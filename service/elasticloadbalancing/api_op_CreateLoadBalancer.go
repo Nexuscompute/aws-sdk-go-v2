@@ -4,28 +4,26 @@ package elasticloadbalancing
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/elasticloadbalancing/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a Classic Load Balancer. You can add listeners, security groups,
-// subnets, and tags when you create your load balancer, or you can add them later
-// using CreateLoadBalancerListeners , ApplySecurityGroupsToLoadBalancer ,
-// AttachLoadBalancerToSubnets , and AddTags . To describe your current load
-// balancers, see DescribeLoadBalancers . When you are finished with a load
-// balancer, you can delete it using DeleteLoadBalancer . You can create up to 20
-// load balancers per region per account. You can request an increase for the
-// number of load balancers for your account. For more information, see Limits for
-// Your Classic Load Balancer (https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-limits.html)
-// in the Classic Load Balancers Guide.
+// Creates a Classic Load Balancer.
+//
+// You can add listeners, security groups, subnets, and tags when you create your
+// load balancer, or you can add them later using CreateLoadBalancerListeners, ApplySecurityGroupsToLoadBalancer, AttachLoadBalancerToSubnets, and AddTags.
+//
+// To describe your current load balancers, see DescribeLoadBalancers. When you are finished with a
+// load balancer, you can delete it using DeleteLoadBalancer.
+//
+// You can create up to 20 load balancers per region per account. You can request
+// an increase for the number of load balancers for your account. For more
+// information, see [Limits for Your Classic Load Balancer]in the Classic Load Balancers Guide.
+//
+// [Limits for Your Classic Load Balancer]: https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-limits.html
 func (c *Client) CreateLoadBalancer(ctx context.Context, params *CreateLoadBalancerInput, optFns ...func(*Options)) (*CreateLoadBalancerOutput, error) {
 	if params == nil {
 		params = &CreateLoadBalancerInput{}
@@ -44,31 +42,42 @@ func (c *Client) CreateLoadBalancer(ctx context.Context, params *CreateLoadBalan
 // Contains the parameters for CreateLoadBalancer.
 type CreateLoadBalancerInput struct {
 
-	// The listeners. For more information, see Listeners for Your Classic Load
-	// Balancer (https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-listener-config.html)
-	// in the Classic Load Balancers Guide.
+	// The listeners.
+	//
+	// For more information, see [Listeners for Your Classic Load Balancer] in the Classic Load Balancers Guide.
+	//
+	// [Listeners for Your Classic Load Balancer]: https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/elb-listener-config.html
 	//
 	// This member is required.
 	Listeners []types.Listener
 
-	// The name of the load balancer. This name must be unique within your set of load
-	// balancers for the region, must have a maximum of 32 characters, must contain
-	// only alphanumeric characters or hyphens, and cannot begin or end with a hyphen.
+	// The name of the load balancer.
+	//
+	// This name must be unique within your set of load balancers for the region, must
+	// have a maximum of 32 characters, must contain only alphanumeric characters or
+	// hyphens, and cannot begin or end with a hyphen.
 	//
 	// This member is required.
 	LoadBalancerName *string
 
-	// One or more Availability Zones from the same region as the load balancer. You
-	// must specify at least one Availability Zone. You can add more Availability Zones
-	// after you create the load balancer using EnableAvailabilityZonesForLoadBalancer .
+	// One or more Availability Zones from the same region as the load balancer.
+	//
+	// You must specify at least one Availability Zone.
+	//
+	// You can add more Availability Zones after you create the load balancer using EnableAvailabilityZonesForLoadBalancer.
 	AvailabilityZones []string
 
-	// The type of a load balancer. Valid only for load balancers in a VPC. By
-	// default, Elastic Load Balancing creates an Internet-facing load balancer with a
-	// DNS name that resolves to public IP addresses. For more information about
-	// Internet-facing and Internal load balancers, see Load Balancer Scheme (https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html#load-balancer-scheme)
-	// in the Elastic Load Balancing User Guide. Specify internal to create a load
-	// balancer with a DNS name that resolves to private IP addresses.
+	// The type of a load balancer. Valid only for load balancers in a VPC.
+	//
+	// By default, Elastic Load Balancing creates an Internet-facing load balancer
+	// with a DNS name that resolves to public IP addresses. For more information about
+	// Internet-facing and Internal load balancers, see [Load Balancer Scheme]in the Elastic Load Balancing
+	// User Guide.
+	//
+	// Specify internal to create a load balancer with a DNS name that resolves to
+	// private IP addresses.
+	//
+	// [Load Balancer Scheme]: https://docs.aws.amazon.com/elasticloadbalancing/latest/userguide/how-elastic-load-balancing-works.html#load-balancer-scheme
 	Scheme *string
 
 	// The IDs of the security groups to assign to the load balancer.
@@ -78,9 +87,12 @@ type CreateLoadBalancerInput struct {
 	// subnet per Availability Zone specified in AvailabilityZones .
 	Subnets []string
 
-	// A list of tags to assign to the load balancer. For more information about
-	// tagging your load balancer, see Tag Your Classic Load Balancer (https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/add-remove-tags.html)
-	// in the Classic Load Balancers Guide.
+	// A list of tags to assign to the load balancer.
+	//
+	// For more information about tagging your load balancer, see [Tag Your Classic Load Balancer] in the Classic Load
+	// Balancers Guide.
+	//
+	// [Tag Your Classic Load Balancer]: https://docs.aws.amazon.com/elasticloadbalancing/latest/classic/add-remove-tags.html
 	Tags []types.Tag
 
 	noSmithyDocumentSerde
@@ -99,6 +111,9 @@ type CreateLoadBalancerOutput struct {
 }
 
 func (c *Client) addOperationCreateLoadBalancerMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpCreateLoadBalancer{}, middleware.After)
 	if err != nil {
 		return err
@@ -107,34 +122,38 @@ func (c *Client) addOperationCreateLoadBalancerMiddlewares(stack *middleware.Sta
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateLoadBalancer"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -146,7 +165,13 @@ func (c *Client) addOperationCreateLoadBalancerMiddlewares(stack *middleware.Sta
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateLoadBalancerResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateLoadBalancerValidationMiddleware(stack); err != nil {
@@ -155,7 +180,7 @@ func (c *Client) addOperationCreateLoadBalancerMiddlewares(stack *middleware.Sta
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateLoadBalancer(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -167,7 +192,19 @@ func (c *Client) addOperationCreateLoadBalancerMiddlewares(stack *middleware.Sta
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -177,130 +214,6 @@ func newServiceMetadataMiddleware_opCreateLoadBalancer(region string) *awsmiddle
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "elasticloadbalancing",
 		OperationName: "CreateLoadBalancer",
 	}
-}
-
-type opCreateLoadBalancerResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateLoadBalancerResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateLoadBalancerResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "elasticloadbalancing"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "elasticloadbalancing"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("elasticloadbalancing")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateLoadBalancerResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateLoadBalancerResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -62,16 +62,36 @@ type Application struct {
 	// The initial capacity of the application.
 	InitialCapacity map[string]InitialCapacityConfig
 
+	// The interactive configuration object that enables the interactive use cases for
+	// an application.
+	InteractiveConfiguration *InteractiveConfiguration
+
 	// The maximum capacity of the application. This is cumulative across all workers
 	// at any given point in time during the lifespan of the application is created. No
 	// new resources will be created once any one of the defined limits is hit.
 	MaximumCapacity *MaximumAllowedResources
+
+	// The configuration setting for monitoring.
+	MonitoringConfiguration *MonitoringConfiguration
 
 	// The name of the application.
 	Name *string
 
 	// The network configuration for customer VPC connectivity for the application.
 	NetworkConfiguration *NetworkConfiguration
+
+	// The [Configuration] specifications of an application. Each configuration consists of a
+	// classification and properties. You use this parameter when creating or updating
+	// an application. To see the runtimeConfiguration object of an application, run
+	// the [GetApplication]API operation.
+	//
+	// [Configuration]: https://docs.aws.amazon.com/emr-serverless/latest/APIReference/API_Configuration.html
+	// [GetApplication]: https://docs.aws.amazon.com/emr-serverless/latest/APIReference/API_GetApplication.html
+	RuntimeConfiguration []Configuration
+
+	// The scheduler configuration for batch and streaming jobs running on this
+	// application. Supported with release labels emr-7.0.0 and above.
+	SchedulerConfiguration *SchedulerConfiguration
 
 	// The state details of the application.
 	StateDetails *string
@@ -183,11 +203,14 @@ type CloudWatchLoggingConfiguration struct {
 	// The types of logs that you want to publish to CloudWatch. If you don't specify
 	// any log types, driver STDOUT and STDERR logs will be published to CloudWatch
 	// Logs by default. For more information including the supported worker types for
-	// Hive and Spark, see Logging for EMR Serverless with CloudWatch (https://docs.aws.amazon.com/emr/latest/EMR-Serverless-UserGuide/logging.html#jobs-log-storage-cw)
-	// .
+	// Hive and Spark, see [Logging for EMR Serverless with CloudWatch].
+	//
 	//   - Key Valid Values: SPARK_DRIVER , SPARK_EXECUTOR , HIVE_DRIVER , TEZ_TASK
+	//
 	//   - Array Members Valid Values: STDOUT , STDERR , HIVE_LOG , TEZ_AM ,
 	//   SYSTEM_LOGS
+	//
+	// [Logging for EMR Serverless with CloudWatch]: https://docs.aws.amazon.com/emr/latest/EMR-Serverless-UserGuide/logging.html#jobs-log-storage-cw
 	LogTypes map[string][]string
 
 	noSmithyDocumentSerde
@@ -275,10 +298,25 @@ type InitialCapacityConfig struct {
 	// The number of workers in the initial capacity configuration.
 	//
 	// This member is required.
-	WorkerCount int64
+	WorkerCount *int64
 
 	// The resource configuration of the initial capacity configuration.
 	WorkerConfiguration *WorkerResourceConfig
+
+	noSmithyDocumentSerde
+}
+
+// The configuration to use to enable the different types of interactive use cases
+// in an application.
+type InteractiveConfiguration struct {
+
+	// Enables an Apache Livy endpoint that you can connect to and run interactive
+	// jobs.
+	LivyEndpointEnabled *bool
+
+	// Enables you to connect an application to Amazon EMR Studio to run interactive
+	// workloads in a notebook.
+	StudioEnabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -371,6 +409,15 @@ type JobRun struct {
 	// This member is required.
 	UpdatedAt *time.Time
 
+	// The attempt of the job run.
+	Attempt *int32
+
+	// The date and time of when the job run attempt was created.
+	AttemptCreatedAt *time.Time
+
+	// The date and time of when the job run attempt was last updated.
+	AttemptUpdatedAt *time.Time
+
 	// The aggregate vCPU, memory, and storage that Amazon Web Services has billed for
 	// the job run. The billed resources include a 1-minute minimum usage for workers,
 	// plus additional storage over 20 GB per worker. Note that billed resources do not
@@ -380,15 +427,30 @@ type JobRun struct {
 	// The configuration settings that are used to override default configuration.
 	ConfigurationOverrides *ConfigurationOverrides
 
+	// The date and time when the job was terminated.
+	EndedAt *time.Time
+
 	// Returns the job run timeout value from the StartJobRun call. If no timeout was
 	// specified, then it returns the default timeout of 720 minutes.
 	ExecutionTimeoutMinutes *int64
+
+	// The mode of the job run.
+	Mode JobRunMode
 
 	// The optional job run name. This doesn't have to be unique.
 	Name *string
 
 	// The network configuration for customer VPC connectivity.
 	NetworkConfiguration *NetworkConfiguration
+
+	// The total time for a job in the QUEUED state in milliseconds.
+	QueuedDurationMilliseconds *int64
+
+	// The retry policy of the job run.
+	RetryPolicy *RetryPolicy
+
+	// The date and time when the job moved to the RUNNING state.
+	StartedAt *time.Time
 
 	// The tags assigned to the job run.
 	Tags map[string]string
@@ -401,6 +463,79 @@ type JobRun struct {
 	// starts to execute, until the time the job terminates, rounded up to the nearest
 	// second.
 	TotalResourceUtilization *TotalResourceUtilization
+
+	noSmithyDocumentSerde
+}
+
+// The summary of attributes associated with a job run attempt.
+type JobRunAttemptSummary struct {
+
+	// The ID of the application the job is running on.
+	//
+	// This member is required.
+	ApplicationId *string
+
+	// The Amazon Resource Name (ARN) of the job run.
+	//
+	// This member is required.
+	Arn *string
+
+	// The date and time when the job run attempt was created.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// The user who created the job run.
+	//
+	// This member is required.
+	CreatedBy *string
+
+	// The Amazon Resource Name (ARN) of the execution role of the job run..
+	//
+	// This member is required.
+	ExecutionRole *string
+
+	// The ID of the job run attempt.
+	//
+	// This member is required.
+	Id *string
+
+	// The date and time of when the job run was created.
+	//
+	// This member is required.
+	JobCreatedAt *time.Time
+
+	// The Amazon EMR release label of the job run attempt.
+	//
+	// This member is required.
+	ReleaseLabel *string
+
+	// The state of the job run attempt.
+	//
+	// This member is required.
+	State JobRunState
+
+	// The state details of the job run attempt.
+	//
+	// This member is required.
+	StateDetails *string
+
+	// The date and time of when the job run attempt was last updated.
+	//
+	// This member is required.
+	UpdatedAt *time.Time
+
+	// The attempt number of the job run execution.
+	Attempt *int32
+
+	// The mode of the job run attempt.
+	Mode JobRunMode
+
+	// The name of the job run attempt.
+	Name *string
+
+	// The type of the job run, such as Spark or Hive.
+	Type *string
 
 	noSmithyDocumentSerde
 }
@@ -458,6 +593,18 @@ type JobRunSummary struct {
 	// This member is required.
 	UpdatedAt *time.Time
 
+	// The attempt number of the job run execution.
+	Attempt *int32
+
+	// The date and time of when the job run attempt was created.
+	AttemptCreatedAt *time.Time
+
+	// The date and time of when the job run attempt was last updated.
+	AttemptUpdatedAt *time.Time
+
+	// The mode of the job run.
+	Mode JobRunMode
+
 	// The optional job run name. This doesn't have to be unique.
 	Name *string
 
@@ -510,6 +657,10 @@ type MonitoringConfiguration struct {
 	// The managed log persistence configuration for a job run.
 	ManagedPersistenceMonitoringConfiguration *ManagedPersistenceMonitoringConfiguration
 
+	// The monitoring configuration object you can configure to send metrics to Amazon
+	// Managed Service for Prometheus for a job run.
+	PrometheusMonitoringConfiguration *PrometheusMonitoringConfiguration
+
 	// The Amazon S3 configuration for monitoring log publishing.
 	S3MonitoringConfiguration *S3MonitoringConfiguration
 
@@ -524,6 +675,17 @@ type NetworkConfiguration struct {
 
 	// The array of subnet Ids for customer VPC connectivity.
 	SubnetIds []string
+
+	noSmithyDocumentSerde
+}
+
+// The monitoring configuration object you can configure to send metrics to Amazon
+// Managed Service for Prometheus for a job run.
+type PrometheusMonitoringConfiguration struct {
+
+	// The remote write URL in the Amazon Managed Service for Prometheus workspace to
+	// send metrics to.
+	RemoteWriteUrl *string
 
 	noSmithyDocumentSerde
 }
@@ -546,6 +708,20 @@ type ResourceUtilization struct {
 	noSmithyDocumentSerde
 }
 
+// The retry policy to use for a job run.
+type RetryPolicy struct {
+
+	// Maximum number of attempts for the job run. This parameter is only applicable
+	// for BATCH mode.
+	MaxAttempts *int32
+
+	// Maximum number of failed attempts per hour. This [arameter is only applicable
+	// for STREAMING mode.
+	MaxFailedAttemptsPerHour *int32
+
+	noSmithyDocumentSerde
+}
+
 // The Amazon S3 configuration for monitoring log publishing. You can configure
 // your jobs to send log information to Amazon S3.
 type S3MonitoringConfiguration struct {
@@ -556,6 +732,23 @@ type S3MonitoringConfiguration struct {
 
 	// The Amazon S3 destination URI for log publishing.
 	LogUri *string
+
+	noSmithyDocumentSerde
+}
+
+// The scheduler configuration for batch and streaming jobs running on this
+// application. Supported with release labels emr-7.0.0 and above.
+type SchedulerConfiguration struct {
+
+	// The maximum concurrent job runs on this application. If scheduler configuration
+	// is enabled on your application, the default value is 15. The valid range is 1 to
+	// 1000.
+	MaxConcurrentRuns *int32
+
+	// The maximum duration in minutes for the job in QUEUED state. If scheduler
+	// configuration is enabled on your application, the default value is 360 minutes
+	// (6 hours). The valid range is from 15 to 720.
+	QueueTimeoutMinutes *int32
 
 	noSmithyDocumentSerde
 }
@@ -612,6 +805,11 @@ type WorkerResourceConfig struct {
 
 	// The disk requirements for every worker instance of the worker type.
 	Disk *string
+
+	// The disk type for every worker instance of the work type. Shuffle optimized
+	// disks have higher performance characteristics and are better for shuffle heavy
+	// workloads. Default is STANDARD .
+	DiskType *string
 
 	noSmithyDocumentSerde
 }

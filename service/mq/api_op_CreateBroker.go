@@ -4,40 +4,52 @@ package mq
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/mq/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a broker. Note: This API is asynchronous. To create a broker, you must
-// either use the AmazonMQFullAccess IAM policy or include the following EC2
-// permissions in your IAM policy.
-//   - ec2:CreateNetworkInterface This permission is required to allow Amazon MQ
-//     to create an elastic network interface (ENI) on behalf of your account.
-//   - ec2:CreateNetworkInterfacePermission This permission is required to attach
-//     the ENI to the broker instance.
+// Creates a broker. Note: This API is asynchronous.
+//
+// To create a broker, you must either use the AmazonMQFullAccess IAM policy or
+// include the following EC2 permissions in your IAM policy.
+//
+//   - ec2:CreateNetworkInterface
+//
+// This permission is required to allow Amazon MQ to create an elastic network
+//
+//	interface (ENI) on behalf of your account.
+//
+//	- ec2:CreateNetworkInterfacePermission
+//
+// This permission is required to attach the ENI to the broker instance.
+//
 //   - ec2:DeleteNetworkInterface
+//
 //   - ec2:DeleteNetworkInterfacePermission
+//
 //   - ec2:DetachNetworkInterface
+//
 //   - ec2:DescribeInternetGateways
+//
 //   - ec2:DescribeNetworkInterfaces
+//
 //   - ec2:DescribeNetworkInterfacePermissions
+//
 //   - ec2:DescribeRouteTables
+//
 //   - ec2:DescribeSecurityGroups
+//
 //   - ec2:DescribeSubnets
+//
 //   - ec2:DescribeVpcs
 //
-// For more information, see Create an IAM User and Get Your Amazon Web Services
-// Credentials (https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/amazon-mq-setting-up.html#create-iam-user)
-// and Never Modify or Delete the Amazon MQ Elastic Network Interface (https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/connecting-to-amazon-mq.html#never-modify-delete-elastic-network-interface)
-// in the Amazon MQ Developer Guide.
+// For more information, see [Create an IAM User and Get Your Amazon Web Services Credentials] and [Never Modify or Delete the Amazon MQ Elastic Network Interface] in the Amazon MQ Developer Guide.
+//
+// [Never Modify or Delete the Amazon MQ Elastic Network Interface]: https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/connecting-to-amazon-mq.html#never-modify-delete-elastic-network-interface
+// [Create an IAM User and Get Your Amazon Web Services Credentials]: https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/amazon-mq-setting-up.html#create-iam-user
 func (c *Client) CreateBroker(ctx context.Context, params *CreateBrokerInput, optFns ...func(*Options)) (*CreateBrokerOutput, error) {
 	if params == nil {
 		params = &CreateBrokerInput{}
@@ -56,22 +68,15 @@ func (c *Client) CreateBroker(ctx context.Context, params *CreateBrokerInput, op
 // Creates a broker using the specified properties.
 type CreateBrokerInput struct {
 
-	// Enables automatic upgrades to new minor versions for brokers, as new versions
-	// are released and supported by Amazon MQ. Automatic upgrades occur during the
-	// scheduled maintenance window of the broker or after a manual broker reboot. Set
-	// to true by default, if no value is specified.
-	//
-	// This member is required.
-	AutoMinorVersionUpgrade bool
-
 	// Required. The broker's name. This value must be unique in your Amazon Web
 	// Services account, 1-50 characters long, must contain only letters, numbers,
 	// dashes, and underscores, and must not contain white spaces, brackets, wildcard
-	// characters, or special characters. Do not add personally identifiable
-	// information (PII) or other confidential or sensitive information in broker
-	// names. Broker names are accessible to other Amazon Web Services services,
-	// including CloudWatch Logs. Broker names are not intended to be used for private
-	// or sensitive data.
+	// characters, or special characters.
+	//
+	// Do not add personally identifiable information (PII) or other confidential or
+	// sensitive information in broker names. Broker names are accessible to other
+	// Amazon Web Services services, including CloudWatch Logs. Broker names are not
+	// intended to be used for private or sensitive data.
 	//
 	// This member is required.
 	BrokerName *string
@@ -87,13 +92,6 @@ type CreateBrokerInput struct {
 	// This member is required.
 	EngineType types.EngineType
 
-	// Required. The broker engine's version. For a list of supported engine versions,
-	// see Supported engines (https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/broker-engine.html)
-	// .
-	//
-	// This member is required.
-	EngineVersion *string
-
 	// Required. The broker's instance type.
 	//
 	// This member is required.
@@ -103,7 +101,7 @@ type CreateBrokerInput struct {
 	// broker's subnets. Set to false by default, if no value is provided.
 	//
 	// This member is required.
-	PubliclyAccessible bool
+	PubliclyAccessible *bool
 
 	// The list of broker users (persons or applications) who can access queues and
 	// topics. For Amazon MQ for RabbitMQ brokers, one and only one administrative user
@@ -118,13 +116,24 @@ type CreateBrokerInput struct {
 	// SIMPLE.
 	AuthenticationStrategy types.AuthenticationStrategy
 
+	// Enables automatic upgrades to new patch versions for brokers as new versions
+	// are released and supported by Amazon MQ. Automatic upgrades occur during the
+	// scheduled maintenance window or after a manual broker reboot. Set to true by
+	// default, if no value is specified.
+	//
+	// Must be set to true for ActiveMQ brokers version 5.18 and above and for
+	// RabbitMQ brokers version 3.13 and above.
+	AutoMinorVersionUpgrade *bool
+
 	// A list of information about the configuration.
 	Configuration *types.ConfigurationId
 
 	// The unique ID that the requester receives for the created broker. Amazon MQ
-	// passes your ID with the API action. We recommend using a Universally Unique
-	// Identifier (UUID) for the creatorRequestId. You may omit the creatorRequestId if
-	// your application doesn't require idempotency.
+	// passes your ID with the API action.
+	//
+	// We recommend using a Universally Unique Identifier (UUID) for the
+	// creatorRequestId. You may omit the creatorRequestId if your application doesn't
+	// require idempotency.
 	CreatorRequestId *string
 
 	// Defines whether this broker is a part of a data replication pair.
@@ -137,6 +146,14 @@ type CreateBrokerInput struct {
 
 	// Encryption options for the broker.
 	EncryptionOptions *types.EncryptionOptions
+
+	// The broker engine version. Defaults to the latest available version for the
+	// specified broker engine type. For more information, see the [ActiveMQ version management]and the [RabbitMQ version management] sections
+	// in the Amazon MQ Developer Guide.
+	//
+	// [RabbitMQ version management]: https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/rabbitmq-version-management.html
+	// [ActiveMQ version management]: https://docs.aws.amazon.com//amazon-mq/latest/developer-guide/activemq-version-management.html
+	EngineVersion *string
 
 	// Optional. The metadata of the LDAP server used to authenticate and authorize
 	// connections to the broker. Does not apply to RabbitMQ brokers.
@@ -163,12 +180,14 @@ type CreateBrokerInput struct {
 	// example, the default subnet). An ACTIVE_STANDBY_MULTI_AZ Amazon MQ for ActiveMQ
 	// deployment requires two subnets. A CLUSTER_MULTI_AZ Amazon MQ for RabbitMQ
 	// deployment has no subnet requirements when deployed with public accessibility.
-	// Deployment without public accessibility requires at least one subnet. If you
-	// specify subnets in a shared VPC (https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html)
-	// for a RabbitMQ broker, the associated VPC to which the specified subnets belong
-	// must be owned by your Amazon Web Services account. Amazon MQ will not be able to
-	// create VPC endpoints in VPCs that are not owned by your Amazon Web Services
-	// account.
+	// Deployment without public accessibility requires at least one subnet.
+	//
+	// If you specify subnets in a [shared VPC] for a RabbitMQ broker, the associated VPC to which
+	// the specified subnets belong must be owned by your Amazon Web Services account.
+	// Amazon MQ will not be able to create VPC endpoints in VPCs that are not owned by
+	// your Amazon Web Services account.
+	//
+	// [shared VPC]: https://docs.aws.amazon.com/vpc/latest/userguide/vpc-sharing.html
 	SubnetIds []string
 
 	// Create tags when creating the broker.
@@ -192,6 +211,9 @@ type CreateBrokerOutput struct {
 }
 
 func (c *Client) addOperationCreateBrokerMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateBroker{}, middleware.After)
 	if err != nil {
 		return err
@@ -200,34 +222,38 @@ func (c *Client) addOperationCreateBrokerMiddlewares(stack *middleware.Stack, op
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateBroker"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -239,7 +265,13 @@ func (c *Client) addOperationCreateBrokerMiddlewares(stack *middleware.Stack, op
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateBrokerResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateBrokerMiddleware(stack, options); err != nil {
@@ -251,7 +283,7 @@ func (c *Client) addOperationCreateBrokerMiddlewares(stack *middleware.Stack, op
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateBroker(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -263,7 +295,19 @@ func (c *Client) addOperationCreateBrokerMiddlewares(stack *middleware.Stack, op
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -306,130 +350,6 @@ func newServiceMetadataMiddleware_opCreateBroker(region string) *awsmiddleware.R
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "mq",
 		OperationName: "CreateBroker",
 	}
-}
-
-type opCreateBrokerResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateBrokerResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateBrokerResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "mq"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "mq"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("mq")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateBrokerResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateBrokerResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

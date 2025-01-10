@@ -4,21 +4,17 @@ package costexplorer
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/costexplorer/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Retrieves an array of Cost Category names and values incurred cost. If some
-// Cost Category names and values are not associated with any cost, they will not
-// be returned by this API.
+// Retrieves an array of Cost Category names and values incurred cost.
+//
+// If some Cost Category names and values are not associated with any cost, they
+// will not be returned by this API.
 func (c *Client) GetCostCategories(ctx context.Context, params *GetCostCategoriesInput, optFns ...func(*Options)) (*GetCostCategoriesOutput, error) {
 	if params == nil {
 		params = &GetCostCategoriesInput{}
@@ -41,68 +37,101 @@ type GetCostCategoriesInput struct {
 	// This member is required.
 	TimePeriod *types.DateInterval
 
+	// The Amazon Resource Name (ARN) that uniquely identifies a specific billing
+	// view. The ARN is used to specify which particular billing view you want to
+	// interact with or retrieve information from when making API calls related to
+	// Amazon Web Services Billing and Cost Management features. The BillingViewArn can
+	// be retrieved by calling the ListBillingViews API.
+	BillingViewArn *string
+
 	// The unique name of the Cost Category.
 	CostCategoryName *string
 
-	// Use Expression to filter in various Cost Explorer APIs. Not all Expression
-	// types are supported in each API. Refer to the documentation for each specific
-	// API to see what is supported. There are two patterns:
+	// Use Expression to filter in various Cost Explorer APIs.
+	//
+	// Not all Expression types are supported in each API. Refer to the documentation
+	// for each specific API to see what is supported.
+	//
+	// There are two patterns:
+	//
 	//   - Simple dimension values.
+	//
 	//   - There are three types of simple dimension values: CostCategories , Tags ,
 	//   and Dimensions .
+	//
 	//   - Specify the CostCategories field to define a filter that acts on Cost
 	//   Categories.
+	//
 	//   - Specify the Tags field to define a filter that acts on Cost Allocation Tags.
-	//   - Specify the Dimensions field to define a filter that acts on the
-	//   DimensionValues (https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_DimensionValues.html)
-	//   .
+	//
+	//   - Specify the Dimensions field to define a filter that acts on the [DimensionValues]
+	//   DimensionValues .
+	//
 	//   - For each filter type, you can set the dimension name and values for the
 	//   filters that you plan to use.
+	//
 	//   - For example, you can filter for REGION==us-east-1 OR REGION==us-west-1 . For
 	//   GetRightsizingRecommendation , the Region is a full name (for example,
 	//   REGION==US East (N. Virginia) .
+	//
 	//   - The corresponding Expression for this example is as follows: {
 	//   "Dimensions": { "Key": "REGION", "Values": [ "us-east-1", "us-west-1" ] } }
+	//
 	//   - As shown in the previous example, lists of dimension values are combined
 	//   with OR when applying the filter.
+	//
 	//   - You can also set different match options to further control how the filter
 	//   behaves. Not all APIs support match options. Refer to the documentation for each
 	//   specific API to see what is supported.
+	//
 	//   - For example, you can filter for linked account names that start with "a".
+	//
 	//   - The corresponding Expression for this example is as follows: {
 	//   "Dimensions": { "Key": "LINKED_ACCOUNT_NAME", "MatchOptions": [ "STARTS_WITH" ],
 	//   "Values": [ "a" ] } }
+	//
 	//   - Compound Expression types with logical operations.
+	//
 	//   - You can use multiple Expression types and the logical operators AND/OR/NOT
 	//   to create a list of one or more Expression objects. By doing this, you can
 	//   filter by more advanced options.
+	//
 	//   - For example, you can filter by ((REGION == us-east-1 OR REGION ==
 	//   us-west-1) OR (TAG.Type == Type1)) AND (USAGE_TYPE != DataTransfer) .
+	//
 	//   - The corresponding Expression for this example is as follows: { "And": [
 	//   {"Or": [ {"Dimensions": { "Key": "REGION", "Values": [ "us-east-1", "us-west-1"
 	//   ] }}, {"Tags": { "Key": "TagName", "Values": ["Value1"] } } ]}, {"Not":
 	//   {"Dimensions": { "Key": "USAGE_TYPE", "Values": ["DataTransfer"] }}} ] }
-	//   Because each Expression can have only one operator, the service returns an
-	//   error if more than one is specified. The following example shows an Expression
+	//
+	// Because each Expression can have only one operator, the service returns an error
+	//   if more than one is specified. The following example shows an Expression
 	//   object that creates an error: { "And": [ ... ], "Dimensions": { "Key":
-	//   "USAGE_TYPE", "Values": [ "DataTransfer" ] } } The following is an example of
-	//   the corresponding error message: "Expression has more than one roots. Only
-	//   one root operator is allowed for each expression: And, Or, Not, Dimensions,
-	//   Tags, CostCategories"
+	//   "USAGE_TYPE", "Values": [ "DataTransfer" ] } }
+	//
+	// The following is an example of the corresponding error message: "Expression has
+	//   more than one roots. Only one root operator is allowed for each expression: And,
+	//   Or, Not, Dimensions, Tags, CostCategories"
+	//
 	// For the GetRightsizingRecommendation action, a combination of OR and NOT isn't
 	// supported. OR isn't supported between different dimensions, or dimensions and
 	// tags. NOT operators aren't supported. Dimensions are also limited to
-	// LINKED_ACCOUNT , REGION , or RIGHTSIZING_TYPE . For the
-	// GetReservationPurchaseRecommendation action, only NOT is supported. AND and OR
-	// aren't supported. Dimensions are limited to LINKED_ACCOUNT .
+	// LINKED_ACCOUNT , REGION , or RIGHTSIZING_TYPE .
+	//
+	// For the GetReservationPurchaseRecommendation action, only NOT is supported. AND
+	// and OR aren't supported. Dimensions are limited to LINKED_ACCOUNT .
+	//
+	// [DimensionValues]: https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_DimensionValues.html
 	Filter *types.Expression
 
-	// This field is only used when the SortBy value is provided in the request. The
-	// maximum number of objects that are returned for this request. If MaxResults
+	// This field is only used when the SortBy value is provided in the request.
+	//
+	// The maximum number of objects that are returned for this request. If MaxResults
 	// isn't specified with the SortBy value, the request returns 1000 results as the
-	// default value for this parameter. For GetCostCategories , MaxResults has an
-	// upper quota of 1000.
-	MaxResults int32
+	// default value for this parameter.
+	//
+	// For GetCostCategories , MaxResults has an upper quota of 1000.
+	MaxResults *int32
 
 	// If the number of objects that are still available for retrieval exceeds the
 	// quota, Amazon Web Services returns a NextPageToken value in the response. To
@@ -110,22 +139,35 @@ type GetCostCategoriesInput struct {
 	// call in your next request.
 	NextPageToken *string
 
-	// The value that you want to search the filter values for. If you don't specify a
-	// CostCategoryName , SearchString is used to filter Cost Category names that
-	// match the SearchString pattern. If you specify a CostCategoryName , SearchString
-	// is used to filter Cost Category values that match the SearchString pattern.
+	// The value that you want to search the filter values for.
+	//
+	// If you don't specify a CostCategoryName , SearchString is used to filter Cost
+	// Category names that match the SearchString pattern. If you specify a
+	// CostCategoryName , SearchString is used to filter Cost Category values that
+	// match the SearchString pattern.
 	SearchString *string
 
-	// The value that you sort the data by. The key represents the cost and usage
-	// metrics. The following values are supported:
+	// The value that you sort the data by.
+	//
+	// The key represents the cost and usage metrics. The following values are
+	// supported:
+	//
 	//   - BlendedCost
+	//
 	//   - UnblendedCost
+	//
 	//   - AmortizedCost
+	//
 	//   - NetAmortizedCost
+	//
 	//   - NetUnblendedCost
+	//
 	//   - UsageQuantity
+	//
 	//   - NormalizedUsageAmount
+	//
 	// The supported key values for the SortOrder value are ASCENDING and DESCENDING .
+	//
 	// When you use the SortBy value, the NextPageToken and SearchString key values
 	// aren't supported.
 	SortBy []types.SortDefinition
@@ -148,8 +190,10 @@ type GetCostCategoriesOutput struct {
 	// The names of the Cost Categories.
 	CostCategoryNames []string
 
-	// The Cost Category values. If the CostCategoryName key isn't specified in the
-	// request, the CostCategoryValues fields aren't returned.
+	// The Cost Category values.
+	//
+	// If the CostCategoryName key isn't specified in the request, the
+	// CostCategoryValues fields aren't returned.
 	CostCategoryValues []string
 
 	// If the number of objects that are still available for retrieval exceeds the
@@ -165,6 +209,9 @@ type GetCostCategoriesOutput struct {
 }
 
 func (c *Client) addOperationGetCostCategoriesMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpGetCostCategories{}, middleware.After)
 	if err != nil {
 		return err
@@ -173,34 +220,38 @@ func (c *Client) addOperationGetCostCategoriesMiddlewares(stack *middleware.Stac
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GetCostCategories"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -212,7 +263,13 @@ func (c *Client) addOperationGetCostCategoriesMiddlewares(stack *middleware.Stac
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGetCostCategoriesResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetCostCategoriesValidationMiddleware(stack); err != nil {
@@ -221,7 +278,7 @@ func (c *Client) addOperationGetCostCategoriesMiddlewares(stack *middleware.Stac
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetCostCategories(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -233,7 +290,19 @@ func (c *Client) addOperationGetCostCategoriesMiddlewares(stack *middleware.Stac
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -243,130 +312,6 @@ func newServiceMetadataMiddleware_opGetCostCategories(region string) *awsmiddlew
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "ce",
 		OperationName: "GetCostCategories",
 	}
-}
-
-type opGetCostCategoriesResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opGetCostCategoriesResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGetCostCategoriesResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "ce"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "ce"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("ce")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addGetCostCategoriesResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGetCostCategoriesResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

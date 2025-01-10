@@ -870,6 +870,26 @@ func (m *validateOpListBranches) HandleInitialize(ctx context.Context, in middle
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListFileCommitHistory struct {
+}
+
+func (*validateOpListFileCommitHistory) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListFileCommitHistory) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListFileCommitHistoryInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListFileCommitHistoryInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListPullRequests struct {
 }
 
@@ -1470,6 +1490,26 @@ func (m *validateOpUpdateRepositoryDescription) HandleInitialize(ctx context.Con
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateRepositoryEncryptionKey struct {
+}
+
+func (*validateOpUpdateRepositoryEncryptionKey) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateRepositoryEncryptionKey) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateRepositoryEncryptionKeyInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateRepositoryEncryptionKeyInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateRepositoryName struct {
 }
 
@@ -1662,6 +1702,10 @@ func addOpListBranchesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListBranches{}, middleware.After)
 }
 
+func addOpListFileCommitHistoryValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListFileCommitHistory{}, middleware.After)
+}
+
 func addOpListPullRequestsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListPullRequests{}, middleware.After)
 }
@@ -1780,6 +1824,10 @@ func addOpUpdatePullRequestTitleValidationMiddleware(stack *middleware.Stack) er
 
 func addOpUpdateRepositoryDescriptionValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateRepositoryDescription{}, middleware.After)
+}
+
+func addOpUpdateRepositoryEncryptionKeyValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateRepositoryEncryptionKey{}, middleware.After)
 }
 
 func addOpUpdateRepositoryNameValidationMiddleware(stack *middleware.Stack) error {
@@ -2838,6 +2886,24 @@ func validateOpListBranchesInput(v *ListBranchesInput) error {
 	}
 }
 
+func validateOpListFileCommitHistoryInput(v *ListFileCommitHistoryInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListFileCommitHistoryInput"}
+	if v.RepositoryName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RepositoryName"))
+	}
+	if v.FilePath == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FilePath"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListPullRequestsInput(v *ListPullRequestsInput) error {
 	if v == nil {
 		return nil
@@ -3422,6 +3488,24 @@ func validateOpUpdateRepositoryDescriptionInput(v *UpdateRepositoryDescriptionIn
 	invalidParams := smithy.InvalidParamsError{Context: "UpdateRepositoryDescriptionInput"}
 	if v.RepositoryName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("RepositoryName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateRepositoryEncryptionKeyInput(v *UpdateRepositoryEncryptionKeyInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateRepositoryEncryptionKeyInput"}
+	if v.RepositoryName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RepositoryName"))
+	}
+	if v.KmsKeyId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("KmsKeyId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

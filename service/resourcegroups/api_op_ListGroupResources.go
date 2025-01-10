@@ -4,24 +4,26 @@ package resourcegroups
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/resourcegroups/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns a list of ARNs of the resources that are members of a specified
-// resource group. Minimum permissions To run this command, you must have the
-// following permissions:
+// Returns a list of Amazon resource names (ARNs) of the resources that are
+// members of a specified resource group.
+//
+// # Minimum permissions
+//
+// To run this command, you must have the following permissions:
+//
 //   - resource-groups:ListGroupResources
+//
 //   - cloudformation:DescribeStacks
+//
 //   - cloudformation:ListStackResources
+//
 //   - tag:GetResources
 func (c *Client) ListGroupResources(ctx context.Context, params *ListGroupResourcesInput, optFns ...func(*Options)) (*ListGroupResourcesOutput, error) {
 	if params == nil {
@@ -40,31 +42,35 @@ func (c *Client) ListGroupResources(ctx context.Context, params *ListGroupResour
 
 type ListGroupResourcesInput struct {
 
-	// Filters, formatted as ResourceFilter objects, that you want to apply to a
-	// ListGroupResources operation. Filters the results to include only those of the
-	// specified resource types.
+	// Filters, formatted as ResourceFilter objects, that you want to apply to a ListGroupResources
+	// operation. Filters the results to include only those of the specified resource
+	// types.
+	//
 	//   - resource-type - Filter resources by their type. Specify up to five resource
 	//   types in the format AWS::ServiceCode::ResourceType . For example,
 	//   AWS::EC2::Instance , or AWS::S3::Bucket .
+	//
 	// When you specify a resource-type filter for ListGroupResources , Resource Groups
 	// validates your filter resource types against the types that are defined in the
 	// query associated with the group. For example, if a group contains only S3
 	// buckets because its query specifies only that resource type, but your
 	// resource-type filter includes EC2 instances, AWS Resource Groups does not filter
 	// for EC2 instances. In this case, a ListGroupResources request returns a
-	// BadRequestException error with a message similar to the following: The resource
-	// types specified as filters in the request are not valid. The error includes a
-	// list of resource types that failed the validation because they are not part of
-	// the query associated with the group. This validation doesn't occur when the
-	// group query specifies AWS::AllSupported , because a group based on such a query
-	// can contain any of the allowed resource types for the query type (tag-based or
-	// Amazon CloudFront stack-based queries).
+	// BadRequestException error with a message similar to the following:
+	//
+	//     The resource types specified as filters in the request are not valid.
+	//
+	// The error includes a list of resource types that failed the validation because
+	// they are not part of the query associated with the group. This validation
+	// doesn't occur when the group query specifies AWS::AllSupported , because a group
+	// based on such a query can contain any of the allowed resource types for the
+	// query type (tag-based or Amazon CloudFront stack-based queries).
 	Filters []types.ResourceFilter
 
-	// The name or the ARN of the resource group
+	// The name or the Amazon resource name (ARN) of the resource group.
 	Group *string
 
-	// Deprecated - don't use this parameter. Use the Group request field instead.
+	//  Deprecated - don't use this parameter. Use the Group request field instead.
 	//
 	// Deprecated: This field is deprecated, use Group instead.
 	GroupName *string
@@ -97,12 +103,14 @@ type ListGroupResourcesOutput struct {
 	// repeat this until the NextToken response element comes back as null .
 	NextToken *string
 
-	// A list of QueryError objects. Each error is an object that contains ErrorCode
-	// and Message structures. Possible values for ErrorCode are
-	// CLOUDFORMATION_STACK_INACTIVE and CLOUDFORMATION_STACK_NOT_EXISTING .
+	// A list of QueryError objects. Each error contains an ErrorCode and Message .
+	// Possible values for ErrorCode are CLOUDFORMATION_STACK_INACTIVE ,
+	// CLOUDFORMATION_STACK_NOT_EXISTING , CLOUDFORMATION_STACK_UNASSUMABLE_ROLE and
+	// RESOURCE_TYPE_NOT_SUPPORTED .
 	QueryErrors []types.QueryError
 
-	// Deprecated - don't use this parameter. Use the Resources response field instead.
+	//  Deprecated - don't use this parameter. Use the Resources response field
+	// instead.
 	//
 	// Deprecated: This field is deprecated, use Resources instead.
 	ResourceIdentifiers []types.ResourceIdentifier
@@ -118,6 +126,9 @@ type ListGroupResourcesOutput struct {
 }
 
 func (c *Client) addOperationListGroupResourcesMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpListGroupResources{}, middleware.After)
 	if err != nil {
 		return err
@@ -126,34 +137,38 @@ func (c *Client) addOperationListGroupResourcesMiddlewares(stack *middleware.Sta
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListGroupResources"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -165,7 +180,13 @@ func (c *Client) addOperationListGroupResourcesMiddlewares(stack *middleware.Sta
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListGroupResourcesResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListGroupResourcesValidationMiddleware(stack); err != nil {
@@ -174,7 +195,7 @@ func (c *Client) addOperationListGroupResourcesMiddlewares(stack *middleware.Sta
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListGroupResources(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -186,19 +207,23 @@ func (c *Client) addOperationListGroupResourcesMiddlewares(stack *middleware.Sta
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// ListGroupResourcesAPIClient is a client that implements the ListGroupResources
-// operation.
-type ListGroupResourcesAPIClient interface {
-	ListGroupResources(context.Context, *ListGroupResourcesInput, ...func(*Options)) (*ListGroupResourcesOutput, error)
-}
-
-var _ ListGroupResourcesAPIClient = (*Client)(nil)
 
 // ListGroupResourcesPaginatorOptions is the paginator options for
 // ListGroupResources
@@ -272,6 +297,9 @@ func (p *ListGroupResourcesPaginator) NextPage(ctx context.Context, optFns ...fu
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListGroupResources(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -291,134 +319,18 @@ func (p *ListGroupResourcesPaginator) NextPage(ctx context.Context, optFns ...fu
 	return result, nil
 }
 
+// ListGroupResourcesAPIClient is a client that implements the ListGroupResources
+// operation.
+type ListGroupResourcesAPIClient interface {
+	ListGroupResources(context.Context, *ListGroupResourcesInput, ...func(*Options)) (*ListGroupResourcesOutput, error)
+}
+
+var _ ListGroupResourcesAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListGroupResources(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "resource-groups",
 		OperationName: "ListGroupResources",
 	}
-}
-
-type opListGroupResourcesResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListGroupResourcesResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListGroupResourcesResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "resource-groups"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "resource-groups"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("resource-groups")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListGroupResourcesResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListGroupResourcesResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

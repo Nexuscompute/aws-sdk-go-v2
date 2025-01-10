@@ -4,27 +4,44 @@ package redshift
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/redshift/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Modifies the settings for a cluster. You can also change node type and the
-// number of nodes to scale up or down the cluster. When resizing a cluster, you
-// must specify both the number of nodes and the node type even if one of the
-// parameters does not change. You can add another security or parameter group, or
-// change the admin user password. Resetting a cluster password or modifying the
-// security groups associated with a cluster do not need a reboot. However,
-// modifying a parameter group requires a reboot for parameters to take effect. For
-// more information about managing clusters, go to Amazon Redshift Clusters (https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html)
-// in the Amazon Redshift Cluster Management Guide.
+// Modifies the settings for a cluster.
+//
+// You can also change node type and the number of nodes to scale up or down the
+// cluster. When resizing a cluster, you must specify both the number of nodes and
+// the node type even if one of the parameters does not change.
+//
+// You can add another security or parameter group, or change the admin user
+// password. Resetting a cluster password or modifying the security groups
+// associated with a cluster do not need a reboot. However, modifying a parameter
+// group requires a reboot for parameters to take effect. For more information
+// about managing clusters, go to [Amazon Redshift Clusters]in the Amazon Redshift Cluster Management Guide.
+//
+// VPC Block Public Access (BPA) enables you to block resources in VPCs and
+// subnets that you own in a Region from reaching or being reached from the
+// internet through internet gateways and egress-only internet gateways. If a
+// subnet group for a provisioned cluster is in an account with VPC BPA turned on,
+// the following capabilities are blocked:
+//
+//   - Creating a public cluster
+//
+//   - Restoring a public cluster
+//
+//   - Modifying a private cluster to be public
+//
+//   - Adding a subnet with VPC BPA turned on to the subnet group when there's at
+//     least one public cluster within the group
+//
+// For more information about VPC BPA, see [Block public access to VPCs and subnets] in the Amazon VPC User Guide.
+//
+// [Amazon Redshift Clusters]: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html
+// [Block public access to VPCs and subnets]: https://docs.aws.amazon.com/vpc/latest/userguide/security-vpc-bpa.html
 func (c *Client) ModifyCluster(ctx context.Context, params *ModifyClusterInput, optFns ...func(*Options)) (*ModifyClusterOutput, error) {
 	if params == nil {
 		params = &ModifyClusterInput{}
@@ -42,23 +59,33 @@ func (c *Client) ModifyCluster(ctx context.Context, params *ModifyClusterInput, 
 
 type ModifyClusterInput struct {
 
-	// The unique identifier of the cluster to be modified. Example: examplecluster
+	// The unique identifier of the cluster to be modified.
+	//
+	// Example: examplecluster
 	//
 	// This member is required.
 	ClusterIdentifier *string
 
 	// If true , major version upgrades will be applied automatically to the cluster
-	// during the maintenance window. Default: false
+	// during the maintenance window.
+	//
+	// Default: false
 	AllowVersionUpgrade *bool
 
 	// The number of days that automated snapshots are retained. If the value is 0,
 	// automated snapshots are disabled. Even if automated snapshots are disabled, you
-	// can still create manual snapshots when you want with CreateClusterSnapshot . If
-	// you decrease the automated snapshot retention period from its current value,
+	// can still create manual snapshots when you want with CreateClusterSnapshot.
+	//
+	// If you decrease the automated snapshot retention period from its current value,
 	// existing automated snapshots that fall outside of the new retention period will
-	// be immediately deleted. You can't disable automated snapshots for RA3 node
-	// types. Set the automated retention period from 1-35 days. Default: Uses existing
-	// setting. Constraints: Must be a value from 0 to 35.
+	// be immediately deleted.
+	//
+	// You can't disable automated snapshots for RA3 node types. Set the automated
+	// retention period from 1-35 days.
+	//
+	// Default: Uses existing setting.
+	//
+	// Constraints: Must be a value from 0 to 35.
 	AutomatedSnapshotRetentionPeriod *int32
 
 	// The option to initiate relocation for an Amazon Redshift cluster to the target
@@ -70,57 +97,81 @@ type ModifyClusterInput struct {
 	AvailabilityZoneRelocation *bool
 
 	// The name of the cluster parameter group to apply to this cluster. This change
-	// is applied only after the cluster is rebooted. To reboot a cluster use
-	// RebootCluster . Default: Uses existing setting. Constraints: The cluster
-	// parameter group must be in the same parameter group family that matches the
-	// cluster version.
+	// is applied only after the cluster is rebooted. To reboot a cluster use RebootCluster.
+	//
+	// Default: Uses existing setting.
+	//
+	// Constraints: The cluster parameter group must be in the same parameter group
+	// family that matches the cluster version.
 	ClusterParameterGroupName *string
 
 	// A list of cluster security groups to be authorized on this cluster. This change
-	// is asynchronously applied as soon as possible. Security groups currently
-	// associated with the cluster, and not in the list of groups to apply, will be
-	// revoked from the cluster. Constraints:
+	// is asynchronously applied as soon as possible.
+	//
+	// Security groups currently associated with the cluster, and not in the list of
+	// groups to apply, will be revoked from the cluster.
+	//
+	// Constraints:
+	//
 	//   - Must be 1 to 255 alphanumeric characters or hyphens
+	//
 	//   - First character must be a letter
+	//
 	//   - Cannot end with a hyphen or contain two consecutive hyphens
 	ClusterSecurityGroups []string
 
-	// The new cluster type. When you submit your cluster resize request, your
-	// existing cluster goes into a read-only mode. After Amazon Redshift provisions a
-	// new cluster based on your resize requirements, there will be outage for a period
-	// while the old cluster is deleted and your connection is switched to the new
-	// cluster. You can use DescribeResize to track the progress of the resize
-	// request. Valid Values: multi-node | single-node
+	// The new cluster type.
+	//
+	// When you submit your cluster resize request, your existing cluster goes into a
+	// read-only mode. After Amazon Redshift provisions a new cluster based on your
+	// resize requirements, there will be outage for a period while the old cluster is
+	// deleted and your connection is switched to the new cluster. You can use DescribeResizeto
+	// track the progress of the resize request.
+	//
+	// Valid Values:  multi-node | single-node
 	ClusterType *string
 
-	// The new version number of the Amazon Redshift engine to upgrade to. For major
-	// version upgrades, if a non-default cluster parameter group is currently in use,
-	// a new cluster parameter group in the cluster parameter group family for the new
-	// version must be specified. The new cluster parameter group can be the default
-	// for that cluster parameter group family. For more information about parameters
-	// and parameter groups, go to Amazon Redshift Parameter Groups (https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html)
-	// in the Amazon Redshift Cluster Management Guide. Example: 1.0
+	// The new version number of the Amazon Redshift engine to upgrade to.
+	//
+	// For major version upgrades, if a non-default cluster parameter group is
+	// currently in use, a new cluster parameter group in the cluster parameter group
+	// family for the new version must be specified. The new cluster parameter group
+	// can be the default for that cluster parameter group family. For more information
+	// about parameters and parameter groups, go to [Amazon Redshift Parameter Groups]in the Amazon Redshift Cluster
+	// Management Guide.
+	//
+	// Example: 1.0
+	//
+	// [Amazon Redshift Parameter Groups]: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html
 	ClusterVersion *string
 
-	// The Elastic IP (EIP) address for the cluster. Constraints: The cluster must be
-	// provisioned in EC2-VPC and publicly-accessible through an Internet gateway. For
-	// more information about provisioning clusters in EC2-VPC, go to Supported
-	// Platforms to Launch Your Cluster (https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#cluster-platforms)
-	// in the Amazon Redshift Cluster Management Guide.
+	// The Elastic IP (EIP) address for the cluster.
+	//
+	// Constraints: The cluster must be provisioned in EC2-VPC and publicly-accessible
+	// through an Internet gateway. For more information about provisioning clusters in
+	// EC2-VPC, go to [Supported Platforms to Launch Your Cluster]in the Amazon Redshift Cluster Management Guide.
+	//
+	// [Supported Platforms to Launch Your Cluster]: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-clusters.html#cluster-platforms
 	ElasticIp *string
 
 	// Indicates whether the cluster is encrypted. If the value is encrypted (true)
 	// and you provide a value for the KmsKeyId parameter, we encrypt the cluster with
 	// the provided KmsKeyId . If you don't provide a KmsKeyId , we encrypt with the
-	// default key. If the value is not encrypted (false), then the cluster is
-	// decrypted.
+	// default key.
+	//
+	// If the value is not encrypted (false), then the cluster is decrypted.
 	Encrypted *bool
 
 	// An option that specifies whether to create the cluster with enhanced VPC
 	// routing enabled. To create a cluster that uses enhanced VPC routing, the cluster
-	// must be in a VPC. For more information, see Enhanced VPC Routing (https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html)
-	// in the Amazon Redshift Cluster Management Guide. If this option is true ,
-	// enhanced VPC routing is enabled. Default: false
+	// must be in a VPC. For more information, see [Enhanced VPC Routing]in the Amazon Redshift Cluster
+	// Management Guide.
+	//
+	// If this option is true , enhanced VPC routing is enabled.
+	//
+	// Default: false
+	//
+	// [Enhanced VPC Routing]: https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html
 	EnhancedVpcRouting *bool
 
 	// Specifies the name of the HSM client certificate the Amazon Redshift cluster
@@ -130,6 +181,10 @@ type ModifyClusterInput struct {
 	// Specifies the name of the HSM configuration that contains the information the
 	// Amazon Redshift cluster can use to retrieve and store keys in an HSM.
 	HsmConfigurationIdentifier *string
+
+	// The IP address types that the cluster supports. Possible values are ipv4 and
+	// dualstack .
+	IpAddressType *string
 
 	// The Key Management Service (KMS) key ID of the encryption key that you want to
 	// use to encrypt data in the cluster.
@@ -143,67 +198,130 @@ type ModifyClusterInput struct {
 	// track name is applied.
 	MaintenanceTrackName *string
 
+	// If true , Amazon Redshift uses Secrets Manager to manage this cluster's admin
+	// credentials. You can't use MasterUserPassword if ManageMasterPassword is true.
+	// If ManageMasterPassword is false or not set, Amazon Redshift uses
+	// MasterUserPassword for the admin user account's password.
+	ManageMasterPassword *bool
+
 	// The default for number of days that a newly created manual snapshot is
 	// retained. If the value is -1, the manual snapshot is retained indefinitely. This
 	// value doesn't retroactively change the retention periods of existing manual
-	// snapshots. The value must be either -1 or an integer between 1 and 3,653. The
-	// default value is -1.
+	// snapshots.
+	//
+	// The value must be either -1 or an integer between 1 and 3,653.
+	//
+	// The default value is -1.
 	ManualSnapshotRetentionPeriod *int32
+
+	// The ID of the Key Management Service (KMS) key used to encrypt and store the
+	// cluster's admin credentials secret. You can only use this parameter if
+	// ManageMasterPassword is true.
+	MasterPasswordSecretKmsKeyId *string
 
 	// The new password for the cluster admin user. This change is asynchronously
 	// applied as soon as possible. Between the time of the request and the completion
 	// of the request, the MasterUserPassword element exists in the
-	// PendingModifiedValues element of the operation response. Operations never return
-	// the password, so this operation provides a way to regain access to the admin
-	// user account for a cluster if the password is lost. Default: Uses existing
-	// setting. Constraints:
+	// PendingModifiedValues element of the operation response.
+	//
+	// You can't use MasterUserPassword if ManageMasterPassword is true .
+	//
+	// Operations never return the password, so this operation provides a way to
+	// regain access to the admin user account for a cluster if the password is lost.
+	//
+	// Default: Uses existing setting.
+	//
+	// Constraints:
+	//
 	//   - Must be between 8 and 64 characters in length.
+	//
 	//   - Must contain at least one uppercase letter.
+	//
 	//   - Must contain at least one lowercase letter.
+	//
 	//   - Must contain one number.
+	//
 	//   - Can be any printable ASCII character (ASCII code 33-126) except ' (single
 	//   quote), " (double quote), \ , / , or @ .
 	MasterUserPassword *string
 
-	// The new identifier for the cluster. Constraints:
+	// If true and the cluster is currently only deployed in a single Availability
+	// Zone, the cluster will be modified to be deployed in two Availability Zones.
+	MultiAZ *bool
+
+	// The new identifier for the cluster.
+	//
+	// Constraints:
+	//
 	//   - Must contain from 1 to 63 alphanumeric characters or hyphens.
+	//
 	//   - Alphabetic characters must be lowercase.
+	//
 	//   - First character must be a letter.
+	//
 	//   - Cannot end with a hyphen or contain two consecutive hyphens.
+	//
 	//   - Must be unique for all clusters within an Amazon Web Services account.
+	//
 	// Example: examplecluster
 	NewClusterIdentifier *string
 
 	// The new node type of the cluster. If you specify a new node type, you must also
-	// specify the number of nodes parameter. For more information about resizing
-	// clusters, go to Resizing Clusters in Amazon Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html)
-	// in the Amazon Redshift Cluster Management Guide. Valid Values: ds2.xlarge |
-	// ds2.8xlarge | dc1.large | dc1.8xlarge | dc2.large | dc2.8xlarge | ra3.xlplus |
-	// ra3.4xlarge | ra3.16xlarge
+	// specify the number of nodes parameter.
+	//
+	// For more information about resizing clusters, go to [Resizing Clusters in Amazon Redshift] in the Amazon Redshift
+	// Cluster Management Guide.
+	//
+	// Valid Values: dc2.large | dc2.8xlarge | ra3.large | ra3.xlplus | ra3.4xlarge |
+	// ra3.16xlarge
+	//
+	// [Resizing Clusters in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html
 	NodeType *string
 
 	// The new number of nodes of the cluster. If you specify a new number of nodes,
-	// you must also specify the node type parameter. For more information about
-	// resizing clusters, go to Resizing Clusters in Amazon Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html)
-	// in the Amazon Redshift Cluster Management Guide. Valid Values: Integer greater
-	// than 0 .
+	// you must also specify the node type parameter.
+	//
+	// For more information about resizing clusters, go to [Resizing Clusters in Amazon Redshift] in the Amazon Redshift
+	// Cluster Management Guide.
+	//
+	// Valid Values: Integer greater than 0 .
+	//
+	// [Resizing Clusters in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/rs-resize-tutorial.html
 	NumberOfNodes *int32
 
 	// The option to change the port of an Amazon Redshift cluster.
+	//
+	// Valid Values:
+	//
+	//   - For clusters with ra3 nodes - Select a port within the ranges 5431-5455 or
+	//   8191-8215 . (If you have an existing cluster with ra3 nodes, it isn't required
+	//   that you change the port to these ranges.)
+	//
+	//   - For clusters with dc2 nodes - Select a port within the range 1150-65535 .
 	Port *int32
 
 	// The weekly time range (in UTC) during which system maintenance can occur, if
 	// necessary. If system maintenance is necessary during the window, it may result
-	// in an outage. This maintenance window change is made immediately. If the new
-	// maintenance window indicates the current time, there must be at least 120
-	// minutes between the current time and end of the window in order to ensure that
-	// pending changes are applied. Default: Uses existing setting. Format:
-	// ddd:hh24:mi-ddd:hh24:mi, for example wed:07:30-wed:08:00 . Valid Days: Mon | Tue
-	// | Wed | Thu | Fri | Sat | Sun Constraints: Must be at least 30 minutes.
+	// in an outage.
+	//
+	// This maintenance window change is made immediately. If the new maintenance
+	// window indicates the current time, there must be at least 120 minutes between
+	// the current time and end of the window in order to ensure that pending changes
+	// are applied.
+	//
+	// Default: Uses existing setting.
+	//
+	// Format: ddd:hh24:mi-ddd:hh24:mi, for example wed:07:30-wed:08:00 .
+	//
+	// Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun
+	//
+	// Constraints: Must be at least 30 minutes.
 	PreferredMaintenanceWindow *string
 
 	// If true , the cluster can be accessed from a public network. Only clusters in
 	// VPCs can be set to be publicly available.
+	//
+	// Default: false
 	PubliclyAccessible *bool
 
 	// A list of virtual private cloud (VPC) security groups to be associated with the
@@ -225,6 +343,9 @@ type ModifyClusterOutput struct {
 }
 
 func (c *Client) addOperationModifyClusterMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpModifyCluster{}, middleware.After)
 	if err != nil {
 		return err
@@ -233,34 +354,38 @@ func (c *Client) addOperationModifyClusterMiddlewares(stack *middleware.Stack, o
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ModifyCluster"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -272,7 +397,13 @@ func (c *Client) addOperationModifyClusterMiddlewares(stack *middleware.Stack, o
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addModifyClusterResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyClusterValidationMiddleware(stack); err != nil {
@@ -281,7 +412,7 @@ func (c *Client) addOperationModifyClusterMiddlewares(stack *middleware.Stack, o
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opModifyCluster(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -293,7 +424,19 @@ func (c *Client) addOperationModifyClusterMiddlewares(stack *middleware.Stack, o
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -303,130 +446,6 @@ func newServiceMetadataMiddleware_opModifyCluster(region string) *awsmiddleware.
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "redshift",
 		OperationName: "ModifyCluster",
 	}
-}
-
-type opModifyClusterResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opModifyClusterResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opModifyClusterResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "redshift"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "redshift"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("redshift")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addModifyClusterResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opModifyClusterResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

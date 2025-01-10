@@ -1524,6 +1524,27 @@ func validateEngineConfiguration(v *types.EngineConfiguration) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "EngineConfiguration"}
+	if v.MaxConcurrentDpus == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaxConcurrentDpus"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateQueryResultsS3AccessGrantsConfiguration(v *types.QueryResultsS3AccessGrantsConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "QueryResultsS3AccessGrantsConfiguration"}
+	if v.EnableS3AccessGrants == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EnableS3AccessGrants"))
+	}
+	if len(v.AuthenticationType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("AuthenticationType"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1619,6 +1640,11 @@ func validateWorkGroupConfiguration(v *types.WorkGroupConfiguration) error {
 			invalidParams.AddNested("CustomerContentEncryptionConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.QueryResultsS3AccessGrantsConfiguration != nil {
+		if err := validateQueryResultsS3AccessGrantsConfiguration(v.QueryResultsS3AccessGrantsConfiguration); err != nil {
+			invalidParams.AddNested("QueryResultsS3AccessGrantsConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1639,6 +1665,11 @@ func validateWorkGroupConfigurationUpdates(v *types.WorkGroupConfigurationUpdate
 	if v.CustomerContentEncryptionConfiguration != nil {
 		if err := validateCustomerContentEncryptionConfiguration(v.CustomerContentEncryptionConfiguration); err != nil {
 			invalidParams.AddNested("CustomerContentEncryptionConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.QueryResultsS3AccessGrantsConfiguration != nil {
+		if err := validateQueryResultsS3AccessGrantsConfiguration(v.QueryResultsS3AccessGrantsConfiguration); err != nil {
+			invalidParams.AddNested("QueryResultsS3AccessGrantsConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -2227,9 +2258,6 @@ func validateOpImportNotebookInput(v *ImportNotebookInput) error {
 	}
 	if v.Name == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Name"))
-	}
-	if v.Payload == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Payload"))
 	}
 	if len(v.Type) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Type"))

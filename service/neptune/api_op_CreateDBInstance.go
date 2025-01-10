@@ -4,14 +4,9 @@ package neptune
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/neptune/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -34,8 +29,11 @@ func (c *Client) CreateDBInstance(ctx context.Context, params *CreateDBInstanceI
 
 type CreateDBInstanceInput struct {
 
-	// The identifier of the DB cluster that the instance will belong to. For
-	// information on creating a DB cluster, see CreateDBCluster . Type: String
+	// The identifier of the DB cluster that the instance will belong to.
+	//
+	// For information on creating a DB cluster, see CreateDBCluster.
+	//
+	// Type: String
 	//
 	// This member is required.
 	DBClusterIdentifier *string
@@ -47,17 +45,23 @@ type CreateDBInstanceInput struct {
 	DBInstanceClass *string
 
 	// The DB instance identifier. This parameter is stored as a lowercase string.
+	//
 	// Constraints:
+	//
 	//   - Must contain from 1 to 63 letters, numbers, or hyphens.
+	//
 	//   - First character must be a letter.
+	//
 	//   - Cannot end with a hyphen or contain two consecutive hyphens.
+	//
 	// Example: mydbinstance
 	//
 	// This member is required.
 	DBInstanceIdentifier *string
 
-	// The name of the database engine to be used for this instance. Valid Values:
-	// neptune
+	// The name of the database engine to be used for this instance.
+	//
+	// Valid Values: neptune
 	//
 	// This member is required.
 	Engine *string
@@ -66,24 +70,38 @@ type CreateDBInstanceInput struct {
 	AllocatedStorage *int32
 
 	// Indicates that minor engine upgrades are applied automatically to the DB
-	// instance during the maintenance window. Default: true
+	// instance during the maintenance window.
+	//
+	// Default: true
 	AutoMinorVersionUpgrade *bool
 
-	// The EC2 Availability Zone that the DB instance is created in Default: A random,
-	// system-chosen Availability Zone in the endpoint's Amazon Region. Example:
-	// us-east-1d Constraint: The AvailabilityZone parameter can't be specified if the
-	// MultiAZ parameter is set to true . The specified Availability Zone must be in
-	// the same Amazon Region as the current endpoint.
+	//  The EC2 Availability Zone that the DB instance is created in
+	//
+	// Default: A random, system-chosen Availability Zone in the endpoint's Amazon
+	// Region.
+	//
+	// Example: us-east-1d
+	//
+	// Constraint: The AvailabilityZone parameter can't be specified if the MultiAZ
+	// parameter is set to true . The specified Availability Zone must be in the same
+	// Amazon Region as the current endpoint.
 	AvailabilityZone *string
 
-	// The number of days for which automated backups are retained. Not applicable.
-	// The retention period for automated backups is managed by the DB cluster. For
-	// more information, see CreateDBCluster . Default: 1 Constraints:
+	// The number of days for which automated backups are retained.
+	//
+	// Not applicable. The retention period for automated backups is managed by the DB
+	// cluster. For more information, see CreateDBCluster.
+	//
+	// Default: 1
+	//
+	// Constraints:
+	//
 	//   - Must be a value from 0 to 35
+	//
 	//   - Cannot be set to 0 if the DB instance is a source to Read Replicas
 	BackupRetentionPeriod *int32
 
-	// (Not supported by Neptune)
+	//  (Not supported by Neptune)
 	CharacterSetName *string
 
 	// True to copy all tags from the DB instance to snapshots of the DB instance, and
@@ -95,25 +113,35 @@ type CreateDBInstanceInput struct {
 
 	// The name of the DB parameter group to associate with this DB instance. If this
 	// argument is omitted, the default DBParameterGroup for the specified engine is
-	// used. Constraints:
+	// used.
+	//
+	// Constraints:
+	//
 	//   - Must be 1 to 255 letters, numbers, or hyphens.
+	//
 	//   - First character must be a letter
+	//
 	//   - Cannot end with a hyphen or contain two consecutive hyphens
 	DBParameterGroupName *string
 
-	// A list of DB security groups to associate with this DB instance. Default: The
-	// default DB security group for the database engine.
+	// A list of DB security groups to associate with this DB instance.
+	//
+	// Default: The default DB security group for the database engine.
 	DBSecurityGroups []string
 
-	// A DB subnet group to associate with this DB instance. If there is no DB subnet
-	// group, then it is a non-VPC DB instance.
+	// A DB subnet group to associate with this DB instance.
+	//
+	// If there is no DB subnet group, then it is a non-VPC DB instance.
 	DBSubnetGroupName *string
 
 	// A value that indicates whether the DB instance has deletion protection enabled.
 	// The database can't be deleted when deletion protection is enabled. By default,
-	// deletion protection is disabled. See Deleting a DB Instance (https://docs.aws.amazon.com/neptune/latest/userguide/manage-console-instances-delete.html)
-	// . DB instances in a DB cluster can be deleted even when deletion protection is
+	// deletion protection is disabled. See [Deleting a DB Instance].
+	//
+	// DB instances in a DB cluster can be deleted even when deletion protection is
 	// enabled in their parent DB cluster.
+	//
+	// [Deleting a DB Instance]: https://docs.aws.amazon.com/neptune/latest/userguide/manage-console-instances-delete.html
 	DeletionProtection *bool
 
 	// Specify the Active Directory Domain to create the instance in.
@@ -129,7 +157,7 @@ type CreateDBInstanceInput struct {
 	// Not supported by Neptune (ignored).
 	EnableIAMDatabaseAuthentication *bool
 
-	// (Not supported by Neptune)
+	//  (Not supported by Neptune)
 	EnablePerformanceInsights *bool
 
 	// The version number of the database engine to use. Currently, setting this
@@ -140,21 +168,25 @@ type CreateDBInstanceInput struct {
 	// initially allocated for the DB instance.
 	Iops *int32
 
-	// The Amazon KMS key identifier for an encrypted DB instance. The KMS key
-	// identifier is the Amazon Resource Name (ARN) for the KMS encryption key. If you
-	// are creating a DB instance with the same Amazon account that owns the KMS
-	// encryption key used to encrypt the new DB instance, then you can use the KMS key
-	// alias instead of the ARN for the KM encryption key. Not applicable. The KMS key
-	// identifier is managed by the DB cluster. For more information, see
-	// CreateDBCluster . If the StorageEncrypted parameter is true, and you do not
-	// specify a value for the KmsKeyId parameter, then Amazon Neptune will use your
-	// default encryption key. Amazon KMS creates the default encryption key for your
-	// Amazon account. Your Amazon account has a different default encryption key for
-	// each Amazon Region.
+	// The Amazon KMS key identifier for an encrypted DB instance.
+	//
+	// The KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption
+	// key. If you are creating a DB instance with the same Amazon account that owns
+	// the KMS encryption key used to encrypt the new DB instance, then you can use the
+	// KMS key alias instead of the ARN for the KM encryption key.
+	//
+	// Not applicable. The KMS key identifier is managed by the DB cluster. For more
+	// information, see CreateDBCluster.
+	//
+	// If the StorageEncrypted parameter is true, and you do not specify a value for
+	// the KmsKeyId parameter, then Amazon Neptune will use your default encryption
+	// key. Amazon KMS creates the default encryption key for your Amazon account. Your
+	// Amazon account has a different default encryption key for each Amazon Region.
 	KmsKeyId *string
 
-	// License model information for this DB instance. Valid values: license-included
-	// | bring-your-own-license | general-public-license
+	// License model information for this DB instance.
+	//
+	// Valid values: license-included | bring-your-own-license | general-public-license
 	LicenseModel *string
 
 	// Not supported by Neptune.
@@ -165,46 +197,66 @@ type CreateDBInstanceInput struct {
 
 	// The interval, in seconds, between points when Enhanced Monitoring metrics are
 	// collected for the DB instance. To disable collecting Enhanced Monitoring
-	// metrics, specify 0. The default is 0. If MonitoringRoleArn is specified, then
-	// you must also set MonitoringInterval to a value other than 0. Valid Values: 0,
-	// 1, 5, 10, 15, 30, 60
+	// metrics, specify 0. The default is 0.
+	//
+	// If MonitoringRoleArn is specified, then you must also set MonitoringInterval to
+	// a value other than 0.
+	//
+	// Valid Values: 0, 1, 5, 10, 15, 30, 60
 	MonitoringInterval *int32
 
 	// The ARN for the IAM role that permits Neptune to send enhanced monitoring
 	// metrics to Amazon CloudWatch Logs. For example,
-	// arn:aws:iam:123456789012:role/emaccess . If MonitoringInterval is set to a
-	// value other than 0, then you must supply a MonitoringRoleArn value.
+	// arn:aws:iam:123456789012:role/emaccess .
+	//
+	// If MonitoringInterval is set to a value other than 0, then you must supply a
+	// MonitoringRoleArn value.
 	MonitoringRoleArn *string
 
 	// Specifies if the DB instance is a Multi-AZ deployment. You can't set the
 	// AvailabilityZone parameter if the MultiAZ parameter is set to true.
 	MultiAZ *bool
 
-	// (Not supported by Neptune)
+	//  (Not supported by Neptune)
 	OptionGroupName *string
 
-	// (Not supported by Neptune)
+	//  (Not supported by Neptune)
 	PerformanceInsightsKMSKeyId *string
 
-	// The port number on which the database accepts connections. Not applicable. The
-	// port is managed by the DB cluster. For more information, see CreateDBCluster .
-	// Default: 8182 Type: Integer
+	// The port number on which the database accepts connections.
+	//
+	// Not applicable. The port is managed by the DB cluster. For more information,
+	// see CreateDBCluster.
+	//
+	// Default: 8182
+	//
+	// Type: Integer
 	Port *int32
 
-	// The daily time range during which automated backups are created. Not
-	// applicable. The daily time range for creating automated backups is managed by
-	// the DB cluster. For more information, see CreateDBCluster .
+	//  The daily time range during which automated backups are created.
+	//
+	// Not applicable. The daily time range for creating automated backups is managed
+	// by the DB cluster. For more information, see CreateDBCluster.
 	PreferredBackupWindow *string
 
 	// The time range each week during which system maintenance can occur, in
-	// Universal Coordinated Time (UTC). Format: ddd:hh24:mi-ddd:hh24:mi The default
-	// is a 30-minute window selected at random from an 8-hour block of time for each
-	// Amazon Region, occurring on a random day of the week. Valid Days: Mon, Tue, Wed,
-	// Thu, Fri, Sat, Sun. Constraints: Minimum 30-minute window.
+	// Universal Coordinated Time (UTC).
+	//
+	// Format: ddd:hh24:mi-ddd:hh24:mi
+	//
+	// The default is a 30-minute window selected at random from an 8-hour block of
+	// time for each Amazon Region, occurring on a random day of the week.
+	//
+	// Valid Days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.
+	//
+	// Constraints: Minimum 30-minute window.
 	PreferredMaintenanceWindow *string
 
 	// A value that specifies the order in which an Read Replica is promoted to the
-	// primary instance after a failure of the existing primary instance. Default: 1
+	// primary instance after a failure of the existing primary instance.
+	//
+	// Default: 1
+	//
 	// Valid Values: 0 - 15
 	PromotionTier *int32
 
@@ -213,13 +265,17 @@ type CreateDBInstanceInput struct {
 	// Deprecated: This member has been deprecated.
 	PubliclyAccessible *bool
 
-	// Specifies whether the DB instance is encrypted. Not applicable. The encryption
-	// for DB instances is managed by the DB cluster. For more information, see
-	// CreateDBCluster . Default: false
+	// Specifies whether the DB instance is encrypted.
+	//
+	// Not applicable. The encryption for DB instances is managed by the DB cluster.
+	// For more information, see CreateDBCluster.
+	//
+	// Default: false
 	StorageEncrypted *bool
 
-	// Specifies the storage type to be associated with the DB instance. Not
-	// applicable. Storage is managed by the DB Cluster.
+	// Specifies the storage type to be associated with the DB instance.
+	//
+	// Not applicable. Storage is managed by the DB Cluster.
 	StorageType *string
 
 	// The tags to assign to the new instance.
@@ -235,10 +291,12 @@ type CreateDBInstanceInput struct {
 	// The time zone of the DB instance.
 	Timezone *string
 
-	// A list of EC2 VPC security groups to associate with this DB instance. Not
-	// applicable. The associated list of EC2 VPC security groups is managed by the DB
-	// cluster. For more information, see CreateDBCluster . Default: The default EC2
-	// VPC security group for the DB subnet group's VPC.
+	// A list of EC2 VPC security groups to associate with this DB instance.
+	//
+	// Not applicable. The associated list of EC2 VPC security groups is managed by
+	// the DB cluster. For more information, see CreateDBCluster.
+	//
+	// Default: The default EC2 VPC security group for the DB subnet group's VPC.
 	VpcSecurityGroupIds []string
 
 	noSmithyDocumentSerde
@@ -246,8 +304,9 @@ type CreateDBInstanceInput struct {
 
 type CreateDBInstanceOutput struct {
 
-	// Contains the details of an Amazon Neptune DB instance. This data type is used
-	// as a response element in the DescribeDBInstances action.
+	// Contains the details of an Amazon Neptune DB instance.
+	//
+	// This data type is used as a response element in the DescribeDBInstances action.
 	DBInstance *types.DBInstance
 
 	// Metadata pertaining to the operation's result.
@@ -257,6 +316,9 @@ type CreateDBInstanceOutput struct {
 }
 
 func (c *Client) addOperationCreateDBInstanceMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpCreateDBInstance{}, middleware.After)
 	if err != nil {
 		return err
@@ -265,34 +327,38 @@ func (c *Client) addOperationCreateDBInstanceMiddlewares(stack *middleware.Stack
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateDBInstance"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -304,7 +370,13 @@ func (c *Client) addOperationCreateDBInstanceMiddlewares(stack *middleware.Stack
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateDBInstanceResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateDBInstanceValidationMiddleware(stack); err != nil {
@@ -313,7 +385,7 @@ func (c *Client) addOperationCreateDBInstanceMiddlewares(stack *middleware.Stack
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateDBInstance(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -325,7 +397,19 @@ func (c *Client) addOperationCreateDBInstanceMiddlewares(stack *middleware.Stack
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -335,130 +419,6 @@ func newServiceMetadataMiddleware_opCreateDBInstance(region string) *awsmiddlewa
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "rds",
 		OperationName: "CreateDBInstance",
 	}
-}
-
-type opCreateDBInstanceResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateDBInstanceResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateDBInstanceResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "rds"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "rds"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("rds")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateDBInstanceResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateDBInstanceResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

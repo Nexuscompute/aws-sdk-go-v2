@@ -4,14 +4,9 @@ package gamelift
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/gamelift/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -21,28 +16,43 @@ import (
 // matches. Backfill requests use the same matchmaker that was used to make the
 // original match, and they provide matchmaking data for all players currently in
 // the game session. FlexMatch uses this information to select new players so that
-// backfilled match continues to meet the original match requirements. When using
-// FlexMatch with Amazon GameLift managed hosting, you can request a backfill match
-// from a client service by calling this operation with a GameSessions ID. You
-// also have the option of making backfill requests directly from your game server.
-// In response to a request, FlexMatch creates player sessions for the new players,
-// updates the GameSession resource, and sends updated matchmaking data to the
-// game server. You can request a backfill match at any point after a game session
-// is started. Each game session can have only one active backfill request at a
-// time; a subsequent request automatically replaces the earlier request. When
-// using FlexMatch as a standalone component, request a backfill match by calling
-// this operation without a game session identifier. As with newly formed matches,
-// matchmaking results are returned in a matchmaking event so that your game can
-// update the game session that is being backfilled. To request a backfill match,
-// specify a unique ticket ID, the original matchmaking configuration, and
-// matchmaking data for all current players in the game session being backfilled.
-// Optionally, specify the GameSession ARN. If successful, a match backfill ticket
-// is created and returned with status set to QUEUED. Track the status of backfill
-// tickets using the same method for tracking tickets for new matches. Only game
-// sessions created by FlexMatch are supported for match backfill. Learn more
-// Backfill existing games with FlexMatch (https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-backfill.html)
-// Matchmaking events (https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-events.html)
-// (reference) How Amazon GameLift FlexMatch works (https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/gamelift-match.html)
+// backfilled match continues to meet the original match requirements.
+//
+// When using FlexMatch with Amazon GameLift managed hosting, you can request a
+// backfill match from a client service by calling this operation with a
+// GameSessions ID. You also have the option of making backfill requests directly
+// from your game server. In response to a request, FlexMatch creates player
+// sessions for the new players, updates the GameSession resource, and sends
+// updated matchmaking data to the game server. You can request a backfill match at
+// any point after a game session is started. Each game session can have only one
+// active backfill request at a time; a subsequent request automatically replaces
+// the earlier request.
+//
+// When using FlexMatch as a standalone component, request a backfill match by
+// calling this operation without a game session identifier. As with newly formed
+// matches, matchmaking results are returned in a matchmaking event so that your
+// game can update the game session that is being backfilled.
+//
+// To request a backfill match, specify a unique ticket ID, the original
+// matchmaking configuration, and matchmaking data for all current players in the
+// game session being backfilled. Optionally, specify the GameSession ARN. If
+// successful, a match backfill ticket is created and returned with status set to
+// QUEUED. Track the status of backfill tickets using the same method for tracking
+// tickets for new matches.
+//
+// Only game sessions created by FlexMatch are supported for match backfill.
+//
+// # Learn more
+//
+// [Backfill existing games with FlexMatch]
+//
+// [Matchmaking events](reference)
+//
+// [How Amazon GameLift FlexMatch works]
+//
+// [How Amazon GameLift FlexMatch works]: https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/gamelift-match.html
+// [Matchmaking events]: https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-events.html
+// [Backfill existing games with FlexMatch]: https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-backfill.html
 func (c *Client) StartMatchBackfill(ctx context.Context, params *StartMatchBackfillInput, optFns ...func(*Options)) (*StartMatchBackfillOutput, error) {
 	if params == nil {
 		params = &StartMatchBackfillInput{}
@@ -70,17 +80,23 @@ type StartMatchBackfillInput struct {
 
 	// Match information on all players that are currently assigned to the game
 	// session. This information is used by the matchmaker to find new players and add
-	// them to the existing game. You can include up to 199 Players in a
-	// StartMatchBackfill request.
+	// them to the existing game.
+	//
+	// You can include up to 199 Players in a StartMatchBackfill request.
+	//
 	//   - PlayerID, PlayerAttributes, Team -- This information is maintained in the
 	//   GameSession object, MatchmakerData property, for all players who are currently
 	//   assigned to the game session. The matchmaker data is in JSON syntax, formatted
-	//   as a string. For more details, see Match Data (https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-server.html#match-server-data)
-	//   . The backfill request must specify the team membership for every player. Do not
+	//   as a string. For more details, see [Match Data].
+	//
+	// The backfill request must specify the team membership for every player. Do not
 	//   specify team if you are not using backfill.
+	//
 	//   - LatencyInMs -- If the matchmaker uses player latency, include a latency
 	//   value, in milliseconds, for the Region that the game session is currently in. Do
 	//   not include latency values for any other Region.
+	//
+	// [Match Data]: https://docs.aws.amazon.com/gamelift/latest/flexmatchguide/match-server.html#match-server-data
 	//
 	// This member is required.
 	Players []types.Player
@@ -111,6 +127,9 @@ type StartMatchBackfillOutput struct {
 }
 
 func (c *Client) addOperationStartMatchBackfillMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpStartMatchBackfill{}, middleware.After)
 	if err != nil {
 		return err
@@ -119,34 +138,38 @@ func (c *Client) addOperationStartMatchBackfillMiddlewares(stack *middleware.Sta
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "StartMatchBackfill"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -158,7 +181,13 @@ func (c *Client) addOperationStartMatchBackfillMiddlewares(stack *middleware.Sta
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addStartMatchBackfillResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartMatchBackfillValidationMiddleware(stack); err != nil {
@@ -167,7 +196,7 @@ func (c *Client) addOperationStartMatchBackfillMiddlewares(stack *middleware.Sta
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opStartMatchBackfill(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -179,7 +208,19 @@ func (c *Client) addOperationStartMatchBackfillMiddlewares(stack *middleware.Sta
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -189,130 +230,6 @@ func newServiceMetadataMiddleware_opStartMatchBackfill(region string) *awsmiddle
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "gamelift",
 		OperationName: "StartMatchBackfill",
 	}
-}
-
-type opStartMatchBackfillResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opStartMatchBackfillResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opStartMatchBackfillResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "gamelift"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "gamelift"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("gamelift")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addStartMatchBackfillResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opStartMatchBackfillResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

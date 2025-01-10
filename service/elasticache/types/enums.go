@@ -12,8 +12,9 @@ const (
 )
 
 // Values returns all known values for AuthenticationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AuthenticationType) Values() []AuthenticationType {
 	return []AuthenticationType{
 		"password",
@@ -31,8 +32,9 @@ const (
 )
 
 // Values returns all known values for AuthTokenUpdateStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AuthTokenUpdateStatus) Values() []AuthTokenUpdateStatus {
 	return []AuthTokenUpdateStatus{
 		"SETTING",
@@ -51,6 +53,7 @@ const (
 
 // Values returns all known values for AuthTokenUpdateStrategyType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (AuthTokenUpdateStrategyType) Values() []AuthTokenUpdateStrategyType {
 	return []AuthTokenUpdateStrategyType{
@@ -71,8 +74,9 @@ const (
 )
 
 // Values returns all known values for AutomaticFailoverStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AutomaticFailoverStatus) Values() []AutomaticFailoverStatus {
 	return []AutomaticFailoverStatus{
 		"enabled",
@@ -91,8 +95,9 @@ const (
 )
 
 // Values returns all known values for AZMode. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AZMode) Values() []AZMode {
 	return []AZMode{
 		"single-az",
@@ -109,8 +114,9 @@ const (
 )
 
 // Values returns all known values for ChangeType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ChangeType) Values() []ChangeType {
 	return []ChangeType{
 		"immediate",
@@ -128,13 +134,31 @@ const (
 )
 
 // Values returns all known values for ClusterMode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ClusterMode) Values() []ClusterMode {
 	return []ClusterMode{
 		"enabled",
 		"disabled",
 		"compatible",
+	}
+}
+
+type DataStorageUnit string
+
+// Enum values for DataStorageUnit
+const (
+	DataStorageUnitGb DataStorageUnit = "GB"
+)
+
+// Values returns all known values for DataStorageUnit. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DataStorageUnit) Values() []DataStorageUnit {
+	return []DataStorageUnit{
+		"GB",
 	}
 }
 
@@ -147,8 +171,9 @@ const (
 )
 
 // Values returns all known values for DataTieringStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DataTieringStatus) Values() []DataTieringStatus {
 	return []DataTieringStatus{
 		"enabled",
@@ -165,8 +190,9 @@ const (
 )
 
 // Values returns all known values for DestinationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DestinationType) Values() []DestinationType {
 	return []DestinationType{
 		"cloudwatch-logs",
@@ -184,8 +210,9 @@ const (
 )
 
 // Values returns all known values for InputAuthenticationType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputAuthenticationType) Values() []InputAuthenticationType {
 	return []InputAuthenticationType{
 		"password",
@@ -203,8 +230,9 @@ const (
 )
 
 // Values returns all known values for IpDiscovery. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (IpDiscovery) Values() []IpDiscovery {
 	return []IpDiscovery{
 		"ipv4",
@@ -225,8 +253,9 @@ const (
 
 // Values returns all known values for LogDeliveryConfigurationStatus. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogDeliveryConfigurationStatus) Values() []LogDeliveryConfigurationStatus {
 	return []LogDeliveryConfigurationStatus{
 		"active",
@@ -246,8 +275,9 @@ const (
 )
 
 // Values returns all known values for LogFormat. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogFormat) Values() []LogFormat {
 	return []LogFormat{
 		"text",
@@ -264,8 +294,9 @@ const (
 )
 
 // Values returns all known values for LogType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogType) Values() []LogType {
 	return []LogType{
 		"slow-log",
@@ -282,8 +313,9 @@ const (
 )
 
 // Values returns all known values for MultiAZStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MultiAZStatus) Values() []MultiAZStatus {
 	return []MultiAZStatus{
 		"enabled",
@@ -301,8 +333,9 @@ const (
 )
 
 // Values returns all known values for NetworkType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NetworkType) Values() []NetworkType {
 	return []NetworkType{
 		"ipv4",
@@ -320,8 +353,9 @@ const (
 )
 
 // Values returns all known values for NodeUpdateInitiatedBy. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NodeUpdateInitiatedBy) Values() []NodeUpdateInitiatedBy {
 	return []NodeUpdateInitiatedBy{
 		"system",
@@ -342,8 +376,9 @@ const (
 )
 
 // Values returns all known values for NodeUpdateStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NodeUpdateStatus) Values() []NodeUpdateStatus {
 	return []NodeUpdateStatus{
 		"not-applied",
@@ -364,8 +399,9 @@ const (
 )
 
 // Values returns all known values for OutpostMode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OutpostMode) Values() []OutpostMode {
 	return []OutpostMode{
 		"single-outpost",
@@ -383,8 +419,9 @@ const (
 
 // Values returns all known values for PendingAutomaticFailoverStatus. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PendingAutomaticFailoverStatus) Values() []PendingAutomaticFailoverStatus {
 	return []PendingAutomaticFailoverStatus{
 		"enabled",
@@ -403,8 +440,9 @@ const (
 )
 
 // Values returns all known values for ServiceUpdateSeverity. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ServiceUpdateSeverity) Values() []ServiceUpdateSeverity {
 	return []ServiceUpdateSeverity{
 		"critical",
@@ -424,8 +462,9 @@ const (
 )
 
 // Values returns all known values for ServiceUpdateStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ServiceUpdateStatus) Values() []ServiceUpdateStatus {
 	return []ServiceUpdateStatus{
 		"available",
@@ -442,8 +481,9 @@ const (
 )
 
 // Values returns all known values for ServiceUpdateType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ServiceUpdateType) Values() []ServiceUpdateType {
 	return []ServiceUpdateType{
 		"security-update",
@@ -460,8 +500,9 @@ const (
 )
 
 // Values returns all known values for SlaMet. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SlaMet) Values() []SlaMet {
 	return []SlaMet{
 		"yes",
@@ -474,18 +515,21 @@ type SourceType string
 
 // Enum values for SourceType
 const (
-	SourceTypeCacheCluster        SourceType = "cache-cluster"
-	SourceTypeCacheParameterGroup SourceType = "cache-parameter-group"
-	SourceTypeCacheSecurityGroup  SourceType = "cache-security-group"
-	SourceTypeCacheSubnetGroup    SourceType = "cache-subnet-group"
-	SourceTypeReplicationGroup    SourceType = "replication-group"
-	SourceTypeUser                SourceType = "user"
-	SourceTypeUserGroup           SourceType = "user-group"
+	SourceTypeCacheCluster            SourceType = "cache-cluster"
+	SourceTypeCacheParameterGroup     SourceType = "cache-parameter-group"
+	SourceTypeCacheSecurityGroup      SourceType = "cache-security-group"
+	SourceTypeCacheSubnetGroup        SourceType = "cache-subnet-group"
+	SourceTypeReplicationGroup        SourceType = "replication-group"
+	SourceTypeServerlessCache         SourceType = "serverless-cache"
+	SourceTypeServerlessCacheSnapshot SourceType = "serverless-cache-snapshot"
+	SourceTypeUser                    SourceType = "user"
+	SourceTypeUserGroup               SourceType = "user-group"
 )
 
 // Values returns all known values for SourceType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SourceType) Values() []SourceType {
 	return []SourceType{
 		"cache-cluster",
@@ -493,6 +537,8 @@ func (SourceType) Values() []SourceType {
 		"cache-security-group",
 		"cache-subnet-group",
 		"replication-group",
+		"serverless-cache",
+		"serverless-cache-snapshot",
 		"user",
 		"user-group",
 	}
@@ -507,8 +553,9 @@ const (
 )
 
 // Values returns all known values for TransitEncryptionMode. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TransitEncryptionMode) Values() []TransitEncryptionMode {
 	return []TransitEncryptionMode{
 		"preferred",
@@ -532,8 +579,9 @@ const (
 )
 
 // Values returns all known values for UpdateActionStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UpdateActionStatus) Values() []UpdateActionStatus {
 	return []UpdateActionStatus{
 		"not-applied",

@@ -591,11 +591,6 @@ func validateConnectorProfileCredentials(v *types.ConnectorProfileCredentials) e
 			invalidParams.AddNested("Marketo", err.(smithy.InvalidParamsError))
 		}
 	}
-	if v.ServiceNow != nil {
-		if err := validateServiceNowConnectorProfileCredentials(v.ServiceNow); err != nil {
-			invalidParams.AddNested("ServiceNow", err.(smithy.InvalidParamsError))
-		}
-	}
 	if v.Singular != nil {
 		if err := validateSingularConnectorProfileCredentials(v.Singular); err != nil {
 			invalidParams.AddNested("Singular", err.(smithy.InvalidParamsError))
@@ -1510,13 +1505,13 @@ func validateSAPODataDestinationProperties(v *types.SAPODataDestinationPropertie
 	}
 }
 
-func validateScheduledTriggerProperties(v *types.ScheduledTriggerProperties) error {
+func validateSAPODataPaginationConfig(v *types.SAPODataPaginationConfig) error {
 	if v == nil {
 		return nil
 	}
-	invalidParams := smithy.InvalidParamsError{Context: "ScheduledTriggerProperties"}
-	if v.ScheduleExpression == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("ScheduleExpression"))
+	invalidParams := smithy.InvalidParamsError{Context: "SAPODataPaginationConfig"}
+	if v.MaxPageSize == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaxPageSize"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1525,16 +1520,50 @@ func validateScheduledTriggerProperties(v *types.ScheduledTriggerProperties) err
 	}
 }
 
-func validateServiceNowConnectorProfileCredentials(v *types.ServiceNowConnectorProfileCredentials) error {
+func validateSAPODataParallelismConfig(v *types.SAPODataParallelismConfig) error {
 	if v == nil {
 		return nil
 	}
-	invalidParams := smithy.InvalidParamsError{Context: "ServiceNowConnectorProfileCredentials"}
-	if v.Username == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Username"))
+	invalidParams := smithy.InvalidParamsError{Context: "SAPODataParallelismConfig"}
+	if v.MaxParallelism == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaxParallelism"))
 	}
-	if v.Password == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Password"))
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSAPODataSourceProperties(v *types.SAPODataSourceProperties) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SAPODataSourceProperties"}
+	if v.ParallelismConfig != nil {
+		if err := validateSAPODataParallelismConfig(v.ParallelismConfig); err != nil {
+			invalidParams.AddNested("ParallelismConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.PaginationConfig != nil {
+		if err := validateSAPODataPaginationConfig(v.PaginationConfig); err != nil {
+			invalidParams.AddNested("PaginationConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateScheduledTriggerProperties(v *types.ScheduledTriggerProperties) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ScheduledTriggerProperties"}
+	if v.ScheduleExpression == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ScheduleExpression"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1781,6 +1810,11 @@ func validateSourceConnectorProperties(v *types.SourceConnectorProperties) error
 	if v.Zendesk != nil {
 		if err := validateZendeskSourceProperties(v.Zendesk); err != nil {
 			invalidParams.AddNested("Zendesk", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SAPOData != nil {
+		if err := validateSAPODataSourceProperties(v.SAPOData); err != nil {
+			invalidParams.AddNested("SAPOData", err.(smithy.InvalidParamsError))
 		}
 	}
 	if v.CustomConnector != nil {

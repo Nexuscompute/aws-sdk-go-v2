@@ -4,13 +4,15 @@ LINT_IGNORE_S3MANAGER_INPUT='feature/s3/manager/upload.go:.+struct field SSEKMSK
 # Names of these are tied to endpoint rules and they're internal so ignore them
 LINT_IGNORE_AWSRULESFN_ARN='internal/endpoints/awsrulesfn/arn.go'
 LINT_IGNORE_AWSRULESFN_PARTITION='internal/endpoints/awsrulesfn/partition.go'
+LINT_IGNORE_PRIVATE_METRICS='aws/middleware/private/metrics'
 
 UNIT_TEST_TAGS=
 BUILD_TAGS=-tags "example,codegen,integration,ec2env,perftest"
+SNAPSHOT_TAGS=-tags "snapshot"
 
 SMITHY_GO_SRC ?= $(shell pwd)/../smithy-go
 
-SDK_MIN_GO_VERSION ?= 1.15
+SDK_MIN_GO_VERSION ?= 1.21
 
 EACHMODULE_FAILFAST ?= true
 EACHMODULE_FAILFAST_FLAG=-fail-fast=${EACHMODULE_FAILFAST}
@@ -84,9 +86,18 @@ generate: smithy-generate update-requires gen-repo-mod-replace update-module-met
 gen-config-asserts gen-internal-codegen copy-attributevalue-feature gen-mod-dropreplace-smithy-. min-go-version-. \
 tidy-modules-. add-module-license-files gen-aws-ptrs format
 
-generate-tmpreplace-smithy: smithy-generate update-requires gen-repo-mod-replace update-module-metadata smithy-annotate-stable \
-gen-config-asserts gen-internal-codegen copy-attributevalue-feature gen-mod-replace-smithy-. min-go-version-. \
-tidy-modules-. add-module-license-files gen-aws-ptrs format gen-mod-dropreplace-smithy-.
+generate-tmpreplace-smithy: smithy-generate update-requires gen-repo-mod-replace gen-mod-replace-smithy-. update-module-metadata smithy-annotate-stable \
+gen-config-asserts gen-internal-codegen copy-attributevalue-feature min-go-version-. \
+tidy-modules-. add-module-license-files gen-aws-ptrs format gen-mod-dropreplace-smithy-. reset-sum
+
+# stripped-down regenerate script that eliminates a lot of the cruft you don't
+# need in development (that takes time)
+# modify this with whatever service you're working on
+generate-dev: smithy-generate update-requires gen-repo-mod-replace gen-mod-replace-smithy-config gen-mod-replace-smithy-aws gen-mod-replace-smithy-service_s3 update-module-metadata smithy-annotate-stable \
+gen-config-asserts gen-internal-codegen tidy-modules-config tidy-modules-aws tidy-modules-service_s3 format-dev
+
+reset-sum:
+	find . -name go.sum -exec git checkout -- {} \;
 
 smithy-generate:
 	cd codegen && ./gradlew clean build -Plog-tests && ./gradlew clean
@@ -117,6 +128,9 @@ smithy-go-publish-local:
 
 format:
 	gofmt -w -s .
+
+format-dev:
+	gofmt -w -s service/s3
 
 gen-config-asserts:
 	@echo "Generating SDK config package implementor assertions"
@@ -201,13 +215,13 @@ sync-api-models:
 
 copy-attributevalue-feature:
 	cd ./feature/dynamodbstreams/attributevalue && \
-	find . -name "*.go" | grep -v "doc.go" | xargs -I % rm % && \
-	find ../../dynamodb/attributevalue -name "*.go" | grep -v "doc.go" | xargs -I % cp % . && \
-	ls *.go | grep -v "convert.go" | grep -v "doc.go" | \
+	find . -name "*.go" | grep -v "doc.go" | grep -v "go_module_metadata.go" | xargs -I % rm % && \
+	find ../../dynamodb/attributevalue -name "*.go" | grep -v "doc.go" | grep -v "go_module_metadata.go" | xargs -I % cp % . && \
+	ls *.go | grep -v "convert.go" | grep -v "doc.go" | grep -v "go_module_metadata.go" | \
 		xargs -I % sed -i.bk -E 's:github.com/aws/aws-sdk-go-v2/(service|feature)/dynamodb:github.com/aws/aws-sdk-go-v2/\1/dynamodbstreams:g' % &&  \
-	ls *.go | grep -v "convert.go" | grep -v "doc.go" | \
+	ls *.go | grep -v "convert.go" | grep -v "doc.go" | grep -v "go_module_metadata.go" | \
 		xargs -I % sed -i.bk 's:DynamoDB:DynamoDBStreams:g' % &&  \
-	ls *.go | grep -v "doc.go" | \
+	ls *.go | grep -v "doc.go" | grep -v "go_module_metadata.go" | \
 		xargs -I % sed -i.bk 's:dynamodb\.:dynamodbstreams.:g' % &&  \
 	sed -i.bk 's:streams\.:ddbtypes.:g' "convert.go" && \
 	sed -i.bk 's:ddb\.:streams.:g' "convert.go" &&  \
@@ -251,7 +265,7 @@ unit-race-modules-%:
 		&& go run . -p $(subst _,/,$(subst unit-race-modules-,,$@)) ${EACHMODULE_FLAGS} \
 		"go vet ${BUILD_TAGS} --all ./..." \
 		"go test ${BUILD_TAGS} ${RUN_NONE} ./..." \
-		"go test -timeout=1m ${UNIT_TEST_TAGS} -race -cpu=4 ./..."
+		"go test -timeout=2m ${UNIT_TEST_TAGS} -race -cpu=4 ./..."
 
 unit-modules-%:
 	@# unit command that uses the pattern to define the root path that the
@@ -263,7 +277,7 @@ unit-modules-%:
 		&& go run . -p $(subst _,/,$(subst unit-modules-,,$@)) ${EACHMODULE_FLAGS} \
 		"go vet ${BUILD_TAGS} --all ./..." \
 		"go test ${BUILD_TAGS} ${RUN_NONE} ./..." \
-		"go test -timeout=1m ${UNIT_TEST_TAGS} ./..."
+		"go test -timeout=2m ${UNIT_TEST_TAGS} ./..."
 
 build: build-modules-.
 
@@ -299,7 +313,7 @@ test-race-modules-%:
 	@# e.g. test-race-modules-internal_protocoltest
 	cd ./internal/repotools/cmd/eachmodule \
 		&& go run . -p $(subst _,/,$(subst test-race-modules-,,$@)) ${EACHMODULE_FLAGS} \
-		"go test -timeout=1m ${UNIT_TEST_TAGS} -race -cpu=4 ./..."
+		"go test -timeout=2m ${UNIT_TEST_TAGS} -race -cpu=4 ./..."
 
 test-modules-%:
 	@# Test command that uses the pattern to define the root path that the
@@ -309,7 +323,22 @@ test-modules-%:
 	@# e.g. test-modules-internal_protocoltest
 	cd ./internal/repotools/cmd/eachmodule \
 		&& go run . -p $(subst _,/,$(subst test-modules-,,$@)) ${EACHMODULE_FLAGS} \
-		"go test -timeout=1m ${UNIT_TEST_TAGS} ./..."
+		"go test -timeout=2m ${UNIT_TEST_TAGS} ./..."
+
+test-check-snapshot-%:
+	cd ./internal/repotools/cmd/eachmodule \
+		&& go run . -p $(subst _,/,$(subst test-check-snapshot-,,$@)) ${EACHMODULE_FLAGS} \
+		"go test ${SNAPSHOT_TAGS} -run TestCheckSnapshot ./..."
+
+test-update-snapshot-%:
+	cd ./internal/repotools/cmd/eachmodule \
+		&& go run . -p $(subst _,/,$(subst test-update-snapshot-,,$@)) ${EACHMODULE_FLAGS} \
+		"go test ${SNAPSHOT_TAGS} -run TestUpdateSnapshot ./..."
+
+test-ci-check-snapshot-%:
+	cd ./internal/repotools/cmd/eachmodule \
+		&& go run . -p $(subst _,/,$(subst test-ci-check-snapshot-,,$@)) ${EACHMODULE_FLAGS} \
+		"go test ${SNAPSHOT_TAGS} -run TestCheckSnapshot -failfast ./..."
 
 cachedep: cachedep-modules-.
 
@@ -381,7 +410,7 @@ ci-lint-install:
 #######################
 .PHONY: integration integ-modules-% cleanup-integ-buckets
 
-integration: integ-modules-service
+integration: integ-modules-service integ-modules-feature
 
 integ-modules-%:
 	@# integration command that uses the pattern to define the root path that
@@ -455,6 +484,14 @@ set-smithy-go-version:
 	fi
 	go run ${REPOTOOLS_CMD_EDIT_MODULE_DEPENDENCY} -s "github.com/aws/smithy-go" -v "${SMITHY_GO_VERSION}"
 
+external-changelog:
+	mkdir -p .changelog
+	cp changelog-template.json .changelog/00000000-0000-0000-0000-000000000000.json
+	@echo "Generate a new UUID and update the file at .changelog/00000000-0000-0000-0000-000000000000.json"
+	@echo "Make sure to rename the file with your new id, like .changelog/12345678-1234-1234-1234-123456789012.json"
+	@echo "See CONTRIBUTING.md 'Changelog Documents' and an example at https://github.com/aws/aws-sdk-go-v2/pull/2934/files"
+
+
 ##################
 # Linting/Verify #
 ##################
@@ -469,7 +506,8 @@ lint:
 	-e ${LINT_IGNORE_S3MANAGER_INPUT} \
 	-e ${LINTIGNORESINGLEFIGHT} \
 	-e ${LINT_IGNORE_AWSRULESFN_ARN} \
-	-e ${LINT_IGNORE_AWSRULESFN_PARTITION}`; \
+	-e ${LINT_IGNORE_AWSRULESFN_PARTITION} \
+	-e ${LINT_IGNORE_PRIVATE_METRICS}`; \
 	echo "$$dolint"; \
 	if [ "$$dolint" != "" ]; then exit 1; fi
 

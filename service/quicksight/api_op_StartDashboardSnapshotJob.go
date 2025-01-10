@@ -4,23 +4,92 @@ package quicksight
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/quicksight/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Starts an asynchronous job that generates a dashboard snapshot. You can request
-// up to one paginated PDF and up to five CSVs per API call. Poll job descriptions
-// with a DescribeDashboardSnapshotJob API call. Once the job succeeds, use the
-// DescribeDashboardSnapshotJobResult API to obtain the download URIs that the job
-// generates.
+// Starts an asynchronous job that generates a snapshot of a dashboard's output.
+// You can request one or several of the following format configurations in each
+// API call.
+//
+//   - 1 Paginated PDF
+//
+//   - 1 Excel workbook that includes up to 5 table or pivot table visuals
+//
+//   - 5 CSVs from table or pivot table visuals
+//
+// The status of a submitted job can be polled with the
+// DescribeDashboardSnapshotJob API. When you call the DescribeDashboardSnapshotJob
+// API, check the JobStatus field in the response. Once the job reaches a COMPLETED
+// or FAILED status, use the DescribeDashboardSnapshotJobResult API to obtain the
+// URLs for the generated files. If the job fails, the
+// DescribeDashboardSnapshotJobResult API returns detailed information about the
+// error that occurred.
+//
+// # StartDashboardSnapshotJob API throttling
+//
+// Amazon QuickSight utilizes API throttling to create a more consistent user
+// experience within a time span for customers when they call the
+// StartDashboardSnapshotJob . By default, 12 jobs can run simlutaneously in one
+// Amazon Web Services account and users can submit up 10 API requests per second
+// before an account is throttled. If an overwhelming number of API requests are
+// made by the same user in a short period of time, Amazon QuickSight throttles the
+// API calls to maintin an optimal experience and reliability for all Amazon
+// QuickSight users.
+//
+// # Common throttling scenarios
+//
+// The following list provides information about the most commin throttling
+// scenarios that can occur.
+//
+//   - A large number of SnapshotExport API jobs are running simultaneously on an
+//     Amazon Web Services account. When a new StartDashboardSnapshotJob is created
+//     and there are already 12 jobs with the RUNNING status, the new job request
+//     fails and returns a LimitExceededException error. Wait for a current job to
+//     comlpete before you resubmit the new job.
+//
+//   - A large number of API requests are submitted on an Amazon Web Services
+//     account. When a user makes more than 10 API calls to the Amazon QuickSight API
+//     in one second, a ThrottlingException is returned.
+//
+// If your use case requires a higher throttling limit, contact your account admin
+// or [Amazon Web ServicesSupport]to explore options to tailor a more optimal expereince for your account.
+//
+// # Best practices to handle throttling
+//
+// If your use case projects high levels of API traffic, try to reduce the degree
+// of frequency and parallelism of API calls as much as you can to avoid
+// throttling. You can also perform a timing test to calculate an estimate for the
+// total processing time of your projected load that stays within the throttling
+// limits of the Amazon QuickSight APIs. For example, if your projected traffic is
+// 100 snapshot jobs before 12:00 PM per day, start 12 jobs in parallel and measure
+// the amount of time it takes to proccess all 12 jobs. Once you obtain the result,
+// multiply the duration by 9, for example (12 minutes * 9 = 108 minutes) . Use the
+// new result to determine the latest time at which the jobs need to be started to
+// meet your target deadline.
+//
+// The time that it takes to process a job can be impacted by the following
+// factors:
+//
+//   - The dataset type (Direct Query or SPICE).
+//
+//   - The size of the dataset.
+//
+//   - The complexity of the calculated fields that are used in the dashboard.
+//
+//   - The number of visuals that are on a sheet.
+//
+//   - The types of visuals that are on the sheet.
+//
+//   - The number of formats and snapshots that are requested in the job
+//     configuration.
+//
+//   - The size of the generated snapshots.
+//
+// [Amazon Web ServicesSupport]: http://aws.amazon.com/contact-us/
 func (c *Client) StartDashboardSnapshotJob(ctx context.Context, params *StartDashboardSnapshotJobInput, optFns ...func(*Options)) (*StartDashboardSnapshotJobOutput, error) {
 	if params == nil {
 		params = &StartDashboardSnapshotJobInput{}
@@ -62,7 +131,7 @@ type StartDashboardSnapshotJobInput struct {
 	// This member is required.
 	SnapshotJobId *string
 
-	// A structure that contains information about the anonymous users that the
+	//  A structure that contains information about the anonymous users that the
 	// generated snapshot is for. This API will not return information about registered
 	// Amazon QuickSight.
 	//
@@ -77,7 +146,7 @@ type StartDashboardSnapshotJobOutput struct {
 	// The Amazon Resource Name (ARN) for the dashboard snapshot job.
 	Arn *string
 
-	// The Amazon Web Services request ID for this operation.
+	//  The Amazon Web Services request ID for this operation.
 	RequestId *string
 
 	// The ID of the job. The job ID is set when you start a new job with a
@@ -94,6 +163,9 @@ type StartDashboardSnapshotJobOutput struct {
 }
 
 func (c *Client) addOperationStartDashboardSnapshotJobMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpStartDashboardSnapshotJob{}, middleware.After)
 	if err != nil {
 		return err
@@ -102,34 +174,38 @@ func (c *Client) addOperationStartDashboardSnapshotJobMiddlewares(stack *middlew
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "StartDashboardSnapshotJob"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -141,7 +217,13 @@ func (c *Client) addOperationStartDashboardSnapshotJobMiddlewares(stack *middlew
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addStartDashboardSnapshotJobResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartDashboardSnapshotJobValidationMiddleware(stack); err != nil {
@@ -150,7 +232,7 @@ func (c *Client) addOperationStartDashboardSnapshotJobMiddlewares(stack *middlew
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opStartDashboardSnapshotJob(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -162,7 +244,19 @@ func (c *Client) addOperationStartDashboardSnapshotJobMiddlewares(stack *middlew
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -172,130 +266,6 @@ func newServiceMetadataMiddleware_opStartDashboardSnapshotJob(region string) *aw
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "quicksight",
 		OperationName: "StartDashboardSnapshotJob",
 	}
-}
-
-type opStartDashboardSnapshotJobResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opStartDashboardSnapshotJobResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opStartDashboardSnapshotJobResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "quicksight"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "quicksight"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("quicksight")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addStartDashboardSnapshotJobResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opStartDashboardSnapshotJobResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

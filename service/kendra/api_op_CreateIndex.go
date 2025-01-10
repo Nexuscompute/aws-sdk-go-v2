@@ -4,14 +4,9 @@ package kendra
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/kendra/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -19,13 +14,17 @@ import (
 // Creates an Amazon Kendra index. Index creation is an asynchronous API. To
 // determine if index creation has completed, check the Status field returned from
 // a call to DescribeIndex . The Status field is set to ACTIVE when the index is
-// ready to use. Once the index is active you can index your documents using the
-// BatchPutDocument API or using one of the supported data sources. For an example
-// of creating an index and data source using the Python SDK, see Getting started
-// with Python SDK (https://docs.aws.amazon.com/kendra/latest/dg/gs-python.html) .
-// For an example of creating an index and data source using the Java SDK, see
-// Getting started with Java SDK (https://docs.aws.amazon.com/kendra/latest/dg/gs-java.html)
-// .
+// ready to use.
+//
+// Once the index is active, you can index your documents using the
+// BatchPutDocument API or using one of the supported [data sources].
+//
+// For an example of creating an index and data source using the Python SDK, see [Getting started with Python SDK].
+// For an example of creating an index and data source using the Java SDK, see [Getting started with Java SDK].
+//
+// [data sources]: https://docs.aws.amazon.com/kendra/latest/dg/data-sources.html
+// [Getting started with Python SDK]: https://docs.aws.amazon.com/kendra/latest/dg/gs-python.html
+// [Getting started with Java SDK]: https://docs.aws.amazon.com/kendra/latest/dg/gs-java.html
 func (c *Client) CreateIndex(ctx context.Context, params *CreateIndexInput, optFns ...func(*Options)) (*CreateIndexOutput, error) {
 	if params == nil {
 		params = &CreateIndexInput{}
@@ -49,8 +48,9 @@ type CreateIndexInput struct {
 	Name *string
 
 	// The Amazon Resource Name (ARN) of an IAM role with permission to access your
-	// Amazon CloudWatch logs and metrics. For more information, see IAM access roles
-	// for Amazon Kendra (https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html) .
+	// Amazon CloudWatch logs and metrics. For more information, see [IAM access roles for Amazon Kendra].
+	//
+	// [IAM access roles for Amazon Kendra]: https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html
 	//
 	// This member is required.
 	RoleArn *string
@@ -65,11 +65,17 @@ type CreateIndexInput struct {
 
 	// The Amazon Kendra edition to use for the index. Choose DEVELOPER_EDITION for
 	// indexes intended for development, testing, or proof of concept. Use
-	// ENTERPRISE_EDITION for production. Once you set the edition for an index, it
-	// can't be changed. The Edition parameter is optional. If you don't supply a
-	// value, the default is ENTERPRISE_EDITION . For more information on quota limits
-	// for Enterprise and Developer editions, see Quotas (https://docs.aws.amazon.com/kendra/latest/dg/quotas.html)
-	// .
+	// ENTERPRISE_EDITION for production. Use GEN_AI_ENTERPRISE_EDITION for creating
+	// generative AI applications. Once you set the edition for an index, it can't be
+	// changed.
+	//
+	// The Edition parameter is optional. If you don't supply a value, the default is
+	// ENTERPRISE_EDITION .
+	//
+	// For more information on quota limits for Gen AI Enterprise Edition, Enterprise
+	// Edition, and Developer Edition indices, see [Quotas].
+	//
+	// [Quotas]: https://docs.aws.amazon.com/kendra/latest/dg/quotas.html
 	Edition types.IndexEdition
 
 	// The identifier of the KMS customer managed key (CMK) that's used to encrypt
@@ -82,21 +88,39 @@ type CreateIndexInput struct {
 	// = + - @.
 	Tags []types.Tag
 
-	// The user context policy. ATTRIBUTE_FILTER All indexed content is searchable and
-	// displayable for all users. If you want to filter search results on user context,
-	// you can use the attribute filters of _user_id and _group_ids or you can provide
-	// user and group information in UserContext . USER_TOKEN Enables token-based user
-	// access control to filter search results on user context. All documents with no
-	// access control and all documents accessible to the user will be searchable and
-	// displayable.
+	// The user context policy.
+	//
+	// If you're using an Amazon Kendra Gen AI Enterprise Edition index, you can only
+	// use ATTRIBUTE_FILTER to filter search results by user context. If you're using
+	// an Amazon Kendra Gen AI Enterprise Edition index and you try to use USER_TOKEN
+	// to configure user context policy, Amazon Kendra returns a ValidationException
+	// error.
+	//
+	// ATTRIBUTE_FILTER All indexed content is searchable and displayable for all
+	// users. If you want to filter search results on user context, you can use the
+	// attribute filters of _user_id and _group_ids or you can provide user and group
+	// information in UserContext .
+	//
+	// USER_TOKEN Enables token-based user access control to filter search results on
+	// user context. All documents with no access control and all documents accessible
+	// to the user will be searchable and displayable.
 	UserContextPolicy types.UserContextPolicy
 
-	// Gets users and groups from IAM Identity Center (successor to Single Sign-On)
-	// identity source. To configure this, see UserGroupResolutionConfiguration (https://docs.aws.amazon.com/kendra/latest/dg/API_UserGroupResolutionConfiguration.html)
-	// .
+	// Gets users and groups from IAM Identity Center identity source. To configure
+	// this, see [UserGroupResolutionConfiguration]. This is useful for user context filtering, where search results are
+	// filtered based on the user or their group access to documents.
+	//
+	// If you're using an Amazon Kendra Gen AI Enterprise Edition index,
+	// UserGroupResolutionConfiguration isn't supported.
+	//
+	// [UserGroupResolutionConfiguration]: https://docs.aws.amazon.com/kendra/latest/dg/API_UserGroupResolutionConfiguration.html
 	UserGroupResolutionConfiguration *types.UserGroupResolutionConfiguration
 
 	// The user token configuration.
+	//
+	// If you're using an Amazon Kendra Gen AI Enterprise Edition index and you try to
+	// use UserTokenConfigurations to configure user context policy, Amazon Kendra
+	// returns a ValidationException error.
 	UserTokenConfigurations []types.UserTokenConfiguration
 
 	noSmithyDocumentSerde
@@ -115,6 +139,9 @@ type CreateIndexOutput struct {
 }
 
 func (c *Client) addOperationCreateIndexMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateIndex{}, middleware.After)
 	if err != nil {
 		return err
@@ -123,34 +150,38 @@ func (c *Client) addOperationCreateIndexMiddlewares(stack *middleware.Stack, opt
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateIndex"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -162,7 +193,13 @@ func (c *Client) addOperationCreateIndexMiddlewares(stack *middleware.Stack, opt
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateIndexResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateIndexMiddleware(stack, options); err != nil {
@@ -174,7 +211,7 @@ func (c *Client) addOperationCreateIndexMiddlewares(stack *middleware.Stack, opt
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateIndex(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -186,7 +223,19 @@ func (c *Client) addOperationCreateIndexMiddlewares(stack *middleware.Stack, opt
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -229,130 +278,6 @@ func newServiceMetadataMiddleware_opCreateIndex(region string) *awsmiddleware.Re
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "kendra",
 		OperationName: "CreateIndex",
 	}
-}
-
-type opCreateIndexResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateIndexResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateIndexResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "kendra"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "kendra"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("kendra")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateIndexResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateIndexResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

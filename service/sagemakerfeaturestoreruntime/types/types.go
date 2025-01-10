@@ -10,8 +10,9 @@ import (
 type BatchGetRecordError struct {
 
 	// The error code of an error that has occurred when attempting to retrieve a
-	// batch of Records. For more information on errors, see Errors (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_GetRecord.html#API_feature_store_GetRecord_Errors)
-	// .
+	// batch of Records. For more information on errors, see [Errors].
+	//
+	// [Errors]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_GetRecord.html#API_feature_store_GetRecord_Errors
 	//
 	// This member is required.
 	ErrorCode *string
@@ -90,20 +91,25 @@ type FeatureValue struct {
 	// This member is required.
 	FeatureName *string
 
-	// The value associated with a feature, in string format. Note that features types
-	// can be String, Integral, or Fractional. This value represents all three types as
-	// a string.
-	//
-	// This member is required.
+	// The value in string format associated with a feature. Used when your
+	// CollectionType is None . Note that features types can be String , Integral , or
+	// Fractional . This value represents all three types as a string.
 	ValueAsString *string
+
+	// The list of values in string format associated with a feature. Used when your
+	// CollectionType is a List , Set , or Vector . Note that features types can be
+	// String , Integral , or Fractional . These values represents all three types as a
+	// string.
+	ValueAsStringList []string
 
 	noSmithyDocumentSerde
 }
 
 // Time to live duration, where the record is hard deleted after the expiration
 // time is reached; ExpiresAt = EventTime + TtlDuration . For information on
-// HardDelete, see the DeleteRecord (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_DeleteRecord.html)
-// API in the Amazon SageMaker API Reference guide.
+// HardDelete, see the [DeleteRecord]API in the Amazon SageMaker API Reference guide.
+//
+// [DeleteRecord]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_feature_store_DeleteRecord.html
 type TtlDuration struct {
 
 	// TtlDuration time unit.

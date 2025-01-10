@@ -250,6 +250,26 @@ func (m *validateOpDescribeSafetyRule) HandleInitialize(ctx context.Context, in 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetResourcePolicy struct {
+}
+
+func (*validateOpGetResourcePolicy) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetResourcePolicy) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetResourcePolicyInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetResourcePolicyInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListAssociatedRoute53HealthChecks struct {
 }
 
@@ -478,6 +498,10 @@ func addOpDescribeSafetyRuleValidationMiddleware(stack *middleware.Stack) error 
 	return stack.Initialize.Add(&validateOpDescribeSafetyRule{}, middleware.After)
 }
 
+func addOpGetResourcePolicyValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetResourcePolicy{}, middleware.After)
+}
+
 func addOpListAssociatedRoute53HealthChecksValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListAssociatedRoute53HealthChecks{}, middleware.After)
 }
@@ -525,6 +549,9 @@ func validateAssertionRuleUpdate(v *types.AssertionRuleUpdate) error {
 	if v.SafetyRuleArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("SafetyRuleArn"))
 	}
+	if v.WaitPeriodMs == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WaitPeriodMs"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -542,6 +569,9 @@ func validateGatingRuleUpdate(v *types.GatingRuleUpdate) error {
 	}
 	if v.SafetyRuleArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("SafetyRuleArn"))
+	}
+	if v.WaitPeriodMs == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WaitPeriodMs"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -570,6 +600,9 @@ func validateNewAssertionRule(v *types.NewAssertionRule) error {
 		if err := validateRuleConfig(v.RuleConfig); err != nil {
 			invalidParams.AddNested("RuleConfig", err.(smithy.InvalidParamsError))
 		}
+	}
+	if v.WaitPeriodMs == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WaitPeriodMs"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -602,6 +635,9 @@ func validateNewGatingRule(v *types.NewGatingRule) error {
 	if v.TargetControls == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("TargetControls"))
 	}
+	if v.WaitPeriodMs == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WaitPeriodMs"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -614,6 +650,12 @@ func validateRuleConfig(v *types.RuleConfig) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "RuleConfig"}
+	if v.Inverted == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Inverted"))
+	}
+	if v.Threshold == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Threshold"))
+	}
 	if len(v.Type) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Type"))
 	}
@@ -809,6 +851,21 @@ func validateOpDescribeSafetyRuleInput(v *DescribeSafetyRuleInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "DescribeSafetyRuleInput"}
 	if v.SafetyRuleArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("SafetyRuleArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetResourcePolicyInput(v *GetResourcePolicyInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetResourcePolicyInput"}
+	if v.ResourceArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ResourceArn"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

@@ -4,20 +4,23 @@ package datasync
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/datasync/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
 )
 
-// Provides information about an DataSync transfer task that's running.
+// Provides information about an execution of your DataSync task. You can use this
+// operation to help monitor the progress of an ongoing data transfer or check the
+// results of the transfer.
+//
+// Some DescribeTaskExecution response elements are only relevant to a specific
+// task mode. For information, see [Understanding task mode differences]and [Understanding data transfer performance counters].
+//
+// [Understanding task mode differences]: https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html#task-mode-differences
+// [Understanding data transfer performance counters]: https://docs.aws.amazon.com/datasync/latest/userguide/transfer-performance-counters.html
 func (c *Client) DescribeTaskExecution(ctx context.Context, params *DescribeTaskExecutionInput, optFns ...func(*Options)) (*DescribeTaskExecutionOutput, error) {
 	if params == nil {
 		params = &DescribeTaskExecutionInput{}
@@ -36,7 +39,8 @@ func (c *Client) DescribeTaskExecution(ctx context.Context, params *DescribeTask
 // DescribeTaskExecutionRequest
 type DescribeTaskExecutionInput struct {
 
-	// Specifies the Amazon Resource Name (ARN) of the transfer task that's running.
+	// Specifies the Amazon Resource Name (ARN) of the task execution that you want
+	// information about.
 	//
 	// This member is required.
 	TaskExecutionArn *string
@@ -47,74 +51,186 @@ type DescribeTaskExecutionInput struct {
 // DescribeTaskExecutionResponse
 type DescribeTaskExecutionOutput struct {
 
-	// The physical number of bytes transferred over the network after compression was
-	// applied. In most cases, this number is less than BytesTransferred unless the
-	// data isn't compressible.
+	// The number of physical bytes that DataSync transfers over the network after
+	// compression (if compression is possible). This number is typically less than [BytesTransferred]
+	// unless the data isn't compressible.
+	//
+	// [BytesTransferred]: https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeTaskExecution.html#DataSync-DescribeTaskExecution-response-BytesTransferred
 	BytesCompressed int64
 
-	// The total number of bytes that are involved in the transfer. For the number of
-	// bytes sent over the network, see BytesCompressed .
+	// The number of bytes that DataSync sends to the network before compression (if
+	// compression is possible). For the number of bytes transferred over the network,
+	// see [BytesCompressed].
+	//
+	// [BytesCompressed]: https://docs.aws.amazon.com/datasync/latest/userguide/API_DescribeTaskExecution.html#DataSync-DescribeTaskExecution-response-BytesCompressed
 	BytesTransferred int64
 
-	// The number of logical bytes written to the destination Amazon Web Services
-	// storage resource.
+	// The number of logical bytes that DataSync actually writes to the destination
+	// location.
 	BytesWritten int64
 
-	// The estimated physical number of bytes that is to be transferred over the
-	// network.
+	// The number of logical bytes that DataSync expects to write to the destination
+	// location.
 	EstimatedBytesToTransfer int64
 
-	// The expected number of files that is to be transferred over the network. This
-	// value is calculated during the PREPARING phase before the TRANSFERRING phase of
-	// the task execution. This value is the expected number of files to be
-	// transferred. It's calculated based on comparing the content of the source and
-	// destination locations and finding the delta that needs to be transferred.
+	// The number of files, objects, and directories that DataSync expects to delete
+	// in your destination location. If you don't configure your task to [delete data in the destination that isn't in the source], the value
+	// is always 0 .
+	//
+	// [delete data in the destination that isn't in the source]: https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html
+	EstimatedFilesToDelete int64
+
+	// The number of files, objects, and directories that DataSync expects to transfer
+	// over the network. This value is calculated while DataSync [prepares]the transfer.
+	//
+	// How this gets calculated depends primarily on your task’s [transfer mode] configuration:
+	//
+	//   - If TranserMode is set to CHANGED - The calculation is based on comparing the
+	//   content of the source and destination locations and determining the difference
+	//   that needs to be transferred. The difference can include:
+	//
+	//   - Anything that's added or modified at the source location.
+	//
+	//   - Anything that's in both locations and modified at the destination after an
+	//   initial transfer (unless [OverwriteMode]is set to NEVER ).
+	//
+	//   - (Basic task mode only) The number of items that DataSync expects to delete
+	//   (if [PreserveDeletedFiles]is set to REMOVE ).
+	//
+	//   - If TranserMode is set to ALL - The calculation is based only on the items
+	//   that DataSync finds at the source location.
+	//
+	// [transfer mode]: https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-TransferMode
+	// [OverwriteMode]: https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-OverwriteMode
+	// [prepares]: https://docs.aws.amazon.com/datasync/latest/userguide/run-task.html#understand-task-execution-statuses
+	// [PreserveDeletedFiles]: https://docs.aws.amazon.com/datasync/latest/userguide/API_Options.html#DataSync-Type-Options-PreserveDeletedFiles
 	EstimatedFilesToTransfer int64
 
 	// A list of filter rules that exclude specific data during your transfer. For
-	// more information and examples, see Filtering data transferred by DataSync (https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html)
-	// .
+	// more information and examples, see [Filtering data transferred by DataSync].
+	//
+	// [Filtering data transferred by DataSync]: https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html
 	Excludes []types.FilterRule
 
-	// The actual number of files that was transferred over the network. This value is
-	// calculated and updated on an ongoing basis during the TRANSFERRING phase of the
-	// task execution. It's updated periodically when each file is read from the source
-	// and sent over the network. If failures occur during a transfer, this value can
-	// be less than EstimatedFilesToTransfer . In some cases, this value can also be
-	// greater than EstimatedFilesToTransfer . This element is implementation-specific
-	// for some location types, so don't use it as an indicator for a correct file
-	// number or to monitor your task execution.
+	// The number of files, objects, and directories that DataSync actually deletes in
+	// your destination location. If you don't configure your task to [delete data in the destination that isn't in the source], the value is
+	// always 0 .
+	//
+	// [delete data in the destination that isn't in the source]: https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html
+	FilesDeleted int64
+
+	// The number of objects that DataSync fails to prepare, transfer, verify, and
+	// delete during your task execution.
+	//
+	// Applies only to [Enhanced mode tasks].
+	//
+	// [Enhanced mode tasks]: https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html
+	FilesFailed *types.TaskExecutionFilesFailedDetail
+
+	// The number of objects that DataSync finds at your locations.
+	//
+	// Applies only to [Enhanced mode tasks].
+	//
+	// [Enhanced mode tasks]: https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html
+	FilesListed *types.TaskExecutionFilesListedDetail
+
+	// The number of objects that DataSync will attempt to transfer after comparing
+	// your source and destination locations.
+	//
+	// Applies only to [Enhanced mode tasks].
+	//
+	// This counter isn't applicable if you configure your task to [transfer all data]. In that scenario,
+	// DataSync copies everything from the source to the destination without comparing
+	// differences between the locations.
+	//
+	// [transfer all data]: https://docs.aws.amazon.com/datasync/latest/userguide/configure-metadata.html#task-option-transfer-mode
+	// [Enhanced mode tasks]: https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html
+	FilesPrepared int64
+
+	// The number of files, objects, and directories that DataSync skips during your
+	// transfer.
+	FilesSkipped int64
+
+	// The number of files, objects, and directories that DataSync actually transfers
+	// over the network. This value is updated periodically during your task execution
+	// when something is read from the source and sent over the network.
+	//
+	// If DataSync fails to transfer something, this value can be less than
+	// EstimatedFilesToTransfer . In some cases, this value can also be greater than
+	// EstimatedFilesToTransfer . This element is implementation-specific for some
+	// location types, so don't use it as an exact indication of what's transferring or
+	// to monitor your task execution.
 	FilesTransferred int64
 
+	// The number of files, objects, and directories that DataSync verifies during
+	// your transfer.
+	//
+	// When you configure your task to [verify only the data that's transferred], DataSync doesn't verify directories in some
+	// situations or files that fail to transfer.
+	//
+	// [verify only the data that's transferred]: https://docs.aws.amazon.com/datasync/latest/userguide/configure-data-verification-options.html
+	FilesVerified int64
+
 	// A list of filter rules that include specific data during your transfer. For
-	// more information and examples, see Filtering data transferred by DataSync (https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html)
-	// .
+	// more information and examples, see [Filtering data transferred by DataSync].
+	//
+	// [Filtering data transferred by DataSync]: https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html
 	Includes []types.FilterRule
 
-	// Configures your DataSync task settings. These options include how DataSync
-	// handles files, objects, and their associated metadata. You also can specify how
-	// DataSync verifies data integrity, set bandwidth limits for your task, among
-	// other options. Each task setting has a default value. Unless you need to, you
-	// don't have to configure any of these Options before starting your task.
+	// The configuration of the manifest that lists the files or objects to transfer.
+	// For more information, see [Specifying what DataSync transfers by using a manifest].
+	//
+	// [Specifying what DataSync transfers by using a manifest]: https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html
+	ManifestConfig *types.ManifestConfig
+
+	// Indicates how your transfer task is configured. These options include how
+	// DataSync handles files, objects, and their associated metadata during your
+	// transfer. You also can specify how to verify data integrity, set bandwidth
+	// limits for your task, among other options.
+	//
+	// Each option has a default value. Unless you need to, you don't have to
+	// configure any option before calling [StartTaskExecution].
+	//
+	// You also can override your task options for each task execution. For example,
+	// you might want to adjust the LogLevel for an individual execution.
+	//
+	// [StartTaskExecution]: https://docs.aws.amazon.com/datasync/latest/userguide/API_StartTaskExecution.html
 	Options *types.Options
+
+	// Indicates whether DataSync generated a complete [task report] for your transfer.
+	//
+	// [task report]: https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html
+	ReportResult *types.ReportResult
 
 	// The result of the task execution.
 	Result *types.TaskExecutionResultDetail
 
-	// The time that the task execution was started.
+	// The time when the task execution started.
 	StartTime *time.Time
 
-	// The status of the task execution. For detailed information about task execution
-	// statuses, see Understanding Task Statuses in the DataSync User Guide.
+	// The status of the task execution.
 	Status types.TaskExecutionStatus
 
-	// The Amazon Resource Name (ARN) of the task execution that was described.
+	// The ARN of the task execution that you wanted information about.
 	// TaskExecutionArn is hierarchical and includes TaskArn for the task that was
-	// executed. For example, a TaskExecution value with the ARN
+	// executed.
+	//
+	// For example, a TaskExecution value with the ARN
 	// arn:aws:datasync:us-east-1:111222333444:task/task-0208075f79cedf4a2/execution/exec-08ef1e88ec491019b
 	// executed the task with the ARN
 	// arn:aws:datasync:us-east-1:111222333444:task/task-0208075f79cedf4a2 .
 	TaskExecutionArn *string
+
+	// The task mode that you're using. For more information, see [Choosing a task mode for your data transfer].
+	//
+	// [Choosing a task mode for your data transfer]: https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html
+	TaskMode types.TaskMode
+
+	// The configuration of your task report, which provides detailed information
+	// about for your DataSync transfer. For more information, see [Creating a task report].
+	//
+	// [Creating a task report]: https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html
+	TaskReportConfig *types.TaskReportConfig
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -123,6 +239,9 @@ type DescribeTaskExecutionOutput struct {
 }
 
 func (c *Client) addOperationDescribeTaskExecutionMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpDescribeTaskExecution{}, middleware.After)
 	if err != nil {
 		return err
@@ -131,34 +250,38 @@ func (c *Client) addOperationDescribeTaskExecutionMiddlewares(stack *middleware.
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeTaskExecution"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -170,7 +293,13 @@ func (c *Client) addOperationDescribeTaskExecutionMiddlewares(stack *middleware.
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeTaskExecutionResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeTaskExecutionValidationMiddleware(stack); err != nil {
@@ -179,7 +308,7 @@ func (c *Client) addOperationDescribeTaskExecutionMiddlewares(stack *middleware.
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeTaskExecution(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -191,7 +320,19 @@ func (c *Client) addOperationDescribeTaskExecutionMiddlewares(stack *middleware.
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -201,130 +342,6 @@ func newServiceMetadataMiddleware_opDescribeTaskExecution(region string) *awsmid
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "datasync",
 		OperationName: "DescribeTaskExecution",
 	}
-}
-
-type opDescribeTaskExecutionResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeTaskExecutionResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeTaskExecutionResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "datasync"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "datasync"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("datasync")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeTaskExecutionResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeTaskExecutionResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

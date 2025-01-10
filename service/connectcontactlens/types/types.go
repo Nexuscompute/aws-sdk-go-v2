@@ -40,12 +40,12 @@ type CharacterOffsets struct {
 	// The beginning of the issue.
 	//
 	// This member is required.
-	BeginOffsetChar int32
+	BeginOffsetChar *int32
 
 	// The end of the issue.
 	//
 	// This member is required.
-	EndOffsetChar int32
+	EndOffsetChar *int32
 
 	noSmithyDocumentSerde
 }
@@ -68,12 +68,46 @@ type PointOfInterest struct {
 	// The beginning offset in milliseconds where the category rule was detected.
 	//
 	// This member is required.
-	BeginOffsetMillis int32
+	BeginOffsetMillis *int32
 
 	// The ending offset in milliseconds where the category rule was detected.
 	//
 	// This member is required.
-	EndOffsetMillis int32
+	EndOffsetMillis *int32
+
+	noSmithyDocumentSerde
+}
+
+// Information about the post-contact summary.
+type PostContactSummary struct {
+
+	// Whether the summary was successfully COMPLETED or FAILED to be generated.
+	//
+	// This member is required.
+	Status PostContactSummaryStatus
+
+	// The content of the summary.
+	Content *string
+
+	// If the summary failed to be generated, one of the following failure codes
+	// occurs:
+	//
+	//   - QUOTA_EXCEEDED : The number of concurrent analytics jobs reached your
+	//   service quota.
+	//
+	//   - INSUFFICIENT_CONVERSATION_CONTENT : The conversation needs to have at least
+	//   one turn from both the participants in order to generate the summary.
+	//
+	//   - FAILED_SAFETY_GUIDELINES : The generated summary cannot be provided because
+	//   it failed to meet system safety guidelines.
+	//
+	//   - INVALID_ANALYSIS_CONFIGURATION : This code occurs when, for example, you're
+	//   using a [language]that isn't supported by generative AI-powered post-contact summaries.
+	//
+	//   - INTERNAL_ERROR : Internal system error.
+	//
+	// [language]: https://docs.aws.amazon.com/connect/latest/adminguide/supported-languages.html#supported-languages-contact-lens
+	FailureCode PostContactSummaryFailureCode
 
 	noSmithyDocumentSerde
 }
@@ -83,6 +117,9 @@ type RealtimeContactAnalysisSegment struct {
 
 	// The matched category rules.
 	Categories *Categories
+
+	// Information about the post-contact summary.
+	PostContactSummary *PostContactSummary
 
 	// The analyzed transcript.
 	Transcript *Transcript
@@ -96,7 +133,7 @@ type Transcript struct {
 	// The beginning offset in the contact for this transcript.
 	//
 	// This member is required.
-	BeginOffsetMillis int32
+	BeginOffsetMillis *int32
 
 	// The content of the transcript.
 	//
@@ -106,14 +143,14 @@ type Transcript struct {
 	// The end offset in the contact for this transcript.
 	//
 	// This member is required.
-	EndOffsetMillis int32
+	EndOffsetMillis *int32
 
 	// The identifier of the transcript.
 	//
 	// This member is required.
 	Id *string
 
-	// The identifier of the participant.
+	// The identifier of the participant. Valid values are CUSTOMER or AGENT.
 	//
 	// This member is required.
 	ParticipantId *string
@@ -123,7 +160,7 @@ type Transcript struct {
 	// This member is required.
 	ParticipantRole *string
 
-	// The sentiment of the detected for this piece of transcript.
+	// The sentiment detected for this piece of transcript.
 	//
 	// This member is required.
 	Sentiment SentimentValue

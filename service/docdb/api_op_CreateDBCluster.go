@@ -4,15 +4,11 @@ package docdb
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
 	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/docdb/types"
 	presignedurlcust "github.com/aws/aws-sdk-go-v2/service/internal/presigned-url"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -33,20 +29,27 @@ func (c *Client) CreateDBCluster(ctx context.Context, params *CreateDBClusterInp
 	return out, nil
 }
 
-// Represents the input to CreateDBCluster .
+// Represents the input to CreateDBCluster.
 type CreateDBClusterInput struct {
 
 	// The cluster identifier. This parameter is stored as a lowercase string.
+	//
 	// Constraints:
+	//
 	//   - Must contain from 1 to 63 letters, numbers, or hyphens.
+	//
 	//   - The first character must be a letter.
+	//
 	//   - Cannot end with a hyphen or contain two consecutive hyphens.
+	//
 	// Example: my-cluster
 	//
 	// This member is required.
 	DBClusterIdentifier *string
 
-	// The name of the database engine to be used for this cluster. Valid values: docdb
+	// The name of the database engine to be used for this cluster.
+	//
+	// Valid values: docdb
 	//
 	// This member is required.
 	Engine *string
@@ -56,15 +59,24 @@ type CreateDBClusterInput struct {
 	AvailabilityZones []string
 
 	// The number of days for which automated backups are retained. You must specify a
-	// minimum value of 1. Default: 1 Constraints:
+	// minimum value of 1.
+	//
+	// Default: 1
+	//
+	// Constraints:
+	//
 	//   - Must be a value from 1 to 35.
 	BackupRetentionPeriod *int32
 
 	// The name of the cluster parameter group to associate with this cluster.
 	DBClusterParameterGroupName *string
 
-	// A subnet group to associate with this cluster. Constraints: Must match the name
-	// of an existing DBSubnetGroup . Must not be default. Example: mySubnetgroup
+	// A subnet group to associate with this cluster.
+	//
+	// Constraints: Must match the name of an existing DBSubnetGroup . Must not be
+	// default.
+	//
+	// Example: mySubnetgroup
 	DBSubnetGroupName *string
 
 	// Specifies whether this cluster can be deleted. If DeletionProtection is
@@ -74,10 +86,11 @@ type CreateDBClusterInput struct {
 	DeletionProtection *bool
 
 	// A list of log types that need to be enabled for exporting to Amazon CloudWatch
-	// Logs. You can enable audit logs or profiler logs. For more information, see
-	// Auditing Amazon DocumentDB Events (https://docs.aws.amazon.com/documentdb/latest/developerguide/event-auditing.html)
-	// and Profiling Amazon DocumentDB Operations (https://docs.aws.amazon.com/documentdb/latest/developerguide/profiling.html)
+	// Logs. You can enable audit logs or profiler logs. For more information, see [Auditing Amazon DocumentDB Events]and [Profiling Amazon DocumentDB Operations]
 	// .
+	//
+	// [Profiling Amazon DocumentDB Operations]: https://docs.aws.amazon.com/documentdb/latest/developerguide/profiling.html
+	// [Auditing Amazon DocumentDB Events]: https://docs.aws.amazon.com/documentdb/latest/developerguide/event-auditing.html
 	EnableCloudwatchLogsExports []string
 
 	// The version number of the database engine to use. The --engine-version will
@@ -89,27 +102,64 @@ type CreateDBClusterInput struct {
 	// The cluster identifier of the new global cluster.
 	GlobalClusterIdentifier *string
 
-	// The KMS key identifier for an encrypted cluster. The KMS key identifier is the
-	// Amazon Resource Name (ARN) for the KMS encryption key. If you are creating a
-	// cluster using the same Amazon Web Services account that owns the KMS encryption
-	// key that is used to encrypt the new cluster, you can use the KMS key alias
-	// instead of the ARN for the KMS encryption key. If an encryption key is not
-	// specified in KmsKeyId :
+	// The KMS key identifier for an encrypted cluster.
+	//
+	// The KMS key identifier is the Amazon Resource Name (ARN) for the KMS encryption
+	// key. If you are creating a cluster using the same Amazon Web Services account
+	// that owns the KMS encryption key that is used to encrypt the new cluster, you
+	// can use the KMS key alias instead of the ARN for the KMS encryption key.
+	//
+	// If an encryption key is not specified in KmsKeyId :
+	//
 	//   - If the StorageEncrypted parameter is true , Amazon DocumentDB uses your
 	//   default encryption key.
+	//
 	// KMS creates the default encryption key for your Amazon Web Services account.
 	// Your Amazon Web Services account has a different default encryption key for each
 	// Amazon Web Services Regions.
 	KmsKeyId *string
 
+	// Specifies whether to manage the master user password with Amazon Web Services
+	// Secrets Manager.
+	//
+	// Constraint: You can't manage the master user password with Amazon Web Services
+	// Secrets Manager if MasterUserPassword is specified.
+	ManageMasterUserPassword *bool
+
 	// The password for the master database user. This password can contain any
 	// printable ASCII character except forward slash (/), double quote ("), or the
-	// "at" symbol (@). Constraints: Must contain from 8 to 100 characters.
+	// "at" symbol (@).
+	//
+	// Constraints: Must contain from 8 to 100 characters.
 	MasterUserPassword *string
 
-	// The name of the master user for the cluster. Constraints:
+	// The Amazon Web Services KMS key identifier to encrypt a secret that is
+	// automatically generated and managed in Amazon Web Services Secrets Manager. This
+	// setting is valid only if the master user password is managed by Amazon
+	// DocumentDB in Amazon Web Services Secrets Manager for the DB cluster.
+	//
+	// The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN,
+	// or alias name for the KMS key. To use a KMS key in a different Amazon Web
+	// Services account, specify the key ARN or alias ARN.
+	//
+	// If you don't specify MasterUserSecretKmsKeyId , then the aws/secretsmanager KMS
+	// key is used to encrypt the secret. If the secret is in a different Amazon Web
+	// Services account, then you can't use the aws/secretsmanager KMS key to encrypt
+	// the secret, and you must use a customer managed KMS key.
+	//
+	// There is a default KMS key for your Amazon Web Services account. Your Amazon
+	// Web Services account has a different default KMS key for each Amazon Web
+	// Services Region.
+	MasterUserSecretKmsKeyId *string
+
+	// The name of the master user for the cluster.
+	//
+	// Constraints:
+	//
 	//   - Must be from 1 to 63 letters or numbers.
+	//
 	//   - The first character must be a letter.
+	//
 	//   - Cannot be a reserved word for the chosen database engine.
 	MasterUsername *string
 
@@ -120,20 +170,33 @@ type CreateDBClusterInput struct {
 	PreSignedUrl *string
 
 	// The daily time range during which automated backups are created if automated
-	// backups are enabled using the BackupRetentionPeriod parameter. The default is a
-	// 30-minute window selected at random from an 8-hour block of time for each Amazon
-	// Web Services Region. Constraints:
+	// backups are enabled using the BackupRetentionPeriod parameter.
+	//
+	// The default is a 30-minute window selected at random from an 8-hour block of
+	// time for each Amazon Web Services Region.
+	//
+	// Constraints:
+	//
 	//   - Must be in the format hh24:mi-hh24:mi .
+	//
 	//   - Must be in Universal Coordinated Time (UTC).
+	//
 	//   - Must not conflict with the preferred maintenance window.
+	//
 	//   - Must be at least 30 minutes.
 	PreferredBackupWindow *string
 
 	// The weekly time range during which system maintenance can occur, in Universal
-	// Coordinated Time (UTC). Format: ddd:hh24:mi-ddd:hh24:mi The default is a
-	// 30-minute window selected at random from an 8-hour block of time for each Amazon
-	// Web Services Region, occurring on a random day of the week. Valid days: Mon,
-	// Tue, Wed, Thu, Fri, Sat, Sun Constraints: Minimum 30-minute window.
+	// Coordinated Time (UTC).
+	//
+	// Format: ddd:hh24:mi-ddd:hh24:mi
+	//
+	// The default is a 30-minute window selected at random from an 8-hour block of
+	// time for each Amazon Web Services Region, occurring on a random day of the week.
+	//
+	// Valid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun
+	//
+	// Constraints: Minimum 30-minute window.
 	PreferredMaintenanceWindow *string
 
 	// The AWS region the resource is in. The presigned URL will be created with this
@@ -142,6 +205,20 @@ type CreateDBClusterInput struct {
 
 	// Specifies whether the cluster is encrypted.
 	StorageEncrypted *bool
+
+	// The storage type to associate with the DB cluster.
+	//
+	// For information on storage types for Amazon DocumentDB clusters, see Cluster
+	// storage configurations in the Amazon DocumentDB Developer Guide.
+	//
+	// Valid values for storage type - standard | iopt1
+	//
+	// Default value is standard
+	//
+	// When you create a DocumentDB DB cluster with the storage type set to iopt1 , the
+	// storage type is returned in the response. The storage type isn't returned when
+	// you set it to standard .
+	StorageType *string
 
 	// The tags to be assigned to the cluster.
 	Tags []types.Tag
@@ -168,6 +245,9 @@ type CreateDBClusterOutput struct {
 }
 
 func (c *Client) addOperationCreateDBClusterMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpCreateDBCluster{}, middleware.After)
 	if err != nil {
 		return err
@@ -176,34 +256,38 @@ func (c *Client) addOperationCreateDBClusterMiddlewares(stack *middleware.Stack,
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateDBCluster"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -218,7 +302,13 @@ func (c *Client) addOperationCreateDBClusterMiddlewares(stack *middleware.Stack,
 	if err = addCreateDBClusterPresignURLMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addCreateDBClusterResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateDBClusterValidationMiddleware(stack); err != nil {
@@ -227,7 +317,7 @@ func (c *Client) addOperationCreateDBClusterMiddlewares(stack *middleware.Stack,
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateDBCluster(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -239,7 +329,19 @@ func (c *Client) addOperationCreateDBClusterMiddlewares(stack *middleware.Stack,
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -328,7 +430,6 @@ func newServiceMetadataMiddleware_opCreateDBCluster(region string) *awsmiddlewar
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "rds",
 		OperationName: "CreateDBCluster",
 	}
 }
@@ -355,127 +456,4 @@ func (c *PresignClient) PresignCreateDBCluster(ctx context.Context, params *Crea
 
 	out := result.(*v4.PresignedHTTPRequest)
 	return out, nil
-}
-
-type opCreateDBClusterResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateDBClusterResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateDBClusterResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "rds"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "rds"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("rds")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateDBClusterResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateDBClusterResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -4,14 +4,9 @@ package glue
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/glue/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -55,38 +50,77 @@ type GetPartitionsInput struct {
 	// duplicate data.
 	ExcludeColumnSchema *bool
 
-	// An expression that filters the partitions to be returned. The expression uses
-	// SQL syntax similar to the SQL WHERE filter clause. The SQL statement parser
-	// JSQLParser (http://jsqlparser.sourceforge.net/home.php) parses the expression.
+	// An expression that filters the partitions to be returned.
+	//
+	// The expression uses SQL syntax similar to the SQL WHERE filter clause. The SQL
+	// statement parser [JSQLParser]parses the expression.
+	//
 	// Operators: The following are the operators that you can use in the Expression
-	// API call: = Checks whether the values of the two operands are equal; if yes,
-	// then the condition becomes true. Example: Assume 'variable a' holds 10 and
-	// 'variable b' holds 20. (a = b) is not true. < > Checks whether the values of two
-	// operands are equal; if the values are not equal, then the condition becomes
-	// true. Example: (a < > b) is true. > Checks whether the value of the left operand
-	// is greater than the value of the right operand; if yes, then the condition
-	// becomes true. Example: (a > b) is not true. < Checks whether the value of the
-	// left operand is less than the value of the right operand; if yes, then the
-	// condition becomes true. Example: (a < b) is true. >= Checks whether the value of
-	// the left operand is greater than or equal to the value of the right operand; if
-	// yes, then the condition becomes true. Example: (a >= b) is not true. <= Checks
-	// whether the value of the left operand is less than or equal to the value of the
-	// right operand; if yes, then the condition becomes true. Example: (a <= b) is
-	// true. AND, OR, IN, BETWEEN, LIKE, NOT, IS NULL Logical operators. Supported
-	// Partition Key Types: The following are the supported partition keys.
+	// API call:
+	//
+	// = Checks whether the values of the two operands are equal; if yes, then the
+	// condition becomes true.
+	//
+	// Example: Assume 'variable a' holds 10 and 'variable b' holds 20.
+	//
+	// (a = b) is not true.
+	//
+	// < > Checks whether the values of two operands are equal; if the values are not
+	// equal, then the condition becomes true.
+	//
+	// Example: (a < > b) is true.
+	//
+	// > Checks whether the value of the left operand is greater than the value of the
+	// right operand; if yes, then the condition becomes true.
+	//
+	// Example: (a > b) is not true.
+	//
+	// < Checks whether the value of the left operand is less than the value of the
+	// right operand; if yes, then the condition becomes true.
+	//
+	// Example: (a < b) is true.
+	//
+	// >= Checks whether the value of the left operand is greater than or equal to the
+	// value of the right operand; if yes, then the condition becomes true.
+	//
+	// Example: (a >= b) is not true.
+	//
+	// <= Checks whether the value of the left operand is less than or equal to the
+	// value of the right operand; if yes, then the condition becomes true.
+	//
+	// Example: (a <= b) is true.
+	//
+	// AND, OR, IN, BETWEEN, LIKE, NOT, IS NULL Logical operators.
+	//
+	// Supported Partition Key Types: The following are the supported partition keys.
+	//
 	//   - string
+	//
 	//   - date
+	//
 	//   - timestamp
+	//
 	//   - int
+	//
 	//   - bigint
+	//
 	//   - long
+	//
 	//   - tinyint
+	//
 	//   - smallint
+	//
 	//   - decimal
-	// If an type is encountered that is not valid, an exception is thrown. The
-	// following list shows the valid operators on each type. When you define a
+	//
+	// If an type is encountered that is not valid, an exception is thrown.
+	//
+	// The following list shows the valid operators on each type. When you define a
 	// crawler, the partitionKey type is created as a STRING , to be compatible with
-	// the catalog partitions. Sample API Call:
+	// the catalog partitions.
+	//
+	// Sample API Call:
+	//
+	// [JSQLParser]: http://jsqlparser.sourceforge.net/home.php
 	Expression *string
 
 	// The maximum number of partitions to return in a single response.
@@ -126,6 +160,9 @@ type GetPartitionsOutput struct {
 }
 
 func (c *Client) addOperationGetPartitionsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpGetPartitions{}, middleware.After)
 	if err != nil {
 		return err
@@ -134,34 +171,38 @@ func (c *Client) addOperationGetPartitionsMiddlewares(stack *middleware.Stack, o
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GetPartitions"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -173,7 +214,13 @@ func (c *Client) addOperationGetPartitionsMiddlewares(stack *middleware.Stack, o
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGetPartitionsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetPartitionsValidationMiddleware(stack); err != nil {
@@ -182,7 +229,7 @@ func (c *Client) addOperationGetPartitionsMiddlewares(stack *middleware.Stack, o
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetPartitions(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -194,18 +241,23 @@ func (c *Client) addOperationGetPartitionsMiddlewares(stack *middleware.Stack, o
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// GetPartitionsAPIClient is a client that implements the GetPartitions operation.
-type GetPartitionsAPIClient interface {
-	GetPartitions(context.Context, *GetPartitionsInput, ...func(*Options)) (*GetPartitionsOutput, error)
-}
-
-var _ GetPartitionsAPIClient = (*Client)(nil)
 
 // GetPartitionsPaginatorOptions is the paginator options for GetPartitions
 type GetPartitionsPaginatorOptions struct {
@@ -270,6 +322,9 @@ func (p *GetPartitionsPaginator) NextPage(ctx context.Context, optFns ...func(*O
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.GetPartitions(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -289,134 +344,17 @@ func (p *GetPartitionsPaginator) NextPage(ctx context.Context, optFns ...func(*O
 	return result, nil
 }
 
+// GetPartitionsAPIClient is a client that implements the GetPartitions operation.
+type GetPartitionsAPIClient interface {
+	GetPartitions(context.Context, *GetPartitionsInput, ...func(*Options)) (*GetPartitionsOutput, error)
+}
+
+var _ GetPartitionsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opGetPartitions(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "glue",
 		OperationName: "GetPartitions",
 	}
-}
-
-type opGetPartitionsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opGetPartitionsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGetPartitionsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "glue"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "glue"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("glue")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addGetPartitionsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGetPartitionsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

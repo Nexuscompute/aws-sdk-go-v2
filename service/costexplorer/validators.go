@@ -170,6 +170,46 @@ func (m *validateOpGetAnomalies) HandleInitialize(ctx context.Context, in middle
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetApproximateUsageRecords struct {
+}
+
+func (*validateOpGetApproximateUsageRecords) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetApproximateUsageRecords) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetApproximateUsageRecordsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetApproximateUsageRecordsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetCommitmentPurchaseAnalysis struct {
+}
+
+func (*validateOpGetCommitmentPurchaseAnalysis) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetCommitmentPurchaseAnalysis) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetCommitmentPurchaseAnalysisInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetCommitmentPurchaseAnalysisInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetCostAndUsage struct {
 }
 
@@ -530,6 +570,46 @@ func (m *validateOpProvideAnomalyFeedback) HandleInitialize(ctx context.Context,
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpStartCommitmentPurchaseAnalysis struct {
+}
+
+func (*validateOpStartCommitmentPurchaseAnalysis) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStartCommitmentPurchaseAnalysis) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StartCommitmentPurchaseAnalysisInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStartCommitmentPurchaseAnalysisInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpStartCostAllocationTagBackfill struct {
+}
+
+func (*validateOpStartCostAllocationTagBackfill) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStartCostAllocationTagBackfill) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StartCostAllocationTagBackfillInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStartCostAllocationTagBackfillInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpTagResource struct {
 }
 
@@ -682,6 +762,14 @@ func addOpGetAnomaliesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetAnomalies{}, middleware.After)
 }
 
+func addOpGetApproximateUsageRecordsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetApproximateUsageRecords{}, middleware.After)
+}
+
+func addOpGetCommitmentPurchaseAnalysisValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetCommitmentPurchaseAnalysis{}, middleware.After)
+}
+
 func addOpGetCostAndUsageValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetCostAndUsage{}, middleware.After)
 }
@@ -752,6 +840,14 @@ func addOpListTagsForResourceValidationMiddleware(stack *middleware.Stack) error
 
 func addOpProvideAnomalyFeedbackValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpProvideAnomalyFeedback{}, middleware.After)
+}
+
+func addOpStartCommitmentPurchaseAnalysisValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStartCommitmentPurchaseAnalysis{}, middleware.After)
+}
+
+func addOpStartCostAllocationTagBackfillValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStartCostAllocationTagBackfill{}, middleware.After)
 }
 
 func addOpTagResourceValidationMiddleware(stack *middleware.Stack) error {
@@ -827,6 +923,23 @@ func validateAnomalySubscription(v *types.AnomalySubscription) error {
 	}
 	if v.SubscriptionName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("SubscriptionName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateCommitmentPurchaseAnalysisConfiguration(v *types.CommitmentPurchaseAnalysisConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CommitmentPurchaseAnalysisConfiguration"}
+	if v.SavingsPlansPurchaseAnalysisConfiguration != nil {
+		if err := validateSavingsPlansPurchaseAnalysisConfiguration(v.SavingsPlansPurchaseAnalysisConfiguration); err != nil {
+			invalidParams.AddNested("SavingsPlansPurchaseAnalysisConfiguration", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1008,6 +1121,31 @@ func validateRightsizingRecommendationConfiguration(v *types.RightsizingRecommen
 	invalidParams := smithy.InvalidParamsError{Context: "RightsizingRecommendationConfiguration"}
 	if len(v.RecommendationTarget) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("RecommendationTarget"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSavingsPlansPurchaseAnalysisConfiguration(v *types.SavingsPlansPurchaseAnalysisConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SavingsPlansPurchaseAnalysisConfiguration"}
+	if len(v.AnalysisType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalysisType"))
+	}
+	if v.SavingsPlansToAdd == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SavingsPlansToAdd"))
+	}
+	if v.LookBackTimePeriod == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LookBackTimePeriod"))
+	} else if v.LookBackTimePeriod != nil {
+		if err := validateDateInterval(v.LookBackTimePeriod); err != nil {
+			invalidParams.AddNested("LookBackTimePeriod", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1218,6 +1356,39 @@ func validateOpGetAnomaliesInput(v *GetAnomaliesInput) error {
 		if err := validateTotalImpactFilter(v.TotalImpact); err != nil {
 			invalidParams.AddNested("TotalImpact", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetApproximateUsageRecordsInput(v *GetApproximateUsageRecordsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetApproximateUsageRecordsInput"}
+	if len(v.Granularity) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Granularity"))
+	}
+	if len(v.ApproximationDimension) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("ApproximationDimension"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetCommitmentPurchaseAnalysisInput(v *GetCommitmentPurchaseAnalysisInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetCommitmentPurchaseAnalysisInput"}
+	if v.AnalysisId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalysisId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1620,6 +1791,40 @@ func validateOpProvideAnomalyFeedbackInput(v *ProvideAnomalyFeedbackInput) error
 	}
 	if len(v.Feedback) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Feedback"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStartCommitmentPurchaseAnalysisInput(v *StartCommitmentPurchaseAnalysisInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StartCommitmentPurchaseAnalysisInput"}
+	if v.CommitmentPurchaseAnalysisConfiguration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CommitmentPurchaseAnalysisConfiguration"))
+	} else if v.CommitmentPurchaseAnalysisConfiguration != nil {
+		if err := validateCommitmentPurchaseAnalysisConfiguration(v.CommitmentPurchaseAnalysisConfiguration); err != nil {
+			invalidParams.AddNested("CommitmentPurchaseAnalysisConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStartCostAllocationTagBackfillInput(v *StartCostAllocationTagBackfillInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StartCostAllocationTagBackfillInput"}
+	if v.BackfillFrom == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BackfillFrom"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

@@ -4,24 +4,21 @@ package iam
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Lists all IAM users, groups, and roles that the specified managed policy is
-// attached to. You can use the optional EntityFilter parameter to limit the
-// results to a particular type of entity (users, groups, or roles). For example,
-// to list only the roles that are attached to the specified policy, set
-// EntityFilter to Role . You can paginate the results using the MaxItems and
-// Marker parameters.
+// attached to.
+//
+// You can use the optional EntityFilter parameter to limit the results to a
+// particular type of entity (users, groups, or roles). For example, to list only
+// the roles that are attached to the specified policy, set EntityFilter to Role .
+//
+// You can paginate the results using the MaxItems and Marker parameters.
 func (c *Client) ListEntitiesForPolicy(ctx context.Context, params *ListEntitiesForPolicyInput, optFns ...func(*Options)) (*ListEntitiesForPolicyOutput, error) {
 	if params == nil {
 		params = &ListEntitiesForPolicyInput{}
@@ -40,17 +37,22 @@ func (c *Client) ListEntitiesForPolicy(ctx context.Context, params *ListEntities
 type ListEntitiesForPolicyInput struct {
 
 	// The Amazon Resource Name (ARN) of the IAM policy for which you want the
-	// versions. For more information about ARNs, see Amazon Resource Names (ARNs) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
-	// in the Amazon Web Services General Reference.
+	// versions.
+	//
+	// For more information about ARNs, see [Amazon Resource Names (ARNs)] in the Amazon Web Services General
+	// Reference.
+	//
+	// [Amazon Resource Names (ARNs)]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 	//
 	// This member is required.
 	PolicyArn *string
 
-	// The entity type to use for filtering the results. For example, when EntityFilter
-	// is Role , only the roles that are attached to the specified policy are returned.
-	// This parameter is optional. If it is not included, all attached entities (users,
-	// groups, and roles) are returned. The argument for this parameter must be one of
-	// the valid values listed below.
+	// The entity type to use for filtering the results.
+	//
+	// For example, when EntityFilter is Role , only the roles that are attached to the
+	// specified policy are returned. This parameter is optional. If it is not
+	// included, all attached entities (users, groups, and roles) are returned. The
+	// argument for this parameter must be one of the valid values listed below.
 	EntityFilter types.EntityType
 
 	// Use this parameter only when paginating results and only after you receive a
@@ -61,27 +63,34 @@ type ListEntitiesForPolicyInput struct {
 
 	// Use this only when paginating results to indicate the maximum number of items
 	// you want in the response. If additional items exist beyond the maximum you
-	// specify, the IsTruncated response element is true . If you do not include this
-	// parameter, the number of items defaults to 100. Note that IAM might return fewer
-	// results, even when there are more results available. In that case, the
-	// IsTruncated response element returns true , and Marker contains a value to
-	// include in the subsequent call that tells the service where to continue from.
+	// specify, the IsTruncated response element is true .
+	//
+	// If you do not include this parameter, the number of items defaults to 100. Note
+	// that IAM might return fewer results, even when there are more results available.
+	// In that case, the IsTruncated response element returns true , and Marker
+	// contains a value to include in the subsequent call that tells the service where
+	// to continue from.
 	MaxItems *int32
 
 	// The path prefix for filtering the results. This parameter is optional. If it is
-	// not included, it defaults to a slash (/), listing all entities. This parameter
-	// allows (through its regex pattern (http://wikipedia.org/wiki/regex) ) a string
-	// of characters consisting of either a forward slash (/) by itself or a string
-	// that must begin and end with forward slashes. In addition, it can contain any
-	// ASCII character from the ! ( \u0021 ) through the DEL character ( \u007F ),
-	// including most punctuation characters, digits, and upper and lowercased letters.
+	// not included, it defaults to a slash (/), listing all entities.
+	//
+	// This parameter allows (through its [regex pattern]) a string of characters consisting of
+	// either a forward slash (/) by itself or a string that must begin and end with
+	// forward slashes. In addition, it can contain any ASCII character from the ! (
+	// \u0021 ) through the DEL character ( \u007F ), including most punctuation
+	// characters, digits, and upper and lowercased letters.
+	//
+	// [regex pattern]: http://wikipedia.org/wiki/regex
 	PathPrefix *string
 
-	// The policy usage method to use for filtering the results. To list only
-	// permissions policies, set PolicyUsageFilter to PermissionsPolicy . To list only
-	// the policies used to set permissions boundaries, set the value to
-	// PermissionsBoundary . This parameter is optional. If it is not included, all
-	// policies are returned.
+	// The policy usage method to use for filtering the results.
+	//
+	// To list only permissions policies, set PolicyUsageFilter to PermissionsPolicy .
+	// To list only the policies used to set permissions boundaries, set the value to
+	// PermissionsBoundary .
+	//
+	// This parameter is optional. If it is not included, all policies are returned.
 	PolicyUsageFilter types.PolicyUsageType
 
 	noSmithyDocumentSerde
@@ -118,6 +127,9 @@ type ListEntitiesForPolicyOutput struct {
 }
 
 func (c *Client) addOperationListEntitiesForPolicyMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpListEntitiesForPolicy{}, middleware.After)
 	if err != nil {
 		return err
@@ -126,34 +138,38 @@ func (c *Client) addOperationListEntitiesForPolicyMiddlewares(stack *middleware.
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListEntitiesForPolicy"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -165,7 +181,13 @@ func (c *Client) addOperationListEntitiesForPolicyMiddlewares(stack *middleware.
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListEntitiesForPolicyResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListEntitiesForPolicyValidationMiddleware(stack); err != nil {
@@ -174,7 +196,7 @@ func (c *Client) addOperationListEntitiesForPolicyMiddlewares(stack *middleware.
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListEntitiesForPolicy(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -186,30 +208,36 @@ func (c *Client) addOperationListEntitiesForPolicyMiddlewares(stack *middleware.
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// ListEntitiesForPolicyAPIClient is a client that implements the
-// ListEntitiesForPolicy operation.
-type ListEntitiesForPolicyAPIClient interface {
-	ListEntitiesForPolicy(context.Context, *ListEntitiesForPolicyInput, ...func(*Options)) (*ListEntitiesForPolicyOutput, error)
-}
-
-var _ ListEntitiesForPolicyAPIClient = (*Client)(nil)
 
 // ListEntitiesForPolicyPaginatorOptions is the paginator options for
 // ListEntitiesForPolicy
 type ListEntitiesForPolicyPaginatorOptions struct {
 	// Use this only when paginating results to indicate the maximum number of items
 	// you want in the response. If additional items exist beyond the maximum you
-	// specify, the IsTruncated response element is true . If you do not include this
-	// parameter, the number of items defaults to 100. Note that IAM might return fewer
-	// results, even when there are more results available. In that case, the
-	// IsTruncated response element returns true , and Marker contains a value to
-	// include in the subsequent call that tells the service where to continue from.
+	// specify, the IsTruncated response element is true .
+	//
+	// If you do not include this parameter, the number of items defaults to 100. Note
+	// that IAM might return fewer results, even when there are more results available.
+	// In that case, the IsTruncated response element returns true , and Marker
+	// contains a value to include in the subsequent call that tells the service where
+	// to continue from.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token
@@ -270,6 +298,9 @@ func (p *ListEntitiesForPolicyPaginator) NextPage(ctx context.Context, optFns ..
 	}
 	params.MaxItems = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListEntitiesForPolicy(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -289,134 +320,18 @@ func (p *ListEntitiesForPolicyPaginator) NextPage(ctx context.Context, optFns ..
 	return result, nil
 }
 
+// ListEntitiesForPolicyAPIClient is a client that implements the
+// ListEntitiesForPolicy operation.
+type ListEntitiesForPolicyAPIClient interface {
+	ListEntitiesForPolicy(context.Context, *ListEntitiesForPolicyInput, ...func(*Options)) (*ListEntitiesForPolicyOutput, error)
+}
+
+var _ ListEntitiesForPolicyAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListEntitiesForPolicy(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "iam",
 		OperationName: "ListEntitiesForPolicy",
 	}
-}
-
-type opListEntitiesForPolicyResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListEntitiesForPolicyResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListEntitiesForPolicyResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "iam"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "iam"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("iam")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListEntitiesForPolicyResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListEntitiesForPolicyResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

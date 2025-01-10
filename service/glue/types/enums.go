@@ -6,15 +6,18 @@ type AdditionalOptionKeys string
 
 // Enum values for AdditionalOptionKeys
 const (
-	AdditionalOptionKeysCacheOption AdditionalOptionKeys = "performanceTuning.caching"
+	AdditionalOptionKeysCacheOption        AdditionalOptionKeys = "performanceTuning.caching"
+	AdditionalOptionKeysObservationsOption AdditionalOptionKeys = "observations.scope"
 )
 
 // Values returns all known values for AdditionalOptionKeys. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AdditionalOptionKeys) Values() []AdditionalOptionKeys {
 	return []AdditionalOptionKeys{
 		"performanceTuning.caching",
+		"observations.scope",
 	}
 }
 
@@ -40,8 +43,9 @@ const (
 )
 
 // Values returns all known values for AggFunction. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AggFunction) Values() []AggFunction {
 	return []AggFunction{
 		"avg",
@@ -62,6 +66,29 @@ func (AggFunction) Values() []AggFunction {
 	}
 }
 
+type AuthenticationType string
+
+// Enum values for AuthenticationType
+const (
+	AuthenticationTypeBasic  AuthenticationType = "BASIC"
+	AuthenticationTypeOauth2 AuthenticationType = "OAUTH2"
+	AuthenticationTypeCustom AuthenticationType = "CUSTOM"
+	AuthenticationTypeIam    AuthenticationType = "IAM"
+)
+
+// Values returns all known values for AuthenticationType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AuthenticationType) Values() []AuthenticationType {
+	return []AuthenticationType{
+		"BASIC",
+		"OAUTH2",
+		"CUSTOM",
+		"IAM",
+	}
+}
+
 type BackfillErrorCode string
 
 // Enum values for BackfillErrorCode
@@ -74,8 +101,9 @@ const (
 )
 
 // Values returns all known values for BackfillErrorCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BackfillErrorCode) Values() []BackfillErrorCode {
 	return []BackfillErrorCode{
 		"ENCRYPTED_PARTITION_ERROR",
@@ -97,8 +125,9 @@ const (
 )
 
 // Values returns all known values for BlueprintRunState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BlueprintRunState) Values() []BlueprintRunState {
 	return []BlueprintRunState{
 		"RUNNING",
@@ -119,8 +148,9 @@ const (
 )
 
 // Values returns all known values for BlueprintStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BlueprintStatus) Values() []BlueprintStatus {
 	return []BlueprintStatus{
 		"CREATING",
@@ -134,17 +164,20 @@ type CatalogEncryptionMode string
 
 // Enum values for CatalogEncryptionMode
 const (
-	CatalogEncryptionModeDisabled CatalogEncryptionMode = "DISABLED"
-	CatalogEncryptionModeSsekms   CatalogEncryptionMode = "SSE-KMS"
+	CatalogEncryptionModeDisabled              CatalogEncryptionMode = "DISABLED"
+	CatalogEncryptionModeSsekms                CatalogEncryptionMode = "SSE-KMS"
+	CatalogEncryptionModeSsekmswithservicerole CatalogEncryptionMode = "SSE-KMS-WITH-SERVICE-ROLE"
 )
 
 // Values returns all known values for CatalogEncryptionMode. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CatalogEncryptionMode) Values() []CatalogEncryptionMode {
 	return []CatalogEncryptionMode{
 		"DISABLED",
 		"SSE-KMS",
+		"SSE-KMS-WITH-SERVICE-ROLE",
 	}
 }
 
@@ -158,11 +191,37 @@ const (
 
 // Values returns all known values for CloudWatchEncryptionMode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (CloudWatchEncryptionMode) Values() []CloudWatchEncryptionMode {
 	return []CloudWatchEncryptionMode{
 		"DISABLED",
 		"SSE-KMS",
+	}
+}
+
+type ColumnStatisticsState string
+
+// Enum values for ColumnStatisticsState
+const (
+	ColumnStatisticsStateStarting  ColumnStatisticsState = "STARTING"
+	ColumnStatisticsStateRunning   ColumnStatisticsState = "RUNNING"
+	ColumnStatisticsStateSucceeded ColumnStatisticsState = "SUCCEEDED"
+	ColumnStatisticsStateFailed    ColumnStatisticsState = "FAILED"
+	ColumnStatisticsStateStopped   ColumnStatisticsState = "STOPPED"
+)
+
+// Values returns all known values for ColumnStatisticsState. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ColumnStatisticsState) Values() []ColumnStatisticsState {
+	return []ColumnStatisticsState{
+		"STARTING",
+		"RUNNING",
+		"SUCCEEDED",
+		"FAILED",
+		"STOPPED",
 	}
 }
 
@@ -180,8 +239,9 @@ const (
 )
 
 // Values returns all known values for ColumnStatisticsType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ColumnStatisticsType) Values() []ColumnStatisticsType {
 	return []ColumnStatisticsType{
 		"BOOLEAN",
@@ -206,8 +266,9 @@ const (
 )
 
 // Values returns all known values for Comparator. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Comparator) Values() []Comparator {
 	return []Comparator{
 		"EQUALS",
@@ -233,8 +294,9 @@ const (
 )
 
 // Values returns all known values for Compatibility. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Compatibility) Values() []Compatibility {
 	return []Compatibility{
 		"NONE",
@@ -257,12 +319,53 @@ const (
 )
 
 // Values returns all known values for CompressionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CompressionType) Values() []CompressionType {
 	return []CompressionType{
 		"gzip",
 		"bzip2",
+	}
+}
+
+type ComputationType string
+
+// Enum values for ComputationType
+const (
+	ComputationTypeFull        ComputationType = "FULL"
+	ComputationTypeIncremental ComputationType = "INCREMENTAL"
+)
+
+// Values returns all known values for ComputationType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ComputationType) Values() []ComputationType {
+	return []ComputationType{
+		"FULL",
+		"INCREMENTAL",
+	}
+}
+
+type ComputeEnvironment string
+
+// Enum values for ComputeEnvironment
+const (
+	ComputeEnvironmentSpark  ComputeEnvironment = "SPARK"
+	ComputeEnvironmentAthena ComputeEnvironment = "ATHENA"
+	ComputeEnvironmentPython ComputeEnvironment = "PYTHON"
+)
+
+// Values returns all known values for ComputeEnvironment. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ComputeEnvironment) Values() []ComputeEnvironment {
+	return []ComputeEnvironment{
+		"SPARK",
+		"ATHENA",
+		"PYTHON",
 	}
 }
 
@@ -296,15 +399,35 @@ const (
 	ConnectionPropertyKeyKafkaClientKeyPassword               ConnectionPropertyKey = "KAFKA_CLIENT_KEY_PASSWORD"
 	ConnectionPropertyKeyEncryptedKafkaClientKeystorePassword ConnectionPropertyKey = "ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD"
 	ConnectionPropertyKeyEncryptedKafkaClientKeyPassword      ConnectionPropertyKey = "ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD"
+	ConnectionPropertyKeyKafkaSaslMechanism                   ConnectionPropertyKey = "KAFKA_SASL_MECHANISM"
+	ConnectionPropertyKeyKafkaSaslPlainUsername               ConnectionPropertyKey = "KAFKA_SASL_PLAIN_USERNAME"
+	ConnectionPropertyKeyKafkaSaslPlainPassword               ConnectionPropertyKey = "KAFKA_SASL_PLAIN_PASSWORD"
+	ConnectionPropertyKeyEncryptedKafkaSaslPlainPassword      ConnectionPropertyKey = "ENCRYPTED_KAFKA_SASL_PLAIN_PASSWORD"
+	ConnectionPropertyKeyKafkaSaslScramUsername               ConnectionPropertyKey = "KAFKA_SASL_SCRAM_USERNAME"
+	ConnectionPropertyKeyKafkaSaslScramPassword               ConnectionPropertyKey = "KAFKA_SASL_SCRAM_PASSWORD"
+	ConnectionPropertyKeyKafkaSaslScramSecretsArn             ConnectionPropertyKey = "KAFKA_SASL_SCRAM_SECRETS_ARN"
+	ConnectionPropertyKeyEncryptedKafkaSaslScramPassword      ConnectionPropertyKey = "ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD"
+	ConnectionPropertyKeyKafkaSaslGssapiKeytab                ConnectionPropertyKey = "KAFKA_SASL_GSSAPI_KEYTAB"
+	ConnectionPropertyKeyKafkaSaslGssapiKrb5Conf              ConnectionPropertyKey = "KAFKA_SASL_GSSAPI_KRB5_CONF"
+	ConnectionPropertyKeyKafkaSaslGssapiService               ConnectionPropertyKey = "KAFKA_SASL_GSSAPI_SERVICE"
+	ConnectionPropertyKeyKafkaSaslGssapiPrincipal             ConnectionPropertyKey = "KAFKA_SASL_GSSAPI_PRINCIPAL"
 	ConnectionPropertyKeySecretId                             ConnectionPropertyKey = "SECRET_ID"
 	ConnectionPropertyKeyConnectorUrl                         ConnectionPropertyKey = "CONNECTOR_URL"
 	ConnectionPropertyKeyConnectorType                        ConnectionPropertyKey = "CONNECTOR_TYPE"
 	ConnectionPropertyKeyConnectorClassName                   ConnectionPropertyKey = "CONNECTOR_CLASS_NAME"
+	ConnectionPropertyKeyEndpoint                             ConnectionPropertyKey = "ENDPOINT"
+	ConnectionPropertyKeyEndpointType                         ConnectionPropertyKey = "ENDPOINT_TYPE"
+	ConnectionPropertyKeyRoleArn                              ConnectionPropertyKey = "ROLE_ARN"
+	ConnectionPropertyKeyRegion                               ConnectionPropertyKey = "REGION"
+	ConnectionPropertyKeyWorkgroupName                        ConnectionPropertyKey = "WORKGROUP_NAME"
+	ConnectionPropertyKeyClusterIdentifier                    ConnectionPropertyKey = "CLUSTER_IDENTIFIER"
+	ConnectionPropertyKeyDatabase                             ConnectionPropertyKey = "DATABASE"
 )
 
 // Values returns all known values for ConnectionPropertyKey. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConnectionPropertyKey) Values() []ConnectionPropertyKey {
 	return []ConnectionPropertyKey{
 		"HOST",
@@ -333,10 +456,50 @@ func (ConnectionPropertyKey) Values() []ConnectionPropertyKey {
 		"KAFKA_CLIENT_KEY_PASSWORD",
 		"ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD",
 		"ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD",
+		"KAFKA_SASL_MECHANISM",
+		"KAFKA_SASL_PLAIN_USERNAME",
+		"KAFKA_SASL_PLAIN_PASSWORD",
+		"ENCRYPTED_KAFKA_SASL_PLAIN_PASSWORD",
+		"KAFKA_SASL_SCRAM_USERNAME",
+		"KAFKA_SASL_SCRAM_PASSWORD",
+		"KAFKA_SASL_SCRAM_SECRETS_ARN",
+		"ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD",
+		"KAFKA_SASL_GSSAPI_KEYTAB",
+		"KAFKA_SASL_GSSAPI_KRB5_CONF",
+		"KAFKA_SASL_GSSAPI_SERVICE",
+		"KAFKA_SASL_GSSAPI_PRINCIPAL",
 		"SECRET_ID",
 		"CONNECTOR_URL",
 		"CONNECTOR_TYPE",
 		"CONNECTOR_CLASS_NAME",
+		"ENDPOINT",
+		"ENDPOINT_TYPE",
+		"ROLE_ARN",
+		"REGION",
+		"WORKGROUP_NAME",
+		"CLUSTER_IDENTIFIER",
+		"DATABASE",
+	}
+}
+
+type ConnectionStatus string
+
+// Enum values for ConnectionStatus
+const (
+	ConnectionStatusReady      ConnectionStatus = "READY"
+	ConnectionStatusInProgress ConnectionStatus = "IN_PROGRESS"
+	ConnectionStatusFailed     ConnectionStatus = "FAILED"
+)
+
+// Values returns all known values for ConnectionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ConnectionStatus) Values() []ConnectionStatus {
+	return []ConnectionStatus{
+		"READY",
+		"IN_PROGRESS",
+		"FAILED",
 	}
 }
 
@@ -344,18 +507,41 @@ type ConnectionType string
 
 // Enum values for ConnectionType
 const (
-	ConnectionTypeJdbc        ConnectionType = "JDBC"
-	ConnectionTypeSftp        ConnectionType = "SFTP"
-	ConnectionTypeMongodb     ConnectionType = "MONGODB"
-	ConnectionTypeKafka       ConnectionType = "KAFKA"
-	ConnectionTypeNetwork     ConnectionType = "NETWORK"
-	ConnectionTypeMarketplace ConnectionType = "MARKETPLACE"
-	ConnectionTypeCustom      ConnectionType = "CUSTOM"
+	ConnectionTypeJdbc                     ConnectionType = "JDBC"
+	ConnectionTypeSftp                     ConnectionType = "SFTP"
+	ConnectionTypeMongodb                  ConnectionType = "MONGODB"
+	ConnectionTypeKafka                    ConnectionType = "KAFKA"
+	ConnectionTypeNetwork                  ConnectionType = "NETWORK"
+	ConnectionTypeMarketplace              ConnectionType = "MARKETPLACE"
+	ConnectionTypeCustom                   ConnectionType = "CUSTOM"
+	ConnectionTypeSalesforce               ConnectionType = "SALESFORCE"
+	ConnectionTypeViewValidationRedshift   ConnectionType = "VIEW_VALIDATION_REDSHIFT"
+	ConnectionTypeViewValidationAthena     ConnectionType = "VIEW_VALIDATION_ATHENA"
+	ConnectionTypeGoogleads                ConnectionType = "GOOGLEADS"
+	ConnectionTypeGooglesheets             ConnectionType = "GOOGLESHEETS"
+	ConnectionTypeGoogleanalytics4         ConnectionType = "GOOGLEANALYTICS4"
+	ConnectionTypeServicenow               ConnectionType = "SERVICENOW"
+	ConnectionTypeMarketo                  ConnectionType = "MARKETO"
+	ConnectionTypeSapodata                 ConnectionType = "SAPODATA"
+	ConnectionTypeZendesk                  ConnectionType = "ZENDESK"
+	ConnectionTypeJiracloud                ConnectionType = "JIRACLOUD"
+	ConnectionTypeNetsuiteerp              ConnectionType = "NETSUITEERP"
+	ConnectionTypeHubspot                  ConnectionType = "HUBSPOT"
+	ConnectionTypeFacebookads              ConnectionType = "FACEBOOKADS"
+	ConnectionTypeInstagramads             ConnectionType = "INSTAGRAMADS"
+	ConnectionTypeZohocrm                  ConnectionType = "ZOHOCRM"
+	ConnectionTypeSalesforcepardot         ConnectionType = "SALESFORCEPARDOT"
+	ConnectionTypeSalesforcemarketingcloud ConnectionType = "SALESFORCEMARKETINGCLOUD"
+	ConnectionTypeSlack                    ConnectionType = "SLACK"
+	ConnectionTypeStripe                   ConnectionType = "STRIPE"
+	ConnectionTypeIntercom                 ConnectionType = "INTERCOM"
+	ConnectionTypeSnapchatads              ConnectionType = "SNAPCHATADS"
 )
 
 // Values returns all known values for ConnectionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConnectionType) Values() []ConnectionType {
 	return []ConnectionType{
 		"JDBC",
@@ -365,6 +551,28 @@ func (ConnectionType) Values() []ConnectionType {
 		"NETWORK",
 		"MARKETPLACE",
 		"CUSTOM",
+		"SALESFORCE",
+		"VIEW_VALIDATION_REDSHIFT",
+		"VIEW_VALIDATION_ATHENA",
+		"GOOGLEADS",
+		"GOOGLESHEETS",
+		"GOOGLEANALYTICS4",
+		"SERVICENOW",
+		"MARKETO",
+		"SAPODATA",
+		"ZENDESK",
+		"JIRACLOUD",
+		"NETSUITEERP",
+		"HUBSPOT",
+		"FACEBOOKADS",
+		"INSTAGRAMADS",
+		"ZOHOCRM",
+		"SALESFORCEPARDOT",
+		"SALESFORCEMARKETINGCLOUD",
+		"SLACK",
+		"STRIPE",
+		"INTERCOM",
+		"SNAPCHATADS",
 	}
 }
 
@@ -379,8 +587,9 @@ const (
 )
 
 // Values returns all known values for CrawlerHistoryState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CrawlerHistoryState) Values() []CrawlerHistoryState {
 	return []CrawlerHistoryState{
 		"RUNNING",
@@ -399,8 +608,9 @@ const (
 )
 
 // Values returns all known values for CrawlerLineageSettings. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CrawlerLineageSettings) Values() []CrawlerLineageSettings {
 	return []CrawlerLineageSettings{
 		"ENABLE",
@@ -418,8 +628,9 @@ const (
 )
 
 // Values returns all known values for CrawlerState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CrawlerState) Values() []CrawlerState {
 	return []CrawlerState{
 		"READY",
@@ -441,8 +652,9 @@ const (
 )
 
 // Values returns all known values for CrawlState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CrawlState) Values() []CrawlState {
 	return []CrawlState{
 		"RUNNING",
@@ -464,13 +676,52 @@ const (
 )
 
 // Values returns all known values for CsvHeaderOption. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CsvHeaderOption) Values() []CsvHeaderOption {
 	return []CsvHeaderOption{
 		"UNKNOWN",
 		"PRESENT",
 		"ABSENT",
+	}
+}
+
+type CsvSerdeOption string
+
+// Enum values for CsvSerdeOption
+const (
+	CsvSerdeOptionOpenCSVSerDe    CsvSerdeOption = "OpenCSVSerDe"
+	CsvSerdeOptionLazySimpleSerDe CsvSerdeOption = "LazySimpleSerDe"
+	CsvSerdeOptionNone            CsvSerdeOption = "None"
+)
+
+// Values returns all known values for CsvSerdeOption. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CsvSerdeOption) Values() []CsvSerdeOption {
+	return []CsvSerdeOption{
+		"OpenCSVSerDe",
+		"LazySimpleSerDe",
+		"None",
+	}
+}
+
+type DatabaseAttributes string
+
+// Enum values for DatabaseAttributes
+const (
+	DatabaseAttributesName DatabaseAttributes = "NAME"
+)
+
+// Values returns all known values for DatabaseAttributes. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DatabaseAttributes) Values() []DatabaseAttributes {
+	return []DatabaseAttributes{
+		"NAME",
 	}
 }
 
@@ -484,13 +735,73 @@ const (
 )
 
 // Values returns all known values for DataFormat. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DataFormat) Values() []DataFormat {
 	return []DataFormat{
 		"AVRO",
 		"JSON",
 		"PROTOBUF",
+	}
+}
+
+type DataOperation string
+
+// Enum values for DataOperation
+const (
+	DataOperationRead  DataOperation = "READ"
+	DataOperationWrite DataOperation = "WRITE"
+)
+
+// Values returns all known values for DataOperation. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DataOperation) Values() []DataOperation {
+	return []DataOperation{
+		"READ",
+		"WRITE",
+	}
+}
+
+type DataQualityEncryptionMode string
+
+// Enum values for DataQualityEncryptionMode
+const (
+	DataQualityEncryptionModeDisabled DataQualityEncryptionMode = "DISABLED"
+	DataQualityEncryptionModeSsekms   DataQualityEncryptionMode = "SSE-KMS"
+)
+
+// Values returns all known values for DataQualityEncryptionMode. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DataQualityEncryptionMode) Values() []DataQualityEncryptionMode {
+	return []DataQualityEncryptionMode{
+		"DISABLED",
+		"SSE-KMS",
+	}
+}
+
+type DataQualityModelStatus string
+
+// Enum values for DataQualityModelStatus
+const (
+	DataQualityModelStatusRunning   DataQualityModelStatus = "RUNNING"
+	DataQualityModelStatusSucceeded DataQualityModelStatus = "SUCCEEDED"
+	DataQualityModelStatusFailed    DataQualityModelStatus = "FAILED"
+)
+
+// Values returns all known values for DataQualityModelStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DataQualityModelStatus) Values() []DataQualityModelStatus {
+	return []DataQualityModelStatus{
+		"RUNNING",
+		"SUCCEEDED",
+		"FAILED",
 	}
 }
 
@@ -505,6 +816,7 @@ const (
 
 // Values returns all known values for DataQualityRuleResultStatus. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DataQualityRuleResultStatus) Values() []DataQualityRuleResultStatus {
 	return []DataQualityRuleResultStatus{
@@ -524,8 +836,9 @@ const (
 )
 
 // Values returns all known values for DeleteBehavior. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeleteBehavior) Values() []DeleteBehavior {
 	return []DeleteBehavior{
 		"LOG",
@@ -544,11 +857,32 @@ const (
 
 // Values returns all known values for DeltaTargetCompressionType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DeltaTargetCompressionType) Values() []DeltaTargetCompressionType {
 	return []DeltaTargetCompressionType{
 		"uncompressed",
 		"snappy",
+	}
+}
+
+type DQCompositeRuleEvaluationMethod string
+
+// Enum values for DQCompositeRuleEvaluationMethod
+const (
+	DQCompositeRuleEvaluationMethodColumn DQCompositeRuleEvaluationMethod = "COLUMN"
+	DQCompositeRuleEvaluationMethodRow    DQCompositeRuleEvaluationMethod = "ROW"
+)
+
+// Values returns all known values for DQCompositeRuleEvaluationMethod. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DQCompositeRuleEvaluationMethod) Values() []DQCompositeRuleEvaluationMethod {
+	return []DQCompositeRuleEvaluationMethod{
+		"COLUMN",
+		"ROW",
 	}
 }
 
@@ -562,6 +896,7 @@ const (
 
 // Values returns all known values for DQStopJobOnFailureTiming. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DQStopJobOnFailureTiming) Values() []DQStopJobOnFailureTiming {
 	return []DQStopJobOnFailureTiming{
@@ -579,8 +914,9 @@ const (
 )
 
 // Values returns all known values for DQTransformOutput. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DQTransformOutput) Values() []DQTransformOutput {
 	return []DQTransformOutput{
 		"PrimaryInput",
@@ -597,8 +933,9 @@ const (
 )
 
 // Values returns all known values for EnableHybridValues. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EnableHybridValues) Values() []EnableHybridValues {
 	return []EnableHybridValues{
 		"TRUE",
@@ -615,12 +952,32 @@ const (
 )
 
 // Values returns all known values for ExecutionClass. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExecutionClass) Values() []ExecutionClass {
 	return []ExecutionClass{
 		"FLEX",
 		"STANDARD",
+	}
+}
+
+type ExecutionStatus string
+
+// Enum values for ExecutionStatus
+const (
+	ExecutionStatusFailed  ExecutionStatus = "FAILED"
+	ExecutionStatusStarted ExecutionStatus = "STARTED"
+)
+
+// Values returns all known values for ExecutionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ExecutionStatus) Values() []ExecutionStatus {
+	return []ExecutionStatus{
+		"FAILED",
+		"STARTED",
 	}
 }
 
@@ -634,8 +991,9 @@ const (
 )
 
 // Values returns all known values for ExistCondition. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExistCondition) Values() []ExistCondition {
 	return []ExistCondition{
 		"MUST_EXIST",
@@ -648,23 +1006,114 @@ type FederationSourceErrorCode string
 
 // Enum values for FederationSourceErrorCode
 const (
+	FederationSourceErrorCodeAccessDeniedException          FederationSourceErrorCode = "AccessDeniedException"
+	FederationSourceErrorCodeEntityNotFoundException        FederationSourceErrorCode = "EntityNotFoundException"
+	FederationSourceErrorCodeInvalidCredentialsException    FederationSourceErrorCode = "InvalidCredentialsException"
+	FederationSourceErrorCodeInvalidInputException          FederationSourceErrorCode = "InvalidInputException"
 	FederationSourceErrorCodeInvalidResponseException       FederationSourceErrorCode = "InvalidResponseException"
 	FederationSourceErrorCodeOperationTimeoutException      FederationSourceErrorCode = "OperationTimeoutException"
 	FederationSourceErrorCodeOperationNotSupportedException FederationSourceErrorCode = "OperationNotSupportedException"
 	FederationSourceErrorCodeInternalServiceException       FederationSourceErrorCode = "InternalServiceException"
+	FederationSourceErrorCodePartialFailureException        FederationSourceErrorCode = "PartialFailureException"
 	FederationSourceErrorCodeThrottlingException            FederationSourceErrorCode = "ThrottlingException"
 )
 
 // Values returns all known values for FederationSourceErrorCode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (FederationSourceErrorCode) Values() []FederationSourceErrorCode {
 	return []FederationSourceErrorCode{
+		"AccessDeniedException",
+		"EntityNotFoundException",
+		"InvalidCredentialsException",
+		"InvalidInputException",
 		"InvalidResponseException",
 		"OperationTimeoutException",
 		"OperationNotSupportedException",
 		"InternalServiceException",
+		"PartialFailureException",
 		"ThrottlingException",
+	}
+}
+
+type FieldDataType string
+
+// Enum values for FieldDataType
+const (
+	FieldDataTypeInt       FieldDataType = "INT"
+	FieldDataTypeSmallint  FieldDataType = "SMALLINT"
+	FieldDataTypeBigint    FieldDataType = "BIGINT"
+	FieldDataTypeFloat     FieldDataType = "FLOAT"
+	FieldDataTypeLong      FieldDataType = "LONG"
+	FieldDataTypeDate      FieldDataType = "DATE"
+	FieldDataTypeBoolean   FieldDataType = "BOOLEAN"
+	FieldDataTypeMap       FieldDataType = "MAP"
+	FieldDataTypeArray     FieldDataType = "ARRAY"
+	FieldDataTypeString    FieldDataType = "STRING"
+	FieldDataTypeTimestamp FieldDataType = "TIMESTAMP"
+	FieldDataTypeDecimal   FieldDataType = "DECIMAL"
+	FieldDataTypeByte      FieldDataType = "BYTE"
+	FieldDataTypeShort     FieldDataType = "SHORT"
+	FieldDataTypeDouble    FieldDataType = "DOUBLE"
+	FieldDataTypeStruct    FieldDataType = "STRUCT"
+)
+
+// Values returns all known values for FieldDataType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FieldDataType) Values() []FieldDataType {
+	return []FieldDataType{
+		"INT",
+		"SMALLINT",
+		"BIGINT",
+		"FLOAT",
+		"LONG",
+		"DATE",
+		"BOOLEAN",
+		"MAP",
+		"ARRAY",
+		"STRING",
+		"TIMESTAMP",
+		"DECIMAL",
+		"BYTE",
+		"SHORT",
+		"DOUBLE",
+		"STRUCT",
+	}
+}
+
+type FieldFilterOperator string
+
+// Enum values for FieldFilterOperator
+const (
+	FieldFilterOperatorLessThan             FieldFilterOperator = "LESS_THAN"
+	FieldFilterOperatorGreaterThan          FieldFilterOperator = "GREATER_THAN"
+	FieldFilterOperatorBetween              FieldFilterOperator = "BETWEEN"
+	FieldFilterOperatorEqualTo              FieldFilterOperator = "EQUAL_TO"
+	FieldFilterOperatorNotEqualTo           FieldFilterOperator = "NOT_EQUAL_TO"
+	FieldFilterOperatorGreaterThanOrEqualTo FieldFilterOperator = "GREATER_THAN_OR_EQUAL_TO"
+	FieldFilterOperatorLessThanOrEqualTo    FieldFilterOperator = "LESS_THAN_OR_EQUAL_TO"
+	FieldFilterOperatorContains             FieldFilterOperator = "CONTAINS"
+	FieldFilterOperatorOrderBy              FieldFilterOperator = "ORDER_BY"
+)
+
+// Values returns all known values for FieldFilterOperator. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FieldFilterOperator) Values() []FieldFilterOperator {
+	return []FieldFilterOperator{
+		"LESS_THAN",
+		"GREATER_THAN",
+		"BETWEEN",
+		"EQUAL_TO",
+		"NOT_EQUAL_TO",
+		"GREATER_THAN_OR_EQUAL_TO",
+		"LESS_THAN_OR_EQUAL_TO",
+		"CONTAINS",
+		"ORDER_BY",
 	}
 }
 
@@ -680,8 +1129,9 @@ const (
 )
 
 // Values returns all known values for FieldName. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FieldName) Values() []FieldName {
 	return []FieldName{
 		"CRAWL_ID",
@@ -701,8 +1151,9 @@ const (
 )
 
 // Values returns all known values for FilterLogicalOperator. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FilterLogicalOperator) Values() []FilterLogicalOperator {
 	return []FilterLogicalOperator{
 		"AND",
@@ -724,8 +1175,9 @@ const (
 )
 
 // Values returns all known values for FilterOperation. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FilterOperation) Values() []FilterOperation {
 	return []FilterOperation{
 		"EQ",
@@ -751,8 +1203,9 @@ const (
 )
 
 // Values returns all known values for FilterOperator. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FilterOperator) Values() []FilterOperator {
 	return []FilterOperator{
 		"GT",
@@ -773,8 +1226,9 @@ const (
 )
 
 // Values returns all known values for FilterValueType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FilterValueType) Values() []FilterValueType {
 	return []FilterValueType{
 		"COLUMNEXTRACTED",
@@ -799,8 +1253,9 @@ const (
 )
 
 // Values returns all known values for GlueRecordType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (GlueRecordType) Values() []GlueRecordType {
 	return []GlueRecordType{
 		"DATE",
@@ -828,6 +1283,7 @@ const (
 
 // Values returns all known values for HudiTargetCompressionType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (HudiTargetCompressionType) Values() []HudiTargetCompressionType {
 	return []HudiTargetCompressionType{
@@ -835,6 +1291,54 @@ func (HudiTargetCompressionType) Values() []HudiTargetCompressionType {
 		"lzo",
 		"uncompressed",
 		"snappy",
+	}
+}
+
+type InclusionAnnotationValue string
+
+// Enum values for InclusionAnnotationValue
+const (
+	InclusionAnnotationValueInclude InclusionAnnotationValue = "INCLUDE"
+	InclusionAnnotationValueExclude InclusionAnnotationValue = "EXCLUDE"
+)
+
+// Values returns all known values for InclusionAnnotationValue. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InclusionAnnotationValue) Values() []InclusionAnnotationValue {
+	return []InclusionAnnotationValue{
+		"INCLUDE",
+		"EXCLUDE",
+	}
+}
+
+type IntegrationStatus string
+
+// Enum values for IntegrationStatus
+const (
+	IntegrationStatusCreating       IntegrationStatus = "CREATING"
+	IntegrationStatusActive         IntegrationStatus = "ACTIVE"
+	IntegrationStatusModifying      IntegrationStatus = "MODIFYING"
+	IntegrationStatusFailed         IntegrationStatus = "FAILED"
+	IntegrationStatusDeleting       IntegrationStatus = "DELETING"
+	IntegrationStatusSyncing        IntegrationStatus = "SYNCING"
+	IntegrationStatusNeedsAttention IntegrationStatus = "NEEDS_ATTENTION"
+)
+
+// Values returns all known values for IntegrationStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IntegrationStatus) Values() []IntegrationStatus {
+	return []IntegrationStatus{
+		"CREATING",
+		"ACTIVE",
+		"MODIFYING",
+		"FAILED",
+		"DELETING",
+		"SYNCING",
+		"NEEDS_ATTENTION",
 	}
 }
 
@@ -850,8 +1354,9 @@ const (
 )
 
 // Values returns all known values for JDBCConnectionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JDBCConnectionType) Values() []JDBCConnectionType {
 	return []JDBCConnectionType{
 		"sqlserver",
@@ -908,8 +1413,9 @@ const (
 )
 
 // Values returns all known values for JDBCDataType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JDBCDataType) Values() []JDBCDataType {
 	return []JDBCDataType{
 		"ARRAY",
@@ -963,8 +1469,9 @@ const (
 )
 
 // Values returns all known values for JdbcMetadataEntry. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JdbcMetadataEntry) Values() []JdbcMetadataEntry {
 	return []JdbcMetadataEntry{
 		"COMMENTS",
@@ -982,11 +1489,33 @@ const (
 
 // Values returns all known values for JobBookmarksEncryptionMode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (JobBookmarksEncryptionMode) Values() []JobBookmarksEncryptionMode {
 	return []JobBookmarksEncryptionMode{
 		"DISABLED",
 		"CSE-KMS",
+	}
+}
+
+type JobMode string
+
+// Enum values for JobMode
+const (
+	JobModeScript   JobMode = "SCRIPT"
+	JobModeVisual   JobMode = "VISUAL"
+	JobModeNotebook JobMode = "NOTEBOOK"
+)
+
+// Values returns all known values for JobMode. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (JobMode) Values() []JobMode {
+	return []JobMode{
+		"SCRIPT",
+		"VISUAL",
+		"NOTEBOOK",
 	}
 }
 
@@ -1003,11 +1532,13 @@ const (
 	JobRunStateTimeout   JobRunState = "TIMEOUT"
 	JobRunStateError     JobRunState = "ERROR"
 	JobRunStateWaiting   JobRunState = "WAITING"
+	JobRunStateExpired   JobRunState = "EXPIRED"
 )
 
 // Values returns all known values for JobRunState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobRunState) Values() []JobRunState {
 	return []JobRunState{
 		"STARTING",
@@ -1019,6 +1550,7 @@ func (JobRunState) Values() []JobRunState {
 		"TIMEOUT",
 		"ERROR",
 		"WAITING",
+		"EXPIRED",
 	}
 }
 
@@ -1035,8 +1567,9 @@ const (
 )
 
 // Values returns all known values for JoinType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JoinType) Values() []JoinType {
 	return []JoinType{
 		"equijoin",
@@ -1057,8 +1590,9 @@ const (
 )
 
 // Values returns all known values for Language. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Language) Values() []Language {
 	return []Language{
 		"PYTHON",
@@ -1076,8 +1610,9 @@ const (
 )
 
 // Values returns all known values for LastCrawlStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LastCrawlStatus) Values() []LastCrawlStatus {
 	return []LastCrawlStatus{
 		"SUCCEEDED",
@@ -1095,8 +1630,9 @@ const (
 )
 
 // Values returns all known values for Logical. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Logical) Values() []Logical {
 	return []Logical{
 		"AND",
@@ -1112,8 +1648,9 @@ const (
 )
 
 // Values returns all known values for LogicalOperator. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogicalOperator) Values() []LogicalOperator {
 	return []LogicalOperator{
 		"EQUALS",
@@ -1128,8 +1665,9 @@ const (
 )
 
 // Values returns all known values for MetadataOperation. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MetadataOperation) Values() []MetadataOperation {
 	return []MetadataOperation{
 		"CREATE",
@@ -1146,8 +1684,9 @@ const (
 
 // Values returns all known values for MLUserDataEncryptionModeString. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MLUserDataEncryptionModeString) Values() []MLUserDataEncryptionModeString {
 	return []MLUserDataEncryptionModeString{
 		"DISABLED",
@@ -1165,13 +1704,35 @@ const (
 )
 
 // Values returns all known values for NodeType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NodeType) Values() []NodeType {
 	return []NodeType{
 		"CRAWLER",
 		"JOB",
 		"TRIGGER",
+	}
+}
+
+type OAuth2GrantType string
+
+// Enum values for OAuth2GrantType
+const (
+	OAuth2GrantTypeAuthorizationCode OAuth2GrantType = "AUTHORIZATION_CODE"
+	OAuth2GrantTypeClientCredentials OAuth2GrantType = "CLIENT_CREDENTIALS"
+	OAuth2GrantTypeJwtBearer         OAuth2GrantType = "JWT_BEARER"
+)
+
+// Values returns all known values for OAuth2GrantType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OAuth2GrantType) Values() []OAuth2GrantType {
+	return []OAuth2GrantType{
+		"AUTHORIZATION_CODE",
+		"CLIENT_CREDENTIALS",
+		"JWT_BEARER",
 	}
 }
 
@@ -1189,8 +1750,9 @@ const (
 )
 
 // Values returns all known values for ParamType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ParamType) Values() []ParamType {
 	return []ParamType{
 		"str",
@@ -1215,8 +1777,9 @@ const (
 )
 
 // Values returns all known values for ParquetCompressionType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ParquetCompressionType) Values() []ParquetCompressionType {
 	return []ParquetCompressionType{
 		"snappy",
@@ -1238,8 +1801,9 @@ const (
 )
 
 // Values returns all known values for PartitionIndexStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PartitionIndexStatus) Values() []PartitionIndexStatus {
 	return []PartitionIndexStatus{
 		"CREATING",
@@ -1265,8 +1829,9 @@ const (
 )
 
 // Values returns all known values for Permission. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Permission) Values() []Permission {
 	return []Permission{
 		"ALL",
@@ -1292,8 +1857,9 @@ const (
 )
 
 // Values returns all known values for PermissionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PermissionType) Values() []PermissionType {
 	return []PermissionType{
 		"COLUMN_PERMISSION",
@@ -1314,8 +1880,9 @@ const (
 )
 
 // Values returns all known values for PiiType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PiiType) Values() []PiiType {
 	return []PiiType{
 		"RowAudit",
@@ -1335,13 +1902,39 @@ const (
 )
 
 // Values returns all known values for PrincipalType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PrincipalType) Values() []PrincipalType {
 	return []PrincipalType{
 		"USER",
 		"ROLE",
 		"GROUP",
+	}
+}
+
+type PropertyType string
+
+// Enum values for PropertyType
+const (
+	PropertyTypeUserInput         PropertyType = "USER_INPUT"
+	PropertyTypeSecret            PropertyType = "SECRET"
+	PropertyTypeReadOnly          PropertyType = "READ_ONLY"
+	PropertyTypeUnused            PropertyType = "UNUSED"
+	PropertyTypeSecretOrUserInput PropertyType = "SECRET_OR_USER_INPUT"
+)
+
+// Values returns all known values for PropertyType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PropertyType) Values() []PropertyType {
+	return []PropertyType{
+		"USER_INPUT",
+		"SECRET",
+		"READ_ONLY",
+		"UNUSED",
+		"SECRET_OR_USER_INPUT",
 	}
 }
 
@@ -1356,8 +1949,9 @@ const (
 )
 
 // Values returns all known values for QuoteChar. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (QuoteChar) Values() []QuoteChar {
 	return []QuoteChar{
 		"quote",
@@ -1377,8 +1971,9 @@ const (
 )
 
 // Values returns all known values for RecrawlBehavior. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RecrawlBehavior) Values() []RecrawlBehavior {
 	return []RecrawlBehavior{
 		"CRAWL_EVERYTHING",
@@ -1396,12 +1991,32 @@ const (
 )
 
 // Values returns all known values for RegistryStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RegistryStatus) Values() []RegistryStatus {
 	return []RegistryStatus{
 		"AVAILABLE",
 		"DELETING",
+	}
+}
+
+type ResourceAction string
+
+// Enum values for ResourceAction
+const (
+	ResourceActionUpdate ResourceAction = "UPDATE"
+	ResourceActionCreate ResourceAction = "CREATE"
+)
+
+// Values returns all known values for ResourceAction. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResourceAction) Values() []ResourceAction {
+	return []ResourceAction{
+		"UPDATE",
+		"CREATE",
 	}
 }
 
@@ -1415,13 +2030,39 @@ const (
 )
 
 // Values returns all known values for ResourceShareType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceShareType) Values() []ResourceShareType {
 	return []ResourceShareType{
 		"FOREIGN",
 		"ALL",
 		"FEDERATED",
+	}
+}
+
+type ResourceState string
+
+// Enum values for ResourceState
+const (
+	ResourceStateQueued     ResourceState = "QUEUED"
+	ResourceStateInProgress ResourceState = "IN_PROGRESS"
+	ResourceStateSuccess    ResourceState = "SUCCESS"
+	ResourceStateStopped    ResourceState = "STOPPED"
+	ResourceStateFailed     ResourceState = "FAILED"
+)
+
+// Values returns all known values for ResourceState. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResourceState) Values() []ResourceState {
+	return []ResourceState{
+		"QUEUED",
+		"IN_PROGRESS",
+		"SUCCESS",
+		"STOPPED",
+		"FAILED",
 	}
 }
 
@@ -1435,8 +2076,9 @@ const (
 )
 
 // Values returns all known values for ResourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceType) Values() []ResourceType {
 	return []ResourceType{
 		"JAR",
@@ -1455,8 +2097,9 @@ const (
 )
 
 // Values returns all known values for S3EncryptionMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (S3EncryptionMode) Values() []S3EncryptionMode {
 	return []S3EncryptionMode{
 		"DISABLED",
@@ -1475,13 +2118,33 @@ const (
 )
 
 // Values returns all known values for ScheduleState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScheduleState) Values() []ScheduleState {
 	return []ScheduleState{
 		"SCHEDULED",
 		"NOT_SCHEDULED",
 		"TRANSITIONING",
+	}
+}
+
+type ScheduleType string
+
+// Enum values for ScheduleType
+const (
+	ScheduleTypeCron ScheduleType = "CRON"
+	ScheduleTypeAuto ScheduleType = "AUTO"
+)
+
+// Values returns all known values for ScheduleType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ScheduleType) Values() []ScheduleType {
+	return []ScheduleType{
+		"CRON",
+		"AUTO",
 	}
 }
 
@@ -1493,8 +2156,9 @@ const (
 )
 
 // Values returns all known values for SchemaDiffType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SchemaDiffType) Values() []SchemaDiffType {
 	return []SchemaDiffType{
 		"SYNTAX_DIFF",
@@ -1511,8 +2175,9 @@ const (
 )
 
 // Values returns all known values for SchemaStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SchemaStatus) Values() []SchemaStatus {
 	return []SchemaStatus{
 		"AVAILABLE",
@@ -1532,8 +2197,9 @@ const (
 )
 
 // Values returns all known values for SchemaVersionStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SchemaVersionStatus) Values() []SchemaVersionStatus {
 	return []SchemaVersionStatus{
 		"AVAILABLE",
@@ -1555,8 +2221,9 @@ const (
 )
 
 // Values returns all known values for Separator. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Separator) Values() []Separator {
 	return []Separator{
 		"comma",
@@ -1580,8 +2247,9 @@ const (
 )
 
 // Values returns all known values for SessionStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SessionStatus) Values() []SessionStatus {
 	return []SessionStatus{
 		"PROVISIONING",
@@ -1590,6 +2258,25 @@ func (SessionStatus) Values() []SessionStatus {
 		"TIMEOUT",
 		"STOPPING",
 		"STOPPED",
+	}
+}
+
+type SettingSource string
+
+// Enum values for SettingSource
+const (
+	SettingSourceCatalog SettingSource = "CATALOG"
+	SettingSourceTable   SettingSource = "TABLE"
+)
+
+// Values returns all known values for SettingSource. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SettingSource) Values() []SettingSource {
+	return []SettingSource{
+		"CATALOG",
+		"TABLE",
 	}
 }
 
@@ -1602,8 +2289,9 @@ const (
 )
 
 // Values returns all known values for Sort. Note that this can be expanded in the
-// future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Sort) Values() []Sort {
 	return []Sort{
 		"ASC",
@@ -1620,8 +2308,9 @@ const (
 )
 
 // Values returns all known values for SortDirectionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SortDirectionType) Values() []SortDirectionType {
 	return []SortDirectionType{
 		"DESCENDING",
@@ -1639,6 +2328,7 @@ const (
 
 // Values returns all known values for SourceControlAuthStrategy. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (SourceControlAuthStrategy) Values() []SourceControlAuthStrategy {
 	return []SourceControlAuthStrategy{
@@ -1652,15 +2342,20 @@ type SourceControlProvider string
 // Enum values for SourceControlProvider
 const (
 	SourceControlProviderGithub        SourceControlProvider = "GITHUB"
+	SourceControlProviderGitlab        SourceControlProvider = "GITLAB"
+	SourceControlProviderBitbucket     SourceControlProvider = "BITBUCKET"
 	SourceControlProviderAwsCodeCommit SourceControlProvider = "AWS_CODE_COMMIT"
 )
 
 // Values returns all known values for SourceControlProvider. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SourceControlProvider) Values() []SourceControlProvider {
 	return []SourceControlProvider{
 		"GITHUB",
+		"GITLAB",
+		"BITBUCKET",
 		"AWS_CODE_COMMIT",
 	}
 }
@@ -1676,8 +2371,9 @@ const (
 )
 
 // Values returns all known values for StartingPosition. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StartingPosition) Values() []StartingPosition {
 	return []StartingPosition{
 		"latest",
@@ -1700,8 +2396,9 @@ const (
 )
 
 // Values returns all known values for StatementState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StatementState) Values() []StatementState {
 	return []StatementState{
 		"WAITING",
@@ -1710,6 +2407,90 @@ func (StatementState) Values() []StatementState {
 		"CANCELLING",
 		"CANCELLED",
 		"ERROR",
+	}
+}
+
+type StatisticEvaluationLevel string
+
+// Enum values for StatisticEvaluationLevel
+const (
+	StatisticEvaluationLevelDataset     StatisticEvaluationLevel = "Dataset"
+	StatisticEvaluationLevelColumn      StatisticEvaluationLevel = "Column"
+	StatisticEvaluationLevelMulticolumn StatisticEvaluationLevel = "Multicolumn"
+)
+
+// Values returns all known values for StatisticEvaluationLevel. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StatisticEvaluationLevel) Values() []StatisticEvaluationLevel {
+	return []StatisticEvaluationLevel{
+		"Dataset",
+		"Column",
+		"Multicolumn",
+	}
+}
+
+type TableAttributes string
+
+// Enum values for TableAttributes
+const (
+	TableAttributesName      TableAttributes = "NAME"
+	TableAttributesTableType TableAttributes = "TABLE_TYPE"
+)
+
+// Values returns all known values for TableAttributes. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TableAttributes) Values() []TableAttributes {
+	return []TableAttributes{
+		"NAME",
+		"TABLE_TYPE",
+	}
+}
+
+type TableOptimizerEventType string
+
+// Enum values for TableOptimizerEventType
+const (
+	TableOptimizerEventTypeStarting   TableOptimizerEventType = "starting"
+	TableOptimizerEventTypeCompleted  TableOptimizerEventType = "completed"
+	TableOptimizerEventTypeFailed     TableOptimizerEventType = "failed"
+	TableOptimizerEventTypeInProgress TableOptimizerEventType = "in_progress"
+)
+
+// Values returns all known values for TableOptimizerEventType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TableOptimizerEventType) Values() []TableOptimizerEventType {
+	return []TableOptimizerEventType{
+		"starting",
+		"completed",
+		"failed",
+		"in_progress",
+	}
+}
+
+type TableOptimizerType string
+
+// Enum values for TableOptimizerType
+const (
+	TableOptimizerTypeCompaction         TableOptimizerType = "compaction"
+	TableOptimizerTypeRetention          TableOptimizerType = "retention"
+	TableOptimizerTypeOrphanFileDeletion TableOptimizerType = "orphan_file_deletion"
+)
+
+// Values returns all known values for TableOptimizerType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TableOptimizerType) Values() []TableOptimizerType {
+	return []TableOptimizerType{
+		"compaction",
+		"retention",
+		"orphan_file_deletion",
 	}
 }
 
@@ -1727,8 +2508,9 @@ const (
 )
 
 // Values returns all known values for TargetFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TargetFormat) Values() []TargetFormat {
 	return []TargetFormat{
 		"json",
@@ -1751,8 +2533,9 @@ const (
 )
 
 // Values returns all known values for TaskRunSortColumnType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TaskRunSortColumnType) Values() []TaskRunSortColumnType {
 	return []TaskRunSortColumnType{
 		"TASK_RUN_TYPE",
@@ -1775,8 +2558,9 @@ const (
 )
 
 // Values returns all known values for TaskStatusType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TaskStatusType) Values() []TaskStatusType {
 	return []TaskStatusType{
 		"STARTING",
@@ -1801,8 +2585,9 @@ const (
 )
 
 // Values returns all known values for TaskType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TaskType) Values() []TaskType {
 	return []TaskType{
 		"EVALUATION",
@@ -1825,8 +2610,9 @@ const (
 )
 
 // Values returns all known values for TransformSortColumnType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TransformSortColumnType) Values() []TransformSortColumnType {
 	return []TransformSortColumnType{
 		"NAME",
@@ -1847,8 +2633,9 @@ const (
 )
 
 // Values returns all known values for TransformStatusType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TransformStatusType) Values() []TransformStatusType {
 	return []TransformStatusType{
 		"NOT_READY",
@@ -1865,8 +2652,9 @@ const (
 )
 
 // Values returns all known values for TransformType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TransformType) Values() []TransformType {
 	return []TransformType{
 		"FIND_MATCHES",
@@ -1888,8 +2676,9 @@ const (
 )
 
 // Values returns all known values for TriggerState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TriggerState) Values() []TriggerState {
 	return []TriggerState{
 		"CREATING",
@@ -1914,8 +2703,9 @@ const (
 )
 
 // Values returns all known values for TriggerType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TriggerType) Values() []TriggerType {
 	return []TriggerType{
 		"SCHEDULED",
@@ -1934,12 +2724,34 @@ const (
 )
 
 // Values returns all known values for UnionType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UnionType) Values() []UnionType {
 	return []UnionType{
 		"ALL",
 		"DISTINCT",
+	}
+}
+
+type UnnestSpec string
+
+// Enum values for UnnestSpec
+const (
+	UnnestSpecToplevel UnnestSpec = "TOPLEVEL"
+	UnnestSpecFull     UnnestSpec = "FULL"
+	UnnestSpecNounnest UnnestSpec = "NOUNNEST"
+)
+
+// Values returns all known values for UnnestSpec. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UnnestSpec) Values() []UnnestSpec {
+	return []UnnestSpec{
+		"TOPLEVEL",
+		"FULL",
+		"NOUNNEST",
 	}
 }
 
@@ -1952,8 +2764,9 @@ const (
 )
 
 // Values returns all known values for UpdateBehavior. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UpdateBehavior) Values() []UpdateBehavior {
 	return []UpdateBehavior{
 		"LOG",
@@ -1970,12 +2783,57 @@ const (
 )
 
 // Values returns all known values for UpdateCatalogBehavior. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UpdateCatalogBehavior) Values() []UpdateCatalogBehavior {
 	return []UpdateCatalogBehavior{
 		"UPDATE_IN_DATABASE",
 		"LOG",
+	}
+}
+
+type ViewDialect string
+
+// Enum values for ViewDialect
+const (
+	ViewDialectRedshift ViewDialect = "REDSHIFT"
+	ViewDialectAthena   ViewDialect = "ATHENA"
+	ViewDialectSpark    ViewDialect = "SPARK"
+)
+
+// Values returns all known values for ViewDialect. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ViewDialect) Values() []ViewDialect {
+	return []ViewDialect{
+		"REDSHIFT",
+		"ATHENA",
+		"SPARK",
+	}
+}
+
+type ViewUpdateAction string
+
+// Enum values for ViewUpdateAction
+const (
+	ViewUpdateActionAdd          ViewUpdateAction = "ADD"
+	ViewUpdateActionReplace      ViewUpdateAction = "REPLACE"
+	ViewUpdateActionAddOrReplace ViewUpdateAction = "ADD_OR_REPLACE"
+	ViewUpdateActionDrop         ViewUpdateAction = "DROP"
+)
+
+// Values returns all known values for ViewUpdateAction. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ViewUpdateAction) Values() []ViewUpdateAction {
+	return []ViewUpdateAction{
+		"ADD",
+		"REPLACE",
+		"ADD_OR_REPLACE",
+		"DROP",
 	}
 }
 
@@ -1993,8 +2851,9 @@ const (
 )
 
 // Values returns all known values for WorkerType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkerType) Values() []WorkerType {
 	return []WorkerType{
 		"Standard",
@@ -2019,8 +2878,9 @@ const (
 )
 
 // Values returns all known values for WorkflowRunStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkflowRunStatus) Values() []WorkflowRunStatus {
 	return []WorkflowRunStatus{
 		"RUNNING",

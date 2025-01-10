@@ -94,7 +94,7 @@ var partitionRegexp = struct {
 	AwsUsGov *regexp.Regexp
 }{
 
-	Aws:      regexp.MustCompile("^(us|eu|ap|sa|ca|me|af|il)\\-\\w+\\-\\d+$"),
+	Aws:      regexp.MustCompile("^(us|eu|ap|sa|ca|me|af|il|mx)\\-\\w+\\-\\d+$"),
 	AwsCn:    regexp.MustCompile("^cn\\-\\w+\\-\\d+$"),
 	AwsIso:   regexp.MustCompile("^us\\-iso\\-\\w+\\-\\d+$"),
 	AwsIsoB:  regexp.MustCompile("^us\\-isob\\-\\w+\\-\\d+$"),
@@ -147,6 +147,24 @@ var defaultPartitions = endpoints.Partitions{
 				CredentialScope: endpoints.CredentialScope{
 					Region: "us-west-2",
 				},
+			},
+			endpoints.EndpointKey{
+				Region:  "aws-global",
+				Variant: endpoints.FIPSVariant,
+			}: {
+				Hostname: "networkmanager-fips.us-west-2.amazonaws.com",
+				CredentialScope: endpoints.CredentialScope{
+					Region: "us-west-2",
+				},
+			},
+			endpoints.EndpointKey{
+				Region: "fips-aws-global",
+			}: endpoints.Endpoint{
+				Hostname: "networkmanager-fips.us-west-2.amazonaws.com",
+				CredentialScope: endpoints.CredentialScope{
+					Region: "us-west-2",
+				},
+				Deprecated: aws.TrueTernary,
 			},
 		},
 	},
@@ -312,6 +330,24 @@ var defaultPartitions = endpoints.Partitions{
 				CredentialScope: endpoints.CredentialScope{
 					Region: "us-gov-west-1",
 				},
+			},
+			endpoints.EndpointKey{
+				Region:  "aws-us-gov-global",
+				Variant: endpoints.FIPSVariant,
+			}: {
+				Hostname: "networkmanager.us-gov-west-1.amazonaws.com",
+				CredentialScope: endpoints.CredentialScope{
+					Region: "us-gov-west-1",
+				},
+			},
+			endpoints.EndpointKey{
+				Region: "fips-aws-us-gov-global",
+			}: endpoints.Endpoint{
+				Hostname: "networkmanager.us-gov-west-1.amazonaws.com",
+				CredentialScope: endpoints.CredentialScope{
+					Region: "us-gov-west-1",
+				},
+				Deprecated: aws.TrueTernary,
 			},
 		},
 	},

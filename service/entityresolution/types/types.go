@@ -3,15 +3,312 @@
 package types
 
 import (
+	"github.com/aws/aws-sdk-go-v2/service/entityresolution/document"
 	smithydocument "github.com/aws/smithy-go/document"
 	"time"
 )
+
+// The deleted unique ID.
+type DeletedUniqueId struct {
+
+	//  The unique ID of the deleted item.
+	//
+	// This member is required.
+	UniqueId *string
+
+	noSmithyDocumentSerde
+}
+
+// The Delete Unique Id error.
+type DeleteUniqueIdError struct {
+
+	//  The error type for the batch delete unique ID operation.
+	//
+	// This member is required.
+	ErrorType DeleteUniqueIdErrorType
+
+	// The unique ID that could not be deleted.
+	//
+	// This member is required.
+	UniqueId *string
+
+	noSmithyDocumentSerde
+}
 
 // An object containing an error message, if there was an error.
 type ErrorDetails struct {
 
 	// The error message from the job, if there is one.
 	ErrorMessage *string
+
+	noSmithyDocumentSerde
+}
+
+// An object containing InputRecords , RecordsNotProcessed , TotalRecordsProcessed
+// , TotalMappedRecords , TotalMappedSourceRecords , and TotalMappedTargetRecords .
+type IdMappingJobMetrics struct {
+
+	// The total number of records that were input for processing.
+	InputRecords *int32
+
+	// The total number of records that did not get processed.
+	RecordsNotProcessed *int32
+
+	//  The total number of records that were mapped.
+	TotalMappedRecords *int32
+
+	//  The total number of mapped source records.
+	TotalMappedSourceRecords *int32
+
+	//  The total number of distinct mapped target records.
+	TotalMappedTargetRecords *int32
+
+	// The total number of records that were processed.
+	TotalRecordsProcessed *int32
+
+	noSmithyDocumentSerde
+}
+
+// An object containing KMSArn , OutputS3Path , and RoleARN .
+type IdMappingJobOutputSource struct {
+
+	// The S3 path to which Entity Resolution will write the output table.
+	//
+	// This member is required.
+	OutputS3Path *string
+
+	// The Amazon Resource Name (ARN) of the IAM role. Entity Resolution assumes this
+	// role to access Amazon Web Services resources on your behalf as part of workflow
+	// execution.
+	//
+	// This member is required.
+	RoleArn *string
+
+	// Customer KMS ARN for encryption at rest. If not provided, system will use an
+	// Entity Resolution managed KMS key.
+	KMSArn *string
+
+	noSmithyDocumentSerde
+}
+
+//	An object that defines the list of matching rules to run in an ID mapping
+//
+// workflow.
+type IdMappingRuleBasedProperties struct {
+
+	// The comparison type. You can either choose ONE_TO_ONE or MANY_TO_MANY as the
+	// attributeMatchingModel .
+	//
+	// If you choose MANY_TO_MANY , the system can match attributes across the
+	// sub-types of an attribute type. For example, if the value of the Email field of
+	// Profile A matches the value of the BusinessEmail field of Profile B, the two
+	// profiles are matched on the Email attribute type.
+	//
+	// If you choose ONE_TO_ONE , the system can only match attributes if the sub-types
+	// are an exact match. For example, for the Email attribute type, the system will
+	// only consider it a match if the value of the Email field of Profile A matches
+	// the value of the Email field of Profile B.
+	//
+	// This member is required.
+	AttributeMatchingModel AttributeMatchingModel
+
+	//  The type of matching record that is allowed to be used in an ID mapping
+	// workflow.
+	//
+	// If the value is set to ONE_SOURCE_TO_ONE_TARGET , only one record in the source
+	// can be matched to the same record in the target.
+	//
+	// If the value is set to MANY_SOURCE_TO_ONE_TARGET , multiple records in the
+	// source can be matched to one record in the target.
+	//
+	// This member is required.
+	RecordMatchingModel RecordMatchingModel
+
+	//  The set of rules you can use in an ID mapping workflow. The limitations
+	// specified for the source or target to define the match rules must be compatible.
+	//
+	// This member is required.
+	RuleDefinitionType IdMappingWorkflowRuleDefinitionType
+
+	//  The rules that can be used for ID mapping.
+	Rules []Rule
+
+	noSmithyDocumentSerde
+}
+
+// An object which defines the ID mapping technique and any additional
+// configurations.
+type IdMappingTechniques struct {
+
+	// The type of ID mapping.
+	//
+	// This member is required.
+	IdMappingType IdMappingType
+
+	// An object which defines any additional configurations required by the provider
+	// service.
+	ProviderProperties *ProviderProperties
+
+	//  An object which defines any additional configurations required by rule-based
+	// matching.
+	RuleBasedProperties *IdMappingRuleBasedProperties
+
+	noSmithyDocumentSerde
+}
+
+// An object containing InputSourceARN , SchemaName , and Type .
+type IdMappingWorkflowInputSource struct {
+
+	// An Glue table Amazon Resource Name (ARN) or a matching workflow ARN for the
+	// input source table.
+	//
+	// This member is required.
+	InputSourceARN *string
+
+	// The name of the schema to be retrieved.
+	SchemaName *string
+
+	// The type of ID namespace. There are two types: SOURCE and TARGET .
+	//
+	// The SOURCE contains configurations for sourceId data that will be processed in
+	// an ID mapping workflow.
+	//
+	// The TARGET contains a configuration of targetId which all sourceIds will
+	// resolve to.
+	Type IdNamespaceType
+
+	noSmithyDocumentSerde
+}
+
+// The output source for the ID mapping workflow.
+type IdMappingWorkflowOutputSource struct {
+
+	// The S3 path to which Entity Resolution will write the output table.
+	//
+	// This member is required.
+	OutputS3Path *string
+
+	// Customer KMS ARN for encryption at rest. If not provided, system will use an
+	// Entity Resolution managed KMS key.
+	KMSArn *string
+
+	noSmithyDocumentSerde
+}
+
+// A list of IdMappingWorkflowSummary objects, each of which contain the fields
+// WorkflowName , WorkflowArn , CreatedAt , and UpdatedAt .
+type IdMappingWorkflowSummary struct {
+
+	// The timestamp of when the workflow was created.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// The timestamp of when the workflow was last updated.
+	//
+	// This member is required.
+	UpdatedAt *time.Time
+
+	// The ARN (Amazon Resource Name) that Entity Resolution generated for the
+	// IdMappingWorkflow .
+	//
+	// This member is required.
+	WorkflowArn *string
+
+	// The name of the workflow.
+	//
+	// This member is required.
+	WorkflowName *string
+
+	noSmithyDocumentSerde
+}
+
+// The settings for the ID namespace for the ID mapping workflow job.
+type IdNamespaceIdMappingWorkflowMetadata struct {
+
+	// The type of ID mapping.
+	//
+	// This member is required.
+	IdMappingType IdMappingType
+
+	noSmithyDocumentSerde
+}
+
+// An object containing IdMappingType , ProviderProperties , and
+// RuleBasedProperties .
+type IdNamespaceIdMappingWorkflowProperties struct {
+
+	// The type of ID mapping.
+	//
+	// This member is required.
+	IdMappingType IdMappingType
+
+	// An object which defines any additional configurations required by the provider
+	// service.
+	ProviderProperties *NamespaceProviderProperties
+
+	//  An object which defines any additional configurations required by rule-based
+	// matching.
+	RuleBasedProperties *NamespaceRuleBasedProperties
+
+	noSmithyDocumentSerde
+}
+
+// An object containing InputSourceARN and SchemaName .
+type IdNamespaceInputSource struct {
+
+	// An Glue table Amazon Resource Name (ARN) or a matching workflow ARN for the
+	// input source table.
+	//
+	// This member is required.
+	InputSourceARN *string
+
+	// The name of the schema.
+	SchemaName *string
+
+	noSmithyDocumentSerde
+}
+
+// A summary of ID namespaces.
+type IdNamespaceSummary struct {
+
+	// The timestamp of when the ID namespace was created.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// The Amazon Resource Name (ARN) of the ID namespace.
+	//
+	// This member is required.
+	IdNamespaceArn *string
+
+	// The name of the ID namespace.
+	//
+	// This member is required.
+	IdNamespaceName *string
+
+	// The type of ID namespace. There are two types: SOURCE and TARGET .
+	//
+	// The SOURCE contains configurations for sourceId data that will be processed in
+	// an ID mapping workflow.
+	//
+	// The TARGET contains a configuration of targetId which all sourceIds will
+	// resolve to.
+	//
+	// This member is required.
+	Type IdNamespaceType
+
+	// The timestamp of when the ID namespace was last updated.
+	//
+	// This member is required.
+	UpdatedAt *time.Time
+
+	// The description of the ID namespace.
+	Description *string
+
+	// An object which defines any additional configurations required by the ID
+	// mapping workflow.
+	IdMappingWorkflowProperties []IdNamespaceIdMappingWorkflowMetadata
 
 	noSmithyDocumentSerde
 }
@@ -29,7 +326,7 @@ type IncrementalRunConfig struct {
 // An object containing InputSourceARN , SchemaName , and ApplyNormalization .
 type InputSource struct {
 
-	// An Glue table ARN for the input source table.
+	// An Glue table Amazon Resource Name (ARN) for the input source table.
 	//
 	// This member is required.
 	InputSourceARN *string
@@ -48,6 +345,19 @@ type InputSource struct {
 	noSmithyDocumentSerde
 }
 
+// The Amazon S3 location that temporarily stores your data while it processes.
+// Your information won't be saved permanently.
+type IntermediateSourceConfiguration struct {
+
+	// The Amazon S3 location (bucket and prefix). For example:
+	// s3://provider_bucket/DOC-EXAMPLE-BUCKET
+	//
+	// This member is required.
+	IntermediateS3Path *string
+
+	noSmithyDocumentSerde
+}
+
 // An object containing InputRecords , TotalRecordsProcessed , MatchIDs , and
 // RecordsNotProcessed .
 type JobMetrics struct {
@@ -58,11 +368,33 @@ type JobMetrics struct {
 	// The total number of matchID s generated.
 	MatchIDs *int32
 
-	// The total number of records that did not get processed,
+	// The total number of records that did not get processed.
 	RecordsNotProcessed *int32
 
 	// The total number of records processed.
 	TotalRecordsProcessed *int32
+
+	noSmithyDocumentSerde
+}
+
+// An object containing KMSArn , OutputS3Path , and RoleArn .
+type JobOutputSource struct {
+
+	// The S3 path to which Entity Resolution will write the output table.
+	//
+	// This member is required.
+	OutputS3Path *string
+
+	// The Amazon Resource Name (ARN) of the IAM role. Entity Resolution assumes this
+	// role to access Amazon Web Services resources on your behalf as part of workflow
+	// execution.
+	//
+	// This member is required.
+	RoleArn *string
+
+	// Customer KMS ARN for encryption at rest. If not provided, system will use an
+	// Entity Resolution managed KMS key.
+	KMSArn *string
 
 	noSmithyDocumentSerde
 }
@@ -80,7 +412,7 @@ type JobSummary struct {
 	// This member is required.
 	StartTime *time.Time
 
-	// The current status of the job. Either running , succeeded , queued , or failed .
+	// The current status of the job.
 	//
 	// This member is required.
 	Status JobStatus
@@ -99,6 +431,12 @@ type MatchingWorkflowSummary struct {
 	//
 	// This member is required.
 	CreatedAt *time.Time
+
+	// The method that has been specified for data matching, either using matching
+	// provided by Entity Resolution or through a provider service.
+	//
+	// This member is required.
+	ResolutionType ResolutionType
 
 	// The timestamp of when the workflow was last updated.
 	//
@@ -119,9 +457,63 @@ type MatchingWorkflowSummary struct {
 	noSmithyDocumentSerde
 }
 
-// A list of OutputAttribute objects, each of which have the fields Name and
-// Hashed. Each of these objects selects a column to be included in the output
-// table, and whether the values of the column should be hashed.
+// An object containing ProviderConfiguration and ProviderServiceArn .
+type NamespaceProviderProperties struct {
+
+	// The Amazon Resource Name (ARN) of the provider service.
+	//
+	// This member is required.
+	ProviderServiceArn *string
+
+	// An object which defines any additional configurations required by the provider
+	// service.
+	ProviderConfiguration document.Interface
+
+	noSmithyDocumentSerde
+}
+
+//	The rule-based properties of an ID namespace. These properties define how the
+//
+// ID namespace can be used in an ID mapping workflow.
+type NamespaceRuleBasedProperties struct {
+
+	// The comparison type. You can either choose ONE_TO_ONE or MANY_TO_MANY as the
+	// attributeMatchingModel .
+	//
+	// If you choose MANY_TO_MANY , the system can match attributes across the
+	// sub-types of an attribute type. For example, if the value of the Email field of
+	// Profile A matches the value of BusinessEmail field of Profile B, the two
+	// profiles are matched on the Email attribute type.
+	//
+	// If you choose ONE_TO_ONE , the system can only match attributes if the sub-types
+	// are an exact match. For example, for the Email attribute type, the system will
+	// only consider it a match if the value of the Email field of Profile A matches
+	// the value of the Email field of Profile B.
+	AttributeMatchingModel AttributeMatchingModel
+
+	//  The type of matching record that is allowed to be used in an ID mapping
+	// workflow.
+	//
+	// If the value is set to ONE_SOURCE_TO_ONE_TARGET , only one record in the source
+	// is matched to one record in the target.
+	//
+	// If the value is set to MANY_SOURCE_TO_ONE_TARGET , all matching records in the
+	// source are matched to one record in the target.
+	RecordMatchingModels []RecordMatchingModel
+
+	//  The sets of rules you can use in an ID mapping workflow. The limitations
+	// specified for the source and target must be compatible.
+	RuleDefinitionTypes []IdMappingWorkflowRuleDefinitionType
+
+	//  The rules for the ID namespace.
+	Rules []Rule
+
+	noSmithyDocumentSerde
+}
+
+// A list of OutputAttribute objects, each of which have the fields Name and Hashed
+// . Each of these objects selects a column to be included in the output table, and
+// whether the values of the column should be hashed.
 type OutputAttribute struct {
 
 	// A name of a column to be written to the output. This must be an InputField name
@@ -136,14 +528,14 @@ type OutputAttribute struct {
 	noSmithyDocumentSerde
 }
 
-// A list of OutputAttribute objects, each of which have the fields Name and
-// Hashed. Each of these objects selects a column to be included in the output
-// table, and whether the values of the column should be hashed.
+// A list of OutputAttribute objects, each of which have the fields Name and Hashed
+// . Each of these objects selects a column to be included in the output table, and
+// whether the values of the column should be hashed.
 type OutputSource struct {
 
-	// A list of OutputAttribute objects, each of which have the fields Name and
-	// Hashed. Each of these objects selects a column to be included in the output
-	// table, and whether the values of the column should be hashed.
+	// A list of OutputAttribute objects, each of which have the fields Name and Hashed
+	// . Each of these objects selects a column to be included in the output table, and
+	// whether the values of the column should be hashed.
 	//
 	// This member is required.
 	Output []OutputAttribute
@@ -166,11 +558,177 @@ type OutputSource struct {
 	noSmithyDocumentSerde
 }
 
-// An object which defines the resolutionType and the ruleBasedProperties
+// The input schema supported by provider service.
+type ProviderComponentSchema struct {
+
+	// The provider schema attributes.
+	ProviderSchemaAttributes []ProviderSchemaAttribute
+
+	// Input schema for the provider service.
+	Schemas [][]string
+
+	noSmithyDocumentSerde
+}
+
+// The required configuration fields to use with the provider service.
+//
+// The following types satisfy this interface:
+//
+//	ProviderEndpointConfigurationMemberMarketplaceConfiguration
+type ProviderEndpointConfiguration interface {
+	isProviderEndpointConfiguration()
+}
+
+// The identifiers of the provider service, from Data Exchange.
+type ProviderEndpointConfigurationMemberMarketplaceConfiguration struct {
+	Value ProviderMarketplaceConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*ProviderEndpointConfigurationMemberMarketplaceConfiguration) isProviderEndpointConfiguration() {
+}
+
+// The provider configuration required for different ID namespace types.
+type ProviderIdNameSpaceConfiguration struct {
+
+	// The description of the ID namespace.
+	Description *string
+
+	// Configurations required for the source ID namespace.
+	ProviderSourceConfigurationDefinition document.Interface
+
+	// Configurations required for the target ID namespace.
+	ProviderTargetConfigurationDefinition document.Interface
+
+	noSmithyDocumentSerde
+}
+
+// The required configuration fields to give intermediate access to a provider
+// service.
+type ProviderIntermediateDataAccessConfiguration struct {
+
+	// The Amazon Web Services account that provider can use to read or write data
+	// into the customer's intermediate S3 bucket.
+	AwsAccountIds []string
+
+	// The S3 bucket actions that the provider requires permission for.
+	RequiredBucketActions []string
+
+	noSmithyDocumentSerde
+}
+
+// The identifiers of the provider service, from Data Exchange.
+type ProviderMarketplaceConfiguration struct {
+
+	// The asset ID on Data Exchange.
+	//
+	// This member is required.
+	AssetId *string
+
+	// The dataset ID on Data Exchange.
+	//
+	// This member is required.
+	DataSetId *string
+
+	// The listing ID on Data Exchange.
+	//
+	// This member is required.
+	ListingId *string
+
+	// The revision ID on Data Exchange.
+	//
+	// This member is required.
+	RevisionId *string
+
+	noSmithyDocumentSerde
+}
+
+// An object containing the providerServiceARN , intermediateSourceConfiguration ,
+// and providerConfiguration .
+type ProviderProperties struct {
+
+	// The ARN of the provider service.
+	//
+	// This member is required.
+	ProviderServiceArn *string
+
+	// The Amazon S3 location that temporarily stores your data while it processes.
+	// Your information won't be saved permanently.
+	IntermediateSourceConfiguration *IntermediateSourceConfiguration
+
+	// The required configuration fields to use with the provider service.
+	ProviderConfiguration document.Interface
+
+	noSmithyDocumentSerde
+}
+
+// The provider schema attribute.
+type ProviderSchemaAttribute struct {
+
+	// The field name.
+	//
+	// This member is required.
+	FieldName *string
+
+	// The type of the provider schema attribute.
+	//
+	// This member is required.
+	Type SchemaAttributeType
+
+	// The hashing attribute of the provider schema.
+	Hashing *bool
+
+	// The sub type of the provider schema attribute.
+	SubType *string
+
+	noSmithyDocumentSerde
+}
+
+// A list of ProviderService objects, each of which contain the fields providerName
+// , providerServiceArn , providerServiceName , and providerServiceType .
+type ProviderServiceSummary struct {
+
+	// The name of the provider. This name is typically the company name.
+	//
+	// This member is required.
+	ProviderName *string
+
+	// The ARN (Amazon Resource Name) that Entity Resolution generated for the
+	// providerService .
+	//
+	// This member is required.
+	ProviderServiceArn *string
+
+	// The display name of the provider service.
+	//
+	// This member is required.
+	ProviderServiceDisplayName *string
+
+	// The name of the product that the provider service provides.
+	//
+	// This member is required.
+	ProviderServiceName *string
+
+	// The type of provider service.
+	//
+	// This member is required.
+	ProviderServiceType ServiceType
+
+	noSmithyDocumentSerde
+}
+
+// An object which defines the resolutionType and the ruleBasedProperties .
 type ResolutionTechniques struct {
 
-	// There are two types of matching, RULE_MATCHING and ML_MATCHING
+	// The type of matching. There are three types of matching: RULE_MATCHING ,
+	// ML_MATCHING , and PROVIDER .
+	//
+	// This member is required.
 	ResolutionType ResolutionType
+
+	// The properties of the provider service.
+	ProviderProperties *ProviderProperties
 
 	// An object which defines the list of matching rules to run and has a field Rules
 	// , which is a list of rule objects.
@@ -197,18 +755,23 @@ type Rule struct {
 	noSmithyDocumentSerde
 }
 
-// An object which defines the list of matching rules to run and has a field Rules
-// , which is a list of rule objects.
+// An object which defines the list of matching rules to run in a matching
+// workflow. RuleBasedProperties contain a Rules field, which is a list of rule
+// objects.
 type RuleBasedProperties struct {
 
-	// You can either choose ONE_TO_ONE or MANY_TO_MANY as the AttributeMatchingModel.
-	// When choosing MANY_TO_MANY , the system can match attribute across the sub-types
-	// of an attribute type. For example, if the value of the Email field of Profile A
-	// and the value of BusinessEmail field of Profile B matches, the two profiles are
-	// matched on the Email type. When choosing ONE_TO_ONE the system can only match
-	// if the sub-types are exact matches. For example, only when the value of the
-	// Email field of Profile A and the value of the Email field of Profile B matches,
-	// the two profiles are matched on the Email type.
+	// The comparison type. You can either choose ONE_TO_ONE or MANY_TO_MANY as the
+	// attributeMatchingModel .
+	//
+	// If you choose MANY_TO_MANY , the system can match attributes across the
+	// sub-types of an attribute type. For example, if the value of the Email field of
+	// Profile A and the value of BusinessEmail field of Profile B matches, the two
+	// profiles are matched on the Email attribute type.
+	//
+	// If you choose ONE_TO_ONE , the system can only match attributes if the sub-types
+	// are an exact match. For example, for the Email attribute type, the system will
+	// only consider it a match if the value of the Email field of Profile A matches
+	// the value of the Email field of Profile B.
 	//
 	// This member is required.
 	AttributeMatchingModel AttributeMatchingModel
@@ -218,10 +781,19 @@ type RuleBasedProperties struct {
 	// This member is required.
 	Rules []Rule
 
+	//  An indicator of whether to generate IDs and index the data or not.
+	//
+	// If you choose IDENTIFIER_GENERATION , the process generates IDs and indexes the
+	// data.
+	//
+	// If you choose INDEXING , the process indexes the data without generating IDs.
+	MatchPurpose MatchPurpose
+
 	noSmithyDocumentSerde
 }
 
-// An object containing FieldField , Type , GroupName , and MatchKey .
+// An object containing FieldName , Type , GroupName , MatchKey , Hashing , and
+// SubType .
 type SchemaInputAttribute struct {
 
 	// A string containing the field name.
@@ -234,20 +806,33 @@ type SchemaInputAttribute struct {
 	// This member is required.
 	Type SchemaAttributeType
 
-	// Instruct Entity Resolution to combine several columns into a unified column
-	// with the identical attribute type. For example, when working with columns such
-	// as first_name, middle_name, and last_name, assigning them a common GroupName
-	// will prompt Entity Resolution to concatenate them into a single value.
+	// A string that instructs Entity Resolution to combine several columns into a
+	// unified column with the identical attribute type.
+	//
+	// For example, when working with columns such as first_name , middle_name , and
+	// last_name , assigning them a common groupName will prompt Entity Resolution to
+	// concatenate them into a single value.
 	GroupName *string
 
+	//  Indicates if the column values are hashed in the schema input. If the value is
+	// set to TRUE , the column values are hashed. If the value is set to FALSE , the
+	// column values are cleartext.
+	Hashed *bool
+
 	// A key that allows grouping of multiple input attributes into a unified matching
-	// group. For example, let's consider a scenario where the source table contains
-	// various addresses, such as business_address and shipping_address. By assigning
-	// the MatchKey Address' to both attributes, Entity Resolution will match records
-	// across these fields to create a consolidated matching group. If no MatchKey is
-	// specified for a column, it won't be utilized for matching purposes but will
-	// still be included in the output table.
+	// group.
+	//
+	// For example, consider a scenario where the source table contains various
+	// addresses, such as business_address and shipping_address . By assigning a
+	// matchKey called address to both attributes, Entity Resolution will match
+	// records across these fields to create a consolidated matching group.
+	//
+	// If no matchKey is specified for a column, it won't be utilized for matching
+	// purposes but will still be included in the output table.
 	MatchKey *string
+
+	// The subtype of the attribute, selected from a list of values.
+	SubType *string
 
 	noSmithyDocumentSerde
 }
@@ -259,6 +844,11 @@ type SchemaMappingSummary struct {
 	//
 	// This member is required.
 	CreatedAt *time.Time
+
+	// Specifies whether the schema mapping has been applied to a workflow.
+	//
+	// This member is required.
+	HasWorkflows *bool
 
 	// The ARN (Amazon Resource Name) that Entity Resolution generated for the
 	// SchemaMapping .
@@ -280,3 +870,14 @@ type SchemaMappingSummary struct {
 }
 
 type noSmithyDocumentSerde = smithydocument.NoSerde
+
+// UnknownUnionMember is returned when a union member is returned over the wire,
+// but has an unknown tag.
+type UnknownUnionMember struct {
+	Tag   string
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*UnknownUnionMember) isProviderEndpointConfiguration() {}

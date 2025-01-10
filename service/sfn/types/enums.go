@@ -2,20 +2,81 @@
 
 package types
 
+type EncryptionType string
+
+// Enum values for EncryptionType
+const (
+	EncryptionTypeAwsOwnedKey           EncryptionType = "AWS_OWNED_KEY"
+	EncryptionTypeCustomerManagedKmsKey EncryptionType = "CUSTOMER_MANAGED_KMS_KEY"
+)
+
+// Values returns all known values for EncryptionType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EncryptionType) Values() []EncryptionType {
+	return []EncryptionType{
+		"AWS_OWNED_KEY",
+		"CUSTOMER_MANAGED_KMS_KEY",
+	}
+}
+
+type ExecutionRedriveFilter string
+
+// Enum values for ExecutionRedriveFilter
+const (
+	ExecutionRedriveFilterRedriven    ExecutionRedriveFilter = "REDRIVEN"
+	ExecutionRedriveFilterNotRedriven ExecutionRedriveFilter = "NOT_REDRIVEN"
+)
+
+// Values returns all known values for ExecutionRedriveFilter. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ExecutionRedriveFilter) Values() []ExecutionRedriveFilter {
+	return []ExecutionRedriveFilter{
+		"REDRIVEN",
+		"NOT_REDRIVEN",
+	}
+}
+
+type ExecutionRedriveStatus string
+
+// Enum values for ExecutionRedriveStatus
+const (
+	ExecutionRedriveStatusRedrivable         ExecutionRedriveStatus = "REDRIVABLE"
+	ExecutionRedriveStatusNotRedrivable      ExecutionRedriveStatus = "NOT_REDRIVABLE"
+	ExecutionRedriveStatusRedrivableByMapRun ExecutionRedriveStatus = "REDRIVABLE_BY_MAP_RUN"
+)
+
+// Values returns all known values for ExecutionRedriveStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ExecutionRedriveStatus) Values() []ExecutionRedriveStatus {
+	return []ExecutionRedriveStatus{
+		"REDRIVABLE",
+		"NOT_REDRIVABLE",
+		"REDRIVABLE_BY_MAP_RUN",
+	}
+}
+
 type ExecutionStatus string
 
 // Enum values for ExecutionStatus
 const (
-	ExecutionStatusRunning   ExecutionStatus = "RUNNING"
-	ExecutionStatusSucceeded ExecutionStatus = "SUCCEEDED"
-	ExecutionStatusFailed    ExecutionStatus = "FAILED"
-	ExecutionStatusTimedOut  ExecutionStatus = "TIMED_OUT"
-	ExecutionStatusAborted   ExecutionStatus = "ABORTED"
+	ExecutionStatusRunning        ExecutionStatus = "RUNNING"
+	ExecutionStatusSucceeded      ExecutionStatus = "SUCCEEDED"
+	ExecutionStatusFailed         ExecutionStatus = "FAILED"
+	ExecutionStatusTimedOut       ExecutionStatus = "TIMED_OUT"
+	ExecutionStatusAborted        ExecutionStatus = "ABORTED"
+	ExecutionStatusPendingRedrive ExecutionStatus = "PENDING_REDRIVE"
 )
 
 // Values returns all known values for ExecutionStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExecutionStatus) Values() []ExecutionStatus {
 	return []ExecutionStatus{
 		"RUNNING",
@@ -23,6 +84,7 @@ func (ExecutionStatus) Values() []ExecutionStatus {
 		"FAILED",
 		"TIMED_OUT",
 		"ABORTED",
+		"PENDING_REDRIVE",
 	}
 }
 
@@ -89,11 +151,15 @@ const (
 	HistoryEventTypeMapRunFailed                 HistoryEventType = "MapRunFailed"
 	HistoryEventTypeMapRunStarted                HistoryEventType = "MapRunStarted"
 	HistoryEventTypeMapRunSucceeded              HistoryEventType = "MapRunSucceeded"
+	HistoryEventTypeExecutionRedriven            HistoryEventType = "ExecutionRedriven"
+	HistoryEventTypeMapRunRedriven               HistoryEventType = "MapRunRedriven"
+	HistoryEventTypeEvaluationFailed             HistoryEventType = "EvaluationFailed"
 )
 
 // Values returns all known values for HistoryEventType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HistoryEventType) Values() []HistoryEventType {
 	return []HistoryEventType{
 		"ActivityFailed",
@@ -155,6 +221,74 @@ func (HistoryEventType) Values() []HistoryEventType {
 		"MapRunFailed",
 		"MapRunStarted",
 		"MapRunSucceeded",
+		"ExecutionRedriven",
+		"MapRunRedriven",
+		"EvaluationFailed",
+	}
+}
+
+type IncludedData string
+
+// Enum values for IncludedData
+const (
+	IncludedDataAllData      IncludedData = "ALL_DATA"
+	IncludedDataMetadataOnly IncludedData = "METADATA_ONLY"
+)
+
+// Values returns all known values for IncludedData. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IncludedData) Values() []IncludedData {
+	return []IncludedData{
+		"ALL_DATA",
+		"METADATA_ONLY",
+	}
+}
+
+type InspectionLevel string
+
+// Enum values for InspectionLevel
+const (
+	InspectionLevelInfo  InspectionLevel = "INFO"
+	InspectionLevelDebug InspectionLevel = "DEBUG"
+	InspectionLevelTrace InspectionLevel = "TRACE"
+)
+
+// Values returns all known values for InspectionLevel. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InspectionLevel) Values() []InspectionLevel {
+	return []InspectionLevel{
+		"INFO",
+		"DEBUG",
+		"TRACE",
+	}
+}
+
+type KmsKeyState string
+
+// Enum values for KmsKeyState
+const (
+	KmsKeyStateDisabled        KmsKeyState = "DISABLED"
+	KmsKeyStatePendingDeletion KmsKeyState = "PENDING_DELETION"
+	KmsKeyStatePendingImport   KmsKeyState = "PENDING_IMPORT"
+	KmsKeyStateUnavailable     KmsKeyState = "UNAVAILABLE"
+	KmsKeyStateCreating        KmsKeyState = "CREATING"
+)
+
+// Values returns all known values for KmsKeyState. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KmsKeyState) Values() []KmsKeyState {
+	return []KmsKeyState{
+		"DISABLED",
+		"PENDING_DELETION",
+		"PENDING_IMPORT",
+		"UNAVAILABLE",
+		"CREATING",
 	}
 }
 
@@ -169,8 +303,9 @@ const (
 )
 
 // Values returns all known values for LogLevel. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogLevel) Values() []LogLevel {
 	return []LogLevel{
 		"ALL",
@@ -191,8 +326,9 @@ const (
 )
 
 // Values returns all known values for MapRunStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MapRunStatus) Values() []MapRunStatus {
 	return []MapRunStatus{
 		"RUNNING",
@@ -211,8 +347,9 @@ const (
 )
 
 // Values returns all known values for StateMachineStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StateMachineStatus) Values() []StateMachineStatus {
 	return []StateMachineStatus{
 		"ACTIVE",
@@ -229,8 +366,9 @@ const (
 )
 
 // Values returns all known values for StateMachineType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StateMachineType) Values() []StateMachineType {
 	return []StateMachineType{
 		"STANDARD",
@@ -248,13 +386,77 @@ const (
 )
 
 // Values returns all known values for SyncExecutionStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SyncExecutionStatus) Values() []SyncExecutionStatus {
 	return []SyncExecutionStatus{
 		"SUCCEEDED",
 		"FAILED",
 		"TIMED_OUT",
+	}
+}
+
+type TestExecutionStatus string
+
+// Enum values for TestExecutionStatus
+const (
+	TestExecutionStatusSucceeded   TestExecutionStatus = "SUCCEEDED"
+	TestExecutionStatusFailed      TestExecutionStatus = "FAILED"
+	TestExecutionStatusRetriable   TestExecutionStatus = "RETRIABLE"
+	TestExecutionStatusCaughtError TestExecutionStatus = "CAUGHT_ERROR"
+)
+
+// Values returns all known values for TestExecutionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TestExecutionStatus) Values() []TestExecutionStatus {
+	return []TestExecutionStatus{
+		"SUCCEEDED",
+		"FAILED",
+		"RETRIABLE",
+		"CAUGHT_ERROR",
+	}
+}
+
+type ValidateStateMachineDefinitionResultCode string
+
+// Enum values for ValidateStateMachineDefinitionResultCode
+const (
+	ValidateStateMachineDefinitionResultCodeOk   ValidateStateMachineDefinitionResultCode = "OK"
+	ValidateStateMachineDefinitionResultCodeFail ValidateStateMachineDefinitionResultCode = "FAIL"
+)
+
+// Values returns all known values for ValidateStateMachineDefinitionResultCode.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ValidateStateMachineDefinitionResultCode) Values() []ValidateStateMachineDefinitionResultCode {
+	return []ValidateStateMachineDefinitionResultCode{
+		"OK",
+		"FAIL",
+	}
+}
+
+type ValidateStateMachineDefinitionSeverity string
+
+// Enum values for ValidateStateMachineDefinitionSeverity
+const (
+	ValidateStateMachineDefinitionSeverityError   ValidateStateMachineDefinitionSeverity = "ERROR"
+	ValidateStateMachineDefinitionSeverityWarning ValidateStateMachineDefinitionSeverity = "WARNING"
+)
+
+// Values returns all known values for ValidateStateMachineDefinitionSeverity.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ValidateStateMachineDefinitionSeverity) Values() []ValidateStateMachineDefinitionSeverity {
+	return []ValidateStateMachineDefinitionSeverity{
+		"ERROR",
+		"WARNING",
 	}
 }
 
@@ -270,6 +472,7 @@ const (
 
 // Values returns all known values for ValidationExceptionReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 	return []ValidationExceptionReason{

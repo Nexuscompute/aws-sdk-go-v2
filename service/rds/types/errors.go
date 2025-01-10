@@ -35,8 +35,10 @@ func (e *AuthorizationAlreadyExistsFault) ErrorCode() string {
 func (e *AuthorizationAlreadyExistsFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The specified CIDR IP range or Amazon EC2 security group might not be
-// authorized for the specified DB security group. Or, RDS might not be authorized
-// to perform necessary actions using IAM on your behalf.
+// authorized for the specified DB security group.
+//
+// Or, RDS might not be authorized to perform necessary actions using IAM on your
+// behalf.
 type AuthorizationNotFoundFault struct {
 	Message *string
 
@@ -852,6 +854,33 @@ func (e *DBInstanceNotFoundFault) ErrorCode() string {
 }
 func (e *DBInstanceNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// An attempt to download or examine log files didn't succeed because an Aurora
+// Serverless v2 instance was paused.
+type DBInstanceNotReadyFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *DBInstanceNotReadyFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *DBInstanceNotReadyFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *DBInstanceNotReadyFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "DBInstanceNotReady"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *DBInstanceNotReadyFault) ErrorFault() smithy.ErrorFault { return smithy.FaultServer }
+
 // The specified RoleArn or FeatureName value is already associated with the DB
 // instance.
 type DBInstanceRoleAlreadyExistsFault struct {
@@ -1393,6 +1422,59 @@ func (e *DBSecurityGroupQuotaExceededFault) ErrorCode() string {
 }
 func (e *DBSecurityGroupQuotaExceededFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The specified DB shard group name must be unique in your Amazon Web Services
+// account in the specified Amazon Web Services Region.
+type DBShardGroupAlreadyExistsFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *DBShardGroupAlreadyExistsFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *DBShardGroupAlreadyExistsFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *DBShardGroupAlreadyExistsFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "DBShardGroupAlreadyExists"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *DBShardGroupAlreadyExistsFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified DB shard group name wasn't found.
+type DBShardGroupNotFoundFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *DBShardGroupNotFoundFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *DBShardGroupNotFoundFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *DBShardGroupNotFoundFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "DBShardGroupNotFound"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *DBShardGroupNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // DBSnapshotIdentifier is already used by an existing snapshot.
 type DBSnapshotAlreadyExistsFault struct {
 	Message *string
@@ -1444,6 +1526,34 @@ func (e *DBSnapshotNotFoundFault) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *DBSnapshotNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified snapshot tenant database wasn't found.
+type DBSnapshotTenantDatabaseNotFoundFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *DBSnapshotTenantDatabaseNotFoundFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *DBSnapshotTenantDatabaseNotFoundFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *DBSnapshotTenantDatabaseNotFoundFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "DBSnapshotTenantDatabaseNotFoundFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *DBSnapshotTenantDatabaseNotFoundFault) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
 
 // DBSubnetGroupName is already used by an existing DB subnet group.
 type DBSubnetGroupAlreadyExistsFault struct {
@@ -1767,8 +1877,9 @@ func (e *ExportTaskNotFoundFault) ErrorCode() string {
 }
 func (e *ExportTaskNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The GlobalClusterIdentifier already exists. Choose a new global database
-// identifier (unique name) to create a new global database cluster.
+// The GlobalClusterIdentifier already exists. Specify a new global database
+// identifier (unique name) to create a new global database cluster or to rename an
+// existing one.
 type GlobalClusterAlreadyExistsFault struct {
 	Message *string
 
@@ -2043,6 +2154,113 @@ func (e *InsufficientStorageClusterCapacityFault) ErrorCode() string {
 func (e *InsufficientStorageClusterCapacityFault) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
+
+// The integration you are trying to create already exists.
+type IntegrationAlreadyExistsFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationAlreadyExistsFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationAlreadyExistsFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationAlreadyExistsFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationAlreadyExistsFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationAlreadyExistsFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// A conflicting conditional operation is currently in progress against this
+// resource. Typically occurs when there are multiple requests being made to the
+// same resource at the same time, and these requests conflict with each other.
+type IntegrationConflictOperationFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationConflictOperationFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationConflictOperationFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationConflictOperationFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationConflictOperationFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationConflictOperationFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified integration could not be found.
+type IntegrationNotFoundFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationNotFoundFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationNotFoundFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationNotFoundFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationNotFoundFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// You can't crate any more zero-ETL integrations because the quota has been
+// reached.
+type IntegrationQuotaExceededFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationQuotaExceededFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationQuotaExceededFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationQuotaExceededFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationQuotaExceededFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationQuotaExceededFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The blue/green deployment can't be switched over or deleted because there is an
 // invalid configuration in the green environment.
@@ -2402,6 +2620,32 @@ func (e *InvalidDBSecurityGroupStateFault) ErrorCode() string {
 }
 func (e *InvalidDBSecurityGroupStateFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The DB shard group must be in the available state.
+type InvalidDBShardGroupStateFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InvalidDBShardGroupStateFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InvalidDBShardGroupStateFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InvalidDBShardGroupStateFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InvalidDBShardGroupState"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InvalidDBShardGroupStateFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // The state of the DB snapshot doesn't allow deletion.
 type InvalidDBSnapshotStateFault struct {
 	Message *string
@@ -2642,6 +2886,33 @@ func (e *InvalidGlobalClusterStateFault) ErrorCode() string {
 }
 func (e *InvalidGlobalClusterStateFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The integration is in an invalid state and can't perform the requested
+// operation.
+type InvalidIntegrationStateFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InvalidIntegrationStateFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InvalidIntegrationStateFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InvalidIntegrationStateFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InvalidIntegrationStateFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InvalidIntegrationStateFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // The option group isn't in the available state.
 type InvalidOptionGroupStateFault struct {
 	Message *string
@@ -2667,6 +2938,32 @@ func (e *InvalidOptionGroupStateFault) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *InvalidOptionGroupStateFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The operation can't be performed because another operation is in progress.
+type InvalidResourceStateFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InvalidResourceStateFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InvalidResourceStateFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InvalidResourceStateFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InvalidResourceStateFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InvalidResourceStateFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // Cannot restore from VPC backup to non-VPC DB instance.
 type InvalidRestoreFault struct {
@@ -2801,6 +3098,33 @@ func (e *KMSKeyNotAccessibleFault) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *KMSKeyNotAccessibleFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The maximum number of DB shard groups for your Amazon Web Services account in
+// the specified Amazon Web Services Region has been reached.
+type MaxDBShardGroupLimitReached struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *MaxDBShardGroupLimitReached) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *MaxDBShardGroupLimitReached) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *MaxDBShardGroupLimitReached) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "MaxDBShardGroupLimitReached"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *MaxDBShardGroupLimitReached) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The network type is invalid for the DB instance. Valid nework type values are
 // IPV4 and DUAL .
@@ -3491,3 +3815,109 @@ func (e *SubscriptionNotFoundFault) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *SubscriptionNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// You attempted to either create a tenant database that already exists or modify
+// a tenant database to use the name of an existing tenant database.
+type TenantDatabaseAlreadyExistsFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *TenantDatabaseAlreadyExistsFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *TenantDatabaseAlreadyExistsFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *TenantDatabaseAlreadyExistsFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "TenantDatabaseAlreadyExists"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *TenantDatabaseAlreadyExistsFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified tenant database wasn't found in the DB instance.
+type TenantDatabaseNotFoundFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *TenantDatabaseNotFoundFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *TenantDatabaseNotFoundFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *TenantDatabaseNotFoundFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "TenantDatabaseNotFound"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *TenantDatabaseNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// You attempted to create more tenant databases than are permitted in your Amazon
+// Web Services account.
+type TenantDatabaseQuotaExceededFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *TenantDatabaseQuotaExceededFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *TenantDatabaseQuotaExceededFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *TenantDatabaseQuotaExceededFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "TenantDatabaseQuotaExceeded"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *TenantDatabaseQuotaExceededFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified DB engine version isn't supported for Aurora Limitless Database.
+type UnsupportedDBEngineVersionFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *UnsupportedDBEngineVersionFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *UnsupportedDBEngineVersionFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *UnsupportedDBEngineVersionFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "UnsupportedDBEngineVersion"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *UnsupportedDBEngineVersionFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }

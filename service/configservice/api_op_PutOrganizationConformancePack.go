@@ -4,26 +4,23 @@ package configservice
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/configservice/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Deploys conformance packs across member accounts in an Amazon Web Services
 // Organization. For information on how many organization conformance packs and how
-// many Config rules you can have per account, see Service Limits  (https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html)
-// in the Config Developer Guide. Only a management account and a delegated
-// administrator can call this API. When calling this API with a delegated
-// administrator, you must ensure Organizations ListDelegatedAdministrator
-// permissions are added. An organization can have up to 3 delegated
-// administrators. This API enables organization service access for
+// many Config rules you can have per account, see [Service Limits]in the Config Developer Guide.
+//
+// Only a management account and a delegated administrator can call this API. When
+// calling this API with a delegated administrator, you must ensure Organizations
+// ListDelegatedAdministrator permissions are added. An organization can have up to
+// 3 delegated administrators.
+//
+// This API enables organization service access for
 // config-multiaccountsetup.amazonaws.com through the EnableAWSServiceAccess
 // action and creates a service-linked role
 // AWSServiceRoleForConfigMultiAccountSetup in the management or delegated
@@ -31,13 +28,20 @@ import (
 // only when the role does not exist in the caller account. To use this API with
 // delegated administrator, register a delegated administrator by calling Amazon
 // Web Services Organization register-delegate-admin for
-// config-multiaccountsetup.amazonaws.com . Prerequisite: Ensure you call
-// EnableAllFeatures API to enable all features in an organization. You must
-// specify either the TemplateS3Uri or the TemplateBody parameter, but not both.
-// If you provide both Config uses the TemplateS3Uri parameter and ignores the
-// TemplateBody parameter. Config sets the state of a conformance pack to
-// CREATE_IN_PROGRESS and UPDATE_IN_PROGRESS until the conformance pack is created
-// or updated. You cannot update a conformance pack while it is in this state.
+// config-multiaccountsetup.amazonaws.com .
+//
+// Prerequisite: Ensure you call EnableAllFeatures API to enable all features in
+// an organization.
+//
+// You must specify either the TemplateS3Uri or the TemplateBody parameter, but
+// not both. If you provide both Config uses the TemplateS3Uri parameter and
+// ignores the TemplateBody parameter.
+//
+// Config sets the state of a conformance pack to CREATE_IN_PROGRESS and
+// UPDATE_IN_PROGRESS until the conformance pack is created or updated. You cannot
+// update a conformance pack while it is in this state.
+//
+// [Service Limits]: https://docs.aws.amazon.com/config/latest/developerguide/configlimits.html
 func (c *Client) PutOrganizationConformancePack(ctx context.Context, params *PutOrganizationConformancePackInput, optFns ...func(*Options)) (*PutOrganizationConformancePackOutput, error) {
 	if params == nil {
 		params = &PutOrganizationConformancePackInput{}
@@ -63,12 +67,14 @@ type PutOrganizationConformancePackInput struct {
 	// A list of ConformancePackInputParameter objects.
 	ConformancePackInputParameters []types.ConformancePackInputParameter
 
-	// The name of the Amazon S3 bucket where Config stores conformance pack
-	// templates. This field is optional. If used, it must be prefixed with
-	// awsconfigconforms .
+	// The name of the Amazon S3 bucket where Config stores conformance pack templates.
+	//
+	// This field is optional. If used, it must be prefixed with awsconfigconforms .
 	DeliveryS3Bucket *string
 
-	// The prefix for the Amazon S3 bucket. This field is optional.
+	// The prefix for the Amazon S3 bucket.
+	//
+	// This field is optional.
 	DeliveryS3KeyPrefix *string
 
 	// A list of Amazon Web Services accounts to be excluded from an organization
@@ -81,8 +87,13 @@ type PutOrganizationConformancePackInput struct {
 	TemplateBody *string
 
 	// Location of file containing the template body. The uri must point to the
-	// conformance pack template (max size: 300 KB). You must have access to read
-	// Amazon S3 bucket.
+	// conformance pack template (max size: 300 KB).
+	//
+	// You must have access to read Amazon S3 bucket. In addition, in order to ensure
+	// a successful deployment, the template object must not be in an [archived storage class]if this
+	// parameter is passed.
+	//
+	// [archived storage class]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/storage-class-intro.html
 	TemplateS3Uri *string
 
 	noSmithyDocumentSerde
@@ -100,6 +111,9 @@ type PutOrganizationConformancePackOutput struct {
 }
 
 func (c *Client) addOperationPutOrganizationConformancePackMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpPutOrganizationConformancePack{}, middleware.After)
 	if err != nil {
 		return err
@@ -108,34 +122,38 @@ func (c *Client) addOperationPutOrganizationConformancePackMiddlewares(stack *mi
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "PutOrganizationConformancePack"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -147,7 +165,13 @@ func (c *Client) addOperationPutOrganizationConformancePackMiddlewares(stack *mi
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addPutOrganizationConformancePackResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutOrganizationConformancePackValidationMiddleware(stack); err != nil {
@@ -156,7 +180,7 @@ func (c *Client) addOperationPutOrganizationConformancePackMiddlewares(stack *mi
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opPutOrganizationConformancePack(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -168,7 +192,19 @@ func (c *Client) addOperationPutOrganizationConformancePackMiddlewares(stack *mi
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -178,130 +214,6 @@ func newServiceMetadataMiddleware_opPutOrganizationConformancePack(region string
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "config",
 		OperationName: "PutOrganizationConformancePack",
 	}
-}
-
-type opPutOrganizationConformancePackResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opPutOrganizationConformancePackResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opPutOrganizationConformancePackResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "config"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "config"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("config")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addPutOrganizationConformancePackResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opPutOrganizationConformancePackResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

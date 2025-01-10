@@ -36,9 +36,10 @@ type ActionConfigurationProperty struct {
 
 	// Whether the configuration property is secret. Secrets are hidden from all calls
 	// except for GetJobDetails , GetThirdPartyJobDetails , PollForJobs , and
-	// PollForThirdPartyJobs . When updating a pipeline, passing * * * * * without
-	// changing any other values of the action preserves the previous value of the
-	// secret.
+	// PollForThirdPartyJobs .
+	//
+	// When updating a pipeline, passing * * * * * without changing any other values
+	// of the action preserves the previous value of the secret.
 	//
 	// This member is required.
 	Secret bool
@@ -48,11 +49,13 @@ type ActionConfigurationProperty struct {
 
 	// Indicates that the property is used with PollForJobs . When creating a custom
 	// action, an action can have up to one queryable property. If it has one, that
-	// property must be both required and not secret. If you create a pipeline with a
-	// custom action type, and that custom action contains a queryable property, the
-	// value for that configuration property is subject to other restrictions. The
-	// value must be less than or equal to twenty (20) characters. The value can
-	// contain only alphanumeric characters, underscores, and hyphens.
+	// property must be both required and not secret.
+	//
+	// If you create a pipeline with a custom action type, and that custom action
+	// contains a queryable property, the value for that configuration property is
+	// subject to other restrictions. The value must be less than or equal to twenty
+	// (20) characters. The value can contain only alphanumeric characters,
+	// underscores, and hyphens.
 	Queryable bool
 
 	// The type of the configuration property.
@@ -86,16 +89,29 @@ type ActionDeclaration struct {
 	// This member is required.
 	Name *string
 
+	// The shell commands to run with your compute action in CodePipeline. All
+	// commands are supported except multi-line formats. While CodeBuild logs and
+	// permissions are used, you do not need to create any resources in CodeBuild.
+	//
+	// Using compute time for this action will incur separate charges in CodeBuild.
+	Commands []string
+
 	// The action's configuration. These are key-value pairs that specify input values
-	// for an action. For more information, see Action Structure Requirements in
-	// CodePipeline (https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html#action-requirements)
-	// . For the list of configuration properties for the CloudFormation action type in
-	// CodePipeline, see Configuration Properties Reference (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-action-reference.html)
-	// in the CloudFormation User Guide. For template snippets with examples, see
-	// Using Parameter Override Functions with CodePipeline Pipelines (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-parameter-override-functions.html)
-	// in the CloudFormation User Guide. The values can be represented in either JSON
-	// or YAML format. For example, the JSON configuration item format is as follows:
-	// JSON: "Configuration" : { Key : Value },
+	// for an action. For more information, see [Action Structure Requirements in CodePipeline]. For the list of configuration
+	// properties for the CloudFormation action type in CodePipeline, see [Configuration Properties Reference]in the
+	// CloudFormation User Guide. For template snippets with examples, see [Using Parameter Override Functions with CodePipeline Pipelines]in the
+	// CloudFormation User Guide.
+	//
+	// The values can be represented in either JSON or YAML format. For example, the
+	// JSON configuration item format is as follows:
+	//
+	// JSON:
+	//
+	//     "Configuration" : { Key : Value },
+	//
+	// [Action Structure Requirements in CodePipeline]: https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html#action-requirements
+	// [Using Parameter Override Functions with CodePipeline Pipelines]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-parameter-override-functions.html
+	// [Configuration Properties Reference]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/continuous-delivery-codepipeline-action-reference.html
 	Configuration map[string]string
 
 	// The name or ID of the artifact consumed by the action, such as a test or build
@@ -110,6 +126,10 @@ type ActionDeclaration struct {
 	// artifact.
 	OutputArtifacts []OutputArtifact
 
+	// The list of variables that are to be exported from the compute action. This is
+	// specifically CodeBuild environment variables as used for that action.
+	OutputVariables []string
+
 	// The action declaration's Amazon Web Services Region, such as us-east-1.
 	Region *string
 
@@ -120,16 +140,24 @@ type ActionDeclaration struct {
 	// The order in which actions are run.
 	RunOrder *int32
 
+	// A timeout duration in minutes that can be applied against the ActionType’s
+	// default timeout value specified in [Quotas for CodePipeline]. This attribute is available only to the
+	// manual approval ActionType.
+	//
+	// [Quotas for CodePipeline]: https://docs.aws.amazon.com/codepipeline/latest/userguide/limits.html
+	TimeoutInMinutes *int32
+
 	noSmithyDocumentSerde
 }
 
 // Represents information about the run of an action.
 type ActionExecution struct {
 
-	// ID of the workflow action execution in the current stage. Use the
-	// GetPipelineState action to retrieve the current action execution details of the
-	// current stage. For older executions, this field might be empty. The action
-	// execution ID is available for executions run on or after March 2020.
+	// ID of the workflow action execution in the current stage. Use the GetPipelineState action to
+	// retrieve the current action execution details of the current stage.
+	//
+	// For older executions, this field might be empty. The action execution ID is
+	// available for executions run on or after March 2020.
 	ActionExecutionId *string
 
 	// The details of an error returned by a URL external to Amazon Web Services.
@@ -147,6 +175,9 @@ type ActionExecution struct {
 
 	// The ARN of the user who last changed the pipeline.
 	LastUpdatedBy *string
+
+	// The Amazon Resource Name (ARN) of the log stream for the action compute.
+	LogStreamARN *string
 
 	// A percentage of completeness of the action as it runs.
 	PercentComplete *int32
@@ -199,15 +230,24 @@ type ActionExecutionDetail struct {
 	// The start time of the action execution.
 	StartTime *time.Time
 
-	// The status of the action execution. Status categories are InProgress , Succeeded
-	// , and Failed .
+	//  The status of the action execution. Status categories are InProgress ,
+	// Succeeded , and Failed .
 	Status ActionExecutionStatus
+
+	// The ARN of the user who changed the pipeline execution details.
+	UpdatedBy *string
 
 	noSmithyDocumentSerde
 }
 
 // Filter values for the action execution.
 type ActionExecutionFilter struct {
+
+	// The latest execution in the pipeline.
+	//
+	// Filtering on the latest execution is available for executions run on or after
+	// February 08, 2024.
+	LatestInPipelineExecution *LatestInPipelineExecutionFilter
 
 	// The pipeline execution ID used to filter action execution history.
 	PipelineExecutionId *string
@@ -268,6 +308,9 @@ type ActionExecutionOutput struct {
 // Execution result information, such as the external execution ID.
 type ActionExecutionResult struct {
 
+	// Represents information about an error in CodePipeline.
+	ErrorDetails *ErrorDetails
+
 	// The action provider's external ID for the action execution.
 	ExternalExecutionId *string
 
@@ -277,6 +320,9 @@ type ActionExecutionResult struct {
 	// The deepest external link to the external resource (for example, a repository
 	// URL or deployment endpoint) that is used when running the action.
 	ExternalExecutionUrl *string
+
+	// The Amazon Resource Name (ARN) of the log stream for the action compute.
+	LogStreamARN *string
 
 	noSmithyDocumentSerde
 }
@@ -443,11 +489,13 @@ type ActionTypeExecutor struct {
 	JobTimeout *int32
 
 	// The policy statement that specifies the permissions in the CodePipeline
-	// customer account that are needed to successfully run an action. To grant
-	// permission to another account, specify the account ID as the Principal, a
-	// domain-style identifier defined by the service, for example
-	// codepipeline.amazonaws.com . The size of the passed JSON policy document cannot
-	// exceed 2048 characters.
+	// customer account that are needed to successfully run an action.
+	//
+	// To grant permission to another account, specify the account ID as the
+	// Principal, a domain-style identifier defined by the service, for example
+	// codepipeline.amazonaws.com .
+	//
+	// The size of the passed JSON policy document cannot exceed 2048 characters.
 	PolicyStatementsTemplate *string
 
 	noSmithyDocumentSerde
@@ -459,21 +507,29 @@ type ActionTypeId struct {
 	// A category defines what kind of action can be taken in the stage, and
 	// constrains the provider type for the action. Valid categories are limited to one
 	// of the following values.
+	//
 	//   - Source
+	//
 	//   - Build
+	//
 	//   - Test
+	//
 	//   - Deploy
+	//
 	//   - Invoke
+	//
 	//   - Approval
+	//
+	//   - Compute
 	//
 	// This member is required.
 	Category ActionCategory
 
 	// The creator of the action being called. There are three valid values for the
 	// Owner field in the action category section within your pipeline structure: AWS ,
-	// ThirdParty , and Custom . For more information, see Valid Action Types and
-	// Providers in CodePipeline (https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html#actions-valid-providers)
-	// .
+	// ThirdParty , and Custom . For more information, see [Valid Action Types and Providers in CodePipeline].
+	//
+	// [Valid Action Types and Providers in CodePipeline]: https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html#actions-valid-providers
 	//
 	// This member is required.
 	Owner ActionOwner
@@ -481,8 +537,9 @@ type ActionTypeId struct {
 	// The provider of the service being called by the action. Valid providers are
 	// determined by the action category. For example, an action in the Deploy category
 	// type might have a provider of CodeDeploy, which would be specified as CodeDeploy
-	// . For more information, see Valid Action Types and Providers in CodePipeline (https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html#actions-valid-providers)
-	// .
+	// . For more information, see [Valid Action Types and Providers in CodePipeline].
+	//
+	// [Valid Action Types and Providers in CodePipeline]: https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html#actions-valid-providers
 	//
 	// This member is required.
 	Provider *string
@@ -499,11 +556,17 @@ type ActionTypeId struct {
 type ActionTypeIdentifier struct {
 
 	// Defines what kind of action can be taken in the stage, one of the following:
+	//
 	//   - Source
+	//
 	//   - Build
+	//
 	//   - Test
+	//
 	//   - Deploy
+	//
 	//   - Approval
+	//
 	//   - Invoke
 	//
 	// This member is required.
@@ -736,10 +799,11 @@ type ArtifactRevision struct {
 	noSmithyDocumentSerde
 }
 
-// The S3 bucket where artifacts for the pipeline are stored. You must include
-// either artifactStore or artifactStores in your pipeline, but you cannot use
-// both. If you create a cross-region action in your pipeline, you must use
-// artifactStores .
+// The S3 bucket where artifacts for the pipeline are stored.
+//
+// You must include either artifactStore or artifactStores in your pipeline, but
+// you cannot use both. If you create a cross-region action in your pipeline, you
+// must use artifactStores .
 type ArtifactStore struct {
 
 	// The S3 bucket used for storing the artifacts for a pipeline. You can specify
@@ -788,6 +852,17 @@ type AWSSessionCredentials struct {
 	noSmithyDocumentSerde
 }
 
+// The conditions for making checks for entry to a stage.
+type BeforeEntryConditions struct {
+
+	// The conditions that are configured as entry conditions.
+	//
+	// This member is required.
+	Conditions []Condition
+
+	noSmithyDocumentSerde
+}
+
 // Reserved for future use.
 type BlockerDeclaration struct {
 
@@ -800,6 +875,51 @@ type BlockerDeclaration struct {
 	//
 	// This member is required.
 	Type BlockerType
+
+	noSmithyDocumentSerde
+}
+
+// The condition for the stage. A condition is made up of the rules and the result
+// for the condition. For more information about conditions, see [Stage conditions]. For more
+// information about rules, see the [CodePipeline rule reference].
+//
+// [Stage conditions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html
+// [CodePipeline rule reference]: https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html
+type Condition struct {
+
+	// The action to be done when the condition is met. For example, rolling back an
+	// execution for a failure condition.
+	Result Result
+
+	// The rules that make up the condition.
+	Rules []RuleDeclaration
+
+	noSmithyDocumentSerde
+}
+
+// The run of a condition.
+type ConditionExecution struct {
+
+	// The last status change of the condition.
+	LastStatusChange *time.Time
+
+	// The status of the run for a condition.
+	Status ConditionExecutionStatus
+
+	// The summary of information about a run for a condition.
+	Summary *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the state of the condition.
+type ConditionState struct {
+
+	// The state of the latest run of the rule.
+	LatestExecution *ConditionExecution
+
+	// The state of the rules for the condition.
+	RuleStates []RuleState
 
 	noSmithyDocumentSerde
 }
@@ -833,11 +953,13 @@ type CurrentRevision struct {
 type EncryptionKey struct {
 
 	// The ID used to identify the key. For an Amazon Web Services KMS key, you can
-	// use the key ID, the key ARN, or the alias ARN. Aliases are recognized only in
-	// the account that created the KMS key. For cross-account actions, you can only
-	// use the key ID or key ARN to identify the key. Cross-account actions involve
-	// using the role from the other account (AccountB), so specifying the key ID will
-	// use the key from the other account (AccountB).
+	// use the key ID, the key ARN, or the alias ARN.
+	//
+	// Aliases are recognized only in the account that created the KMS key. For
+	// cross-account actions, you can only use the key ID or key ARN to identify the
+	// key. Cross-account actions involve using the role from the other account
+	// (AccountB), so specifying the key ID will use the key from the other account
+	// (AccountB).
 	//
 	// This member is required.
 	Id *string
@@ -910,6 +1032,24 @@ type ExecutorConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// The configuration that specifies the result, such as rollback, to occur upon
+// stage failure.
+type FailureConditions struct {
+
+	// The conditions that are configured as failure conditions.
+	Conditions []Condition
+
+	// The specified result for when the failure conditions are met, such as rolling
+	// back the stage.
+	Result Result
+
+	// The retry configuration specifies automatic retry for a failed stage, along
+	// with the configured retry mode.
+	RetryConfiguration *RetryConfiguration
+
+	noSmithyDocumentSerde
+}
+
 // Represents information about failure details.
 type FailureDetails struct {
 
@@ -929,20 +1069,132 @@ type FailureDetails struct {
 	noSmithyDocumentSerde
 }
 
+// The Git repository branches specified as filter criteria to start the pipeline.
+type GitBranchFilterCriteria struct {
+
+	// The list of patterns of Git branches that, when a commit is pushed, are to be
+	// excluded from starting the pipeline.
+	Excludes []string
+
+	// The list of patterns of Git branches that, when a commit is pushed, are to be
+	// included as criteria that starts the pipeline.
+	Includes []string
+
+	noSmithyDocumentSerde
+}
+
+// A type of trigger configuration for Git-based source actions.
+//
+// You can specify the Git configuration trigger type for all third-party
+// Git-based source actions that are supported by the CodeStarSourceConnection
+// action type.
+type GitConfiguration struct {
+
+	// The name of the pipeline source action where the trigger configuration, such as
+	// Git tags, is specified. The trigger configuration will start the pipeline upon
+	// the specified change only.
+	//
+	// You can only specify one trigger configuration per source action.
+	//
+	// This member is required.
+	SourceActionName *string
+
+	// The field where the repository event that will start the pipeline is specified
+	// as pull requests.
+	PullRequest []GitPullRequestFilter
+
+	// The field where the repository event that will start the pipeline, such as
+	// pushing Git tags, is specified with details.
+	Push []GitPushFilter
+
+	noSmithyDocumentSerde
+}
+
+// The Git repository file paths specified as filter criteria to start the
+// pipeline.
+type GitFilePathFilterCriteria struct {
+
+	// The list of patterns of Git repository file paths that, when a commit is
+	// pushed, are to be excluded from starting the pipeline.
+	Excludes []string
+
+	// The list of patterns of Git repository file paths that, when a commit is
+	// pushed, are to be included as criteria that starts the pipeline.
+	Includes []string
+
+	noSmithyDocumentSerde
+}
+
+// The event criteria for the pull request trigger configuration, such as the
+// lists of branches or file paths to include and exclude.
+type GitPullRequestFilter struct {
+
+	// The field that specifies to filter on branches for the pull request trigger
+	// configuration.
+	Branches *GitBranchFilterCriteria
+
+	// The field that specifies which pull request events to filter on (opened,
+	// updated, closed) for the trigger configuration.
+	Events []GitPullRequestEventType
+
+	// The field that specifies to filter on file paths for the pull request trigger
+	// configuration.
+	FilePaths *GitFilePathFilterCriteria
+
+	noSmithyDocumentSerde
+}
+
+// The event criteria that specify when a specified repository event will start
+// the pipeline for the specified trigger configuration, such as the lists of Git
+// tags to include and exclude.
+type GitPushFilter struct {
+
+	// The field that specifies to filter on branches for the push trigger
+	// configuration.
+	Branches *GitBranchFilterCriteria
+
+	// The field that specifies to filter on file paths for the push trigger
+	// configuration.
+	FilePaths *GitFilePathFilterCriteria
+
+	// The field that contains the details for the Git tags trigger configuration.
+	Tags *GitTagFilterCriteria
+
+	noSmithyDocumentSerde
+}
+
+// The Git tags specified as filter criteria for whether a Git tag repository
+// event will start the pipeline.
+type GitTagFilterCriteria struct {
+
+	// The list of patterns of Git tags that, when pushed, are to be excluded from
+	// starting the pipeline.
+	Excludes []string
+
+	// The list of patterns of Git tags that, when pushed, are to be included as
+	// criteria that starts the pipeline.
+	Includes []string
+
+	noSmithyDocumentSerde
+}
+
 // Represents information about an artifact to be worked on, such as a test or
 // build artifact.
 type InputArtifact struct {
 
-	// The name of the artifact to be worked on (for example, "My App"). Artifacts are
-	// the files that are worked on by actions in the pipeline. See the action
-	// configuration for each action for details about artifact parameters. For
+	// The name of the artifact to be worked on (for example, "My App").
+	//
+	// Artifacts are the files that are worked on by actions in the pipeline. See the
+	// action configuration for each action for details about artifact parameters. For
 	// example, the S3 source action input artifact is a file name (or file path), and
 	// the files are generally provided as a ZIP file. Example artifact name:
-	// SampleApp_Windows.zip The input artifact of an action must exactly match the
-	// output artifact declared in a preceding action, but the input artifact does not
-	// have to be the next action in strict sequence from the action that provided the
-	// output artifact. Actions in parallel can declare different output artifacts,
-	// which are in turn consumed by different following actions.
+	// SampleApp_Windows.zip
+	//
+	// The input artifact of an action must exactly match the output artifact declared
+	// in a preceding action, but the input artifact does not have to be the next
+	// action in strict sequence from the action that provided the output artifact.
+	// Actions in parallel can declare different output artifacts, which are in turn
+	// consumed by different following actions.
 	//
 	// This member is required.
 	Name *string
@@ -963,8 +1215,7 @@ type Job struct {
 	Id *string
 
 	// A system-generated random number that CodePipeline uses to ensure that the job
-	// is being worked on by only one job worker. Use this number in an AcknowledgeJob
-	// request.
+	// is being worked on by only one job worker. Use this number in an AcknowledgeJobrequest.
 	Nonce *string
 
 	noSmithyDocumentSerde
@@ -1000,8 +1251,9 @@ type JobData struct {
 	// The output of the job.
 	OutputArtifacts []Artifact
 
-	// Represents information about a pipeline to a job worker. Includes pipelineArn
-	// and pipelineExecutionId for custom jobs.
+	// Represents information about a pipeline to a job worker.
+	//
+	// Includes pipelineArn and pipelineExecutionId for custom jobs.
 	PipelineContext *PipelineContext
 
 	noSmithyDocumentSerde
@@ -1049,6 +1301,30 @@ type LambdaExecutorConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// The field that specifies to filter on the latest execution in the pipeline.
+//
+// Filtering on the latest execution is available for executions run on or after
+// February 08, 2024.
+type LatestInPipelineExecutionFilter struct {
+
+	// The execution ID for the latest execution in the pipeline.
+	//
+	// This member is required.
+	PipelineExecutionId *string
+
+	// The start time to filter on for the latest execution in the pipeline. Valid
+	// options:
+	//
+	//   - All
+	//
+	//   - Latest
+	//
+	// This member is required.
+	StartTimeRange StartTimeRange
+
+	noSmithyDocumentSerde
+}
+
 // The detail returned for each webhook after listing webhooks, such as the
 // webhook URL, the webhook name, and the webhook ARN.
 type ListWebhookItem struct {
@@ -1089,23 +1365,31 @@ type ListWebhookItem struct {
 // Represents information about the output of an action.
 type OutputArtifact struct {
 
-	// The name of the output of an artifact, such as "My App". The input artifact of
-	// an action must exactly match the output artifact declared in a preceding action,
-	// but the input artifact does not have to be the next action in strict sequence
-	// from the action that provided the output artifact. Actions in parallel can
-	// declare different output artifacts, which are in turn consumed by different
-	// following actions. Output artifact names must be unique within a pipeline.
+	// The name of the output of an artifact, such as "My App".
+	//
+	// The input artifact of an action must exactly match the output artifact declared
+	// in a preceding action, but the input artifact does not have to be the next
+	// action in strict sequence from the action that provided the output artifact.
+	// Actions in parallel can declare different output artifacts, which are in turn
+	// consumed by different following actions.
+	//
+	// Output artifact names must be unique within a pipeline.
 	//
 	// This member is required.
 	Name *string
 
+	// The files that you want to associate with the output artifact that will be
+	// exported from the compute action.
+	Files []string
+
 	noSmithyDocumentSerde
 }
 
-// Represents information about a pipeline to a job worker. PipelineContext
-// contains pipelineArn and pipelineExecutionId for custom action jobs. The
-// pipelineArn and pipelineExecutionId fields are not populated for ThirdParty
-// action jobs.
+// Represents information about a pipeline to a job worker.
+//
+// PipelineContext contains pipelineArn and pipelineExecutionId for custom action
+// jobs. The pipelineArn and pipelineExecutionId fields are not populated for
+// ThirdParty action jobs.
 type PipelineContext struct {
 
 	// The context of an action to a job worker in the stage of a pipeline.
@@ -1148,17 +1432,59 @@ type PipelineDeclaration struct {
 	Stages []StageDeclaration
 
 	// Represents information about the S3 bucket where artifacts are stored for the
-	// pipeline. You must include either artifactStore or artifactStores in your
-	// pipeline, but you cannot use both. If you create a cross-region action in your
-	// pipeline, you must use artifactStores .
+	// pipeline.
+	//
+	// You must include either artifactStore or artifactStores in your pipeline, but
+	// you cannot use both. If you create a cross-region action in your pipeline, you
+	// must use artifactStores .
 	ArtifactStore *ArtifactStore
 
 	// A mapping of artifactStore objects and their corresponding Amazon Web Services
 	// Regions. There must be an artifact store for the pipeline Region and for each
-	// cross-region action in the pipeline. You must include either artifactStore or
-	// artifactStores in your pipeline, but you cannot use both. If you create a
-	// cross-region action in your pipeline, you must use artifactStores .
+	// cross-region action in the pipeline.
+	//
+	// You must include either artifactStore or artifactStores in your pipeline, but
+	// you cannot use both. If you create a cross-region action in your pipeline, you
+	// must use artifactStores .
 	ArtifactStores map[string]ArtifactStore
+
+	// The method that the pipeline will use to handle multiple executions. The
+	// default mode is SUPERSEDED.
+	ExecutionMode ExecutionMode
+
+	// CodePipeline provides the following pipeline types, which differ in
+	// characteristics and price, so that you can tailor your pipeline features and
+	// cost to the needs of your applications.
+	//
+	//   - V1 type pipelines have a JSON structure that contains standard pipeline,
+	//   stage, and action-level parameters.
+	//
+	//   - V2 type pipelines have the same structure as a V1 type, along with
+	//   additional parameters for release safety and trigger configuration.
+	//
+	// Including V2 parameters, such as triggers on Git tags, in the pipeline JSON
+	// when creating or updating a pipeline will result in the pipeline having the V2
+	// type of pipeline and the associated costs.
+	//
+	// For information about pricing for CodePipeline, see [Pricing].
+	//
+	// For information about which type of pipeline to choose, see [What type of pipeline is right for me?].
+	//
+	// [What type of pipeline is right for me?]: https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types-planning.html
+	// [Pricing]: http://aws.amazon.com/codepipeline/pricing/
+	PipelineType PipelineType
+
+	// The trigger configuration specifying a type of event, such as Git tags, that
+	// starts the pipeline.
+	//
+	// When a trigger configuration is specified, default change detection for
+	// repository and branch commits is disabled.
+	Triggers []PipelineTriggerDeclaration
+
+	// A list that defines the pipeline variables for a pipeline resource. Variable
+	// names can have alphanumeric and underscore characters, and the values must match
+	// [A-Za-z0-9@\-_]+ .
+	Variables []PipelineVariableDeclaration
 
 	// The version number of the pipeline. A new pipeline always has a version number
 	// of 1. This number is incremented when a pipeline is updated.
@@ -1173,6 +1499,13 @@ type PipelineExecution struct {
 	// A list of ArtifactRevision objects included in a pipeline execution.
 	ArtifactRevisions []ArtifactRevision
 
+	// The method that the pipeline will use to handle multiple executions. The
+	// default mode is SUPERSEDED.
+	ExecutionMode ExecutionMode
+
+	// The type of the pipeline execution.
+	ExecutionType ExecutionType
+
 	// The ID of the pipeline execution.
 	PipelineExecutionId *string
 
@@ -1182,33 +1515,66 @@ type PipelineExecution struct {
 	// The version number of the pipeline with the specified pipeline execution.
 	PipelineVersion *int32
 
+	// The metadata about the execution pertaining to stage rollback.
+	RollbackMetadata *PipelineRollbackMetadata
+
 	// The status of the pipeline execution.
+	//
 	//   - Cancelled: The pipeline’s definition was updated before the pipeline
 	//   execution could be completed.
+	//
 	//   - InProgress: The pipeline execution is currently running.
+	//
 	//   - Stopped: The pipeline execution was manually stopped. For more information,
-	//   see Stopped Executions (https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-executions-stopped)
-	//   .
+	//   see [Stopped Executions].
+	//
 	//   - Stopping: The pipeline execution received a request to be manually stopped.
 	//   Depending on the selected stop mode, the execution is either completing or
-	//   abandoning in-progress actions. For more information, see Stopped Executions (https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-executions-stopped)
-	//   .
+	//   abandoning in-progress actions. For more information, see [Stopped Executions].
+	//
 	//   - Succeeded: The pipeline execution was completed successfully.
+	//
 	//   - Superseded: While this pipeline execution was waiting for the next stage to
 	//   be completed, a newer pipeline execution advanced and continued through the
-	//   pipeline instead. For more information, see Superseded Executions (https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-superseded)
-	//   .
+	//   pipeline instead. For more information, see [Superseded Executions].
+	//
 	//   - Failed: The pipeline execution was not completed successfully.
+	//
+	// [Superseded Executions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-superseded
+	// [Stopped Executions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-executions-stopped
 	Status PipelineExecutionStatus
 
 	// A summary that contains a description of the pipeline execution status.
 	StatusSummary *string
+
+	// The interaction or event that started a pipeline execution.
+	Trigger *ExecutionTrigger
+
+	// A list of pipeline variables used for the pipeline execution.
+	Variables []ResolvedPipelineVariable
+
+	noSmithyDocumentSerde
+}
+
+// The pipeline execution to filter on.
+type PipelineExecutionFilter struct {
+
+	// Filter for pipeline executions where the stage was successful in the current
+	// pipeline version.
+	SucceededInStage *SucceededInStageFilter
 
 	noSmithyDocumentSerde
 }
 
 // Summary information about a pipeline execution.
 type PipelineExecutionSummary struct {
+
+	// The method that the pipeline will use to handle multiple executions. The
+	// default mode is SUPERSEDED.
+	ExecutionMode ExecutionMode
+
+	// Type of the pipeline execution.
+	ExecutionType ExecutionType
 
 	// The date and time of the last change to the pipeline execution, in timestamp
 	// format.
@@ -1217,6 +1583,9 @@ type PipelineExecutionSummary struct {
 	// The ID of the pipeline execution.
 	PipelineExecutionId *string
 
+	// The metadata for the stage execution to be rolled back.
+	RollbackMetadata *PipelineRollbackMetadata
+
 	// A list of the source artifact revisions that initiated a pipeline execution.
 	SourceRevisions []SourceRevision
 
@@ -1224,21 +1593,30 @@ type PipelineExecutionSummary struct {
 	StartTime *time.Time
 
 	// The status of the pipeline execution.
+	//
 	//   - InProgress: The pipeline execution is currently running.
+	//
 	//   - Stopped: The pipeline execution was manually stopped. For more information,
-	//   see Stopped Executions (https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-executions-stopped)
-	//   .
+	//   see [Stopped Executions].
+	//
 	//   - Stopping: The pipeline execution received a request to be manually stopped.
 	//   Depending on the selected stop mode, the execution is either completing or
-	//   abandoning in-progress actions. For more information, see Stopped Executions (https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-executions-stopped)
-	//   .
+	//   abandoning in-progress actions. For more information, see [Stopped Executions].
+	//
 	//   - Succeeded: The pipeline execution was completed successfully.
+	//
 	//   - Superseded: While this pipeline execution was waiting for the next stage to
 	//   be completed, a newer pipeline execution advanced and continued through the
-	//   pipeline instead. For more information, see Superseded Executions (https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-superseded)
-	//   .
+	//   pipeline instead. For more information, see [Superseded Executions].
+	//
 	//   - Failed: The pipeline execution was not completed successfully.
+	//
+	// [Superseded Executions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-superseded
+	// [Stopped Executions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/concepts.html#concepts-executions-stopped
 	Status PipelineExecutionStatus
+
+	// Status summary for the pipeline.
+	StatusSummary *string
 
 	// The interaction that stopped a pipeline execution.
 	StopTrigger *StopExecutionTrigger
@@ -1263,13 +1641,22 @@ type PipelineMetadata struct {
 	// for the pipeline, in timestamp format. You can migrate (update) a polling
 	// pipeline to use event-based change detection. For example, for a pipeline with a
 	// CodeCommit source, we recommend you migrate (update) your pipeline to use
-	// CloudWatch Events. To learn more, see Migrate polling pipelines to use
-	// event-based change detection (https://docs.aws.amazon.com/codepipeline/latest/userguide/update-change-detection.html)
-	// in the CodePipeline User Guide.
+	// CloudWatch Events. To learn more, see [Migrate polling pipelines to use event-based change detection]in the CodePipeline User Guide.
+	//
+	// [Migrate polling pipelines to use event-based change detection]: https://docs.aws.amazon.com/codepipeline/latest/userguide/update-change-detection.html
 	PollingDisabledAt *time.Time
 
 	// The date and time the pipeline was last updated, in timestamp format.
 	Updated *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// The metadata for the stage execution to be rolled back.
+type PipelineRollbackMetadata struct {
+
+	// The pipeline execution ID to which the stage will be rolled back.
+	RollbackTargetPipelineExecutionId *string
 
 	noSmithyDocumentSerde
 }
@@ -1280,14 +1667,505 @@ type PipelineSummary struct {
 	// The date and time the pipeline was created, in timestamp format.
 	Created *time.Time
 
+	// The method that the pipeline will use to handle multiple executions. The
+	// default mode is SUPERSEDED.
+	ExecutionMode ExecutionMode
+
 	// The name of the pipeline.
 	Name *string
+
+	// CodePipeline provides the following pipeline types, which differ in
+	// characteristics and price, so that you can tailor your pipeline features and
+	// cost to the needs of your applications.
+	//
+	//   - V1 type pipelines have a JSON structure that contains standard pipeline,
+	//   stage, and action-level parameters.
+	//
+	//   - V2 type pipelines have the same structure as a V1 type, along with
+	//   additional parameters for release safety and trigger configuration.
+	//
+	// Including V2 parameters, such as triggers on Git tags, in the pipeline JSON
+	// when creating or updating a pipeline will result in the pipeline having the V2
+	// type of pipeline and the associated costs.
+	//
+	// For information about pricing for CodePipeline, see [Pricing].
+	//
+	// For information about which type of pipeline to choose, see [What type of pipeline is right for me?].
+	//
+	// [What type of pipeline is right for me?]: https://docs.aws.amazon.com/codepipeline/latest/userguide/pipeline-types-planning.html
+	// [Pricing]: http://aws.amazon.com/codepipeline/pricing/
+	PipelineType PipelineType
 
 	// The date and time of the last update to the pipeline, in timestamp format.
 	Updated *time.Time
 
 	// The version number of the pipeline.
 	Version *int32
+
+	noSmithyDocumentSerde
+}
+
+// Represents information about the specified trigger configuration, such as the
+// filter criteria and the source stage for the action that contains the trigger.
+//
+// This is only supported for the CodeStarSourceConnection action type.
+//
+// When a trigger configuration is specified, default change detection for
+// repository and branch commits is disabled.
+type PipelineTriggerDeclaration struct {
+
+	// Provides the filter criteria and the source stage for the repository event that
+	// starts the pipeline, such as Git tags.
+	//
+	// This member is required.
+	GitConfiguration *GitConfiguration
+
+	// The source provider for the event, such as connections configured for a
+	// repository with Git tags, for the specified trigger configuration.
+	//
+	// This member is required.
+	ProviderType PipelineTriggerProviderType
+
+	noSmithyDocumentSerde
+}
+
+// A pipeline-level variable used for a pipeline execution.
+type PipelineVariable struct {
+
+	// The name of a pipeline-level variable.
+	//
+	// This member is required.
+	Name *string
+
+	// The value of a pipeline-level variable.
+	//
+	// This member is required.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// A variable declared at the pipeline level.
+type PipelineVariableDeclaration struct {
+
+	// The name of a pipeline-level variable.
+	//
+	// This member is required.
+	Name *string
+
+	// The value of a pipeline-level variable.
+	DefaultValue *string
+
+	// The description of a pipeline-level variable. It's used to add additional
+	// context about the variable, and not being used at time when pipeline executes.
+	Description *string
+
+	noSmithyDocumentSerde
+}
+
+// A pipeline-level variable used for a pipeline execution.
+type ResolvedPipelineVariable struct {
+
+	// The name of a pipeline-level variable.
+	Name *string
+
+	// The resolved value of a pipeline-level variable.
+	ResolvedValue *string
+
+	noSmithyDocumentSerde
+}
+
+// The retry configuration specifies automatic retry for a failed stage, along
+// with the configured retry mode.
+type RetryConfiguration struct {
+
+	// The method that you want to configure for automatic stage retry on stage
+	// failure. You can specify to retry only failed action in the stage or all actions
+	// in the stage.
+	RetryMode StageRetryMode
+
+	noSmithyDocumentSerde
+}
+
+// The details of a specific automatic retry on stage failure, including the
+// attempt number and trigger.
+type RetryStageMetadata struct {
+
+	// The number of attempts for a specific stage with automatic retry on stage
+	// failure. One attempt is allowed for automatic stage retry on failure.
+	AutoStageRetryAttempt *int32
+
+	// The latest trigger for a specific stage where manual or automatic retries have
+	// been made upon stage failure.
+	LatestRetryTrigger RetryTrigger
+
+	// The number of attempts for a specific stage where manual retries have been made
+	// upon stage failure.
+	ManualStageRetryAttempt *int32
+
+	noSmithyDocumentSerde
+}
+
+// Represents information about a rule configuration property.
+type RuleConfigurationProperty struct {
+
+	// Whether the configuration property is a key.
+	//
+	// This member is required.
+	Key bool
+
+	// The name of the rule configuration property.
+	//
+	// This member is required.
+	Name *string
+
+	// Whether the configuration property is a required value.
+	//
+	// This member is required.
+	Required bool
+
+	// Whether the configuration property is secret.
+	//
+	// When updating a pipeline, passing * * * * * without changing any other values
+	// of the action preserves the previous value of the secret.
+	//
+	// This member is required.
+	Secret bool
+
+	// The description of the action configuration property that is displayed to users.
+	Description *string
+
+	// Indicates whether the property can be queried.
+	//
+	// If you create a pipeline with a condition and rule, and that rule contains a
+	// queryable property, the value for that configuration property is subject to
+	// other restrictions. The value must be less than or equal to twenty (20)
+	// characters. The value can contain only alphanumeric characters, underscores, and
+	// hyphens.
+	Queryable bool
+
+	// The type of the configuration property.
+	Type RuleConfigurationPropertyType
+
+	noSmithyDocumentSerde
+}
+
+// Represents information about the rule to be created for an associated
+// condition. An example would be creating a new rule for an entry condition, such
+// as a rule that checks for a test result before allowing the run to enter the
+// deployment stage. For more information about conditions, see [Stage conditions]. For more
+// information about rules, see the [CodePipeline rule reference].
+//
+// [Stage conditions]: https://docs.aws.amazon.com/codepipeline/latest/userguide/stage-conditions.html
+// [CodePipeline rule reference]: https://docs.aws.amazon.com/codepipeline/latest/userguide/rule-reference.html
+type RuleDeclaration struct {
+
+	// The name of the rule that is created for the condition, such as VariableCheck .
+	//
+	// This member is required.
+	Name *string
+
+	// The ID for the rule type, which is made up of the combined values for category,
+	// owner, provider, and version.
+	//
+	// This member is required.
+	RuleTypeId *RuleTypeId
+
+	// The shell commands to run with your commands rule in CodePipeline. All commands
+	// are supported except multi-line formats. While CodeBuild logs and permissions
+	// are used, you do not need to create any resources in CodeBuild.
+	//
+	// Using compute time for this action will incur separate charges in CodeBuild.
+	Commands []string
+
+	// The action configuration fields for the rule.
+	Configuration map[string]string
+
+	// The input artifacts fields for the rule, such as specifying an input file for
+	// the rule.
+	InputArtifacts []InputArtifact
+
+	// The Region for the condition associated with the rule.
+	Region *string
+
+	// The pipeline role ARN associated with the rule.
+	RoleArn *string
+
+	// The action timeout for the rule.
+	TimeoutInMinutes *int32
+
+	noSmithyDocumentSerde
+}
+
+// Represents information about each time a rule is run as part of the pipeline
+// execution for a pipeline configured with conditions.
+type RuleExecution struct {
+
+	// Represents information about an error in CodePipeline.
+	ErrorDetails *ErrorDetails
+
+	// The external ID of the run of the rule.
+	ExternalExecutionId *string
+
+	// The URL of a resource external to Amazon Web Services that is used when running
+	// the rule (for example, an external repository URL).
+	ExternalExecutionUrl *string
+
+	// The last status change of the rule.
+	LastStatusChange *time.Time
+
+	// The ARN of the user who last changed the rule.
+	LastUpdatedBy *string
+
+	// The execution ID for the run of the rule.
+	RuleExecutionId *string
+
+	// The status of the run of the rule, such as FAILED.
+	Status RuleExecutionStatus
+
+	// A summary of the run of the rule.
+	Summary *string
+
+	// The system-generated token used to identify a unique request.
+	Token *string
+
+	noSmithyDocumentSerde
+}
+
+// The details of the runs for a rule and the results produced on an artifact as
+// it passes through stages in the pipeline.
+type RuleExecutionDetail struct {
+
+	// Input details for the rule execution, such as role ARN, Region, and input
+	// artifacts.
+	Input *RuleExecutionInput
+
+	// The date and time of the last change to the rule execution, in timestamp format.
+	LastUpdateTime *time.Time
+
+	// Output details for the rule execution, such as the rule execution result.
+	Output *RuleExecutionOutput
+
+	// The ID of the pipeline execution in the stage where the rule was run. Use the GetPipelineState
+	// action to retrieve the current pipelineExecutionId of the stage.
+	PipelineExecutionId *string
+
+	// The version number of the pipeline with the stage where the rule was run.
+	PipelineVersion *int32
+
+	// The ID of the run for the rule.
+	RuleExecutionId *string
+
+	// The name of the rule that was run in the stage.
+	RuleName *string
+
+	// The name of the stage where the rule was run.
+	StageName *string
+
+	// The start time of the rule execution.
+	StartTime *time.Time
+
+	// The status of the rule execution. Status categories are InProgress , Succeeded ,
+	// and Failed .
+	Status RuleExecutionStatus
+
+	// The ARN of the user who changed the rule execution details.
+	UpdatedBy *string
+
+	noSmithyDocumentSerde
+}
+
+// Filter values for the rule execution.
+type RuleExecutionFilter struct {
+
+	// The field that specifies to filter on the latest execution in the pipeline.
+	//
+	// Filtering on the latest execution is available for executions run on or after
+	// February 08, 2024.
+	LatestInPipelineExecution *LatestInPipelineExecutionFilter
+
+	// The pipeline execution ID used to filter rule execution history.
+	PipelineExecutionId *string
+
+	noSmithyDocumentSerde
+}
+
+// Input information used for a rule execution.
+type RuleExecutionInput struct {
+
+	// Configuration data for a rule execution, such as the resolved values for that
+	// run.
+	Configuration map[string]string
+
+	// Details of input artifacts of the rule that correspond to the rule execution.
+	InputArtifacts []ArtifactDetail
+
+	// The Amazon Web Services Region for the rule, such as us-east-1.
+	Region *string
+
+	// Configuration data for a rule execution with all variable references replaced
+	// with their real values for the execution.
+	ResolvedConfiguration map[string]string
+
+	// The ARN of the IAM service role that performs the declared rule. This is
+	// assumed through the roleArn for the pipeline.
+	RoleArn *string
+
+	// The ID for the rule type, which is made up of the combined values for category,
+	// owner, provider, and version.
+	RuleTypeId *RuleTypeId
+
+	noSmithyDocumentSerde
+}
+
+// Output details listed for a rule execution, such as the rule execution result.
+type RuleExecutionOutput struct {
+
+	// Execution result information listed in the output details for a rule execution.
+	ExecutionResult *RuleExecutionResult
+
+	noSmithyDocumentSerde
+}
+
+// Execution result information, such as the external execution ID.
+type RuleExecutionResult struct {
+
+	// Represents information about an error in CodePipeline.
+	ErrorDetails *ErrorDetails
+
+	// The external ID for the rule execution.
+	ExternalExecutionId *string
+
+	// The external provider summary for the rule execution.
+	ExternalExecutionSummary *string
+
+	// The deepest external link to the external resource (for example, a repository
+	// URL or deployment endpoint) that is used when running the rule.
+	ExternalExecutionUrl *string
+
+	noSmithyDocumentSerde
+}
+
+// The change to a rule that creates a revision of the rule.
+type RuleRevision struct {
+
+	// The date and time when the most recent version of the rule was created, in
+	// timestamp format.
+	//
+	// This member is required.
+	Created *time.Time
+
+	// The unique identifier of the change that set the state to this revision (for
+	// example, a deployment ID or timestamp).
+	//
+	// This member is required.
+	RevisionChangeId *string
+
+	// The system-generated unique ID that identifies the revision number of the rule.
+	//
+	// This member is required.
+	RevisionId *string
+
+	noSmithyDocumentSerde
+}
+
+// Returns information about the state of a rule.
+//
+// Values returned in the revisionId field indicate the rule revision information,
+// such as the commit ID, for the current state.
+type RuleState struct {
+
+	// The ID of the current revision of the artifact successfully worked on by the
+	// job.
+	CurrentRevision *RuleRevision
+
+	// A URL link for more information about the state of the action, such as a
+	// details page.
+	EntityUrl *string
+
+	// Represents information about the latest run of an rule.
+	LatestExecution *RuleExecution
+
+	// A URL link for more information about the revision, such as a commit details
+	// page.
+	RevisionUrl *string
+
+	// The name of the rule.
+	RuleName *string
+
+	noSmithyDocumentSerde
+}
+
+// The rule type, which is made up of the combined values for category, owner,
+// provider, and version.
+type RuleType struct {
+
+	// Represents information about a rule type.
+	//
+	// This member is required.
+	Id *RuleTypeId
+
+	// Returns information about the details of an artifact.
+	//
+	// This member is required.
+	InputArtifactDetails *ArtifactDetails
+
+	// The configuration properties for the rule type.
+	RuleConfigurationProperties []RuleConfigurationProperty
+
+	// Returns information about the settings for a rule type.
+	Settings *RuleTypeSettings
+
+	noSmithyDocumentSerde
+}
+
+// The ID for the rule type, which is made up of the combined values for category,
+// owner, provider, and version.
+type RuleTypeId struct {
+
+	// A category defines what kind of rule can be run in the stage, and constrains
+	// the provider type for the rule. The valid category is Rule .
+	//
+	// This member is required.
+	Category RuleCategory
+
+	// The rule provider, such as the DeploymentWindow rule.
+	//
+	// This member is required.
+	Provider *string
+
+	// The creator of the rule being called. The valid value for the Owner field in
+	// the rule category is AWS .
+	Owner RuleOwner
+
+	// A string that describes the rule version.
+	Version *string
+
+	noSmithyDocumentSerde
+}
+
+// Returns information about the settings for a rule type.
+type RuleTypeSettings struct {
+
+	// The URL returned to the CodePipeline console that provides a deep link to the
+	// resources of the external system, such as the configuration page for a
+	// CodeDeploy deployment group. This link is provided as part of the action display
+	// in the pipeline.
+	EntityUrlTemplate *string
+
+	// The URL returned to the CodePipeline console that contains a link to the
+	// top-level landing page for the external system, such as the console page for
+	// CodeDeploy. This link is shown on the pipeline view page in the CodePipeline
+	// console and provides a link to the execution entity of the external action.
+	ExecutionUrlTemplate *string
+
+	// The URL returned to the CodePipeline console that contains a link to the page
+	// where customers can update or change the configuration of the external action.
+	RevisionUrlTemplate *string
+
+	// The URL of a sign-up page where users can sign up for an external service and
+	// perform initial configuration of the action provided by that service.
+	ThirdPartyConfigurationUrl *string
 
 	noSmithyDocumentSerde
 }
@@ -1347,6 +2225,60 @@ type SourceRevision struct {
 	noSmithyDocumentSerde
 }
 
+// A list that allows you to specify, or override, the source revision for a
+// pipeline execution that's being started. A source revision is the version with
+// all the changes to your application code, or source artifact, for the pipeline
+// execution.
+//
+// For the S3_OBJECT_VERSION_ID and S3_OBJECT_KEY types of source revisions,
+// either of the types can be used independently, or they can be used together to
+// override the source with a specific ObjectKey and VersionID.
+type SourceRevisionOverride struct {
+
+	// The name of the action where the override will be applied.
+	//
+	// This member is required.
+	ActionName *string
+
+	// The type of source revision, based on the source provider. For example, the
+	// revision type for the CodeCommit action provider is the commit ID.
+	//
+	// This member is required.
+	RevisionType SourceRevisionType
+
+	// The source revision, or version of your source artifact, with the changes that
+	// you want to run in the pipeline execution.
+	//
+	// This member is required.
+	RevisionValue *string
+
+	noSmithyDocumentSerde
+}
+
+// Represents information about the run of a condition for a stage.
+type StageConditionsExecution struct {
+
+	// The status of a run of a condition for a stage.
+	Status ConditionExecutionStatus
+
+	// A summary of the run of the condition for a stage.
+	Summary *string
+
+	noSmithyDocumentSerde
+}
+
+// The state of a run of a condition for a stage.
+type StageConditionState struct {
+
+	// The states of the conditions for a run of a condition for a stage.
+	ConditionStates []ConditionState
+
+	// Represents information about the latest run of a condition for a stage.
+	LatestExecution *StageConditionsExecution
+
+	noSmithyDocumentSerde
+}
+
 // Represents information about a stage to a job worker.
 type StageContext struct {
 
@@ -1369,8 +2301,22 @@ type StageDeclaration struct {
 	// This member is required.
 	Name *string
 
+	// The method to use when a stage allows entry. For example, configuring this
+	// field for conditions will allow entry to the stage when the conditions are met.
+	BeforeEntry *BeforeEntryConditions
+
 	// Reserved for future use.
 	Blockers []BlockerDeclaration
+
+	// The method to use when a stage has not completed successfully. For example,
+	// configuring this field for rollback will roll back a failed stage automatically
+	// to the last successful pipeline execution in the stage.
+	OnFailure *FailureConditions
+
+	// The method to use when a stage has succeeded. For example, configuring this
+	// field for conditions will allow the stage to succeed when the conditions are
+	// met.
+	OnSuccess *SuccessConditions
 
 	noSmithyDocumentSerde
 }
@@ -1383,12 +2329,17 @@ type StageExecution struct {
 	// This member is required.
 	PipelineExecutionId *string
 
-	// The status of the stage, or for a completed stage, the last status of the
-	// stage. A status of cancelled means that the pipeline’s definition was updated
-	// before the stage execution could be completed.
+	// The status of the stage, or for a completed stage, the last status of the stage.
+	//
+	// A status of cancelled means that the pipeline’s definition was updated before
+	// the stage execution could be completed.
 	//
 	// This member is required.
 	Status StageExecutionStatus
+
+	// The type of pipeline execution for the stage, such as a rollback pipeline
+	// execution.
+	Type ExecutionType
 
 	noSmithyDocumentSerde
 }
@@ -1399,8 +2350,14 @@ type StageState struct {
 	// The state of the stage.
 	ActionStates []ActionState
 
+	// The state of the entry conditions for a stage.
+	BeforeEntryConditionState *StageConditionState
+
 	// Represents information about the run of a stage.
 	InboundExecution *StageExecution
+
+	// The inbound executions for a stage.
+	InboundExecutions []StageExecution
 
 	// The state of the inbound transition, which is either enabled or disabled.
 	InboundTransitionState *TransitionState
@@ -1408,6 +2365,16 @@ type StageState struct {
 	// Information about the latest execution in the stage, including its ID and
 	// status.
 	LatestExecution *StageExecution
+
+	// The state of the failure conditions for a stage.
+	OnFailureConditionState *StageConditionState
+
+	// The state of the success conditions for a stage.
+	OnSuccessConditionState *StageConditionState
+
+	// he details of a specific automatic retry on stage failure, including the
+	// attempt number and trigger.
+	RetryStageMetadata *RetryStageMetadata
 
 	// The name of the stage.
 	StageName *string
@@ -1420,6 +2387,28 @@ type StopExecutionTrigger struct {
 
 	// The user-specified reason the pipeline was stopped.
 	Reason *string
+
+	noSmithyDocumentSerde
+}
+
+// Filter for pipeline executions that have successfully completed the stage in
+// the current pipeline version.
+type SucceededInStageFilter struct {
+
+	// The name of the stage for filtering for pipeline executions where the stage was
+	// successful in the current pipeline version.
+	StageName *string
+
+	noSmithyDocumentSerde
+}
+
+// The conditions for making checks that, if met, succeed a stage.
+type SuccessConditions struct {
+
+	// The conditions that are success conditions.
+	//
+	// This member is required.
+	Conditions []Condition
 
 	noSmithyDocumentSerde
 }
@@ -1490,8 +2479,9 @@ type ThirdPartyJobData struct {
 	// user when the action is created.
 	OutputArtifacts []Artifact
 
-	// Represents information about a pipeline to a job worker. Does not include
-	// pipelineArn and pipelineExecutionId for ThirdParty jobs.
+	// Represents information about a pipeline to a job worker.
+	//
+	// Does not include pipelineArn and pipelineExecutionId for ThirdParty jobs.
 	PipelineContext *PipelineContext
 
 	noSmithyDocumentSerde
@@ -1507,8 +2497,7 @@ type ThirdPartyJobDetails struct {
 	Id *string
 
 	// A system-generated random number that CodePipeline uses to ensure that the job
-	// is being worked on by only one job worker. Use this number in an
-	// AcknowledgeThirdPartyJob request.
+	// is being worked on by only one job worker. Use this number in an AcknowledgeThirdPartyJobrequest.
 	Nonce *string
 
 	noSmithyDocumentSerde
@@ -1544,6 +2533,16 @@ type WebhookAuthConfiguration struct {
 
 	// The property used to configure GitHub authentication. For GITHUB_HMAC, only the
 	// SecretToken property must be set.
+	//
+	// When creating CodePipeline webhooks, do not use your own credentials or reuse
+	// the same secret token across multiple webhooks. For optimal security, generate a
+	// unique secret token for each webhook you create. The secret token is an
+	// arbitrary string that you provide, which GitHub uses to compute and sign the
+	// webhook payloads sent to CodePipeline, for protecting the integrity and
+	// authenticity of the webhook payloads. Using your own credentials or reusing the
+	// same token across multiple webhooks can lead to security vulnerabilities.
+	//
+	// If a secret token was provided, it will be redacted in the response.
 	SecretToken *string
 
 	noSmithyDocumentSerde
@@ -1553,12 +2552,26 @@ type WebhookAuthConfiguration struct {
 type WebhookDefinition struct {
 
 	// Supported options are GITHUB_HMAC, IP, and UNAUTHENTICATED.
+	//
+	// When creating CodePipeline webhooks, do not use your own credentials or reuse
+	// the same secret token across multiple webhooks. For optimal security, generate a
+	// unique secret token for each webhook you create. The secret token is an
+	// arbitrary string that you provide, which GitHub uses to compute and sign the
+	// webhook payloads sent to CodePipeline, for protecting the integrity and
+	// authenticity of the webhook payloads. Using your own credentials or reusing the
+	// same token across multiple webhooks can lead to security vulnerabilities.
+	//
+	// If a secret token was provided, it will be redacted in the response.
+	//
 	//   - For information about the authentication scheme implemented by GITHUB_HMAC,
-	//   see Securing your webhooks (https://developer.github.com/webhooks/securing/)
-	//   on the GitHub Developer website.
+	//   see [Securing your webhooks]on the GitHub Developer website.
+	//
 	//   - IP rejects webhooks trigger requests unless they originate from an IP
 	//   address in the IP range whitelisted in the authentication configuration.
+	//
 	//   - UNAUTHENTICATED accepts all webhook trigger requests regardless of origin.
+	//
+	// [Securing your webhooks]: https://developer.github.com/webhooks/securing/
 	//
 	// This member is required.
 	Authentication WebhookAuthenticationType
@@ -1603,8 +2616,10 @@ type WebhookFilterRule struct {
 
 	// A JsonPath expression that is applied to the body/payload of the webhook. The
 	// value selected by the JsonPath expression must match the value specified in the
-	// MatchEquals field. Otherwise, the request is ignored. For more information, see
-	// Java JsonPath implementation (https://github.com/json-path/JsonPath) in GitHub.
+	// MatchEquals field. Otherwise, the request is ignored. For more information, see [Java JsonPath implementation]
+	// in GitHub.
+	//
+	// [Java JsonPath implementation]: https://github.com/json-path/JsonPath
 	//
 	// This member is required.
 	JsonPath *string
@@ -1616,9 +2631,9 @@ type WebhookFilterRule struct {
 	// the value supplied here is "refs/heads/{Branch}" and the target action has an
 	// action configuration property called "Branch" with a value of "main", the
 	// MatchEquals value is evaluated as "refs/heads/main". For a list of action
-	// configuration properties for built-in action types, see Pipeline Structure
-	// Reference Action Requirements (https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html#action-requirements)
-	// .
+	// configuration properties for built-in action types, see [Pipeline Structure Reference Action Requirements].
+	//
+	// [Pipeline Structure Reference Action Requirements]: https://docs.aws.amazon.com/codepipeline/latest/userguide/reference-pipeline-structure.html#action-requirements
 	MatchEquals *string
 
 	noSmithyDocumentSerde

@@ -2,6 +2,23 @@
 
 package types
 
+type AssociationType string
+
+// Enum values for AssociationType
+const (
+	AssociationTypeReservationTimeWindowArn AssociationType = "RESERVATION_TIME_WINDOW_ARN"
+)
+
+// Values returns all known values for AssociationType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AssociationType) Values() []AssociationType {
+	return []AssociationType{
+		"RESERVATION_TIME_WINDOW_ARN",
+	}
+}
+
 type CancellationStatus string
 
 // Enum values for CancellationStatus
@@ -11,8 +28,9 @@ const (
 )
 
 // Values returns all known values for CancellationStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CancellationStatus) Values() []CancellationStatus {
 	return []CancellationStatus{
 		"CANCELLING",
@@ -29,8 +47,9 @@ const (
 )
 
 // Values returns all known values for CompressionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CompressionType) Values() []CompressionType {
 	return []CompressionType{
 		"NONE",
@@ -48,8 +67,9 @@ const (
 )
 
 // Values returns all known values for DeviceStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeviceStatus) Values() []DeviceStatus {
 	return []DeviceStatus{
 		"ONLINE",
@@ -67,12 +87,31 @@ const (
 )
 
 // Values returns all known values for DeviceType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeviceType) Values() []DeviceType {
 	return []DeviceType{
 		"QPU",
 		"SIMULATOR",
+	}
+}
+
+type HybridJobAdditionalAttributeName string
+
+// Enum values for HybridJobAdditionalAttributeName
+const (
+	HybridJobAdditionalAttributeNameQueueInfo HybridJobAdditionalAttributeName = "QueueInfo"
+)
+
+// Values returns all known values for HybridJobAdditionalAttributeName. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (HybridJobAdditionalAttributeName) Values() []HybridJobAdditionalAttributeName {
+	return []HybridJobAdditionalAttributeName{
+		"QueueInfo",
 	}
 }
 
@@ -122,8 +161,9 @@ const (
 )
 
 // Values returns all known values for InstanceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceType) Values() []InstanceType {
 	return []InstanceType{
 		"ml.m4.xlarge",
@@ -186,8 +226,9 @@ const (
 )
 
 // Values returns all known values for JobEventType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobEventType) Values() []JobEventType {
 	return []JobEventType{
 		"WAITING_FOR_PRIORITY",
@@ -217,8 +258,9 @@ const (
 )
 
 // Values returns all known values for JobPrimaryStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobPrimaryStatus) Values() []JobPrimaryStatus {
 	return []JobPrimaryStatus{
 		"QUEUED",
@@ -227,6 +269,24 @@ func (JobPrimaryStatus) Values() []JobPrimaryStatus {
 		"FAILED",
 		"CANCELLING",
 		"CANCELLED",
+	}
+}
+
+type QuantumTaskAdditionalAttributeName string
+
+// Enum values for QuantumTaskAdditionalAttributeName
+const (
+	QuantumTaskAdditionalAttributeNameQueueInfo QuantumTaskAdditionalAttributeName = "QueueInfo"
+)
+
+// Values returns all known values for QuantumTaskAdditionalAttributeName. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QuantumTaskAdditionalAttributeName) Values() []QuantumTaskAdditionalAttributeName {
+	return []QuantumTaskAdditionalAttributeName{
+		"QueueInfo",
 	}
 }
 
@@ -244,8 +304,9 @@ const (
 )
 
 // Values returns all known values for QuantumTaskStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (QuantumTaskStatus) Values() []QuantumTaskStatus {
 	return []QuantumTaskStatus{
 		"CREATED",
@@ -255,6 +316,44 @@ func (QuantumTaskStatus) Values() []QuantumTaskStatus {
 		"FAILED",
 		"CANCELLING",
 		"CANCELLED",
+	}
+}
+
+type QueueName string
+
+// Enum values for QueueName
+const (
+	QueueNameQuantumTasksQueue QueueName = "QUANTUM_TASKS_QUEUE"
+	QueueNameJobsQueue         QueueName = "JOBS_QUEUE"
+)
+
+// Values returns all known values for QueueName. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QueueName) Values() []QueueName {
+	return []QueueName{
+		"QUANTUM_TASKS_QUEUE",
+		"JOBS_QUEUE",
+	}
+}
+
+type QueuePriority string
+
+// Enum values for QueuePriority
+const (
+	QueuePriorityNormal   QueuePriority = "Normal"
+	QueuePriorityPriority QueuePriority = "Priority"
+)
+
+// Values returns all known values for QueuePriority. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QueuePriority) Values() []QueuePriority {
+	return []QueuePriority{
+		"Normal",
+		"Priority",
 	}
 }
 
@@ -273,6 +372,7 @@ const (
 
 // Values returns all known values for SearchJobsFilterOperator. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (SearchJobsFilterOperator) Values() []SearchJobsFilterOperator {
 	return []SearchJobsFilterOperator{
@@ -300,8 +400,9 @@ const (
 
 // Values returns all known values for SearchQuantumTasksFilterOperator. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SearchQuantumTasksFilterOperator) Values() []SearchQuantumTasksFilterOperator {
 	return []SearchQuantumTasksFilterOperator{
 		"LT",

@@ -7,6 +7,32 @@ import (
 	smithy "github.com/aws/smithy-go"
 )
 
+// Access is denied.
+type AccessDeniedException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *AccessDeniedException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *AccessDeniedException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *AccessDeniedException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "AccessDeniedException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *AccessDeniedException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // Your request has conflicting operations. This can occur if you're trying to
 // perform more than one operation on the same resource at the same time.
 type ConflictingOperationException struct {
@@ -92,9 +118,11 @@ func (e *InvalidRequestException) ErrorFault() smithy.ErrorFault { return smithy
 
 // You've reached the limit for a resource. For example, this can occur if you're
 // trying to associate more than the allowed number of child assets or attempting
-// to create more than the allowed number of properties for an asset model. For
-// more information, see Quotas (https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html)
-// in the IoT SiteWise User Guide.
+// to create more than the allowed number of properties for an asset model.
+//
+// For more information, see [Quotas] in the IoT SiteWise User Guide.
+//
+// [Quotas]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html
 type LimitExceededException struct {
 	Message *string
 
@@ -119,6 +147,61 @@ func (e *LimitExceededException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *LimitExceededException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The precondition in one or more of the request-header fields evaluated to FALSE .
+type PreconditionFailedException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	ResourceId  *string
+	ResourceArn *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *PreconditionFailedException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *PreconditionFailedException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *PreconditionFailedException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "PreconditionFailedException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *PreconditionFailedException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The query timed out.
+type QueryTimeoutException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *QueryTimeoutException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *QueryTimeoutException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *QueryTimeoutException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "QueryTimeoutException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *QueryTimeoutException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The resource already exists.
 type ResourceAlreadyExistsException struct {
@@ -203,8 +286,11 @@ func (e *ServiceUnavailableException) ErrorFault() smithy.ErrorFault { return sm
 
 // Your request exceeded a rate limit. For example, you might have exceeded the
 // number of IoT SiteWise assets that can be created per second, the allowed number
-// of messages per second, and so on. For more information, see Quotas (https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html)
-// in the IoT SiteWise User Guide.
+// of messages per second, and so on.
+//
+// For more information, see [Quotas] in the IoT SiteWise User Guide.
+//
+// [Quotas]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/quotas.html
 type ThrottlingException struct {
 	Message *string
 
@@ -231,8 +317,9 @@ func (e *ThrottlingException) ErrorCode() string {
 func (e *ThrottlingException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // You've reached the limit for the number of tags allowed for a resource. For
-// more information, see Tag naming limits and requirements (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html#tag-conventions)
-// in the Amazon Web Services General Reference.
+// more information, see [Tag naming limits and requirements]in the Amazon Web Services General Reference.
+//
+// [Tag naming limits and requirements]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html#tag-conventions
 type TooManyTagsException struct {
 	Message *string
 
@@ -285,3 +372,29 @@ func (e *UnauthorizedException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *UnauthorizedException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The validation failed for this query.
+type ValidationException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ValidationException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ValidationException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ValidationException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ValidationException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ValidationException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }

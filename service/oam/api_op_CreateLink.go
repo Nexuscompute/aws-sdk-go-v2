@@ -4,27 +4,32 @@ package oam
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/oam/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Creates a link between a source account and a sink that you have created in a
-// monitoring account. Before you create a link, you must create a sink in the
-// monitoring account and create a sink policy in that account. The sink policy
-// must permit the source account to link to it. You can grant permission to source
-// accounts by granting permission to an entire organization or to individual
-// accounts. For more information, see CreateSink (https://docs.aws.amazon.com/OAM/latest/APIReference/API_CreateSink.html)
-// and PutSinkPolicy (https://docs.aws.amazon.com/OAM/latest/APIReference/API_PutSinkPolicy.html)
-// . Each monitoring account can be linked to as many as 100,000 source accounts.
+// monitoring account. After the link is created, data is sent from the source
+// account to the monitoring account. When you create a link, you can optionally
+// specify filters that specify which metric namespaces and which log groups are
+// shared from the source account to the monitoring account.
+//
+// Before you create a link, you must create a sink in the monitoring account and
+// create a sink policy in that account. The sink policy must permit the source
+// account to link to it. You can grant permission to source accounts by granting
+// permission to an entire organization or to individual accounts.
+//
+// For more information, see [CreateSink] and [PutSinkPolicy].
+//
+// Each monitoring account can be linked to as many as 100,000 source accounts.
+//
 // Each source account can be linked to as many as five monitoring accounts.
+//
+// [CreateSink]: https://docs.aws.amazon.com/OAM/latest/APIReference/API_CreateSink.html
+// [PutSinkPolicy]: https://docs.aws.amazon.com/OAM/latest/APIReference/API_PutSinkPolicy.html
 func (c *Client) CreateLink(ctx context.Context, params *CreateLinkInput, optFns ...func(*Options)) (*CreateLinkOutput, error) {
 	if params == nil {
 		params = &CreateLinkInput{}
@@ -43,10 +48,14 @@ func (c *Client) CreateLink(ctx context.Context, params *CreateLinkInput, optFns
 type CreateLinkInput struct {
 
 	// Specify a friendly human-readable name to use to identify this source account
-	// when you are viewing data from it in the monitoring account. You can use a
-	// custom label or use the following variables:
+	// when you are viewing data from it in the monitoring account.
+	//
+	// You can use a custom label or use the following variables:
+	//
 	//   - $AccountName is the name of the account
+	//
 	//   - $AccountEmail is the globally unique email address of the account
+	//
 	//   - $AccountEmailNoDomain is the email address of the account without the domain
 	//   name
 	//
@@ -59,19 +68,31 @@ type CreateLinkInput struct {
 	// This member is required.
 	ResourceTypes []types.ResourceType
 
-	// The ARN of the sink to use to create this link. You can use ListSinks (https://docs.aws.amazon.com/OAM/latest/APIReference/API_ListSinks.html)
-	// to find the ARNs of sinks. For more information about sinks, see CreateSink (https://docs.aws.amazon.com/OAM/latest/APIReference/API_CreateSink.html)
-	// .
+	// The ARN of the sink to use to create this link. You can use [ListSinks] to find the ARNs
+	// of sinks.
+	//
+	// For more information about sinks, see [CreateSink].
+	//
+	// [CreateSink]: https://docs.aws.amazon.com/OAM/latest/APIReference/API_CreateSink.html
+	// [ListSinks]: https://docs.aws.amazon.com/OAM/latest/APIReference/API_ListSinks.html
 	//
 	// This member is required.
 	SinkIdentifier *string
 
-	// Assigns one or more tags (key-value pairs) to the link. Tags can help you
-	// organize and categorize your resources. You can also use them to scope user
-	// permissions by granting a user permission to access or change only resources
-	// with certain tag values. For more information about using tags to control
-	// access, see Controlling access to Amazon Web Services resources using tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html)
-	// .
+	// Use this structure to optionally create filters that specify that only some
+	// metric namespaces or log groups are to be shared from the source account to the
+	// monitoring account.
+	LinkConfiguration *types.LinkConfiguration
+
+	// Assigns one or more tags (key-value pairs) to the link.
+	//
+	// Tags can help you organize and categorize your resources. You can also use them
+	// to scope user permissions by granting a user permission to access or change only
+	// resources with certain tag values.
+	//
+	// For more information about using tags to control access, see [Controlling access to Amazon Web Services resources using tags].
+	//
+	// [Controlling access to Amazon Web Services resources using tags]: https://docs.aws.amazon.com/IAM/latest/UserGuide/access_tags.html
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -92,6 +113,10 @@ type CreateLinkOutput struct {
 	// The exact label template that you specified, with the variables not resolved.
 	LabelTemplate *string
 
+	// This structure includes filters that specify which metric namespaces and which
+	// log groups are shared from the source account to the monitoring account.
+	LinkConfiguration *types.LinkConfiguration
+
 	// The resource types supported by this link.
 	ResourceTypes []string
 
@@ -108,6 +133,9 @@ type CreateLinkOutput struct {
 }
 
 func (c *Client) addOperationCreateLinkMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateLink{}, middleware.After)
 	if err != nil {
 		return err
@@ -116,34 +144,38 @@ func (c *Client) addOperationCreateLinkMiddlewares(stack *middleware.Stack, opti
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateLink"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -155,7 +187,13 @@ func (c *Client) addOperationCreateLinkMiddlewares(stack *middleware.Stack, opti
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateLinkResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateLinkValidationMiddleware(stack); err != nil {
@@ -164,7 +202,7 @@ func (c *Client) addOperationCreateLinkMiddlewares(stack *middleware.Stack, opti
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateLink(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -176,7 +214,19 @@ func (c *Client) addOperationCreateLinkMiddlewares(stack *middleware.Stack, opti
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -186,130 +236,6 @@ func newServiceMetadataMiddleware_opCreateLink(region string) *awsmiddleware.Reg
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "oam",
 		OperationName: "CreateLink",
 	}
-}
-
-type opCreateLinkResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateLinkResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateLinkResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "oam"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "oam"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("oam")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateLinkResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateLinkResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

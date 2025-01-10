@@ -94,7 +94,7 @@ var partitionRegexp = struct {
 	AwsUsGov *regexp.Regexp
 }{
 
-	Aws:      regexp.MustCompile("^(us|eu|ap|sa|ca|me|af|il)\\-\\w+\\-\\d+$"),
+	Aws:      regexp.MustCompile("^(us|eu|ap|sa|ca|me|af|il|mx)\\-\\w+\\-\\d+$"),
 	AwsCn:    regexp.MustCompile("^cn\\-\\w+\\-\\d+$"),
 	AwsIso:   regexp.MustCompile("^us\\-iso\\-\\w+\\-\\d+$"),
 	AwsIsoB:  regexp.MustCompile("^us\\-isob\\-\\w+\\-\\d+$"),
@@ -239,6 +239,24 @@ var defaultPartitions = endpoints.Partitions{
 				Hostname: "servicediscovery.ap-southeast-4.api.aws",
 			},
 			endpoints.EndpointKey{
+				Region: "ap-southeast-5",
+			}: endpoints.Endpoint{},
+			endpoints.EndpointKey{
+				Region:  "ap-southeast-5",
+				Variant: endpoints.DualStackVariant,
+			}: {
+				Hostname: "servicediscovery.ap-southeast-5.api.aws",
+			},
+			endpoints.EndpointKey{
+				Region: "ap-southeast-7",
+			}: endpoints.Endpoint{},
+			endpoints.EndpointKey{
+				Region:  "ap-southeast-7",
+				Variant: endpoints.DualStackVariant,
+			}: {
+				Hostname: "servicediscovery.ap-southeast-7.api.aws",
+			},
+			endpoints.EndpointKey{
 				Region: "ca-central-1",
 			}: endpoints.Endpoint{},
 			endpoints.EndpointKey{
@@ -265,6 +283,36 @@ var defaultPartitions = endpoints.Partitions{
 				Hostname: "servicediscovery-fips.ca-central-1.amazonaws.com",
 				CredentialScope: endpoints.CredentialScope{
 					Region: "ca-central-1",
+				},
+				Deprecated: aws.TrueTernary,
+			},
+			endpoints.EndpointKey{
+				Region: "ca-west-1",
+			}: endpoints.Endpoint{},
+			endpoints.EndpointKey{
+				Region:  "ca-west-1",
+				Variant: endpoints.FIPSVariant,
+			}: {
+				Hostname: "servicediscovery-fips.ca-west-1.amazonaws.com",
+			},
+			endpoints.EndpointKey{
+				Region:  "ca-west-1",
+				Variant: endpoints.FIPSVariant | endpoints.DualStackVariant,
+			}: {
+				Hostname: "servicediscovery-fips.ca-west-1.api.aws",
+			},
+			endpoints.EndpointKey{
+				Region:  "ca-west-1",
+				Variant: endpoints.DualStackVariant,
+			}: {
+				Hostname: "servicediscovery.ca-west-1.api.aws",
+			},
+			endpoints.EndpointKey{
+				Region: "ca-west-1-fips",
+			}: endpoints.Endpoint{
+				Hostname: "servicediscovery-fips.ca-west-1.amazonaws.com",
+				CredentialScope: endpoints.CredentialScope{
+					Region: "ca-west-1",
 				},
 				Deprecated: aws.TrueTernary,
 			},
@@ -704,21 +752,21 @@ var defaultPartitions = endpoints.Partitions{
 			}: endpoints.Endpoint{},
 			endpoints.EndpointKey{
 				Region:  "us-gov-east-1",
-				Variant: endpoints.FIPSVariant | endpoints.DualStackVariant,
-			}: {
-				Hostname: "servicediscovery-fips.us-gov-east-1.amazonaws.com",
-			},
-			endpoints.EndpointKey{
-				Region:  "us-gov-east-1",
 				Variant: endpoints.FIPSVariant,
 			}: {
 				Hostname: "servicediscovery-fips.us-gov-east-1.amazonaws.com",
 			},
 			endpoints.EndpointKey{
 				Region:  "us-gov-east-1",
+				Variant: endpoints.FIPSVariant | endpoints.DualStackVariant,
+			}: {
+				Hostname: "servicediscovery-fips.us-gov-east-1.api.aws",
+			},
+			endpoints.EndpointKey{
+				Region:  "us-gov-east-1",
 				Variant: endpoints.DualStackVariant,
 			}: {
-				Hostname: "servicediscovery.us-gov-east-1.amazonaws.com",
+				Hostname: "servicediscovery.us-gov-east-1.api.aws",
 			},
 			endpoints.EndpointKey{
 				Region: "us-gov-east-1-fips",
@@ -734,21 +782,21 @@ var defaultPartitions = endpoints.Partitions{
 			}: endpoints.Endpoint{},
 			endpoints.EndpointKey{
 				Region:  "us-gov-west-1",
-				Variant: endpoints.FIPSVariant | endpoints.DualStackVariant,
-			}: {
-				Hostname: "servicediscovery-fips.us-gov-west-1.amazonaws.com",
-			},
-			endpoints.EndpointKey{
-				Region:  "us-gov-west-1",
 				Variant: endpoints.FIPSVariant,
 			}: {
 				Hostname: "servicediscovery-fips.us-gov-west-1.amazonaws.com",
 			},
 			endpoints.EndpointKey{
 				Region:  "us-gov-west-1",
+				Variant: endpoints.FIPSVariant | endpoints.DualStackVariant,
+			}: {
+				Hostname: "servicediscovery-fips.us-gov-west-1.api.aws",
+			},
+			endpoints.EndpointKey{
+				Region:  "us-gov-west-1",
 				Variant: endpoints.DualStackVariant,
 			}: {
-				Hostname: "servicediscovery.us-gov-west-1.amazonaws.com",
+				Hostname: "servicediscovery.us-gov-west-1.api.aws",
 			},
 			endpoints.EndpointKey{
 				Region: "us-gov-west-1-fips",

@@ -59,6 +59,92 @@ func (e *AlreadyExistsException) ErrorCode() string {
 }
 func (e *AlreadyExistsException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// An exception thrown when you try to stop a task run when there is no task
+// running.
+type ColumnStatisticsTaskNotRunningException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ColumnStatisticsTaskNotRunningException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ColumnStatisticsTaskNotRunningException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ColumnStatisticsTaskNotRunningException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ColumnStatisticsTaskNotRunningException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ColumnStatisticsTaskNotRunningException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
+// An exception thrown when you try to start another job while running a column
+// stats generation job.
+type ColumnStatisticsTaskRunningException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ColumnStatisticsTaskRunningException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ColumnStatisticsTaskRunningException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ColumnStatisticsTaskRunningException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ColumnStatisticsTaskRunningException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ColumnStatisticsTaskRunningException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
+// An exception thrown when you try to stop a task run.
+type ColumnStatisticsTaskStoppingException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ColumnStatisticsTaskStoppingException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ColumnStatisticsTaskStoppingException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ColumnStatisticsTaskStoppingException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ColumnStatisticsTaskStoppingException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ColumnStatisticsTaskStoppingException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
 // Two processes are trying to modify a resource simultaneously.
 type ConcurrentModificationException struct {
 	Message *string
@@ -327,6 +413,7 @@ func (e *FederationSourceException) ErrorCode() string {
 }
 func (e *FederationSourceException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// A federation source failed, but the operation may be retried.
 type FederationSourceRetryableException struct {
 	Message *string
 
@@ -486,6 +573,110 @@ func (e *IllegalWorkflowStateException) ErrorCode() string {
 }
 func (e *IllegalWorkflowStateException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The requested operation conflicts with another operation.
+type IntegrationConflictOperationFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationConflictOperationFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationConflictOperationFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationConflictOperationFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationConflictOperationFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationConflictOperationFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified integration could not be found.
+type IntegrationNotFoundFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationNotFoundFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationNotFoundFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationNotFoundFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationNotFoundFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The data processed through your integration exceeded your quota.
+type IntegrationQuotaExceededFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationQuotaExceededFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationQuotaExceededFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationQuotaExceededFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationQuotaExceededFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationQuotaExceededFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// An internal server error occurred.
+type InternalServerException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InternalServerException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InternalServerException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InternalServerException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InternalServerException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InternalServerException) ErrorFault() smithy.ErrorFault { return smithy.FaultServer }
+
 // An internal service error occurred.
 type InternalServiceException struct {
 	Message *string
@@ -540,6 +731,32 @@ func (e *InvalidInputException) ErrorCode() string {
 }
 func (e *InvalidInputException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The integration is in an invalid state.
+type InvalidIntegrationStateFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InvalidIntegrationStateFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InvalidIntegrationStateFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InvalidIntegrationStateFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InvalidIntegrationStateFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InvalidIntegrationStateFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // An error that indicates your data is in an invalid state.
 type InvalidStateException struct {
 	Message *string
@@ -565,6 +782,32 @@ func (e *InvalidStateException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *InvalidStateException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The KMS key specified is not accessible.
+type KMSKeyNotAccessibleFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *KMSKeyNotAccessibleFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *KMSKeyNotAccessibleFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *KMSKeyNotAccessibleFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "KMSKeyNotAccessibleFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *KMSKeyNotAccessibleFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The machine learning transform is not ready to run.
 type MLTransformNotReadyException struct {
@@ -618,6 +861,32 @@ func (e *NoScheduleException) ErrorCode() string {
 }
 func (e *NoScheduleException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The operation is not available in the region.
+type OperationNotSupportedException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *OperationNotSupportedException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *OperationNotSupportedException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *OperationNotSupportedException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "OperationNotSupportedException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *OperationNotSupportedException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // The operation timed out.
 type OperationTimeoutException struct {
 	Message *string
@@ -669,6 +938,32 @@ func (e *PermissionTypeMismatchException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *PermissionTypeMismatchException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The resource could not be found.
+type ResourceNotFoundException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ResourceNotFoundException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ResourceNotFoundException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ResourceNotFoundException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ResourceNotFoundException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ResourceNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // A resource was not ready for a transaction.
 type ResourceNotReadyException struct {
@@ -801,6 +1096,58 @@ func (e *SchedulerTransitioningException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *SchedulerTransitioningException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The target resource could not be found.
+type TargetResourceNotFound struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *TargetResourceNotFound) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *TargetResourceNotFound) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *TargetResourceNotFound) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "TargetResourceNotFound"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *TargetResourceNotFound) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The throttling threshhold was exceeded.
+type ThrottlingException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ThrottlingException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ThrottlingException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ThrottlingException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ThrottlingException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ThrottlingException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // A value could not be validated.
 type ValidationException struct {

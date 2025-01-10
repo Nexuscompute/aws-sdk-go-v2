@@ -4,14 +4,9 @@ package devicefarm
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/devicefarm/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -45,38 +40,66 @@ type ListUploadsInput struct {
 	// can be used to return the next set of items in the list.
 	NextToken *string
 
-	// The type of upload. Must be one of the following values:
+	// The type of upload.
+	//
+	// Must be one of the following values:
+	//
 	//   - ANDROID_APP
+	//
 	//   - IOS_APP
+	//
 	//   - WEB_APP
+	//
 	//   - EXTERNAL_DATA
+	//
 	//   - APPIUM_JAVA_JUNIT_TEST_PACKAGE
+	//
 	//   - APPIUM_JAVA_TESTNG_TEST_PACKAGE
+	//
 	//   - APPIUM_PYTHON_TEST_PACKAGE
+	//
 	//   - APPIUM_NODE_TEST_PACKAGE
+	//
 	//   - APPIUM_RUBY_TEST_PACKAGE
+	//
 	//   - APPIUM_WEB_JAVA_JUNIT_TEST_PACKAGE
+	//
 	//   - APPIUM_WEB_JAVA_TESTNG_TEST_PACKAGE
+	//
 	//   - APPIUM_WEB_PYTHON_TEST_PACKAGE
+	//
 	//   - APPIUM_WEB_NODE_TEST_PACKAGE
+	//
 	//   - APPIUM_WEB_RUBY_TEST_PACKAGE
-	//   - CALABASH_TEST_PACKAGE
+	//
 	//   - INSTRUMENTATION_TEST_PACKAGE
-	//   - UIAUTOMATION_TEST_PACKAGE
-	//   - UIAUTOMATOR_TEST_PACKAGE
+	//
 	//   - XCTEST_TEST_PACKAGE
+	//
 	//   - XCTEST_UI_TEST_PACKAGE
+	//
 	//   - APPIUM_JAVA_JUNIT_TEST_SPEC
+	//
 	//   - APPIUM_JAVA_TESTNG_TEST_SPEC
+	//
 	//   - APPIUM_PYTHON_TEST_SPEC
+	//
 	//   - APPIUM_NODE_TEST_SPEC
+	//
 	//   - APPIUM_RUBY_TEST_SPEC
+	//
 	//   - APPIUM_WEB_JAVA_JUNIT_TEST_SPEC
+	//
 	//   - APPIUM_WEB_JAVA_TESTNG_TEST_SPEC
+	//
 	//   - APPIUM_WEB_PYTHON_TEST_SPEC
+	//
 	//   - APPIUM_WEB_NODE_TEST_SPEC
+	//
 	//   - APPIUM_WEB_RUBY_TEST_SPEC
+	//
 	//   - INSTRUMENTATION_TEST_SPEC
+	//
 	//   - XCTEST_UI_TEST_SPEC
 	Type types.UploadType
 
@@ -101,6 +124,9 @@ type ListUploadsOutput struct {
 }
 
 func (c *Client) addOperationListUploadsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpListUploads{}, middleware.After)
 	if err != nil {
 		return err
@@ -109,34 +135,38 @@ func (c *Client) addOperationListUploadsMiddlewares(stack *middleware.Stack, opt
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListUploads"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -148,7 +178,13 @@ func (c *Client) addOperationListUploadsMiddlewares(stack *middleware.Stack, opt
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListUploadsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListUploadsValidationMiddleware(stack); err != nil {
@@ -157,7 +193,7 @@ func (c *Client) addOperationListUploadsMiddlewares(stack *middleware.Stack, opt
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListUploads(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -169,18 +205,23 @@ func (c *Client) addOperationListUploadsMiddlewares(stack *middleware.Stack, opt
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// ListUploadsAPIClient is a client that implements the ListUploads operation.
-type ListUploadsAPIClient interface {
-	ListUploads(context.Context, *ListUploadsInput, ...func(*Options)) (*ListUploadsOutput, error)
-}
-
-var _ ListUploadsAPIClient = (*Client)(nil)
 
 // ListUploadsPaginatorOptions is the paginator options for ListUploads
 type ListUploadsPaginatorOptions struct {
@@ -233,6 +274,9 @@ func (p *ListUploadsPaginator) NextPage(ctx context.Context, optFns ...func(*Opt
 	params := *p.params
 	params.NextToken = p.nextToken
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListUploads(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -252,134 +296,17 @@ func (p *ListUploadsPaginator) NextPage(ctx context.Context, optFns ...func(*Opt
 	return result, nil
 }
 
+// ListUploadsAPIClient is a client that implements the ListUploads operation.
+type ListUploadsAPIClient interface {
+	ListUploads(context.Context, *ListUploadsInput, ...func(*Options)) (*ListUploadsOutput, error)
+}
+
+var _ ListUploadsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListUploads(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "devicefarm",
 		OperationName: "ListUploads",
 	}
-}
-
-type opListUploadsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListUploadsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListUploadsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "devicefarm"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "devicefarm"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("devicefarm")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListUploadsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListUploadsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

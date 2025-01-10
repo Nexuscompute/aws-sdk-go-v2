@@ -3,23 +3,20 @@
 package restxml
 
 import (
-	"bytes"
 	"context"
 	"github.com/aws/aws-sdk-go-v2/aws"
-	awshttp "github.com/aws/aws-sdk-go-v2/aws/transport/http"
+	protocoltesthttp "github.com/aws/aws-sdk-go-v2/internal/protocoltest"
 	"github.com/aws/aws-sdk-go-v2/internal/protocoltest/restxml/types"
 	"github.com/aws/smithy-go/middleware"
+	smithyprivateprotocol "github.com/aws/smithy-go/private/protocol"
 	"github.com/aws/smithy-go/ptr"
 	smithyrand "github.com/aws/smithy-go/rand"
 	smithytesting "github.com/aws/smithy-go/testing"
 	smithytime "github.com/aws/smithy-go/time"
 	"io"
-	"io/ioutil"
 	"math"
 	"net/http"
-	"net/http/httptest"
 	"net/url"
-	"strconv"
 	"testing"
 	"time"
 )
@@ -161,6 +158,20 @@ func TestClient_AllQueryStringTypes_awsRestxmlSerialize(t *testing.T) {
 				return smithytesting.CompareReaderEmpty(actual)
 			},
 		},
+		// Handles escaping all required characters in the query string.
+		"RestXmlQueryStringEscaping": {
+			Params: &AllQueryStringTypesInput{
+				QueryString: ptr.String(" %:/?#[]@!$&'()*+,;=😹"),
+			},
+			ExpectMethod:  "GET",
+			ExpectURIPath: "/AllQueryStringTypesInput",
+			ExpectQuery: []smithytesting.QueryItem{
+				{Key: "String", Value: "%20%25%3A%2F%3F%23%5B%5D%40%21%24%26%27%28%29%2A%2B%2C%3B%3D%F0%9F%98%B9"},
+			},
+			BodyAssert: func(actual io.Reader) error {
+				return smithytesting.CompareReaderEmpty(actual)
+			},
+		},
 		// Supports handling NaN float query values.
 		"RestXmlSupportsNaNFloatQueryValues": {
 			Params: &AllQueryStringTypesInput{
@@ -209,28 +220,27 @@ func TestClient_AllQueryStringTypes_awsRestxmlSerialize(t *testing.T) {
 				return smithytesting.CompareReaderEmpty(actual)
 			},
 		},
+		// Query values of 0 and false are serialized
+		"RestXmlZeroAndFalseQueryValues": {
+			Params: &AllQueryStringTypesInput{
+				QueryInteger: ptr.Int32(0),
+				QueryBoolean: ptr.Bool(false),
+			},
+			ExpectMethod:  "GET",
+			ExpectURIPath: "/AllQueryStringTypesInput",
+			ExpectQuery: []smithytesting.QueryItem{
+				{Key: "Integer", Value: "0"},
+				{Key: "Boolean", Value: "false"},
+			},
+			BodyAssert: func(actual io.Reader) error {
+				return smithytesting.CompareReaderEmpty(actual)
+			},
+		},
 	}
 	for name, c := range cases {
 		t.Run(name, func(t *testing.T) {
-			var actualReq *http.Request
-			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				actualReq = r.Clone(r.Context())
-				if len(actualReq.URL.RawPath) == 0 {
-					actualReq.URL.RawPath = actualReq.URL.Path
-				}
-				if v := actualReq.ContentLength; v != 0 {
-					actualReq.Header.Set("Content-Length", strconv.FormatInt(v, 10))
-				}
-				var buf bytes.Buffer
-				if _, err := io.Copy(&buf, r.Body); err != nil {
-					t.Errorf("failed to read request body, %v", err)
-				}
-				actualReq.Body = ioutil.NopCloser(&buf)
-
-				w.WriteHeader(200)
-			}))
-			defer server.Close()
-			serverURL := server.URL
+			actualReq := &http.Request{}
+			serverURL := "http://localhost:8888/"
 			if c.Host != nil {
 				u, err := url.Parse(serverURL)
 				if err != nil {
@@ -254,11 +264,15 @@ func TestClient_AllQueryStringTypes_awsRestxmlSerialize(t *testing.T) {
 					e.SigningRegion = "us-west-2"
 					return e, err
 				}),
-				HTTPClient:               awshttp.NewBuildableClient(),
+				HTTPClient:               protocoltesthttp.NewClient(),
 				IdempotencyTokenProvider: smithyrand.NewUUIDIdempotencyToken(&smithytesting.ByteLoop{}),
 				Region:                   "us-west-2",
 			})
-			result, err := client.AllQueryStringTypes(context.Background(), c.Params)
+			result, err := client.AllQueryStringTypes(context.Background(), c.Params, func(options *Options) {
+				options.APIOptions = append(options.APIOptions, func(stack *middleware.Stack) error {
+					return smithyprivateprotocol.AddCaptureRequestMiddleware(stack, actualReq)
+				})
+			})
 			if err != nil {
 				t.Fatalf("expect nil err, got %v", err)
 			}

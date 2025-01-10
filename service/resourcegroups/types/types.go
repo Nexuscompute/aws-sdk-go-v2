@@ -4,6 +4,7 @@ package types
 
 import (
 	smithydocument "github.com/aws/smithy-go/document"
+	"time"
 )
 
 // The Resource Groups settings for this Amazon Web Services account.
@@ -31,7 +32,8 @@ type FailedResource struct {
 	// The error message text associated with the failure.
 	ErrorMessage *string
 
-	// The ARN of the resource that failed to be added or removed.
+	// The Amazon resource name (ARN) of the resource that failed to be added or
+	// removed.
 	ResourceArn *string
 
 	noSmithyDocumentSerde
@@ -40,17 +42,20 @@ type FailedResource struct {
 // A resource group that contains Amazon Web Services resources. You can assign
 // resources to the group by associating either of the following elements with the
 // group:
-//   - ResourceQuery - Use a resource query to specify a set of tag keys and
-//     values. All resources in the same Amazon Web Services Region and Amazon Web
-//     Services account that have those keys with the same values are included in the
-//     group. You can add a resource query when you create the group, or later by using
-//     the PutGroupConfiguration operation.
-//   - GroupConfiguration - Use a service configuration to associate the group with
-//     an Amazon Web Services service. The configuration specifies which resource types
-//     can be included in the group.
+//
+// ResourceQuery
+//   - - Use a resource query to specify a set of tag keys and values. All
+//     resources in the same Amazon Web Services Region and Amazon Web Services account
+//     that have those keys with the same values are included in the group. You can add
+//     a resource query when you create the group, or later by using the PutGroupConfigurationoperation.
+//
+// GroupConfiguration
+//   - - Use a service configuration to associate the group with an Amazon Web
+//     Services service. The configuration specifies which resource types can be
+//     included in the group.
 type Group struct {
 
-	// The ARN of the resource group.
+	// The Amazon resource name (ARN) of the resource group.
 	//
 	// This member is required.
 	GroupArn *string
@@ -60,8 +65,23 @@ type Group struct {
 	// This member is required.
 	Name *string
 
+	// A tag that defines the application group membership. This tag is only supported
+	// for application groups.
+	ApplicationTag map[string]string
+
+	// The critical rank of the application group on a scale of 1 to 10, with a rank
+	// of 1 being the most critical, and a rank of 10 being least critical.
+	Criticality *int32
+
 	// The description of the resource group.
 	Description *string
+
+	// The name of the application group, which you can change at any time.
+	DisplayName *string
+
+	// A name, email address or other identifier for the person or group who is
+	// considered as the owner of this application group within your organization.
+	Owner *string
 
 	noSmithyDocumentSerde
 }
@@ -69,10 +89,10 @@ type Group struct {
 // A service configuration associated with a resource group. The configuration
 // options are determined by the Amazon Web Services service that defines the Type
 // , and specifies which resources can be included in the group. You can add a
-// service configuration when you create the group by using CreateGroup , or later
-// by using the PutGroupConfiguration operation. For details about group service
-// configuration syntax, see Service configurations for resource groups (https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html)
-// .
+// service configuration when you create the group by using CreateGroup, or later by using
+// the PutGroupConfigurationoperation. For details about group service configuration syntax, see [Service configurations for resource groups].
+//
+// [Service configurations for resource groups]: https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html
 type GroupConfiguration struct {
 
 	// The configuration currently associated with the group and in effect.
@@ -92,45 +112,47 @@ type GroupConfiguration struct {
 }
 
 // An item in a group configuration. A group service configuration can have one or
-// more items. For details about group service configuration syntax, see Service
-// configurations for resource groups (https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html)
-// .
+// more items. For details about group service configuration syntax, see [Service configurations for resource groups].
+//
+// [Service configurations for resource groups]: https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html
 type GroupConfigurationItem struct {
 
 	// Specifies the type of group configuration item. Each item must have a unique
 	// value for type . For the list of types that you can specify for a configuration
-	// item, see Supported resource types and parameters (https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types)
-	// .
+	// item, see [Supported resource types and parameters].
+	//
+	// [Supported resource types and parameters]: https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types
 	//
 	// This member is required.
 	Type *string
 
 	// A collection of parameters for this group configuration item. For the list of
-	// parameters that you can use with each configuration item type, see Supported
-	// resource types and parameters (https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types)
-	// .
+	// parameters that you can use with each configuration item type, see [Supported resource types and parameters].
+	//
+	// [Supported resource types and parameters]: https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types
 	Parameters []GroupConfigurationParameter
 
 	noSmithyDocumentSerde
 }
 
 // A parameter for a group configuration item. For details about group service
-// configuration syntax, see Service configurations for resource groups (https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html)
-// .
+// configuration syntax, see [Service configurations for resource groups].
+//
+// [Service configurations for resource groups]: https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html
 type GroupConfigurationParameter struct {
 
 	// The name of the group configuration parameter. For the list of parameters that
-	// you can use with each configuration item type, see Supported resource types and
-	// parameters (https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types)
-	// .
+	// you can use with each configuration item type, see [Supported resource types and parameters].
+	//
+	// [Supported resource types and parameters]: https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types
 	//
 	// This member is required.
 	Name *string
 
 	// The value or values to be used for the specified parameter. For the list of
-	// values you can use with each parameter, see Supported resource types and
-	// parameters (https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types)
-	// .
+	// values you can use with each parameter, see [Supported resource types and parameters].
+	//
+	// [Supported resource types and parameters]: https://docs.aws.amazon.com/ARG/latest/APIReference/about-slg.html#about-slg-types
 	Values []string
 
 	noSmithyDocumentSerde
@@ -157,11 +179,50 @@ type GroupFilter struct {
 // The unique identifiers for a resource group.
 type GroupIdentifier struct {
 
-	// The ARN of the resource group.
+	// The critical rank of the application group on a scale of 1 to 10, with a rank
+	// of 1 being the most critical, and a rank of 10 being least critical.
+	Criticality *int32
+
+	// The description of the application group.
+	Description *string
+
+	// The name of the application group, which you can change at any time.
+	DisplayName *string
+
+	// The Amazon resource name (ARN) of the resource group.
 	GroupArn *string
 
 	// The name of the resource group.
 	GroupName *string
+
+	// A name, email address or other identifier for the person or group who is
+	// considered as the owner of this group within your organization.
+	Owner *string
+
+	noSmithyDocumentSerde
+}
+
+// The information about a grouping or ungrouping resource action.
+type GroupingStatusesItem struct {
+
+	// Describes the resource grouping action with values of GROUP or UNGROUP .
+	Action GroupingType
+
+	// Specifies the error code that was raised.
+	ErrorCode *string
+
+	// A message that explains the ErrorCode .
+	ErrorMessage *string
+
+	// The Amazon resource name (ARN) of a resource.
+	ResourceArn *string
+
+	// Describes the resource grouping status with values of SUCCESS , FAILED ,
+	// IN_PROGRESS , or SKIPPED .
+	Status GroupingStatus
+
+	// A timestamp of when the status was last updated.
+	UpdatedAt *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -185,17 +246,49 @@ type GroupQuery struct {
 	noSmithyDocumentSerde
 }
 
-// A structure returned by the ListGroupResources operation that contains identity
-// and group membership status information for one of the resources in the group.
+// A filter name and value pair that is used to obtain more specific results from
+// the list of grouping statuses.
+type ListGroupingStatusesFilter struct {
+
+	// The name of the filter. Filter names are case-sensitive.
+	//
+	// This member is required.
+	Name ListGroupingStatusesFilterName
+
+	// One or more filter values. Allowed filter values vary by resource filter name,
+	// and are case-sensitive.
+	//
+	// This member is required.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// A structure returned by the ListGroupResources operation that contains identity and group
+// membership status information for one of the resources in the group.
 type ListGroupResourcesItem struct {
 
 	// A structure that contains the ARN of a resource and its resource type.
 	Identifier *ResourceIdentifier
 
-	// A structure that contains the status of this resource's membership in the
-	// group. This field is present in the response only if the group is of type
+	// A structure that contains the status of this resource's membership in the group.
+	//
+	// This field is present in the response only if the group is of type
 	// AWS::EC2::HostManagement .
 	Status *ResourceStatus
+
+	noSmithyDocumentSerde
+}
+
+// Returns tag-sync tasks filtered by the Amazon resource name (ARN) or name of a
+// specified application group.
+type ListTagSyncTasksFilter struct {
+
+	// The Amazon resource name (ARN) of the application group.
+	GroupArn *string
+
+	// The name of the application group.
+	GroupName *string
 
 	noSmithyDocumentSerde
 }
@@ -212,20 +305,13 @@ type PendingResource struct {
 }
 
 // A two-part error structure that can occur in ListGroupResources or
-// SearchResources operations on CloudFront stack-based queries. The error occurs
-// if the CloudFront stack on which the query is based either does not exist, or
-// has a status that renders the stack inactive. A QueryError occurrence does not
-// necessarily mean that Resource Groups could not complete the operation, but the
-// resulting group might have no member resources.
+// SearchResources .
 type QueryError struct {
 
 	// Specifies the error code that was raised.
 	ErrorCode QueryErrorCode
 
-	// A message that explains the ErrorCode value. Messages might state that the
-	// specified CloudFront stack does not exist (or no longer exists). For
-	// CLOUDFORMATION_STACK_INACTIVE , the message typically states that the CloudFront
-	// stack has a status that is not (or no longer) active, such as CREATE_FAILED .
+	// A message that explains the ErrorCode .
 	Message *string
 
 	noSmithyDocumentSerde
@@ -252,7 +338,7 @@ type ResourceFilter struct {
 // A structure that contains the ARN of a resource and its resource type.
 type ResourceIdentifier struct {
 
-	// The ARN of a resource.
+	// The Amazon resource name (ARN) of a resource.
 	ResourceArn *string
 
 	// The resource type of a resource, such as AWS::EC2::Instance .
@@ -264,74 +350,105 @@ type ResourceIdentifier struct {
 // The query you can use to define a resource group or a search for resources. A
 // ResourceQuery specifies both a query Type and a Query string as JSON string
 // objects. See the examples section for example JSON strings. For more information
-// about creating a resource group with a resource query, see Build queries and
-// groups in Resource Groups (https://docs.aws.amazon.com/ARG/latest/userguide/gettingstarted-query.html)
-// in the Resource Groups User Guide When you combine all of the elements together
-// into a single string, any double quotes that are embedded inside another double
-// quote pair must be escaped by preceding the embedded double quote with a
-// backslash character (\). For example, a complete ResourceQuery parameter must
-// be formatted like the following CLI parameter example: --resource-query
-// '{"Type":"TAG_FILTERS_1_0","Query":"{\"ResourceTypeFilters\":[\"AWS::AllSupported\"],\"TagFilters\":[{\"Key\":\"Stage\",\"Values\":[\"Test\"]}]}"}'
+// about creating a resource group with a resource query, see [Build queries and groups in Resource Groups]in the Resource
+// Groups User Guide
+//
+// When you combine all of the elements together into a single string, any double
+// quotes that are embedded inside another double quote pair must be escaped by
+// preceding the embedded double quote with a backslash character (\). For example,
+// a complete ResourceQuery parameter must be formatted like the following CLI
+// parameter example:
+//
+//	--resource-query
+//	'{"Type":"TAG_FILTERS_1_0","Query":"{\"ResourceTypeFilters\":[\"AWS::AllSupported\"],\"TagFilters\":[{\"Key\":\"Stage\",\"Values\":[\"Test\"]}]}"}'
+//
 // In the preceding example, all of the double quote characters in the value part
 // of the Query element must be escaped because the value itself is surrounded by
-// double quotes. For more information, see Quoting strings (https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html)
-// in the Command Line Interface User Guide. For the complete list of resource
-// types that you can use in the array value for ResourceTypeFilters , see
-// Resources you can use with Resource Groups and Tag Editor (https://docs.aws.amazon.com/ARG/latest/userguide/supported-resources.html)
-// in the Resource Groups User Guide. For example:
-// "ResourceTypeFilters":["AWS::S3::Bucket", "AWS::EC2::Instance"]
+// double quotes. For more information, see [Quoting strings]in the Command Line Interface User
+// Guide.
+//
+// For the complete list of resource types that you can use in the array value for
+// ResourceTypeFilters , see [Resources you can use with Resource Groups and Tag Editor] in the Resource Groups User Guide. For example:
+//
+//	"ResourceTypeFilters":["AWS::S3::Bucket", "AWS::EC2::Instance"]
+//
+// [Quoting strings]: https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-quoting-strings.html
+// [Resources you can use with Resource Groups and Tag Editor]: https://docs.aws.amazon.com/ARG/latest/userguide/supported-resources.html
+// [Build queries and groups in Resource Groups]: https://docs.aws.amazon.com/ARG/latest/userguide/gettingstarted-query.html
 type ResourceQuery struct {
 
 	// The query that defines a group or a search. The contents depends on the value
 	// of the Type element.
+	//
 	//   - ResourceTypeFilters – Applies to all ResourceQuery objects of either Type .
 	//   This element contains one of the following two items:
+	//
 	//   - The value AWS::AllSupported . This causes the ResourceQuery to match
 	//   resources of any resource type that also match the query.
+	//
 	//   - A list (a JSON array) of resource type identifiers that limit the query to
 	//   only resources of the specified types. For the complete list of resource types
-	//   that you can use in the array value for ResourceTypeFilters , see Resources
-	//   you can use with Resource Groups and Tag Editor (https://docs.aws.amazon.com/ARG/latest/userguide/supported-resources.html)
-	//   in the Resource Groups User Guide. Example: "ResourceTypeFilters":
-	//   ["AWS::AllSupported"] or "ResourceTypeFilters": ["AWS::EC2::Instance",
-	//   "AWS::S3::Bucket"]
+	//   that you can use in the array value for ResourceTypeFilters , see [Resources you can use with Resource Groups and Tag Editor]in the
+	//   Resource Groups User Guide.
+	//
+	// Example: "ResourceTypeFilters": ["AWS::AllSupported"] or "ResourceTypeFilters":
+	//   ["AWS::EC2::Instance", "AWS::S3::Bucket"]
+	//
 	//   - TagFilters – applicable only if Type = TAG_FILTERS_1_0 . The Query contains
 	//   a JSON string that represents a collection of simple tag filters. The JSON
-	//   string uses a syntax similar to the GetResources (https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html)
-	//   operation, but uses only the ResourceTypeFilters (https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-ResourceTypeFilters)
-	//   and TagFilters (https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-TagFiltersTagFilters)
-	//   fields. If you specify more than one tag key, only resources that match all tag
-	//   keys, and at least one value of each specified tag key, are returned in your
-	//   query. If you specify more than one value for a tag key, a resource matches the
-	//   filter if it has a tag key value that matches any of the specified values. For
-	//   example, consider the following sample query for resources that have two tags,
-	//   Stage and Version , with two values each:
-	//   [{"Stage":["Test","Deploy"]},{"Version":["1","2"]}] The results of this
-	//   resource query could include the following.
+	//   string uses a syntax similar to the [GetResources]operation, but uses only the [ResourceTypeFilters]and [TagFilters]fields.
+	//   If you specify more than one tag key, only resources that match all tag keys,
+	//   and at least one value of each specified tag key, are returned in your query. If
+	//   you specify more than one value for a tag key, a resource matches the filter if
+	//   it has a tag key value that matches any of the specified values.
+	//
+	// For example, consider the following sample query for resources that have two
+	//   tags, Stage and Version , with two values each:
+	//
+	// [{"Stage":["Test","Deploy"]},{"Version":["1","2"]}]
+	//
+	// The results of this resource query could include the following.
+	//
 	//   - An Amazon EC2 instance that has the following two tags: {"Stage":"Deploy"} ,
 	//   and {"Version":"2"}
+	//
 	//   - An S3 bucket that has the following two tags: {"Stage":"Test"} , and
-	//   {"Version":"1"} The resource query results would not include the following
-	//   items in the results, however.
+	//   {"Version":"1"}
+	//
+	// The resource query results would not include the following items in the
+	//   results, however.
+	//
 	//   - An Amazon EC2 instance that has only the following tag: {"Stage":"Deploy"} .
-	//   The instance does not have all of the tag keys specified in the filter, so it is
-	//   excluded from the results.
+	//
+	// The instance does not have all of the tag keys specified in the filter, so it
+	//   is excluded from the results.
+	//
 	//   - An RDS database that has the following two tags: {"Stage":"Archived"} and
-	//   {"Version":"4"} The database has all of the tag keys, but none of those keys
-	//   has an associated value that matches at least one of the specified values in the
-	//   filter. Example: "TagFilters": [ { "Key": "Stage", "Values": [ "Gamma",
-	//   "Beta" ] }
+	//   {"Version":"4"}
+	//
+	// The database has all of the tag keys, but none of those keys has an associated
+	//   value that matches at least one of the specified values in the filter.
+	//
+	// Example: "TagFilters": [ { "Key": "Stage", "Values": [ "Gamma", "Beta" ] }
+	//
 	//   - StackIdentifier – applicable only if Type = CLOUDFORMATION_STACK_1_0 . The
 	//   value of this parameter is the Amazon Resource Name (ARN) of the CloudFormation
 	//   stack whose resources you want included in the group.
+	//
+	// [Resources you can use with Resource Groups and Tag Editor]: https://docs.aws.amazon.com/ARG/latest/userguide/supported-resources.html
+	// [TagFilters]: https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-TagFiltersTagFilters
+	// [GetResources]: https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html
+	// [ResourceTypeFilters]: https://docs.aws.amazon.com/resourcegroupstagging/latest/APIReference/API_GetResources.html#resourcegrouptagging-GetResources-request-ResourceTypeFilters
 	//
 	// This member is required.
 	Query *string
 
 	// The type of the query to perform. This can have one of two values:
+	//
 	//   - CLOUDFORMATION_STACK_1_0: Specifies that you want the group to contain the
 	//   members of an CloudFormation stack. The Query contains a StackIdentifier
-	//   element with an ARN for a CloudFormation stack.
+	//   element with an Amazon resource name (ARN) for a CloudFormation stack.
+	//
 	//   - TAG_FILTERS_1_0: Specifies that you want the group to include resource that
 	//   have tags that match the query.
 	//
@@ -349,6 +466,50 @@ type ResourceStatus struct {
 
 	// The current status.
 	Name ResourceStatusValue
+
+	noSmithyDocumentSerde
+}
+
+// The Amazon resource name (ARN) of the tag-sync task.
+type TagSyncTaskItem struct {
+
+	// The timestamp of when the tag-sync task was created.
+	CreatedAt *time.Time
+
+	// The specific error message in cases where the tag-sync task status is Error .
+	ErrorMessage *string
+
+	// The Amazon resource name (ARN) of the application group.
+	GroupArn *string
+
+	// The name of the application group.
+	GroupName *string
+
+	// The Amazon resource name (ARN) of the role assumed by the service to tag and
+	// untag resources on your behalf.
+	RoleArn *string
+
+	// The status of the tag-sync task.
+	//
+	// Valid values include:
+	//
+	//   - ACTIVE - The tag-sync task is actively managing resources in the application
+	//   by adding or removing the awsApplication tag from resources when they are
+	//   tagged or untagged with the specified tag key-value pair.
+	//
+	//   - ERROR - The tag-sync task is not actively managing resources in the
+	//   application. Review the ErrorMessage for more information about resolving the
+	//   error.
+	Status TagSyncTaskStatus
+
+	// The tag key.
+	TagKey *string
+
+	// The tag value.
+	TagValue *string
+
+	// The Amazon resource name (ARN) of the tag-sync task.
+	TaskArn *string
 
 	noSmithyDocumentSerde
 }

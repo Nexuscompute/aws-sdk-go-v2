@@ -8,10 +8,11 @@ import (
 )
 
 // A data type pair that consists of a KeyName and Values list that is used in
-// conjunction with the KeyName (https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html#customerprofiles-SearchProfiles-request-KeyName)
-// and Values (https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html#customerprofiles-SearchProfiles-request-Values)
-// parameters to search for profiles using the SearchProfiles (https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html)
-// API.
+// conjunction with the [KeyName]and [Values] parameters to search for profiles using the [SearchProfiles] API.
+//
+// [KeyName]: https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html#customerprofiles-SearchProfiles-request-KeyName
+// [SearchProfiles]: https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html
+// [Values]: https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html#customerprofiles-SearchProfiles-request-Values
 type AdditionalSearchKey struct {
 
 	// A searchable identifier of a customer profile.
@@ -60,6 +61,30 @@ type Address struct {
 
 	// The state in which a customer lives.
 	State *string
+
+	noSmithyDocumentSerde
+}
+
+// Object that segments on Customer Profile's address object.
+type AddressDimension struct {
+
+	// The city belonging to the address.
+	City *ProfileDimension
+
+	// The country belonging to the address.
+	Country *ProfileDimension
+
+	// The county belonging to the address.
+	County *ProfileDimension
+
+	// The postal code belonging to the address.
+	PostalCode *ProfileDimension
+
+	// The province belonging to the address.
+	Province *ProfileDimension
+
+	// The state belonging to the address.
+	State *ProfileDimension
 
 	noSmithyDocumentSerde
 }
@@ -192,6 +217,22 @@ type AttributeDetails struct {
 	noSmithyDocumentSerde
 }
 
+// Object that segments on various Customer Profile's fields.
+type AttributeDimension struct {
+
+	// The action to segment with.
+	//
+	// This member is required.
+	DimensionType AttributeDimensionType
+
+	// The values to apply the DimensionType on.
+	//
+	// This member is required.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
 // The details of a single attribute item specified in the mathematical expression.
 type AttributeItem struct {
 
@@ -207,11 +248,17 @@ type AttributeItem struct {
 // identity resolution uses to match profiles. You can choose how profiles are
 // compared across attribute types and which attribute to use for matching from
 // each type. There are three attribute types you can configure:
+//
 //   - Email type
+//
 //   - You can choose from Email , BusinessEmail , and PersonalEmail
+//
 //   - Phone number type
+//
 //   - You can choose from Phone , HomePhone , and MobilePhone
+//
 //   - Address type
+//
 //   - You can choose from Address , BusinessAddress , MaillingAddress , and
 //     ShippingAddress
 //
@@ -232,27 +279,41 @@ type AttributeTypesSelector struct {
 	AttributeMatchingModel AttributeMatchingModel
 
 	// The Address type. You can choose from Address , BusinessAddress ,
-	// MaillingAddress , and ShippingAddress . You only can use the Address type in the
-	// MatchingRule . For example, if you want to match profile based on
-	// BusinessAddress.City or MaillingAddress.City , you need to choose the
-	// BusinessAddress and the MaillingAddress to represent the Address type and
-	// specify the Address.City on the matching rule.
+	// MaillingAddress , and ShippingAddress .
+	//
+	// You only can use the Address type in the MatchingRule . For example, if you want
+	// to match profile based on BusinessAddress.City or MaillingAddress.City , you
+	// need to choose the BusinessAddress and the MaillingAddress to represent the
+	// Address type and specify the Address.City on the matching rule.
 	Address []string
 
 	// The Email type. You can choose from EmailAddress , BusinessEmailAddress and
-	// PersonalEmailAddress . You only can use the EmailAddress type in the
-	// MatchingRule . For example, if you want to match profile based on
-	// PersonalEmailAddress or BusinessEmailAddress , you need to choose the
-	// PersonalEmailAddress and the BusinessEmailAddress to represent the EmailAddress
-	// type and only specify the EmailAddress on the matching rule.
+	// PersonalEmailAddress .
+	//
+	// You only can use the EmailAddress type in the MatchingRule . For example, if you
+	// want to match profile based on PersonalEmailAddress or BusinessEmailAddress ,
+	// you need to choose the PersonalEmailAddress and the BusinessEmailAddress to
+	// represent the EmailAddress type and only specify the EmailAddress on the
+	// matching rule.
 	EmailAddress []string
 
 	// The PhoneNumber type. You can choose from PhoneNumber , HomePhoneNumber , and
-	// MobilePhoneNumber . You only can use the PhoneNumber type in the MatchingRule .
-	// For example, if you want to match a profile based on Phone or HomePhone , you
-	// need to choose the Phone and the HomePhone to represent the PhoneNumber type
-	// and only specify the PhoneNumber on the matching rule.
+	// MobilePhoneNumber .
+	//
+	// You only can use the PhoneNumber type in the MatchingRule . For example, if you
+	// want to match a profile based on Phone or HomePhone , you need to choose the
+	// Phone and the HomePhone to represent the PhoneNumber type and only specify the
+	// PhoneNumber on the matching rule.
 	PhoneNumber []string
+
+	noSmithyDocumentSerde
+}
+
+// List containing the values for the given attribute.
+type AttributeValueItem struct {
+
+	// An individual value belonging to the given attribute.
+	Value *string
 
 	noSmithyDocumentSerde
 }
@@ -267,7 +328,8 @@ type AutoMerging struct {
 
 	// How the auto-merging process should resolve conflicts between different
 	// profiles. For example, if Profile A and Profile B have the same FirstName and
-	// LastName (and that is the matching criteria), which EmailAddress should be used?
+	// LastName (and that is the matching criteria), which EmailAddress should be
+	// used?
 	ConflictResolution *ConflictResolution
 
 	// A list of matching attributes that represent matching criteria. If two profiles
@@ -301,6 +363,99 @@ type Batch struct {
 	noSmithyDocumentSerde
 }
 
+// Error object describing why a specific profile and calculated attribute failed.
+type BatchGetCalculatedAttributeForProfileError struct {
+
+	// Status code for why a specific profile and calculated attribute failed.
+	//
+	// This member is required.
+	Code *string
+
+	// Message describing why a specific profile and calculated attribute failed.
+	//
+	// This member is required.
+	Message *string
+
+	// The profile id that failed.
+	//
+	// This member is required.
+	ProfileId *string
+
+	noSmithyDocumentSerde
+}
+
+// Error object describing why a specific profile failed.
+type BatchGetProfileError struct {
+
+	// Status code for why a specific profile failed.
+	//
+	// This member is required.
+	Code *string
+
+	// Message describing why a specific profile failed.
+	//
+	// This member is required.
+	Message *string
+
+	// The profile id that failed.
+	//
+	// This member is required.
+	ProfileId *string
+
+	noSmithyDocumentSerde
+}
+
+// Object that segments on Customer Profile's Calculated Attributes.
+type CalculatedAttributeDimension struct {
+
+	// The action to segment with.
+	//
+	// This member is required.
+	DimensionType AttributeDimensionType
+
+	// The values to apply the DimensionType with.
+	//
+	// This member is required.
+	Values []string
+
+	// Applies the given condition over the initial Calculated Attribute's definition.
+	ConditionOverrides *ConditionOverrides
+
+	noSmithyDocumentSerde
+}
+
+// The object containing the values of a single calculated attribute value.
+type CalculatedAttributeValue struct {
+
+	// The unique name of the calculated attribute.
+	CalculatedAttributeName *string
+
+	// The display name of the calculated attribute.
+	DisplayName *string
+
+	// Indicates whether the calculated attribute's value is based on partial data. If
+	// the data is partial, it is set to true.
+	IsDataPartial *string
+
+	// The profile id belonging to this calculated attribute value.
+	ProfileId *string
+
+	// The value of the calculated attribute.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// An object to override the original condition block of a calculated attribute.
+type ConditionOverrides struct {
+
+	// The relative time period over which data is included in the aggregation for
+	// this override.
+	Range *RangeOverride
+
+	noSmithyDocumentSerde
+}
+
 // The conditions including range, object count, and threshold for the calculated
 // attribute.
 type Conditions struct {
@@ -323,7 +478,9 @@ type ConflictResolution struct {
 
 	// How the auto-merging process should resolve conflicts between different
 	// profiles.
+	//
 	//   - RECENCY : Uses the data that was most recently updated.
+	//
 	//   - SOURCE : Uses the data from a specific source. For example, if a company has
 	//   been aquired or two departments have merged, data from the specified source is
 	//   used. If two duplicate profiles are from the same source, then RECENCY is used
@@ -371,6 +528,22 @@ type Consolidation struct {
 	noSmithyDocumentSerde
 }
 
+// Object that segments on various Customer Profile's date fields.
+type DateDimension struct {
+
+	// The action to segment with.
+	//
+	// This member is required.
+	DimensionType DateDimensionType
+
+	// The values to apply the DimensionType on.
+	//
+	// This member is required.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
 // Summary information about the Kinesis data stream
 type DestinationSummary struct {
 
@@ -390,6 +563,49 @@ type DestinationSummary struct {
 
 	noSmithyDocumentSerde
 }
+
+// Contains ProfileObjectType mapping information from the model.
+type DetectedProfileObjectType struct {
+
+	// A map of the name and the ObjectType field.
+	Fields map[string]ObjectTypeField
+
+	// A list of unique keys that can be used to map data to a profile.
+	Keys map[string][]ObjectTypeKey
+
+	// The format of sourceLastUpdatedTimestamp that was detected in fields.
+	SourceLastUpdatedTimestampFormat *string
+
+	noSmithyDocumentSerde
+}
+
+// Object that holds what profile and calculated attributes to segment on.
+//
+// The following types satisfy this interface:
+//
+//	DimensionMemberCalculatedAttributes
+//	DimensionMemberProfileAttributes
+type Dimension interface {
+	isDimension()
+}
+
+// Object that holds the calculated attributes to segment on.
+type DimensionMemberCalculatedAttributes struct {
+	Value map[string]CalculatedAttributeDimension
+
+	noSmithyDocumentSerde
+}
+
+func (*DimensionMemberCalculatedAttributes) isDimension() {}
+
+// Object that holds the profile attributes to segment on.
+type DimensionMemberProfileAttributes struct {
+	Value ProfileAttributes
+
+	noSmithyDocumentSerde
+}
+
+func (*DimensionMemberProfileAttributes) isDimension() {}
 
 // Usage-specific statistics about the domain.
 type DomainStats struct {
@@ -471,12 +687,81 @@ type EventStreamSummary struct {
 	noSmithyDocumentSerde
 }
 
+// Specifies the circumstances under which the event should trigger the
+// destination.
+type EventTriggerCondition struct {
+
+	// A list of dimensions to be evaluated for the event.
+	//
+	// This member is required.
+	EventTriggerDimensions []EventTriggerDimension
+
+	// The operator used to combine multiple dimensions.
+	//
+	// This member is required.
+	LogicalOperator EventTriggerLogicalOperator
+
+	noSmithyDocumentSerde
+}
+
+// A specific event dimension to be assessed.
+type EventTriggerDimension struct {
+
+	// A list of object attributes to be evaluated.
+	//
+	// This member is required.
+	ObjectAttributes []ObjectAttribute
+
+	noSmithyDocumentSerde
+}
+
+// Defines limits controlling whether an event triggers the destination, based on
+// ingestion latency and the number of invocations per profile over specific time
+// periods.
+type EventTriggerLimits struct {
+
+	// In milliseconds. Specifies that an event will only trigger the destination if
+	// it is processed within a certain latency period.
+	EventExpiration *int64
+
+	// A list of time periods during which the limits apply.
+	Periods []Period
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the event trigger.
+type EventTriggerSummaryItem struct {
+
+	// The timestamp of when the event trigger was created.
+	CreatedAt *time.Time
+
+	// The description of the event trigger.
+	Description *string
+
+	// The unique name of the event trigger.
+	EventTriggerName *string
+
+	// The timestamp of when the event trigger was most recently updated.
+	LastUpdatedAt *time.Time
+
+	// The unique name of the object type.
+	ObjectTypeName *string
+
+	// An array of key-value pairs to apply to this resource.
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
 // Configuration information about the S3 bucket where Identity Resolution Jobs
-// writes result files. You need to give Customer Profiles service principal write
-// permission to your S3 bucket. Otherwise, you'll get an exception in the API
-// response. For an example policy, see Amazon Connect Customer Profiles
-// cross-service confused deputy prevention (https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html#customer-profiles-cross-service)
-// .
+// writes result files.
+//
+// You need to give Customer Profiles service principal write permission to your
+// S3 bucket. Otherwise, you'll get an exception in the API response. For an
+// example policy, see [Amazon Connect Customer Profiles cross-service confused deputy prevention].
+//
+// [Amazon Connect Customer Profiles cross-service confused deputy prevention]: https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html#customer-profiles-cross-service
 type ExportingConfig struct {
 
 	// The S3 location where Identity Resolution Jobs write result files.
@@ -491,6 +776,23 @@ type ExportingLocation struct {
 	// Information about the S3 location where Identity Resolution Jobs write result
 	// files.
 	S3Exporting *S3ExportingLocation
+
+	noSmithyDocumentSerde
+}
+
+// Object that segments on various Customer profile's fields that are larger than
+// normal.
+type ExtraLengthValueProfileDimension struct {
+
+	// The action to segment with.
+	//
+	// This member is required.
+	DimensionType StringDimensionType
+
+	// The values to apply the DimensionType on.
+	//
+	// This member is required.
+	Values []string
 
 	noSmithyDocumentSerde
 }
@@ -564,6 +866,67 @@ type FieldSourceProfileIds struct {
 	noSmithyDocumentSerde
 }
 
+// Defines how to filter the objects coming in for calculated attributes.
+type Filter struct {
+
+	// Holds the list of Filter groups within the Filter definition.
+	//
+	// This member is required.
+	Groups []FilterGroup
+
+	// Define whether to include or exclude objects for Calculated Attributed
+	// calculation that fit the filter groups criteria.
+	//
+	// This member is required.
+	Include Include
+
+	noSmithyDocumentSerde
+}
+
+// Object that defines how to filter the incoming objects for the calculated
+// attribute.
+type FilterAttributeDimension struct {
+
+	// The action to filter with.
+	//
+	// This member is required.
+	DimensionType FilterDimensionType
+
+	// The values to apply the DimensionType on.
+	//
+	// This member is required.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// Contains the map of attribute names to attribute dimensions.
+type FilterDimension struct {
+
+	// Is the attribute within the FilterDimension map
+	//
+	// This member is required.
+	Attributes map[string]FilterAttributeDimension
+
+	noSmithyDocumentSerde
+}
+
+// Object that holds the dimensions to filter on.
+type FilterGroup struct {
+
+	// Object that holds the attributes to filter on.
+	//
+	// This member is required.
+	Dimensions []FilterDimension
+
+	// The type of logical relationship between the dimensions of the Filter group.
+	//
+	// This member is required.
+	Type Type
+
+	noSmithyDocumentSerde
+}
+
 // The configurations that control how Customer Profiles retrieves data from the
 // source, Amazon AppFlow. Customer Profiles uses this information to create an
 // AppFlow flow on behalf of customers.
@@ -605,8 +968,9 @@ type FlowDefinition struct {
 }
 
 // A data type pair that consists of a KeyName and Values list that were used to
-// find a profile returned in response to a SearchProfiles (https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html)
-// request.
+// find a profile returned in response to a [SearchProfiles]request.
+//
+// [SearchProfiles]: https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html
 type FoundByKeyValue struct {
 
 	// A searchable identifier of a customer profile.
@@ -614,6 +978,24 @@ type FoundByKeyValue struct {
 
 	// A list of key values.
 	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// Contains dimensions that determine what to segment on.
+type Group struct {
+
+	// Defines the attributes to segment on.
+	Dimensions []Dimension
+
+	// Defines the starting source of data.
+	SourceSegments []SourceSegment
+
+	// Defines how to interact with the source data.
+	SourceType IncludeOptions
+
+	// Defines how to interact with the profiles found in the current filtering.
+	Type IncludeOptions
 
 	noSmithyDocumentSerde
 }
@@ -643,17 +1025,24 @@ type IdentityResolutionJob struct {
 	Message *string
 
 	// The status of the Identity Resolution Job.
+	//
 	//   - PENDING : The Identity Resolution Job is scheduled but has not started yet.
 	//   If you turn off the Identity Resolution feature in your domain, jobs in the
 	//   PENDING state are deleted.
+	//
 	//   - PREPROCESSING : The Identity Resolution Job is loading your data.
+	//
 	//   - FIND_MATCHING : The Identity Resolution Job is using the machine learning
 	//   model to identify profiles that belong to the same matching group.
+	//
 	//   - MERGING : The Identity Resolution Job is merging duplicate profiles.
+	//
 	//   - COMPLETED : The Identity Resolution Job completed successfully.
+	//
 	//   - PARTIAL_SUCCESS : There's a system error and not all of the data is merged.
 	//   The Identity Resolution Job writes a message indicating the source of the
 	//   problem.
+	//
 	//   - FAILED : The Identity Resolution Job did not merge any data. It writes a
 	//   message indicating the source of the problem.
 	Status IdentityResolutionJobStatus
@@ -804,6 +1193,10 @@ type ListIntegrationItem struct {
 	// This member is required.
 	Uri *string
 
+	// A list of unique names for active event triggers associated with the
+	// integration.
+	EventTriggerNames []string
+
 	// Boolean that shows if the Flow that's associated with the Integration is
 	// created in Amazon Appflow, or with ObjectTypeName equals _unstructured via
 	// API/CLI in flowDefinition.
@@ -819,11 +1212,31 @@ type ListIntegrationItem struct {
 	// ShopifyUpdateDraftOrders , ShopifyCreateOrders , and ShopifyUpdatedOrders .
 	ObjectTypeNames map[string]string
 
+	// The Amazon Resource Name (ARN) of the IAM role. The Integration uses this role
+	// to make Customer Profiles requests on your behalf.
+	RoleArn *string
+
 	// The tags used to organize, track, or control access for this resource.
 	Tags map[string]string
 
 	// Unique identifier for the workflow.
 	WorkflowId *string
+
+	noSmithyDocumentSerde
+}
+
+// Item that contains the attribute and when it was last updated.
+type ListObjectTypeAttributeItem struct {
+
+	// Name of the attribute.
+	//
+	// This member is required.
+	AttributeName *string
+
+	// When the attribute was last updated.
+	//
+	// This member is required.
+	LastUpdatedAt *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -862,6 +1275,12 @@ type ListProfileObjectTypeItem struct {
 
 	// The timestamp of when the domain was most recently edited.
 	LastUpdatedAt *time.Time
+
+	// The amount of provisioned profile object max count available.
+	MaxAvailableProfileObjectCount *int32
+
+	// The amount of profile object max count assigned to the object type.
+	MaxProfileObjectCount *int32
 
 	// The tags used to organize, track, or control access for this resource.
 	Tags map[string]string
@@ -975,22 +1394,39 @@ type MatchingResponse struct {
 
 // Specifies how does the rule-based matching process should match profiles. You
 // can choose from the following attributes to build the matching Rule:
+//
 //   - AccountNumber
+//
 //   - Address.Address
+//
 //   - Address.City
+//
 //   - Address.Country
+//
 //   - Address.County
+//
 //   - Address.PostalCode
+//
 //   - Address.State
+//
 //   - Address.Province
+//
 //   - BirthDate
+//
 //   - BusinessName
+//
 //   - EmailAddress
+//
 //   - FirstName
+//
 //   - Gender
+//
 //   - LastName
+//
 //   - MiddleName
+//
 //   - PhoneNumber
+//
 //   - Any customized profile attributes that start with the Attributes
 type MatchingRule struct {
 
@@ -1021,6 +1457,29 @@ type MatchItem struct {
 
 	// A list of identifiers for profiles that match.
 	ProfileIds []string
+
+	noSmithyDocumentSerde
+}
+
+// The criteria that a specific object attribute must meet to trigger the
+// destination.
+type ObjectAttribute struct {
+
+	// The operator used to compare an attribute against a list of values.
+	//
+	// This member is required.
+	ComparisonOperator ComparisonOperator
+
+	// A list of attribute values used for comparison.
+	//
+	// This member is required.
+	Values []string
+
+	// A field defined within an object type.
+	FieldName *string
+
+	// An attribute contained within a source object.
+	Source *string
 
 	noSmithyDocumentSerde
 }
@@ -1085,10 +1544,33 @@ type ObjectTypeKey struct {
 	noSmithyDocumentSerde
 }
 
+// Defines a limit and the time period during which it is enforced.
+type Period struct {
+
+	// The unit of time.
+	//
+	// This member is required.
+	Unit PeriodUnit
+
+	// The amount of time of the specified unit.
+	//
+	// This member is required.
+	Value *int32
+
+	// The maximum allowed number of destination invocations per profile.
+	MaxInvocationsPerProfile *int32
+
+	// If set to true, there is no limit on the number of destination invocations per
+	// profile. The default is false.
+	Unlimited bool
+
+	noSmithyDocumentSerde
+}
+
 // The standard profile of a customer.
 type Profile struct {
 
-	// A unique account number that you have given to the customer.
+	// An account number that you have given to the customer.
 	AccountNumber *string
 
 	// Any additional information relevant to the customer’s profile.
@@ -1123,22 +1605,26 @@ type Profile struct {
 	// The customer’s first name.
 	FirstName *string
 
-	// A list of items used to find a profile returned in a SearchProfiles (https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html)
-	// response. An item is a key-value(s) pair that matches an attribute in the
-	// profile. If the optional AdditionalSearchKeys parameter was included in the
-	// SearchProfiles (https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html)
-	// request, the FoundByItems list should be interpreted based on the
-	// LogicalOperator used in the request:
+	// A list of items used to find a profile returned in a [SearchProfiles] response. An item is a
+	// key-value(s) pair that matches an attribute in the profile.
+	//
+	// If the optional AdditionalSearchKeys parameter was included in the [SearchProfiles] request,
+	// the FoundByItems list should be interpreted based on the LogicalOperator used
+	// in the request:
+	//
 	//   - AND - The profile included in the response matched all of the search keys
 	//   specified in the request. The FoundByItems will include all of the
 	//   key-value(s) pairs that were specified in the request (as this is a requirement
 	//   of AND search logic).
+	//
 	//   - OR - The profile included in the response matched at least one of the search
 	//   keys specified in the request. The FoundByItems will include each of the
 	//   key-value(s) pairs that the profile was found by.
+	//
 	// The OR relationship is the default behavior if the LogicalOperator parameter is
-	// not included in the SearchProfiles (https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html)
-	// request.
+	// not included in the [SearchProfiles]request.
+	//
+	// [SearchProfiles]: https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_SearchProfiles.html
 	FoundByItems []FoundByKeyValue
 
 	// The gender with which the customer identifies.
@@ -1188,6 +1674,129 @@ type Profile struct {
 	noSmithyDocumentSerde
 }
 
+// The object used to segment on attributes within the customer profile.
+type ProfileAttributes struct {
+
+	// A field to describe values to segment on within account number.
+	AccountNumber *ProfileDimension
+
+	// A field to describe values to segment on within additional information.
+	AdditionalInformation *ExtraLengthValueProfileDimension
+
+	// A field to describe values to segment on within address.
+	Address *AddressDimension
+
+	// A field to describe values to segment on within attributes.
+	Attributes map[string]AttributeDimension
+
+	// A field to describe values to segment on within billing address.
+	BillingAddress *AddressDimension
+
+	// A field to describe values to segment on within birthDate.
+	BirthDate *DateDimension
+
+	// A field to describe values to segment on within business email address.
+	BusinessEmailAddress *ProfileDimension
+
+	// A field to describe values to segment on within business name.
+	BusinessName *ProfileDimension
+
+	// A field to describe values to segment on within business phone number.
+	BusinessPhoneNumber *ProfileDimension
+
+	// A field to describe values to segment on within email address.
+	EmailAddress *ProfileDimension
+
+	// A field to describe values to segment on within first name.
+	FirstName *ProfileDimension
+
+	// A field to describe values to segment on within genderString.
+	GenderString *ProfileDimension
+
+	// A field to describe values to segment on within home phone number.
+	HomePhoneNumber *ProfileDimension
+
+	// A field to describe values to segment on within last name.
+	LastName *ProfileDimension
+
+	// A field to describe values to segment on within mailing address.
+	MailingAddress *AddressDimension
+
+	// A field to describe values to segment on within middle name.
+	MiddleName *ProfileDimension
+
+	// A field to describe values to segment on within mobile phone number.
+	MobilePhoneNumber *ProfileDimension
+
+	// A field to describe values to segment on within partyTypeString.
+	PartyTypeString *ProfileDimension
+
+	// A field to describe values to segment on within personal email address.
+	PersonalEmailAddress *ProfileDimension
+
+	// A field to describe values to segment on within phone number.
+	PhoneNumber *ProfileDimension
+
+	// A field to describe values to segment on within shipping address.
+	ShippingAddress *AddressDimension
+
+	noSmithyDocumentSerde
+}
+
+// Object to hold the dimensions of a profile's fields to segment on.
+type ProfileDimension struct {
+
+	// The action to segment on.
+	//
+	// This member is required.
+	DimensionType StringDimensionType
+
+	// The values to apply the DimensionType on.
+	//
+	// This member is required.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// Object that holds failures for membership.
+type ProfileQueryFailures struct {
+
+	// A message describing the failure.
+	//
+	// This member is required.
+	Message *string
+
+	// The profile id the failure belongs to.
+	//
+	// This member is required.
+	ProfileId *string
+
+	// The status describing the failure.
+	Status *int32
+
+	noSmithyDocumentSerde
+}
+
+// Object that holds the results for membership.
+type ProfileQueryResult struct {
+
+	// The profile id the result belongs to.
+	//
+	// This member is required.
+	ProfileId *string
+
+	// Describes whether the profile was absent or present in the segment.
+	//
+	// This member is required.
+	QueryResult QueryResult
+
+	// The standard profile of a customer.
+	Profile *Profile
+
+	noSmithyDocumentSerde
+}
+
 // The relative time period over which data is included in the aggregation.
 type Range struct {
 
@@ -1199,7 +1808,26 @@ type Range struct {
 	// The amount of time of the specified unit.
 	//
 	// This member is required.
-	Value int32
+	Value *int32
+
+	noSmithyDocumentSerde
+}
+
+// Overrides the original range on a calculated attribute definition.
+type RangeOverride struct {
+
+	// The start time of when to include objects.
+	//
+	// This member is required.
+	Start *int32
+
+	// The unit for start and end.
+	//
+	// This member is required.
+	Unit RangeUnit
+
+	// The end time of when to include objects.
+	End int32
 
 	noSmithyDocumentSerde
 }
@@ -1221,11 +1849,13 @@ type RuleBasedMatchingRequest struct {
 	ConflictResolution *ConflictResolution
 
 	// Configuration information about the S3 bucket where Identity Resolution Jobs
-	// writes result files. You need to give Customer Profiles service principal write
-	// permission to your S3 bucket. Otherwise, you'll get an exception in the API
-	// response. For an example policy, see Amazon Connect Customer Profiles
-	// cross-service confused deputy prevention (https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html#customer-profiles-cross-service)
-	// .
+	// writes result files.
+	//
+	// You need to give Customer Profiles service principal write permission to your
+	// S3 bucket. Otherwise, you'll get an exception in the API response. For an
+	// example policy, see [Amazon Connect Customer Profiles cross-service confused deputy prevention].
+	//
+	// [Amazon Connect Customer Profiles cross-service confused deputy prevention]: https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html#customer-profiles-cross-service
 	ExportingConfig *ExportingConfig
 
 	// Configures how the rule-based matching process should match profiles. You can
@@ -1235,7 +1865,9 @@ type RuleBasedMatchingRequest struct {
 	// Indicates the maximum allowed rule level.
 	MaxAllowedRuleLevelForMatching *int32
 
-	// MatchingRule (https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_MatchingRule.html)
+	// [MatchingRule]
+	//
+	// [MatchingRule]: https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_MatchingRule.html
 	MaxAllowedRuleLevelForMerging *int32
 
 	noSmithyDocumentSerde
@@ -1256,11 +1888,13 @@ type RuleBasedMatchingResponse struct {
 	Enabled *bool
 
 	// Configuration information about the S3 bucket where Identity Resolution Jobs
-	// writes result files. You need to give Customer Profiles service principal write
-	// permission to your S3 bucket. Otherwise, you'll get an exception in the API
-	// response. For an example policy, see Amazon Connect Customer Profiles
-	// cross-service confused deputy prevention (https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html#customer-profiles-cross-service)
-	// .
+	// writes result files.
+	//
+	// You need to give Customer Profiles service principal write permission to your
+	// S3 bucket. Otherwise, you'll get an exception in the API response. For an
+	// example policy, see [Amazon Connect Customer Profiles cross-service confused deputy prevention].
+	//
+	// [Amazon Connect Customer Profiles cross-service confused deputy prevention]: https://docs.aws.amazon.com/connect/latest/adminguide/cross-service-confused-deputy-prevention.html#customer-profiles-cross-service
 	ExportingConfig *ExportingConfig
 
 	// Configures how the rule-based matching process should match profiles. You can
@@ -1270,19 +1904,26 @@ type RuleBasedMatchingResponse struct {
 	// Indicates the maximum allowed rule level.
 	MaxAllowedRuleLevelForMatching *int32
 
-	// MatchingRule (https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_MatchingRule.html)
+	// [MatchingRule]
+	//
+	// [MatchingRule]: https://docs.aws.amazon.com/customerprofiles/latest/APIReference/API_MatchingRule.html
 	MaxAllowedRuleLevelForMerging *int32
 
 	// PENDING
+	//
 	//   - The first status after configuration a rule-based matching rule. If it is
 	//   an existing domain, the rule-based Identity Resolution waits one hour before
 	//   creating the matching rule. If it is a new domain, the system will skip the
 	//   PENDING stage.
+	//
 	// IN_PROGRESS
+	//
 	//   - The system is creating the rule-based matching rule. Under this status, the
 	//   system is evaluating the existing data and you can no longer change the
 	//   Rule-based matching configuration.
+	//
 	// ACTIVE
+	//
 	//   - The rule is ready to use. You can change the rule a day after the status is
 	//   in ACTIVE .
 	Status RuleBasedMatchingStatus
@@ -1387,6 +2028,55 @@ type ScheduledTriggerProperties struct {
 	noSmithyDocumentSerde
 }
 
+// Object holding the segment definition fields.
+type SegmentDefinitionItem struct {
+
+	// When the segment definition was created.
+	CreatedAt *time.Time
+
+	// The description of the segment definition.
+	Description *string
+
+	// Display name of the segment definition.
+	DisplayName *string
+
+	// The arn of the segment definition.
+	SegmentDefinitionArn *string
+
+	// Name of the segment definition.
+	SegmentDefinitionName *string
+
+	// The tags belonging to the segment definition.
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// Contains all groups of the segment definition.
+type SegmentGroup struct {
+
+	// Holds the list of groups within the segment definition.
+	Groups []Group
+
+	// Defines whether to include or exclude the profiles that fit the segment
+	// criteria.
+	Include IncludeOptions
+
+	noSmithyDocumentSerde
+}
+
+// Contains all groups of the segment definition.
+type SegmentGroupStructure struct {
+
+	// Holds the list of groups within the segment definition.
+	Groups []Group
+
+	// Define whether to include or exclude the profiles that fit the segment criteria.
+	Include IncludeOptions
+
+	noSmithyDocumentSerde
+}
+
 // The properties that are applied when ServiceNow is being used as a source.
 type ServiceNowSourceProperties struct {
 
@@ -1444,6 +2134,15 @@ type SourceFlowConfig struct {
 	// configuration is provided, the fields specified in the configuration are used
 	// when querying for the incremental data pull.
 	IncrementalPullConfig *IncrementalPullConfig
+
+	noSmithyDocumentSerde
+}
+
+// The source segments to build off of.
+type SourceSegment struct {
+
+	// The unique name of the segment definition.
+	SegmentDefinitionName *string
 
 	noSmithyDocumentSerde
 }
@@ -1594,3 +2293,14 @@ type ZendeskSourceProperties struct {
 }
 
 type noSmithyDocumentSerde = smithydocument.NoSerde
+
+// UnknownUnionMember is returned when a union member is returned over the wire,
+// but has an unknown tag.
+type UnknownUnionMember struct {
+	Tag   string
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*UnknownUnionMember) isDimension() {}

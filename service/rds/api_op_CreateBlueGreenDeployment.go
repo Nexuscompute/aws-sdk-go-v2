@@ -4,33 +4,32 @@ package rds
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/rds/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a blue/green deployment. A blue/green deployment creates a staging
-// environment that copies the production environment. In a blue/green deployment,
-// the blue environment is the current production environment. The green
-// environment is the staging environment. The staging environment stays in sync
-// with the current production environment using logical replication. You can make
-// changes to the databases in the green environment without affecting production
-// workloads. For example, you can upgrade the major or minor DB engine version,
-// change database parameters, or make schema changes in the staging environment.
-// You can thoroughly test changes in the green environment. When ready, you can
-// switch over the environments to promote the green environment to be the new
-// production environment. The switchover typically takes under a minute. For more
-// information, see Using Amazon RDS Blue/Green Deployments for database updates (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html)
-// in the Amazon RDS User Guide and Using Amazon RDS Blue/Green Deployments for
-// database updates (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html)
-// in the Amazon Aurora User Guide.
+// Creates a blue/green deployment.
+//
+// A blue/green deployment creates a staging environment that copies the
+// production environment. In a blue/green deployment, the blue environment is the
+// current production environment. The green environment is the staging
+// environment, and it stays in sync with the current production environment.
+//
+// You can make changes to the databases in the green environment without
+// affecting production workloads. For example, you can upgrade the major or minor
+// DB engine version, change database parameters, or make schema changes in the
+// staging environment. You can thoroughly test changes in the green environment.
+// When ready, you can switch over the environments to promote the green
+// environment to be the new production environment. The switchover typically takes
+// under a minute.
+//
+// For more information, see [Using Amazon RDS Blue/Green Deployments for database updates] in the Amazon RDS User Guide and [Using Amazon RDS Blue/Green Deployments for database updates] in the Amazon
+// Aurora User Guide.
+//
+// [Using Amazon RDS Blue/Green Deployments for database updates]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html
 func (c *Client) CreateBlueGreenDeployment(ctx context.Context, params *CreateBlueGreenDeploymentInput, optFns ...func(*Options)) (*CreateBlueGreenDeploymentOutput, error) {
 	if params == nil {
 		params = &CreateBlueGreenDeploymentInput{}
@@ -48,18 +47,23 @@ func (c *Client) CreateBlueGreenDeployment(ctx context.Context, params *CreateBl
 
 type CreateBlueGreenDeploymentInput struct {
 
-	// The name of the blue/green deployment. Constraints:
+	// The name of the blue/green deployment.
+	//
+	// Constraints:
+	//
 	//   - Can't be the same as an existing blue/green deployment name in the same
 	//   account and Amazon Web Services Region.
 	//
 	// This member is required.
 	BlueGreenDeploymentName *string
 
-	// The Amazon Resource Name (ARN) of the source production database. Specify the
-	// database that you want to clone. The blue/green deployment creates this database
-	// in the green environment. You can make updates to the database in the green
-	// environment, such as an engine version upgrade. When you are ready, you can
-	// switch the database in the green environment to be the production database.
+	// The Amazon Resource Name (ARN) of the source production database.
+	//
+	// Specify the database that you want to clone. The blue/green deployment creates
+	// this database in the green environment. You can make updates to the database in
+	// the green environment, such as an engine version upgrade. When you are ready,
+	// you can switch the database in the green environment to be the production
+	// database.
 	//
 	// This member is required.
 	Source *string
@@ -67,30 +71,81 @@ type CreateBlueGreenDeploymentInput struct {
 	// Tags to assign to the blue/green deployment.
 	Tags []types.Tag
 
+	// The amount of storage in gibibytes (GiB) to allocate for the green DB instance.
+	// You can choose to increase or decrease the allocated storage on the green DB
+	// instance.
+	//
+	// This setting doesn't apply to Amazon Aurora blue/green deployments.
+	TargetAllocatedStorage *int32
+
 	// The DB cluster parameter group associated with the Aurora DB cluster in the
-	// green environment. To test parameter changes, specify a DB cluster parameter
-	// group that is different from the one associated with the source DB cluster.
+	// green environment.
+	//
+	// To test parameter changes, specify a DB cluster parameter group that is
+	// different from the one associated with the source DB cluster.
 	TargetDBClusterParameterGroupName *string
 
-	// The DB parameter group associated with the DB instance in the green
-	// environment. To test parameter changes, specify a DB parameter group that is
-	// different from the one associated with the source DB instance.
+	// Specify the DB instance class for the databases in the green environment.
+	//
+	// This parameter only applies to RDS DB instances, because DB instances within an
+	// Aurora DB cluster can have multiple different instance classes. If you're
+	// creating a blue/green deployment from an Aurora DB cluster, don't specify this
+	// parameter. After the green environment is created, you can individually modify
+	// the instance classes of the DB instances within the green DB cluster.
+	TargetDBInstanceClass *string
+
+	// The DB parameter group associated with the DB instance in the green environment.
+	//
+	// To test parameter changes, specify a DB parameter group that is different from
+	// the one associated with the source DB instance.
 	TargetDBParameterGroupName *string
 
-	// The engine version of the database in the green environment. Specify the engine
-	// version to upgrade to in the green environment.
+	// The engine version of the database in the green environment.
+	//
+	// Specify the engine version to upgrade to in the green environment.
 	TargetEngineVersion *string
+
+	// The amount of Provisioned IOPS (input/output operations per second) to allocate
+	// for the green DB instance. For information about valid IOPS values, see [Amazon RDS DB instance storage]in the
+	// Amazon RDS User Guide.
+	//
+	// This setting doesn't apply to Amazon Aurora blue/green deployments.
+	//
+	// [Amazon RDS DB instance storage]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Storage.html
+	TargetIops *int32
+
+	// The storage throughput value for the green DB instance.
+	//
+	// This setting applies only to the gp3 storage type.
+	//
+	// This setting doesn't apply to Amazon Aurora blue/green deployments.
+	TargetStorageThroughput *int32
+
+	// The storage type to associate with the green DB instance.
+	//
+	// Valid Values: gp2 | gp3 | io1 | io2
+	//
+	// This setting doesn't apply to Amazon Aurora blue/green deployments.
+	TargetStorageType *string
+
+	// Whether to upgrade the storage file system configuration on the green database.
+	// This option migrates the green DB instance from the older 32-bit file system to
+	// the preferred configuration. For more information, see [Upgrading the storage file system for a DB instance].
+	//
+	// [Upgrading the storage file system for a DB instance]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIOPS.StorageTypes.html#USER_PIOPS.UpgradeFileSystem
+	UpgradeTargetStorageConfig *bool
 
 	noSmithyDocumentSerde
 }
 
 type CreateBlueGreenDeploymentOutput struct {
 
-	// Details about a blue/green deployment. For more information, see Using Amazon
-	// RDS Blue/Green Deployments for database updates (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html)
-	// in the Amazon RDS User Guide and Using Amazon RDS Blue/Green Deployments for
-	// database updates (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html)
-	// in the Amazon Aurora User Guide.
+	// Details about a blue/green deployment.
+	//
+	// For more information, see [Using Amazon RDS Blue/Green Deployments for database updates] in the Amazon RDS User Guide and [Using Amazon RDS Blue/Green Deployments for database updates] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Using Amazon RDS Blue/Green Deployments for database updates]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html
 	BlueGreenDeployment *types.BlueGreenDeployment
 
 	// Metadata pertaining to the operation's result.
@@ -100,6 +155,9 @@ type CreateBlueGreenDeploymentOutput struct {
 }
 
 func (c *Client) addOperationCreateBlueGreenDeploymentMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpCreateBlueGreenDeployment{}, middleware.After)
 	if err != nil {
 		return err
@@ -108,34 +166,38 @@ func (c *Client) addOperationCreateBlueGreenDeploymentMiddlewares(stack *middlew
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateBlueGreenDeployment"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -147,7 +209,13 @@ func (c *Client) addOperationCreateBlueGreenDeploymentMiddlewares(stack *middlew
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateBlueGreenDeploymentResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateBlueGreenDeploymentValidationMiddleware(stack); err != nil {
@@ -156,7 +224,7 @@ func (c *Client) addOperationCreateBlueGreenDeploymentMiddlewares(stack *middlew
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateBlueGreenDeployment(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -168,7 +236,19 @@ func (c *Client) addOperationCreateBlueGreenDeploymentMiddlewares(stack *middlew
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -178,130 +258,6 @@ func newServiceMetadataMiddleware_opCreateBlueGreenDeployment(region string) *aw
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "rds",
 		OperationName: "CreateBlueGreenDeployment",
 	}
-}
-
-type opCreateBlueGreenDeploymentResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateBlueGreenDeploymentResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateBlueGreenDeploymentResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "rds"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "rds"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("rds")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateBlueGreenDeploymentResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateBlueGreenDeploymentResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

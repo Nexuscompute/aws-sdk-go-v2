@@ -11,8 +11,9 @@ const (
 )
 
 // Values returns all known values for AccessPolicyType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AccessPolicyType) Values() []AccessPolicyType {
 	return []AccessPolicyType{
 		"data",
@@ -34,8 +35,9 @@ const (
 )
 
 // Values returns all known values for CollectionStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CollectionStatus) Values() []CollectionStatus {
 	return []CollectionStatus{
 		"CREATING",
@@ -58,13 +60,97 @@ const (
 )
 
 // Values returns all known values for CollectionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CollectionType) Values() []CollectionType {
 	return []CollectionType{
 		"SEARCH",
 		"TIMESERIES",
 		"VECTORSEARCH",
+	}
+}
+
+type IamIdentityCenterGroupAttribute string
+
+// Enum values for IamIdentityCenterGroupAttribute
+const (
+	// Group ID
+	IamIdentityCenterGroupAttributeGroupId IamIdentityCenterGroupAttribute = "GroupId"
+	// Group Name
+	IamIdentityCenterGroupAttributeGroupName IamIdentityCenterGroupAttribute = "GroupName"
+)
+
+// Values returns all known values for IamIdentityCenterGroupAttribute. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IamIdentityCenterGroupAttribute) Values() []IamIdentityCenterGroupAttribute {
+	return []IamIdentityCenterGroupAttribute{
+		"GroupId",
+		"GroupName",
+	}
+}
+
+type IamIdentityCenterUserAttribute string
+
+// Enum values for IamIdentityCenterUserAttribute
+const (
+	// User ID
+	IamIdentityCenterUserAttributeUserId IamIdentityCenterUserAttribute = "UserId"
+	// User Name
+	IamIdentityCenterUserAttributeUserName IamIdentityCenterUserAttribute = "UserName"
+	// Email
+	IamIdentityCenterUserAttributeEmail IamIdentityCenterUserAttribute = "Email"
+)
+
+// Values returns all known values for IamIdentityCenterUserAttribute. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IamIdentityCenterUserAttribute) Values() []IamIdentityCenterUserAttribute {
+	return []IamIdentityCenterUserAttribute{
+		"UserId",
+		"UserName",
+		"Email",
+	}
+}
+
+type LifecyclePolicyType string
+
+// Enum values for LifecyclePolicyType
+const (
+	// retention policy type
+	LifecyclePolicyTypeRetention LifecyclePolicyType = "retention"
+)
+
+// Values returns all known values for LifecyclePolicyType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LifecyclePolicyType) Values() []LifecyclePolicyType {
+	return []LifecyclePolicyType{
+		"retention",
+	}
+}
+
+type ResourceType string
+
+// Enum values for ResourceType
+const (
+	// index resource type
+	ResourceTypeIndex ResourceType = "index"
+)
+
+// Values returns all known values for ResourceType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResourceType) Values() []ResourceType {
+	return []ResourceType{
+		"index",
 	}
 }
 
@@ -74,14 +160,18 @@ type SecurityConfigType string
 const (
 	// saml provider
 	SecurityConfigTypeSaml SecurityConfigType = "saml"
+	// iam identity center
+	SecurityConfigTypeIamidentitycenter SecurityConfigType = "iamidentitycenter"
 )
 
 // Values returns all known values for SecurityConfigType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SecurityConfigType) Values() []SecurityConfigType {
 	return []SecurityConfigType{
 		"saml",
+		"iamidentitycenter",
 	}
 }
 
@@ -96,12 +186,34 @@ const (
 )
 
 // Values returns all known values for SecurityPolicyType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SecurityPolicyType) Values() []SecurityPolicyType {
 	return []SecurityPolicyType{
 		"encryption",
 		"network",
+	}
+}
+
+type StandbyReplicas string
+
+// Enum values for StandbyReplicas
+const (
+	// Standby replicas enabled
+	StandbyReplicasEnabled StandbyReplicas = "ENABLED"
+	// Standby replicas disabled
+	StandbyReplicasDisabled StandbyReplicas = "DISABLED"
+)
+
+// Values returns all known values for StandbyReplicas. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StandbyReplicas) Values() []StandbyReplicas {
+	return []StandbyReplicas{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 
@@ -120,8 +232,9 @@ const (
 )
 
 // Values returns all known values for VpcEndpointStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VpcEndpointStatus) Values() []VpcEndpointStatus {
 	return []VpcEndpointStatus{
 		"PENDING",

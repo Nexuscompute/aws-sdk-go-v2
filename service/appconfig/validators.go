@@ -1211,11 +1211,11 @@ func validateOpDeleteEnvironmentInput(v *DeleteEnvironmentInput) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "DeleteEnvironmentInput"}
-	if v.ApplicationId == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("ApplicationId"))
-	}
 	if v.EnvironmentId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("EnvironmentId"))
+	}
+	if v.ApplicationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ApplicationId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1264,6 +1264,9 @@ func validateOpDeleteHostedConfigurationVersionInput(v *DeleteHostedConfiguratio
 	}
 	if v.ConfigurationProfileId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ConfigurationProfileId"))
+	}
+	if v.VersionNumber == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("VersionNumber"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1423,6 +1426,9 @@ func validateOpGetHostedConfigurationVersionInput(v *GetHostedConfigurationVersi
 	}
 	if v.ConfigurationProfileId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ConfigurationProfileId"))
+	}
+	if v.VersionNumber == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("VersionNumber"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

@@ -4,14 +4,9 @@ package macie2
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/macie2/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -45,8 +40,8 @@ type DescribeClassificationJobInput struct {
 
 type DescribeClassificationJobOutput struct {
 
-	// An array of unique identifiers, one for each allow list that the job uses when
-	// it analyzes data.
+	// An array of unique identifiers, one for each allow list that the job is
+	// configured to use when it analyzes data.
 	AllowListIds []string
 
 	// The token that was provided to ensure the idempotency of the request to create
@@ -58,8 +53,8 @@ type DescribeClassificationJobOutput struct {
 	CreatedAt *time.Time
 
 	// An array of unique identifiers, one for each custom data identifier that the
-	// job uses when it analyzes data. This value is null if the job uses only managed
-	// data identifiers to analyze data.
+	// job is configured to use when it analyzes data. This value is null if the job is
+	// configured to use only managed data identifiers to analyze data.
 	CustomDataIdentifierIds []string
 
 	// The custom description of the job.
@@ -70,7 +65,7 @@ type DescribeClassificationJobOutput struct {
 	// configured the job to analyze only those objects that were created or changed
 	// after the job was created and before the job's first scheduled run, this value
 	// is false. This value is also false for a one-time job.
-	InitialRun bool
+	InitialRun *bool
 
 	// The Amazon Resource Name (ARN) of the job.
 	JobArn *string
@@ -79,17 +74,23 @@ type DescribeClassificationJobOutput struct {
 	JobId *string
 
 	// The current status of the job. Possible values are:
+	//
 	//   - CANCELLED - You cancelled the job or, if it's a one-time job, you paused
 	//   the job and didn't resume it within 30 days.
+	//
 	//   - COMPLETE - For a one-time job, Amazon Macie finished processing the data
 	//   specified for the job. This value doesn't apply to recurring jobs.
+	//
 	//   - IDLE - For a recurring job, the previous scheduled run is complete and the
 	//   next scheduled run is pending. This value doesn't apply to one-time jobs.
+	//
 	//   - PAUSED - Macie started running the job but additional processing would
 	//   exceed the monthly sensitive data discovery quota for your account or one or
 	//   more member accounts that the job analyzes data for.
+	//
 	//   - RUNNING - For a one-time job, the job is in progress. For a recurring job,
 	//   a scheduled run is in progress.
+	//
 	//   - USER_PAUSED - You paused the job. If you paused the job while it had a
 	//   status of RUNNING and you don't resume it within 30 days of pausing it, the job
 	//   or job run will expire and be cancelled, depending on the job's type. To check
@@ -97,7 +98,9 @@ type DescribeClassificationJobOutput struct {
 	JobStatus types.JobStatus
 
 	// The schedule for running the job. Possible values are:
+	//
 	//   - ONE_TIME - The job runs only once.
+	//
 	//   - SCHEDULED - The job runs on a daily, weekly, or monthly basis. The
 	//   scheduleFrequency property indicates the recurrence pattern for the job.
 	JobType types.JobType
@@ -115,32 +118,41 @@ type DescribeClassificationJobOutput struct {
 	// An array of unique identifiers, one for each managed data identifier that the
 	// job is explicitly configured to include (use) or exclude (not use) when it
 	// analyzes data. Inclusion or exclusion depends on the managed data identifier
-	// selection type specified for the job (managedDataIdentifierSelector).This value
-	// is null if the job's managed data identifier selection type is ALL, NONE, or
-	// RECOMMENDED.
+	// selection type specified for the job (managedDataIdentifierSelector).
+	//
+	// This value is null if the job's managed data identifier selection type is ALL,
+	// NONE, or RECOMMENDED.
 	ManagedDataIdentifierIds []string
 
 	// The selection type that determines which managed data identifiers the job uses
 	// when it analyzes data. Possible values are:
-	//   - ALL (default) - Use all managed data identifiers.
+	//
+	//   - ALL - Use all managed data identifiers.
+	//
 	//   - EXCLUDE - Use all managed data identifiers except the ones specified by the
 	//   managedDataIdentifierIds property.
+	//
 	//   - INCLUDE - Use only the managed data identifiers specified by the
 	//   managedDataIdentifierIds property.
+	//
 	//   - NONE - Don't use any managed data identifiers. Use only custom data
 	//   identifiers (customDataIdentifierIds).
-	//   - RECOMMENDED - Use only the set of managed data identifiers that Amazon Web
-	//   Services recommends for jobs.
-	// If this value is null, the job uses all managed data identifiers. If the job is
-	// a recurring job and this value is null, ALL, or EXCLUDE, each job run
-	// automatically uses new managed data identifiers that are released after the job
-	// was created or the preceding run ended. If this value is RECOMMENDED for a
-	// recurring job, each job run uses all the managed data identifiers that are in
-	// the recommended set when the run starts. For information about individual
-	// managed data identifiers or to determine which ones are in the recommended set,
-	// see Using managed data identifiers (https://docs.aws.amazon.com/macie/latest/user/managed-data-identifiers.html)
-	// and Recommended managed data identifiers (https://docs.aws.amazon.com/macie/latest/user/discovery-jobs-mdis-recommended.html)
-	// in the Amazon Macie User Guide.
+	//
+	//   - RECOMMENDED (default) - Use the recommended set of managed data identifiers.
+	//
+	// If this value is null, the job uses the recommended set of managed data
+	// identifiers.
+	//
+	// If the job is a recurring job and this value is ALL or EXCLUDE, each job run
+	// automatically uses new managed data identifiers that are released. If this value
+	// is null or RECOMMENDED for a recurring job, each job run uses all the managed
+	// data identifiers that are in the recommended set when the run starts.
+	//
+	// To learn about individual managed data identifiers or determine which ones are
+	// in the recommended set, see [Using managed data identifiers]or [Recommended managed data identifiers] in the Amazon Macie User Guide.
+	//
+	// [Using managed data identifiers]: https://docs.aws.amazon.com/macie/latest/user/managed-data-identifiers.html
+	// [Recommended managed data identifiers]: https://docs.aws.amazon.com/macie/latest/user/discovery-jobs-mdis-recommended.html
 	ManagedDataIdentifierSelector types.ManagedDataIdentifierSelector
 
 	// The custom name of the job.
@@ -152,7 +164,7 @@ type DescribeClassificationJobOutput struct {
 
 	// The sampling depth, as a percentage, that determines the percentage of eligible
 	// objects that the job analyzes.
-	SamplingPercentage int32
+	SamplingPercentage *int32
 
 	// The recurrence pattern for running the job. This value is null if the job is
 	// configured to run only once.
@@ -163,7 +175,7 @@ type DescribeClassificationJobOutput struct {
 	Statistics *types.Statistics
 
 	// A map of key-value pairs that specifies which tags (keys and values) are
-	// associated with the classification job.
+	// associated with the job.
 	Tags map[string]string
 
 	// If the current status of the job is USER_PAUSED, specifies when the job was
@@ -178,6 +190,9 @@ type DescribeClassificationJobOutput struct {
 }
 
 func (c *Client) addOperationDescribeClassificationJobMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpDescribeClassificationJob{}, middleware.After)
 	if err != nil {
 		return err
@@ -186,34 +201,38 @@ func (c *Client) addOperationDescribeClassificationJobMiddlewares(stack *middlew
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeClassificationJob"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -225,7 +244,13 @@ func (c *Client) addOperationDescribeClassificationJobMiddlewares(stack *middlew
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeClassificationJobResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeClassificationJobValidationMiddleware(stack); err != nil {
@@ -234,7 +259,7 @@ func (c *Client) addOperationDescribeClassificationJobMiddlewares(stack *middlew
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeClassificationJob(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -246,7 +271,19 @@ func (c *Client) addOperationDescribeClassificationJobMiddlewares(stack *middlew
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -256,130 +293,6 @@ func newServiceMetadataMiddleware_opDescribeClassificationJob(region string) *aw
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "macie2",
 		OperationName: "DescribeClassificationJob",
 	}
-}
-
-type opDescribeClassificationJobResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeClassificationJobResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeClassificationJobResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "macie2"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "macie2"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("macie2")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeClassificationJobResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeClassificationJobResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

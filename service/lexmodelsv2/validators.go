@@ -150,6 +150,26 @@ func (m *validateOpCreateBotLocale) HandleInitialize(ctx context.Context, in mid
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateBotReplica struct {
+}
+
+func (*validateOpCreateBotReplica) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateBotReplica) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateBotReplicaInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateBotReplicaInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateBotVersion struct {
 }
 
@@ -365,6 +385,26 @@ func (m *validateOpDeleteBotLocale) HandleInitialize(ctx context.Context, in mid
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeleteBotLocaleInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteBotReplica struct {
+}
+
+func (*validateOpDeleteBotReplica) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteBotReplica) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteBotReplicaInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteBotReplicaInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -670,6 +710,46 @@ func (m *validateOpDescribeBotRecommendation) HandleInitialize(ctx context.Conte
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDescribeBotReplica struct {
+}
+
+func (*validateOpDescribeBotReplica) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeBotReplica) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeBotReplicaInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeBotReplicaInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeBotResourceGeneration struct {
+}
+
+func (*validateOpDescribeBotResourceGeneration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeBotResourceGeneration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeBotResourceGenerationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeBotResourceGenerationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDescribeBotVersion struct {
 }
 
@@ -910,6 +990,26 @@ func (m *validateOpDescribeTestSet) HandleInitialize(ctx context.Context, in mid
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGenerateBotElement struct {
+}
+
+func (*validateOpGenerateBotElement) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGenerateBotElement) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GenerateBotElementInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGenerateBotElementInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetTestExecutionArtifactsUrl struct {
 }
 
@@ -970,6 +1070,26 @@ func (m *validateOpListBotAliases) HandleInitialize(ctx context.Context, in midd
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListBotAliasReplicas struct {
+}
+
+func (*validateOpListBotAliasReplicas) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListBotAliasReplicas) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListBotAliasReplicasInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListBotAliasReplicasInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListBotLocales struct {
 }
 
@@ -1010,6 +1130,46 @@ func (m *validateOpListBotRecommendations) HandleInitialize(ctx context.Context,
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListBotReplicas struct {
+}
+
+func (*validateOpListBotReplicas) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListBotReplicas) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListBotReplicasInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListBotReplicasInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListBotResourceGenerations struct {
+}
+
+func (*validateOpListBotResourceGenerations) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListBotResourceGenerations) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListBotResourceGenerationsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListBotResourceGenerationsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListBots struct {
 }
 
@@ -1025,6 +1185,26 @@ func (m *validateOpListBots) HandleInitialize(ctx context.Context, in middleware
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListBotsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListBotVersionReplicas struct {
+}
+
+func (*validateOpListBotVersionReplicas) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListBotVersionReplicas) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListBotVersionReplicasInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListBotVersionReplicasInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1510,6 +1690,26 @@ func (m *validateOpStartBotRecommendation) HandleInitialize(ctx context.Context,
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpStartBotResourceGeneration struct {
+}
+
+func (*validateOpStartBotResourceGeneration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStartBotResourceGeneration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StartBotResourceGenerationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStartBotResourceGenerationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpStartImport struct {
 }
 
@@ -1858,6 +2058,10 @@ func addOpCreateBotLocaleValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateBotLocale{}, middleware.After)
 }
 
+func addOpCreateBotReplicaValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateBotReplica{}, middleware.After)
+}
+
 func addOpCreateBotVersionValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateBotVersion{}, middleware.After)
 }
@@ -1900,6 +2104,10 @@ func addOpDeleteBotValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpDeleteBotLocaleValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteBotLocale{}, middleware.After)
+}
+
+func addOpDeleteBotReplicaValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteBotReplica{}, middleware.After)
 }
 
 func addOpDeleteBotVersionValidationMiddleware(stack *middleware.Stack) error {
@@ -1962,6 +2170,14 @@ func addOpDescribeBotRecommendationValidationMiddleware(stack *middleware.Stack)
 	return stack.Initialize.Add(&validateOpDescribeBotRecommendation{}, middleware.After)
 }
 
+func addOpDescribeBotReplicaValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeBotReplica{}, middleware.After)
+}
+
+func addOpDescribeBotResourceGenerationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeBotResourceGeneration{}, middleware.After)
+}
+
 func addOpDescribeBotVersionValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeBotVersion{}, middleware.After)
 }
@@ -2010,6 +2226,10 @@ func addOpDescribeTestSetValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeTestSet{}, middleware.After)
 }
 
+func addOpGenerateBotElementValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGenerateBotElement{}, middleware.After)
+}
+
 func addOpGetTestExecutionArtifactsUrlValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetTestExecutionArtifactsUrl{}, middleware.After)
 }
@@ -2022,6 +2242,10 @@ func addOpListBotAliasesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListBotAliases{}, middleware.After)
 }
 
+func addOpListBotAliasReplicasValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListBotAliasReplicas{}, middleware.After)
+}
+
 func addOpListBotLocalesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListBotLocales{}, middleware.After)
 }
@@ -2030,8 +2254,20 @@ func addOpListBotRecommendationsValidationMiddleware(stack *middleware.Stack) er
 	return stack.Initialize.Add(&validateOpListBotRecommendations{}, middleware.After)
 }
 
+func addOpListBotReplicasValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListBotReplicas{}, middleware.After)
+}
+
+func addOpListBotResourceGenerationsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListBotResourceGenerations{}, middleware.After)
+}
+
 func addOpListBotsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListBots{}, middleware.After)
+}
+
+func addOpListBotVersionReplicasValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListBotVersionReplicas{}, middleware.After)
 }
 
 func addOpListBotVersionsValidationMiddleware(stack *middleware.Stack) error {
@@ -2128,6 +2364,10 @@ func addOpSearchAssociatedTranscriptsValidationMiddleware(stack *middleware.Stac
 
 func addOpStartBotRecommendationValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpStartBotRecommendation{}, middleware.After)
+}
+
+func addOpStartBotResourceGenerationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStartBotResourceGeneration{}, middleware.After)
 }
 
 func addOpStartImportValidationMiddleware(stack *middleware.Stack) error {
@@ -2926,6 +3166,59 @@ func validateAudioSpecification(v *types.AudioSpecification) error {
 	}
 }
 
+func validateBedrockGuardrailConfiguration(v *types.BedrockGuardrailConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BedrockGuardrailConfiguration"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
+	}
+	if v.Version == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Version"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateBedrockKnowledgeStoreConfiguration(v *types.BedrockKnowledgeStoreConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BedrockKnowledgeStoreConfiguration"}
+	if v.BedrockKnowledgeBaseArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BedrockKnowledgeBaseArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateBedrockModelSpecification(v *types.BedrockModelSpecification) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BedrockModelSpecification"}
+	if v.ModelArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ModelArn"))
+	}
+	if v.Guardrail != nil {
+		if err := validateBedrockGuardrailConfiguration(v.Guardrail); err != nil {
+			invalidParams.AddNested("Guardrail", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateBotAliasLocaleSettings(v *types.BotAliasLocaleSettings) error {
 	if v == nil {
 		return nil
@@ -3261,6 +3554,24 @@ func validateBotVersionLocaleSpecification(v map[string]types.BotVersionLocaleDe
 	}
 }
 
+func validateBotVersionReplicaSortBy(v *types.BotVersionReplicaSortBy) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BotVersionReplicaSortBy"}
+	if len(v.Attribute) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Attribute"))
+	}
+	if len(v.Order) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Order"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateBotVersionSortBy(v *types.BotVersionSortBy) error {
 	if v == nil {
 		return nil
@@ -3271,6 +3582,28 @@ func validateBotVersionSortBy(v *types.BotVersionSortBy) error {
 	}
 	if len(v.Order) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Order"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateBuildtimeSettings(v *types.BuildtimeSettings) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BuildtimeSettings"}
+	if v.DescriptiveBotBuilder != nil {
+		if err := validateDescriptiveBotBuilderSpecification(v.DescriptiveBotBuilder); err != nil {
+			invalidParams.AddNested("DescriptiveBotBuilder", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SampleUtteranceGeneration != nil {
+		if err := validateSampleUtteranceGenerationSpecification(v.SampleUtteranceGeneration); err != nil {
+			invalidParams.AddNested("SampleUtteranceGeneration", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -3689,6 +4022,33 @@ func validateDataPrivacy(v *types.DataPrivacy) error {
 	}
 }
 
+func validateDataSourceConfiguration(v *types.DataSourceConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DataSourceConfiguration"}
+	if v.OpensearchConfiguration != nil {
+		if err := validateOpensearchConfiguration(v.OpensearchConfiguration); err != nil {
+			invalidParams.AddNested("OpensearchConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.KendraConfiguration != nil {
+		if err := validateQnAKendraConfiguration(v.KendraConfiguration); err != nil {
+			invalidParams.AddNested("KendraConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.BedrockKnowledgeStoreConfiguration != nil {
+		if err := validateBedrockKnowledgeStoreConfiguration(v.BedrockKnowledgeStoreConfiguration); err != nil {
+			invalidParams.AddNested("BedrockKnowledgeStoreConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateDateRangeFilter(v *types.DateRangeFilter) error {
 	if v == nil {
 		return nil
@@ -3737,6 +4097,23 @@ func validateDeleteCustomVocabularyItemsList(v []types.CustomVocabularyEntryId) 
 	for i := range v {
 		if err := validateCustomVocabularyEntryId(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDescriptiveBotBuilderSpecification(v *types.DescriptiveBotBuilderSpecification) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescriptiveBotBuilderSpecification"}
+	if v.BedrockModelSpecification != nil {
+		if err := validateBedrockModelSpecification(v.BedrockModelSpecification); err != nil {
+			invalidParams.AddNested("BedrockModelSpecification", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -3846,6 +4223,24 @@ func validateElicitationCodeHookInvocationSetting(v *types.ElicitationCodeHookIn
 	invalidParams := smithy.InvalidParamsError{Context: "ElicitationCodeHookInvocationSetting"}
 	if v.EnableCodeHookInvocation == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("EnableCodeHookInvocation"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateExactResponseFields(v *types.ExactResponseFields) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ExactResponseFields"}
+	if v.QuestionField == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("QuestionField"))
+	}
+	if v.AnswerField == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AnswerField"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -4041,6 +4436,46 @@ func validateFulfillmentUpdatesSpecification(v *types.FulfillmentUpdatesSpecific
 	if v.UpdateResponse != nil {
 		if err := validateFulfillmentUpdateResponseSpecification(v.UpdateResponse); err != nil {
 			invalidParams.AddNested("UpdateResponse", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateGenerationSortBy(v *types.GenerationSortBy) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GenerationSortBy"}
+	if len(v.Attribute) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Attribute"))
+	}
+	if len(v.Order) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Order"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateGenerativeAISettings(v *types.GenerativeAISettings) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GenerativeAISettings"}
+	if v.RuntimeSettings != nil {
+		if err := validateRuntimeSettings(v.RuntimeSettings); err != nil {
+			invalidParams.AddNested("RuntimeSettings", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.BuildtimeSettings != nil {
+		if err := validateBuildtimeSettings(v.BuildtimeSettings); err != nil {
+			invalidParams.AddNested("BuildtimeSettings", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -4584,6 +5019,29 @@ func validateObfuscationSetting(v *types.ObfuscationSetting) error {
 	}
 }
 
+func validateOpensearchConfiguration(v *types.OpensearchConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "OpensearchConfiguration"}
+	if v.DomainEndpoint == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainEndpoint"))
+	}
+	if v.IndexName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IndexName"))
+	}
+	if v.ExactResponseFields != nil {
+		if err := validateExactResponseFields(v.ExactResponseFields); err != nil {
+			invalidParams.AddNested("ExactResponseFields", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOutputContext(v *types.OutputContext) error {
 	if v == nil {
 		return nil
@@ -4825,6 +5283,43 @@ func validatePromptSpecification(v *types.PromptSpecification) error {
 	}
 }
 
+func validateQnAIntentConfiguration(v *types.QnAIntentConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "QnAIntentConfiguration"}
+	if v.DataSourceConfiguration != nil {
+		if err := validateDataSourceConfiguration(v.DataSourceConfiguration); err != nil {
+			invalidParams.AddNested("DataSourceConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.BedrockModelConfiguration != nil {
+		if err := validateBedrockModelSpecification(v.BedrockModelConfiguration); err != nil {
+			invalidParams.AddNested("BedrockModelConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateQnAKendraConfiguration(v *types.QnAKendraConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "QnAKendraConfiguration"}
+	if v.KendraIndex == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("KendraIndex"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateRelativeAggregationDuration(v *types.RelativeAggregationDuration) error {
 	if v == nil {
 		return nil
@@ -4832,6 +5327,9 @@ func validateRelativeAggregationDuration(v *types.RelativeAggregationDuration) e
 	invalidParams := smithy.InvalidParamsError{Context: "RelativeAggregationDuration"}
 	if len(v.TimeDimension) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("TimeDimension"))
+	}
+	if v.TimeValue == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TimeValue"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -4850,6 +5348,23 @@ func validateResponseSpecification(v *types.ResponseSpecification) error {
 	} else if v.MessageGroups != nil {
 		if err := validateMessageGroupsList(v.MessageGroups); err != nil {
 			invalidParams.AddNested("MessageGroups", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRuntimeSettings(v *types.RuntimeSettings) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RuntimeSettings"}
+	if v.SlotResolutionImprovement != nil {
+		if err := validateSlotResolutionImprovementSpecification(v.SlotResolutionImprovement); err != nil {
+			invalidParams.AddNested("SlotResolutionImprovement", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -4907,6 +5422,23 @@ func validateSampleUtterance(v *types.SampleUtterance) error {
 	invalidParams := smithy.InvalidParamsError{Context: "SampleUtterance"}
 	if v.Utterance == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Utterance"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSampleUtteranceGenerationSpecification(v *types.SampleUtteranceGenerationSpecification) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SampleUtteranceGenerationSpecification"}
+	if v.BedrockModelSpecification != nil {
+		if err := validateBedrockModelSpecification(v.BedrockModelSpecification); err != nil {
+			invalidParams.AddNested("BedrockModelSpecification", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -5153,6 +5685,38 @@ func validateSlotPriority(v *types.SlotPriority) error {
 	}
 }
 
+func validateSlotResolutionImprovementSpecification(v *types.SlotResolutionImprovementSpecification) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SlotResolutionImprovementSpecification"}
+	if v.BedrockModelSpecification != nil {
+		if err := validateBedrockModelSpecification(v.BedrockModelSpecification); err != nil {
+			invalidParams.AddNested("BedrockModelSpecification", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSlotResolutionSetting(v *types.SlotResolutionSetting) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SlotResolutionSetting"}
+	if len(v.SlotResolutionStrategy) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("SlotResolutionStrategy"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateSlotSortBy(v *types.SlotSortBy) error {
 	if v == nil {
 		return nil
@@ -5297,6 +5861,11 @@ func validateSlotValueElicitationSetting(v *types.SlotValueElicitationSetting) e
 	if v.SlotCaptureSetting != nil {
 		if err := validateSlotCaptureSetting(v.SlotCaptureSetting); err != nil {
 			invalidParams.AddNested("SlotCaptureSetting", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SlotResolutionSetting != nil {
+		if err := validateSlotResolutionSetting(v.SlotResolutionSetting); err != nil {
+			invalidParams.AddNested("SlotResolutionSetting", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -6130,6 +6699,29 @@ func validateOpCreateBotLocaleInput(v *CreateBotLocaleInput) error {
 			invalidParams.AddNested("VoiceSettings", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.GenerativeAISettings != nil {
+		if err := validateGenerativeAISettings(v.GenerativeAISettings); err != nil {
+			invalidParams.AddNested("GenerativeAISettings", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateBotReplicaInput(v *CreateBotReplicaInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateBotReplicaInput"}
+	if v.BotId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotId"))
+	}
+	if v.ReplicaRegion == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ReplicaRegion"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -6241,6 +6833,11 @@ func validateOpCreateIntentInput(v *CreateIntentInput) error {
 	if v.InitialResponseSetting != nil {
 		if err := validateInitialResponseSetting(v.InitialResponseSetting); err != nil {
 			invalidParams.AddNested("InitialResponseSetting", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.QnAIntentConfiguration != nil {
+		if err := validateQnAIntentConfiguration(v.QnAIntentConfiguration); err != nil {
+			invalidParams.AddNested("QnAIntentConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -6451,6 +7048,24 @@ func validateOpDeleteBotLocaleInput(v *DeleteBotLocaleInput) error {
 	}
 	if v.LocaleId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("LocaleId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteBotReplicaInput(v *DeleteBotReplicaInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteBotReplicaInput"}
+	if v.BotId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotId"))
+	}
+	if v.ReplicaRegion == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ReplicaRegion"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -6744,6 +7359,48 @@ func validateOpDescribeBotRecommendationInput(v *DescribeBotRecommendationInput)
 	}
 }
 
+func validateOpDescribeBotReplicaInput(v *DescribeBotReplicaInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeBotReplicaInput"}
+	if v.BotId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotId"))
+	}
+	if v.ReplicaRegion == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ReplicaRegion"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeBotResourceGenerationInput(v *DescribeBotResourceGenerationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeBotResourceGenerationInput"}
+	if v.BotId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotId"))
+	}
+	if v.BotVersion == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotVersion"))
+	}
+	if v.LocaleId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LocaleId"))
+	}
+	if v.GenerationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("GenerationId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDescribeBotVersionInput(v *DescribeBotVersionInput) error {
 	if v == nil {
 		return nil
@@ -6963,6 +7620,30 @@ func validateOpDescribeTestSetInput(v *DescribeTestSetInput) error {
 	}
 }
 
+func validateOpGenerateBotElementInput(v *GenerateBotElementInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GenerateBotElementInput"}
+	if v.IntentId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IntentId"))
+	}
+	if v.BotId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotId"))
+	}
+	if v.BotVersion == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotVersion"))
+	}
+	if v.LocaleId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LocaleId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetTestExecutionArtifactsUrlInput(v *GetTestExecutionArtifactsUrlInput) error {
 	if v == nil {
 		return nil
@@ -7028,6 +7709,24 @@ func validateOpListBotAliasesInput(v *ListBotAliasesInput) error {
 	}
 }
 
+func validateOpListBotAliasReplicasInput(v *ListBotAliasReplicasInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListBotAliasReplicasInput"}
+	if v.BotId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotId"))
+	}
+	if v.ReplicaRegion == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ReplicaRegion"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListBotLocalesInput(v *ListBotLocalesInput) error {
 	if v == nil {
 		return nil
@@ -7077,6 +7776,47 @@ func validateOpListBotRecommendationsInput(v *ListBotRecommendationsInput) error
 	}
 }
 
+func validateOpListBotReplicasInput(v *ListBotReplicasInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListBotReplicasInput"}
+	if v.BotId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListBotResourceGenerationsInput(v *ListBotResourceGenerationsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListBotResourceGenerationsInput"}
+	if v.BotId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotId"))
+	}
+	if v.BotVersion == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotVersion"))
+	}
+	if v.LocaleId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LocaleId"))
+	}
+	if v.SortBy != nil {
+		if err := validateGenerationSortBy(v.SortBy); err != nil {
+			invalidParams.AddNested("SortBy", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListBotsInput(v *ListBotsInput) error {
 	if v == nil {
 		return nil
@@ -7090,6 +7830,29 @@ func validateOpListBotsInput(v *ListBotsInput) error {
 	if v.Filters != nil {
 		if err := validateBotFilters(v.Filters); err != nil {
 			invalidParams.AddNested("Filters", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListBotVersionReplicasInput(v *ListBotVersionReplicasInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListBotVersionReplicasInput"}
+	if v.BotId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotId"))
+	}
+	if v.ReplicaRegion == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ReplicaRegion"))
+	}
+	if v.SortBy != nil {
+		if err := validateBotVersionReplicaSortBy(v.SortBy); err != nil {
+			invalidParams.AddNested("SortBy", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -7757,6 +8520,30 @@ func validateOpStartBotRecommendationInput(v *StartBotRecommendationInput) error
 	}
 }
 
+func validateOpStartBotResourceGenerationInput(v *StartBotResourceGenerationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StartBotResourceGenerationInput"}
+	if v.GenerationInputPrompt == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("GenerationInputPrompt"))
+	}
+	if v.BotId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotId"))
+	}
+	if v.BotVersion == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BotVersion"))
+	}
+	if v.LocaleId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LocaleId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpStartImportInput(v *StartImportInput) error {
 	if v == nil {
 		return nil
@@ -7993,6 +8780,11 @@ func validateOpUpdateBotLocaleInput(v *UpdateBotLocaleInput) error {
 			invalidParams.AddNested("VoiceSettings", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.GenerativeAISettings != nil {
+		if err := validateGenerativeAISettings(v.GenerativeAISettings); err != nil {
+			invalidParams.AddNested("GenerativeAISettings", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -8110,6 +8902,11 @@ func validateOpUpdateIntentInput(v *UpdateIntentInput) error {
 	if v.InitialResponseSetting != nil {
 		if err := validateInitialResponseSetting(v.InitialResponseSetting); err != nil {
 			invalidParams.AddNested("InitialResponseSetting", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.QnAIntentConfiguration != nil {
+		if err := validateQnAIntentConfiguration(v.QnAIntentConfiguration); err != nil {
+			invalidParams.AddNested("QnAIntentConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
