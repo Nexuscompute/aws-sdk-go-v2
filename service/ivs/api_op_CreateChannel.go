@@ -4,14 +4,9 @@ package ivs
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/ivs/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -38,17 +33,30 @@ type CreateChannelInput struct {
 	// false .
 	Authorized bool
 
-	// Whether the channel allows insecure RTMP ingest. Default: false .
+	// Indicates which content-packaging format is used (MPEG-TS or fMP4). If
+	// multitrackInputConfiguration is specified and enabled is true , then
+	// containerFormat is required and must be set to FRAGMENTED_MP4 . Otherwise,
+	// containerFormat may be set to TS or FRAGMENTED_MP4 . Default: TS .
+	ContainerFormat types.ContainerFormat
+
+	// Whether the channel allows insecure RTMP and SRT ingest. Default: false .
 	InsecureIngest bool
 
 	// Channel latency mode. Use NORMAL to broadcast and deliver live video up to Full
-	// HD. Use LOW for near-real-time interaction with viewers. (Note: In the Amazon
-	// IVS console, LOW and NORMAL correspond to Ultra-low and Standard,
-	// respectively.) Default: LOW .
+	// HD. Use LOW for near-real-time interaction with viewers. Default: LOW .
 	LatencyMode types.ChannelLatencyMode
+
+	// Object specifying multitrack input configuration. Default: no multitrack input
+	// configuration is specified.
+	MultitrackInputConfiguration *types.MultitrackInputConfiguration
 
 	// Channel name.
 	Name *string
+
+	// Playback-restriction-policy ARN. A valid ARN value here both specifies the ARN
+	// and enables playback restriction. Default: "" (empty string, no playback
+	// restriction policy is applied).
+	PlaybackRestrictionPolicyArn *string
 
 	// Optional transcode preset for the channel. This is selectable only for
 	// ADVANCED_HD and ADVANCED_SD channel types. For those channel types, the default
@@ -56,55 +64,23 @@ type CreateChannelInput struct {
 	// STANDARD ), preset is the empty string ( "" ).
 	Preset types.TranscodePreset
 
-	// Recording-configuration ARN. Default: "" (empty string, recording is disabled).
+	// Recording-configuration ARN. A valid ARN value here both specifies the ARN and
+	// enables recording. Default: "" (empty string, recording is disabled).
 	RecordingConfigurationArn *string
 
-	// Array of 1-50 maps, each of the form string:string (key:value) . See Tagging
-	// Amazon Web Services Resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)
-	// for more information, including restrictions that apply to tags and "Tag naming
-	// limits and requirements"; Amazon IVS has no service-specific constraints beyond
-	// what is documented there.
+	// Array of 1-50 maps, each of the form string:string (key:value) . See [Best practices and strategies] in
+	// Tagging Amazon Web Services Resources and Tag Editor for details, including
+	// restrictions that apply to tags and "Tag naming limits and requirements"; Amazon
+	// IVS has no service-specific constraints beyond what is documented there.
+	//
+	// [Best practices and strategies]: https://docs.aws.amazon.com/tag-editor/latest/userguide/best-practices-and-strats.html
 	Tags map[string]string
 
 	// Channel type, which determines the allowable resolution and bitrate. If you
 	// exceed the allowable input resolution or bitrate, the stream probably will
-	// disconnect immediately. Some types generate multiple qualities (renditions) from
-	// the original input; this automatically gives viewers the best experience for
-	// their devices and network conditions. Some types provide transcoded video;
-	// transcoding allows higher playback quality across a range of download speeds.
-	// Default: STANDARD . Valid values:
-	//   - BASIC : Video is transmuxed: Amazon IVS delivers the original input quality
-	//   to viewers. The viewer’s video-quality choice is limited to the original input.
-	//   Input resolution can be up to 1080p and bitrate can be up to 1.5 Mbps for 480p
-	//   and up to 3.5 Mbps for resolutions between 480p and 1080p. Original audio is
-	//   passed through.
-	//   - STANDARD : Video is transcoded: multiple qualities are generated from the
-	//   original input, to automatically give viewers the best experience for their
-	//   devices and network conditions. Transcoding allows higher playback quality
-	//   across a range of download speeds. Resolution can be up to 1080p and bitrate can
-	//   be up to 8.5 Mbps. Audio is transcoded only for renditions 360p and below; above
-	//   that, audio is passed through. This is the default when you create a channel.
-	//   - ADVANCED_SD : Video is transcoded; multiple qualities are generated from the
-	//   original input, to automatically give viewers the best experience for their
-	//   devices and network conditions. Input resolution can be up to 1080p and bitrate
-	//   can be up to 8.5 Mbps; output is capped at SD quality (480p). You can select an
-	//   optional transcode preset (see below). Audio for all renditions is transcoded,
-	//   and an audio-only rendition is available.
-	//   - ADVANCED_HD : Video is transcoded; multiple qualities are generated from the
-	//   original input, to automatically give viewers the best experience for their
-	//   devices and network conditions. Input resolution can be up to 1080p and bitrate
-	//   can be up to 8.5 Mbps; output is capped at HD quality (720p). You can select an
-	//   optional transcode preset (see below). Audio for all renditions is transcoded,
-	//   and an audio-only rendition is available.
-	// Optional transcode presets (available for the ADVANCED types) allow you to
-	// trade off available download bandwidth and video quality, to optimize the
-	// viewing experience. There are two presets:
-	//   - Constrained bandwidth delivery uses a lower bitrate for each quality level.
-	//   Use it if you have low download bandwidth and/or simple video content (e.g.,
-	//   talking heads)
-	//   - Higher bandwidth delivery uses a higher bitrate for each quality level. Use
-	//   it if you have high download bandwidth and/or complex video content (e.g.,
-	//   flashes and quick scene changes).
+	// disconnect immediately. Default: STANDARD . For details, see [Channel Types].
+	//
+	// [Channel Types]: https://docs.aws.amazon.com/ivs/latest/LowLatencyAPIReference/channel-types.html
 	Type types.ChannelType
 
 	noSmithyDocumentSerde
@@ -125,6 +101,9 @@ type CreateChannelOutput struct {
 }
 
 func (c *Client) addOperationCreateChannelMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateChannel{}, middleware.After)
 	if err != nil {
 		return err
@@ -133,34 +112,38 @@ func (c *Client) addOperationCreateChannelMiddlewares(stack *middleware.Stack, o
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateChannel"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -172,13 +155,19 @@ func (c *Client) addOperationCreateChannelMiddlewares(stack *middleware.Stack, o
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateChannelResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateChannel(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -190,7 +179,19 @@ func (c *Client) addOperationCreateChannelMiddlewares(stack *middleware.Stack, o
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -200,130 +201,6 @@ func newServiceMetadataMiddleware_opCreateChannel(region string) *awsmiddleware.
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "ivs",
 		OperationName: "CreateChannel",
 	}
-}
-
-type opCreateChannelResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateChannelResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateChannelResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "ivs"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "ivs"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("ivs")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateChannelResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateChannelResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

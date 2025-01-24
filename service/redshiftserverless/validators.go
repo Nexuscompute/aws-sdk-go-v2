@@ -30,6 +30,26 @@ func (m *validateOpConvertRecoveryPointToSnapshot) HandleInitialize(ctx context.
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateCustomDomainAssociation struct {
+}
+
+func (*validateOpCreateCustomDomainAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateCustomDomainAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateCustomDomainAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateCustomDomainAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateEndpointAccess struct {
 }
 
@@ -65,6 +85,46 @@ func (m *validateOpCreateNamespace) HandleInitialize(ctx context.Context, in mid
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpCreateNamespaceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateScheduledAction struct {
+}
+
+func (*validateOpCreateScheduledAction) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateScheduledAction) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateScheduledActionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateScheduledActionInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateSnapshotCopyConfiguration struct {
+}
+
+func (*validateOpCreateSnapshotCopyConfiguration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateSnapshotCopyConfiguration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateSnapshotCopyConfigurationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateSnapshotCopyConfigurationInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -130,6 +190,26 @@ func (m *validateOpCreateWorkgroup) HandleInitialize(ctx context.Context, in mid
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeleteCustomDomainAssociation struct {
+}
+
+func (*validateOpDeleteCustomDomainAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteCustomDomainAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteCustomDomainAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteCustomDomainAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteEndpointAccess struct {
 }
 
@@ -185,6 +265,46 @@ func (m *validateOpDeleteResourcePolicy) HandleInitialize(ctx context.Context, i
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeleteResourcePolicyInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteScheduledAction struct {
+}
+
+func (*validateOpDeleteScheduledAction) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteScheduledAction) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteScheduledActionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteScheduledActionInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteSnapshotCopyConfiguration struct {
+}
+
+func (*validateOpDeleteSnapshotCopyConfiguration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteSnapshotCopyConfiguration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteSnapshotCopyConfigurationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteSnapshotCopyConfigurationInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -250,21 +370,21 @@ func (m *validateOpDeleteWorkgroup) HandleInitialize(ctx context.Context, in mid
 	return next.HandleInitialize(ctx, in)
 }
 
-type validateOpGetCredentials struct {
+type validateOpGetCustomDomainAssociation struct {
 }
 
-func (*validateOpGetCredentials) ID() string {
+func (*validateOpGetCustomDomainAssociation) ID() string {
 	return "OperationInputValidation"
 }
 
-func (m *validateOpGetCredentials) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+func (m *validateOpGetCustomDomainAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
 	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
 ) {
-	input, ok := in.Parameters.(*GetCredentialsInput)
+	input, ok := in.Parameters.(*GetCustomDomainAssociationInput)
 	if !ok {
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
-	if err := validateOpGetCredentialsInput(input); err != nil {
+	if err := validateOpGetCustomDomainAssociationInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -345,6 +465,26 @@ func (m *validateOpGetResourcePolicy) HandleInitialize(ctx context.Context, in m
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetResourcePolicyInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetScheduledAction struct {
+}
+
+func (*validateOpGetScheduledAction) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetScheduledAction) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetScheduledActionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetScheduledActionInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -490,6 +630,26 @@ func (m *validateOpRestoreFromSnapshot) HandleInitialize(ctx context.Context, in
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpRestoreTableFromRecoveryPoint struct {
+}
+
+func (*validateOpRestoreTableFromRecoveryPoint) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpRestoreTableFromRecoveryPoint) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*RestoreTableFromRecoveryPointInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpRestoreTableFromRecoveryPointInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpRestoreTableFromSnapshot struct {
 }
 
@@ -550,6 +710,26 @@ func (m *validateOpUntagResource) HandleInitialize(ctx context.Context, in middl
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateCustomDomainAssociation struct {
+}
+
+func (*validateOpUpdateCustomDomainAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateCustomDomainAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateCustomDomainAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateCustomDomainAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateEndpointAccess struct {
 }
 
@@ -585,6 +765,46 @@ func (m *validateOpUpdateNamespace) HandleInitialize(ctx context.Context, in mid
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpUpdateNamespaceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateScheduledAction struct {
+}
+
+func (*validateOpUpdateScheduledAction) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateScheduledAction) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateScheduledActionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateScheduledActionInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateSnapshotCopyConfiguration struct {
+}
+
+func (*validateOpUpdateSnapshotCopyConfiguration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateSnapshotCopyConfiguration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateSnapshotCopyConfigurationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateSnapshotCopyConfigurationInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -654,12 +874,24 @@ func addOpConvertRecoveryPointToSnapshotValidationMiddleware(stack *middleware.S
 	return stack.Initialize.Add(&validateOpConvertRecoveryPointToSnapshot{}, middleware.After)
 }
 
+func addOpCreateCustomDomainAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateCustomDomainAssociation{}, middleware.After)
+}
+
 func addOpCreateEndpointAccessValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateEndpointAccess{}, middleware.After)
 }
 
 func addOpCreateNamespaceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateNamespace{}, middleware.After)
+}
+
+func addOpCreateScheduledActionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateScheduledAction{}, middleware.After)
+}
+
+func addOpCreateSnapshotCopyConfigurationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateSnapshotCopyConfiguration{}, middleware.After)
 }
 
 func addOpCreateSnapshotValidationMiddleware(stack *middleware.Stack) error {
@@ -674,6 +906,10 @@ func addOpCreateWorkgroupValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateWorkgroup{}, middleware.After)
 }
 
+func addOpDeleteCustomDomainAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteCustomDomainAssociation{}, middleware.After)
+}
+
 func addOpDeleteEndpointAccessValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteEndpointAccess{}, middleware.After)
 }
@@ -684,6 +920,14 @@ func addOpDeleteNamespaceValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpDeleteResourcePolicyValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteResourcePolicy{}, middleware.After)
+}
+
+func addOpDeleteScheduledActionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteScheduledAction{}, middleware.After)
+}
+
+func addOpDeleteSnapshotCopyConfigurationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteSnapshotCopyConfiguration{}, middleware.After)
 }
 
 func addOpDeleteSnapshotValidationMiddleware(stack *middleware.Stack) error {
@@ -698,8 +942,8 @@ func addOpDeleteWorkgroupValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteWorkgroup{}, middleware.After)
 }
 
-func addOpGetCredentialsValidationMiddleware(stack *middleware.Stack) error {
-	return stack.Initialize.Add(&validateOpGetCredentials{}, middleware.After)
+func addOpGetCustomDomainAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetCustomDomainAssociation{}, middleware.After)
 }
 
 func addOpGetEndpointAccessValidationMiddleware(stack *middleware.Stack) error {
@@ -716,6 +960,10 @@ func addOpGetRecoveryPointValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpGetResourcePolicyValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetResourcePolicy{}, middleware.After)
+}
+
+func addOpGetScheduledActionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetScheduledAction{}, middleware.After)
 }
 
 func addOpGetTableRestoreStatusValidationMiddleware(stack *middleware.Stack) error {
@@ -746,6 +994,10 @@ func addOpRestoreFromSnapshotValidationMiddleware(stack *middleware.Stack) error
 	return stack.Initialize.Add(&validateOpRestoreFromSnapshot{}, middleware.After)
 }
 
+func addOpRestoreTableFromRecoveryPointValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpRestoreTableFromRecoveryPoint{}, middleware.After)
+}
+
 func addOpRestoreTableFromSnapshotValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpRestoreTableFromSnapshot{}, middleware.After)
 }
@@ -758,12 +1010,24 @@ func addOpUntagResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUntagResource{}, middleware.After)
 }
 
+func addOpUpdateCustomDomainAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateCustomDomainAssociation{}, middleware.After)
+}
+
 func addOpUpdateEndpointAccessValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateEndpointAccess{}, middleware.After)
 }
 
 func addOpUpdateNamespaceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateNamespace{}, middleware.After)
+}
+
+func addOpUpdateScheduledActionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateScheduledAction{}, middleware.After)
+}
+
+func addOpUpdateSnapshotCopyConfigurationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateSnapshotCopyConfiguration{}, middleware.After)
 }
 
 func addOpUpdateSnapshotValidationMiddleware(stack *middleware.Stack) error {
@@ -776,6 +1040,29 @@ func addOpUpdateUsageLimitValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpUpdateWorkgroupValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateWorkgroup{}, middleware.After)
+}
+
+func validateCreateSnapshotScheduleActionParameters(v *types.CreateSnapshotScheduleActionParameters) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateSnapshotScheduleActionParameters"}
+	if v.NamespaceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("NamespaceName"))
+	}
+	if v.SnapshotNamePrefix == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SnapshotNamePrefix"))
+	}
+	if v.Tags != nil {
+		if err := validateTagList(v.Tags); err != nil {
+			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
 }
 
 func validateTag(v *types.Tag) error {
@@ -813,6 +1100,25 @@ func validateTagList(v []types.Tag) error {
 	}
 }
 
+func validateTargetAction(v types.TargetAction) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "TargetAction"}
+	switch uv := v.(type) {
+	case *types.TargetActionMemberCreateSnapshot:
+		if err := validateCreateSnapshotScheduleActionParameters(&uv.Value); err != nil {
+			invalidParams.AddNested("[createSnapshot]", err.(smithy.InvalidParamsError))
+		}
+
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpConvertRecoveryPointToSnapshotInput(v *ConvertRecoveryPointToSnapshotInput) error {
 	if v == nil {
 		return nil
@@ -828,6 +1134,27 @@ func validateOpConvertRecoveryPointToSnapshotInput(v *ConvertRecoveryPointToSnap
 		if err := validateTagList(v.Tags); err != nil {
 			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateCustomDomainAssociationInput(v *CreateCustomDomainAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateCustomDomainAssociationInput"}
+	if v.WorkgroupName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WorkgroupName"))
+	}
+	if v.CustomDomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CustomDomainName"))
+	}
+	if v.CustomDomainCertificateArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CustomDomainCertificateArn"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -869,6 +1196,55 @@ func validateOpCreateNamespaceInput(v *CreateNamespaceInput) error {
 		if err := validateTagList(v.Tags); err != nil {
 			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateScheduledActionInput(v *CreateScheduledActionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateScheduledActionInput"}
+	if v.ScheduledActionName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ScheduledActionName"))
+	}
+	if v.TargetAction == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TargetAction"))
+	} else if v.TargetAction != nil {
+		if err := validateTargetAction(v.TargetAction); err != nil {
+			invalidParams.AddNested("TargetAction", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.Schedule == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Schedule"))
+	}
+	if v.RoleArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RoleArn"))
+	}
+	if v.NamespaceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("NamespaceName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateSnapshotCopyConfigurationInput(v *CreateSnapshotCopyConfigurationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateSnapshotCopyConfigurationInput"}
+	if v.NamespaceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("NamespaceName"))
+	}
+	if v.DestinationRegion == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DestinationRegion"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -944,6 +1320,24 @@ func validateOpCreateWorkgroupInput(v *CreateWorkgroupInput) error {
 	}
 }
 
+func validateOpDeleteCustomDomainAssociationInput(v *DeleteCustomDomainAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteCustomDomainAssociationInput"}
+	if v.WorkgroupName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WorkgroupName"))
+	}
+	if v.CustomDomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CustomDomainName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDeleteEndpointAccessInput(v *DeleteEndpointAccessInput) error {
 	if v == nil {
 		return nil
@@ -981,6 +1375,36 @@ func validateOpDeleteResourcePolicyInput(v *DeleteResourcePolicyInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "DeleteResourcePolicyInput"}
 	if v.ResourceArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ResourceArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteScheduledActionInput(v *DeleteScheduledActionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteScheduledActionInput"}
+	if v.ScheduledActionName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ScheduledActionName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteSnapshotCopyConfigurationInput(v *DeleteSnapshotCopyConfigurationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteSnapshotCopyConfigurationInput"}
+	if v.SnapshotCopyConfigurationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SnapshotCopyConfigurationId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1034,11 +1458,14 @@ func validateOpDeleteWorkgroupInput(v *DeleteWorkgroupInput) error {
 	}
 }
 
-func validateOpGetCredentialsInput(v *GetCredentialsInput) error {
+func validateOpGetCustomDomainAssociationInput(v *GetCustomDomainAssociationInput) error {
 	if v == nil {
 		return nil
 	}
-	invalidParams := smithy.InvalidParamsError{Context: "GetCredentialsInput"}
+	invalidParams := smithy.InvalidParamsError{Context: "GetCustomDomainAssociationInput"}
+	if v.CustomDomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CustomDomainName"))
+	}
 	if v.WorkgroupName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("WorkgroupName"))
 	}
@@ -1101,6 +1528,21 @@ func validateOpGetResourcePolicyInput(v *GetResourcePolicyInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "GetResourcePolicyInput"}
 	if v.ResourceArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ResourceArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetScheduledActionInput(v *GetScheduledActionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetScheduledActionInput"}
+	if v.ScheduledActionName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ScheduledActionName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1226,6 +1668,36 @@ func validateOpRestoreFromSnapshotInput(v *RestoreFromSnapshotInput) error {
 	}
 }
 
+func validateOpRestoreTableFromRecoveryPointInput(v *RestoreTableFromRecoveryPointInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RestoreTableFromRecoveryPointInput"}
+	if v.NamespaceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("NamespaceName"))
+	}
+	if v.WorkgroupName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WorkgroupName"))
+	}
+	if v.RecoveryPointId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RecoveryPointId"))
+	}
+	if v.SourceDatabaseName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SourceDatabaseName"))
+	}
+	if v.SourceTableName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SourceTableName"))
+	}
+	if v.NewTableName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("NewTableName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpRestoreTableFromSnapshotInput(v *RestoreTableFromSnapshotInput) error {
 	if v == nil {
 		return nil
@@ -1296,6 +1768,27 @@ func validateOpUntagResourceInput(v *UntagResourceInput) error {
 	}
 }
 
+func validateOpUpdateCustomDomainAssociationInput(v *UpdateCustomDomainAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateCustomDomainAssociationInput"}
+	if v.WorkgroupName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WorkgroupName"))
+	}
+	if v.CustomDomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CustomDomainName"))
+	}
+	if v.CustomDomainCertificateArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CustomDomainCertificateArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpUpdateEndpointAccessInput(v *UpdateEndpointAccessInput) error {
 	if v == nil {
 		return nil
@@ -1318,6 +1811,41 @@ func validateOpUpdateNamespaceInput(v *UpdateNamespaceInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "UpdateNamespaceInput"}
 	if v.NamespaceName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("NamespaceName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateScheduledActionInput(v *UpdateScheduledActionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateScheduledActionInput"}
+	if v.ScheduledActionName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ScheduledActionName"))
+	}
+	if v.TargetAction != nil {
+		if err := validateTargetAction(v.TargetAction); err != nil {
+			invalidParams.AddNested("TargetAction", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateSnapshotCopyConfigurationInput(v *UpdateSnapshotCopyConfigurationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateSnapshotCopyConfigurationInput"}
+	if v.SnapshotCopyConfigurationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SnapshotCopyConfigurationId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

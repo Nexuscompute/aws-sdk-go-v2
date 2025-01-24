@@ -6,23 +6,18 @@ import (
 	"bytes"
 	"context"
 	"github.com/aws/aws-sdk-go-v2/aws"
-	awshttp "github.com/aws/aws-sdk-go-v2/aws/transport/http"
+	protocoltesthttp "github.com/aws/aws-sdk-go-v2/internal/protocoltest"
 	"github.com/aws/aws-sdk-go-v2/internal/protocoltest/restxml/types"
-	smithydocument "github.com/aws/smithy-go/document"
 	"github.com/aws/smithy-go/middleware"
+	smithyprivateprotocol "github.com/aws/smithy-go/private/protocol"
 	"github.com/aws/smithy-go/ptr"
 	smithyrand "github.com/aws/smithy-go/rand"
 	smithytesting "github.com/aws/smithy-go/testing"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 	"io"
 	"io/ioutil"
-	"math"
 	"net/http"
-	"net/http/httptest"
 	"net/url"
-	"strconv"
 	"testing"
 )
 
@@ -63,7 +58,7 @@ func TestClient_XmlUnions_awsRestxmlSerialize(t *testing.T) {
 			},
 			BodyMediaType: "application/xml",
 			BodyAssert: func(actual io.Reader) error {
-				return smithytesting.CompareXMLReaderBytes(actual, []byte(`<XmlUnionsInputOutput>
+				return smithytesting.CompareXMLReaderBytes(actual, []byte(`<XmlUnionsRequest>
 			    <unionValue>
 			       <structValue>
 			          <stringValue>string</stringValue>
@@ -76,7 +71,7 @@ func TestClient_XmlUnions_awsRestxmlSerialize(t *testing.T) {
 			          <doubleValue>6.5</doubleValue>
 			       </structValue>
 			    </unionValue>
-			</XmlUnionsInputOutput>
+			</XmlUnionsRequest>
 			`))
 			},
 		},
@@ -93,11 +88,11 @@ func TestClient_XmlUnions_awsRestxmlSerialize(t *testing.T) {
 			},
 			BodyMediaType: "application/xml",
 			BodyAssert: func(actual io.Reader) error {
-				return smithytesting.CompareXMLReaderBytes(actual, []byte(`<XmlUnionsInputOutput>
+				return smithytesting.CompareXMLReaderBytes(actual, []byte(`<XmlUnionsRequest>
 			   <unionValue>
 			      <stringValue>some string</stringValue>
 			   </unionValue>
-			</XmlUnionsInputOutput>
+			</XmlUnionsRequest>
 			`))
 			},
 		},
@@ -114,11 +109,11 @@ func TestClient_XmlUnions_awsRestxmlSerialize(t *testing.T) {
 			},
 			BodyMediaType: "application/xml",
 			BodyAssert: func(actual io.Reader) error {
-				return smithytesting.CompareXMLReaderBytes(actual, []byte(`<XmlUnionsInputOutput>
+				return smithytesting.CompareXMLReaderBytes(actual, []byte(`<XmlUnionsRequest>
 			   <unionValue>
 			      <booleanValue>true</booleanValue>
 			   </unionValue>
-			</XmlUnionsInputOutput>
+			</XmlUnionsRequest>
 			`))
 			},
 		},
@@ -135,38 +130,21 @@ func TestClient_XmlUnions_awsRestxmlSerialize(t *testing.T) {
 			},
 			BodyMediaType: "application/xml",
 			BodyAssert: func(actual io.Reader) error {
-				return smithytesting.CompareXMLReaderBytes(actual, []byte(`<XmlUnionsInputOutput>
+				return smithytesting.CompareXMLReaderBytes(actual, []byte(`<XmlUnionsRequest>
 			   <unionValue>
 			      <unionValue>
 			         <booleanValue>true</booleanValue>
 			      </unionValue>
 			   </unionValue>
-			</XmlUnionsInputOutput>
+			</XmlUnionsRequest>
 			`))
 			},
 		},
 	}
 	for name, c := range cases {
 		t.Run(name, func(t *testing.T) {
-			var actualReq *http.Request
-			server := httptest.NewServer(http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-				actualReq = r.Clone(r.Context())
-				if len(actualReq.URL.RawPath) == 0 {
-					actualReq.URL.RawPath = actualReq.URL.Path
-				}
-				if v := actualReq.ContentLength; v != 0 {
-					actualReq.Header.Set("Content-Length", strconv.FormatInt(v, 10))
-				}
-				var buf bytes.Buffer
-				if _, err := io.Copy(&buf, r.Body); err != nil {
-					t.Errorf("failed to read request body, %v", err)
-				}
-				actualReq.Body = ioutil.NopCloser(&buf)
-
-				w.WriteHeader(200)
-			}))
-			defer server.Close()
-			serverURL := server.URL
+			actualReq := &http.Request{}
+			serverURL := "http://localhost:8888/"
 			if c.Host != nil {
 				u, err := url.Parse(serverURL)
 				if err != nil {
@@ -190,11 +168,15 @@ func TestClient_XmlUnions_awsRestxmlSerialize(t *testing.T) {
 					e.SigningRegion = "us-west-2"
 					return e, err
 				}),
-				HTTPClient:               awshttp.NewBuildableClient(),
+				HTTPClient:               protocoltesthttp.NewClient(),
 				IdempotencyTokenProvider: smithyrand.NewUUIDIdempotencyToken(&smithytesting.ByteLoop{}),
 				Region:                   "us-west-2",
 			})
-			result, err := client.XmlUnions(context.Background(), c.Params)
+			result, err := client.XmlUnions(context.Background(), c.Params, func(options *Options) {
+				options.APIOptions = append(options.APIOptions, func(stack *middleware.Stack) error {
+					return smithyprivateprotocol.AddCaptureRequestMiddleware(stack, actualReq)
+				})
+			})
 			if err != nil {
 				t.Fatalf("expect nil err, got %v", err)
 			}
@@ -238,7 +220,7 @@ func TestClient_XmlUnions_awsRestxmlDeserialize(t *testing.T) {
 				"Content-Type": []string{"application/xml"},
 			},
 			BodyMediaType: "application/xml",
-			Body: []byte(`<XmlUnionsInputOutput>
+			Body: []byte(`<XmlUnionsResponse>
 			    <unionValue>
 			       <structValue>
 			          <stringValue>string</stringValue>
@@ -251,7 +233,7 @@ func TestClient_XmlUnions_awsRestxmlDeserialize(t *testing.T) {
 			          <doubleValue>6.5</doubleValue>
 			       </structValue>
 			    </unionValue>
-			</XmlUnionsInputOutput>
+			</XmlUnionsResponse>
 			`),
 			ExpectResult: &XmlUnionsOutput{
 				UnionValue: &types.XmlUnionShapeMemberStructValue{Value: types.XmlNestedUnionStruct{
@@ -273,11 +255,11 @@ func TestClient_XmlUnions_awsRestxmlDeserialize(t *testing.T) {
 				"Content-Type": []string{"application/xml"},
 			},
 			BodyMediaType: "application/xml",
-			Body: []byte(`<XmlUnionsInputOutput>
+			Body: []byte(`<XmlUnionsResponse>
 			   <unionValue>
 			      <stringValue>some string</stringValue>
 			   </unionValue>
-			</XmlUnionsInputOutput>
+			</XmlUnionsResponse>
 			`),
 			ExpectResult: &XmlUnionsOutput{
 				UnionValue: &types.XmlUnionShapeMemberStringValue{Value: "some string"},
@@ -290,11 +272,11 @@ func TestClient_XmlUnions_awsRestxmlDeserialize(t *testing.T) {
 				"Content-Type": []string{"application/xml"},
 			},
 			BodyMediaType: "application/xml",
-			Body: []byte(`<XmlUnionsInputOutput>
+			Body: []byte(`<XmlUnionsResponse>
 			   <unionValue>
 			      <booleanValue>true</booleanValue>
 			   </unionValue>
-			</XmlUnionsInputOutput>
+			</XmlUnionsResponse>
 			`),
 			ExpectResult: &XmlUnionsOutput{
 				UnionValue: &types.XmlUnionShapeMemberBooleanValue{Value: true},
@@ -307,13 +289,13 @@ func TestClient_XmlUnions_awsRestxmlDeserialize(t *testing.T) {
 				"Content-Type": []string{"application/xml"},
 			},
 			BodyMediaType: "application/xml",
-			Body: []byte(`<XmlUnionsInputOutput>
+			Body: []byte(`<XmlUnionsResponse>
 			   <unionValue>
 			      <unionValue>
 			         <booleanValue>true</booleanValue>
 			      </unionValue>
 			   </unionValue>
-			</XmlUnionsInputOutput>
+			</XmlUnionsResponse>
 			`),
 			ExpectResult: &XmlUnionsOutput{
 				UnionValue: &types.XmlUnionShapeMemberUnionValue{Value: &types.XmlUnionShapeMemberBooleanValue{Value: true}},
@@ -371,19 +353,7 @@ func TestClient_XmlUnions_awsRestxmlDeserialize(t *testing.T) {
 			if result == nil {
 				t.Fatalf("expect not nil result")
 			}
-			opts := cmp.Options{
-				cmpopts.IgnoreUnexported(
-					middleware.Metadata{},
-				),
-				cmp.FilterValues(func(x, y float64) bool {
-					return math.IsNaN(x) && math.IsNaN(y)
-				}, cmp.Comparer(func(_, _ interface{}) bool { return true })),
-				cmp.FilterValues(func(x, y float32) bool {
-					return math.IsNaN(float64(x)) && math.IsNaN(float64(y))
-				}, cmp.Comparer(func(_, _ interface{}) bool { return true })),
-				cmpopts.IgnoreTypes(smithydocument.NoSerde{}),
-			}
-			if err := smithytesting.CompareValues(c.ExpectResult, result, opts...); err != nil {
+			if err := smithytesting.CompareValues(c.ExpectResult, result); err != nil {
 				t.Errorf("expect c.ExpectResult value match:\n%v", err)
 			}
 		})

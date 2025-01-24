@@ -11,8 +11,9 @@ const (
 )
 
 // Values returns all known values for AppliedStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AppliedStatus) Values() []AppliedStatus {
 	return []AppliedStatus{
 		"APPLIED",
@@ -20,23 +21,128 @@ func (AppliedStatus) Values() []AppliedStatus {
 	}
 }
 
+type AutoshiftAppliedStatus string
+
+// Enum values for AutoshiftAppliedStatus
+const (
+	AutoshiftAppliedStatusApplied    AutoshiftAppliedStatus = "APPLIED"
+	AutoshiftAppliedStatusNotApplied AutoshiftAppliedStatus = "NOT_APPLIED"
+)
+
+// Values returns all known values for AutoshiftAppliedStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AutoshiftAppliedStatus) Values() []AutoshiftAppliedStatus {
+	return []AutoshiftAppliedStatus{
+		"APPLIED",
+		"NOT_APPLIED",
+	}
+}
+
+type AutoshiftExecutionStatus string
+
+// Enum values for AutoshiftExecutionStatus
+const (
+	AutoshiftExecutionStatusActive    AutoshiftExecutionStatus = "ACTIVE"
+	AutoshiftExecutionStatusCompleted AutoshiftExecutionStatus = "COMPLETED"
+)
+
+// Values returns all known values for AutoshiftExecutionStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AutoshiftExecutionStatus) Values() []AutoshiftExecutionStatus {
+	return []AutoshiftExecutionStatus{
+		"ACTIVE",
+		"COMPLETED",
+	}
+}
+
+type AutoshiftObserverNotificationStatus string
+
+// Enum values for AutoshiftObserverNotificationStatus
+const (
+	AutoshiftObserverNotificationStatusEnabled  AutoshiftObserverNotificationStatus = "ENABLED"
+	AutoshiftObserverNotificationStatusDisabled AutoshiftObserverNotificationStatus = "DISABLED"
+)
+
+// Values returns all known values for AutoshiftObserverNotificationStatus. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AutoshiftObserverNotificationStatus) Values() []AutoshiftObserverNotificationStatus {
+	return []AutoshiftObserverNotificationStatus{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type ConflictExceptionReason string
 
 // Enum values for ConflictExceptionReason
 const (
-	ConflictExceptionReasonZonalShiftAlreadyExists         ConflictExceptionReason = "ZonalShiftAlreadyExists"
-	ConflictExceptionReasonZonalShiftStatusNotActive       ConflictExceptionReason = "ZonalShiftStatusNotActive"
-	ConflictExceptionReasonSimultaneousZonalShiftsConflict ConflictExceptionReason = "SimultaneousZonalShiftsConflict"
+	ConflictExceptionReasonZonalShiftAlreadyExists            ConflictExceptionReason = "ZonalShiftAlreadyExists"
+	ConflictExceptionReasonZonalShiftStatusNotActive          ConflictExceptionReason = "ZonalShiftStatusNotActive"
+	ConflictExceptionReasonSimultaneousZonalShiftsConflict    ConflictExceptionReason = "SimultaneousZonalShiftsConflict"
+	ConflictExceptionReasonPracticeConfigurationAlreadyExists ConflictExceptionReason = "PracticeConfigurationAlreadyExists"
+	ConflictExceptionReasonAutoshiftEnabled                   ConflictExceptionReason = "AutoShiftEnabled"
+	ConflictExceptionReasonPracticeConfigurationDoesNotExist  ConflictExceptionReason = "PracticeConfigurationDoesNotExist"
 )
 
 // Values returns all known values for ConflictExceptionReason. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConflictExceptionReason) Values() []ConflictExceptionReason {
 	return []ConflictExceptionReason{
 		"ZonalShiftAlreadyExists",
 		"ZonalShiftStatusNotActive",
 		"SimultaneousZonalShiftsConflict",
+		"PracticeConfigurationAlreadyExists",
+		"AutoShiftEnabled",
+		"PracticeConfigurationDoesNotExist",
+	}
+}
+
+type ControlConditionType string
+
+// Enum values for ControlConditionType
+const (
+	ControlConditionTypeCloudwatch ControlConditionType = "CLOUDWATCH"
+)
+
+// Values returns all known values for ControlConditionType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ControlConditionType) Values() []ControlConditionType {
+	return []ControlConditionType{
+		"CLOUDWATCH",
+	}
+}
+
+type PracticeRunOutcome string
+
+// Enum values for PracticeRunOutcome
+const (
+	PracticeRunOutcomeFailed      PracticeRunOutcome = "FAILED"
+	PracticeRunOutcomeInterrupted PracticeRunOutcome = "INTERRUPTED"
+	PracticeRunOutcomePending     PracticeRunOutcome = "PENDING"
+	PracticeRunOutcomeSucceeded   PracticeRunOutcome = "SUCCEEDED"
+)
+
+// Values returns all known values for PracticeRunOutcome. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PracticeRunOutcome) Values() []PracticeRunOutcome {
+	return []PracticeRunOutcome{
+		"FAILED",
+		"INTERRUPTED",
+		"PENDING",
+		"SUCCEEDED",
 	}
 }
 
@@ -51,10 +157,14 @@ const (
 	ValidationExceptionReasonInvalidResourceIdentifier ValidationExceptionReason = "InvalidResourceIdentifier"
 	ValidationExceptionReasonInvalidAz                 ValidationExceptionReason = "InvalidAz"
 	ValidationExceptionReasonUnsupportedAz             ValidationExceptionReason = "UnsupportedAz"
+	ValidationExceptionReasonInvalidAlarmCondition     ValidationExceptionReason = "InvalidAlarmCondition"
+	ValidationExceptionReasonInvalidConditionType      ValidationExceptionReason = "InvalidConditionType"
+	ValidationExceptionReasonInvalidPracticeBlocker    ValidationExceptionReason = "InvalidPracticeBlocker"
 )
 
 // Values returns all known values for ValidationExceptionReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 	return []ValidationExceptionReason{
@@ -65,6 +175,28 @@ func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 		"InvalidResourceIdentifier",
 		"InvalidAz",
 		"UnsupportedAz",
+		"InvalidAlarmCondition",
+		"InvalidConditionType",
+		"InvalidPracticeBlocker",
+	}
+}
+
+type ZonalAutoshiftStatus string
+
+// Enum values for ZonalAutoshiftStatus
+const (
+	ZonalAutoshiftStatusEnabled  ZonalAutoshiftStatus = "ENABLED"
+	ZonalAutoshiftStatusDisabled ZonalAutoshiftStatus = "DISABLED"
+)
+
+// Values returns all known values for ZonalAutoshiftStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ZonalAutoshiftStatus) Values() []ZonalAutoshiftStatus {
+	return []ZonalAutoshiftStatus{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 
@@ -78,8 +210,9 @@ const (
 )
 
 // Values returns all known values for ZonalShiftStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ZonalShiftStatus) Values() []ZonalShiftStatus {
 	return []ZonalShiftStatus{
 		"ACTIVE",

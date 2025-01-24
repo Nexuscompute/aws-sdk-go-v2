@@ -12,8 +12,9 @@ const (
 )
 
 // Values returns all known values for AccountSortBy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AccountSortBy) Values() []AccountSortBy {
 	return []AccountSortBy{
 		"CRITICAL",
@@ -32,8 +33,9 @@ const (
 )
 
 // Values returns all known values for AggregationFindingType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AggregationFindingType) Values() []AggregationFindingType {
 	return []AggregationFindingType{
 		"NETWORK_REACHABILITY",
@@ -52,8 +54,9 @@ const (
 )
 
 // Values returns all known values for AggregationResourceType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AggregationResourceType) Values() []AggregationResourceType {
 	return []AggregationResourceType{
 		"AWS_EC2_INSTANCE",
@@ -80,8 +83,9 @@ const (
 )
 
 // Values returns all known values for AggregationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AggregationType) Values() []AggregationType {
 	return []AggregationType{
 		"FINDING_TYPE",
@@ -109,8 +113,9 @@ const (
 )
 
 // Values returns all known values for AmiSortBy. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AmiSortBy) Values() []AmiSortBy {
 	return []AmiSortBy{
 		"CRITICAL",
@@ -129,8 +134,9 @@ const (
 )
 
 // Values returns all known values for Architecture. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Architecture) Values() []Architecture {
 	return []Architecture{
 		"X86_64",
@@ -148,13 +154,426 @@ const (
 )
 
 // Values returns all known values for AwsEcrContainerSortBy. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AwsEcrContainerSortBy) Values() []AwsEcrContainerSortBy {
 	return []AwsEcrContainerSortBy{
 		"CRITICAL",
 		"HIGH",
 		"ALL",
+	}
+}
+
+type CisFindingStatus string
+
+// Enum values for CisFindingStatus
+const (
+	CisFindingStatusPassed  CisFindingStatus = "PASSED"
+	CisFindingStatusFailed  CisFindingStatus = "FAILED"
+	CisFindingStatusSkipped CisFindingStatus = "SKIPPED"
+)
+
+// Values returns all known values for CisFindingStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisFindingStatus) Values() []CisFindingStatus {
+	return []CisFindingStatus{
+		"PASSED",
+		"FAILED",
+		"SKIPPED",
+	}
+}
+
+type CisFindingStatusComparison string
+
+// Enum values for CisFindingStatusComparison
+const (
+	CisFindingStatusComparisonEquals CisFindingStatusComparison = "EQUALS"
+)
+
+// Values returns all known values for CisFindingStatusComparison. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisFindingStatusComparison) Values() []CisFindingStatusComparison {
+	return []CisFindingStatusComparison{
+		"EQUALS",
+	}
+}
+
+type CisReportFormat string
+
+// Enum values for CisReportFormat
+const (
+	CisReportFormatPdf CisReportFormat = "PDF"
+	CisReportFormatCsv CisReportFormat = "CSV"
+)
+
+// Values returns all known values for CisReportFormat. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisReportFormat) Values() []CisReportFormat {
+	return []CisReportFormat{
+		"PDF",
+		"CSV",
+	}
+}
+
+type CisReportStatus string
+
+// Enum values for CisReportStatus
+const (
+	CisReportStatusSucceeded  CisReportStatus = "SUCCEEDED"
+	CisReportStatusFailed     CisReportStatus = "FAILED"
+	CisReportStatusInProgress CisReportStatus = "IN_PROGRESS"
+)
+
+// Values returns all known values for CisReportStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisReportStatus) Values() []CisReportStatus {
+	return []CisReportStatus{
+		"SUCCEEDED",
+		"FAILED",
+		"IN_PROGRESS",
+	}
+}
+
+type CisResultStatus string
+
+// Enum values for CisResultStatus
+const (
+	CisResultStatusPassed  CisResultStatus = "PASSED"
+	CisResultStatusFailed  CisResultStatus = "FAILED"
+	CisResultStatusSkipped CisResultStatus = "SKIPPED"
+)
+
+// Values returns all known values for CisResultStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisResultStatus) Values() []CisResultStatus {
+	return []CisResultStatus{
+		"PASSED",
+		"FAILED",
+		"SKIPPED",
+	}
+}
+
+type CisResultStatusComparison string
+
+// Enum values for CisResultStatusComparison
+const (
+	CisResultStatusComparisonEquals CisResultStatusComparison = "EQUALS"
+)
+
+// Values returns all known values for CisResultStatusComparison. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisResultStatusComparison) Values() []CisResultStatusComparison {
+	return []CisResultStatusComparison{
+		"EQUALS",
+	}
+}
+
+type CisRuleStatus string
+
+// Enum values for CisRuleStatus
+const (
+	CisRuleStatusFailed        CisRuleStatus = "FAILED"
+	CisRuleStatusPassed        CisRuleStatus = "PASSED"
+	CisRuleStatusNotEvaluated  CisRuleStatus = "NOT_EVALUATED"
+	CisRuleStatusInformational CisRuleStatus = "INFORMATIONAL"
+	CisRuleStatusUnknown       CisRuleStatus = "UNKNOWN"
+	CisRuleStatusNotApplicable CisRuleStatus = "NOT_APPLICABLE"
+	CisRuleStatusError         CisRuleStatus = "ERROR"
+)
+
+// Values returns all known values for CisRuleStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisRuleStatus) Values() []CisRuleStatus {
+	return []CisRuleStatus{
+		"FAILED",
+		"PASSED",
+		"NOT_EVALUATED",
+		"INFORMATIONAL",
+		"UNKNOWN",
+		"NOT_APPLICABLE",
+		"ERROR",
+	}
+}
+
+type CisScanConfigurationsSortBy string
+
+// Enum values for CisScanConfigurationsSortBy
+const (
+	CisScanConfigurationsSortByScanName             CisScanConfigurationsSortBy = "SCAN_NAME"
+	CisScanConfigurationsSortByScanConfigurationArn CisScanConfigurationsSortBy = "SCAN_CONFIGURATION_ARN"
+)
+
+// Values returns all known values for CisScanConfigurationsSortBy. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisScanConfigurationsSortBy) Values() []CisScanConfigurationsSortBy {
+	return []CisScanConfigurationsSortBy{
+		"SCAN_NAME",
+		"SCAN_CONFIGURATION_ARN",
+	}
+}
+
+type CisScanResultDetailsSortBy string
+
+// Enum values for CisScanResultDetailsSortBy
+const (
+	CisScanResultDetailsSortByCheckId CisScanResultDetailsSortBy = "CHECK_ID"
+	CisScanResultDetailsSortByStatus  CisScanResultDetailsSortBy = "STATUS"
+)
+
+// Values returns all known values for CisScanResultDetailsSortBy. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisScanResultDetailsSortBy) Values() []CisScanResultDetailsSortBy {
+	return []CisScanResultDetailsSortBy{
+		"CHECK_ID",
+		"STATUS",
+	}
+}
+
+type CisScanResultsAggregatedByChecksSortBy string
+
+// Enum values for CisScanResultsAggregatedByChecksSortBy
+const (
+	CisScanResultsAggregatedByChecksSortByCheckId       CisScanResultsAggregatedByChecksSortBy = "CHECK_ID"
+	CisScanResultsAggregatedByChecksSortByTitle         CisScanResultsAggregatedByChecksSortBy = "TITLE"
+	CisScanResultsAggregatedByChecksSortByPlatform      CisScanResultsAggregatedByChecksSortBy = "PLATFORM"
+	CisScanResultsAggregatedByChecksSortByFailedCounts  CisScanResultsAggregatedByChecksSortBy = "FAILED_COUNTS"
+	CisScanResultsAggregatedByChecksSortBySecurityLevel CisScanResultsAggregatedByChecksSortBy = "SECURITY_LEVEL"
+)
+
+// Values returns all known values for CisScanResultsAggregatedByChecksSortBy.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisScanResultsAggregatedByChecksSortBy) Values() []CisScanResultsAggregatedByChecksSortBy {
+	return []CisScanResultsAggregatedByChecksSortBy{
+		"CHECK_ID",
+		"TITLE",
+		"PLATFORM",
+		"FAILED_COUNTS",
+		"SECURITY_LEVEL",
+	}
+}
+
+type CisScanResultsAggregatedByTargetResourceSortBy string
+
+// Enum values for CisScanResultsAggregatedByTargetResourceSortBy
+const (
+	CisScanResultsAggregatedByTargetResourceSortByResourceId         CisScanResultsAggregatedByTargetResourceSortBy = "RESOURCE_ID"
+	CisScanResultsAggregatedByTargetResourceSortByFailedCounts       CisScanResultsAggregatedByTargetResourceSortBy = "FAILED_COUNTS"
+	CisScanResultsAggregatedByTargetResourceSortByAccountId          CisScanResultsAggregatedByTargetResourceSortBy = "ACCOUNT_ID"
+	CisScanResultsAggregatedByTargetResourceSortByPlatform           CisScanResultsAggregatedByTargetResourceSortBy = "PLATFORM"
+	CisScanResultsAggregatedByTargetResourceSortByTargetStatus       CisScanResultsAggregatedByTargetResourceSortBy = "TARGET_STATUS"
+	CisScanResultsAggregatedByTargetResourceSortByTargetStatusReason CisScanResultsAggregatedByTargetResourceSortBy = "TARGET_STATUS_REASON"
+)
+
+// Values returns all known values for
+// CisScanResultsAggregatedByTargetResourceSortBy. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisScanResultsAggregatedByTargetResourceSortBy) Values() []CisScanResultsAggregatedByTargetResourceSortBy {
+	return []CisScanResultsAggregatedByTargetResourceSortBy{
+		"RESOURCE_ID",
+		"FAILED_COUNTS",
+		"ACCOUNT_ID",
+		"PLATFORM",
+		"TARGET_STATUS",
+		"TARGET_STATUS_REASON",
+	}
+}
+
+type CisScanStatus string
+
+// Enum values for CisScanStatus
+const (
+	CisScanStatusFailed     CisScanStatus = "FAILED"
+	CisScanStatusCompleted  CisScanStatus = "COMPLETED"
+	CisScanStatusCancelled  CisScanStatus = "CANCELLED"
+	CisScanStatusInProgress CisScanStatus = "IN_PROGRESS"
+)
+
+// Values returns all known values for CisScanStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisScanStatus) Values() []CisScanStatus {
+	return []CisScanStatus{
+		"FAILED",
+		"COMPLETED",
+		"CANCELLED",
+		"IN_PROGRESS",
+	}
+}
+
+type CisScanStatusComparison string
+
+// Enum values for CisScanStatusComparison
+const (
+	CisScanStatusComparisonEquals CisScanStatusComparison = "EQUALS"
+)
+
+// Values returns all known values for CisScanStatusComparison. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisScanStatusComparison) Values() []CisScanStatusComparison {
+	return []CisScanStatusComparison{
+		"EQUALS",
+	}
+}
+
+type CisSecurityLevel string
+
+// Enum values for CisSecurityLevel
+const (
+	CisSecurityLevelLevel1 CisSecurityLevel = "LEVEL_1"
+	CisSecurityLevelLevel2 CisSecurityLevel = "LEVEL_2"
+)
+
+// Values returns all known values for CisSecurityLevel. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisSecurityLevel) Values() []CisSecurityLevel {
+	return []CisSecurityLevel{
+		"LEVEL_1",
+		"LEVEL_2",
+	}
+}
+
+type CisSecurityLevelComparison string
+
+// Enum values for CisSecurityLevelComparison
+const (
+	CisSecurityLevelComparisonEquals CisSecurityLevelComparison = "EQUALS"
+)
+
+// Values returns all known values for CisSecurityLevelComparison. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisSecurityLevelComparison) Values() []CisSecurityLevelComparison {
+	return []CisSecurityLevelComparison{
+		"EQUALS",
+	}
+}
+
+type CisSortOrder string
+
+// Enum values for CisSortOrder
+const (
+	CisSortOrderAsc  CisSortOrder = "ASC"
+	CisSortOrderDesc CisSortOrder = "DESC"
+)
+
+// Values returns all known values for CisSortOrder. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisSortOrder) Values() []CisSortOrder {
+	return []CisSortOrder{
+		"ASC",
+		"DESC",
+	}
+}
+
+type CisStringComparison string
+
+// Enum values for CisStringComparison
+const (
+	CisStringComparisonEquals    CisStringComparison = "EQUALS"
+	CisStringComparisonPrefix    CisStringComparison = "PREFIX"
+	CisStringComparisonNotEquals CisStringComparison = "NOT_EQUALS"
+)
+
+// Values returns all known values for CisStringComparison. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisStringComparison) Values() []CisStringComparison {
+	return []CisStringComparison{
+		"EQUALS",
+		"PREFIX",
+		"NOT_EQUALS",
+	}
+}
+
+type CisTargetStatus string
+
+// Enum values for CisTargetStatus
+const (
+	CisTargetStatusTimedOut  CisTargetStatus = "TIMED_OUT"
+	CisTargetStatusCancelled CisTargetStatus = "CANCELLED"
+	CisTargetStatusCompleted CisTargetStatus = "COMPLETED"
+)
+
+// Values returns all known values for CisTargetStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisTargetStatus) Values() []CisTargetStatus {
+	return []CisTargetStatus{
+		"TIMED_OUT",
+		"CANCELLED",
+		"COMPLETED",
+	}
+}
+
+type CisTargetStatusComparison string
+
+// Enum values for CisTargetStatusComparison
+const (
+	CisTargetStatusComparisonEquals CisTargetStatusComparison = "EQUALS"
+)
+
+// Values returns all known values for CisTargetStatusComparison. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisTargetStatusComparison) Values() []CisTargetStatusComparison {
+	return []CisTargetStatusComparison{
+		"EQUALS",
+	}
+}
+
+type CisTargetStatusReason string
+
+// Enum values for CisTargetStatusReason
+const (
+	CisTargetStatusReasonScanInProgress CisTargetStatusReason = "SCAN_IN_PROGRESS"
+	CisTargetStatusReasonUnsupportedOs  CisTargetStatusReason = "UNSUPPORTED_OS"
+	CisTargetStatusReasonSsmUnmanaged   CisTargetStatusReason = "SSM_UNMANAGED"
+)
+
+// Values returns all known values for CisTargetStatusReason. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CisTargetStatusReason) Values() []CisTargetStatusReason {
+	return []CisTargetStatusReason{
+		"SCAN_IN_PROGRESS",
+		"UNSUPPORTED_OS",
+		"SSM_UNMANAGED",
 	}
 }
 
@@ -169,8 +588,9 @@ const (
 )
 
 // Values returns all known values for CodeSnippetErrorCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CodeSnippetErrorCode) Values() []CodeSnippetErrorCode {
 	return []CodeSnippetErrorCode{
 		"INTERNAL_ERROR",
@@ -188,8 +608,9 @@ const (
 )
 
 // Values returns all known values for CoverageMapComparison. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CoverageMapComparison) Values() []CoverageMapComparison {
 	return []CoverageMapComparison{
 		"EQUALS",
@@ -207,8 +628,9 @@ const (
 )
 
 // Values returns all known values for CoverageResourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CoverageResourceType) Values() []CoverageResourceType {
 	return []CoverageResourceType{
 		"AWS_EC2_INSTANCE",
@@ -228,6 +650,7 @@ const (
 
 // Values returns all known values for CoverageStringComparison. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (CoverageStringComparison) Values() []CoverageStringComparison {
 	return []CoverageStringComparison{
@@ -244,11 +667,41 @@ const (
 )
 
 // Values returns all known values for Currency. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Currency) Values() []Currency {
 	return []Currency{
 		"USD",
+	}
+}
+
+type Day string
+
+// Enum values for Day
+const (
+	DaySun Day = "SUN"
+	DayMon Day = "MON"
+	DayTue Day = "TUE"
+	DayWed Day = "WED"
+	DayThu Day = "THU"
+	DayFri Day = "FRI"
+	DaySat Day = "SAT"
+)
+
+// Values returns all known values for Day. Note that this can be expanded in the
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Day) Values() []Day {
+	return []Day{
+		"SUN",
+		"MON",
+		"TUE",
+		"WED",
+		"THU",
+		"FRI",
+		"SAT",
 	}
 }
 
@@ -261,8 +714,9 @@ const (
 )
 
 // Values returns all known values for DelegatedAdminStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DelegatedAdminStatus) Values() []DelegatedAdminStatus {
 	return []DelegatedAdminStatus{
 		"ENABLED",
@@ -281,8 +735,9 @@ const (
 )
 
 // Values returns all known values for Ec2DeepInspectionStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Ec2DeepInspectionStatus) Values() []Ec2DeepInspectionStatus {
 	return []Ec2DeepInspectionStatus{
 		"ACTIVATED",
@@ -303,8 +758,9 @@ const (
 )
 
 // Values returns all known values for Ec2InstanceSortBy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Ec2InstanceSortBy) Values() []Ec2InstanceSortBy {
 	return []Ec2InstanceSortBy{
 		"NETWORK_FINDINGS",
@@ -321,16 +777,82 @@ const (
 	Ec2PlatformWindows Ec2Platform = "WINDOWS"
 	Ec2PlatformLinux   Ec2Platform = "LINUX"
 	Ec2PlatformUnknown Ec2Platform = "UNKNOWN"
+	Ec2PlatformMacos   Ec2Platform = "MACOS"
 )
 
 // Values returns all known values for Ec2Platform. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Ec2Platform) Values() []Ec2Platform {
 	return []Ec2Platform{
 		"WINDOWS",
 		"LINUX",
 		"UNKNOWN",
+		"MACOS",
+	}
+}
+
+type Ec2ScanMode string
+
+// Enum values for Ec2ScanMode
+const (
+	Ec2ScanModeEc2SsmAgentBased Ec2ScanMode = "EC2_SSM_AGENT_BASED"
+	Ec2ScanModeEc2Hybrid        Ec2ScanMode = "EC2_HYBRID"
+)
+
+// Values returns all known values for Ec2ScanMode. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Ec2ScanMode) Values() []Ec2ScanMode {
+	return []Ec2ScanMode{
+		"EC2_SSM_AGENT_BASED",
+		"EC2_HYBRID",
+	}
+}
+
+type Ec2ScanModeStatus string
+
+// Enum values for Ec2ScanModeStatus
+const (
+	Ec2ScanModeStatusSuccess Ec2ScanModeStatus = "SUCCESS"
+	Ec2ScanModeStatusPending Ec2ScanModeStatus = "PENDING"
+)
+
+// Values returns all known values for Ec2ScanModeStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Ec2ScanModeStatus) Values() []Ec2ScanModeStatus {
+	return []Ec2ScanModeStatus{
+		"SUCCESS",
+		"PENDING",
+	}
+}
+
+type EcrPullDateRescanDuration string
+
+// Enum values for EcrPullDateRescanDuration
+const (
+	EcrPullDateRescanDurationDays14  EcrPullDateRescanDuration = "DAYS_14"
+	EcrPullDateRescanDurationDays30  EcrPullDateRescanDuration = "DAYS_30"
+	EcrPullDateRescanDurationDays60  EcrPullDateRescanDuration = "DAYS_60"
+	EcrPullDateRescanDurationDays90  EcrPullDateRescanDuration = "DAYS_90"
+	EcrPullDateRescanDurationDays180 EcrPullDateRescanDuration = "DAYS_180"
+)
+
+// Values returns all known values for EcrPullDateRescanDuration. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EcrPullDateRescanDuration) Values() []EcrPullDateRescanDuration {
+	return []EcrPullDateRescanDuration{
+		"DAYS_14",
+		"DAYS_30",
+		"DAYS_60",
+		"DAYS_90",
+		"DAYS_180",
 	}
 }
 
@@ -341,16 +863,23 @@ const (
 	EcrRescanDurationLifetime EcrRescanDuration = "LIFETIME"
 	EcrRescanDurationDays30   EcrRescanDuration = "DAYS_30"
 	EcrRescanDurationDays180  EcrRescanDuration = "DAYS_180"
+	EcrRescanDurationDays14   EcrRescanDuration = "DAYS_14"
+	EcrRescanDurationDays60   EcrRescanDuration = "DAYS_60"
+	EcrRescanDurationDays90   EcrRescanDuration = "DAYS_90"
 )
 
 // Values returns all known values for EcrRescanDuration. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EcrRescanDuration) Values() []EcrRescanDuration {
 	return []EcrRescanDuration{
 		"LIFETIME",
 		"DAYS_30",
 		"DAYS_180",
+		"DAYS_14",
+		"DAYS_60",
+		"DAYS_90",
 	}
 }
 
@@ -364,8 +893,9 @@ const (
 )
 
 // Values returns all known values for EcrRescanDurationStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EcrRescanDurationStatus) Values() []EcrRescanDurationStatus {
 	return []EcrRescanDurationStatus{
 		"SUCCESS",
@@ -384,8 +914,9 @@ const (
 )
 
 // Values returns all known values for EcrScanFrequency. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EcrScanFrequency) Values() []EcrScanFrequency {
 	return []EcrScanFrequency{
 		"MANUAL",
@@ -398,25 +929,28 @@ type ErrorCode string
 
 // Enum values for ErrorCode
 const (
-	ErrorCodeAlreadyEnabled          ErrorCode = "ALREADY_ENABLED"
-	ErrorCodeEnableInProgress        ErrorCode = "ENABLE_IN_PROGRESS"
-	ErrorCodeDisableInProgress       ErrorCode = "DISABLE_IN_PROGRESS"
-	ErrorCodeSuspendInProgress       ErrorCode = "SUSPEND_IN_PROGRESS"
-	ErrorCodeResourceNotFound        ErrorCode = "RESOURCE_NOT_FOUND"
-	ErrorCodeAccessDenied            ErrorCode = "ACCESS_DENIED"
-	ErrorCodeInternalError           ErrorCode = "INTERNAL_ERROR"
-	ErrorCodeSsmUnavailable          ErrorCode = "SSM_UNAVAILABLE"
-	ErrorCodeSsmThrottled            ErrorCode = "SSM_THROTTLED"
-	ErrorCodeEventbridgeUnavailable  ErrorCode = "EVENTBRIDGE_UNAVAILABLE"
-	ErrorCodeEventbridgeThrottled    ErrorCode = "EVENTBRIDGE_THROTTLED"
-	ErrorCodeResourceScanNotDisabled ErrorCode = "RESOURCE_SCAN_NOT_DISABLED"
-	ErrorCodeDisassociateAllMembers  ErrorCode = "DISASSOCIATE_ALL_MEMBERS"
-	ErrorCodeAccountIsIsolated       ErrorCode = "ACCOUNT_IS_ISOLATED"
+	ErrorCodeAlreadyEnabled                        ErrorCode = "ALREADY_ENABLED"
+	ErrorCodeEnableInProgress                      ErrorCode = "ENABLE_IN_PROGRESS"
+	ErrorCodeDisableInProgress                     ErrorCode = "DISABLE_IN_PROGRESS"
+	ErrorCodeSuspendInProgress                     ErrorCode = "SUSPEND_IN_PROGRESS"
+	ErrorCodeResourceNotFound                      ErrorCode = "RESOURCE_NOT_FOUND"
+	ErrorCodeAccessDenied                          ErrorCode = "ACCESS_DENIED"
+	ErrorCodeInternalError                         ErrorCode = "INTERNAL_ERROR"
+	ErrorCodeSsmUnavailable                        ErrorCode = "SSM_UNAVAILABLE"
+	ErrorCodeSsmThrottled                          ErrorCode = "SSM_THROTTLED"
+	ErrorCodeEventbridgeUnavailable                ErrorCode = "EVENTBRIDGE_UNAVAILABLE"
+	ErrorCodeEventbridgeThrottled                  ErrorCode = "EVENTBRIDGE_THROTTLED"
+	ErrorCodeResourceScanNotDisabled               ErrorCode = "RESOURCE_SCAN_NOT_DISABLED"
+	ErrorCodeDisassociateAllMembers                ErrorCode = "DISASSOCIATE_ALL_MEMBERS"
+	ErrorCodeAccountIsIsolated                     ErrorCode = "ACCOUNT_IS_ISOLATED"
+	ErrorCodeEc2SsmResourceDataSyncLimitExceeded   ErrorCode = "EC2_SSM_RESOURCE_DATA_SYNC_LIMIT_EXCEEDED"
+	ErrorCodeEc2SsmAssociationVersionLimitExceeded ErrorCode = "EC2_SSM_ASSOCIATION_VERSION_LIMIT_EXCEEDED"
 )
 
 // Values returns all known values for ErrorCode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ErrorCode) Values() []ErrorCode {
 	return []ErrorCode{
 		"ALREADY_ENABLED",
@@ -433,6 +967,8 @@ func (ErrorCode) Values() []ErrorCode {
 		"RESOURCE_SCAN_NOT_DISABLED",
 		"DISASSOCIATE_ALL_MEMBERS",
 		"ACCOUNT_IS_ISOLATED",
+		"EC2_SSM_RESOURCE_DATA_SYNC_LIMIT_EXCEEDED",
+		"EC2_SSM_ASSOCIATION_VERSION_LIMIT_EXCEEDED",
 	}
 }
 
@@ -445,8 +981,9 @@ const (
 )
 
 // Values returns all known values for ExploitAvailable. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExploitAvailable) Values() []ExploitAvailable {
 	return []ExploitAvailable{
 		"YES",
@@ -465,8 +1002,9 @@ const (
 )
 
 // Values returns all known values for ExternalReportStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExternalReportStatus) Values() []ExternalReportStatus {
 	return []ExternalReportStatus{
 		"SUCCEEDED",
@@ -485,8 +1023,9 @@ const (
 )
 
 // Values returns all known values for FilterAction. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FilterAction) Values() []FilterAction {
 	return []FilterAction{
 		"NONE",
@@ -505,8 +1044,9 @@ const (
 )
 
 // Values returns all known values for FindingDetailsErrorCode. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FindingDetailsErrorCode) Values() []FindingDetailsErrorCode {
 	return []FindingDetailsErrorCode{
 		"INTERNAL_ERROR",
@@ -526,8 +1066,9 @@ const (
 )
 
 // Values returns all known values for FindingStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FindingStatus) Values() []FindingStatus {
 	return []FindingStatus{
 		"ACTIVE",
@@ -546,8 +1087,9 @@ const (
 )
 
 // Values returns all known values for FindingType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FindingType) Values() []FindingType {
 	return []FindingType{
 		"NETWORK_REACHABILITY",
@@ -566,8 +1108,9 @@ const (
 )
 
 // Values returns all known values for FindingTypeSortBy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FindingTypeSortBy) Values() []FindingTypeSortBy {
 	return []FindingTypeSortBy{
 		"CRITICAL",
@@ -586,8 +1129,9 @@ const (
 )
 
 // Values returns all known values for FixAvailable. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FixAvailable) Values() []FixAvailable {
 	return []FixAvailable{
 		"YES",
@@ -605,8 +1149,9 @@ const (
 )
 
 // Values returns all known values for FreeTrialInfoErrorCode. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FreeTrialInfoErrorCode) Values() []FreeTrialInfoErrorCode {
 	return []FreeTrialInfoErrorCode{
 		"ACCESS_DENIED",
@@ -623,8 +1168,9 @@ const (
 )
 
 // Values returns all known values for FreeTrialStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FreeTrialStatus) Values() []FreeTrialStatus {
 	return []FreeTrialStatus{
 		"ACTIVE",
@@ -643,8 +1189,9 @@ const (
 )
 
 // Values returns all known values for FreeTrialType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FreeTrialType) Values() []FreeTrialType {
 	return []FreeTrialType{
 		"EC2",
@@ -666,8 +1213,9 @@ const (
 )
 
 // Values returns all known values for GroupKey. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (GroupKey) Values() []GroupKey {
 	return []GroupKey{
 		"SCAN_STATUS_CODE",
@@ -688,8 +1236,9 @@ const (
 )
 
 // Values returns all known values for ImageLayerSortBy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImageLayerSortBy) Values() []ImageLayerSortBy {
 	return []ImageLayerSortBy{
 		"CRITICAL",
@@ -708,8 +1257,9 @@ const (
 )
 
 // Values returns all known values for LambdaFunctionSortBy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LambdaFunctionSortBy) Values() []LambdaFunctionSortBy {
 	return []LambdaFunctionSortBy{
 		"CRITICAL",
@@ -728,13 +1278,56 @@ const (
 )
 
 // Values returns all known values for LambdaLayerSortBy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LambdaLayerSortBy) Values() []LambdaLayerSortBy {
 	return []LambdaLayerSortBy{
 		"CRITICAL",
 		"HIGH",
 		"ALL",
+	}
+}
+
+type ListCisScansDetailLevel string
+
+// Enum values for ListCisScansDetailLevel
+const (
+	ListCisScansDetailLevelOrganization ListCisScansDetailLevel = "ORGANIZATION"
+	ListCisScansDetailLevelMember       ListCisScansDetailLevel = "MEMBER"
+)
+
+// Values returns all known values for ListCisScansDetailLevel. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ListCisScansDetailLevel) Values() []ListCisScansDetailLevel {
+	return []ListCisScansDetailLevel{
+		"ORGANIZATION",
+		"MEMBER",
+	}
+}
+
+type ListCisScansSortBy string
+
+// Enum values for ListCisScansSortBy
+const (
+	ListCisScansSortByStatus        ListCisScansSortBy = "STATUS"
+	ListCisScansSortByScheduledBy   ListCisScansSortBy = "SCHEDULED_BY"
+	ListCisScansSortByScanStartDate ListCisScansSortBy = "SCAN_START_DATE"
+	ListCisScansSortByFailedChecks  ListCisScansSortBy = "FAILED_CHECKS"
+)
+
+// Values returns all known values for ListCisScansSortBy. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ListCisScansSortBy) Values() []ListCisScansSortBy {
+	return []ListCisScansSortBy{
+		"STATUS",
+		"SCHEDULED_BY",
+		"SCAN_START_DATE",
+		"FAILED_CHECKS",
 	}
 }
 
@@ -746,8 +1339,9 @@ const (
 )
 
 // Values returns all known values for MapComparison. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MapComparison) Values() []MapComparison {
 	return []MapComparison{
 		"EQUALS",
@@ -763,8 +1357,9 @@ const (
 )
 
 // Values returns all known values for NetworkProtocol. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NetworkProtocol) Values() []NetworkProtocol {
 	return []NetworkProtocol{
 		"TCP",
@@ -783,8 +1378,9 @@ const (
 )
 
 // Values returns all known values for Operation. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Operation) Values() []Operation {
 	return []Operation{
 		"ENABLE_SCANNING",
@@ -798,28 +1394,30 @@ type PackageManager string
 
 // Enum values for PackageManager
 const (
-	PackageManagerBundler   PackageManager = "BUNDLER"
-	PackageManagerCargo     PackageManager = "CARGO"
-	PackageManagerComposer  PackageManager = "COMPOSER"
-	PackageManagerNpm       PackageManager = "NPM"
-	PackageManagerNuget     PackageManager = "NUGET"
-	PackageManagerPipenv    PackageManager = "PIPENV"
-	PackageManagerPoetry    PackageManager = "POETRY"
-	PackageManagerYarn      PackageManager = "YARN"
-	PackageManagerGobinary  PackageManager = "GOBINARY"
-	PackageManagerGomod     PackageManager = "GOMOD"
-	PackageManagerJar       PackageManager = "JAR"
-	PackageManagerOs        PackageManager = "OS"
-	PackageManagerPip       PackageManager = "PIP"
-	PackageManagerPythonpkg PackageManager = "PYTHONPKG"
-	PackageManagerNodepkg   PackageManager = "NODEPKG"
-	PackageManagerPom       PackageManager = "POM"
-	PackageManagerGemspec   PackageManager = "GEMSPEC"
+	PackageManagerBundler    PackageManager = "BUNDLER"
+	PackageManagerCargo      PackageManager = "CARGO"
+	PackageManagerComposer   PackageManager = "COMPOSER"
+	PackageManagerNpm        PackageManager = "NPM"
+	PackageManagerNuget      PackageManager = "NUGET"
+	PackageManagerPipenv     PackageManager = "PIPENV"
+	PackageManagerPoetry     PackageManager = "POETRY"
+	PackageManagerYarn       PackageManager = "YARN"
+	PackageManagerGobinary   PackageManager = "GOBINARY"
+	PackageManagerGomod      PackageManager = "GOMOD"
+	PackageManagerJar        PackageManager = "JAR"
+	PackageManagerOs         PackageManager = "OS"
+	PackageManagerPip        PackageManager = "PIP"
+	PackageManagerPythonpkg  PackageManager = "PYTHONPKG"
+	PackageManagerNodepkg    PackageManager = "NODEPKG"
+	PackageManagerPom        PackageManager = "POM"
+	PackageManagerGemspec    PackageManager = "GEMSPEC"
+	PackageManagerDotnetCore PackageManager = "DOTNET_CORE"
 )
 
 // Values returns all known values for PackageManager. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PackageManager) Values() []PackageManager {
 	return []PackageManager{
 		"BUNDLER",
@@ -839,6 +1437,7 @@ func (PackageManager) Values() []PackageManager {
 		"NODEPKG",
 		"POM",
 		"GEMSPEC",
+		"DOTNET_CORE",
 	}
 }
 
@@ -852,8 +1451,9 @@ const (
 )
 
 // Values returns all known values for PackageSortBy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PackageSortBy) Values() []PackageSortBy {
 	return []PackageSortBy{
 		"CRITICAL",
@@ -871,8 +1471,9 @@ const (
 )
 
 // Values returns all known values for PackageType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PackageType) Values() []PackageType {
 	return []PackageType{
 		"IMAGE",
@@ -899,8 +1500,9 @@ const (
 )
 
 // Values returns all known values for RelationshipStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RelationshipStatus) Values() []RelationshipStatus {
 	return []RelationshipStatus{
 		"CREATED",
@@ -927,8 +1529,9 @@ const (
 )
 
 // Values returns all known values for ReportFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportFormat) Values() []ReportFormat {
 	return []ReportFormat{
 		"CSV",
@@ -949,8 +1552,9 @@ const (
 )
 
 // Values returns all known values for ReportingErrorCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportingErrorCode) Values() []ReportingErrorCode {
 	return []ReportingErrorCode{
 		"INTERNAL_ERROR",
@@ -973,8 +1577,9 @@ const (
 )
 
 // Values returns all known values for RepositorySortBy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RepositorySortBy) Values() []RepositorySortBy {
 	return []RepositorySortBy{
 		"CRITICAL",
@@ -992,8 +1597,9 @@ const (
 )
 
 // Values returns all known values for ResourceMapComparison. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceMapComparison) Values() []ResourceMapComparison {
 	return []ResourceMapComparison{
 		"EQUALS",
@@ -1011,8 +1617,9 @@ const (
 )
 
 // Values returns all known values for ResourceScanType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceScanType) Values() []ResourceScanType {
 	return []ResourceScanType{
 		"EC2",
@@ -1032,6 +1639,7 @@ const (
 
 // Values returns all known values for ResourceStringComparison. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceStringComparison) Values() []ResourceStringComparison {
 	return []ResourceStringComparison{
@@ -1051,8 +1659,9 @@ const (
 )
 
 // Values returns all known values for ResourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceType) Values() []ResourceType {
 	return []ResourceType{
 		"AWS_EC2_INSTANCE",
@@ -1066,26 +1675,33 @@ type Runtime string
 
 // Enum values for Runtime
 const (
-	RuntimeNodejs      Runtime = "NODEJS"
-	RuntimeNodejs12X   Runtime = "NODEJS_12_X"
-	RuntimeNodejs14X   Runtime = "NODEJS_14_X"
-	RuntimeNodejs16X   Runtime = "NODEJS_16_X"
-	RuntimeJava8       Runtime = "JAVA_8"
-	RuntimeJava8Al2    Runtime = "JAVA_8_AL2"
-	RuntimeJava11      Runtime = "JAVA_11"
-	RuntimePython37    Runtime = "PYTHON_3_7"
-	RuntimePython38    Runtime = "PYTHON_3_8"
-	RuntimePython39    Runtime = "PYTHON_3_9"
-	RuntimeUnsupported Runtime = "UNSUPPORTED"
-	RuntimeNodejs18X   Runtime = "NODEJS_18_X"
-	RuntimeGo1X        Runtime = "GO_1_X"
-	RuntimeJava17      Runtime = "JAVA_17"
-	RuntimePython310   Runtime = "PYTHON_3_10"
+	RuntimeNodejs       Runtime = "NODEJS"
+	RuntimeNodejs12X    Runtime = "NODEJS_12_X"
+	RuntimeNodejs14X    Runtime = "NODEJS_14_X"
+	RuntimeNodejs16X    Runtime = "NODEJS_16_X"
+	RuntimeJava8        Runtime = "JAVA_8"
+	RuntimeJava8Al2     Runtime = "JAVA_8_AL2"
+	RuntimeJava11       Runtime = "JAVA_11"
+	RuntimePython37     Runtime = "PYTHON_3_7"
+	RuntimePython38     Runtime = "PYTHON_3_8"
+	RuntimePython39     Runtime = "PYTHON_3_9"
+	RuntimeUnsupported  Runtime = "UNSUPPORTED"
+	RuntimeNodejs18X    Runtime = "NODEJS_18_X"
+	RuntimeGo1X         Runtime = "GO_1_X"
+	RuntimeJava17       Runtime = "JAVA_17"
+	RuntimePython310    Runtime = "PYTHON_3_10"
+	RuntimePython311    Runtime = "PYTHON_3_11"
+	RuntimeDotnetcore31 Runtime = "DOTNETCORE_3_1"
+	RuntimeDotnet6      Runtime = "DOTNET_6"
+	RuntimeDotnet7      Runtime = "DOTNET_7"
+	RuntimeRuby27       Runtime = "RUBY_2_7"
+	RuntimeRuby32       Runtime = "RUBY_3_2"
 )
 
 // Values returns all known values for Runtime. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Runtime) Values() []Runtime {
 	return []Runtime{
 		"NODEJS",
@@ -1103,6 +1719,12 @@ func (Runtime) Values() []Runtime {
 		"GO_1_X",
 		"JAVA_17",
 		"PYTHON_3_10",
+		"PYTHON_3_11",
+		"DOTNETCORE_3_1",
+		"DOTNET_6",
+		"DOTNET_7",
+		"RUBY_2_7",
+		"RUBY_3_2",
 	}
 }
 
@@ -1115,12 +1737,32 @@ const (
 )
 
 // Values returns all known values for SbomReportFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SbomReportFormat) Values() []SbomReportFormat {
 	return []SbomReportFormat{
 		"CYCLONEDX_1_4",
 		"SPDX_2_3",
+	}
+}
+
+type ScanMode string
+
+// Enum values for ScanMode
+const (
+	ScanModeEc2SsmAgentBased ScanMode = "EC2_SSM_AGENT_BASED"
+	ScanModeEc2Agentless     ScanMode = "EC2_AGENTLESS"
+)
+
+// Values returns all known values for ScanMode. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ScanMode) Values() []ScanMode {
+	return []ScanMode{
+		"EC2_SSM_AGENT_BASED",
+		"EC2_AGENTLESS",
 	}
 }
 
@@ -1133,8 +1775,9 @@ const (
 )
 
 // Values returns all known values for ScanStatusCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScanStatusCode) Values() []ScanStatusCode {
 	return []ScanStatusCode{
 		"ACTIVE",
@@ -1170,11 +1813,14 @@ const (
 	ScanStatusReasonDeepInspectionDailySsmInventoryLimitExceeded ScanStatusReason = "DEEP_INSPECTION_DAILY_SSM_INVENTORY_LIMIT_EXCEEDED"
 	ScanStatusReasonDeepInspectionCollectionTimeLimitExceeded    ScanStatusReason = "DEEP_INSPECTION_COLLECTION_TIME_LIMIT_EXCEEDED"
 	ScanStatusReasonDeepInspectionNoInventory                    ScanStatusReason = "DEEP_INSPECTION_NO_INVENTORY"
+	ScanStatusReasonAgentlessInstanceStorageLimitExceeded        ScanStatusReason = "AGENTLESS_INSTANCE_STORAGE_LIMIT_EXCEEDED"
+	ScanStatusReasonAgentlessInstanceCollectionTimeLimitExceeded ScanStatusReason = "AGENTLESS_INSTANCE_COLLECTION_TIME_LIMIT_EXCEEDED"
 )
 
 // Values returns all known values for ScanStatusReason. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScanStatusReason) Values() []ScanStatusReason {
 	return []ScanStatusReason{
 		"PENDING_INITIAL_SCAN",
@@ -1201,6 +1847,8 @@ func (ScanStatusReason) Values() []ScanStatusReason {
 		"DEEP_INSPECTION_DAILY_SSM_INVENTORY_LIMIT_EXCEEDED",
 		"DEEP_INSPECTION_COLLECTION_TIME_LIMIT_EXCEEDED",
 		"DEEP_INSPECTION_NO_INVENTORY",
+		"AGENTLESS_INSTANCE_STORAGE_LIMIT_EXCEEDED",
+		"AGENTLESS_INSTANCE_COLLECTION_TIME_LIMIT_EXCEEDED",
 	}
 }
 
@@ -1214,8 +1862,9 @@ const (
 )
 
 // Values returns all known values for ScanType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScanType) Values() []ScanType {
 	return []ScanType{
 		"NETWORK",
@@ -1234,8 +1883,9 @@ const (
 )
 
 // Values returns all known values for Service. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Service) Values() []Service {
 	return []Service{
 		"EC2",
@@ -1257,8 +1907,9 @@ const (
 )
 
 // Values returns all known values for Severity. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Severity) Values() []Severity {
 	return []Severity{
 		"INFORMATIONAL",
@@ -1294,8 +1945,9 @@ const (
 )
 
 // Values returns all known values for SortField. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SortField) Values() []SortField {
 	return []SortField{
 		"AWS_ACCOUNT_ID",
@@ -1327,8 +1979,9 @@ const (
 )
 
 // Values returns all known values for SortOrder. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SortOrder) Values() []SortOrder {
 	return []SortOrder{
 		"ASC",
@@ -1349,8 +2002,9 @@ const (
 )
 
 // Values returns all known values for Status. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Status) Values() []Status {
 	return []Status{
 		"ENABLING",
@@ -1359,6 +2013,29 @@ func (Status) Values() []Status {
 		"DISABLED",
 		"SUSPENDING",
 		"SUSPENDED",
+	}
+}
+
+type StopCisSessionStatus string
+
+// Enum values for StopCisSessionStatus
+const (
+	StopCisSessionStatusSuccess       StopCisSessionStatus = "SUCCESS"
+	StopCisSessionStatusFailed        StopCisSessionStatus = "FAILED"
+	StopCisSessionStatusInterrupted   StopCisSessionStatus = "INTERRUPTED"
+	StopCisSessionStatusUnsupportedOs StopCisSessionStatus = "UNSUPPORTED_OS"
+)
+
+// Values returns all known values for StopCisSessionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StopCisSessionStatus) Values() []StopCisSessionStatus {
+	return []StopCisSessionStatus{
+		"SUCCESS",
+		"FAILED",
+		"INTERRUPTED",
+		"UNSUPPORTED_OS",
 	}
 }
 
@@ -1372,13 +2049,31 @@ const (
 )
 
 // Values returns all known values for StringComparison. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StringComparison) Values() []StringComparison {
 	return []StringComparison{
 		"EQUALS",
 		"PREFIX",
 		"NOT_EQUALS",
+	}
+}
+
+type TagComparison string
+
+// Enum values for TagComparison
+const (
+	TagComparisonEquals TagComparison = "EQUALS"
+)
+
+// Values returns all known values for TagComparison. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TagComparison) Values() []TagComparison {
+	return []TagComparison{
+		"EQUALS",
 	}
 }
 
@@ -1392,8 +2087,9 @@ const (
 )
 
 // Values returns all known values for TitleSortBy. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TitleSortBy) Values() []TitleSortBy {
 	return []TitleSortBy{
 		"CRITICAL",
@@ -1414,8 +2110,9 @@ const (
 )
 
 // Values returns all known values for UsageType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UsageType) Values() []UsageType {
 	return []UsageType{
 		"EC2_INSTANCE_HOURS",
@@ -1437,6 +2134,7 @@ const (
 
 // Values returns all known values for ValidationExceptionReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 	return []ValidationExceptionReason{
@@ -1454,8 +2152,9 @@ const (
 )
 
 // Values returns all known values for VulnerabilitySource. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VulnerabilitySource) Values() []VulnerabilitySource {
 	return []VulnerabilitySource{
 		"NVD",

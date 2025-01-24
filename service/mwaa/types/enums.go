@@ -2,6 +2,25 @@
 
 package types
 
+type EndpointManagement string
+
+// Enum values for EndpointManagement
+const (
+	EndpointManagementCustomer EndpointManagement = "CUSTOMER"
+	EndpointManagementService  EndpointManagement = "SERVICE"
+)
+
+// Values returns all known values for EndpointManagement. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EndpointManagement) Values() []EndpointManagement {
+	return []EndpointManagement{
+		"CUSTOMER",
+		"SERVICE",
+	}
+}
+
 type EnvironmentStatus string
 
 // Enum values for EnvironmentStatus
@@ -16,11 +35,14 @@ const (
 	EnvironmentStatusUpdateFailed     EnvironmentStatus = "UPDATE_FAILED"
 	EnvironmentStatusRollingBack      EnvironmentStatus = "ROLLING_BACK"
 	EnvironmentStatusCreatingSnapshot EnvironmentStatus = "CREATING_SNAPSHOT"
+	EnvironmentStatusPending          EnvironmentStatus = "PENDING"
+	EnvironmentStatusMaintenance      EnvironmentStatus = "MAINTENANCE"
 )
 
 // Values returns all known values for EnvironmentStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EnvironmentStatus) Values() []EnvironmentStatus {
 	return []EnvironmentStatus{
 		"CREATING",
@@ -33,6 +55,8 @@ func (EnvironmentStatus) Values() []EnvironmentStatus {
 		"UPDATE_FAILED",
 		"ROLLING_BACK",
 		"CREATING_SNAPSHOT",
+		"PENDING",
+		"MAINTENANCE",
 	}
 }
 
@@ -48,8 +72,9 @@ const (
 )
 
 // Values returns all known values for LoggingLevel. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LoggingLevel) Values() []LoggingLevel {
 	return []LoggingLevel{
 		"CRITICAL",
@@ -57,6 +82,31 @@ func (LoggingLevel) Values() []LoggingLevel {
 		"WARNING",
 		"INFO",
 		"DEBUG",
+	}
+}
+
+type RestApiMethod string
+
+// Enum values for RestApiMethod
+const (
+	RestApiMethodGet    RestApiMethod = "GET"
+	RestApiMethodPut    RestApiMethod = "PUT"
+	RestApiMethodPost   RestApiMethod = "POST"
+	RestApiMethodPatch  RestApiMethod = "PATCH"
+	RestApiMethodDelete RestApiMethod = "DELETE"
+)
+
+// Values returns all known values for RestApiMethod. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RestApiMethod) Values() []RestApiMethod {
+	return []RestApiMethod{
+		"GET",
+		"PUT",
+		"POST",
+		"PATCH",
+		"DELETE",
 	}
 }
 
@@ -94,8 +144,9 @@ const (
 )
 
 // Values returns all known values for Unit. Note that this can be expanded in the
-// future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Unit) Values() []Unit {
 	return []Unit{
 		"Seconds",
@@ -138,8 +189,9 @@ const (
 )
 
 // Values returns all known values for UpdateStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UpdateStatus) Values() []UpdateStatus {
 	return []UpdateStatus{
 		"SUCCESS",
@@ -157,8 +209,9 @@ const (
 )
 
 // Values returns all known values for WebserverAccessMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WebserverAccessMode) Values() []WebserverAccessMode {
 	return []WebserverAccessMode{
 		"PRIVATE_ONLY",

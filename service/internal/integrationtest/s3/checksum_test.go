@@ -8,6 +8,7 @@ import (
 	"context"
 	"fmt"
 	"io/ioutil"
+	"net/http"
 	"strings"
 	"testing"
 
@@ -16,16 +17,41 @@ import (
 	"github.com/aws/aws-sdk-go-v2/service/s3/types"
 	s3types "github.com/aws/aws-sdk-go-v2/service/s3/types"
 	"github.com/aws/smithy-go/logging"
-	"github.com/google/go-cmp/cmp"
 )
+
+type retryClient struct {
+	isRetriedCall bool
+	baseClient    aws.HTTPClient
+}
+
+type mockConnectionError struct{ err error }
+
+func (m mockConnectionError) ConnectionError() bool {
+	return true
+}
+func (m mockConnectionError) Error() string {
+	return fmt.Sprintf("request error: %v", m.err)
+}
+func (m mockConnectionError) Unwrap() error {
+	return m.err
+}
+
+func (c *retryClient) Do(req *http.Request) (*http.Response, error) {
+	if !c.isRetriedCall {
+		c.isRetriedCall = true
+		return nil, mockConnectionError{}
+	}
+	return c.baseClient.Do(req)
+}
 
 func TestInteg_ObjectChecksums(t *testing.T) {
 	cases := map[string]map[string]struct {
-		disableHTTPS bool
-		params       *s3.PutObjectInput
-		expectErr    string
+		disableHTTPS               bool
+		retry                      bool
+		requestChecksumCalculation aws.RequestChecksumCalculation
+		params                     *s3.PutObjectInput
 
-		getObjectChecksumMode    s3types.ChecksumMode
+		expectErr                string
 		expectReadErr            string
 		expectLogged             string
 		expectChecksumAlgorithms s3types.ChecksumAlgorithm
@@ -34,13 +60,27 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 		expectAlgorithmsUsed     *s3.ChecksumValidationMetadata
 	}{
 		"seekable": {
-			"no checksum": {
+			"no checksum algorithm passed": {
 				params: &s3.PutObjectInput{
 					Body: strings.NewReader("abc123"),
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectPayload:         []byte("abc123"),
-				expectLogged:          "Response has no supported checksum.",
+				expectPayload: []byte("abc123"),
+				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
+					ComputedChecksums: map[string]string{
+						"CRC32": "zwK7XA==",
+					},
+				},
+				expectAlgorithmsUsed: &s3.ChecksumValidationMetadata{
+					AlgorithmsUsed: []string{"CRC32"},
+				},
+			},
+			"no checksum calculation": {
+				params: &s3.PutObjectInput{
+					Body: strings.NewReader("abc123"),
+				},
+				requestChecksumCalculation: aws.RequestChecksumCalculationWhenRequired,
+				expectPayload:              []byte("abc123"),
+				expectLogged:               "Response has no supported checksum",
 			},
 			"preset checksum": {
 				params: &s3.PutObjectInput{
@@ -48,8 +88,7 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 					ChecksumCRC32C:    aws.String("yZRlqg=="),
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectPayload:         []byte("hello world"),
+				expectPayload: []byte("hello world"),
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "yZRlqg==",
@@ -59,14 +98,26 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 					AlgorithmsUsed: []string{"CRC32C"},
 				},
 			},
+			"preset crc64 checksum": {
+				params: &s3.PutObjectInput{
+					Body:              strings.NewReader("Hello, precomputed checksum!"),
+					ChecksumCRC64NVME: aws.String("uxBNEklueLQ="),
+				},
+				expectPayload: []byte("Hello, precomputed checksum!"),
+				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
+					ComputedChecksums: map[string]string{
+						"CRC64NVME": "uxBNEklueLQ=",
+					},
+				},
+				expectLogged: "Response has no supported checksum",
+			},
 			"wrong preset checksum": {
 				params: &s3.PutObjectInput{
 					Body:              strings.NewReader("hello world"),
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 					ChecksumCRC32C:    aws.String("RZRlqg=="),
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectErr:             "BadDigest",
+				expectErr: "BadDigest",
 			},
 			"without TLS autofill header checksum": {
 				disableHTTPS: true,
@@ -74,8 +125,7 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 					Body:              strings.NewReader("hello world"),
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectPayload:         []byte("hello world"),
+				expectPayload: []byte("hello world"),
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "yZRlqg==",
@@ -86,12 +136,12 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 				},
 			},
 			"autofill trailing checksum": {
+				retry: true,
 				params: &s3.PutObjectInput{
 					Body:              strings.NewReader("hello world"),
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectPayload:         []byte("hello world"),
+				expectPayload: []byte("hello world"),
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "yZRlqg==",
@@ -104,11 +154,10 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 			"content length preset": {
 				params: &s3.PutObjectInput{
 					Body:              strings.NewReader("hello world"),
-					ContentLength:     11,
+					ContentLength:     aws.Int64(11),
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectPayload:         []byte("hello world"),
+				expectPayload: []byte("hello world"),
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "yZRlqg==",
@@ -124,8 +173,7 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 					ContentEncoding:   aws.String("gzip"),
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectPayload:         []byte("hello world"),
+				expectPayload: []byte("hello world"),
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "yZRlqg==",
@@ -137,13 +185,27 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 			},
 		},
 		"unseekable": {
-			"no checksum": {
+			"no checksum algorithm passed": {
 				params: &s3.PutObjectInput{
 					Body: bytes.NewBuffer([]byte("abc123")),
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectPayload:         []byte("abc123"),
-				expectLogged:          "Response has no supported checksum.",
+				expectPayload: []byte("abc123"),
+				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
+					ComputedChecksums: map[string]string{
+						"CRC32": "zwK7XA==",
+					},
+				},
+				expectAlgorithmsUsed: &s3.ChecksumValidationMetadata{
+					AlgorithmsUsed: []string{"CRC32"},
+				},
+			},
+			"no checksum calculation": {
+				params: &s3.PutObjectInput{
+					Body: bytes.NewBuffer([]byte("abc123")),
+				},
+				requestChecksumCalculation: aws.RequestChecksumCalculationWhenRequired,
+				expectPayload:              []byte("abc123"),
+				expectLogged:               "Response has no supported checksum",
 			},
 			"preset checksum": {
 				params: &s3.PutObjectInput{
@@ -151,8 +213,7 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 					ChecksumCRC32C:    aws.String("yZRlqg=="),
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectPayload:         []byte("hello world"),
+				expectPayload: []byte("hello world"),
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "yZRlqg==",
@@ -162,22 +223,33 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 					AlgorithmsUsed: []string{"CRC32C"},
 				},
 			},
+			"preset crc64 checksum": {
+				params: &s3.PutObjectInput{
+					Body:              bytes.NewBuffer([]byte("Hello, precomputed checksum!")),
+					ChecksumCRC64NVME: aws.String("uxBNEklueLQ="),
+				},
+				expectPayload: []byte("Hello, precomputed checksum!"),
+				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
+					ComputedChecksums: map[string]string{
+						"CRC64NVME": "uxBNEklueLQ=",
+					},
+				},
+				expectLogged: "Response has no supported checksum",
+			},
 			"wrong preset checksum": {
 				params: &s3.PutObjectInput{
 					Body:              bytes.NewBuffer([]byte("hello world")),
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 					ChecksumCRC32C:    aws.String("RZRlqg=="),
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectErr:             "BadDigest",
+				expectErr: "BadDigest",
 			},
 			"autofill trailing checksum": {
 				params: &s3.PutObjectInput{
 					Body:              bytes.NewBuffer([]byte("hello world")),
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectPayload:         []byte("hello world"),
+				expectPayload: []byte("hello world"),
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "yZRlqg==",
@@ -198,11 +270,10 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 			"content length preset": {
 				params: &s3.PutObjectInput{
 					Body:              ioutil.NopCloser(strings.NewReader("hello world")),
-					ContentLength:     11,
+					ContentLength:     aws.Int64(11),
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectPayload:         []byte("hello world"),
+				expectPayload: []byte("hello world"),
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "yZRlqg==",
@@ -221,17 +292,27 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 			},
 		},
 		"nil body": {
-			"no checksum": {
-				params:                &s3.PutObjectInput{},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectLogged:          "Response has no supported checksum.",
+			"no checksum algorithm passed": {
+				params: &s3.PutObjectInput{},
+				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
+					ComputedChecksums: map[string]string{
+						"CRC32": "AAAAAA==",
+					},
+				},
+				expectAlgorithmsUsed: &s3.ChecksumValidationMetadata{
+					AlgorithmsUsed: []string{"CRC32"},
+				},
+			},
+			"no checksum calculation": {
+				params:                     &s3.PutObjectInput{},
+				requestChecksumCalculation: aws.RequestChecksumCalculationWhenRequired,
+				expectLogged:               "Response has no supported checksum",
 			},
 			"preset checksum": {
 				params: &s3.PutObjectInput{
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 					ChecksumCRC32C:    aws.String("AAAAAA=="),
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "AAAAAA==",
@@ -245,7 +326,6 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 				params: &s3.PutObjectInput{
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "AAAAAA==",
@@ -260,7 +340,6 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 				params: &s3.PutObjectInput{
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "AAAAAA==",
@@ -272,12 +351,25 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 			},
 		},
 		"empty body": {
-			"no checksum": {
+			"no checksum algorithm passed": {
 				params: &s3.PutObjectInput{
 					Body: bytes.NewBuffer([]byte{}),
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
-				expectLogged:          "Response has no supported checksum.",
+				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
+					ComputedChecksums: map[string]string{
+						"CRC32": "AAAAAA==",
+					},
+				},
+				expectAlgorithmsUsed: &s3.ChecksumValidationMetadata{
+					AlgorithmsUsed: []string{"CRC32"},
+				},
+			},
+			"no checksum calculation": {
+				params: &s3.PutObjectInput{
+					Body: bytes.NewBuffer([]byte{}),
+				},
+				requestChecksumCalculation: aws.RequestChecksumCalculationWhenRequired,
+				expectLogged:               "Response has no supported checksum",
 			},
 			"preset checksum": {
 				params: &s3.PutObjectInput{
@@ -285,7 +377,6 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 					ChecksumCRC32C:    aws.String("AAAAAA=="),
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "AAAAAA==",
@@ -300,7 +391,6 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 					Body:              bytes.NewBuffer([]byte{}),
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "AAAAAA==",
@@ -316,7 +406,6 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 					Body:              bytes.NewBuffer([]byte{}),
 					ChecksumAlgorithm: s3types.ChecksumAlgorithmCrc32c,
 				},
-				getObjectChecksumMode: s3types.ChecksumModeEnabled,
 				expectComputedChecksums: &s3.ComputedInputChecksumsMetadata{
 					ComputedChecksums: map[string]string{
 						"CRC32C": "AAAAAA==",
@@ -341,6 +430,17 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 					s3Options := func(o *s3.Options) {
 						o.Logger = logger
 						o.EndpointOptions.DisableHTTPS = c.disableHTTPS
+						if c.requestChecksumCalculation != 0 {
+							o.RequestChecksumCalculation = c.requestChecksumCalculation
+						}
+					}
+
+					if c.retry {
+						opts := s3client.Options()
+						opts.HTTPClient = &retryClient{
+							baseClient: opts.HTTPClient,
+						}
+						s3client = s3.New(opts)
 					}
 
 					t.Logf("putting bucket: %q, object: %q", *c.params.Bucket, *c.params.Key)
@@ -359,19 +459,18 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 					}
 					// assert computed input checksums metadata
 					computedChecksums, ok := s3.GetComputedInputChecksumsMetadata(putResult.ResultMetadata)
-					if e, a := ok, (c.expectComputedChecksums != nil); e != a {
+					if e, a := (c.expectComputedChecksums != nil), ok; e != a {
 						t.Fatalf("expect computed checksum metadata %t, got %t, %v", e, a, computedChecksums)
 					}
 					if c.expectComputedChecksums != nil {
-						if diff := cmp.Diff(*c.expectComputedChecksums, computedChecksums); diff != "" {
+						if diff := cmpDiff(*c.expectComputedChecksums, computedChecksums); diff != "" {
 							t.Errorf("expect computed checksum metadata match\n%s", diff)
 						}
 					}
 
 					getResult, err := s3client.GetObject(ctx, &s3.GetObjectInput{
-						Bucket:       c.params.Bucket,
-						Key:          c.params.Key,
-						ChecksumMode: c.getObjectChecksumMode,
+						Bucket: c.params.Bucket,
+						Key:    c.params.Key,
 					}, s3Options)
 					if err != nil {
 						t.Fatalf("expect no error, got %v", err)
@@ -391,7 +490,7 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 						return
 					}
 
-					if diff := cmp.Diff(string(c.expectPayload), string(actualPayload)); diff != "" {
+					if diff := cmpDiff(string(c.expectPayload), string(actualPayload)); diff != "" {
 						t.Errorf("expect payload match:\n%s", diff)
 					}
 
@@ -407,11 +506,11 @@ func TestInteg_ObjectChecksums(t *testing.T) {
 
 					// assert checksum validation metadata
 					algorithmsUsed, ok := s3.GetChecksumValidationMetadata(getResult.ResultMetadata)
-					if e, a := ok, (c.expectAlgorithmsUsed != nil); e != a {
+					if e, a := (c.expectAlgorithmsUsed != nil), ok; e != a {
 						t.Fatalf("expect algorithms used metadata %t, got %t, %v", e, a, algorithmsUsed)
 					}
 					if c.expectAlgorithmsUsed != nil {
-						if diff := cmp.Diff(*c.expectAlgorithmsUsed, algorithmsUsed); diff != "" {
+						if diff := cmpDiff(*c.expectAlgorithmsUsed, algorithmsUsed); diff != "" {
 							t.Errorf("expect algorithms used to match\n%s", diff)
 						}
 					}
@@ -433,7 +532,7 @@ func TestInteg_RequireChecksum(t *testing.T) {
 		expectComputedChecksums []string
 	}{
 		"no algorithm": {
-			expectComputedChecksums: []string{"MD5"},
+			expectComputedChecksums: []string{"CRC32"},
 		},
 		"with algorithm": {
 			checksumAlgorithm:       types.ChecksumAlgorithmCrc32c,
@@ -449,7 +548,7 @@ func TestInteg_RequireChecksum(t *testing.T) {
 					Objects: []s3types.ObjectIdentifier{
 						{Key: aws.String(t.Name())},
 					},
-					Quiet: true,
+					Quiet: aws.Bool(true),
 				},
 				ChecksumAlgorithm: c.checksumAlgorithm,
 			})
@@ -475,6 +574,38 @@ func TestInteg_RequireChecksum(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestInteg_RequireChecksumWithoutRequestAlgorithmMember(t *testing.T) {
+	params := &s3.PutBucketOwnershipControlsInput{
+		Bucket: &setupMetadata.Buckets.Source.Name,
+		OwnershipControls: &types.OwnershipControls{
+			Rules: []types.OwnershipControlsRule{
+				{
+					ObjectOwnership: types.ObjectOwnershipBucketOwnerPreferred,
+				},
+			},
+		},
+	}
+
+	t.Logf("putting bucket ownership control: %q", *params.Bucket)
+	result, err := s3client.PutBucketOwnershipControls(context.Background(), params)
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+	computedChecksums, ok := s3.GetComputedInputChecksumsMetadata(result.ResultMetadata)
+	if !ok {
+		t.Fatalf("expect computed checksums metadata present, got %q", result)
+	}
+
+	expectComputedChecksums := s3.ComputedInputChecksumsMetadata{
+		ComputedChecksums: map[string]string{
+			"CRC32": "cK9COg==",
+		},
+	}
+	if diff := cmpDiff(expectComputedChecksums, computedChecksums); diff != "" {
+		t.Errorf("expect computed checksum metadata match: %s\n", diff)
 	}
 }
 

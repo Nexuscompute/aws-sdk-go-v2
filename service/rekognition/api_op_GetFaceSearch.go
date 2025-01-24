@@ -4,38 +4,40 @@ package rekognition
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/rekognition/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Gets the face search results for Amazon Rekognition Video face search started
-// by StartFaceSearch . The search returns faces in a collection that match the
-// faces of persons detected in a video. It also includes the time(s) that faces
-// are matched in the video. Face search in a video is an asynchronous operation.
-// You start face search by calling to StartFaceSearch which returns a job
-// identifier ( JobId ). When the search operation finishes, Amazon Rekognition
-// Video publishes a completion status to the Amazon Simple Notification Service
-// topic registered in the initial call to StartFaceSearch . To get the search
-// results, first check that the status value published to the Amazon SNS topic is
-// SUCCEEDED . If so, call GetFaceSearch and pass the job identifier ( JobId ) from
-// the initial call to StartFaceSearch . For more information, see Searching Faces
-// in a Collection in the Amazon Rekognition Developer Guide. The search results
-// are retured in an array, Persons , of PersonMatch objects. Each PersonMatch
-// element contains details about the matching faces in the input collection,
-// person information (facial attributes, bounding boxes, and person identifer) for
-// the matched person, and the time the person was matched in the video.
+// by StartFaceSearch. The search returns faces in a collection that match the faces of persons
+// detected in a video. It also includes the time(s) that faces are matched in the
+// video.
+//
+// Face search in a video is an asynchronous operation. You start face search by
+// calling to StartFaceSearchwhich returns a job identifier ( JobId ). When the search operation
+// finishes, Amazon Rekognition Video publishes a completion status to the Amazon
+// Simple Notification Service topic registered in the initial call to
+// StartFaceSearch . To get the search results, first check that the status value
+// published to the Amazon SNS topic is SUCCEEDED . If so, call GetFaceSearch and
+// pass the job identifier ( JobId ) from the initial call to StartFaceSearch .
+//
+// For more information, see Searching Faces in a Collection in the Amazon
+// Rekognition Developer Guide.
+//
+// The search results are retured in an array, Persons , of PersonMatch objects. Each
+// PersonMatch element contains details about the matching faces in the input
+// collection, person information (facial attributes, bounding boxes, and person
+// identifer) for the matched person, and the time the person was matched in the
+// video.
+//
 // GetFaceSearch only returns the default facial attributes ( BoundingBox ,
 // Confidence , Landmarks , Pose , and Quality ). The other facial attributes
 // listed in the Face object of the following response syntax are not returned.
 // For more information, see FaceDetail in the Amazon Rekognition Developer Guide.
+//
 // By default, the Persons array is sorted by the time, in milliseconds from the
 // start of the video, persons are matched. You can also sort by persons by
 // specifying INDEX for the SORTBY input parameter.
@@ -99,8 +101,8 @@ type GetFaceSearchOutput struct {
 	// results.
 	NextToken *string
 
-	// An array of persons, PersonMatch , in the video whose face(s) match the face(s)
-	// in an Amazon Rekognition collection. It also includes time information for when
+	// An array of persons, PersonMatch, in the video whose face(s) match the face(s) in an
+	// Amazon Rekognition collection. It also includes time information for when
 	// persons are matched in the video. You specify the input collection in an initial
 	// call to StartFaceSearch . Each Persons element includes a time the person was
 	// matched, face match details ( FaceMatches ) for matching faces in the
@@ -111,8 +113,8 @@ type GetFaceSearchOutput struct {
 	StatusMessage *string
 
 	// Video file stored in an Amazon S3 bucket. Amazon Rekognition video start
-	// operations such as StartLabelDetection use Video to specify a video for
-	// analysis. The supported file formats are .mp4, .mov and .avi.
+	// operations such as StartLabelDetectionuse Video to specify a video for analysis. The supported
+	// file formats are .mp4, .mov and .avi.
 	Video *types.Video
 
 	// Information about a video that Amazon Rekognition analyzed. Videometadata is
@@ -127,6 +129,9 @@ type GetFaceSearchOutput struct {
 }
 
 func (c *Client) addOperationGetFaceSearchMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpGetFaceSearch{}, middleware.After)
 	if err != nil {
 		return err
@@ -135,34 +140,38 @@ func (c *Client) addOperationGetFaceSearchMiddlewares(stack *middleware.Stack, o
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GetFaceSearch"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -174,7 +183,13 @@ func (c *Client) addOperationGetFaceSearchMiddlewares(stack *middleware.Stack, o
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGetFaceSearchResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetFaceSearchValidationMiddleware(stack); err != nil {
@@ -183,7 +198,7 @@ func (c *Client) addOperationGetFaceSearchMiddlewares(stack *middleware.Stack, o
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetFaceSearch(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -195,18 +210,23 @@ func (c *Client) addOperationGetFaceSearchMiddlewares(stack *middleware.Stack, o
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// GetFaceSearchAPIClient is a client that implements the GetFaceSearch operation.
-type GetFaceSearchAPIClient interface {
-	GetFaceSearch(context.Context, *GetFaceSearchInput, ...func(*Options)) (*GetFaceSearchOutput, error)
-}
-
-var _ GetFaceSearchAPIClient = (*Client)(nil)
 
 // GetFaceSearchPaginatorOptions is the paginator options for GetFaceSearch
 type GetFaceSearchPaginatorOptions struct {
@@ -273,6 +293,9 @@ func (p *GetFaceSearchPaginator) NextPage(ctx context.Context, optFns ...func(*O
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.GetFaceSearch(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -292,134 +315,17 @@ func (p *GetFaceSearchPaginator) NextPage(ctx context.Context, optFns ...func(*O
 	return result, nil
 }
 
+// GetFaceSearchAPIClient is a client that implements the GetFaceSearch operation.
+type GetFaceSearchAPIClient interface {
+	GetFaceSearch(context.Context, *GetFaceSearchInput, ...func(*Options)) (*GetFaceSearchOutput, error)
+}
+
+var _ GetFaceSearchAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opGetFaceSearch(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "rekognition",
 		OperationName: "GetFaceSearch",
 	}
-}
-
-type opGetFaceSearchResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opGetFaceSearchResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGetFaceSearchResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "rekognition"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "rekognition"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("rekognition")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addGetFaceSearchResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGetFaceSearchResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

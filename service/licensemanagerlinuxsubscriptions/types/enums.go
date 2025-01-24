@@ -14,6 +14,7 @@ const (
 
 // Values returns all known values for LinuxSubscriptionsDiscovery. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (LinuxSubscriptionsDiscovery) Values() []LinuxSubscriptionsDiscovery {
 	return []LinuxSubscriptionsDiscovery{
@@ -35,8 +36,9 @@ const (
 )
 
 // Values returns all known values for Operator. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Operator) Values() []Operator {
 	return []Operator{
 		"Equal",
@@ -56,8 +58,9 @@ const (
 )
 
 // Values returns all known values for OrganizationIntegration. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OrganizationIntegration) Values() []OrganizationIntegration {
 	return []OrganizationIntegration{
 		"Enabled",
@@ -80,13 +83,56 @@ const (
 )
 
 // Values returns all known values for Status. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Status) Values() []Status {
 	return []Status{
 		"InProgress",
 		"Completed",
 		"Successful",
 		"Failed",
+	}
+}
+
+type SubscriptionProviderSource string
+
+// Enum values for SubscriptionProviderSource
+const (
+	// RedHat subscription provider namespace
+	SubscriptionProviderSourceRedHat SubscriptionProviderSource = "RedHat"
+)
+
+// Values returns all known values for SubscriptionProviderSource. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SubscriptionProviderSource) Values() []SubscriptionProviderSource {
+	return []SubscriptionProviderSource{
+		"RedHat",
+	}
+}
+
+type SubscriptionProviderStatus string
+
+// Enum values for SubscriptionProviderStatus
+const (
+	// ACTIVE status
+	SubscriptionProviderStatusActive SubscriptionProviderStatus = "ACTIVE"
+	// INVALID status
+	SubscriptionProviderStatusInvalid SubscriptionProviderStatus = "INVALID"
+	// PENDING status
+	SubscriptionProviderStatusPending SubscriptionProviderStatus = "PENDING"
+)
+
+// Values returns all known values for SubscriptionProviderStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SubscriptionProviderStatus) Values() []SubscriptionProviderStatus {
+	return []SubscriptionProviderStatus{
+		"ACTIVE",
+		"INVALID",
+		"PENDING",
 	}
 }

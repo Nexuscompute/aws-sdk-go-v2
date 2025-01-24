@@ -11,8 +11,9 @@ const (
 )
 
 // Values returns all known values for AuthPolicyState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AuthPolicyState) Values() []AuthPolicyState {
 	return []AuthPolicyState{
 		"Active",
@@ -29,8 +30,9 @@ const (
 )
 
 // Values returns all known values for AuthType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AuthType) Values() []AuthType {
 	return []AuthType{
 		"NONE",
@@ -50,6 +52,7 @@ const (
 
 // Values returns all known values for HealthCheckProtocolVersion. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (HealthCheckProtocolVersion) Values() []HealthCheckProtocolVersion {
 	return []HealthCheckProtocolVersion{
@@ -69,12 +72,34 @@ const (
 )
 
 // Values returns all known values for IpAddressType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (IpAddressType) Values() []IpAddressType {
 	return []IpAddressType{
 		"IPV4",
 		"IPV6",
+	}
+}
+
+type LambdaEventStructureVersion string
+
+// Enum values for LambdaEventStructureVersion
+const (
+	// This is the default lambda event structure version
+	LambdaEventStructureVersionV1 LambdaEventStructureVersion = "V1"
+	// Indicates use of lambda event structure version 2
+	LambdaEventStructureVersionV2 LambdaEventStructureVersion = "V2"
+)
+
+// Values returns all known values for LambdaEventStructureVersion. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LambdaEventStructureVersion) Values() []LambdaEventStructureVersion {
+	return []LambdaEventStructureVersion{
+		"V1",
+		"V2",
 	}
 }
 
@@ -86,15 +111,241 @@ const (
 	ListenerProtocolHttp ListenerProtocol = "HTTP"
 	// Indicates HTTPS protocol
 	ListenerProtocolHttps ListenerProtocol = "HTTPS"
+	// Indicates TLS_PASSTHROUGH protocol
+	ListenerProtocolTlsPassthrough ListenerProtocol = "TLS_PASSTHROUGH"
 )
 
 // Values returns all known values for ListenerProtocol. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ListenerProtocol) Values() []ListenerProtocol {
 	return []ListenerProtocol{
 		"HTTP",
 		"HTTPS",
+		"TLS_PASSTHROUGH",
+	}
+}
+
+type ProtocolType string
+
+// Enum values for ProtocolType
+const (
+	// Resource Configuration protocol type TCP
+	ProtocolTypeTcp ProtocolType = "TCP"
+)
+
+// Values returns all known values for ProtocolType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ProtocolType) Values() []ProtocolType {
+	return []ProtocolType{
+		"TCP",
+	}
+}
+
+type ResourceConfigurationIpAddressType string
+
+// Enum values for ResourceConfigurationIpAddressType
+const (
+	// Ipv4 ip address type for dns type resource configs
+	ResourceConfigurationIpAddressTypeIpv4 ResourceConfigurationIpAddressType = "IPV4"
+	// IPv6 ip address type for dns type resource configs
+	ResourceConfigurationIpAddressTypeIpv6 ResourceConfigurationIpAddressType = "IPV6"
+	// Dualstack ip address type for dns type resource configs
+	ResourceConfigurationIpAddressTypeDualstack ResourceConfigurationIpAddressType = "DUALSTACK"
+)
+
+// Values returns all known values for ResourceConfigurationIpAddressType. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResourceConfigurationIpAddressType) Values() []ResourceConfigurationIpAddressType {
+	return []ResourceConfigurationIpAddressType{
+		"IPV4",
+		"IPV6",
+		"DUALSTACK",
+	}
+}
+
+type ResourceConfigurationStatus string
+
+// Enum values for ResourceConfigurationStatus
+const (
+	// Resource Configuration is active.
+	ResourceConfigurationStatusActive ResourceConfigurationStatus = "ACTIVE"
+	// Resource Configuration creation in progress.
+	ResourceConfigurationStatusCreateInProgress ResourceConfigurationStatus = "CREATE_IN_PROGRESS"
+	// Resource Configuration update in progress.
+	ResourceConfigurationStatusUpdateInProgress ResourceConfigurationStatus = "UPDATE_IN_PROGRESS"
+	// Resource Configuration deletion in progress
+	ResourceConfigurationStatusDeleteInProgress ResourceConfigurationStatus = "DELETE_IN_PROGRESS"
+	// Resource Configuration creation failed
+	ResourceConfigurationStatusCreateFailed ResourceConfigurationStatus = "CREATE_FAILED"
+	// Resource Configuration update failed
+	ResourceConfigurationStatusUpdateFailed ResourceConfigurationStatus = "UPDATE_FAILED"
+	// Resource Configuration deletion failed.
+	ResourceConfigurationStatusDeleteFailed ResourceConfigurationStatus = "DELETE_FAILED"
+)
+
+// Values returns all known values for ResourceConfigurationStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResourceConfigurationStatus) Values() []ResourceConfigurationStatus {
+	return []ResourceConfigurationStatus{
+		"ACTIVE",
+		"CREATE_IN_PROGRESS",
+		"UPDATE_IN_PROGRESS",
+		"DELETE_IN_PROGRESS",
+		"CREATE_FAILED",
+		"UPDATE_FAILED",
+		"DELETE_FAILED",
+	}
+}
+
+type ResourceConfigurationType string
+
+// Enum values for ResourceConfigurationType
+const (
+	// Resource Configuration of type GROUP
+	ResourceConfigurationTypeGroup ResourceConfigurationType = "GROUP"
+	// Resource Configuration of type CHILD
+	ResourceConfigurationTypeChild ResourceConfigurationType = "CHILD"
+	// Resource Configuration of type SINGLE
+	ResourceConfigurationTypeSingle ResourceConfigurationType = "SINGLE"
+	// Resource Configuration of type ARN
+	ResourceConfigurationTypeArn ResourceConfigurationType = "ARN"
+)
+
+// Values returns all known values for ResourceConfigurationType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResourceConfigurationType) Values() []ResourceConfigurationType {
+	return []ResourceConfigurationType{
+		"GROUP",
+		"CHILD",
+		"SINGLE",
+		"ARN",
+	}
+}
+
+type ResourceGatewayIpAddressType string
+
+// Enum values for ResourceGatewayIpAddressType
+const (
+	// Ipv4 ip address type for resource gateway
+	ResourceGatewayIpAddressTypeIpv4 ResourceGatewayIpAddressType = "IPV4"
+	// IPv6 ip address type for resource gateway
+	ResourceGatewayIpAddressTypeIpv6 ResourceGatewayIpAddressType = "IPV6"
+	// Dualstack ip address type for resource gateway
+	ResourceGatewayIpAddressTypeDualstack ResourceGatewayIpAddressType = "DUALSTACK"
+)
+
+// Values returns all known values for ResourceGatewayIpAddressType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResourceGatewayIpAddressType) Values() []ResourceGatewayIpAddressType {
+	return []ResourceGatewayIpAddressType{
+		"IPV4",
+		"IPV6",
+		"DUALSTACK",
+	}
+}
+
+type ResourceGatewayStatus string
+
+// Enum values for ResourceGatewayStatus
+const (
+	// Resource Gateway is active.
+	ResourceGatewayStatusActive ResourceGatewayStatus = "ACTIVE"
+	// Resource Gateway creation in progress.
+	ResourceGatewayStatusCreateInProgress ResourceGatewayStatus = "CREATE_IN_PROGRESS"
+	// Resource Gateway update in progress.
+	ResourceGatewayStatusUpdateInProgress ResourceGatewayStatus = "UPDATE_IN_PROGRESS"
+	// Resource Gateway deletion in progress
+	ResourceGatewayStatusDeleteInProgress ResourceGatewayStatus = "DELETE_IN_PROGRESS"
+	// Resource Gateway creation failed
+	ResourceGatewayStatusCreateFailed ResourceGatewayStatus = "CREATE_FAILED"
+	// Reosurce Gateway update failed
+	ResourceGatewayStatusUpdateFailed ResourceGatewayStatus = "UPDATE_FAILED"
+	// Resource Gateway deletion failed.
+	ResourceGatewayStatusDeleteFailed ResourceGatewayStatus = "DELETE_FAILED"
+)
+
+// Values returns all known values for ResourceGatewayStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResourceGatewayStatus) Values() []ResourceGatewayStatus {
+	return []ResourceGatewayStatus{
+		"ACTIVE",
+		"CREATE_IN_PROGRESS",
+		"UPDATE_IN_PROGRESS",
+		"DELETE_IN_PROGRESS",
+		"CREATE_FAILED",
+		"UPDATE_FAILED",
+		"DELETE_FAILED",
+	}
+}
+
+type ServiceNetworkLogType string
+
+// Enum values for ServiceNetworkLogType
+const (
+	// Indicates logs for Lattice services.
+	ServiceNetworkLogTypeService ServiceNetworkLogType = "SERVICE"
+	// Indicates logs for Lattice resource configurations.
+	ServiceNetworkLogTypeResource ServiceNetworkLogType = "RESOURCE"
+)
+
+// Values returns all known values for ServiceNetworkLogType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ServiceNetworkLogType) Values() []ServiceNetworkLogType {
+	return []ServiceNetworkLogType{
+		"SERVICE",
+		"RESOURCE",
+	}
+}
+
+type ServiceNetworkResourceAssociationStatus string
+
+// Enum values for ServiceNetworkResourceAssociationStatus
+const (
+	// ServiceNetwork and Service association creation in progress
+	ServiceNetworkResourceAssociationStatusCreateInProgress ServiceNetworkResourceAssociationStatus = "CREATE_IN_PROGRESS"
+	// ServiceNetwork and Service association is active
+	ServiceNetworkResourceAssociationStatusActive ServiceNetworkResourceAssociationStatus = "ACTIVE"
+	// ServiceNetwork and Service association is partial
+	ServiceNetworkResourceAssociationStatusPartial ServiceNetworkResourceAssociationStatus = "PARTIAL"
+	// ServiceNetwork and Service association deletion in progress
+	ServiceNetworkResourceAssociationStatusDeleteInProgress ServiceNetworkResourceAssociationStatus = "DELETE_IN_PROGRESS"
+	// ServiceNetwork and Service association creation failed.
+	ServiceNetworkResourceAssociationStatusCreateFailed ServiceNetworkResourceAssociationStatus = "CREATE_FAILED"
+	// ServiceNetwork and Service association deletion failed
+	ServiceNetworkResourceAssociationStatusDeleteFailed ServiceNetworkResourceAssociationStatus = "DELETE_FAILED"
+)
+
+// Values returns all known values for ServiceNetworkResourceAssociationStatus.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ServiceNetworkResourceAssociationStatus) Values() []ServiceNetworkResourceAssociationStatus {
+	return []ServiceNetworkResourceAssociationStatus{
+		"CREATE_IN_PROGRESS",
+		"ACTIVE",
+		"PARTIAL",
+		"DELETE_IN_PROGRESS",
+		"CREATE_FAILED",
+		"DELETE_FAILED",
 	}
 }
 
@@ -116,8 +367,9 @@ const (
 
 // Values returns all known values for ServiceNetworkServiceAssociationStatus.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ServiceNetworkServiceAssociationStatus) Values() []ServiceNetworkServiceAssociationStatus {
 	return []ServiceNetworkServiceAssociationStatus{
 		"CREATE_IN_PROGRESS",
@@ -150,8 +402,9 @@ const (
 
 // Values returns all known values for ServiceNetworkVpcAssociationStatus. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ServiceNetworkVpcAssociationStatus) Values() []ServiceNetworkVpcAssociationStatus {
 	return []ServiceNetworkVpcAssociationStatus{
 		"CREATE_IN_PROGRESS",
@@ -181,8 +434,9 @@ const (
 )
 
 // Values returns all known values for ServiceStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ServiceStatus) Values() []ServiceStatus {
 	return []ServiceStatus{
 		"ACTIVE",
@@ -201,15 +455,19 @@ const (
 	TargetGroupProtocolHttp TargetGroupProtocol = "HTTP"
 	// Indicates HTTPS protocol
 	TargetGroupProtocolHttps TargetGroupProtocol = "HTTPS"
+	// Indicates TCP protocol
+	TargetGroupProtocolTcp TargetGroupProtocol = "TCP"
 )
 
 // Values returns all known values for TargetGroupProtocol. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TargetGroupProtocol) Values() []TargetGroupProtocol {
 	return []TargetGroupProtocol{
 		"HTTP",
 		"HTTPS",
+		"TCP",
 	}
 }
 
@@ -227,6 +485,7 @@ const (
 
 // Values returns all known values for TargetGroupProtocolVersion. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (TargetGroupProtocolVersion) Values() []TargetGroupProtocolVersion {
 	return []TargetGroupProtocolVersion{
@@ -253,8 +512,9 @@ const (
 )
 
 // Values returns all known values for TargetGroupStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TargetGroupStatus) Values() []TargetGroupStatus {
 	return []TargetGroupStatus{
 		"CREATE_IN_PROGRESS",
@@ -280,8 +540,9 @@ const (
 )
 
 // Values returns all known values for TargetGroupType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TargetGroupType) Values() []TargetGroupType {
 	return []TargetGroupType{
 		"IP",
@@ -310,8 +571,9 @@ const (
 )
 
 // Values returns all known values for TargetStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TargetStatus) Values() []TargetStatus {
 	return []TargetStatus{
 		"DRAINING",
@@ -335,6 +597,7 @@ const (
 
 // Values returns all known values for ValidationExceptionReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 	return []ValidationExceptionReason{

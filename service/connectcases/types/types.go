@@ -7,6 +7,135 @@ import (
 	"time"
 )
 
+// Represents the content of a particular audit event.
+type AuditEvent struct {
+
+	// Unique identifier of a case audit history event.
+	//
+	// This member is required.
+	EventId *string
+
+	// A list of Case Audit History event fields.
+	//
+	// This member is required.
+	Fields []*AuditEventField
+
+	// Time at which an Audit History event took place.
+	//
+	// This member is required.
+	PerformedTime *time.Time
+
+	// The Type of an audit history event.
+	//
+	// This member is required.
+	Type AuditEventType
+
+	// Information of the user which performed the audit.
+	PerformedBy *AuditEventPerformedBy
+
+	// The Type of the related item.
+	RelatedItemType RelatedItemType
+
+	noSmithyDocumentSerde
+}
+
+// Fields for audit event.
+type AuditEventField struct {
+
+	// Unique identifier of field in an Audit History entry.
+	//
+	// This member is required.
+	EventFieldId *string
+
+	// Union of potential field value types.
+	//
+	// This member is required.
+	NewValue AuditEventFieldValueUnion
+
+	// Union of potential field value types.
+	OldValue AuditEventFieldValueUnion
+
+	noSmithyDocumentSerde
+}
+
+// Object to store union of Field values.
+//
+// The following types satisfy this interface:
+//
+//	AuditEventFieldValueUnionMemberBooleanValue
+//	AuditEventFieldValueUnionMemberDoubleValue
+//	AuditEventFieldValueUnionMemberEmptyValue
+//	AuditEventFieldValueUnionMemberStringValue
+//	AuditEventFieldValueUnionMemberUserArnValue
+type AuditEventFieldValueUnion interface {
+	isAuditEventFieldValueUnion()
+}
+
+// Can be either null, or have a Boolean value type. Only one value can be
+// provided.
+type AuditEventFieldValueUnionMemberBooleanValue struct {
+	Value bool
+
+	noSmithyDocumentSerde
+}
+
+func (*AuditEventFieldValueUnionMemberBooleanValue) isAuditEventFieldValueUnion() {}
+
+// Can be either null, or have a Double value type. Only one value can be provided.
+type AuditEventFieldValueUnionMemberDoubleValue struct {
+	Value float64
+
+	noSmithyDocumentSerde
+}
+
+func (*AuditEventFieldValueUnionMemberDoubleValue) isAuditEventFieldValueUnion() {}
+
+// An empty value. You cannot set EmptyFieldValue on a field that is required on a
+// case template.
+//
+// This structure will never have any data members. It signifies an empty value on
+// a case field.
+type AuditEventFieldValueUnionMemberEmptyValue struct {
+	Value EmptyFieldValue
+
+	noSmithyDocumentSerde
+}
+
+func (*AuditEventFieldValueUnionMemberEmptyValue) isAuditEventFieldValueUnion() {}
+
+// Can be either null, or have a String value type. Only one value can be provided.
+type AuditEventFieldValueUnionMemberStringValue struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*AuditEventFieldValueUnionMemberStringValue) isAuditEventFieldValueUnion() {}
+
+// Can be either null, or have a String value type formatted as an ARN. Only one
+// value can be provided.
+type AuditEventFieldValueUnionMemberUserArnValue struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*AuditEventFieldValueUnionMemberUserArnValue) isAuditEventFieldValueUnion() {}
+
+// Information of the user which performed the audit.
+type AuditEventPerformedBy struct {
+
+	// Unique identifier of an IAM role.
+	//
+	// This member is required.
+	IamPrincipalArn *string
+
+	// Represents the identity of the person who performed the action.
+	User UserUnion
+
+	noSmithyDocumentSerde
+}
+
 // Content specific to BasicLayout type. It configures fields in the top panel and
 // More Info tab of agent application.
 type BasicLayout struct {
@@ -183,8 +312,10 @@ type DomainSummary struct {
 }
 
 // An empty value. You cannot set EmptyFieldValue on a field that is required on a
-// case template. This structure will never have any data members. It signifies an
-// empty value on a case field.
+// case template.
+//
+// This structure will never have any data members. It signifies an empty value on
+// a case field.
 type EmptyFieldValue struct {
 	noSmithyDocumentSerde
 }
@@ -433,12 +564,16 @@ type FieldValue struct {
 
 // Object to store union of Field values.
 //
+// The Summary system field accepts 1500 characters while all other fields accept
+// 500 characters.
+//
 // The following types satisfy this interface:
 //
 //	FieldValueUnionMemberBooleanValue
 //	FieldValueUnionMemberDoubleValue
 //	FieldValueUnionMemberEmptyValue
 //	FieldValueUnionMemberStringValue
+//	FieldValueUnionMemberUserArnValue
 type FieldValueUnion interface {
 	isFieldValueUnion()
 }
@@ -481,6 +616,35 @@ type FieldValueUnionMemberStringValue struct {
 
 func (*FieldValueUnionMemberStringValue) isFieldValueUnion() {}
 
+// Represents the user that performed the audit.
+type FieldValueUnionMemberUserArnValue struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*FieldValueUnionMemberUserArnValue) isFieldValueUnion() {}
+
+// An object that represents a content of an Amazon Connect file object.
+type FileContent struct {
+
+	// The Amazon Resource Name (ARN) of a File in Amazon Connect.
+	//
+	// This member is required.
+	FileArn *string
+
+	noSmithyDocumentSerde
+}
+
+// A filter for related items of type File .
+type FileFilter struct {
+
+	// The Amazon Resource Name (ARN) of the file.
+	FileArn *string
+
+	noSmithyDocumentSerde
+}
+
 // Object to store detailed field information.
 type GetFieldResponse struct {
 
@@ -509,8 +673,17 @@ type GetFieldResponse struct {
 	// This member is required.
 	Type FieldType
 
+	// Timestamp at which the resource was created.
+	CreatedTime *time.Time
+
+	// Denotes whether or not the resource has been deleted.
+	Deleted bool
+
 	// Description of the field.
 	Description *string
+
+	// Timestamp at which the resource was created or last modified.
+	LastModifiedTime *time.Time
 
 	// A map of of key-value pairs that represent tags on a resource. Tags are used to
 	// organize, track, or control access for this resource.
@@ -522,7 +695,7 @@ type GetFieldResponse struct {
 // Object to store configuration of layouts associated to the template.
 type LayoutConfiguration struct {
 
-	// Unique identifier of a layout.
+	//  Unique identifier of a layout.
 	DefaultLayout *string
 
 	noSmithyDocumentSerde
@@ -584,6 +757,7 @@ type LayoutSummary struct {
 //
 //	RelatedItemContentMemberComment
 //	RelatedItemContentMemberContact
+//	RelatedItemContentMemberFile
 type RelatedItemContent interface {
 	isRelatedItemContent()
 }
@@ -606,6 +780,15 @@ type RelatedItemContentMemberContact struct {
 
 func (*RelatedItemContentMemberContact) isRelatedItemContent() {}
 
+// Represents the content of a File to be returned to agents.
+type RelatedItemContentMemberFile struct {
+	Value FileContent
+
+	noSmithyDocumentSerde
+}
+
+func (*RelatedItemContentMemberFile) isRelatedItemContent() {}
+
 // Details of what related item data is published through the case event stream.
 type RelatedItemEventIncludedData struct {
 
@@ -623,6 +806,7 @@ type RelatedItemEventIncludedData struct {
 //
 //	RelatedItemInputContentMemberComment
 //	RelatedItemInputContentMemberContact
+//	RelatedItemInputContentMemberFile
 type RelatedItemInputContent interface {
 	isRelatedItemInputContent()
 }
@@ -645,12 +829,22 @@ type RelatedItemInputContentMemberContact struct {
 
 func (*RelatedItemInputContentMemberContact) isRelatedItemInputContent() {}
 
+// A file of related items.
+type RelatedItemInputContentMemberFile struct {
+	Value FileContent
+
+	noSmithyDocumentSerde
+}
+
+func (*RelatedItemInputContentMemberFile) isRelatedItemInputContent() {}
+
 // The list of types of related items and their parameters to use for filtering.
 //
 // The following types satisfy this interface:
 //
 //	RelatedItemTypeFilterMemberComment
 //	RelatedItemTypeFilterMemberContact
+//	RelatedItemTypeFilterMemberFile
 type RelatedItemTypeFilter interface {
 	isRelatedItemTypeFilter()
 }
@@ -672,6 +866,15 @@ type RelatedItemTypeFilterMemberContact struct {
 }
 
 func (*RelatedItemTypeFilterMemberContact) isRelatedItemTypeFilter() {}
+
+// A filter for related items of this type of File .
+type RelatedItemTypeFilterMemberFile struct {
+	Value FileFilter
+
+	noSmithyDocumentSerde
+}
+
+func (*RelatedItemTypeFilterMemberFile) isRelatedItemTypeFilter() {}
 
 // List of fields that must have a value provided to create a case.
 type RequiredField struct {
@@ -731,6 +934,9 @@ type SearchRelatedItemsResponseItem struct {
 	//
 	// This member is required.
 	Type RelatedItemType
+
+	// Represents the creator of the related item.
+	PerformedBy UserUnion
 
 	// A map of of key-value pairs that represent tags on a resource. Tags are used to
 	// organize, track, or control access for this resource.
@@ -799,6 +1005,24 @@ type TemplateSummary struct {
 	noSmithyDocumentSerde
 }
 
+// Represents the identity of the person who performed the action.
+//
+// The following types satisfy this interface:
+//
+//	UserUnionMemberUserArn
+type UserUnion interface {
+	isUserUnion()
+}
+
+// Represents the Amazon Connect ARN of the user.
+type UserUnionMemberUserArn struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*UserUnionMemberUserArn) isUserUnion() {}
+
 type noSmithyDocumentSerde = smithydocument.NoSerde
 
 // UnknownUnionMember is returned when a union member is returned over the wire,
@@ -810,11 +1034,13 @@ type UnknownUnionMember struct {
 	noSmithyDocumentSerde
 }
 
-func (*UnknownUnionMember) isCaseFilter()              {}
-func (*UnknownUnionMember) isFieldFilter()             {}
-func (*UnknownUnionMember) isFieldValueUnion()         {}
-func (*UnknownUnionMember) isLayoutContent()           {}
-func (*UnknownUnionMember) isRelatedItemContent()      {}
-func (*UnknownUnionMember) isRelatedItemInputContent() {}
-func (*UnknownUnionMember) isRelatedItemTypeFilter()   {}
-func (*UnknownUnionMember) isSection()                 {}
+func (*UnknownUnionMember) isAuditEventFieldValueUnion() {}
+func (*UnknownUnionMember) isCaseFilter()                {}
+func (*UnknownUnionMember) isFieldFilter()               {}
+func (*UnknownUnionMember) isFieldValueUnion()           {}
+func (*UnknownUnionMember) isLayoutContent()             {}
+func (*UnknownUnionMember) isRelatedItemContent()        {}
+func (*UnknownUnionMember) isRelatedItemInputContent()   {}
+func (*UnknownUnionMember) isRelatedItemTypeFilter()     {}
+func (*UnknownUnionMember) isSection()                   {}
+func (*UnknownUnionMember) isUserUnion()                 {}

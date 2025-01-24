@@ -7,41 +7,110 @@ import (
 	"time"
 )
 
+// Represents the current status of applicable Hooks for a resource operation
+// request. It contains list of Hook invocation information for the resource
+// specified in the request since the same target can invoke multiple Hooks. For
+// more information, see [Managing resource operation requests with Amazon Web Services Cloud Control API].
+//
+// [Managing resource operation requests with Amazon Web Services Cloud Control API]: https://docs.aws.amazon.com/cloudcontrolapi/latest/userguide/resource-operations-manage-requests.html
+type HookProgressEvent struct {
+
+	// The failure mode of the invocation. The following are the potential statuses:
+	//
+	//   - FAIL : This will fail the Hook invocation and the request associated with it.
+	//
+	//   - WARN : This will fail the Hook invocation, but not the request associated
+	//   with it.
+	FailureMode *string
+
+	// The time that the Hook invocation request initiated.
+	HookEventTime *time.Time
+
+	// The status of the Hook invocation. The following are potential statuses:
+	//
+	//   - HOOK_PENDING : The Hook was added to the invocation plan, but not yet
+	//   invoked.
+	//
+	//   - HOOK_IN_PROGRESS : The Hook was invoked, but hasn't completed.
+	//
+	//   - HOOK_COMPLETE_SUCCEEDED : The Hook invocation is complete with a successful
+	//   result.
+	//
+	//   - HOOK_COMPLETE_FAILED : The Hook invocation is complete with a failed result.
+	//
+	//   - HOOK_FAILED : The Hook invocation didn't complete successfully.
+	HookStatus *string
+
+	// The message explaining the current Hook status.
+	HookStatusMessage *string
+
+	// The ARN of the Hook being invoked.
+	HookTypeArn *string
+
+	// The type name of the Hook being invoked.
+	HookTypeName *string
+
+	// The type version of the Hook being invoked.
+	HookTypeVersionId *string
+
+	// States whether the Hook is invoked before or after resource provisioning.
+	InvocationPoint *string
+
+	noSmithyDocumentSerde
+}
+
 // Represents the current status of a resource operation request. For more
-// information, see Managing resource operation requests (https://docs.aws.amazon.com/cloudcontrolapi/latest/userguide/resource-operations-manage-requests.html)
-// in the Amazon Web Services Cloud Control API User Guide.
+// information, see [Managing resource operation requests]in the Amazon Web Services Cloud Control API User Guide.
+//
+// [Managing resource operation requests]: https://docs.aws.amazon.com/cloudcontrolapi/latest/userguide/resource-operations-manage-requests.html
 type ProgressEvent struct {
 
-	// For requests with a status of FAILED , the associated error code. For error code
-	// definitions, see Handler error codes (https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-test-contract-errors.html)
-	// in the CloudFormation Command Line Interface User Guide for Extension
-	// Development.
+	// For requests with a status of FAILED , the associated error code.
+	//
+	// For error code definitions, see [Handler error codes] in the CloudFormation Command Line Interface
+	// User Guide for Extension Development.
+	//
+	// [Handler error codes]: https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-test-contract-errors.html
 	ErrorCode HandlerErrorCode
 
 	// When the resource operation request was initiated.
 	EventTime *time.Time
 
-	// The primary identifier for the resource. In some cases, the resource identifier
-	// may be available before the resource operation has reached a status of SUCCESS .
+	// The unique token representing the Hooks operation for the request.
+	HooksRequestToken *string
+
+	// The primary identifier for the resource.
+	//
+	// In some cases, the resource identifier may be available before the resource
+	// operation has reached a status of SUCCESS .
 	Identifier *string
 
 	// The resource operation type.
 	Operation Operation
 
 	// The current status of the resource operation request.
+	//
 	//   - PENDING : The resource operation hasn't yet started.
+	//
 	//   - IN_PROGRESS : The resource operation is currently in progress.
+	//
 	//   - SUCCESS : The resource operation has successfully completed.
+	//
 	//   - FAILED : The resource operation has failed. Refer to the error code and
 	//   status message for more information.
+	//
 	//   - CANCEL_IN_PROGRESS : The resource operation is in the process of being
 	//   canceled.
+	//
 	//   - CANCEL_COMPLETE : The resource operation has been canceled.
 	OperationStatus OperationStatus
 
-	// The unique token representing this resource operation request. Use the
-	// RequestToken with GetResourceRequestStatus (https://docs.aws.amazon.com/cloudcontrolapi/latest/APIReference/API_GetResourceRequestStatus.html)
-	// to return the current status of a resource operation request.
+	// The unique token representing this resource operation request.
+	//
+	// Use the RequestToken with [GetResourceRequestStatus] to return the current status of a resource operation
+	// request.
+	//
+	// [GetResourceRequestStatus]: https://docs.aws.amazon.com/cloudcontrolapi/latest/APIReference/API_GetResourceRequestStatus.html
 	RequestToken *string
 
 	// A JSON string containing the resource model, consisting of each resource
@@ -63,9 +132,12 @@ type ProgressEvent struct {
 // Represents information about a provisioned resource.
 type ResourceDescription struct {
 
-	// The primary identifier for the resource. For more information, see Identifying
-	// resources (https://docs.aws.amazon.com/cloudcontrolapi/latest/userguide/resource-identifier.html)
-	// in the Amazon Web Services Cloud Control API User Guide.
+	// The primary identifier for the resource.
+	//
+	// For more information, see [Identifying resources] in the Amazon Web Services Cloud Control API User
+	// Guide.
+	//
+	// [Identifying resources]: https://docs.aws.amazon.com/cloudcontrolapi/latest/userguide/resource-identifier.html
 	Identifier *string
 
 	// A list of the resource properties and their current values.
@@ -78,11 +150,17 @@ type ResourceDescription struct {
 type ResourceRequestStatusFilter struct {
 
 	// The operation statuses to include in the filter.
+	//
 	//   - PENDING : The operation has been requested, but not yet initiated.
+	//
 	//   - IN_PROGRESS : The operation is in progress.
+	//
 	//   - SUCCESS : The operation completed.
+	//
 	//   - FAILED : The operation failed.
+	//
 	//   - CANCEL_IN_PROGRESS : The operation is in the process of being canceled.
+	//
 	//   - CANCEL_COMPLETE : The operation has been canceled.
 	OperationStatuses []OperationStatus
 

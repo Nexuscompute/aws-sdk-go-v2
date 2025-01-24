@@ -4,14 +4,9 @@ package backup
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/backup/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -38,8 +33,7 @@ type DescribeRecoveryPointInput struct {
 
 	// The name of a logical container where backups are stored. Backup vaults are
 	// identified by names that are unique to the account used to create them and the
-	// Amazon Web Services Region where they are created. They consist of lowercase
-	// letters, numbers, and hyphens.
+	// Amazon Web Services Region where they are created.
 	//
 	// This member is required.
 	BackupVaultName *string
@@ -52,6 +46,9 @@ type DescribeRecoveryPointInput struct {
 	// This member is required.
 	RecoveryPointArn *string
 
+	// The account ID of the specified backup vault.
+	BackupVaultAccountId *string
+
 	noSmithyDocumentSerde
 }
 
@@ -61,13 +58,12 @@ type DescribeRecoveryPointOutput struct {
 	BackupSizeInBytes *int64
 
 	// An ARN that uniquely identifies a backup vault; for example,
-	// arn:aws:backup:us-east-1:123456789012:vault:aBackupVault .
+	// arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault .
 	BackupVaultArn *string
 
 	// The name of a logical container where backups are stored. Backup vaults are
 	// identified by names that are unique to the account used to create them and the
-	// Region where they are created. They consist of lowercase letters, numbers, and
-	// hyphens.
+	// Region where they are created.
 	BackupVaultName *string
 
 	// A CalculatedLifecycle object containing DeleteAt and MoveToColdStorageAt
@@ -80,10 +76,11 @@ type DescribeRecoveryPointOutput struct {
 	// Friday, January 26, 2018 12:11:30.087 AM.
 	CompletionDate *time.Time
 
-	// This is the identifier of a resource within a composite group, such as nested
-	// (child) recovery point belonging to a composite (parent) stack. The ID is
-	// transferred from the logical ID (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax)
-	// within a stack.
+	// The identifier of a resource within a composite group, such as nested (child)
+	// recovery point belonging to a composite (parent) stack. The ID is transferred
+	// from the [logical ID]within a stack.
+	//
+	// [logical ID]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resources-section-structure.html#resources-section-structure-syntax
 	CompositeMemberIdentifier *string
 
 	// Contains identifying information about the creation of a recovery point,
@@ -105,6 +102,19 @@ type DescribeRecoveryPointOutput struct {
 	// example, arn:aws:iam::123456789012:role/S3Access .
 	IamRoleArn *string
 
+	// This is the current status for the backup index associated with the specified
+	// recovery point.
+	//
+	// Statuses are: PENDING | ACTIVE | FAILED | DELETING
+	//
+	// A recovery point with an index that has the status of ACTIVE can be included in
+	// a search.
+	IndexStatus types.IndexStatus
+
+	// A string in the form of a detailed message explaining the status of a backup
+	// index associated with the recovery point.
+	IndexStatusMessage *string
+
 	// A Boolean value that is returned as TRUE if the specified recovery point is
 	// encrypted, or FALSE if the recovery point is not encrypted.
 	IsEncrypted bool
@@ -121,14 +131,18 @@ type DescribeRecoveryPointOutput struct {
 
 	// The lifecycle defines when a protected resource is transitioned to cold storage
 	// and when it expires. Backup transitions and expires backups automatically
-	// according to the lifecycle that you define. Backups that are transitioned to
-	// cold storage must be stored in cold storage for a minimum of 90 days. Therefore,
-	// the “retention” setting must be 90 days greater than the “transition to cold
-	// after days” setting. The “transition to cold after days” setting cannot be
-	// changed after a backup has been transitioned to cold. Resource types that are
-	// able to be transitioned to cold storage are listed in the "Lifecycle to cold
-	// storage" section of the Feature availability by resource (https://docs.aws.amazon.com/aws-backup/latest/devguide/whatisbackup.html#features-by-resource)
-	// table. Backup ignores this expression for other resource types.
+	// according to the lifecycle that you define.
+	//
+	// Backups that are transitioned to cold storage must be stored in cold storage
+	// for a minimum of 90 days. Therefore, the “retention” setting must be 90 days
+	// greater than the “transition to cold after days” setting. The “transition to
+	// cold after days” setting cannot be changed after a backup has been transitioned
+	// to cold.
+	//
+	// Resource types that can transition to cold storage are listed in the [Feature availability by resource] table.
+	// Backup ignores this expression for other resource types.
+	//
+	// [Feature availability by resource]: https://docs.aws.amazon.com/aws-backup/latest/devguide/backup-feature-availability.html#features-by-resource
 	Lifecycle *types.Lifecycle
 
 	// This is an ARN that uniquely identifies a parent (composite) recovery point;
@@ -146,8 +160,7 @@ type DescribeRecoveryPointOutput struct {
 	// on the resource type.
 	ResourceArn *string
 
-	// This is the non-unique name of the resource that belongs to the specified
-	// backup.
+	// The name of the resource that belongs to the specified backup.
 	ResourceName *string
 
 	// The type of Amazon Web Services resource to save as a recovery point; for
@@ -157,32 +170,43 @@ type DescribeRecoveryPointOutput struct {
 
 	// An Amazon Resource Name (ARN) that uniquely identifies the source vault where
 	// the resource was originally backed up in; for example,
-	// arn:aws:backup:us-east-1:123456789012:vault:BackupVault . If the recovery is
-	// restored to the same Amazon Web Services account or Region, this value will be
-	// null .
+	// arn:aws:backup:us-east-1:123456789012:backup-vault:aBackupVault . If the
+	// recovery is restored to the same Amazon Web Services account or Region, this
+	// value will be null .
 	SourceBackupVaultArn *string
 
-	// A status code specifying the state of the recovery point. PARTIAL status
-	// indicates Backup could not create the recovery point before the backup window
-	// closed. To increase your backup plan window using the API, see UpdateBackupPlan (https://docs.aws.amazon.com/aws-backup/latest/devguide/API_UpdateBackupPlan.html)
-	// . You can also increase your backup plan window using the Console by choosing
-	// and editing your backup plan. EXPIRED status indicates that the recovery point
-	// has exceeded its retention period, but Backup lacks permission or is otherwise
-	// unable to delete it. To manually delete these recovery points, see Step 3:
-	// Delete the recovery points (https://docs.aws.amazon.com/aws-backup/latest/devguide/gs-cleanup-resources.html#cleanup-backups)
-	// in the Clean up resources section of Getting started. STOPPED status occurs on
-	// a continuous backup where a user has taken some action that causes the
-	// continuous backup to be disabled. This can be caused by the removal of
-	// permissions, turning off versioning, turning off events being sent to
+	// A status code specifying the state of the recovery point.
+	//
+	// PARTIAL status indicates Backup could not create the recovery point before the
+	// backup window closed. To increase your backup plan window using the API, see [UpdateBackupPlan].
+	// You can also increase your backup plan window using the Console by choosing and
+	// editing your backup plan.
+	//
+	// EXPIRED status indicates that the recovery point has exceeded its retention
+	// period, but Backup lacks permission or is otherwise unable to delete it. To
+	// manually delete these recovery points, see [Step 3: Delete the recovery points]in the Clean up resources section of
+	// Getting started.
+	//
+	// STOPPED status occurs on a continuous backup where a user has taken some action
+	// that causes the continuous backup to be disabled. This can be caused by the
+	// removal of permissions, turning off versioning, turning off events being sent to
 	// EventBridge, or disabling the EventBridge rules that are put in place by Backup.
+	// For recovery points of Amazon S3, Amazon RDS, and Amazon Aurora resources, this
+	// status occurs when the retention period of a continuous backup rule is changed.
+	//
 	// To resolve STOPPED status, ensure that all requested permissions are in place
 	// and that versioning is enabled on the S3 bucket. Once these conditions are met,
 	// the next instance of a backup rule running will result in a new continuous
 	// recovery point being created. The recovery points with STOPPED status do not
-	// need to be deleted. For SAP HANA on Amazon EC2 STOPPED status occurs due to
-	// user action, application misconfiguration, or backup failure. To ensure that
-	// future continuous backups succeed, refer to the recovery point status and check
-	// SAP HANA for details.
+	// need to be deleted.
+	//
+	// For SAP HANA on Amazon EC2 STOPPED status occurs due to user action,
+	// application misconfiguration, or backup failure. To ensure that future
+	// continuous backups succeed, refer to the recovery point status and check SAP
+	// HANA for details.
+	//
+	// [Step 3: Delete the recovery points]: https://docs.aws.amazon.com/aws-backup/latest/devguide/gs-cleanup-resources.html#cleanup-backups
+	// [UpdateBackupPlan]: https://docs.aws.amazon.com/aws-backup/latest/devguide/API_UpdateBackupPlan.html
 	Status types.RecoveryPointStatus
 
 	// A status message explaining the status of the recovery point.
@@ -192,6 +216,9 @@ type DescribeRecoveryPointOutput struct {
 	// .
 	StorageClass types.StorageClass
 
+	// The type of vault in which the described recovery point is stored.
+	VaultType types.VaultType
+
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
 
@@ -199,6 +226,9 @@ type DescribeRecoveryPointOutput struct {
 }
 
 func (c *Client) addOperationDescribeRecoveryPointMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpDescribeRecoveryPoint{}, middleware.After)
 	if err != nil {
 		return err
@@ -207,34 +237,38 @@ func (c *Client) addOperationDescribeRecoveryPointMiddlewares(stack *middleware.
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeRecoveryPoint"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -246,7 +280,13 @@ func (c *Client) addOperationDescribeRecoveryPointMiddlewares(stack *middleware.
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeRecoveryPointResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeRecoveryPointValidationMiddleware(stack); err != nil {
@@ -255,7 +295,7 @@ func (c *Client) addOperationDescribeRecoveryPointMiddlewares(stack *middleware.
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeRecoveryPoint(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -267,7 +307,19 @@ func (c *Client) addOperationDescribeRecoveryPointMiddlewares(stack *middleware.
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -277,130 +329,6 @@ func newServiceMetadataMiddleware_opDescribeRecoveryPoint(region string) *awsmid
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "backup",
 		OperationName: "DescribeRecoveryPoint",
 	}
-}
-
-type opDescribeRecoveryPointResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeRecoveryPointResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeRecoveryPointResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "backup"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "backup"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("backup")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeRecoveryPointResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeRecoveryPointResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -4,14 +4,9 @@ package apigatewayv2
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/apigatewayv2/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -53,15 +48,16 @@ type UpdateAuthorizerInput struct {
 
 	// Specifies the format of the payload sent to an HTTP API Lambda authorizer.
 	// Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To
-	// learn more, see Working with AWS Lambda authorizers for HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html)
-	// .
+	// learn more, see [Working with AWS Lambda authorizers for HTTP APIs].
+	//
+	// [Working with AWS Lambda authorizers for HTTP APIs]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html
 	AuthorizerPayloadFormatVersion *string
 
 	// The time to live (TTL) for cached authorizer results, in seconds. If it equals
 	// 0, authorization caching is disabled. If it is greater than 0, API Gateway
 	// caches authorizer responses. The maximum value is 3600, or 1 hour. Supported
 	// only for HTTP API Lambda authorizers.
-	AuthorizerResultTtlInSeconds int32
+	AuthorizerResultTtlInSeconds *int32
 
 	// The authorizer type. Specify REQUEST for a Lambda function using incoming
 	// request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP
@@ -83,15 +79,17 @@ type UpdateAuthorizerInput struct {
 	// Specifies whether a Lambda authorizer returns a response in a simple format. By
 	// default, a Lambda authorizer must return an IAM policy. If enabled, the Lambda
 	// authorizer can return a boolean value instead of an IAM policy. Supported only
-	// for HTTP APIs. To learn more, see Working with AWS Lambda authorizers for HTTP
-	// APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html)
-	EnableSimpleResponses bool
+	// for HTTP APIs. To learn more, see [Working with AWS Lambda authorizers for HTTP APIs]
+	//
+	// [Working with AWS Lambda authorizers for HTTP APIs]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html
+	EnableSimpleResponses *bool
 
-	// The identity source for which authorization is requested. For a REQUEST
-	// authorizer, this is optional. The value is a set of one or more mapping
-	// expressions of the specified request parameters. The identity source can be
-	// headers, query string parameters, stage variables, and context parameters. For
-	// example, if an Auth header and a Name query string parameter are defined as
+	// The identity source for which authorization is requested.
+	//
+	// For a REQUEST authorizer, this is optional. The value is a set of one or more
+	// mapping expressions of the specified request parameters. The identity source can
+	// be headers, query string parameters, stage variables, and context parameters.
+	// For example, if an Auth header and a Name query string parameter are defined as
 	// identity sources, this value is route.request.header.Auth,
 	// route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection
 	// expressions prefixed with $, for example, $request.header.Auth,
@@ -101,12 +99,14 @@ type UpdateAuthorizerInput struct {
 	// when this is true does the authorizer invoke the authorizer Lambda function.
 	// Otherwise, it returns a 401 Unauthorized response without calling the Lambda
 	// function. For HTTP APIs, identity sources are also used as the cache key when
-	// caching is enabled. To learn more, see Working with AWS Lambda authorizers for
-	// HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html)
-	// . For JWT, a single entry that specifies where to extract the JSON Web Token
+	// caching is enabled. To learn more, see [Working with AWS Lambda authorizers for HTTP APIs].
+	//
+	// For JWT, a single entry that specifies where to extract the JSON Web Token
 	// (JWT) from inbound requests. Currently only header-based and query
 	// parameter-based selections are supported, for example
 	// $request.header.Authorization.
+	//
+	// [Working with AWS Lambda authorizers for HTTP APIs]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html
 	IdentitySource []string
 
 	// This parameter is not used.
@@ -135,15 +135,16 @@ type UpdateAuthorizerOutput struct {
 
 	// Specifies the format of the payload sent to an HTTP API Lambda authorizer.
 	// Required for HTTP API Lambda authorizers. Supported values are 1.0 and 2.0. To
-	// learn more, see Working with AWS Lambda authorizers for HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html)
-	// .
+	// learn more, see [Working with AWS Lambda authorizers for HTTP APIs].
+	//
+	// [Working with AWS Lambda authorizers for HTTP APIs]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html
 	AuthorizerPayloadFormatVersion *string
 
 	// The time to live (TTL) for cached authorizer results, in seconds. If it equals
 	// 0, authorization caching is disabled. If it is greater than 0, API Gateway
 	// caches authorizer responses. The maximum value is 3600, or 1 hour. Supported
 	// only for HTTP API Lambda authorizers.
-	AuthorizerResultTtlInSeconds int32
+	AuthorizerResultTtlInSeconds *int32
 
 	// The authorizer type. Specify REQUEST for a Lambda function using incoming
 	// request parameters. Specify JWT to use JSON Web Tokens (supported only for HTTP
@@ -164,15 +165,17 @@ type UpdateAuthorizerOutput struct {
 
 	// Specifies whether a Lambda authorizer returns a response in a simple format. If
 	// enabled, the Lambda authorizer can return a boolean value instead of an IAM
-	// policy. Supported only for HTTP APIs. To learn more, see Working with AWS
-	// Lambda authorizers for HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html)
-	EnableSimpleResponses bool
+	// policy. Supported only for HTTP APIs. To learn more, see [Working with AWS Lambda authorizers for HTTP APIs]
+	//
+	// [Working with AWS Lambda authorizers for HTTP APIs]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html
+	EnableSimpleResponses *bool
 
-	// The identity source for which authorization is requested. For a REQUEST
-	// authorizer, this is optional. The value is a set of one or more mapping
-	// expressions of the specified request parameters. The identity source can be
-	// headers, query string parameters, stage variables, and context parameters. For
-	// example, if an Auth header and a Name query string parameter are defined as
+	// The identity source for which authorization is requested.
+	//
+	// For a REQUEST authorizer, this is optional. The value is a set of one or more
+	// mapping expressions of the specified request parameters. The identity source can
+	// be headers, query string parameters, stage variables, and context parameters.
+	// For example, if an Auth header and a Name query string parameter are defined as
 	// identity sources, this value is route.request.header.Auth,
 	// route.request.querystring.Name for WebSocket APIs. For HTTP APIs, use selection
 	// expressions prefixed with $, for example, $request.header.Auth,
@@ -182,12 +185,14 @@ type UpdateAuthorizerOutput struct {
 	// when this is true does the authorizer invoke the authorizer Lambda function.
 	// Otherwise, it returns a 401 Unauthorized response without calling the Lambda
 	// function. For HTTP APIs, identity sources are also used as the cache key when
-	// caching is enabled. To learn more, see Working with AWS Lambda authorizers for
-	// HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html)
-	// . For JWT, a single entry that specifies where to extract the JSON Web Token
+	// caching is enabled. To learn more, see [Working with AWS Lambda authorizers for HTTP APIs].
+	//
+	// For JWT, a single entry that specifies where to extract the JSON Web Token
 	// (JWT) from inbound requests. Currently only header-based and query
 	// parameter-based selections are supported, for example
 	// $request.header.Authorization.
+	//
+	// [Working with AWS Lambda authorizers for HTTP APIs]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-lambda-authorizer.html
 	IdentitySource []string
 
 	// The validation expression does not apply to the REQUEST authorizer.
@@ -207,6 +212,9 @@ type UpdateAuthorizerOutput struct {
 }
 
 func (c *Client) addOperationUpdateAuthorizerMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpUpdateAuthorizer{}, middleware.After)
 	if err != nil {
 		return err
@@ -215,34 +223,38 @@ func (c *Client) addOperationUpdateAuthorizerMiddlewares(stack *middleware.Stack
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateAuthorizer"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -254,7 +266,13 @@ func (c *Client) addOperationUpdateAuthorizerMiddlewares(stack *middleware.Stack
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateAuthorizerResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateAuthorizerValidationMiddleware(stack); err != nil {
@@ -263,7 +281,7 @@ func (c *Client) addOperationUpdateAuthorizerMiddlewares(stack *middleware.Stack
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateAuthorizer(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -275,7 +293,19 @@ func (c *Client) addOperationUpdateAuthorizerMiddlewares(stack *middleware.Stack
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -285,130 +315,6 @@ func newServiceMetadataMiddleware_opUpdateAuthorizer(region string) *awsmiddlewa
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "apigateway",
 		OperationName: "UpdateAuthorizer",
 	}
-}
-
-type opUpdateAuthorizerResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateAuthorizerResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateAuthorizerResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "apigateway"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "apigateway"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("apigateway")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateAuthorizerResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateAuthorizerResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

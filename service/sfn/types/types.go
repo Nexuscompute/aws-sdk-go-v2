@@ -32,12 +32,20 @@ type ActivityListItem struct {
 	// This member is required.
 	CreationDate *time.Time
 
-	// The name of the activity. A name must not contain:
+	// The name of the activity.
+	//
+	// A name must not contain:
+	//
 	//   - white space
+	//
 	//   - brackets < > { } [ ]
+	//
 	//   - wildcard characters ? *
+	//
 	//   - special characters " # % \ ^ | ~ ` $ & , ; : /
+	//
 	//   - control characters ( U+0000-001F , U+007F-009F )
+	//
 	// To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z,
 	// a-z, - and _.
 	//
@@ -88,7 +96,7 @@ type ActivityScheduleFailedEventDetails struct {
 type ActivityStartedEventDetails struct {
 
 	// The name of the worker that the task is assigned to. These names are provided
-	// by the workers when calling GetActivityTask .
+	// by the workers when calling GetActivityTask.
 	WorkerName *string
 
 	noSmithyDocumentSerde
@@ -120,6 +128,17 @@ type ActivityTimedOutEventDetails struct {
 	noSmithyDocumentSerde
 }
 
+// Provides details about assigned variables in an execution history event.
+type AssignedVariablesDetails struct {
+
+	// Indicates whether assigned variables were truncated in the response. Always
+	// false for API calls. In CloudWatch logs, the value will be true if the data is
+	// truncated due to size limits.
+	Truncated bool
+
+	noSmithyDocumentSerde
+}
+
 // An object that describes workflow billing details.
 type BillingDetails struct {
 
@@ -147,6 +166,66 @@ type CloudWatchLogsLogGroup struct {
 	// The ARN of the the CloudWatch log group to which you want your logs emitted to.
 	// The ARN must end with :*
 	LogGroupArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Settings to configure server-side encryption.
+//
+// For additional control over security, you can encrypt your data using a
+// customer-managed key for Step Functions state machines and activities. You can
+// configure a symmetric KMS key and data key reuse period when creating or
+// updating a State Machine, and when creating an Activity. The execution history
+// and state machine definition will be encrypted with the key applied to the State
+// Machine. Activity inputs will be encrypted with the key applied to the Activity.
+//
+// Step Functions automatically enables encryption at rest using Amazon Web
+// Services owned keys at no charge. However, KMS charges apply when using a
+// customer managed key. For more information about pricing, see [Key Management Service pricing].
+//
+// For more information on KMS, see [What is Key Management Service?]
+//
+// [Key Management Service pricing]: https://aws.amazon.com/kms/pricing/
+// [What is Key Management Service?]: https://docs.aws.amazon.com/kms/latest/developerguide/overview.html
+type EncryptionConfiguration struct {
+
+	// Encryption type
+	//
+	// This member is required.
+	Type EncryptionType
+
+	// Maximum duration that Step Functions will reuse data keys. When the period
+	// expires, Step Functions will call GenerateDataKey . Only applies to customer
+	// managed keys.
+	KmsDataKeyReusePeriodSeconds *int32
+
+	// An alias, alias ARN, key ID, or key ARN of a symmetric encryption KMS key to
+	// encrypt data. To specify a KMS key in a different Amazon Web Services account,
+	// you must use the key ARN or alias ARN.
+	KmsKeyId *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about an evaluation failure that occurred while processing a
+// state, for example, when a JSONata expression throws an error. This event will
+// only be present in state machines that have QueryLanguage set to JSONata, or
+// individual states set to JSONata.
+type EvaluationFailedEventDetails struct {
+
+	// The name of the state in which the evaluation error occurred.
+	//
+	// This member is required.
+	State *string
+
+	// A more detailed explanation of the cause of the failure.
+	Cause *string
+
+	// The error code of the failure.
+	Error *string
+
+	// The location of the field in the state in which the evaluation error occurred.
+	Location *string
 
 	noSmithyDocumentSerde
 }
@@ -183,12 +262,20 @@ type ExecutionListItem struct {
 	// This member is required.
 	ExecutionArn *string
 
-	// The name of the execution. A name must not contain:
+	// The name of the execution.
+	//
+	// A name must not contain:
+	//
 	//   - white space
+	//
 	//   - brackets < > { } [ ]
+	//
 	//   - wildcard characters ? *
+	//
 	//   - special characters " # % \ ^ | ~ ` $ & , ; : /
+	//
 	//   - control characters ( U+0000-001F , U+007F-009F )
+	//
 	// To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z,
 	// a-z, - and _.
 	//
@@ -221,20 +308,45 @@ type ExecutionListItem struct {
 	// was specified in ListExecutions , the mapRunArn isn't returned.
 	MapRunArn *string
 
+	// The number of times you've redriven an execution. If you have not yet redriven
+	// an execution, the redriveCount is 0. This count is only updated when you
+	// successfully redrive an execution.
+	RedriveCount *int32
+
+	// The date the execution was last redriven.
+	RedriveDate *time.Time
+
 	// The Amazon Resource Name (ARN) of the state machine alias used to start an
-	// execution. If the state machine execution was started with an unqualified ARN or
-	// a version ARN, it returns null.
+	// execution.
+	//
+	// If the state machine execution was started with an unqualified ARN or a version
+	// ARN, it returns null.
 	StateMachineAliasArn *string
 
 	// The Amazon Resource Name (ARN) of the state machine version associated with the
-	// execution. If the state machine execution was started with an unqualified ARN,
-	// it returns null. If the execution was started using a stateMachineAliasArn ,
-	// both the stateMachineAliasArn and stateMachineVersionArn parameters contain the
+	// execution.
+	//
+	// If the state machine execution was started with an unqualified ARN, it returns
+	// null.
+	//
+	// If the execution was started using a stateMachineAliasArn , both the
+	// stateMachineAliasArn and stateMachineVersionArn parameters contain the
 	// respective values.
 	StateMachineVersionArn *string
 
 	// If the execution already ended, the date the execution stopped.
 	StopDate *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about a redriven execution.
+type ExecutionRedrivenEventDetails struct {
+
+	// The number of times you've redriven an execution. If you have not yet redriven
+	// an execution, the redriveCount is 0. This count is not updated for redrives
+	// that failed to start or are pending to be redriven.
+	RedriveCount *int32
 
 	noSmithyDocumentSerde
 }
@@ -326,11 +438,18 @@ type HistoryEvent struct {
 	// Contains details about an activity timeout that occurred during an execution.
 	ActivityTimedOutEventDetails *ActivityTimedOutEventDetails
 
+	// Contains details about an evaluation failure that occurred while processing a
+	// state.
+	EvaluationFailedEventDetails *EvaluationFailedEventDetails
+
 	// Contains details about an abort of an execution.
 	ExecutionAbortedEventDetails *ExecutionAbortedEventDetails
 
 	// Contains details about an execution failure event.
 	ExecutionFailedEventDetails *ExecutionFailedEventDetails
+
+	// Contains details about the redrive attempt of an execution.
+	ExecutionRedrivenEventDetails *ExecutionRedrivenEventDetails
 
 	// Contains details about the start of the execution.
 	ExecutionStartedEventDetails *ExecutionStartedEventDetails
@@ -377,6 +496,9 @@ type HistoryEvent struct {
 
 	// Contains error and cause details about a Map Run that failed.
 	MapRunFailedEventDetails *MapRunFailedEventDetails
+
+	// Contains details about the redrive attempt of a Map Run.
+	MapRunRedrivenEventDetails *MapRunRedrivenEventDetails
 
 	// Contains details, such as mapRunArn , and the start date and time of a Map Run.
 	// mapRunArn is the Amazon Resource Name (ARN) of the Map Run that was started.
@@ -425,8 +547,109 @@ type HistoryEvent struct {
 type HistoryEventExecutionDataDetails struct {
 
 	// Indicates whether input or output was truncated in the response. Always false
-	// for API calls.
+	// for API calls. In CloudWatch logs, the value will be true if the data is
+	// truncated due to size limits.
 	Truncated bool
+
+	noSmithyDocumentSerde
+}
+
+// Contains additional details about the state's execution, including its input
+// and output data processing flow, and HTTP request and response information.
+type InspectionData struct {
+
+	// The input after Step Functions applies an Arguments filter. This event will
+	// only be present when QueryLanguage for the state machine or individual states is
+	// set to JSONata. For more info, see [Transforming data with Step Functions].
+	//
+	// [Transforming data with Step Functions]: https://docs.aws.amazon.com/step-functions/latest/dg/data-transform.html
+	AfterArguments *string
+
+	// The input after Step Functions applies the [InputPath] filter. Not populated when
+	// QueryLanguage is JSONata.
+	//
+	// [InputPath]: https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-inputpath
+	AfterInputPath *string
+
+	// The effective input after Step Functions applies the [Parameters] filter. Not populated
+	// when QueryLanguage is JSONata.
+	//
+	// [Parameters]: https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-parameters
+	AfterParameters *string
+
+	// The effective result combined with the raw state input after Step Functions
+	// applies the [ResultPath]filter. Not populated when QueryLanguage is JSONata.
+	//
+	// [ResultPath]: https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultpath.html
+	AfterResultPath *string
+
+	// The effective result after Step Functions applies the [ResultSelector] filter. Not populated
+	// when QueryLanguage is JSONata.
+	//
+	// [ResultSelector]: https://docs.aws.amazon.com/step-functions/latest/dg/input-output-inputpath-params.html#input-output-resultselector
+	AfterResultSelector *string
+
+	// The raw state input.
+	Input *string
+
+	// The raw HTTP request that is sent when you test an HTTP Task.
+	Request *InspectionDataRequest
+
+	// The raw HTTP response that is returned when you test an HTTP Task.
+	Response *InspectionDataResponse
+
+	// The state's raw result.
+	Result *string
+
+	// JSON string that contains the set of workflow variables after execution of the
+	// state. The set will include variables assigned in the state and variables set up
+	// as test state input.
+	Variables *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains additional details about the state's execution, including its input
+// and output data processing flow, and HTTP request information.
+type InspectionDataRequest struct {
+
+	// The request body for the HTTP request.
+	Body *string
+
+	// The request headers associated with the HTTP request.
+	Headers *string
+
+	// The HTTP method used for the HTTP request.
+	Method *string
+
+	// The protocol used to make the HTTP request.
+	Protocol *string
+
+	// The API endpoint used for the HTTP request.
+	Url *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains additional details about the state's execution, including its input
+// and output data processing flow, and HTTP response information. The
+// inspectionLevel request parameter specifies which details are returned.
+type InspectionDataResponse struct {
+
+	// The HTTP response returned.
+	Body *string
+
+	// The response headers associated with the HTTP response.
+	Headers *string
+
+	// The protocol used to return the HTTP response.
+	Protocol *string
+
+	// The HTTP response status code for the HTTP response.
+	StatusCode *string
+
+	// The message associated with the HTTP status code.
+	StatusMessage *string
 
 	noSmithyDocumentSerde
 }
@@ -522,9 +745,10 @@ type LambdaFunctionTimedOutEventDetails struct {
 
 type LogDestination struct {
 
-	// An object describing a CloudWatch log group. For more information, see
-	// AWS::Logs::LogGroup (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html)
-	// in the CloudFormation User Guide.
+	// An object describing a CloudWatch log group. For more information, see [AWS::Logs::LogGroup] in the
+	// CloudFormation User Guide.
+	//
+	// [AWS::Logs::LogGroup]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-logs-loggroup.html
 	CloudWatchLogsLogGroup *CloudWatchLogsLogGroup
 
 	noSmithyDocumentSerde
@@ -583,8 +807,9 @@ type MapRunExecutionCounts struct {
 	Pending int64
 
 	// Returns the count of child workflow executions whose results were written by
-	// ResultWriter . For more information, see ResultWriter (https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultwriter.html)
-	// in the Step Functions Developer Guide.
+	// ResultWriter . For more information, see [ResultWriter] in the Step Functions Developer Guide.
+	//
+	// [ResultWriter]: https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultwriter.html
 	//
 	// This member is required.
 	ResultsWritten int64
@@ -611,6 +836,18 @@ type MapRunExecutionCounts struct {
 	//
 	// This member is required.
 	Total int64
+
+	// The number of FAILED , ABORTED , or TIMED_OUT child workflow executions that
+	// cannot be redriven because their execution status is terminal. For example,
+	// child workflows with an execution status of FAILED , ABORTED , or TIMED_OUT and
+	// a redriveStatus of NOT_REDRIVABLE .
+	FailuresNotRedrivable *int64
+
+	// The number of unsuccessful child workflow executions currently waiting to be
+	// redriven. The status of these child workflow executions could be FAILED ,
+	// ABORTED , or TIMED_OUT in the original execution attempt or a previous redrive
+	// attempt.
+	PendingRedrive *int64
 
 	noSmithyDocumentSerde
 }
@@ -651,8 +888,9 @@ type MapRunItemCounts struct {
 	Pending int64
 
 	// Returns the count of items whose results were written by ResultWriter . For more
-	// information, see ResultWriter (https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultwriter.html)
-	// in the Step Functions Developer Guide.
+	// information, see [ResultWriter]in the Step Functions Developer Guide.
+	//
+	// [ResultWriter]: https://docs.aws.amazon.com/step-functions/latest/dg/input-output-resultwriter.html
 	//
 	// This member is required.
 	ResultsWritten int64
@@ -680,6 +918,16 @@ type MapRunItemCounts struct {
 	//
 	// This member is required.
 	Total int64
+
+	// The number of FAILED , ABORTED , or TIMED_OUT items in child workflow
+	// executions that cannot be redriven because the execution status of those child
+	// workflows is terminal. For example, child workflows with an execution status of
+	// FAILED , ABORTED , or TIMED_OUT and a redriveStatus of NOT_REDRIVABLE .
+	FailuresNotRedrivable *int64
+
+	// The number of unsuccessful items in child workflow executions currently waiting
+	// to be redriven.
+	PendingRedrive *int64
 
 	noSmithyDocumentSerde
 }
@@ -713,6 +961,20 @@ type MapRunListItem struct {
 	noSmithyDocumentSerde
 }
 
+// Contains details about a Map Run that was redriven.
+type MapRunRedrivenEventDetails struct {
+
+	// The Amazon Resource Name (ARN) of a Map Run that was redriven.
+	MapRunArn *string
+
+	// The number of times the Map Run has been redriven at this point in the
+	// execution's history including this event. The redrive count for a redriven Map
+	// Run is always greater than 0.
+	RedriveCount *int32
+
+	noSmithyDocumentSerde
+}
+
 // Contains details about a Map Run that was started during a state machine
 // execution.
 type MapRunStartedEventDetails struct {
@@ -739,15 +1001,16 @@ type MapStateStartedEventDetails struct {
 type RoutingConfigurationListItem struct {
 
 	// The Amazon Resource Name (ARN) that identifies one or two state machine
-	// versions defined in the routing configuration. If you specify the ARN of a
-	// second version, it must belong to the same state machine as the first version.
+	// versions defined in the routing configuration.
+	//
+	// If you specify the ARN of a second version, it must belong to the same state
+	// machine as the first version.
 	//
 	// This member is required.
 	StateMachineVersionArn *string
 
-	// The percentage of traffic you want to route to the second state machine
-	// version. The sum of the weights in the routing configuration must be equal to
-	// 100.
+	// The percentage of traffic you want to route to a state machine version. The sum
+	// of the weights in the routing configuration must be equal to 100.
 	//
 	// This member is required.
 	Weight int32
@@ -776,17 +1039,31 @@ type StateEnteredEventDetails struct {
 // Contains details about an exit from a state during an execution.
 type StateExitedEventDetails struct {
 
-	// The name of the state. A name must not contain:
+	// The name of the state.
+	//
+	// A name must not contain:
+	//
 	//   - white space
+	//
 	//   - brackets < > { } [ ]
+	//
 	//   - wildcard characters ? *
+	//
 	//   - special characters " # % \ ^ | ~ ` $ & , ; : /
+	//
 	//   - control characters ( U+0000-001F , U+007F-009F )
+	//
 	// To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z,
 	// a-z, - and _.
 	//
 	// This member is required.
 	Name *string
+
+	// Map of variable name and value as a serialized JSON representation.
+	AssignedVariables map[string]string
+
+	// Provides details about input or output in an execution history event.
+	AssignedVariablesDetails *AssignedVariablesDetails
 
 	// The JSON output data of the state. Length constraints apply to the payload
 	// size, and are expressed as bytes in UTF-8 encoding.
@@ -824,12 +1101,20 @@ type StateMachineListItem struct {
 	// This member is required.
 	CreationDate *time.Time
 
-	// The name of the state machine. A name must not contain:
+	// The name of the state machine.
+	//
+	// A name must not contain:
+	//
 	//   - white space
+	//
 	//   - brackets < > { } [ ]
+	//
 	//   - wildcard characters ? *
+	//
 	//   - special characters " # % \ ^ | ~ ` $ & , ; : /
+	//
 	//   - control characters ( U+0000-001F , U+007F-009F )
+	//
 	// To enable logging with CloudWatch Logs, the name should only contain 0-9, A-Z,
 	// a-z, - and _.
 	//
@@ -868,12 +1153,16 @@ type StateMachineVersionListItem struct {
 }
 
 // Tags are key-value pairs that can be associated with Step Functions state
-// machines and activities. An array of key-value pairs. For more information, see
-// Using Cost Allocation Tags (https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html)
-// in the Amazon Web Services Billing and Cost Management User Guide, and
-// Controlling Access Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html)
-// . Tags may only contain Unicode letters, digits, white space, or these symbols:
-// _ . : / = + - @ .
+// machines and activities.
+//
+// An array of key-value pairs. For more information, see [Using Cost Allocation Tags] in the Amazon Web
+// Services Billing and Cost Management User Guide, and [Controlling Access Using IAM Tags].
+//
+// Tags may only contain Unicode letters, digits, white space, or these symbols: _
+// . : / = + - @ .
+//
+// [Controlling Access Using IAM Tags]: https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html
+// [Using Cost Allocation Tags]: https://docs.aws.amazon.com/awsaccountbilling/latest/aboutv2/cost-alloc-tags.html
 type Tag struct {
 
 	// The key of a tag.
@@ -1089,6 +1378,88 @@ type TracingConfiguration struct {
 
 	// When set to true , X-Ray tracing is enabled.
 	Enabled bool
+
+	noSmithyDocumentSerde
+}
+
+// Describes potential issues found during state machine validation. Rather than
+// raise an exception, validation will return a list of diagnostic elements
+// containing diagnostic information.
+//
+// The [ValidateStateMachineDefinitionlAPI] might add new diagnostics in the future, adjust diagnostic codes, or
+// change the message wording. Your automated processes should only rely on the
+// value of the result field value (OK, FAIL). Do not rely on the exact order,
+// count, or wording of diagnostic messages.
+//
+// # List of warning codes
+//
+// NO_DOLLAR No .$ on a field that appears to be a JSONPath or Intrinsic Function.
+//
+// NO_PATH Field value looks like a path, but field name does not end with 'Path'.
+//
+// PASS_RESULT_IS_STATIC Attempt to use a path in the result of a pass state.
+//
+// # List of error codes
+//
+// INVALID_JSON_DESCRIPTION JSON syntax problem found.
+//
+// MISSING_DESCRIPTION Received a null or empty workflow input.
+//
+// SCHEMA_VALIDATION_FAILED Schema validation reported errors.
+//
+// INVALID_RESOURCE The value of a Task-state resource field is invalid.
+//
+// MISSING_END_STATE The workflow does not have a terminal state.
+//
+// DUPLICATE_STATE_NAME The same state name appears more than once.
+//
+// INVALID_STATE_NAME The state name does not follow the naming convention.
+//
+// STATE_MACHINE_NAME_EMPTY The state machine name has not been specified.
+//
+// STATE_MACHINE_NAME_INVALID The state machine name does not follow the naming
+// convention.
+//
+// STATE_MACHINE_NAME_TOO_LONG The state name exceeds the allowed length.
+//
+// STATE_MACHINE_NAME_ALREADY_EXISTS The state name already exists.
+//
+// DUPLICATE_LABEL_NAME A label name appears more than once.
+//
+// INVALID_LABEL_NAME You have provided an invalid label name.
+//
+// MISSING_TRANSITION_TARGET The value of "Next" field doesn't match a known state
+// name.
+//
+// TOO_DEEPLY_NESTED The states are too deeply nested.
+//
+// [ValidateStateMachineDefinitionlAPI]: https://docs.aws.amazon.com/step-functions/latest/apireference/API_ValidateStateMachineDefinition.html
+type ValidateStateMachineDefinitionDiagnostic struct {
+
+	// Identifying code for the diagnostic.
+	//
+	// This member is required.
+	Code *string
+
+	// Message describing the diagnostic condition.
+	//
+	// This member is required.
+	Message *string
+
+	// A value of ERROR means that you cannot create or update a state machine with
+	// this definition.
+	//
+	// WARNING level diagnostics alert you to potential issues, but they will not
+	// prevent you from creating or updating your state machine.
+	//
+	// This member is required.
+	Severity ValidateStateMachineDefinitionSeverity
+
+	// Location of the issue in the state machine, if available.
+	//
+	// For errors specific to a field, the location could be in the format: /States// ,
+	// for example: /States/FailState/ErrorPath .
+	Location *string
 
 	noSmithyDocumentSerde
 }

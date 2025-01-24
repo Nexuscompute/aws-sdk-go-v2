@@ -9,16 +9,21 @@ const (
 	EntityStatusCodeImpaired   EntityStatusCode = "IMPAIRED"
 	EntityStatusCodeUnimpaired EntityStatusCode = "UNIMPAIRED"
 	EntityStatusCodeUnknown    EntityStatusCode = "UNKNOWN"
+	EntityStatusCodePending    EntityStatusCode = "PENDING"
+	EntityStatusCodeResolved   EntityStatusCode = "RESOLVED"
 )
 
 // Values returns all known values for EntityStatusCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EntityStatusCode) Values() []EntityStatusCode {
 	return []EntityStatusCode{
 		"IMPAIRED",
 		"UNIMPAIRED",
 		"UNKNOWN",
+		"PENDING",
+		"RESOLVED",
 	}
 }
 
@@ -30,8 +35,9 @@ const (
 )
 
 // Values returns all known values for EventAggregateField. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EventAggregateField) Values() []EventAggregateField {
 	return []EventAggregateField{
 		"eventTypeCategory",
@@ -48,8 +54,9 @@ const (
 )
 
 // Values returns all known values for EventScopeCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EventScopeCode) Values() []EventScopeCode {
 	return []EventScopeCode{
 		"PUBLIC",
@@ -68,8 +75,9 @@ const (
 )
 
 // Values returns all known values for EventStatusCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EventStatusCode) Values() []EventStatusCode {
 	return []EventStatusCode{
 		"open",
@@ -89,8 +97,9 @@ const (
 )
 
 // Values returns all known values for EventTypeCategory. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EventTypeCategory) Values() []EventTypeCategory {
 	return []EventTypeCategory{
 		"issue",

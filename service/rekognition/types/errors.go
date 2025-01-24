@@ -36,7 +36,8 @@ func (e *AccessDeniedException) ErrorCode() string {
 }
 func (e *AccessDeniedException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// A User with the same Id already exists within the collection, or the update or
+//	A User with the same Id already exists within the collection, or the update or
+//
 // deletion of the User caused an inconsistent state. **
 type ConflictException struct {
 	Message *string
@@ -222,6 +223,36 @@ func (e *InvalidImageFormatException) ErrorCode() string {
 }
 func (e *InvalidImageFormatException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// Indicates that a provided manifest file is empty or larger than the allowed
+// limit.
+type InvalidManifestException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	Code   *string
+	Logref *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InvalidManifestException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InvalidManifestException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InvalidManifestException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InvalidManifestException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InvalidManifestException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // Pagination token in the request is not valid.
 type InvalidPaginationTokenException struct {
 	Message *string
@@ -340,10 +371,10 @@ func (e *InvalidS3ObjectException) ErrorCode() string {
 func (e *InvalidS3ObjectException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // An Amazon Rekognition service limit was exceeded. For example, if you start too
-// many Amazon Rekognition Video jobs concurrently, calls to start operations (
-// StartLabelDetection , for example) will raise a LimitExceededException
-// exception (HTTP status code: 400) until the number of concurrently running jobs
-// is below the Amazon Rekognition service limit.
+// many jobs concurrently, subsequent calls to start operations (ex:
+// StartLabelDetection ) will raise a LimitExceededException exception (HTTP
+// status code: 400) until the number of concurrently running jobs is below the
+// Amazon Rekognition service limit.
 type LimitExceededException struct {
 	Message *string
 

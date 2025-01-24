@@ -19,35 +19,61 @@ type AvailabilityZone struct {
 // A certificate authority (CA) certificate for an Amazon Web Services account.
 type Certificate struct {
 
-	// The Amazon Resource Name (ARN) for the certificate. Example:
-	// arn:aws:rds:us-east-1::cert:rds-ca-2019
+	// The Amazon Resource Name (ARN) for the certificate.
+	//
+	// Example: arn:aws:rds:us-east-1::cert:rds-ca-2019
 	CertificateArn *string
 
-	// The unique key that identifies a certificate. Example: rds-ca-2019
+	// The unique key that identifies a certificate.
+	//
+	// Example: rds-ca-2019
 	CertificateIdentifier *string
 
-	// The type of the certificate. Example: CA
+	// The type of the certificate.
+	//
+	// Example: CA
 	CertificateType *string
 
 	// The thumbprint of the certificate.
 	Thumbprint *string
 
-	// The starting date-time from which the certificate is valid. Example:
-	// 2019-07-31T17:57:09Z
+	// The starting date-time from which the certificate is valid.
+	//
+	// Example: 2019-07-31T17:57:09Z
 	ValidFrom *time.Time
 
-	// The date-time after which the certificate is no longer valid. Example:
-	// 2024-07-31T17:57:09Z
+	// The date-time after which the certificate is no longer valid.
+	//
+	// Example: 2024-07-31T17:57:09Z
+	ValidTill *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Returns the details of the DB instance’s server certificate.
+//
+// For more information, see [Updating Your Amazon DocumentDB TLS Certificates] and [Encrypting Data in Transit] in the Amazon DocumentDB Developer Guide.
+//
+// [Updating Your Amazon DocumentDB TLS Certificates]: https://docs.aws.amazon.com/documentdb/latest/developerguide/ca_cert_rotation.html
+// [Encrypting Data in Transit]: https://docs.aws.amazon.com/documentdb/latest/developerguide/security.encryption.ssl.html
+type CertificateDetails struct {
+
+	// The CA identifier of the CA certificate used for the DB instance's server
+	// certificate.
+	CAIdentifier *string
+
+	// The expiration date of the DB instance’s server certificate.
 	ValidTill *time.Time
 
 	noSmithyDocumentSerde
 }
 
 // The configuration setting for the log types to be enabled for export to Amazon
-// CloudWatch Logs for a specific instance or cluster. The EnableLogTypes and
-// DisableLogTypes arrays determine which logs are exported (or not exported) to
-// CloudWatch Logs. The values within these arrays depend on the engine that is
-// being used.
+// CloudWatch Logs for a specific instance or cluster.
+//
+// The EnableLogTypes and DisableLogTypes arrays determine which logs are exported
+// (or not exported) to CloudWatch Logs. The values within these arrays depend on
+// the engine that is being used.
 type CloudwatchLogsExportConfiguration struct {
 
 	// The list of log types to disable.
@@ -55,6 +81,40 @@ type CloudwatchLogsExportConfiguration struct {
 
 	// The list of log types to enable.
 	EnableLogTypes []string
+
+	noSmithyDocumentSerde
+}
+
+// Contains the secret managed by Amazon DocumentDB in Amazon Web Services Secrets
+// Manager for the master user password.
+type ClusterMasterUserSecret struct {
+
+	// The Amazon Web Services KMS key identifier that is used to encrypt the secret.
+	KmsKeyId *string
+
+	// The Amazon Resource Name (ARN) of the secret.
+	SecretArn *string
+
+	// The status of the secret.
+	//
+	// The possible status values include the following:
+	//
+	//   - creating - The secret is being created.
+	//
+	//   - active - The secret is available for normal use and rotation.
+	//
+	//   - rotating - The secret is being rotated.
+	//
+	//   - impaired - The secret can be used to access database credentials, but it
+	//   can't be rotated. A secret might have this status if, for example, permissions
+	//   are changed so that Amazon DocumentDB can no longer access either the secret or
+	//   the KMS key for the secret.
+	//
+	// When a secret has this status, you can correct the condition that caused the
+	//   status. Alternatively, modify the instance to turn off automatic management of
+	//   database credentials, and then modify the instance again to turn on automatic
+	//   management of database credentials.
+	SecretStatus *string
 
 	noSmithyDocumentSerde
 }
@@ -108,7 +168,7 @@ type DBCluster struct {
 	// enabled, the cluster cannot be deleted unless it is modified and
 	// DeletionProtection is disabled. DeletionProtection protects clusters from being
 	// accidentally deleted.
-	DeletionProtection bool
+	DeletionProtection *bool
 
 	// The earliest time to which a database can be restored with point-in-time
 	// restore.
@@ -137,11 +197,15 @@ type DBCluster struct {
 	// point-in-time restore.
 	LatestRestorableTime *time.Time
 
+	// The secret managed by Amazon DocumentDB in Amazon Web Services Secrets Manager
+	// for the master user password.
+	MasterUserSecret *ClusterMasterUserSecret
+
 	// Contains the master user name for the cluster.
 	MasterUsername *string
 
 	// Specifies whether the cluster has instances in multiple Availability Zones.
-	MultiAZ bool
+	MultiAZ *bool
 
 	// Specifies the progress of the operation as a percentage.
 	PercentProgress *string
@@ -166,11 +230,12 @@ type DBCluster struct {
 	// a cluster. As clients request new connections to the reader endpoint, Amazon
 	// DocumentDB distributes the connection requests among the Amazon DocumentDB
 	// replicas in the cluster. This functionality can help balance your read workload
-	// across multiple Amazon DocumentDB replicas in your cluster. If a failover
-	// occurs, and the Amazon DocumentDB replica that you are connected to is promoted
-	// to be the primary instance, your connection is dropped. To continue sending your
-	// read workload to other Amazon DocumentDB replicas in the cluster, you can then
-	// reconnect to the reader endpoint.
+	// across multiple Amazon DocumentDB replicas in your cluster.
+	//
+	// If a failover occurs, and the Amazon DocumentDB replica that you are connected
+	// to is promoted to be the primary instance, your connection is dropped. To
+	// continue sending your read workload to other Amazon DocumentDB replicas in the
+	// cluster, you can then reconnect to the reader endpoint.
 	ReaderEndpoint *string
 
 	// Contains the identifier of the source cluster if this cluster is a secondary
@@ -181,7 +246,19 @@ type DBCluster struct {
 	Status *string
 
 	// Specifies whether the cluster is encrypted.
-	StorageEncrypted bool
+	StorageEncrypted *bool
+
+	// Storage type associated with your cluster
+	//
+	// Storage type associated with your cluster
+	//
+	// For information on storage types for Amazon DocumentDB clusters, see Cluster
+	// storage configurations in the Amazon DocumentDB Developer Guide.
+	//
+	// Valid values for storage type - standard | iopt1
+	//
+	// Default value is standard
+	StorageType *string
 
 	// Provides a list of virtual private cloud (VPC) security groups that the cluster
 	// belongs to.
@@ -202,7 +279,7 @@ type DBClusterMember struct {
 
 	// A value that is true if the cluster member is the primary instance for the
 	// cluster and false otherwise.
-	IsClusterWriter bool
+	IsClusterWriter *bool
 
 	// A value that specifies the order in which an Amazon DocumentDB replica is
 	// promoted to the primary instance after a failure of the existing primary
@@ -241,9 +318,12 @@ type DBClusterRole struct {
 
 	// Describes the state of association between the IAMrole and the cluster. The
 	// Status property returns one of the following values:
+	//
 	//   - ACTIVE - The IAMrole ARN is associated with the cluster and can be used to
 	//   access other Amazon Web Services services on your behalf.
+	//
 	//   - PENDING - The IAMrole ARN is being associated with the cluster.
+	//
 	//   - INVALID - The IAMrole ARN is associated with the cluster, but the cluster
 	//   cannot assume the IAMrole to access other Amazon Web Services services on your
 	//   behalf.
@@ -287,11 +367,11 @@ type DBClusterSnapshot struct {
 	MasterUsername *string
 
 	// Specifies the percentage of the estimated data that has been transferred.
-	PercentProgress int32
+	PercentProgress *int32
 
 	// Specifies the port that the cluster was listening on at the time of the
 	// snapshot.
-	Port int32
+	Port *int32
 
 	// Provides the time when the snapshot was taken, in UTC.
 	SnapshotCreateTime *time.Time
@@ -307,7 +387,17 @@ type DBClusterSnapshot struct {
 	Status *string
 
 	// Specifies whether the cluster snapshot is encrypted.
-	StorageEncrypted bool
+	StorageEncrypted *bool
+
+	// Storage type associated with your cluster snapshot
+	//
+	// For information on storage types for Amazon DocumentDB clusters, see Cluster
+	// storage configurations in the Amazon DocumentDB Developer Guide.
+	//
+	// Valid values for storage type - standard | iopt1
+	//
+	// Default value is standard
+	StorageType *string
 
 	// Provides the virtual private cloud (VPC) ID that is associated with the cluster
 	// snapshot.
@@ -316,21 +406,25 @@ type DBClusterSnapshot struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the name and values of a manual cluster snapshot attribute. Manual
-// cluster snapshot attributes are used to authorize other Amazon Web Services
-// accounts to restore a manual cluster snapshot.
+// Contains the name and values of a manual cluster snapshot attribute.
+//
+// Manual cluster snapshot attributes are used to authorize other Amazon Web
+// Services accounts to restore a manual cluster snapshot.
 type DBClusterSnapshotAttribute struct {
 
-	// The name of the manual cluster snapshot attribute. The attribute named restore
-	// refers to the list of Amazon Web Services accounts that have permission to copy
-	// or restore the manual cluster snapshot.
+	// The name of the manual cluster snapshot attribute.
+	//
+	// The attribute named restore refers to the list of Amazon Web Services accounts
+	// that have permission to copy or restore the manual cluster snapshot.
 	AttributeName *string
 
-	// The values for the manual cluster snapshot attribute. If the AttributeName
-	// field is set to restore , then this element returns a list of IDs of the Amazon
-	// Web Services accounts that are authorized to copy or restore the manual cluster
-	// snapshot. If a value of all is in the list, then the manual cluster snapshot is
-	// public and available for any Amazon Web Services account to copy or restore.
+	// The values for the manual cluster snapshot attribute.
+	//
+	// If the AttributeName field is set to restore , then this element returns a list
+	// of IDs of the Amazon Web Services accounts that are authorized to copy or
+	// restore the manual cluster snapshot. If a value of all is in the list, then the
+	// manual cluster snapshot is public and available for any Amazon Web Services
+	// account to copy or restore.
 	AttributeValues []string
 
 	noSmithyDocumentSerde
@@ -371,9 +465,21 @@ type DBEngineVersion struct {
 	// CloudWatch Logs.
 	ExportableLogTypes []string
 
+	// A list of the supported CA certificate identifiers.
+	//
+	// For more information, see [Updating Your Amazon DocumentDB TLS Certificates] and [Encrypting Data in Transit] in the Amazon DocumentDB Developer Guide.
+	//
+	// [Updating Your Amazon DocumentDB TLS Certificates]: https://docs.aws.amazon.com/documentdb/latest/developerguide/ca_cert_rotation.html
+	// [Encrypting Data in Transit]: https://docs.aws.amazon.com/documentdb/latest/developerguide/security.encryption.ssl.html
+	SupportedCACertificateIdentifiers []string
+
+	// Indicates whether the engine version supports rotating the server certificate
+	// without rebooting the DB instance.
+	SupportsCertificateRotationWithoutRestart *bool
+
 	// A value that indicates whether the engine version supports exporting the log
 	// types specified by ExportableLogTypes to CloudWatch Logs.
-	SupportsLogExportsToCloudwatchLogs bool
+	SupportsLogExportsToCloudwatchLogs *bool
 
 	// A list of engine versions that this database engine version can be upgraded to.
 	ValidUpgradeTarget []UpgradeTarget
@@ -386,16 +492,19 @@ type DBInstance struct {
 
 	// Does not apply. This parameter does not apply to Amazon DocumentDB. Amazon
 	// DocumentDB does not perform minor version upgrades regardless of the value set.
-	AutoMinorVersionUpgrade bool
+	AutoMinorVersionUpgrade *bool
 
 	// Specifies the name of the Availability Zone that the instance is located in.
 	AvailabilityZone *string
 
 	// Specifies the number of days for which automatic snapshots are retained.
-	BackupRetentionPeriod int32
+	BackupRetentionPeriod *int32
 
 	// The identifier of the CA certificate for this DB instance.
 	CACertificateIdentifier *string
+
+	// The details of the DB instance's server certificate.
+	CertificateDetails *CertificateDetails
 
 	// A value that indicates whether to copy tags from the DB instance to snapshots
 	// of the DB instance. By default, tags are not copied.
@@ -443,7 +552,8 @@ type DBInstance struct {
 	// Provides the date and time that the instance was created.
 	InstanceCreateTime *time.Time
 
-	// If StorageEncrypted is true , the KMS key identifier for the encrypted instance.
+	//  If StorageEncrypted is true , the KMS key identifier for the encrypted
+	// instance.
 	KmsKeyId *string
 
 	// Specifies the latest time to which a database can be restored with
@@ -454,7 +564,16 @@ type DBInstance struct {
 	// only when changes are pending. Specific changes are identified by subelements.
 	PendingModifiedValues *PendingModifiedValues
 
-	// Specifies the daily time range during which automated backups are created if
+	// Set to true if Amazon RDS Performance Insights is enabled for the DB instance,
+	// and otherwise false .
+	PerformanceInsightsEnabled *bool
+
+	// The KMS key identifier for encryption of Performance Insights data. The KMS key
+	// ID is the Amazon Resource Name (ARN), KMS key identifier, or the KMS key alias
+	// for the KMS encryption key.
+	PerformanceInsightsKMSKeyId *string
+
+	//  Specifies the daily time range during which automated backups are created if
 	// automated backups are enabled, as determined by the BackupRetentionPeriod .
 	PreferredBackupWindow *string
 
@@ -469,14 +588,14 @@ type DBInstance struct {
 
 	// Not supported. Amazon DocumentDB does not currently support public endpoints.
 	// The value of PubliclyAccessible is always false .
-	PubliclyAccessible bool
+	PubliclyAccessible *bool
 
 	// The status of a read replica. If the instance is not a read replica, this is
 	// blank.
 	StatusInfos []DBInstanceStatusInfo
 
 	// Specifies whether or not the instance is encrypted.
-	StorageEncrypted bool
+	StorageEncrypted *bool
 
 	// Provides a list of VPC security group elements that the instance belongs to.
 	VpcSecurityGroups []VpcSecurityGroupMembership
@@ -493,7 +612,7 @@ type DBInstanceStatusInfo struct {
 
 	// A Boolean value that is true if the instance is operating normally, or false if
 	// the instance is in an error state.
-	Normal bool
+	Normal *bool
 
 	// Status of the instance. For a StatusType of read replica, the values can be
 	// replicating , error, stopped , or terminated .
@@ -540,7 +659,7 @@ type Endpoint struct {
 	HostedZoneId *string
 
 	// Specifies the port that the database engine is listening on.
-	Port int32
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -612,7 +731,7 @@ type EventSubscription struct {
 
 	// A Boolean value indicating whether the subscription is enabled. A value of true
 	// indicates that the subscription is enabled.
-	Enabled bool
+	Enabled *bool
 
 	// A list of event categories for the Amazon DocumentDB event notification
 	// subscription.
@@ -631,11 +750,15 @@ type EventSubscription struct {
 	SourceType *string
 
 	// The status of the Amazon DocumentDB event notification subscription.
-	// Constraints: Can be one of the following: creating , modifying , deleting ,
-	// active , no-permission , topic-not-exist The no-permission status indicates
-	// that Amazon DocumentDB no longer has permission to post to the SNS topic. The
-	// topic-not-exist status indicates that the topic was deleted after the
-	// subscription was created.
+	//
+	// Constraints:
+	//
+	// Can be one of the following: creating , modifying , deleting , active ,
+	// no-permission , topic-not-exist
+	//
+	// The no-permission status indicates that Amazon DocumentDB no longer has
+	// permission to post to the SNS topic. The topic-not-exist status indicates that
+	// the topic was deleted after the subscription was created.
 	Status *string
 
 	// The time at which the Amazon DocumentDB event notification subscription was
@@ -647,7 +770,9 @@ type EventSubscription struct {
 
 // A named set of filter values, used to return a more specific list of results.
 // You can use a filter to match a set of resources by specific criteria, such as
-// IDs. Wildcards are not supported in filters.
+// IDs.
+//
+// Wildcards are not supported in filters.
 type Filter struct {
 
 	// The name of the filter. Filter names are case sensitive.
@@ -710,10 +835,10 @@ type GlobalClusterMember struct {
 	// The Amazon Resource Name (ARN) for each Amazon DocumentDB cluster.
 	DBClusterArn *string
 
-	// Specifies whether the Amazon DocumentDB cluster is the primary cluster (that
+	//  Specifies whether the Amazon DocumentDB cluster is the primary cluster (that
 	// is, has read-write capability) for the Amazon DocumentDB global cluster with
 	// which it is associated.
-	IsWriter bool
+	IsWriter *bool
 
 	// The Amazon Resource Name (ARN) for each read-only secondary cluster associated
 	// with the Aurora global cluster.
@@ -740,8 +865,11 @@ type OrderableDBInstanceOption struct {
 	// The license model for an instance.
 	LicenseModel *string
 
+	// The storage type to associate with the DB cluster
+	StorageType *string
+
 	// Indicates whether an instance is in a virtual private cloud (VPC).
-	Vpc bool
+	Vpc *bool
 
 	noSmithyDocumentSerde
 }
@@ -764,10 +892,10 @@ type Parameter struct {
 	// Provides a description of the parameter.
 	Description *string
 
-	// Indicates whether ( true ) or not ( false ) the parameter can be modified. Some
+	//  Indicates whether ( true ) or not ( false ) the parameter can be modified. Some
 	// parameters have security or operational implications that prevent them from
 	// being changed.
-	IsModifiable bool
+	IsModifiable *bool
 
 	// The earliest engine version to which the parameter can apply.
 	MinimumEngineVersion *string
@@ -830,11 +958,12 @@ type PendingMaintenanceAction struct {
 	noSmithyDocumentSerde
 }
 
-// One or more modified settings for an instance. These modified settings have
+//	One or more modified settings for an instance. These modified settings have
+//
 // been requested, but haven't been applied yet.
 type PendingModifiedValues struct {
 
-	// Contains the new AllocatedStorage size for then instance that will be applied
+	//  Contains the new AllocatedStorage size for then instance that will be applied
 	// or is currently being applied.
 	AllocatedStorage *int32
 
@@ -845,11 +974,11 @@ type PendingModifiedValues struct {
 	// DB instance.
 	CACertificateIdentifier *string
 
-	// Contains the new DBInstanceClass for the instance that will be applied or is
+	//  Contains the new DBInstanceClass for the instance that will be applied or is
 	// currently being applied.
 	DBInstanceClass *string
 
-	// Contains the new DBInstanceIdentifier for the instance that will be applied or
+	//  Contains the new DBInstanceIdentifier for the instance that will be applied or
 	// is currently being applied.
 	DBInstanceIdentifier *string
 
@@ -863,8 +992,9 @@ type PendingModifiedValues struct {
 	// or is currently being applied.
 	Iops *int32
 
-	// The license model for the instance. Valid values: license-included ,
-	// bring-your-own-license , general-public-license
+	// The license model for the instance.
+	//
+	// Valid values: license-included , bring-your-own-license , general-public-license
 	LicenseModel *string
 
 	// Contains the pending or currently in-progress change of the master credentials
@@ -887,7 +1017,7 @@ type PendingModifiedValues struct {
 	noSmithyDocumentSerde
 }
 
-// Represents the output of ApplyPendingMaintenanceAction .
+// Represents the output of ApplyPendingMaintenanceAction.
 type ResourcePendingMaintenanceActions struct {
 
 	// A list that provides details about the pending maintenance actions for the
@@ -940,7 +1070,7 @@ type UpgradeTarget struct {
 
 	// A value that indicates whether the target version is applied to any source DB
 	// instances that have AutoMinorVersionUpgrade set to true .
-	AutoUpgrade bool
+	AutoUpgrade *bool
 
 	// The version of the database engine that an instance can be upgraded to.
 	Description *string
@@ -952,7 +1082,7 @@ type UpgradeTarget struct {
 	EngineVersion *string
 
 	// A value that indicates whether a database engine is upgraded to a major version.
-	IsMajorVersionUpgrade bool
+	IsMajorVersionUpgrade *bool
 
 	noSmithyDocumentSerde
 }

@@ -4,20 +4,53 @@ package connect
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/connect/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
 )
 
-// Initiates a flow to start a new task.
+// Initiates a flow to start a new task contact. For more information about task
+// contacts, see [Concepts: Tasks in Amazon Connect]in the Amazon Connect Administrator Guide.
+//
+// When using PreviousContactId and RelatedContactId input parameters, note the
+// following:
+//
+//   - PreviousContactId
+//
+//   - Any updates to user-defined task contact attributes on any contact linked
+//     through the same PreviousContactId will affect every contact in the chain.
+//
+//   - There can be a maximum of 12 linked task contacts in a chain. That is, 12
+//     task contacts can be created that share the same PreviousContactId .
+//
+//   - RelatedContactId
+//
+//   - Copies contact attributes from the related task contact to the new contact.
+//
+//   - Any update on attributes in a new task contact does not update attributes
+//     on previous contact.
+//
+//   - There’s no limit on the number of task contacts that can be created that
+//     use the same RelatedContactId .
+//
+// In addition, when calling StartTaskContact include only one of these
+// parameters: ContactFlowID , QuickConnectID , or TaskTemplateID . Only one
+// parameter is required as long as the task template has a flow configured to run
+// it. If more than one parameter is specified, or only the TaskTemplateID is
+// specified but it does not have a flow configured, the request returns an error
+// because Amazon Connect cannot identify the unique flow to run when the task is
+// created.
+//
+// A ServiceQuotaExceededException occurs when the number of open tasks exceeds
+// the active tasks quota or there are already 12 tasks referencing the same
+// PreviousContactId . For more information about service quotas for task contacts,
+// see [Amazon Connect service quotas]in the Amazon Connect Administrator Guide.
+//
+// [Amazon Connect service quotas]: https://docs.aws.amazon.com/connect/latest/adminguide/amazon-connect-service-limits.html
+// [Concepts: Tasks in Amazon Connect]: https://docs.aws.amazon.com/connect/latest/adminguide/tasks.html
 func (c *Client) StartTaskContact(ctx context.Context, params *StartTaskContactInput, optFns ...func(*Options)) (*StartTaskContactOutput, error) {
 	if params == nil {
 		params = &StartTaskContactInput{}
@@ -35,8 +68,10 @@ func (c *Client) StartTaskContact(ctx context.Context, params *StartTaskContactI
 
 type StartTaskContactInput struct {
 
-	// The identifier of the Amazon Connect instance. You can find the instance ID (https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html)
-	// in the Amazon Resource Name (ARN) of the instance.
+	// The identifier of the Amazon Connect instance. You can [find the instance ID] in the Amazon Resource
+	// Name (ARN) of the instance.
+	//
+	// [find the instance ID]: https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html
 	//
 	// This member is required.
 	InstanceId *string
@@ -48,23 +83,25 @@ type StartTaskContactInput struct {
 
 	// A custom key-value pair using an attribute map. The attributes are standard
 	// Amazon Connect attributes, and can be accessed in flows just like any other
-	// contact attributes. There can be up to 32,768 UTF-8 bytes across all key-value
-	// pairs per contact. Attribute keys can include only alphanumeric, dash, and
-	// underscore characters.
+	// contact attributes.
+	//
+	// There can be up to 32,768 UTF-8 bytes across all key-value pairs per contact.
+	// Attribute keys can include only alphanumeric, dash, and underscore characters.
 	Attributes map[string]string
 
 	// A unique, case-sensitive identifier that you provide to ensure the idempotency
 	// of the request. If not provided, the Amazon Web Services SDK populates this
-	// field. For more information about idempotency, see Making retries safe with
-	// idempotent APIs (https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/)
-	// .
+	// field. For more information about idempotency, see [Making retries safe with idempotent APIs].
+	//
+	// [Making retries safe with idempotent APIs]: https://aws.amazon.com/builders-library/making-retries-safe-with-idempotent-APIs/
 	ClientToken *string
 
 	// The identifier of the flow for initiating the tasks. To see the ContactFlowId
-	// in the Amazon Connect console user interface, on the navigation menu go to
-	// Routing, Contact Flows. Choose the flow. On the flow page, under the name of the
-	// flow, choose Show additional flow information. The ContactFlowId is the last
-	// part of the ARN, shown here in bold:
+	// in the Amazon Connect admin website, on the navigation menu go to Routing,
+	// Flows. Choose the flow. On the flow page, under the name of the flow, choose
+	// Show additional flow information. The ContactFlowId is the last part of the ARN,
+	// shown here in bold:
+	//
 	// arn:aws:connect:us-west-2:xxxxxxxxxxxx:instance/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/contact-flow/846ec553-a005-41c0-8341-xxxxxxxxxxxx
 	ContactFlowId *string
 
@@ -72,17 +109,33 @@ type StartTaskContactInput struct {
 	// Panel (CCP).
 	Description *string
 
-	// The identifier of the previous chat, voice, or task contact.
+	// The identifier of the previous chat, voice, or task contact. Any updates to
+	// user-defined attributes to task contacts linked using the same PreviousContactID
+	// will affect every contact in the chain. There can be a maximum of 12 linked task
+	// contacts in a chain.
 	PreviousContactId *string
 
-	// The identifier for the quick connect.
+	// The identifier for the quick connect. Tasks that are created by using
+	// QuickConnectId will use the flow that is defined on agent or queue quick
+	// connect. For more information about quick connects, see [Create quick connects].
+	//
+	// [Create quick connects]: https://docs.aws.amazon.com/connect/latest/adminguide/quick-connects.html
 	QuickConnectId *string
 
 	// A formatted URL that is shown to an agent in the Contact Control Panel (CCP).
+	// Tasks can have the following reference types at the time of creation: URL |
+	// NUMBER | STRING | DATE | EMAIL . ATTACHMENT is not a supported reference type
+	// during task creation.
 	References map[string]types.Reference
 
-	// The contactId that is related (https://docs.aws.amazon.com/connect/latest/adminguide/tasks.html#linked-tasks)
-	// to this contact.
+	// The contactId that is [related] to this contact. Linking tasks together by using
+	// RelatedContactID copies over contact attributes from the related task contact to
+	// the new task contact. All updates to user-defined attributes in the new task
+	// contact are limited to the individual contact ID, unlike what happens when tasks
+	// are linked by using PreviousContactID . There are no limits to the number of
+	// contacts that can be linked by using RelatedContactId .
+	//
+	// [related]: https://docs.aws.amazon.com/connect/latest/adminguide/tasks.html#linked-tasks
 	RelatedContactId *string
 
 	// The timestamp, in Unix Epoch seconds format, at which to start running the
@@ -90,7 +143,30 @@ type StartTaskContactInput struct {
 	// 6 days in future.
 	ScheduledTime *time.Time
 
-	// A unique identifier for the task template.
+	// A set of system defined key-value pairs stored on individual contact segments
+	// (unique contact ID) using an attribute map. The attributes are standard Amazon
+	// Connect attributes. They can be accessed in flows.
+	//
+	// Attribute keys can include only alphanumeric, -, and _.
+	//
+	// This field can be used to set Contact Expiry as a duration in minutes and set a
+	// UserId for the User who created a task.
+	//
+	// To set contact expiry, a ValueMap must be specified containing the integer
+	// number of minutes the contact will be active for before expiring, with
+	// SegmentAttributes like {  "connect:ContactExpiry": {"ValueMap" : {
+	// "ExpiryDuration": { "ValueInteger": 135}}}} .
+	//
+	// To set the created by user, a valid AgentResourceId must be supplied, with
+	// SegmentAttributes like { "connect:CreatedByUser" { "ValueString":
+	// "arn:aws:connect:us-west-2:xxxxxxxxxxxx:instance/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx/agent/xxxxxxxx-xxxx-xxxx-xxxx-xxxxxxxxxxxx"}}}
+	// .
+	SegmentAttributes map[string]types.SegmentAttributeValue
+
+	// A unique identifier for the task template. For more information about task
+	// templates, see [Create task templates]in the Amazon Connect Administrator Guide.
+	//
+	// [Create task templates]: https://docs.aws.amazon.com/connect/latest/adminguide/task-templates.html
 	TaskTemplateId *string
 
 	noSmithyDocumentSerde
@@ -108,6 +184,9 @@ type StartTaskContactOutput struct {
 }
 
 func (c *Client) addOperationStartTaskContactMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpStartTaskContact{}, middleware.After)
 	if err != nil {
 		return err
@@ -116,34 +195,38 @@ func (c *Client) addOperationStartTaskContactMiddlewares(stack *middleware.Stack
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "StartTaskContact"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -155,7 +238,13 @@ func (c *Client) addOperationStartTaskContactMiddlewares(stack *middleware.Stack
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addStartTaskContactResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opStartTaskContactMiddleware(stack, options); err != nil {
@@ -167,7 +256,7 @@ func (c *Client) addOperationStartTaskContactMiddlewares(stack *middleware.Stack
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opStartTaskContact(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -179,7 +268,19 @@ func (c *Client) addOperationStartTaskContactMiddlewares(stack *middleware.Stack
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -222,130 +323,6 @@ func newServiceMetadataMiddleware_opStartTaskContact(region string) *awsmiddlewa
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "connect",
 		OperationName: "StartTaskContact",
 	}
-}
-
-type opStartTaskContactResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opStartTaskContactResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opStartTaskContactResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "connect"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "connect"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("connect")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addStartTaskContactResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opStartTaskContactResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -17,8 +17,8 @@ type LockConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// Information about the resource tags used to identify resources that are
-// retained by the retention rule.
+// [Tag-level retention rules only] Information about the resource tags used to
+// identify resources that are retained by the retention rule.
 type ResourceTag struct {
 
 	// The tag key.
@@ -60,13 +60,17 @@ type RuleSummary struct {
 	// The unique ID of the retention rule.
 	Identifier *string
 
-	// The lock state for the retention rule.
+	// [Region-level retention rules only] The lock state for the retention rule.
+	//
 	//   - locked - The retention rule is locked and can't be modified or deleted.
+	//
 	//   - pending_unlock - The retention rule has been unlocked but it is still within
 	//   the unlock delay period. The retention rule can be modified or deleted only
 	//   after the unlock delay period has expired.
+	//
 	//   - unlocked - The retention rule is unlocked and it can be modified or deleted
 	//   by any user with the required permissions.
+	//
 	//   - null - The retention rule has never been locked. Once a retention rule has
 	//   been locked, it can transition between the locked and unlocked states only; it
 	//   can never transition back to null .
@@ -75,6 +79,9 @@ type RuleSummary struct {
 	// Information about the retention period for which the retention rule is to
 	// retain resources.
 	RetentionPeriod *RetentionPeriod
+
+	// The Amazon Resource Name (ARN) of the retention rule.
+	RuleArn *string
 
 	noSmithyDocumentSerde
 }

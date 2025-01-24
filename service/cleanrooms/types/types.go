@@ -3,6 +3,7 @@
 package types
 
 import (
+	"github.com/aws/aws-sdk-go-v2/service/cleanrooms/document"
 	smithydocument "github.com/aws/smithy-go/document"
 	"time"
 )
@@ -139,6 +140,13 @@ type AnalysisRuleAggregation struct {
 	// This member is required.
 	ScalarFunctions []ScalarFunctions
 
+	//  An indicator as to whether additional analyses (such as Clean Rooms ML) can be
+	// applied to the output of the direct query.
+	//
+	// The additionalAnalyses parameter is currently supported for the list analysis
+	// rule ( AnalysisRuleList ) and the custom analysis rule ( AnalysisRuleCustom ).
+	AdditionalAnalyses AdditionalAnalyses
+
 	// Which logical operators (if any) are to be used in an INNER JOIN match
 	// condition. Default is AND .
 	AllowedJoinOperators []JoinOperator
@@ -151,17 +159,46 @@ type AnalysisRuleAggregation struct {
 }
 
 // A type of analysis rule that enables the table owner to approve custom SQL
-// queries on their configured tables.
+// queries on their configured tables. It supports differential privacy.
 type AnalysisRuleCustom struct {
 
-	// The analysis templates that are allowed by the custom analysis rule.
+	// The ARN of the analysis templates that are allowed by the custom analysis rule.
 	//
 	// This member is required.
 	AllowedAnalyses []string
 
-	// The Amazon Web Services accounts that are allowed to query by the custom
-	// analysis rule. Required when allowedAnalyses is ANY_QUERY .
+	//  An indicator as to whether additional analyses (such as Clean Rooms ML) can be
+	// applied to the output of the direct query.
+	AdditionalAnalyses AdditionalAnalyses
+
+	// The IDs of the Amazon Web Services accounts that are allowed to query by the
+	// custom analysis rule. Required when allowedAnalyses is ANY_QUERY .
 	AllowedAnalysisProviders []string
+
+	// The differential privacy configuration.
+	DifferentialPrivacy *DifferentialPrivacyConfiguration
+
+	//  A list of columns that aren't allowed to be shown in the query output.
+	DisallowedOutputColumns []string
+
+	noSmithyDocumentSerde
+}
+
+// Defines details for the analysis rule ID mapping table.
+type AnalysisRuleIdMappingTable struct {
+
+	// The columns that query runners are allowed to use in an INNER JOIN statement.
+	//
+	// This member is required.
+	JoinColumns []string
+
+	// The query constraints of the analysis rule ID mapping table.
+	//
+	// This member is required.
+	QueryConstraints []QueryConstraint
+
+	// The columns that query runners are allowed to select, group by, or filter by.
+	DimensionColumns []string
 
 	noSmithyDocumentSerde
 }
@@ -179,6 +216,10 @@ type AnalysisRuleList struct {
 	//
 	// This member is required.
 	ListColumns []string
+
+	//  An indicator as to whether additional analyses (such as Clean Rooms ML) can be
+	// applied to the output of the direct query.
+	AdditionalAnalyses AdditionalAnalyses
 
 	// The logical operators (if any) that are to be used in an INNER JOIN match
 	// condition. Default is AND .
@@ -211,6 +252,7 @@ func (*AnalysisRulePolicyMemberV1) isAnalysisRulePolicy() {}
 //
 //	AnalysisRulePolicyV1MemberAggregation
 //	AnalysisRulePolicyV1MemberCustom
+//	AnalysisRulePolicyV1MemberIdMappingTable
 //	AnalysisRulePolicyV1MemberList
 type AnalysisRulePolicyV1 interface {
 	isAnalysisRulePolicyV1()
@@ -233,6 +275,15 @@ type AnalysisRulePolicyV1MemberCustom struct {
 }
 
 func (*AnalysisRulePolicyV1MemberCustom) isAnalysisRulePolicyV1() {}
+
+// The ID mapping table.
+type AnalysisRulePolicyV1MemberIdMappingTable struct {
+	Value AnalysisRuleIdMappingTable
+
+	noSmithyDocumentSerde
+}
+
+func (*AnalysisRulePolicyV1MemberIdMappingTable) isAnalysisRulePolicyV1() {}
 
 // Analysis rule type that enables only list queries on a configured table.
 type AnalysisRulePolicyV1MemberList struct {
@@ -339,6 +390,9 @@ type AnalysisTemplate struct {
 	// The description of the analysis template.
 	Description *string
 
+	// Information about the validations performed on the analysis template.
+	Validations []AnalysisTemplateValidationStatusDetail
+
 	noSmithyDocumentSerde
 }
 
@@ -397,6 +451,70 @@ type AnalysisTemplateSummary struct {
 	noSmithyDocumentSerde
 }
 
+// The status details of the analysis template validation. Clean Rooms
+// Differential Privacy uses a general-purpose query structure to support complex
+// SQL queries and validates whether an analysis template fits that general-purpose
+// query structure. Validation is performed when analysis templates are created and
+// fetched. Because analysis templates are immutable by design, we recommend that
+// you create analysis templates after you associate the configured tables with
+// their analysis rule to your collaboration.
+//
+// For more information, see [https://docs.aws.amazon.com/clean-rooms/latest/userguide/analysis-rules-custom.html#custom-diff-privacy].
+//
+// [https://docs.aws.amazon.com/clean-rooms/latest/userguide/analysis-rules-custom.html#custom-diff-privacy]: https://docs.aws.amazon.com/clean-rooms/latest/userguide/analysis-rules-custom.html#custom-diff-privacy
+type AnalysisTemplateValidationStatusDetail struct {
+
+	// The status of the validation.
+	//
+	// This member is required.
+	Status AnalysisTemplateValidationStatus
+
+	// The type of validation that was performed.
+	//
+	// This member is required.
+	Type AnalysisTemplateValidationType
+
+	// The reasons for the validation results.
+	Reasons []AnalysisTemplateValidationStatusReason
+
+	noSmithyDocumentSerde
+}
+
+// The reasons for the validation results.
+type AnalysisTemplateValidationStatusReason struct {
+
+	// The validation message.
+	//
+	// This member is required.
+	Message *string
+
+	noSmithyDocumentSerde
+}
+
+// A reference to a table within Athena.
+type AthenaTableReference struct {
+
+	//  The database name.
+	//
+	// This member is required.
+	DatabaseName *string
+
+	//  The table reference.
+	//
+	// This member is required.
+	TableName *string
+
+	//  The workgroup of the Athena table reference.
+	//
+	// This member is required.
+	WorkGroup *string
+
+	//  The output location for the Athena table.
+	OutputLocation *string
+
+	noSmithyDocumentSerde
+}
+
 // Details of errors thrown by the call to retrieve multiple analysis templates
 // within a collaboration by their identifiers.
 type BatchGetCollaborationAnalysisTemplateError struct {
@@ -419,6 +537,32 @@ type BatchGetCollaborationAnalysisTemplateError struct {
 	noSmithyDocumentSerde
 }
 
+// An error that describes why a schema could not be fetched.
+type BatchGetSchemaAnalysisRuleError struct {
+
+	// An error code for the error.
+	//
+	// This member is required.
+	Code *string
+
+	// A description of why the call failed.
+	//
+	// This member is required.
+	Message *string
+
+	// An error name for the error.
+	//
+	// This member is required.
+	Name *string
+
+	// The analysis rule type.
+	//
+	// This member is required.
+	Type AnalysisRuleType
+
+	noSmithyDocumentSerde
+}
+
 // An error describing why a schema could not be fetched.
 type BatchGetSchemaError struct {
 
@@ -436,6 +580,19 @@ type BatchGetSchemaError struct {
 	//
 	// This member is required.
 	Name *string
+
+	noSmithyDocumentSerde
+}
+
+//	Information related to the utilization of resources that have been billed or
+//
+// charged for in a given context, such as a protected query.
+type BilledResourceUtilization struct {
+
+	//  The number of Clean Rooms Processing Unit (CRPU) hours that have been billed.
+	//
+	// This member is required.
+	Units *float64
 
 	noSmithyDocumentSerde
 }
@@ -491,6 +648,9 @@ type Collaboration struct {
 	//
 	// This member is required.
 	UpdateTime *time.Time
+
+	//  The analytics engine for the collaboration.
+	AnalyticsEngine AnalyticsEngine
 
 	// The settings for client-side encryption for cryptographic computing.
 	DataEncryptionMetadata *DataEncryptionMetadata
@@ -573,6 +733,9 @@ type CollaborationAnalysisTemplate struct {
 	// The description of the analysis template.
 	Description *string
 
+	// The validations that were performed.
+	Validations []AnalysisTemplateValidationStatusDetail
+
 	noSmithyDocumentSerde
 }
 
@@ -629,6 +792,425 @@ type CollaborationAnalysisTemplateSummary struct {
 	noSmithyDocumentSerde
 }
 
+// The configured audience model association within a collaboration.
+type CollaborationConfiguredAudienceModelAssociation struct {
+
+	// The Amazon Resource Name (ARN) of the configured audience model association.
+	//
+	// This member is required.
+	Arn *string
+
+	// The unique ARN for the configured audience model's associated collaboration.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// A unique identifier for the collaboration that the configured audience model
+	// associations belong to. Accepts collaboration ID.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The Amazon Resource Name (ARN) of the configure audience model.
+	//
+	// This member is required.
+	ConfiguredAudienceModelArn *string
+
+	// The time at which the configured audience model association was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The identifier used to reference members of the collaboration. Only supports
+	// Amazon Web Services account ID.
+	//
+	// This member is required.
+	CreatorAccountId *string
+
+	// The identifier of the configured audience model association.
+	//
+	// This member is required.
+	Id *string
+
+	// The name of the configured audience model association.
+	//
+	// This member is required.
+	Name *string
+
+	// The most recent time at which the configured audience model association was
+	// updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	// The description of the configured audience model association.
+	Description *string
+
+	noSmithyDocumentSerde
+}
+
+// A summary of the configured audience model association in the collaboration.
+type CollaborationConfiguredAudienceModelAssociationSummary struct {
+
+	// The Amazon Resource Name (ARN) of the configured audience model association.
+	//
+	// This member is required.
+	Arn *string
+
+	// The unique ARN for the configured audience model's associated collaboration.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// A unique identifier for the collaboration that the configured audience model
+	// associations belong to. Accepts collaboration ID.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which the configured audience model association was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The identifier used to reference members of the collaboration. Only supports
+	// Amazon Web Services account ID.
+	//
+	// This member is required.
+	CreatorAccountId *string
+
+	// The identifier of the configured audience model association.
+	//
+	// This member is required.
+	Id *string
+
+	// The name of the configured audience model association.
+	//
+	// This member is required.
+	Name *string
+
+	// The most recent time at which the configured audience model association was
+	// updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	// The description of the configured audience model association.
+	Description *string
+
+	noSmithyDocumentSerde
+}
+
+// Defines details for the collaboration ID namespace association.
+type CollaborationIdNamespaceAssociation struct {
+
+	// The Amazon Resource Name (ARN) of the collaboration ID namespace association.
+	//
+	// This member is required.
+	Arn *string
+
+	// The Amazon Resource Name (ARN) of the collaboration that contains the
+	// collaboration ID namespace association.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// The unique identifier of the collaboration that contains the collaboration ID
+	// namespace association.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which the collaboration ID namespace association was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The unique identifier of the Amazon Web Services account that created the
+	// collaboration ID namespace association.
+	//
+	// This member is required.
+	CreatorAccountId *string
+
+	// The unique identifier of the collaboration ID namespace association.
+	//
+	// This member is required.
+	Id *string
+
+	// The input reference configuration that's necessary to create the collaboration
+	// ID namespace association.
+	//
+	// This member is required.
+	InputReferenceConfig *IdNamespaceAssociationInputReferenceConfig
+
+	// The input reference properties that are needed to create the collaboration ID
+	// namespace association.
+	//
+	// This member is required.
+	InputReferenceProperties *IdNamespaceAssociationInputReferenceProperties
+
+	// The name of the collaboration ID namespace association.
+	//
+	// This member is required.
+	Name *string
+
+	// The most recent time at which the collaboration ID namespace was updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	// The description of the collaboration ID namespace association.
+	Description *string
+
+	// The configuration settings for the ID mapping table.
+	IdMappingConfig *IdMappingConfig
+
+	noSmithyDocumentSerde
+}
+
+// Provides summary information about the collaboration ID namespace association.
+type CollaborationIdNamespaceAssociationSummary struct {
+
+	// The Amazon Resource Name (ARN) of the collaboration ID namespace association.
+	//
+	// This member is required.
+	Arn *string
+
+	// The Amazon Resource Name (ARN) of the collaboration that contains this
+	// collaboration ID namespace association.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// The unique identifier of the collaboration that contains this collaboration ID
+	// namespace association.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which the collaboration ID namespace association was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The Amazon Web Services account that created this collaboration ID namespace
+	// association.
+	//
+	// This member is required.
+	CreatorAccountId *string
+
+	// The unique identifier of the collaboration ID namespace association.
+	//
+	// This member is required.
+	Id *string
+
+	// The input reference configuration that's used to create the collaboration ID
+	// namespace association.
+	//
+	// This member is required.
+	InputReferenceConfig *IdNamespaceAssociationInputReferenceConfig
+
+	// The input reference properties that are used to create the collaboration ID
+	// namespace association.
+	//
+	// This member is required.
+	InputReferenceProperties *IdNamespaceAssociationInputReferencePropertiesSummary
+
+	// The name of the collaboration ID namespace association.
+	//
+	// This member is required.
+	Name *string
+
+	// The most recent time at which the collaboration ID namespace association was
+	// updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	// The description of the collaboration ID namepsace association.
+	Description *string
+
+	noSmithyDocumentSerde
+}
+
+// A summary of the collaboration privacy budgets. This summary includes the
+// collaboration information, creation information, epsilon provided, and utility
+// in terms of aggregations.
+type CollaborationPrivacyBudgetSummary struct {
+
+	// The includes epsilon provided and utility in terms of aggregations.
+	//
+	// This member is required.
+	Budget PrivacyBudget
+
+	// The ARN of the collaboration that includes this privacy budget.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// The unique identifier of the collaboration that includes this privacy budget.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which the privacy budget was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The unique identifier of the account that created this privacy budget.
+	//
+	// This member is required.
+	CreatorAccountId *string
+
+	// The unique identifier of the collaboration privacy budget.
+	//
+	// This member is required.
+	Id *string
+
+	// The ARN of the collaboration privacy budget template.
+	//
+	// This member is required.
+	PrivacyBudgetTemplateArn *string
+
+	// The unique identifier of the collaboration privacy budget template.
+	//
+	// This member is required.
+	PrivacyBudgetTemplateId *string
+
+	// The type of privacy budget template.
+	//
+	// This member is required.
+	Type PrivacyBudgetType
+
+	// The most recent time at which the privacy budget was updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// An array that specifies the information for a collaboration's privacy budget
+// template.
+type CollaborationPrivacyBudgetTemplate struct {
+
+	// The ARN of the collaboration privacy budget template.
+	//
+	// This member is required.
+	Arn *string
+
+	// How often the privacy budget refreshes.
+	//
+	// If you plan to regularly bring new data into the collaboration, use
+	// CALENDAR_MONTH to automatically get a new privacy budget for the collaboration
+	// every calendar month. Choosing this option allows arbitrary amounts of
+	// information to be revealed about rows of the data when repeatedly queried across
+	// refreshes. Avoid choosing this if the same rows will be repeatedly queried
+	// between privacy budget refreshes.
+	//
+	// This member is required.
+	AutoRefresh PrivacyBudgetTemplateAutoRefresh
+
+	// The ARN of the collaboration that includes this collaboration privacy budget
+	// template.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// The unique identifier of the collaboration that includes this collaboration
+	// privacy budget template.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which the collaboration privacy budget template was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The unique identifier of the account that created this collaboration privacy
+	// budget template.
+	//
+	// This member is required.
+	CreatorAccountId *string
+
+	// The unique identifier of the collaboration privacy budget template.
+	//
+	// This member is required.
+	Id *string
+
+	// Specifies the epsilon and noise parameters for the privacy budget template.
+	//
+	// This member is required.
+	Parameters PrivacyBudgetTemplateParametersOutput
+
+	// The type of privacy budget template.
+	//
+	// This member is required.
+	PrivacyBudgetType PrivacyBudgetType
+
+	// The most recent time at which the collaboration privacy budget template was
+	// updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// A summary of the collaboration's privacy budget template. This summary includes
+// information about who created the privacy budget template and what
+// collaborations it belongs to.
+type CollaborationPrivacyBudgetTemplateSummary struct {
+
+	// The ARN of the collaboration privacy budget template.
+	//
+	// This member is required.
+	Arn *string
+
+	// The ARN of the collaboration that contains this collaboration privacy budget
+	// template.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// The unique identifier of the collaboration that contains this collaboration
+	// privacy budget template.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which the collaboration privacy budget template was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The unique identifier of the account that created this collaboration privacy
+	// budget template.
+	//
+	// This member is required.
+	CreatorAccountId *string
+
+	// The unique identifier of the collaboration privacy budget template.
+	//
+	// This member is required.
+	Id *string
+
+	// The type of the privacy budget template.
+	//
+	// This member is required.
+	PrivacyBudgetType PrivacyBudgetType
+
+	// The most recent time at which the collaboration privacy budget template was
+	// updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
 // The metadata of the collaboration.
 type CollaborationSummary struct {
 
@@ -674,6 +1256,9 @@ type CollaborationSummary struct {
 	// This member is required.
 	UpdateTime *time.Time
 
+	//  The analytics engine.
+	AnalyticsEngine AnalyticsEngine
+
 	// The ARN of a member in a collaboration.
 	MembershipArn *string
 
@@ -683,7 +1268,7 @@ type CollaborationSummary struct {
 	noSmithyDocumentSerde
 }
 
-// A column within a schema relation, derived from the underlying Glue table.
+// A column within a schema relation, derived from the underlying table.
 type Column struct {
 
 	// The name of the column.
@@ -695,6 +1280,183 @@ type Column struct {
 	//
 	// This member is required.
 	Type *string
+
+	noSmithyDocumentSerde
+}
+
+//	The configuration of the compute resources for an analysis with the Spark
+//
+// analytics engine.
+//
+// The following types satisfy this interface:
+//
+//	ComputeConfigurationMemberWorker
+type ComputeConfiguration interface {
+	isComputeConfiguration()
+}
+
+// The worker configuration for the compute environment.
+type ComputeConfigurationMemberWorker struct {
+	Value WorkerComputeConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*ComputeConfigurationMemberWorker) isComputeConfiguration() {}
+
+//	The configuration details.
+//
+// The following types satisfy this interface:
+//
+//	ConfigurationDetailsMemberDirectAnalysisConfigurationDetails
+type ConfigurationDetails interface {
+	isConfigurationDetails()
+}
+
+// The direct analysis configuration details.
+type ConfigurationDetailsMemberDirectAnalysisConfigurationDetails struct {
+	Value DirectAnalysisConfigurationDetails
+
+	noSmithyDocumentSerde
+}
+
+func (*ConfigurationDetailsMemberDirectAnalysisConfigurationDetails) isConfigurationDetails() {}
+
+// Details about the configured audience model association.
+type ConfiguredAudienceModelAssociation struct {
+
+	// The Amazon Resource Name (ARN) of the configured audience model association.
+	//
+	// This member is required.
+	Arn *string
+
+	// The Amazon Resource Name (ARN) of the collaboration that contains this
+	// configured audience model association.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// A unique identifier of the collaboration that contains this configured audience
+	// model association.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The Amazon Resource Name (ARN) of the configured audience model that was used
+	// for this configured audience model association.
+	//
+	// This member is required.
+	ConfiguredAudienceModelArn *string
+
+	// The time at which the configured audience model association was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// A unique identifier of the configured audience model association.
+	//
+	// This member is required.
+	Id *string
+
+	// When TRUE , indicates that the resource policy for the configured audience model
+	// resource being associated is configured for Clean Rooms to manage permissions
+	// related to the given collaboration. When FALSE , indicates that the configured
+	// audience model resource owner will manage permissions related to the given
+	// collaboration.
+	//
+	// This member is required.
+	ManageResourcePolicies *bool
+
+	// The Amazon Resource Name (ARN) of the membership that contains this configured
+	// audience model association.
+	//
+	// This member is required.
+	MembershipArn *string
+
+	// A unique identifier for the membership that contains this configured audience
+	// model association.
+	//
+	// This member is required.
+	MembershipId *string
+
+	// The name of the configured audience model association.
+	//
+	// This member is required.
+	Name *string
+
+	// The most recent time at which the configured audience model association was
+	// updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	// The description of the configured audience model association.
+	Description *string
+
+	noSmithyDocumentSerde
+}
+
+// A summary of the configured audience model association.
+type ConfiguredAudienceModelAssociationSummary struct {
+
+	// The Amazon Resource Name (ARN) of the configured audience model association.
+	//
+	// This member is required.
+	Arn *string
+
+	// The Amazon Resource Name (ARN) of the collaboration that contains the
+	// configured audience model association.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// A unique identifier of the collaboration that configured audience model is
+	// associated with.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The Amazon Resource Name (ARN) of the configured audience model that was used
+	// for this configured audience model association.
+	//
+	// This member is required.
+	ConfiguredAudienceModelArn *string
+
+	// The time at which the configured audience model association was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// A unique identifier of the configured audience model association.
+	//
+	// This member is required.
+	Id *string
+
+	// The Amazon Resource Name (ARN) of the membership that contains the configured
+	// audience model association.
+	//
+	// This member is required.
+	MembershipArn *string
+
+	// A unique identifier of the membership that contains the configured audience
+	// model association.
+	//
+	// This member is required.
+	MembershipId *string
+
+	// The name of the configured audience model association.
+	//
+	// This member is required.
+	Name *string
+
+	// The most recent time at which the configured audience model association was
+	// updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	// The description of the configured audience model association.
+	Description *string
 
 	noSmithyDocumentSerde
 }
@@ -740,7 +1502,7 @@ type ConfiguredTable struct {
 	// This member is required.
 	Name *string
 
-	// The Glue table that this configured table represents.
+	// The table that this configured table represents.
 	//
 	// This member is required.
 	TableReference TableReference
@@ -833,7 +1595,7 @@ func (*ConfiguredTableAnalysisRulePolicyV1MemberAggregation) isConfiguredTableAn
 }
 
 // A type of analysis rule that enables the table owner to approve custom SQL
-// queries on their configured tables.
+// queries on their configured tables. It supports differential privacy.
 type ConfiguredTableAnalysisRulePolicyV1MemberCustom struct {
 	Value AnalysisRuleCustom
 
@@ -907,10 +1669,175 @@ type ConfiguredTableAssociation struct {
 	// This member is required.
 	UpdateTime *time.Time
 
+	//  The analysis rule types for the configured table association.
+	AnalysisRuleTypes []ConfiguredTableAssociationAnalysisRuleType
+
 	// A description of the configured table association.
 	Description *string
 
 	noSmithyDocumentSerde
+}
+
+// An analysis rule for a configured table association. This analysis rule
+// specifies how data from the table can be used within its associated
+// collaboration. In the console, the ConfiguredTableAssociationAnalysisRule is
+// referred to as the collaboration analysis rule.
+type ConfiguredTableAssociationAnalysisRule struct {
+
+	//  The Amazon Resource Name (ARN) of the configured table association.
+	//
+	// This member is required.
+	ConfiguredTableAssociationArn *string
+
+	//  The unique identifier for the configured table association.
+	//
+	// This member is required.
+	ConfiguredTableAssociationId *string
+
+	//  The creation time of the configured table association analysis rule.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	//  The membership identifier for the configured table association analysis rule.
+	//
+	// This member is required.
+	MembershipIdentifier *string
+
+	//  The policy of the configured table association analysis rule.
+	//
+	// This member is required.
+	Policy ConfiguredTableAssociationAnalysisRulePolicy
+
+	//  The type of the configured table association analysis rule.
+	//
+	// This member is required.
+	Type ConfiguredTableAssociationAnalysisRuleType
+
+	//  The update time of the configured table association analysis rule.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
+//	The configured table association analysis rule applied to a configured table
+//
+// with the aggregation analysis rule.
+type ConfiguredTableAssociationAnalysisRuleAggregation struct {
+
+	//  The list of resources or wildcards (ARNs) that are allowed to perform
+	// additional analysis on query output.
+	//
+	// The allowedAdditionalAnalyses parameter is currently supported for the list
+	// analysis rule ( AnalysisRuleList ) and the custom analysis rule (
+	// AnalysisRuleCustom ).
+	AllowedAdditionalAnalyses []string
+
+	//  The list of collaboration members who are allowed to receive results of
+	// queries run with this configured table.
+	AllowedResultReceivers []string
+
+	noSmithyDocumentSerde
+}
+
+//	The configured table association analysis rule applied to a configured table
+//
+// with the custom analysis rule.
+type ConfiguredTableAssociationAnalysisRuleCustom struct {
+
+	//  The list of resources or wildcards (ARNs) that are allowed to perform
+	// additional analysis on query output.
+	AllowedAdditionalAnalyses []string
+
+	//  The list of collaboration members who are allowed to receive results of
+	// queries run with this configured table.
+	AllowedResultReceivers []string
+
+	noSmithyDocumentSerde
+}
+
+//	The configured table association analysis rule applied to a configured table
+//
+// with the list analysis rule.
+type ConfiguredTableAssociationAnalysisRuleList struct {
+
+	//  The list of resources or wildcards (ARNs) that are allowed to perform
+	// additional analysis on query output.
+	AllowedAdditionalAnalyses []string
+
+	//  The list of collaboration members who are allowed to receive results of
+	// queries run with this configured table.
+	AllowedResultReceivers []string
+
+	noSmithyDocumentSerde
+}
+
+//	Controls on the query specifications that can be run on an associated
+//
+// configured table.
+//
+// The following types satisfy this interface:
+//
+//	ConfiguredTableAssociationAnalysisRulePolicyMemberV1
+type ConfiguredTableAssociationAnalysisRulePolicy interface {
+	isConfiguredTableAssociationAnalysisRulePolicy()
+}
+
+// The policy for the configured table association analysis rule.
+type ConfiguredTableAssociationAnalysisRulePolicyMemberV1 struct {
+	Value ConfiguredTableAssociationAnalysisRulePolicyV1
+
+	noSmithyDocumentSerde
+}
+
+func (*ConfiguredTableAssociationAnalysisRulePolicyMemberV1) isConfiguredTableAssociationAnalysisRulePolicy() {
+}
+
+//	Controls on the query specifications that can be run on an associated
+//
+// configured table.
+//
+// The following types satisfy this interface:
+//
+//	ConfiguredTableAssociationAnalysisRulePolicyV1MemberAggregation
+//	ConfiguredTableAssociationAnalysisRulePolicyV1MemberCustom
+//	ConfiguredTableAssociationAnalysisRulePolicyV1MemberList
+type ConfiguredTableAssociationAnalysisRulePolicyV1 interface {
+	isConfiguredTableAssociationAnalysisRulePolicyV1()
+}
+
+// Analysis rule type that enables only aggregation queries on a configured table.
+type ConfiguredTableAssociationAnalysisRulePolicyV1MemberAggregation struct {
+	Value ConfiguredTableAssociationAnalysisRuleAggregation
+
+	noSmithyDocumentSerde
+}
+
+func (*ConfiguredTableAssociationAnalysisRulePolicyV1MemberAggregation) isConfiguredTableAssociationAnalysisRulePolicyV1() {
+}
+
+//	Analysis rule type that enables the table owner to approve custom SQL queries
+//
+// on their configured tables. It supports differential privacy.
+type ConfiguredTableAssociationAnalysisRulePolicyV1MemberCustom struct {
+	Value ConfiguredTableAssociationAnalysisRuleCustom
+
+	noSmithyDocumentSerde
+}
+
+func (*ConfiguredTableAssociationAnalysisRulePolicyV1MemberCustom) isConfiguredTableAssociationAnalysisRulePolicyV1() {
+}
+
+// Analysis rule type that enables only list queries on a configured table.
+type ConfiguredTableAssociationAnalysisRulePolicyV1MemberList struct {
+	Value ConfiguredTableAssociationAnalysisRuleList
+
+	noSmithyDocumentSerde
+}
+
+func (*ConfiguredTableAssociationAnalysisRulePolicyV1MemberList) isConfiguredTableAssociationAnalysisRulePolicyV1() {
 }
 
 // The configured table association summary for the objects listed by the request.
@@ -1007,30 +1934,250 @@ type ConfiguredTableSummary struct {
 // The settings for client-side encryption for cryptographic computing.
 type DataEncryptionMetadata struct {
 
-	// Indicates whether encrypted tables can contain cleartext data (true) or are to
-	// cryptographically process every column (false).
+	// Indicates whether encrypted tables can contain cleartext data ( TRUE ) or are to
+	// cryptographically process every column ( FALSE ).
 	//
 	// This member is required.
 	AllowCleartext *bool
 
-	// Indicates whether Fingerprint columns can contain duplicate entries (true) or
-	// are to contain only non-repeated values (false).
+	// Indicates whether Fingerprint columns can contain duplicate entries ( TRUE ) or
+	// are to contain only non-repeated values ( FALSE ).
 	//
 	// This member is required.
 	AllowDuplicates *bool
 
 	// Indicates whether Fingerprint columns can be joined on any other Fingerprint
-	// column with a different name (true) or can only be joined on Fingerprint columns
-	// of the same name (false).
+	// column with a different name ( TRUE ) or can only be joined on Fingerprint
+	// columns of the same name ( FALSE ).
 	//
 	// This member is required.
 	AllowJoinsOnColumnsWithDifferentNames *bool
 
-	// Indicates whether NULL values are to be copied as NULL to encrypted tables
-	// (true) or cryptographically processed (false).
+	// Indicates whether NULL values are to be copied as NULL to encrypted tables ( TRUE
+	// ) or cryptographically processed ( FALSE ).
 	//
 	// This member is required.
 	PreserveNulls *bool
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the name of the column that contains the unique identifier of your
+// users, whose privacy you want to protect.
+type DifferentialPrivacyColumn struct {
+
+	// The name of the column, such as user_id, that contains the unique identifier of
+	// your users, whose privacy you want to protect. If you want to turn on
+	// differential privacy for two or more tables in a collaboration, you must
+	// configure the same column as the user identifier column in both analysis rules.
+	//
+	// This member is required.
+	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the unique identifier for your users.
+type DifferentialPrivacyConfiguration struct {
+
+	// The name of the column (such as user_id) that contains the unique identifier of
+	// your users whose privacy you want to protect. If you want to turn on diﬀerential
+	// privacy for two or more tables in a collaboration, you must conﬁgure the same
+	// column as the user identiﬁer column in both analysis rules.
+	//
+	// This member is required.
+	Columns []DifferentialPrivacyColumn
+
+	noSmithyDocumentSerde
+}
+
+// An array that contains the sensitivity parameters.
+type DifferentialPrivacyParameters struct {
+
+	// Provides the sensitivity parameters that you can use to better understand the
+	// total amount of noise in query results.
+	//
+	// This member is required.
+	SensitivityParameters []DifferentialPrivacySensitivityParameters
+
+	noSmithyDocumentSerde
+}
+
+// Provides an estimate of the number of aggregation functions that the member who
+// can query can run given the epsilon and noise parameters.
+type DifferentialPrivacyPreviewAggregation struct {
+
+	// The maximum number of aggregations that the member who can query can run given
+	// the epsilon and noise parameters.
+	//
+	// This member is required.
+	MaxCount *int32
+
+	// The type of aggregation function.
+	//
+	// This member is required.
+	Type DifferentialPrivacyAggregationType
+
+	noSmithyDocumentSerde
+}
+
+// The epsilon and noise parameters that you want to preview.
+type DifferentialPrivacyPreviewParametersInput struct {
+
+	// The epsilon value that you want to preview.
+	//
+	// This member is required.
+	Epsilon *int32
+
+	// Noise added per query is measured in terms of the number of users whose
+	// contributions you want to obscure. This value governs the rate at which the
+	// privacy budget is depleted.
+	//
+	// This member is required.
+	UsersNoisePerQuery *int32
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the configured epsilon value and the utility in terms of total
+// aggregations, as well as the remaining aggregations available.
+type DifferentialPrivacyPrivacyBudget struct {
+
+	// This information includes the configured epsilon value and the utility in terms
+	// of total aggregations, as well as the remaining aggregations.
+	//
+	// This member is required.
+	Aggregations []DifferentialPrivacyPrivacyBudgetAggregation
+
+	// The epsilon value that you configured.
+	//
+	// This member is required.
+	Epsilon *int32
+
+	noSmithyDocumentSerde
+}
+
+// Information about the total number of aggregations, as well as the remaining
+// aggregations.
+type DifferentialPrivacyPrivacyBudgetAggregation struct {
+
+	// The maximum number of aggregation functions that you can perform with the given
+	// privacy budget.
+	//
+	// This member is required.
+	MaxCount *int32
+
+	// The remaining number of aggregation functions that can be run with the
+	// available privacy budget.
+	//
+	// This member is required.
+	RemainingCount *int32
+
+	// The different types of aggregation functions that you can perform.
+	//
+	// This member is required.
+	Type DifferentialPrivacyAggregationType
+
+	noSmithyDocumentSerde
+}
+
+// Information about the number of aggregation functions that the member who can
+// query can run given the epsilon and noise parameters.
+type DifferentialPrivacyPrivacyImpact struct {
+
+	// The number of aggregation functions that you can perform.
+	//
+	// This member is required.
+	Aggregations []DifferentialPrivacyPreviewAggregation
+
+	noSmithyDocumentSerde
+}
+
+// Provides the sensitivity parameters.
+type DifferentialPrivacySensitivityParameters struct {
+
+	// The aggregation expression that was run.
+	//
+	// This member is required.
+	AggregationExpression *string
+
+	// The type of aggregation function that was run.
+	//
+	// This member is required.
+	AggregationType DifferentialPrivacyAggregationType
+
+	// The maximum number of rows contributed by a user in a SQL query.
+	//
+	// This member is required.
+	UserContributionLimit *int32
+
+	// The upper bound of the aggregation expression.
+	MaxColumnValue *float32
+
+	// The lower bound of the aggregation expression.
+	MinColumnValue *float32
+
+	noSmithyDocumentSerde
+}
+
+// The epsilon and noise parameter values that you want to use for the
+// differential privacy template.
+type DifferentialPrivacyTemplateParametersInput struct {
+
+	// The epsilon value that you want to use.
+	//
+	// This member is required.
+	Epsilon *int32
+
+	// Noise added per query is measured in terms of the number of users whose
+	// contributions you want to obscure. This value governs the rate at which the
+	// privacy budget is depleted.
+	//
+	// This member is required.
+	UsersNoisePerQuery *int32
+
+	noSmithyDocumentSerde
+}
+
+// The epsilon and noise parameter values that were used for the differential
+// privacy template.
+type DifferentialPrivacyTemplateParametersOutput struct {
+
+	// The epsilon value that you specified.
+	//
+	// This member is required.
+	Epsilon *int32
+
+	// Noise added per query is measured in terms of the number of users whose
+	// contributions you want to obscure. This value governs the rate at which the
+	// privacy budget is depleted.
+	//
+	// This member is required.
+	UsersNoisePerQuery *int32
+
+	noSmithyDocumentSerde
+}
+
+// The epsilon and noise parameter values that you want to update in the
+// differential privacy template.
+type DifferentialPrivacyTemplateUpdateParameters struct {
+
+	// The updated epsilon value that you want to use.
+	Epsilon *int32
+
+	// The updated value of noise added per query. It is measured in terms of the
+	// number of users whose contributions you want to obscure. This value governs the
+	// rate at which the privacy budget is depleted.
+	UsersNoisePerQuery *int32
+
+	noSmithyDocumentSerde
+}
+
+// The direct analysis configuration details.
+type DirectAnalysisConfigurationDetails struct {
+
+	//  The account IDs for the member who received the results of a protected query.
+	ReceiverAccountIds []string
 
 	noSmithyDocumentSerde
 }
@@ -1047,6 +2194,400 @@ type GlueTableReference struct {
 	//
 	// This member is required.
 	TableName *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration settings for the ID mapping table.
+type IdMappingConfig struct {
+
+	// An indicator as to whether you can use your column as a dimension column in the
+	// ID mapping table ( TRUE ) or not ( FALSE ).
+	//
+	// Default is FALSE .
+	//
+	// This member is required.
+	AllowUseAsDimensionColumn bool
+
+	noSmithyDocumentSerde
+}
+
+// Describes information about the ID mapping table.
+type IdMappingTable struct {
+
+	// The Amazon Resource Name (ARN) of the ID mapping table.
+	//
+	// This member is required.
+	Arn *string
+
+	// The Amazon Resource Name (ARN) of the collaboration that contains this ID
+	// mapping table.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// The unique identifier of the collaboration that contains this ID mapping table.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which the ID mapping table was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The unique identifier of the ID mapping table.
+	//
+	// This member is required.
+	Id *string
+
+	// The input reference configuration for the ID mapping table.
+	//
+	// This member is required.
+	InputReferenceConfig *IdMappingTableInputReferenceConfig
+
+	// The input reference properties for the ID mapping table.
+	//
+	// This member is required.
+	InputReferenceProperties *IdMappingTableInputReferenceProperties
+
+	// The Amazon Resource Name (ARN) of the membership resource for the ID mapping
+	// table.
+	//
+	// This member is required.
+	MembershipArn *string
+
+	// The unique identifier of the membership resource for the ID mapping table.
+	//
+	// This member is required.
+	MembershipId *string
+
+	// The name of the ID mapping table.
+	//
+	// This member is required.
+	Name *string
+
+	// The most recent time at which the ID mapping table was updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	// The description of the ID mapping table.
+	Description *string
+
+	// The Amazon Resource Name (ARN) of the Amazon Web Services KMS key.
+	KmsKeyArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Provides the input reference configuration for the ID mapping table.
+type IdMappingTableInputReferenceConfig struct {
+
+	// The Amazon Resource Name (ARN) of the referenced resource in Entity Resolution.
+	// Valid values are ID mapping workflow ARNs.
+	//
+	// This member is required.
+	InputReferenceArn *string
+
+	// When TRUE , Clean Rooms manages permissions for the ID mapping table resource.
+	//
+	// When FALSE , the resource owner manages permissions for the ID mapping table
+	// resource.
+	//
+	// This member is required.
+	ManageResourcePolicies *bool
+
+	noSmithyDocumentSerde
+}
+
+// The input reference properties for the ID mapping table.
+type IdMappingTableInputReferenceProperties struct {
+
+	// The input source of the ID mapping table.
+	//
+	// This member is required.
+	IdMappingTableInputSource []IdMappingTableInputSource
+
+	noSmithyDocumentSerde
+}
+
+// The input source of the ID mapping table.
+type IdMappingTableInputSource struct {
+
+	// The unique identifier of the ID namespace association.
+	//
+	// This member is required.
+	IdNamespaceAssociationId *string
+
+	// The type of the input source of the ID mapping table.
+	//
+	// This member is required.
+	Type IdNamespaceType
+
+	noSmithyDocumentSerde
+}
+
+// Additional properties that are specific to the type of the associated schema.
+type IdMappingTableSchemaTypeProperties struct {
+
+	// Defines which ID namespace associations are used to create the ID mapping table.
+	//
+	// This member is required.
+	IdMappingTableInputSource []IdMappingTableInputSource
+
+	noSmithyDocumentSerde
+}
+
+// Detailed information about the ID mapping table.
+type IdMappingTableSummary struct {
+
+	// The Amazon Resource Name (ARN) of this ID mapping table.
+	//
+	// This member is required.
+	Arn *string
+
+	// The Amazon Resource Name (ARN) of the collaboration that contains this ID
+	// mapping table.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// The unique identifier of the collaboration that contains this ID mapping table.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which this ID mapping table was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The unique identifier of this ID mapping table.
+	//
+	// This member is required.
+	Id *string
+
+	// The input reference configuration for the ID mapping table.
+	//
+	// This member is required.
+	InputReferenceConfig *IdMappingTableInputReferenceConfig
+
+	// The Amazon Resource Name (ARN) of the membership resource for this ID mapping
+	// table.
+	//
+	// This member is required.
+	MembershipArn *string
+
+	// The unique identifier of the membership resource for this ID mapping table.
+	//
+	// This member is required.
+	MembershipId *string
+
+	// The name of this ID mapping table.
+	//
+	// This member is required.
+	Name *string
+
+	// The most recent time at which this ID mapping table was updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	// The description of this ID mapping table.
+	Description *string
+
+	noSmithyDocumentSerde
+}
+
+// Provides information to create the ID namespace association.
+type IdNamespaceAssociation struct {
+
+	// The Amazon Resource Name (ARN) of the ID namespace association.
+	//
+	// This member is required.
+	Arn *string
+
+	// The Amazon Resource Name (ARN) of the collaboration that contains this ID
+	// namespace association.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// The unique identifier of the collaboration that contains this ID namespace
+	// association.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which the ID namespace association was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The unique identifier for this ID namespace association.
+	//
+	// This member is required.
+	Id *string
+
+	// The input reference configuration for the ID namespace association.
+	//
+	// This member is required.
+	InputReferenceConfig *IdNamespaceAssociationInputReferenceConfig
+
+	// The input reference properties for the ID namespace association.
+	//
+	// This member is required.
+	InputReferenceProperties *IdNamespaceAssociationInputReferenceProperties
+
+	// The Amazon Resource Name (ARN) of the membership resource for this ID namespace
+	// association.
+	//
+	// This member is required.
+	MembershipArn *string
+
+	// The unique identifier of the membership resource for this ID namespace
+	// association.
+	//
+	// This member is required.
+	MembershipId *string
+
+	// The name of this ID namespace association.
+	//
+	// This member is required.
+	Name *string
+
+	// The most recent time at which the ID namespace association was updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	// The description of the ID namespace association.
+	Description *string
+
+	// The configuration settings for the ID mapping table.
+	IdMappingConfig *IdMappingConfig
+
+	noSmithyDocumentSerde
+}
+
+// Provides the information for the ID namespace association input reference
+// configuration.
+type IdNamespaceAssociationInputReferenceConfig struct {
+
+	// The Amazon Resource Name (ARN) of the Entity Resolution resource that is being
+	// associated to the collaboration. Valid resource ARNs are from the ID namespaces
+	// that you own.
+	//
+	// This member is required.
+	InputReferenceArn *string
+
+	// When TRUE , Clean Rooms manages permissions for the ID namespace association
+	// resource.
+	//
+	// When FALSE , the resource owner manages permissions for the ID namespace
+	// association resource.
+	//
+	// This member is required.
+	ManageResourcePolicies *bool
+
+	noSmithyDocumentSerde
+}
+
+// Provides the information for the ID namespace association input reference
+// properties.
+type IdNamespaceAssociationInputReferenceProperties struct {
+
+	// Defines how ID mapping workflows are supported for this ID namespace
+	// association.
+	//
+	// This member is required.
+	IdMappingWorkflowsSupported []document.Interface
+
+	// The ID namespace type for this ID namespace association.
+	//
+	// This member is required.
+	IdNamespaceType IdNamespaceType
+
+	noSmithyDocumentSerde
+}
+
+// Detailed information about the ID namespace association input reference
+// properties.
+type IdNamespaceAssociationInputReferencePropertiesSummary struct {
+
+	// The ID namespace type for this ID namespace association.
+	//
+	// This member is required.
+	IdNamespaceType IdNamespaceType
+
+	noSmithyDocumentSerde
+}
+
+// Detailed information about the ID namespace association.
+type IdNamespaceAssociationSummary struct {
+
+	// The Amazon Resource Name (ARN) of this ID namespace association.
+	//
+	// This member is required.
+	Arn *string
+
+	// The Amazon Resource Name (ARN) of the collaboration that contains this ID
+	// namespace association.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// The unique identifier of the collaboration that contains this ID namespace
+	// association.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which this ID namespace association was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The unique identifier of this ID namespace association.
+	//
+	// This member is required.
+	Id *string
+
+	// The input reference configuration details for this ID namespace association.
+	//
+	// This member is required.
+	InputReferenceConfig *IdNamespaceAssociationInputReferenceConfig
+
+	// The input reference properties for this ID namespace association.
+	//
+	// This member is required.
+	InputReferenceProperties *IdNamespaceAssociationInputReferencePropertiesSummary
+
+	// The Amazon Resource Name (ARN) of the membership resource for this ID namespace
+	// association.
+	//
+	// This member is required.
+	MembershipArn *string
+
+	// The unique identifier of the membership resource for this ID namespace
+	// association.
+	//
+	// This member is required.
+	MembershipId *string
+
+	// The name of the ID namespace association.
+	//
+	// This member is required.
+	Name *string
+
+	// The most recent time at which this ID namespace association has been updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	// The description of the ID namespace association.
+	Description *string
 
 	noSmithyDocumentSerde
 }
@@ -1100,14 +2641,18 @@ type Membership struct {
 	// This member is required.
 	MemberAbilities []MemberAbility
 
+	// The payment responsibilities accepted by the collaboration member.
+	//
+	// This member is required.
+	PaymentConfiguration *MembershipPaymentConfiguration
+
 	// An indicator as to whether query logging has been enabled or disabled for the
-	// collaboration.
+	// membership.
 	//
 	// This member is required.
 	QueryLogStatus MembershipQueryLogStatus
 
-	// The status of the membership. Valid values are `ACTIVE`, `REMOVED`, and
-	// `COLLABORATION_DELETED`.
+	// The status of the membership.
 	//
 	// This member is required.
 	Status MembershipStatus
@@ -1116,6 +2661,158 @@ type Membership struct {
 	//
 	// This member is required.
 	UpdateTime *time.Time
+
+	// The default protected query result configuration as specified by the member who
+	// can receive results.
+	DefaultResultConfiguration *MembershipProtectedQueryResultConfiguration
+
+	// Specifies the ML member abilities that are granted to a collaboration member.
+	//
+	// Custom ML modeling is in beta release and is subject to change. For beta terms
+	// and conditions, see Betas and Previews in the [Amazon Web Services Service Terms].
+	//
+	// [Amazon Web Services Service Terms]: https://aws.amazon.com/service-terms/
+	MlMemberAbilities *MLMemberAbilities
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's machine learning payment
+// responsibilities set by the collaboration creator.
+type MembershipMLPaymentConfig struct {
+
+	// The payment responsibilities accepted by the member for model inference.
+	ModelInference *MembershipModelInferencePaymentConfig
+
+	// The payment responsibilities accepted by the member for model training.
+	ModelTraining *MembershipModelTrainingPaymentConfig
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's model inference payment
+// responsibilities set by the collaboration creator.
+type MembershipModelInferencePaymentConfig struct {
+
+	// Indicates whether the collaboration member has accepted to pay for model
+	// inference costs ( TRUE ) or has not accepted to pay for model inference costs (
+	// FALSE ).
+	//
+	// If the collaboration creator has not specified anyone to pay for model
+	// inference costs, then the member who can query is the default payer.
+	//
+	// An error message is returned for the following reasons:
+	//
+	//   - If you set the value to FALSE but you are responsible to pay for model
+	//   inference costs.
+	//
+	//   - If you set the value to TRUE but you are not responsible to pay for model
+	//   inference costs.
+	//
+	// This member is required.
+	IsResponsible *bool
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's model training payment
+// responsibilities set by the collaboration creator.
+type MembershipModelTrainingPaymentConfig struct {
+
+	// Indicates whether the collaboration member has accepted to pay for model
+	// training costs ( TRUE ) or has not accepted to pay for model training costs (
+	// FALSE ).
+	//
+	// If the collaboration creator has not specified anyone to pay for model training
+	// costs, then the member who can query is the default payer.
+	//
+	// An error message is returned for the following reasons:
+	//
+	//   - If you set the value to FALSE but you are responsible to pay for model
+	//   training costs.
+	//
+	//   - If you set the value to TRUE but you are not responsible to pay for model
+	//   training costs.
+	//
+	// This member is required.
+	IsResponsible *bool
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the payment responsibilities accepted by the
+// collaboration member.
+type MembershipPaymentConfiguration struct {
+
+	// The payment responsibilities accepted by the collaboration member for query
+	// compute costs.
+	//
+	// This member is required.
+	QueryCompute *MembershipQueryComputePaymentConfig
+
+	// The payment responsibilities accepted by the collaboration member for machine
+	// learning costs.
+	MachineLearning *MembershipMLPaymentConfig
+
+	noSmithyDocumentSerde
+}
+
+// Contains configurations for protected query results.
+//
+// The following types satisfy this interface:
+//
+//	MembershipProtectedQueryOutputConfigurationMemberS3
+type MembershipProtectedQueryOutputConfiguration interface {
+	isMembershipProtectedQueryOutputConfiguration()
+}
+
+// Contains the configuration to write the query results to S3.
+type MembershipProtectedQueryOutputConfigurationMemberS3 struct {
+	Value ProtectedQueryS3OutputConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*MembershipProtectedQueryOutputConfigurationMemberS3) isMembershipProtectedQueryOutputConfiguration() {
+}
+
+// Contains configurations for protected query results.
+type MembershipProtectedQueryResultConfiguration struct {
+
+	// Configuration for protected query results.
+	//
+	// This member is required.
+	OutputConfiguration MembershipProtectedQueryOutputConfiguration
+
+	// The unique ARN for an IAM role that is used by Clean Rooms to write protected
+	// query results to the result location, given by the member who can receive
+	// results.
+	RoleArn *string
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the payment responsibilities accepted by the
+// collaboration member for query compute costs.
+type MembershipQueryComputePaymentConfig struct {
+
+	// Indicates whether the collaboration member has accepted to pay for query
+	// compute costs ( TRUE ) or has not accepted to pay for query compute costs ( FALSE
+	// ).
+	//
+	// If the collaboration creator has not specified anyone to pay for query compute
+	// costs, then the member who can query is the default payer.
+	//
+	// An error message is returned for the following reasons:
+	//
+	//   - If you set the value to FALSE but you are responsible to pay for query
+	//   compute costs.
+	//
+	//   - If you set the value to TRUE but you are not responsible to pay for query
+	//   compute costs.
+	//
+	// This member is required.
+	IsResponsible *bool
 
 	noSmithyDocumentSerde
 }
@@ -1169,8 +2866,12 @@ type MembershipSummary struct {
 	// This member is required.
 	MemberAbilities []MemberAbility
 
-	// The status of the membership. Valid values are `ACTIVE`, `REMOVED`, and
-	// `COLLABORATION_DELETED`.
+	// The payment responsibilities accepted by the collaboration member.
+	//
+	// This member is required.
+	PaymentConfiguration *MembershipPaymentConfiguration
+
+	// The status of the membership.
 	//
 	// This member is required.
 	Status MembershipStatus
@@ -1179,6 +2880,14 @@ type MembershipSummary struct {
 	//
 	// This member is required.
 	UpdateTime *time.Time
+
+	// Provides a summary of the ML abilities for the collaboration member.
+	//
+	// Custom ML modeling is in beta release and is subject to change. For beta terms
+	// and conditions, see Betas and Previews in the [Amazon Web Services Service Terms].
+	//
+	// [Amazon Web Services Service Terms]: https://aws.amazon.com/service-terms/
+	MlMemberAbilities *MLMemberAbilities
 
 	noSmithyDocumentSerde
 }
@@ -1201,6 +2910,21 @@ type MemberSpecification struct {
 	//
 	// This member is required.
 	MemberAbilities []MemberAbility
+
+	// The ML abilities granted to the collaboration member.
+	//
+	// Custom ML modeling is in beta release and is subject to change. For beta terms
+	// and conditions, see Betas and Previews in the [Amazon Web Services Service Terms].
+	//
+	// [Amazon Web Services Service Terms]: https://aws.amazon.com/service-terms/
+	MlMemberAbilities *MLMemberAbilities
+
+	// The collaboration member's payment responsibilities set by the collaboration
+	// creator.
+	//
+	// If the collaboration creator hasn't speciﬁed anyone as the member paying for
+	// query compute costs, then the member who can query is the default payer.
+	PaymentConfiguration *PaymentConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -1229,8 +2953,13 @@ type MemberSummary struct {
 	// This member is required.
 	DisplayName *string
 
-	// The status of the member. Valid values are `INVITED`, `ACTIVE`, `LEFT`, and
-	// `REMOVED`.
+	// The collaboration member's payment responsibilities set by the collaboration
+	// creator.
+	//
+	// This member is required.
+	PaymentConfiguration *PaymentConfiguration
+
+	// The status of the member.
 	//
 	// This member is required.
 	Status MemberStatus
@@ -1246,8 +2975,420 @@ type MemberSummary struct {
 	// The unique ID for the member's associated membership, if present.
 	MembershipId *string
 
+	// Provides a summary of the ML abilities for the collaboration member.
+	//
+	// Custom ML modeling is in beta release and is subject to change. For beta terms
+	// and conditions, see Betas and Previews in the [Amazon Web Services Service Terms].
+	//
+	// [Amazon Web Services Service Terms]: https://aws.amazon.com/service-terms/
+	MlAbilities *MLMemberAbilities
+
 	noSmithyDocumentSerde
 }
+
+// The ML member abilities for a collaboration member.
+//
+// Custom ML modeling is in beta release and is subject to change. For beta terms
+// and conditions, see Betas and Previews in the [Amazon Web Services Service Terms].
+//
+// [Amazon Web Services Service Terms]: https://aws.amazon.com/service-terms/
+type MLMemberAbilities struct {
+
+	// The custom ML member abilities for a collaboration member. The inference
+	// feature is not available in the custom ML modeling beta.
+	//
+	// Custom ML modeling is in beta release and is subject to change. For beta terms
+	// and conditions, see Betas and Previews in the [Amazon Web Services Service Terms].
+	//
+	// [Amazon Web Services Service Terms]: https://aws.amazon.com/service-terms/
+	//
+	// This member is required.
+	CustomMLMemberAbilities []CustomMLMemberAbility
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's machine learning payment
+// responsibilities set by the collaboration creator.
+type MLPaymentConfig struct {
+
+	// The payment responsibilities accepted by the member for model inference.
+	ModelInference *ModelInferencePaymentConfig
+
+	// The payment responsibilities accepted by the member for model training.
+	ModelTraining *ModelTrainingPaymentConfig
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's model inference payment
+// responsibilities set by the collaboration creator.
+type ModelInferencePaymentConfig struct {
+
+	// Indicates whether the collaboration creator has configured the collaboration
+	// member to pay for model inference costs ( TRUE ) or has not configured the
+	// collaboration member to pay for model inference costs ( FALSE ).
+	//
+	// Exactly one member can be configured to pay for model inference costs. An error
+	// is returned if the collaboration creator sets a TRUE value for more than one
+	// member in the collaboration.
+	//
+	// If the collaboration creator hasn't specified anyone as the member paying for
+	// model inference costs, then the member who can query is the default payer. An
+	// error is returned if the collaboration creator sets a FALSE value for the
+	// member who can query.
+	//
+	// This member is required.
+	IsResponsible *bool
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's model training payment
+// responsibilities set by the collaboration creator.
+type ModelTrainingPaymentConfig struct {
+
+	// Indicates whether the collaboration creator has configured the collaboration
+	// member to pay for model training costs ( TRUE ) or has not configured the
+	// collaboration member to pay for model training costs ( FALSE ).
+	//
+	// Exactly one member can be configured to pay for model training costs. An error
+	// is returned if the collaboration creator sets a TRUE value for more than one
+	// member in the collaboration.
+	//
+	// If the collaboration creator hasn't specified anyone as the member paying for
+	// model training costs, then the member who can query is the default payer. An
+	// error is returned if the collaboration creator sets a FALSE value for the
+	// member who can query.
+	//
+	// This member is required.
+	IsResponsible *bool
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the collaboration member's payment responsibilities set
+// by the collaboration creator.
+type PaymentConfiguration struct {
+
+	// The collaboration member's payment responsibilities set by the collaboration
+	// creator for query compute costs.
+	//
+	// This member is required.
+	QueryCompute *QueryComputePaymentConfig
+
+	// An object representing the collaboration member's machine learning payment
+	// responsibilities set by the collaboration creator.
+	MachineLearning *MLPaymentConfig
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the updated epsilon and noise parameters to preview. The preview
+// allows you to see how the maximum number of each type of aggregation function
+// would change with the new parameters.
+//
+// The following types satisfy this interface:
+//
+//	PreviewPrivacyImpactParametersInputMemberDifferentialPrivacy
+type PreviewPrivacyImpactParametersInput interface {
+	isPreviewPrivacyImpactParametersInput()
+}
+
+// An array that specifies the epsilon and noise parameters.
+type PreviewPrivacyImpactParametersInputMemberDifferentialPrivacy struct {
+	Value DifferentialPrivacyPreviewParametersInput
+
+	noSmithyDocumentSerde
+}
+
+func (*PreviewPrivacyImpactParametersInputMemberDifferentialPrivacy) isPreviewPrivacyImpactParametersInput() {
+}
+
+// The epsilon parameter value and number of each aggregation function that you
+// can perform.
+//
+// The following types satisfy this interface:
+//
+//	PrivacyBudgetMemberDifferentialPrivacy
+type PrivacyBudget interface {
+	isPrivacyBudget()
+}
+
+// An object that specifies the epsilon parameter and the utility in terms of
+// total aggregations, as well as the remaining aggregations available.
+type PrivacyBudgetMemberDifferentialPrivacy struct {
+	Value DifferentialPrivacyPrivacyBudget
+
+	noSmithyDocumentSerde
+}
+
+func (*PrivacyBudgetMemberDifferentialPrivacy) isPrivacyBudget() {}
+
+// An array that summaries the specified privacy budget. This summary includes
+// collaboration information, creation information, membership information, and
+// privacy budget information.
+type PrivacyBudgetSummary struct {
+
+	// The provided privacy budget.
+	//
+	// This member is required.
+	Budget PrivacyBudget
+
+	// The ARN of the collaboration that contains this privacy budget.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// The unique identifier of the collaboration that contains this privacy budget.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which the privacy budget was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The unique identifier of the privacy budget.
+	//
+	// This member is required.
+	Id *string
+
+	// The Amazon Resource Name (ARN) of the member who created the privacy budget
+	// summary.
+	//
+	// This member is required.
+	MembershipArn *string
+
+	// The identifier for a membership resource.
+	//
+	// This member is required.
+	MembershipId *string
+
+	// The ARN of the privacy budget template.
+	//
+	// This member is required.
+	PrivacyBudgetTemplateArn *string
+
+	// The unique identifier of the privacy budget template.
+	//
+	// This member is required.
+	PrivacyBudgetTemplateId *string
+
+	// Specifies the type of the privacy budget.
+	//
+	// This member is required.
+	Type PrivacyBudgetType
+
+	// The most recent time at which the privacy budget was updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// An object that defines the privacy budget template.
+type PrivacyBudgetTemplate struct {
+
+	// The ARN of the privacy budget template.
+	//
+	// This member is required.
+	Arn *string
+
+	// How often the privacy budget refreshes.
+	//
+	// If you plan to regularly bring new data into the collaboration, use
+	// CALENDAR_MONTH to automatically get a new privacy budget for the collaboration
+	// every calendar month. Choosing this option allows arbitrary amounts of
+	// information to be revealed about rows of the data when repeatedly queried across
+	// refreshes. Avoid choosing this if the same rows will be repeatedly queried
+	// between privacy budget refreshes.
+	//
+	// This member is required.
+	AutoRefresh PrivacyBudgetTemplateAutoRefresh
+
+	// The ARN of the collaboration that contains this privacy budget template.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// The unique ID of the collaboration that contains this privacy budget template.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which the privacy budget template was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The unique identifier of the privacy budget template.
+	//
+	// This member is required.
+	Id *string
+
+	// The Amazon Resource Name (ARN) of the member who created the privacy budget
+	// template.
+	//
+	// This member is required.
+	MembershipArn *string
+
+	// The identifier for a membership resource.
+	//
+	// This member is required.
+	MembershipId *string
+
+	// Specifies the epsilon and noise parameters for the privacy budget template.
+	//
+	// This member is required.
+	Parameters PrivacyBudgetTemplateParametersOutput
+
+	// Specifies the type of the privacy budget template.
+	//
+	// This member is required.
+	PrivacyBudgetType PrivacyBudgetType
+
+	// The most recent time at which the privacy budget template was updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// The epsilon and noise parameters that you want to use for the privacy budget
+// template.
+//
+// The following types satisfy this interface:
+//
+//	PrivacyBudgetTemplateParametersInputMemberDifferentialPrivacy
+type PrivacyBudgetTemplateParametersInput interface {
+	isPrivacyBudgetTemplateParametersInput()
+}
+
+// An object that specifies the epsilon and noise parameters.
+type PrivacyBudgetTemplateParametersInputMemberDifferentialPrivacy struct {
+	Value DifferentialPrivacyTemplateParametersInput
+
+	noSmithyDocumentSerde
+}
+
+func (*PrivacyBudgetTemplateParametersInputMemberDifferentialPrivacy) isPrivacyBudgetTemplateParametersInput() {
+}
+
+// The epsilon and noise parameters that were used in the privacy budget template.
+//
+// The following types satisfy this interface:
+//
+//	PrivacyBudgetTemplateParametersOutputMemberDifferentialPrivacy
+type PrivacyBudgetTemplateParametersOutput interface {
+	isPrivacyBudgetTemplateParametersOutput()
+}
+
+// The epsilon and noise parameters.
+type PrivacyBudgetTemplateParametersOutputMemberDifferentialPrivacy struct {
+	Value DifferentialPrivacyTemplateParametersOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*PrivacyBudgetTemplateParametersOutputMemberDifferentialPrivacy) isPrivacyBudgetTemplateParametersOutput() {
+}
+
+// A summary of the privacy budget template. The summary includes membership
+// information, collaboration information, and creation information.
+type PrivacyBudgetTemplateSummary struct {
+
+	// The ARN of the privacy budget template.
+	//
+	// This member is required.
+	Arn *string
+
+	// The ARN of the collaboration that contains this privacy budget template.
+	//
+	// This member is required.
+	CollaborationArn *string
+
+	// The unique ID of the collaboration that contains this privacy budget template.
+	//
+	// This member is required.
+	CollaborationId *string
+
+	// The time at which the privacy budget template was created.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The unique identifier of the privacy budget template.
+	//
+	// This member is required.
+	Id *string
+
+	// The Amazon Resource Name (ARN) of the member who created the privacy budget
+	// template.
+	//
+	// This member is required.
+	MembershipArn *string
+
+	// The identifier for a membership resource.
+	//
+	// This member is required.
+	MembershipId *string
+
+	// The type of the privacy budget template.
+	//
+	// This member is required.
+	PrivacyBudgetType PrivacyBudgetType
+
+	// The most recent time at which the privacy budget template was updated.
+	//
+	// This member is required.
+	UpdateTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// The epsilon and noise parameters that you want to update in the privacy budget
+// template.
+//
+// The following types satisfy this interface:
+//
+//	PrivacyBudgetTemplateUpdateParametersMemberDifferentialPrivacy
+type PrivacyBudgetTemplateUpdateParameters interface {
+	isPrivacyBudgetTemplateUpdateParameters()
+}
+
+// An object that specifies the new values for the epsilon and noise parameters.
+type PrivacyBudgetTemplateUpdateParametersMemberDifferentialPrivacy struct {
+	Value DifferentialPrivacyTemplateUpdateParameters
+
+	noSmithyDocumentSerde
+}
+
+func (*PrivacyBudgetTemplateUpdateParametersMemberDifferentialPrivacy) isPrivacyBudgetTemplateUpdateParameters() {
+}
+
+// Provides an estimate of the number of aggregation functions that the member who
+// can query can run given the epsilon and noise parameters.
+//
+// The following types satisfy this interface:
+//
+//	PrivacyImpactMemberDifferentialPrivacy
+type PrivacyImpact interface {
+	isPrivacyImpact()
+}
+
+// An object that lists the number and type of aggregation functions you can
+// perform.
+type PrivacyImpactMemberDifferentialPrivacy struct {
+	Value DifferentialPrivacyPrivacyImpact
+
+	noSmithyDocumentSerde
+}
+
+func (*PrivacyImpactMemberDifferentialPrivacy) isPrivacyImpact() {}
 
 // The parameters for an Clean Rooms protected query.
 type ProtectedQuery struct {
@@ -1272,26 +3413,29 @@ type ProtectedQuery struct {
 	// This member is required.
 	MembershipId *string
 
-	// Contains any details needed to write the query results.
-	//
-	// This member is required.
-	ResultConfiguration *ProtectedQueryResultConfiguration
-
-	// The protected query SQL parameters.
-	//
-	// This member is required.
-	SqlParameters *ProtectedQuerySQLParameters
-
 	// The status of the query.
 	//
 	// This member is required.
 	Status ProtectedQueryStatus
+
+	//  The compute configuration for the protected query.
+	ComputeConfiguration ComputeConfiguration
+
+	// The sensitivity parameters of the differential privacy results of the protected
+	// query.
+	DifferentialPrivacy *DifferentialPrivacyParameters
 
 	// An error thrown by the protected query.
 	Error *ProtectedQueryError
 
 	// The result of the protected query.
 	Result *ProtectedQueryResult
+
+	// Contains any details needed to write the query results.
+	ResultConfiguration *ProtectedQueryResultConfiguration
+
+	// The protected query SQL parameters.
+	SqlParameters *ProtectedQuerySQLParameters
 
 	// Statistics about protected query execution.
 	Statistics *ProtectedQueryStatistics
@@ -1315,14 +3459,36 @@ type ProtectedQueryError struct {
 	noSmithyDocumentSerde
 }
 
+// Contains configuration details for the protected query member output.
+type ProtectedQueryMemberOutputConfiguration struct {
+
+	// The unique identifier for the account.
+	//
+	// This member is required.
+	AccountId *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains details about the protected query output.
 //
 // The following types satisfy this interface:
 //
+//	ProtectedQueryOutputMemberMemberList
 //	ProtectedQueryOutputMemberS3
 type ProtectedQueryOutput interface {
 	isProtectedQueryOutput()
 }
+
+// The list of member Amazon Web Services account(s) that received the results of
+// the query.
+type ProtectedQueryOutputMemberMemberList struct {
+	Value []ProtectedQuerySingleMemberOutput
+
+	noSmithyDocumentSerde
+}
+
+func (*ProtectedQueryOutputMemberMemberList) isProtectedQueryOutput() {}
 
 // If present, the output for a protected query with an `S3` output type.
 type ProtectedQueryOutputMemberS3 struct {
@@ -1337,12 +3503,22 @@ func (*ProtectedQueryOutputMemberS3) isProtectedQueryOutput() {}
 //
 // The following types satisfy this interface:
 //
+//	ProtectedQueryOutputConfigurationMemberMember
 //	ProtectedQueryOutputConfigurationMemberS3
 type ProtectedQueryOutputConfiguration interface {
 	isProtectedQueryOutputConfiguration()
 }
 
-// Required configuration for a protected query with an `S3` output type.
+// Required configuration for a protected query with a member output type.
+type ProtectedQueryOutputConfigurationMemberMember struct {
+	Value ProtectedQueryMemberOutputConfiguration
+
+	noSmithyDocumentSerde
+}
+
+func (*ProtectedQueryOutputConfigurationMemberMember) isProtectedQueryOutputConfiguration() {}
+
+// Required configuration for a protected query with an s3 output type.
 type ProtectedQueryOutputConfigurationMemberS3 struct {
 	Value ProtectedQueryS3OutputConfiguration
 
@@ -1400,6 +3576,23 @@ type ProtectedQueryS3OutputConfiguration struct {
 	// The S3 prefix to unload the protected query results.
 	KeyPrefix *string
 
+	// Indicates whether files should be output as a single file ( TRUE ) or output as
+	// multiple files ( FALSE ). This parameter is only supported for analyses with the
+	// Spark analytics engine.
+	SingleFileOutput *bool
+
+	noSmithyDocumentSerde
+}
+
+// Details about the member who received the query result.
+type ProtectedQuerySingleMemberOutput struct {
+
+	// The Amazon Web Services account ID of the member in the collaboration who can
+	// receive results for the query.
+	//
+	// This member is required.
+	AccountId *string
+
 	noSmithyDocumentSerde
 }
 
@@ -1422,7 +3615,10 @@ type ProtectedQuerySQLParameters struct {
 // Contains statistics about the execution of the protected query.
 type ProtectedQueryStatistics struct {
 
-	// The duration of the Protected Query, from creation until query completion.
+	//  The billed resource utilization.
+	BilledResourceUtilization *BilledResourceUtilization
+
+	// The duration of the protected query, from creation until query completion.
 	TotalDurationInMillis *int64
 
 	noSmithyDocumentSerde
@@ -1451,8 +3647,12 @@ type ProtectedQuerySummary struct {
 	// This member is required.
 	MembershipId *string
 
-	// The status of the protected query. Value values are `SUBMITTED`, `STARTED`,
-	// `CANCELLED`, `CANCELLING`, `FAILED`, `SUCCESS`, `TIMED_OUT`.
+	//  The receiver configuration.
+	//
+	// This member is required.
+	ReceiverConfigurations []ReceiverConfiguration
+
+	// The status of the protected query.
 	//
 	// This member is required.
 	Status ProtectedQueryStatus
@@ -1460,16 +3660,84 @@ type ProtectedQuerySummary struct {
 	noSmithyDocumentSerde
 }
 
+// An object representing the collaboration member's payment responsibilities set
+// by the collaboration creator for query compute costs.
+type QueryComputePaymentConfig struct {
+
+	// Indicates whether the collaboration creator has configured the collaboration
+	// member to pay for query compute costs ( TRUE ) or has not configured the
+	// collaboration member to pay for query compute costs ( FALSE ).
+	//
+	// Exactly one member can be configured to pay for query compute costs. An error
+	// is returned if the collaboration creator sets a TRUE value for more than one
+	// member in the collaboration.
+	//
+	// If the collaboration creator hasn't specified anyone as the member paying for
+	// query compute costs, then the member who can query is the default payer. An
+	// error is returned if the collaboration creator sets a FALSE value for the
+	// member who can query.
+	//
+	// This member is required.
+	IsResponsible *bool
+
+	noSmithyDocumentSerde
+}
+
+// Provides any necessary query constraint information.
+//
+// The following types satisfy this interface:
+//
+//	QueryConstraintMemberRequireOverlap
+type QueryConstraint interface {
+	isQueryConstraint()
+}
+
+// An array of column names that specifies which columns are required in the JOIN
+// statement.
+type QueryConstraintMemberRequireOverlap struct {
+	Value QueryConstraintRequireOverlap
+
+	noSmithyDocumentSerde
+}
+
+func (*QueryConstraintMemberRequireOverlap) isQueryConstraint() {}
+
+// Provides the name of the columns that are required to overlap.
+type QueryConstraintRequireOverlap struct {
+
+	// The columns that are required to overlap.
+	Columns []string
+
+	noSmithyDocumentSerde
+}
+
+// The receiver configuration for a protected query.
+type ReceiverConfiguration struct {
+
+	//  The type of analysis for the protected query. The results of the query can be
+	// analyzed directly ( DIRECT_ANALYSIS ) or used as input into additional analyses (
+	// ADDITIONAL_ANALYSIS ), such as a query that is a seed for a lookalike ML model.
+	//
+	// This member is required.
+	AnalysisType AnalysisType
+
+	//  The configuration details of the receiver configuration.
+	ConfigurationDetails ConfigurationDetails
+
+	noSmithyDocumentSerde
+}
+
 // A schema is a relation within a collaboration.
 type Schema struct {
 
-	// The analysis rule types associated with the schema. Currently, only one entry
-	// is present.
+	// The analysis rule types that are associated with the schema. Currently, only
+	// one entry is present.
 	//
 	// This member is required.
 	AnalysisRuleTypes []AnalysisRuleType
 
-	// The unique ARN for the collaboration that the schema belongs to.
+	// The unique Amazon Resource Name (ARN) for the collaboration that the schema
+	// belongs to.
 	//
 	// This member is required.
 	CollaborationArn *string
@@ -1479,12 +3747,12 @@ type Schema struct {
 	// This member is required.
 	CollaborationId *string
 
-	// The columns for the relation this schema represents.
+	// The columns for the relation that this schema represents.
 	//
 	// This member is required.
 	Columns []Column
 
-	// The time the schema was created.
+	// The time at which the schema was created.
 	//
 	// This member is required.
 	CreateTime *time.Time
@@ -1510,19 +3778,92 @@ type Schema struct {
 	// This member is required.
 	PartitionKeys []Column
 
-	// The type of schema. The only valid value is currently `TABLE`.
+	// Details about the status of the schema. Currently, only one entry is present.
+	//
+	// This member is required.
+	SchemaStatusDetails []SchemaStatusDetail
+
+	// The type of schema.
 	//
 	// This member is required.
 	Type SchemaType
 
-	// The time the schema was last updated.
+	// The most recent time at which the schema was updated.
 	//
 	// This member is required.
 	UpdateTime *time.Time
 
 	// The analysis method for the schema. The only valid value is currently
-	// DIRECT_QUERY.
+	// DIRECT_QUERY .
 	AnalysisMethod AnalysisMethod
+
+	// The schema type properties.
+	SchemaTypeProperties SchemaTypeProperties
+
+	noSmithyDocumentSerde
+}
+
+// Defines the information that's necessary to retrieve an analysis rule schema.
+// Schema analysis rules are uniquely identiﬁed by a combination of the schema name
+// and the analysis rule type for a given collaboration.
+type SchemaAnalysisRuleRequest struct {
+
+	// The name of the analysis rule schema that you are requesting.
+	//
+	// This member is required.
+	Name *string
+
+	// The type of analysis rule schema that you are requesting.
+	//
+	// This member is required.
+	Type AnalysisRuleType
+
+	noSmithyDocumentSerde
+}
+
+// Information about the schema status.
+//
+// A status of READY means that based on the schema analysis rule, queries of the
+// given analysis rule type are properly configured to run queries on this schema.
+type SchemaStatusDetail struct {
+
+	// The type of analysis that can be performed on the schema.
+	//
+	// A schema can have an analysisType of DIRECT_ANALYSIS ,
+	// ADDITIONAL_ANALYSIS_FOR_AUDIENCE_GENERATION , or both.
+	//
+	// This member is required.
+	AnalysisType AnalysisType
+
+	// The status of the schema, indicating if it is ready to query.
+	//
+	// This member is required.
+	Status SchemaStatus
+
+	// The analysis rule type for which the schema status has been evaluated.
+	AnalysisRuleType AnalysisRuleType
+
+	// The configuration details of the schema analysis rule for the given type.
+	Configurations []SchemaConfiguration
+
+	// The reasons why the schema status is set to its current state.
+	Reasons []SchemaStatusReason
+
+	noSmithyDocumentSerde
+}
+
+// A reason why the schema status is set to its current value.
+type SchemaStatusReason struct {
+
+	// The schema status reason code.
+	//
+	// This member is required.
+	Code SchemaStatusReasonCode
+
+	// An explanation of the schema status reason code.
+	//
+	// This member is required.
+	Message *string
 
 	noSmithyDocumentSerde
 }
@@ -1560,7 +3901,7 @@ type SchemaSummary struct {
 	// This member is required.
 	Name *string
 
-	// The type of schema object. The only valid schema type is currently `TABLE`.
+	// The type of schema object.
 	//
 	// This member is required.
 	Type SchemaType
@@ -1577,15 +3918,118 @@ type SchemaSummary struct {
 	noSmithyDocumentSerde
 }
 
-// A pointer to the dataset that underlies this table. Currently, this can only be
-// an Glue table.
+// Information about the schema type properties.
 //
 // The following types satisfy this interface:
 //
+//	SchemaTypePropertiesMemberIdMappingTable
+type SchemaTypeProperties interface {
+	isSchemaTypeProperties()
+}
+
+// The ID mapping table for the schema type properties.
+type SchemaTypePropertiesMemberIdMappingTable struct {
+	Value IdMappingTableSchemaTypeProperties
+
+	noSmithyDocumentSerde
+}
+
+func (*SchemaTypePropertiesMemberIdMappingTable) isSchemaTypeProperties() {}
+
+// A reference to a table within Snowflake.
+type SnowflakeTableReference struct {
+
+	//  The account identifier for the Snowflake table reference.
+	//
+	// This member is required.
+	AccountIdentifier *string
+
+	//  The name of the database the Snowflake table belongs to.
+	//
+	// This member is required.
+	DatabaseName *string
+
+	//  The schema name of the Snowflake table reference.
+	//
+	// This member is required.
+	SchemaName *string
+
+	//  The secret ARN of the Snowflake table reference.
+	//
+	// This member is required.
+	SecretArn *string
+
+	//  The name of the Snowflake table.
+	//
+	// This member is required.
+	TableName *string
+
+	//  The schema of the Snowflake table.
+	//
+	// This member is required.
+	TableSchema SnowflakeTableSchema
+
+	noSmithyDocumentSerde
+}
+
+//	The schema of a Snowflake table.
+//
+// The following types satisfy this interface:
+//
+//	SnowflakeTableSchemaMemberV1
+type SnowflakeTableSchema interface {
+	isSnowflakeTableSchema()
+}
+
+// The schema of a Snowflake table.
+type SnowflakeTableSchemaMemberV1 struct {
+	Value []SnowflakeTableSchemaV1
+
+	noSmithyDocumentSerde
+}
+
+func (*SnowflakeTableSchemaMemberV1) isSnowflakeTableSchema() {}
+
+// The Snowflake table schema.
+type SnowflakeTableSchemaV1 struct {
+
+	//  The column name.
+	//
+	// This member is required.
+	ColumnName *string
+
+	//  The column's data type. Supported data types: ARRAY , BIGINT , BOOLEAN , CHAR ,
+	// DATE , DECIMAL , DOUBLE , DOUBLE PRECISION , FLOAT , FLOAT4 , INT , INTEGER ,
+	// MAP , NUMERIC , NUMBER , REAL , SMALLINT , STRING , TIMESTAMP , TIMESTAMP_LTZ ,
+	// TIMESTAMP_NTZ , DATETIME , TINYINT , VARCHAR , TEXT , CHARACTER .
+	//
+	// This member is required.
+	ColumnType *string
+
+	noSmithyDocumentSerde
+}
+
+// A pointer to the dataset that underlies this table.
+//
+// The following types satisfy this interface:
+//
+//	TableReferenceMemberAthena
 //	TableReferenceMemberGlue
+//	TableReferenceMemberSnowflake
 type TableReference interface {
 	isTableReference()
 }
+
+//	If present, a reference to the Athena table referred to by this table
+//
+// reference.
+type TableReferenceMemberAthena struct {
+	Value AthenaTableReference
+
+	noSmithyDocumentSerde
+}
+
+func (*TableReferenceMemberAthena) isTableReference() {}
 
 // If present, a reference to the Glue table referred to by this table reference.
 type TableReferenceMemberGlue struct {
@@ -1595,6 +4039,17 @@ type TableReferenceMemberGlue struct {
 }
 
 func (*TableReferenceMemberGlue) isTableReference() {}
+
+//	If present, a reference to the Snowflake table referred to by this table
+//
+// reference.
+type TableReferenceMemberSnowflake struct {
+	Value SnowflakeTableReference
+
+	noSmithyDocumentSerde
+}
+
+func (*TableReferenceMemberSnowflake) isTableReference() {}
 
 // Describes validation errors for specific input parameters.
 type ValidationExceptionField struct {
@@ -1612,6 +4067,20 @@ type ValidationExceptionField struct {
 	noSmithyDocumentSerde
 }
 
+//	The configuration of the compute resources for workers running an analysis
+//
+// with the Clean Rooms SQL analytics engine.
+type WorkerComputeConfiguration struct {
+
+	//  The number of workers.
+	Number *int32
+
+	//  The worker compute configuration type.
+	Type WorkerComputeType
+
+	noSmithyDocumentSerde
+}
+
 type noSmithyDocumentSerde = smithydocument.NoSerde
 
 // UnknownUnionMember is returned when a union member is returned over the wire,
@@ -1623,11 +4092,25 @@ type UnknownUnionMember struct {
 	noSmithyDocumentSerde
 }
 
-func (*UnknownUnionMember) isAnalysisRulePolicy()                  {}
-func (*UnknownUnionMember) isAnalysisRulePolicyV1()                {}
-func (*UnknownUnionMember) isAnalysisSource()                      {}
-func (*UnknownUnionMember) isConfiguredTableAnalysisRulePolicy()   {}
-func (*UnknownUnionMember) isConfiguredTableAnalysisRulePolicyV1() {}
-func (*UnknownUnionMember) isProtectedQueryOutput()                {}
-func (*UnknownUnionMember) isProtectedQueryOutputConfiguration()   {}
-func (*UnknownUnionMember) isTableReference()                      {}
+func (*UnknownUnionMember) isAnalysisRulePolicy()                             {}
+func (*UnknownUnionMember) isAnalysisRulePolicyV1()                           {}
+func (*UnknownUnionMember) isAnalysisSource()                                 {}
+func (*UnknownUnionMember) isComputeConfiguration()                           {}
+func (*UnknownUnionMember) isConfigurationDetails()                           {}
+func (*UnknownUnionMember) isConfiguredTableAnalysisRulePolicy()              {}
+func (*UnknownUnionMember) isConfiguredTableAnalysisRulePolicyV1()            {}
+func (*UnknownUnionMember) isConfiguredTableAssociationAnalysisRulePolicy()   {}
+func (*UnknownUnionMember) isConfiguredTableAssociationAnalysisRulePolicyV1() {}
+func (*UnknownUnionMember) isMembershipProtectedQueryOutputConfiguration()    {}
+func (*UnknownUnionMember) isPreviewPrivacyImpactParametersInput()            {}
+func (*UnknownUnionMember) isPrivacyBudget()                                  {}
+func (*UnknownUnionMember) isPrivacyBudgetTemplateParametersInput()           {}
+func (*UnknownUnionMember) isPrivacyBudgetTemplateParametersOutput()          {}
+func (*UnknownUnionMember) isPrivacyBudgetTemplateUpdateParameters()          {}
+func (*UnknownUnionMember) isPrivacyImpact()                                  {}
+func (*UnknownUnionMember) isProtectedQueryOutput()                           {}
+func (*UnknownUnionMember) isProtectedQueryOutputConfiguration()              {}
+func (*UnknownUnionMember) isQueryConstraint()                                {}
+func (*UnknownUnionMember) isSchemaTypeProperties()                           {}
+func (*UnknownUnionMember) isSnowflakeTableSchema()                           {}
+func (*UnknownUnionMember) isTableReference()                                 {}

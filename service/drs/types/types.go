@@ -31,6 +31,10 @@ type ConversionProperties struct {
 	// A mapping between the volumes being converted and the converted snapshot ids
 	VolumeToConversionMap map[string]map[string]string
 
+	// A mapping between the volumes being converted and the product codes associated
+	// with them
+	VolumeToProductCodes map[string][]ProductCode
+
 	// A mapping between the volumes and their sizes
 	VolumeToVolumeSize map[string]int64
 
@@ -85,6 +89,9 @@ type DataReplicationInfo struct {
 	// AWS Availability zone into which data is being replicated.
 	StagingAvailabilityZone *string
 
+	// The ARN of the staging Outpost
+	StagingOutpostArn *string
+
 	noSmithyDocumentSerde
 }
 
@@ -105,6 +112,9 @@ type DataReplicationInfoReplicatedDisk struct {
 
 	// The total amount of data to be replicated in bytes.
 	TotalStorageBytes int64
+
+	// The status of the volume.
+	VolumeStatus VolumeStatus
 
 	noSmithyDocumentSerde
 }
@@ -336,6 +346,97 @@ type JobLogEventData struct {
 	noSmithyDocumentSerde
 }
 
+// Launch action.
+type LaunchAction struct {
+
+	// Launch action code.
+	ActionCode *string
+
+	// Launch action Id.
+	ActionId *string
+
+	// Launch action version.
+	ActionVersion *string
+
+	// Whether the launch action is active.
+	Active *bool
+
+	// Launch action category.
+	Category LaunchActionCategory
+
+	// Launch action description.
+	Description *string
+
+	// Launch action name.
+	Name *string
+
+	// Whether the launch will not be marked as failed if this action fails.
+	Optional *bool
+
+	// Launch action order.
+	Order *int32
+
+	// Launch action parameters.
+	Parameters map[string]LaunchActionParameter
+
+	// Launch action type.
+	Type LaunchActionType
+
+	noSmithyDocumentSerde
+}
+
+// Launch action parameter.
+type LaunchActionParameter struct {
+
+	// Type.
+	Type LaunchActionParameterType
+
+	// Value.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// Launch action run.
+type LaunchActionRun struct {
+
+	// Action.
+	Action *LaunchAction
+
+	// Failure reason.
+	FailureReason *string
+
+	// Run Id.
+	RunId *string
+
+	// Run status.
+	Status LaunchActionRunStatus
+
+	noSmithyDocumentSerde
+}
+
+// Resource launch actions filter.
+type LaunchActionsRequestFilters struct {
+
+	// Launch actions Ids.
+	ActionIds []string
+
+	noSmithyDocumentSerde
+}
+
+// Launch actions status.
+type LaunchActionsStatus struct {
+
+	// List of post launch action status.
+	Runs []LaunchActionRun
+
+	// Time where the AWS Systems Manager was detected as running on the launched
+	// instance.
+	SsmAgentDiscoveryDatetime *string
+
+	noSmithyDocumentSerde
+}
+
 // Account level Launch Configuration Template.
 type LaunchConfigurationTemplate struct {
 
@@ -357,14 +458,32 @@ type LaunchConfigurationTemplate struct {
 	// Launch disposition.
 	LaunchDisposition LaunchDisposition
 
+	// DRS will set the 'launch into instance ID' of any source server when performing
+	// a drill, recovery or failback to the previous region or availability zone, using
+	// the instance ID of the source instance.
+	LaunchIntoSourceInstance *bool
+
 	// Licensing.
 	Licensing *Licensing
+
+	// Post-launch actions activated.
+	PostLaunchEnabled *bool
 
 	// Tags of the Launch Configuration Template.
 	Tags map[string]string
 
 	// Target instance type right-sizing method.
 	TargetInstanceTypeRightSizingMethod TargetInstanceTypeRightSizingMethod
+
+	noSmithyDocumentSerde
+}
+
+// Launch into existing instance.
+type LaunchIntoInstanceProperties struct {
+
+	// Optionally holds EC2 instance ID of an instance to launch into, instead of
+	// launching a new instance during drill, recovery or failback.
+	LaunchIntoEC2InstanceID *string
 
 	noSmithyDocumentSerde
 }
@@ -485,6 +604,9 @@ func (*ParticipatingResourceIDMemberSourceNetworkID) isParticipatingResourceID()
 // Represents a server participating in an asynchronous Job.
 type ParticipatingServer struct {
 
+	// The post-launch action runs of a participating server.
+	LaunchActionsStatus *LaunchActionsStatus
+
 	// The launch status of a participating server.
 	LaunchStatus LaunchStatus
 
@@ -504,12 +626,12 @@ type PITPolicyRule struct {
 	// How often, in the chosen units, a snapshot should be taken.
 	//
 	// This member is required.
-	Interval int32
+	Interval *int32
 
 	// The duration to retain a snapshot for, in the chosen units.
 	//
 	// This member is required.
-	RetentionDuration int32
+	RetentionDuration *int32
 
 	// The units used to measure the interval and retentionDuration.
 	//
@@ -525,8 +647,23 @@ type PITPolicyRule struct {
 	noSmithyDocumentSerde
 }
 
+// Properties of a product code associated with a volume.
+type ProductCode struct {
+
+	// Id of a product code associated with a volume.
+	ProductCodeId *string
+
+	// Mode of a product code associated with a volume.
+	ProductCodeMode ProductCodeMode
+
+	noSmithyDocumentSerde
+}
+
 // A Recovery Instance is a replica of a Source Server running on EC2.
 type RecoveryInstance struct {
+
+	// The version of the DRS agent installed on the recovery instance
+	AgentVersion *string
 
 	// The ARN of the Recovery Instance.
 	Arn *string
@@ -566,6 +703,9 @@ type RecoveryInstance struct {
 
 	// Properties of the Recovery Instance machine.
 	RecoveryInstanceProperties *RecoveryInstanceProperties
+
+	// The ARN of the source Outpost
+	SourceOutpostArn *string
 
 	// The Source Server ID that this Recovery Instance is associated with.
 	SourceServerID *string
@@ -611,6 +751,9 @@ type RecoveryInstanceDataReplicationInfo struct {
 
 	// AWS Availability zone into which data is being replicated.
 	StagingAvailabilityZone *string
+
+	// The ARN of the staging Outpost
+	StagingOutpostArn *string
 
 	noSmithyDocumentSerde
 }
@@ -886,6 +1029,9 @@ type SourceCloudProperties struct {
 	// AWS Region for an EC2-originated Source Server.
 	OriginRegion *string
 
+	// The ARN of the source Outpost
+	SourceOutpostArn *string
+
 	noSmithyDocumentSerde
 }
 
@@ -986,6 +1132,9 @@ type SourceProperties struct {
 }
 
 type SourceServer struct {
+
+	// The version of the DRS agent installed on the source server
+	AgentVersion *string
 
 	// The ARN of the Source Server.
 	Arn *string

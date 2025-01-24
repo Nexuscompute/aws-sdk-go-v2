@@ -35,6 +35,9 @@ func ExampleAnalysisRulePolicyV1_outputUsage() {
 	case *types.AnalysisRulePolicyV1MemberCustom:
 		_ = v.Value // Value is types.AnalysisRuleCustom
 
+	case *types.AnalysisRulePolicyV1MemberIdMappingTable:
+		_ = v.Value // Value is types.AnalysisRuleIdMappingTable
+
 	case *types.AnalysisRulePolicyV1MemberList:
 		_ = v.Value // Value is types.AnalysisRuleList
 
@@ -50,6 +53,7 @@ func ExampleAnalysisRulePolicyV1_outputUsage() {
 var _ *types.AnalysisRuleAggregation
 var _ *types.AnalysisRuleCustom
 var _ *types.AnalysisRuleList
+var _ *types.AnalysisRuleIdMappingTable
 
 func ExampleAnalysisSource_outputUsage() {
 	var union types.AnalysisSource
@@ -68,6 +72,42 @@ func ExampleAnalysisSource_outputUsage() {
 }
 
 var _ *string
+
+func ExampleComputeConfiguration_outputUsage() {
+	var union types.ComputeConfiguration
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.ComputeConfigurationMemberWorker:
+		_ = v.Value // Value is types.WorkerComputeConfiguration
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.WorkerComputeConfiguration
+
+func ExampleConfigurationDetails_outputUsage() {
+	var union types.ConfigurationDetails
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.ConfigurationDetailsMemberDirectAnalysisConfigurationDetails:
+		_ = v.Value // Value is types.DirectAnalysisConfigurationDetails
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.DirectAnalysisConfigurationDetails
 
 func ExampleConfiguredTableAnalysisRulePolicy_outputUsage() {
 	var union types.ConfiguredTableAnalysisRulePolicy
@@ -113,12 +153,12 @@ var _ *types.AnalysisRuleAggregation
 var _ *types.AnalysisRuleCustom
 var _ *types.AnalysisRuleList
 
-func ExampleProtectedQueryOutput_outputUsage() {
-	var union types.ProtectedQueryOutput
+func ExampleConfiguredTableAssociationAnalysisRulePolicy_outputUsage() {
+	var union types.ConfiguredTableAssociationAnalysisRulePolicy
 	// type switches can be used to check the union value
 	switch v := union.(type) {
-	case *types.ProtectedQueryOutputMemberS3:
-		_ = v.Value // Value is types.ProtectedQueryS3Output
+	case *types.ConfiguredTableAssociationAnalysisRulePolicyMemberV1:
+		_ = v.Value // Value is types.ConfiguredTableAssociationAnalysisRulePolicyV1
 
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
@@ -129,13 +169,39 @@ func ExampleProtectedQueryOutput_outputUsage() {
 	}
 }
 
-var _ *types.ProtectedQueryS3Output
+var _ types.ConfiguredTableAssociationAnalysisRulePolicyV1
 
-func ExampleProtectedQueryOutputConfiguration_outputUsage() {
-	var union types.ProtectedQueryOutputConfiguration
+func ExampleConfiguredTableAssociationAnalysisRulePolicyV1_outputUsage() {
+	var union types.ConfiguredTableAssociationAnalysisRulePolicyV1
 	// type switches can be used to check the union value
 	switch v := union.(type) {
-	case *types.ProtectedQueryOutputConfigurationMemberS3:
+	case *types.ConfiguredTableAssociationAnalysisRulePolicyV1MemberAggregation:
+		_ = v.Value // Value is types.ConfiguredTableAssociationAnalysisRuleAggregation
+
+	case *types.ConfiguredTableAssociationAnalysisRulePolicyV1MemberCustom:
+		_ = v.Value // Value is types.ConfiguredTableAssociationAnalysisRuleCustom
+
+	case *types.ConfiguredTableAssociationAnalysisRulePolicyV1MemberList:
+		_ = v.Value // Value is types.ConfiguredTableAssociationAnalysisRuleList
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.ConfiguredTableAssociationAnalysisRuleCustom
+var _ *types.ConfiguredTableAssociationAnalysisRuleAggregation
+var _ *types.ConfiguredTableAssociationAnalysisRuleList
+
+func ExampleMembershipProtectedQueryOutputConfiguration_outputUsage() {
+	var union types.MembershipProtectedQueryOutputConfiguration
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.MembershipProtectedQueryOutputConfigurationMemberS3:
 		_ = v.Value // Value is types.ProtectedQueryS3OutputConfiguration
 
 	case *types.UnknownUnionMember:
@@ -149,12 +215,224 @@ func ExampleProtectedQueryOutputConfiguration_outputUsage() {
 
 var _ *types.ProtectedQueryS3OutputConfiguration
 
+func ExamplePreviewPrivacyImpactParametersInput_outputUsage() {
+	var union types.PreviewPrivacyImpactParametersInput
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.PreviewPrivacyImpactParametersInputMemberDifferentialPrivacy:
+		_ = v.Value // Value is types.DifferentialPrivacyPreviewParametersInput
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.DifferentialPrivacyPreviewParametersInput
+
+func ExamplePrivacyBudget_outputUsage() {
+	var union types.PrivacyBudget
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.PrivacyBudgetMemberDifferentialPrivacy:
+		_ = v.Value // Value is types.DifferentialPrivacyPrivacyBudget
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.DifferentialPrivacyPrivacyBudget
+
+func ExamplePrivacyBudgetTemplateParametersInput_outputUsage() {
+	var union types.PrivacyBudgetTemplateParametersInput
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.PrivacyBudgetTemplateParametersInputMemberDifferentialPrivacy:
+		_ = v.Value // Value is types.DifferentialPrivacyTemplateParametersInput
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.DifferentialPrivacyTemplateParametersInput
+
+func ExamplePrivacyBudgetTemplateParametersOutput_outputUsage() {
+	var union types.PrivacyBudgetTemplateParametersOutput
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.PrivacyBudgetTemplateParametersOutputMemberDifferentialPrivacy:
+		_ = v.Value // Value is types.DifferentialPrivacyTemplateParametersOutput
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.DifferentialPrivacyTemplateParametersOutput
+
+func ExamplePrivacyBudgetTemplateUpdateParameters_outputUsage() {
+	var union types.PrivacyBudgetTemplateUpdateParameters
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.PrivacyBudgetTemplateUpdateParametersMemberDifferentialPrivacy:
+		_ = v.Value // Value is types.DifferentialPrivacyTemplateUpdateParameters
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.DifferentialPrivacyTemplateUpdateParameters
+
+func ExamplePrivacyImpact_outputUsage() {
+	var union types.PrivacyImpact
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.PrivacyImpactMemberDifferentialPrivacy:
+		_ = v.Value // Value is types.DifferentialPrivacyPrivacyImpact
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.DifferentialPrivacyPrivacyImpact
+
+func ExampleProtectedQueryOutput_outputUsage() {
+	var union types.ProtectedQueryOutput
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.ProtectedQueryOutputMemberMemberList:
+		_ = v.Value // Value is []types.ProtectedQuerySingleMemberOutput
+
+	case *types.ProtectedQueryOutputMemberS3:
+		_ = v.Value // Value is types.ProtectedQueryS3Output
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ []types.ProtectedQuerySingleMemberOutput
+var _ *types.ProtectedQueryS3Output
+
+func ExampleProtectedQueryOutputConfiguration_outputUsage() {
+	var union types.ProtectedQueryOutputConfiguration
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.ProtectedQueryOutputConfigurationMemberMember:
+		_ = v.Value // Value is types.ProtectedQueryMemberOutputConfiguration
+
+	case *types.ProtectedQueryOutputConfigurationMemberS3:
+		_ = v.Value // Value is types.ProtectedQueryS3OutputConfiguration
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.ProtectedQueryMemberOutputConfiguration
+var _ *types.ProtectedQueryS3OutputConfiguration
+
+func ExampleQueryConstraint_outputUsage() {
+	var union types.QueryConstraint
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.QueryConstraintMemberRequireOverlap:
+		_ = v.Value // Value is types.QueryConstraintRequireOverlap
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.QueryConstraintRequireOverlap
+
+func ExampleSchemaTypeProperties_outputUsage() {
+	var union types.SchemaTypeProperties
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.SchemaTypePropertiesMemberIdMappingTable:
+		_ = v.Value // Value is types.IdMappingTableSchemaTypeProperties
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.IdMappingTableSchemaTypeProperties
+
+func ExampleSnowflakeTableSchema_outputUsage() {
+	var union types.SnowflakeTableSchema
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.SnowflakeTableSchemaMemberV1:
+		_ = v.Value // Value is []types.SnowflakeTableSchemaV1
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ []types.SnowflakeTableSchemaV1
+
 func ExampleTableReference_outputUsage() {
 	var union types.TableReference
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.TableReferenceMemberAthena:
+		_ = v.Value // Value is types.AthenaTableReference
+
 	case *types.TableReferenceMemberGlue:
 		_ = v.Value // Value is types.GlueTableReference
+
+	case *types.TableReferenceMemberSnowflake:
+		_ = v.Value // Value is types.SnowflakeTableReference
 
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
@@ -166,3 +444,5 @@ func ExampleTableReference_outputUsage() {
 }
 
 var _ *types.GlueTableReference
+var _ *types.SnowflakeTableReference
+var _ *types.AthenaTableReference

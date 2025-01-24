@@ -61,7 +61,7 @@ type AccessPolicySummary struct {
 	// The version of the policy.
 	PolicyVersion *string
 
-	// The type of access policy. Currently the only available type is data .
+	// The type of access policy. Currently, the only available type is data .
 	Type AccessPolicyType
 
 	noSmithyDocumentSerde
@@ -72,9 +72,9 @@ type AccountSettingsDetail struct {
 
 	// The maximum capacity limits for all OpenSearch Serverless collections, in
 	// OpenSearch Compute Units (OCUs). These limits are used to scale your collections
-	// based on the current workload. For more information, see Managing capacity
-	// limits for Amazon OpenSearch Serverless (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-scaling.html)
-	// .
+	// based on the current workload. For more information, see [Managing capacity limits for Amazon OpenSearch Serverless].
+	//
+	// [Managing capacity limits for Amazon OpenSearch Serverless]: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-scaling.html
 	CapacityLimits *CapacityLimits
 
 	noSmithyDocumentSerde
@@ -82,9 +82,9 @@ type AccountSettingsDetail struct {
 
 // The maximum capacity limits for all OpenSearch Serverless collections, in
 // OpenSearch Compute Units (OCUs). These limits are used to scale your collections
-// based on the current workload. For more information, see Managing capacity
-// limits for Amazon OpenSearch Serverless (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-scaling.html)
-// .
+// based on the current workload. For more information, see [Managing capacity limits for Amazon OpenSearch Serverless].
+//
+// [Managing capacity limits for Amazon OpenSearch Serverless]: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-scaling.html
 type CapacityLimits struct {
 
 	// The maximum indexing capacity for collections.
@@ -116,6 +116,12 @@ type CollectionDetail struct {
 	// A description of the collection.
 	Description *string
 
+	// A failure code associated with the request.
+	FailureCode *string
+
+	// A message associated with the failure code.
+	FailureMessage *string
+
 	// A unique identifier for the collection.
 	Id *string
 
@@ -127,6 +133,9 @@ type CollectionDetail struct {
 
 	// The name of the collection.
 	Name *string
+
+	// Details about an OpenSearch Serverless collection.
+	StandbyReplicas StandbyReplicas
 
 	// The current status of the collection.
 	Status CollectionStatus
@@ -157,7 +166,7 @@ type CollectionErrorDetail struct {
 	noSmithyDocumentSerde
 }
 
-// List of filter keys that you can use for LIST, UPDATE, and DELETE requests to
+// A list of filter keys that you can use for LIST, UPDATE, and DELETE requests to
 // OpenSearch Serverless collections.
 type CollectionFilters struct {
 
@@ -213,6 +222,9 @@ type CreateCollectionDetail struct {
 	// The name of the collection.
 	Name *string
 
+	// Creates details about an OpenSearch Serverless collection.
+	StandbyReplicas StandbyReplicas
+
 	// The current status of the collection.
 	Status CollectionStatus
 
@@ -222,10 +234,30 @@ type CreateCollectionDetail struct {
 	noSmithyDocumentSerde
 }
 
+// Describes IAM Identity Center options for creating an OpenSearch Serverless
+// security configuration in the form of a key-value map.
+type CreateIamIdentityCenterConfigOptions struct {
+
+	// The ARN of the IAM Identity Center instance used to integrate with OpenSearch
+	// Serverless.
+	//
+	// This member is required.
+	InstanceArn *string
+
+	// The group attribute for this IAM Identity Center integration. Defaults to
+	// GroupId .
+	GroupAttribute IamIdentityCenterGroupAttribute
+
+	// The user attribute for this IAM Identity Center integration. Defaults to UserId .
+	UserAttribute IamIdentityCenterUserAttribute
+
+	noSmithyDocumentSerde
+}
+
 // Creation details for an OpenSearch Serverless-managed interface endpoint. For
-// more information, see Access Amazon OpenSearch Serverless using an interface
-// endpoint (https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-vpc.html)
-// .
+// more information, see [Access Amazon OpenSearch Serverless using an interface endpoint].
+//
+// [Access Amazon OpenSearch Serverless using an interface endpoint]: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/serverless-vpc.html
 type CreateVpcEndpointDetail struct {
 
 	// The unique identifier of the endpoint.
@@ -270,6 +302,194 @@ type DeleteVpcEndpointDetail struct {
 	noSmithyDocumentSerde
 }
 
+// Error information for an OpenSearch Serverless request.
+type EffectiveLifecyclePolicyDetail struct {
+
+	// The minimum number of index retention days set. That is an optional param that
+	// will return as true if the minimum number of days or hours is not set to a
+	// index resource.
+	NoMinRetentionPeriod *bool
+
+	// The name of the lifecycle policy.
+	PolicyName *string
+
+	// The name of the OpenSearch Serverless index resource.
+	Resource *string
+
+	// The type of OpenSearch Serverless resource. Currently, the only supported
+	// resource is index .
+	ResourceType ResourceType
+
+	// The minimum number of index retention in days or hours. This is an optional
+	// parameter that will return only if it’s set.
+	RetentionPeriod *string
+
+	// The type of lifecycle policy.
+	Type LifecyclePolicyType
+
+	noSmithyDocumentSerde
+}
+
+// Error information for an OpenSearch Serverless request.
+type EffectiveLifecyclePolicyErrorDetail struct {
+
+	// The error code for the request.
+	ErrorCode *string
+
+	// A description of the error. For example, The specified Index resource is not
+	// found .
+	ErrorMessage *string
+
+	// The name of OpenSearch Serverless index resource.
+	Resource *string
+
+	// The type of lifecycle policy.
+	Type LifecyclePolicyType
+
+	noSmithyDocumentSerde
+}
+
+// Describes IAM Identity Center options for an OpenSearch Serverless security
+// configuration in the form of a key-value map.
+type IamIdentityCenterConfigOptions struct {
+
+	// The ARN of the IAM Identity Center application used to integrate with
+	// OpenSearch Serverless.
+	ApplicationArn *string
+
+	// The description of the IAM Identity Center application used to integrate with
+	// OpenSearch Serverless.
+	ApplicationDescription *string
+
+	// The name of the IAM Identity Center application used to integrate with
+	// OpenSearch Serverless.
+	ApplicationName *string
+
+	// The group attribute for this IAM Identity Center integration. Defaults to
+	// GroupId .
+	GroupAttribute IamIdentityCenterGroupAttribute
+
+	// The ARN of the IAM Identity Center instance used to integrate with OpenSearch
+	// Serverless.
+	InstanceArn *string
+
+	// The user attribute for this IAM Identity Center integration. Defaults to UserId
+	UserAttribute IamIdentityCenterUserAttribute
+
+	noSmithyDocumentSerde
+}
+
+// Details about an OpenSearch Serverless lifecycle policy.
+type LifecyclePolicyDetail struct {
+
+	// The date the lifecycle policy was created.
+	CreatedDate *int64
+
+	// The description of the lifecycle policy.
+	Description *string
+
+	// The timestamp of when the lifecycle policy was last modified.
+	LastModifiedDate *int64
+
+	// The name of the lifecycle policy.
+	Name *string
+
+	// The JSON policy document without any whitespaces.
+	Policy document.Interface
+
+	// The version of the lifecycle policy.
+	PolicyVersion *string
+
+	// The type of lifecycle policy.
+	Type LifecyclePolicyType
+
+	noSmithyDocumentSerde
+}
+
+// Error information for an OpenSearch Serverless request.
+type LifecyclePolicyErrorDetail struct {
+
+	// The error code for the request. For example, NOT_FOUND .
+	ErrorCode *string
+
+	// A description of the error. For example, The specified Lifecycle Policy is not
+	// found .
+	ErrorMessage *string
+
+	// The name of the lifecycle policy.
+	Name *string
+
+	// The type of lifecycle policy.
+	Type LifecyclePolicyType
+
+	noSmithyDocumentSerde
+}
+
+// The unique identifiers of policy types and policy names.
+type LifecyclePolicyIdentifier struct {
+
+	// The name of the lifecycle policy.
+	//
+	// This member is required.
+	Name *string
+
+	// The type of lifecycle policy.
+	//
+	// This member is required.
+	Type LifecyclePolicyType
+
+	noSmithyDocumentSerde
+}
+
+// The unique identifiers of policy types and resource names.
+type LifecyclePolicyResourceIdentifier struct {
+
+	// The name of the OpenSearch Serverless ilndex resource.
+	//
+	// This member is required.
+	Resource *string
+
+	// The type of lifecycle policy.
+	//
+	// This member is required.
+	Type LifecyclePolicyType
+
+	noSmithyDocumentSerde
+}
+
+// Statistics for an OpenSearch Serverless lifecycle policy.
+type LifecyclePolicyStats struct {
+
+	// The number of retention lifecycle policies in the current account.
+	RetentionPolicyCount *int64
+
+	noSmithyDocumentSerde
+}
+
+// A summary of the lifecycle policy.
+type LifecyclePolicySummary struct {
+
+	// The Epoch time when the lifecycle policy was created.
+	CreatedDate *int64
+
+	// The description of the lifecycle policy.
+	Description *string
+
+	// The date and time when the lifecycle policy was last modified.
+	LastModifiedDate *int64
+
+	// The name of the lifecycle policy.
+	Name *string
+
+	// The version of the lifecycle policy.
+	PolicyVersion *string
+
+	// The type of lifecycle policy.
+	Type LifecyclePolicyType
+
+	noSmithyDocumentSerde
+}
+
 // Describes SAML options for an OpenSearch Serverless security configuration in
 // the form of a key-value map.
 type SamlConfigOptions struct {
@@ -302,6 +522,9 @@ type SecurityConfigDetail struct {
 
 	// The description of the security configuration.
 	Description *string
+
+	// Describes IAM Identity Center options in the form of a key-value map.
+	IamIdentityCenterOptions *IamIdentityCenterConfigOptions
 
 	// The unique identifier of the security configuration.
 	Id *string
@@ -460,6 +683,20 @@ type UpdateCollectionDetail struct {
 	noSmithyDocumentSerde
 }
 
+// Describes IAM Identity Center options for updating an OpenSearch Serverless
+// security configuration in the form of a key-value map.
+type UpdateIamIdentityCenterConfigOptions struct {
+
+	// The group attribute for this IAM Identity Center integration. Defaults to
+	// GroupId .
+	GroupAttribute IamIdentityCenterGroupAttribute
+
+	// The user attribute for this IAM Identity Center integration. Defaults to UserId .
+	UserAttribute IamIdentityCenterUserAttribute
+
+	noSmithyDocumentSerde
+}
+
 // Update details for an OpenSearch Serverless-managed interface endpoint.
 type UpdateVpcEndpointDetail struct {
 
@@ -490,6 +727,12 @@ type VpcEndpointDetail struct {
 
 	// The date the endpoint was created.
 	CreatedDate *int64
+
+	// A failure code associated with the request.
+	FailureCode *string
+
+	// A message associated with the failure code.
+	FailureMessage *string
 
 	// The unique identifier of the endpoint.
 	Id *string

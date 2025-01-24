@@ -129,14 +129,18 @@ type DnsRecord struct {
 	noSmithyDocumentSerde
 }
 
-// The domain to associate with an WorkMail organization. When you configure a
-// domain hosted in Amazon Route 53 (Route 53), all recommended DNS records are
-// added to the organization when you create it. For more information, see Adding
-// a domain (https://docs.aws.amazon.com/workmail/latest/adminguide/add_domain.html)
-// in the WorkMail Administrator Guide.
+// The domain to associate with an WorkMail organization.
+//
+// When you configure a domain hosted in Amazon Route 53 (Route 53), all
+// recommended DNS records are added to the organization when you create it. For
+// more information, see [Adding a domain]in the WorkMail Administrator Guide.
+//
+// [Adding a domain]: https://docs.aws.amazon.com/workmail/latest/adminguide/add_domain.html
 type Domain struct {
 
 	// The fully qualified domain name.
+	//
+	// This member is required.
 	DomainName *string
 
 	// The hosted zone ID for a domain hosted in Route 53. Required when configuring a
@@ -212,6 +216,36 @@ type Group struct {
 	noSmithyDocumentSerde
 }
 
+// The identifier that contains the Group ID and name of a group.
+type GroupIdentifier struct {
+
+	// Group ID that matched the group.
+	GroupId *string
+
+	// Group name that matched the group.
+	GroupName *string
+
+	noSmithyDocumentSerde
+}
+
+// The IAM Identity Center configuration.
+type IdentityCenterConfiguration struct {
+
+	//  The Amazon Resource Name (ARN) of IAMIdentity Center Application for WorkMail.
+	// Must be created by the WorkMail API, see CreateIdentityCenterApplication.
+	//
+	// This member is required.
+	ApplicationArn *string
+
+	//  The Amazon Resource Name (ARN) of the of IAM Identity Center instance. Must be
+	// in the same AWS account and region as WorkMail organization.
+	//
+	// This member is required.
+	InstanceArn *string
+
+	noSmithyDocumentSerde
+}
+
 // The impersonation rule that matched the input.
 type ImpersonationMatchedRule struct {
 
@@ -282,6 +316,73 @@ type LambdaAvailabilityProvider struct {
 	//
 	// This member is required.
 	LambdaArn *string
+
+	noSmithyDocumentSerde
+}
+
+//	Filtering options for ListGroups operation. This is only used as input to
+//
+// Operation.
+type ListGroupsFilters struct {
+
+	// Filters only groups with the provided name prefix.
+	NamePrefix *string
+
+	// Filters only groups with the provided primary email prefix.
+	PrimaryEmailPrefix *string
+
+	// Filters only groups with the provided state.
+	State EntityState
+
+	noSmithyDocumentSerde
+}
+
+//	Filtering options for ListGroupsForEntity operation. This is only used as
+//
+// input to Operation.
+type ListGroupsForEntityFilters struct {
+
+	// Filters only group names that start with the provided name prefix.
+	GroupNamePrefix *string
+
+	noSmithyDocumentSerde
+}
+
+// Filtering options for ListResources operation. This is only used as input to
+// Operation.
+type ListResourcesFilters struct {
+
+	// Filters only resource that start with the entered name prefix .
+	NamePrefix *string
+
+	// Filters only resource with the provided primary email prefix.
+	PrimaryEmailPrefix *string
+
+	// Filters only resource with the provided state.
+	State EntityState
+
+	noSmithyDocumentSerde
+}
+
+//	Filtering options for ListUsers operation. This is only used as input to
+//
+// Operation.
+type ListUsersFilters struct {
+
+	// Filters only users with the provided display name prefix.
+	DisplayNamePrefix *string
+
+	// Filters only users with the ID from the IAM Identity Center.
+	IdentityProviderUserIdPrefix *string
+
+	// Filters only users with the provided email prefix.
+	PrimaryEmailPrefix *string
+
+	// Filters only users with the provided state.
+	State EntityState
+
+	// Filters only users with the provided username prefix.
+	UsernamePrefix *string
 
 	noSmithyDocumentSerde
 }
@@ -494,6 +595,56 @@ type Permission struct {
 	noSmithyDocumentSerde
 }
 
+// Displays the Personal Access Token status.
+type PersonalAccessTokenConfiguration struct {
+
+	//  The status of the Personal Access Token allowed for the organization.
+	//
+	//   - Active - Mailbox users can login to the web application and choose Settings
+	//   to see the new Personal Access Tokens page to create and delete the Personal
+	//   Access Tokens. Mailbox users can use the Personal Access Tokens to set up
+	//   mailbox connection from desktop or mobile email clients.
+	//
+	//   - Inactive - Personal Access Tokens are disabled for your organization.
+	//   Mailbox users can’t create, list, or delete Personal Access Tokens and can’t use
+	//   them to connect to their mailboxes from desktop or mobile email clients.
+	//
+	// This member is required.
+	Status PersonalAccessTokenConfigurationStatus
+
+	//  The validity of the Personal Access Token status in days.
+	LifetimeInDays *int32
+
+	noSmithyDocumentSerde
+}
+
+// The summary of the Personal Access Token.
+type PersonalAccessTokenSummary struct {
+
+	//  The date when the Personal Access Token was created.
+	DateCreated *time.Time
+
+	//  The date when the Personal Access Token was last used.
+	DateLastUsed *time.Time
+
+	//  The date when the Personal Access Token will expire.
+	ExpiresTime *time.Time
+
+	//  The name of the Personal Access Token.
+	Name *string
+
+	//  The ID of the Personal Access Token.
+	PersonalAccessTokenId *string
+
+	//  Lists all the Personal Access Token permissions for a mailbox.
+	Scopes []string
+
+	//  The user ID of the WorkMail user associated with the Personal Access Token.
+	UserId *string
+
+	noSmithyDocumentSerde
+}
+
 // Describes an EWS based availability provider when returned from the service. It
 // does not contain the password of the endpoint.
 type RedactedEwsAvailabilityProvider struct {
@@ -509,6 +660,9 @@ type RedactedEwsAvailabilityProvider struct {
 
 // The representation of a resource.
 type Resource struct {
+
+	// Resource description.
+	Description *string
 
 	// The date indicating when the resource was disabled from WorkMail use.
 	DisabledDate *time.Time
@@ -567,6 +721,16 @@ type User struct {
 
 	// The identifier of the user.
 	Id *string
+
+	// Identity store ID from the IAM Identity Center. If this parameter is empty it
+	// will be updated automatically when the user logs in for the first time to the
+	// mailbox associated with WorkMail.
+	IdentityProviderIdentityStoreId *string
+
+	// User ID from the IAM Identity Center. If this parameter is empty it will be
+	// updated automatically when the user logs in for the first time to the mailbox
+	// associated with WorkMail.
+	IdentityProviderUserId *string
 
 	// The name of the user.
 	Name *string

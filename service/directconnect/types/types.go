@@ -7,6 +7,22 @@ import (
 	"time"
 )
 
+// The Amazon Web Services Cloud WAN core network that the Direct Connect
+// attachment is associated with.
+type AssociatedCoreNetwork struct {
+
+	// the ID of the Direct Connect attachment
+	AttachmentId *string
+
+	// The ID of the Cloud WAN core network.
+	Id *string
+
+	// The account owner of the Cloud WAN core network.
+	OwnerAccount *string
+
+	noSmithyDocumentSerde
+}
+
 // Information about the associated gateway.
 type AssociatedGateway struct {
 
@@ -54,20 +70,27 @@ type BGPPeer struct {
 	BgpPeerId *string
 
 	// The state of the BGP peer. The following are the possible values:
+	//
 	//   - verifying : The BGP peering addresses or ASN require validation before the
 	//   BGP peer can be created. This state applies only to public virtual interfaces.
+	//
 	//   - pending : The BGP peer is created, and remains in this state until it is
 	//   ready to be established.
+	//
 	//   - available : The BGP peer is ready to be established.
+	//
 	//   - deleting : The BGP peer is being deleted.
+	//
 	//   - deleted : The BGP peer is deleted and cannot be established.
 	BgpPeerState BGPPeerState
 
 	// The status of the BGP peer. The following are the possible values:
+	//
 	//   - up : The BGP peer is established. This state does not indicate the state of
 	//   the routing function. Ensure that you are receiving routes over the BGP session.
 	//
 	//   - down : The BGP peer is down.
+	//
 	//   - unknown : The BGP peer status is not available.
 	BgpStatus BGPStatus
 
@@ -102,24 +125,34 @@ type Connection struct {
 	ConnectionName *string
 
 	// The state of the connection. The following are the possible values:
+	//
 	//   - ordering : The initial state of a hosted connection provisioned on an
 	//   interconnect. The connection stays in the ordering state until the owner of the
 	//   hosted connection confirms or declines the connection order.
+	//
 	//   - requested : The initial state of a standard connection. The connection stays
 	//   in the requested state until the Letter of Authorization (LOA) is sent to the
 	//   customer.
+	//
 	//   - pending : The connection has been approved and is being initialized.
+	//
 	//   - available : The network link is up and the connection is ready for use.
+	//
 	//   - down : The network link is down.
+	//
 	//   - deleting : The connection is being deleted.
+	//
 	//   - deleted : The connection has been deleted.
+	//
 	//   - rejected : A hosted connection in the ordering state enters the rejected
 	//   state if it is deleted by the customer.
+	//
 	//   - unknown : The state of the connection is not available.
 	ConnectionState ConnectionState
 
-	// The MAC Security (MACsec) connection encryption mode. The valid values are
-	// no_encrypt , should_encrypt , and must_encrypt .
+	// The MAC Security (MACsec) connection encryption mode.
+	//
+	// The valid values are no_encrypt , should_encrypt , and must_encrypt .
 	EncryptionMode *string
 
 	// Indicates whether the connection supports a secondary BGP peer in the same
@@ -150,9 +183,10 @@ type Connection struct {
 	// The name of the Direct Connect service provider associated with the connection.
 	PartnerName *string
 
-	// The MAC Security (MACsec) port link status of the connection. The valid values
-	// are Encryption Up , which means that there is an active Connection Key Name, or
-	// Encryption Down .
+	// The MAC Security (MACsec) port link status of the connection.
+	//
+	// The valid values are Encryption Up , which means that there is an active
+	// Connection Key Name, or Encryption Down .
 	PortEncryptionStatus *string
 
 	// The name of the service provider associated with the connection.
@@ -196,9 +230,13 @@ type DirectConnectGateway struct {
 	DirectConnectGatewayName *string
 
 	// The state of the Direct Connect gateway. The following are the possible values:
-	//   - pending : The initial state after calling CreateDirectConnectGateway .
+	//
+	//   - pending : The initial state after calling CreateDirectConnectGateway.
+	//
 	//   - available : The Direct Connect gateway is ready for use.
-	//   - deleting : The initial state after calling DeleteDirectConnectGateway .
+	//
+	//   - deleting : The initial state after calling DeleteDirectConnectGateway.
+	//
 	//   - deleted : The Direct Connect gateway is deleted and cannot pass traffic.
 	DirectConnectGatewayState DirectConnectGatewayState
 
@@ -218,6 +256,10 @@ type DirectConnectGatewayAssociation struct {
 	// The Amazon VPC prefixes to advertise to the Direct Connect gateway.
 	AllowedPrefixesToDirectConnectGateway []RouteFilterPrefix
 
+	// The ID of the Cloud WAN core network associated with the Direct Connect
+	// attachment.
+	AssociatedCoreNetwork *AssociatedCoreNetwork
+
 	// Information about the associated gateway.
 	AssociatedGateway *AssociatedGateway
 
@@ -225,15 +267,18 @@ type DirectConnectGatewayAssociation struct {
 	AssociationId *string
 
 	// The state of the association. The following are the possible values:
-	//   - associating : The initial state after calling
-	//   CreateDirectConnectGatewayAssociation .
+	//
+	//   - associating : The initial state after calling CreateDirectConnectGatewayAssociation.
+	//
 	//   - associated : The Direct Connect gateway and virtual private gateway or
 	//   transit gateway are successfully associated and ready to pass traffic.
-	//   - disassociating : The initial state after calling
-	//   DeleteDirectConnectGatewayAssociation .
+	//
+	//   - disassociating : The initial state after calling DeleteDirectConnectGatewayAssociation.
+	//
 	//   - disassociated : The virtual private gateway or transit gateway is
 	//   disassociated from the Direct Connect gateway. Traffic flow between the Direct
 	//   Connect gateway and virtual private gateway or transit gateway is stopped.
+	//
 	//   - updating : The CIDR blocks for the virtual private gateway or transit
 	//   gateway are currently being updated. This could be new CIDR blocks added or
 	//   current CIDR blocks removed.
@@ -283,10 +328,13 @@ type DirectConnectGatewayAssociationProposal struct {
 	ProposalId *string
 
 	// The state of the proposal. The following are possible values:
+	//
 	//   - accepted : The proposal has been accepted. The Direct Connect gateway
 	//   association is available to use in this state.
+	//
 	//   - deleted : The proposal has been deleted by the owner that made the proposal.
 	//   The Direct Connect gateway association cannot be used in this state.
+	//
 	//   - requested : The proposal has been requested. The Direct Connect gateway
 	//   association cannot be used in this state.
 	ProposalState DirectConnectGatewayAssociationProposalState
@@ -302,11 +350,15 @@ type DirectConnectGatewayAssociationProposal struct {
 type DirectConnectGatewayAttachment struct {
 
 	// The state of the attachment. The following are the possible values:
+	//
 	//   - attaching : The initial state after a virtual interface is created using the
 	//   Direct Connect gateway.
+	//
 	//   - attached : The Direct Connect gateway and virtual interface are attached and
 	//   ready to pass traffic.
-	//   - detaching : The initial state after calling DeleteVirtualInterface .
+	//
+	//   - detaching : The initial state after calling DeleteVirtualInterface.
+	//
 	//   - detached : The virtual interface is detached from the Direct Connect
 	//   gateway. Traffic flow between the Direct Connect gateway and virtual interface
 	//   is stopped.
@@ -362,14 +414,21 @@ type Interconnect struct {
 	InterconnectName *string
 
 	// The state of the interconnect. The following are the possible values:
+	//
 	//   - requested : The initial state of an interconnect. The interconnect stays in
 	//   the requested state until the Letter of Authorization (LOA) is sent to the
 	//   customer.
+	//
 	//   - pending : The interconnect is approved, and is being initialized.
+	//
 	//   - available : The network link is up, and the interconnect is ready for use.
+	//
 	//   - down : The network link is down.
+	//
 	//   - deleting : The interconnect is being deleted.
+	//
 	//   - deleted : The interconnect is deleted.
+	//
 	//   - unknown : The state of the interconnect is not available.
 	InterconnectState InterconnectState
 
@@ -419,11 +478,12 @@ type Lag struct {
 	Connections []Connection
 
 	// The individual bandwidth of the physical connections bundled by the LAG. The
-	// possible values are 1Gbps and 10Gbps.
+	// possible values are 1Gbps, 10Gbps, 100Gbps, or 400 Gbps..
 	ConnectionsBandwidth *string
 
-	// The LAG MAC Security (MACsec) encryption mode. The valid values are no_encrypt ,
-	// should_encrypt , and must_encrypt .
+	// The LAG MAC Security (MACsec) encryption mode.
+	//
+	// The valid values are no_encrypt , should_encrypt , and must_encrypt .
 	EncryptionMode *string
 
 	// Indicates whether the LAG supports a secondary BGP peer in the same address
@@ -440,13 +500,20 @@ type Lag struct {
 	LagName *string
 
 	// The state of the LAG. The following are the possible values:
+	//
 	//   - requested : The initial state of a LAG. The LAG stays in the requested state
 	//   until the Letter of Authorization (LOA) is available.
+	//
 	//   - pending : The LAG has been approved and is being initialized.
+	//
 	//   - available : The network link is established and the LAG is ready for use.
+	//
 	//   - down : The network link is down.
+	//
 	//   - deleting : The LAG is being deleted.
+	//
 	//   - deleted : The LAG is deleted.
+	//
 	//   - unknown : The state of the LAG is not available.
 	LagState LagState
 
@@ -463,8 +530,9 @@ type Lag struct {
 	// for the LAG itself to be operational.
 	MinimumLinks int32
 
-	// The number of physical dedicated connections bundled by the LAG, up to a
-	// maximum of 10.
+	// The number of physical dedicated connections initially provisioned and bundled
+	// by the LAG. You can have a maximum of four connections when the port speed is 1
+	// Gbps or 10 Gbps, or two when the port speed is 100 Gbps or 400 Gbps.
 	NumberOfConnections int32
 
 	// The ID of the Amazon Web Services account that owns the LAG.
@@ -534,13 +602,19 @@ type MacSecKey struct {
 	// displayed in UTC format.
 	StartOn *string
 
-	// The state of the MAC Security (MACsec) secret key. The possible values are:
+	// The state of the MAC Security (MACsec) secret key.
+	//
+	// The possible values are:
+	//
 	//   - associating : The MAC Security (MACsec) secret key is being validated and
 	//   not yet associated with the connection or LAG.
+	//
 	//   - associated : The MAC Security (MACsec) secret key is validated and
 	//   associated with the connection or LAG.
+	//
 	//   - disassociating : The MAC Security (MACsec) secret key is being disassociated
 	//   from the connection or LAG
+	//
 	//   - disassociated : The MAC Security (MACsec) secret key is no longer associated
 	//   with the connection or LAG.
 	State *string
@@ -575,7 +649,9 @@ type NewBGPPeer struct {
 type NewPrivateVirtualInterface struct {
 
 	// The autonomous system (AS) number for Border Gateway Protocol (BGP)
-	// configuration. The valid values are 1-2147483647.
+	// configuration.
+	//
+	// The valid values are 1-2147483647.
 	//
 	// This member is required.
 	Asn int32
@@ -612,7 +688,7 @@ type NewPrivateVirtualInterface struct {
 	EnableSiteLink *bool
 
 	// The maximum transmission unit (MTU), in bytes. The supported values are 1500
-	// and 9001. The default value is 1500.
+	// and 8500. The default value is 1500.
 	Mtu *int32
 
 	// The tags associated with the private virtual interface.
@@ -628,7 +704,9 @@ type NewPrivateVirtualInterface struct {
 type NewPrivateVirtualInterfaceAllocation struct {
 
 	// The autonomous system (AS) number for Border Gateway Protocol (BGP)
-	// configuration. The valid values are 1-2147483647.
+	// configuration.
+	//
+	// The valid values are 1-2147483647.
 	//
 	// This member is required.
 	Asn int32
@@ -659,7 +737,7 @@ type NewPrivateVirtualInterfaceAllocation struct {
 	CustomerAddress *string
 
 	// The maximum transmission unit (MTU), in bytes. The supported values are 1500
-	// and 9001. The default value is 1500.
+	// and 8500. The default value is 1500.
 	Mtu *int32
 
 	// The tags associated with the private virtual interface.
@@ -672,7 +750,9 @@ type NewPrivateVirtualInterfaceAllocation struct {
 type NewPublicVirtualInterface struct {
 
 	// The autonomous system (AS) number for Border Gateway Protocol (BGP)
-	// configuration. The valid values are 1-2147483647.
+	// configuration.
+	//
+	// The valid values are 1-2147483647.
 	//
 	// This member is required.
 	Asn int32
@@ -716,7 +796,9 @@ type NewPublicVirtualInterface struct {
 type NewPublicVirtualInterfaceAllocation struct {
 
 	// The autonomous system (AS) number for Border Gateway Protocol (BGP)
-	// configuration. The valid values are 1-2147483647.
+	// configuration.
+	//
+	// The valid values are 1-2147483647.
 	//
 	// This member is required.
 	Asn int32
@@ -766,7 +848,9 @@ type NewTransitVirtualInterface struct {
 	AmazonAddress *string
 
 	// The autonomous system (AS) number for Border Gateway Protocol (BGP)
-	// configuration. The valid values are 1-2147483647.
+	// configuration.
+	//
+	// The valid values are 1-2147483647.
 	Asn int32
 
 	// The authentication key for BGP configuration. This string has a minimum length
@@ -810,7 +894,9 @@ type NewTransitVirtualInterfaceAllocation struct {
 	AmazonAddress *string
 
 	// The autonomous system (AS) number for Border Gateway Protocol (BGP)
-	// configuration. The valid values are 1-2147483647.
+	// configuration.
+	//
+	// The valid values are 1-2147483647.
 	Asn int32
 
 	// The authentication key for BGP configuration. This string has a minimum length
@@ -906,11 +992,14 @@ type VirtualGateway struct {
 	// The ID of the virtual private gateway.
 	VirtualGatewayId *string
 
-	// The state of the virtual private gateway. The following are the possible
-	// values:
+	// The state of the virtual private gateway. The following are the possible values:
+	//
 	//   - pending : Initial state after creating the virtual private gateway.
+	//
 	//   - available : Ready for use by a private virtual interface.
+	//
 	//   - deleting : Initial state after deleting the virtual private gateway.
+	//
 	//   - deleted : The virtual private gateway is deleted. The private virtual
 	//   interface is unable to send traffic over this gateway.
 	VirtualGatewayState *string
@@ -931,7 +1020,9 @@ type VirtualInterface struct {
 	AmazonSideAsn *int64
 
 	// The autonomous system (AS) number for Border Gateway Protocol (BGP)
-	// configuration. The valid values are 1-2147483647.
+	// configuration.
+	//
+	// The valid values are 1-2147483647.
 	Asn int32
 
 	// The authentication key for BGP configuration. This string has a minimum length
@@ -999,28 +1090,38 @@ type VirtualInterface struct {
 	VirtualInterfaceName *string
 
 	// The state of the virtual interface. The following are the possible values:
+	//
 	//   - confirming : The creation of the virtual interface is pending confirmation
 	//   from the virtual interface owner. If the owner of the virtual interface is
 	//   different from the owner of the connection on which it is provisioned, then the
 	//   virtual interface will remain in this state until it is confirmed by the virtual
 	//   interface owner.
+	//
 	//   - verifying : This state only applies to public virtual interfaces. Each
 	//   public virtual interface needs validation before the virtual interface can be
 	//   created.
+	//
 	//   - pending : A virtual interface is in this state from the time that it is
 	//   created until the virtual interface is ready to forward traffic.
+	//
 	//   - available : A virtual interface that is able to forward traffic.
+	//
 	//   - down : A virtual interface that is BGP down.
-	//   - deleting : A virtual interface is in this state immediately after calling
-	//   DeleteVirtualInterface until it can no longer forward traffic.
+	//
+	//   - deleting : A virtual interface is in this state immediately after calling DeleteVirtualInterface
+	//   until it can no longer forward traffic.
+	//
 	//   - deleted : A virtual interface that cannot forward traffic.
+	//
 	//   - rejected : The virtual interface owner has declined creation of the virtual
 	//   interface. If a virtual interface in the Confirming state is deleted by the
 	//   virtual interface owner, the virtual interface enters the Rejected state.
+	//
 	//   - unknown : The state of the virtual interface is not available.
 	VirtualInterfaceState VirtualInterfaceState
 
-	// The type of virtual interface. The possible values are private and public .
+	// The type of virtual interface. The possible values are private , public and
+	// transit .
 	VirtualInterfaceType *string
 
 	// The ID of the VLAN.

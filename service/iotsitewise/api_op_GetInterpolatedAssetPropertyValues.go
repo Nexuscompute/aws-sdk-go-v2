@@ -4,14 +4,9 @@ package iotsitewise
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -19,14 +14,19 @@ import (
 // Get interpolated values for an asset property for a specified time interval,
 // during a period of time. If your time series is missing data points during the
 // specified time interval, you can use interpolation to estimate the missing data.
+//
 // For example, you can use this operation to return the interpolated temperature
-// values for a wind turbine every 24 hours over a duration of 7 days. To identify
-// an asset property, you must specify one of the following:
+// values for a wind turbine every 24 hours over a duration of 7 days.
+//
+// To identify an asset property, you must specify one of the following:
+//
 //   - The assetId and propertyId of an asset property.
+//
 //   - A propertyAlias , which is a data stream alias (for example,
 //     /company/windfarm/3/turbine/7/temperature ). To define an asset property's
-//     alias, see UpdateAssetProperty (https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetProperty.html)
-//     .
+//     alias, see [UpdateAssetProperty].
+//
+// [UpdateAssetProperty]: https://docs.aws.amazon.com/iot-sitewise/latest/APIReference/API_UpdateAssetProperty.html
 func (c *Client) GetInterpolatedAssetPropertyValues(ctx context.Context, params *GetInterpolatedAssetPropertyValuesInput, optFns ...func(*Options)) (*GetInterpolatedAssetPropertyValuesOutput, error) {
 	if params == nil {
 		params = &GetInterpolatedAssetPropertyValuesInput{}
@@ -68,28 +68,38 @@ type GetInterpolatedAssetPropertyValuesInput struct {
 	// This member is required.
 	StartTimeInSeconds *int64
 
-	// The interpolation type. Valid values: LINEAR_INTERPOLATION | LOCF_INTERPOLATION
-	//   - LINEAR_INTERPOLATION – Estimates missing data using linear interpolation (https://en.wikipedia.org/wiki/Linear_interpolation)
-	//   . For example, you can use this operation to return the interpolated temperature
+	// The interpolation type.
+	//
+	// Valid values: LINEAR_INTERPOLATION | LOCF_INTERPOLATION
+	//
+	//   - LINEAR_INTERPOLATION – Estimates missing data using [linear interpolation].
+	//
+	// For example, you can use this operation to return the interpolated temperature
 	//   values for a wind turbine every 24 hours over a duration of 7 days. If the
 	//   interpolation starts July 1, 2021, at 9 AM, IoT SiteWise returns the first
 	//   interpolated value on July 2, 2021, at 9 AM, the second interpolated value on
 	//   July 3, 2021, at 9 AM, and so on.
+	//
 	//   - LOCF_INTERPOLATION – Estimates missing data using last observation carried
-	//   forward interpolation If no data point is found for an interval, IoT SiteWise
-	//   returns the last observed data point for the previous interval and carries
-	//   forward this interpolated value until a new data point is found. For example,
-	//   you can get the state of an on-off valve every 24 hours over a duration of 7
-	//   days. If the interpolation starts July 1, 2021, at 9 AM, IoT SiteWise returns
-	//   the last observed data point between July 1, 2021, at 9 AM and July 2, 2021, at
-	//   9 AM as the first interpolated value. If a data point isn't found after 9 AM on
-	//   July 2, 2021, IoT SiteWise uses the same interpolated value for the rest of the
-	//   days.
+	//   forward interpolation
+	//
+	// If no data point is found for an interval, IoT SiteWise returns the last
+	//   observed data point for the previous interval and carries forward this
+	//   interpolated value until a new data point is found.
+	//
+	// For example, you can get the state of an on-off valve every 24 hours over a
+	//   duration of 7 days. If the interpolation starts July 1, 2021, at 9 AM, IoT
+	//   SiteWise returns the last observed data point between July 1, 2021, at 9 AM and
+	//   July 2, 2021, at 9 AM as the first interpolated value. If a data point isn't
+	//   found after 9 AM on July 2, 2021, IoT SiteWise uses the same interpolated value
+	//   for the rest of the days.
+	//
+	// [linear interpolation]: https://en.wikipedia.org/wiki/Linear_interpolation
 	//
 	// This member is required.
 	Type *string
 
-	// The ID of the asset.
+	// The ID of the asset, in UUID format.
 	AssetId *string
 
 	// The nanosecond offset converted from endTimeInSeconds .
@@ -100,11 +110,14 @@ type GetInterpolatedAssetPropertyValuesInput struct {
 	// minus the window to the timestamp of each interval plus the window. If not
 	// specified, the window ranges between the start time minus the interval and the
 	// end time plus the interval.
+	//
 	//   - If you specify a value for the intervalWindowInSeconds parameter, the value
 	//   for the type parameter must be LINEAR_INTERPOLATION .
+	//
 	//   - If a data point isn't found during the specified query window, IoT SiteWise
 	//   won't return an interpolated value for the interval. This indicates that there's
 	//   a gap in the ingested data points.
+	//
 	// For example, you can get the interpolated temperature values for a wind turbine
 	// every 24 hours over a duration of 7 days. If the interpolation starts on July 1,
 	// 2021, at 9 AM with a window of 2 hours, IoT SiteWise uses the data points from 7
@@ -123,11 +136,12 @@ type GetInterpolatedAssetPropertyValuesInput struct {
 
 	// The alias that identifies the property, such as an OPC-UA server data stream
 	// path (for example, /company/windfarm/3/turbine/7/temperature ). For more
-	// information, see Mapping industrial data streams to asset properties (https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html)
-	// in the IoT SiteWise User Guide.
+	// information, see [Mapping industrial data streams to asset properties]in the IoT SiteWise User Guide.
+	//
+	// [Mapping industrial data streams to asset properties]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/connect-data-streams.html
 	PropertyAlias *string
 
-	// The ID of the asset property.
+	// The ID of the asset property, in UUID format.
 	PropertyId *string
 
 	// The nanosecond offset converted from startTimeInSeconds .
@@ -154,6 +168,9 @@ type GetInterpolatedAssetPropertyValuesOutput struct {
 }
 
 func (c *Client) addOperationGetInterpolatedAssetPropertyValuesMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpGetInterpolatedAssetPropertyValues{}, middleware.After)
 	if err != nil {
 		return err
@@ -162,34 +179,38 @@ func (c *Client) addOperationGetInterpolatedAssetPropertyValuesMiddlewares(stack
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GetInterpolatedAssetPropertyValues"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -201,10 +222,16 @@ func (c *Client) addOperationGetInterpolatedAssetPropertyValuesMiddlewares(stack
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addEndpointPrefix_opGetInterpolatedAssetPropertyValuesMiddleware(stack); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGetInterpolatedAssetPropertyValuesResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addEndpointPrefix_opGetInterpolatedAssetPropertyValuesMiddleware(stack); err != nil {
 		return err
 	}
 	if err = addOpGetInterpolatedAssetPropertyValuesValidationMiddleware(stack); err != nil {
@@ -213,7 +240,7 @@ func (c *Client) addOperationGetInterpolatedAssetPropertyValuesMiddlewares(stack
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetInterpolatedAssetPropertyValues(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -225,46 +252,23 @@ func (c *Client) addOperationGetInterpolatedAssetPropertyValuesMiddlewares(stack
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-type endpointPrefix_opGetInterpolatedAssetPropertyValuesMiddleware struct {
-}
-
-func (*endpointPrefix_opGetInterpolatedAssetPropertyValuesMiddleware) ID() string {
-	return "EndpointHostPrefix"
-}
-
-func (m *endpointPrefix_opGetInterpolatedAssetPropertyValuesMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if smithyhttp.GetHostnameImmutable(ctx) || smithyhttp.IsEndpointHostPrefixDisabled(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	req.URL.Host = "data." + req.URL.Host
-
-	return next.HandleSerialize(ctx, in)
-}
-func addEndpointPrefix_opGetInterpolatedAssetPropertyValuesMiddleware(stack *middleware.Stack) error {
-	return stack.Serialize.Insert(&endpointPrefix_opGetInterpolatedAssetPropertyValuesMiddleware{}, `OperationSerializer`, middleware.After)
-}
-
-// GetInterpolatedAssetPropertyValuesAPIClient is a client that implements the
-// GetInterpolatedAssetPropertyValues operation.
-type GetInterpolatedAssetPropertyValuesAPIClient interface {
-	GetInterpolatedAssetPropertyValues(context.Context, *GetInterpolatedAssetPropertyValuesInput, ...func(*Options)) (*GetInterpolatedAssetPropertyValuesOutput, error)
-}
-
-var _ GetInterpolatedAssetPropertyValuesAPIClient = (*Client)(nil)
 
 // GetInterpolatedAssetPropertyValuesPaginatorOptions is the paginator options for
 // GetInterpolatedAssetPropertyValues
@@ -333,6 +337,9 @@ func (p *GetInterpolatedAssetPropertyValuesPaginator) NextPage(ctx context.Conte
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.GetInterpolatedAssetPropertyValues(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -352,29 +359,18 @@ func (p *GetInterpolatedAssetPropertyValuesPaginator) NextPage(ctx context.Conte
 	return result, nil
 }
 
-func newServiceMetadataMiddleware_opGetInterpolatedAssetPropertyValues(region string) *awsmiddleware.RegisterServiceMetadata {
-	return &awsmiddleware.RegisterServiceMetadata{
-		Region:        region,
-		ServiceID:     ServiceID,
-		SigningName:   "iotsitewise",
-		OperationName: "GetInterpolatedAssetPropertyValues",
-	}
+type endpointPrefix_opGetInterpolatedAssetPropertyValuesMiddleware struct {
 }
 
-type opGetInterpolatedAssetPropertyValuesResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
+func (*endpointPrefix_opGetInterpolatedAssetPropertyValuesMiddleware) ID() string {
+	return "EndpointHostPrefix"
 }
 
-func (*opGetInterpolatedAssetPropertyValuesResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGetInterpolatedAssetPropertyValuesResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+func (m *endpointPrefix_opGetInterpolatedAssetPropertyValuesMiddleware) HandleFinalize(ctx context.Context, in middleware.FinalizeInput, next middleware.FinalizeHandler) (
+	out middleware.FinalizeOutput, metadata middleware.Metadata, err error,
 ) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
+	if smithyhttp.GetHostnameImmutable(ctx) || smithyhttp.IsEndpointHostPrefixDisabled(ctx) {
+		return next.HandleFinalize(ctx, in)
 	}
 
 	req, ok := in.Request.(*smithyhttp.Request)
@@ -382,104 +378,26 @@ func (m *opGetInterpolatedAssetPropertyValuesResolveEndpointMiddleware) HandleSe
 		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
 	}
 
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
+	req.URL.Host = "data." + req.URL.Host
 
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "iotsitewise"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "iotsitewise"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("iotsitewise")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
+	return next.HandleFinalize(ctx, in)
+}
+func addEndpointPrefix_opGetInterpolatedAssetPropertyValuesMiddleware(stack *middleware.Stack) error {
+	return stack.Finalize.Insert(&endpointPrefix_opGetInterpolatedAssetPropertyValuesMiddleware{}, "ResolveEndpointV2", middleware.After)
 }
 
-func addGetInterpolatedAssetPropertyValuesResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGetInterpolatedAssetPropertyValuesResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
+// GetInterpolatedAssetPropertyValuesAPIClient is a client that implements the
+// GetInterpolatedAssetPropertyValues operation.
+type GetInterpolatedAssetPropertyValuesAPIClient interface {
+	GetInterpolatedAssetPropertyValues(context.Context, *GetInterpolatedAssetPropertyValuesInput, ...func(*Options)) (*GetInterpolatedAssetPropertyValuesOutput, error)
+}
+
+var _ GetInterpolatedAssetPropertyValuesAPIClient = (*Client)(nil)
+
+func newServiceMetadataMiddleware_opGetInterpolatedAssetPropertyValues(region string) *awsmiddleware.RegisterServiceMetadata {
+	return &awsmiddleware.RegisterServiceMetadata{
+		Region:        region,
+		ServiceID:     ServiceID,
+		OperationName: "GetInterpolatedAssetPropertyValues",
+	}
 }

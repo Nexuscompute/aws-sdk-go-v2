@@ -12,6 +12,7 @@ import (
 	"github.com/aws/smithy-go/encoding/httpbinding"
 	smithyjson "github.com/aws/smithy-go/encoding/json"
 	"github.com/aws/smithy-go/middleware"
+	"github.com/aws/smithy-go/tracing"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
@@ -25,6 +26,10 @@ func (*awsRestjson1_serializeOpStartCallAnalyticsStreamTranscription) ID() strin
 func (m *awsRestjson1_serializeOpStartCallAnalyticsStreamTranscription) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -63,6 +68,8 @@ func (m *awsRestjson1_serializeOpStartCallAnalyticsStreamTranscription) HandleSe
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsStartCallAnalyticsStreamTranscriptionInput(v *StartCallAnalyticsStreamTranscriptionInput, encoder *httpbinding.Encoder) error {
@@ -90,7 +97,7 @@ func awsRestjson1_serializeOpHttpBindingsStartCallAnalyticsStreamTranscriptionIn
 		encoder.SetHeader(locationName).String(string(v.LanguageCode))
 	}
 
-	if v.LanguageModelName != nil && len(*v.LanguageModelName) > 0 {
+	if v.LanguageModelName != nil {
 		locationName := "X-Amzn-Transcribe-Language-Model-Name"
 		encoder.SetHeader(locationName).String(*v.LanguageModelName)
 	}
@@ -110,12 +117,12 @@ func awsRestjson1_serializeOpHttpBindingsStartCallAnalyticsStreamTranscriptionIn
 		encoder.SetHeader(locationName).String(string(v.PartialResultsStability))
 	}
 
-	if v.PiiEntityTypes != nil && len(*v.PiiEntityTypes) > 0 {
+	if v.PiiEntityTypes != nil {
 		locationName := "X-Amzn-Transcribe-Pii-Entity-Types"
 		encoder.SetHeader(locationName).String(*v.PiiEntityTypes)
 	}
 
-	if v.SessionId != nil && len(*v.SessionId) > 0 {
+	if v.SessionId != nil {
 		locationName := "X-Amzn-Transcribe-Session-Id"
 		encoder.SetHeader(locationName).String(*v.SessionId)
 	}
@@ -125,12 +132,12 @@ func awsRestjson1_serializeOpHttpBindingsStartCallAnalyticsStreamTranscriptionIn
 		encoder.SetHeader(locationName).String(string(v.VocabularyFilterMethod))
 	}
 
-	if v.VocabularyFilterName != nil && len(*v.VocabularyFilterName) > 0 {
+	if v.VocabularyFilterName != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Filter-Name"
 		encoder.SetHeader(locationName).String(*v.VocabularyFilterName)
 	}
 
-	if v.VocabularyName != nil && len(*v.VocabularyName) > 0 {
+	if v.VocabularyName != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Name"
 		encoder.SetHeader(locationName).String(*v.VocabularyName)
 	}
@@ -148,6 +155,10 @@ func (*awsRestjson1_serializeOpStartMedicalStreamTranscription) ID() string {
 func (m *awsRestjson1_serializeOpStartMedicalStreamTranscription) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -186,6 +197,8 @@ func (m *awsRestjson1_serializeOpStartMedicalStreamTranscription) HandleSerializ
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsStartMedicalStreamTranscriptionInput(v *StartMedicalStreamTranscriptionInput, encoder *httpbinding.Encoder) error {
@@ -223,7 +236,7 @@ func awsRestjson1_serializeOpHttpBindingsStartMedicalStreamTranscriptionInput(v 
 		encoder.SetHeader(locationName).Integer(*v.NumberOfChannels)
 	}
 
-	if v.SessionId != nil && len(*v.SessionId) > 0 {
+	if v.SessionId != nil {
 		locationName := "X-Amzn-Transcribe-Session-Id"
 		encoder.SetHeader(locationName).String(*v.SessionId)
 	}
@@ -243,7 +256,7 @@ func awsRestjson1_serializeOpHttpBindingsStartMedicalStreamTranscriptionInput(v 
 		encoder.SetHeader(locationName).String(string(v.Type))
 	}
 
-	if v.VocabularyName != nil && len(*v.VocabularyName) > 0 {
+	if v.VocabularyName != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Name"
 		encoder.SetHeader(locationName).String(*v.VocabularyName)
 	}
@@ -261,6 +274,10 @@ func (*awsRestjson1_serializeOpStartStreamTranscription) ID() string {
 func (m *awsRestjson1_serializeOpStartStreamTranscription) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -299,6 +316,8 @@ func (m *awsRestjson1_serializeOpStartStreamTranscription) HandleSerialize(ctx c
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsStartStreamTranscriptionInput(v *StartStreamTranscriptionInput, encoder *httpbinding.Encoder) error {
@@ -331,17 +350,22 @@ func awsRestjson1_serializeOpHttpBindingsStartStreamTranscriptionInput(v *StartS
 		encoder.SetHeader(locationName).Boolean(v.IdentifyLanguage)
 	}
 
+	if v.IdentifyMultipleLanguages {
+		locationName := "X-Amzn-Transcribe-Identify-Multiple-Languages"
+		encoder.SetHeader(locationName).Boolean(v.IdentifyMultipleLanguages)
+	}
+
 	if len(v.LanguageCode) > 0 {
 		locationName := "X-Amzn-Transcribe-Language-Code"
 		encoder.SetHeader(locationName).String(string(v.LanguageCode))
 	}
 
-	if v.LanguageModelName != nil && len(*v.LanguageModelName) > 0 {
+	if v.LanguageModelName != nil {
 		locationName := "X-Amzn-Transcribe-Language-Model-Name"
 		encoder.SetHeader(locationName).String(*v.LanguageModelName)
 	}
 
-	if v.LanguageOptions != nil && len(*v.LanguageOptions) > 0 {
+	if v.LanguageOptions != nil {
 		locationName := "X-Amzn-Transcribe-Language-Options"
 		encoder.SetHeader(locationName).String(*v.LanguageOptions)
 	}
@@ -366,7 +390,7 @@ func awsRestjson1_serializeOpHttpBindingsStartStreamTranscriptionInput(v *StartS
 		encoder.SetHeader(locationName).String(string(v.PartialResultsStability))
 	}
 
-	if v.PiiEntityTypes != nil && len(*v.PiiEntityTypes) > 0 {
+	if v.PiiEntityTypes != nil {
 		locationName := "X-Amzn-Transcribe-Pii-Entity-Types"
 		encoder.SetHeader(locationName).String(*v.PiiEntityTypes)
 	}
@@ -376,7 +400,7 @@ func awsRestjson1_serializeOpHttpBindingsStartStreamTranscriptionInput(v *StartS
 		encoder.SetHeader(locationName).String(string(v.PreferredLanguage))
 	}
 
-	if v.SessionId != nil && len(*v.SessionId) > 0 {
+	if v.SessionId != nil {
 		locationName := "X-Amzn-Transcribe-Session-Id"
 		encoder.SetHeader(locationName).String(*v.SessionId)
 	}
@@ -391,22 +415,22 @@ func awsRestjson1_serializeOpHttpBindingsStartStreamTranscriptionInput(v *StartS
 		encoder.SetHeader(locationName).String(string(v.VocabularyFilterMethod))
 	}
 
-	if v.VocabularyFilterName != nil && len(*v.VocabularyFilterName) > 0 {
+	if v.VocabularyFilterName != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Filter-Name"
 		encoder.SetHeader(locationName).String(*v.VocabularyFilterName)
 	}
 
-	if v.VocabularyFilterNames != nil && len(*v.VocabularyFilterNames) > 0 {
+	if v.VocabularyFilterNames != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Filter-Names"
 		encoder.SetHeader(locationName).String(*v.VocabularyFilterNames)
 	}
 
-	if v.VocabularyName != nil && len(*v.VocabularyName) > 0 {
+	if v.VocabularyName != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Name"
 		encoder.SetHeader(locationName).String(*v.VocabularyName)
 	}
 
-	if v.VocabularyNames != nil && len(*v.VocabularyNames) > 0 {
+	if v.VocabularyNames != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Names"
 		encoder.SetHeader(locationName).String(*v.VocabularyNames)
 	}

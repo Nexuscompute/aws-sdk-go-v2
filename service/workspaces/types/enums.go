@@ -11,12 +11,120 @@ const (
 )
 
 // Values returns all known values for AccessPropertyValue. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AccessPropertyValue) Values() []AccessPropertyValue {
 	return []AccessPropertyValue{
 		"ALLOW",
 		"DENY",
+	}
+}
+
+type AccountLinkStatusEnum string
+
+// Enum values for AccountLinkStatusEnum
+const (
+	AccountLinkStatusEnumLinked                           AccountLinkStatusEnum = "LINKED"
+	AccountLinkStatusEnumLinkingFailed                    AccountLinkStatusEnum = "LINKING_FAILED"
+	AccountLinkStatusEnumLinkNotFound                     AccountLinkStatusEnum = "LINK_NOT_FOUND"
+	AccountLinkStatusEnumPendingAcceptanceByTargetAccount AccountLinkStatusEnum = "PENDING_ACCEPTANCE_BY_TARGET_ACCOUNT"
+	AccountLinkStatusEnumRejected                         AccountLinkStatusEnum = "REJECTED"
+)
+
+// Values returns all known values for AccountLinkStatusEnum. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AccountLinkStatusEnum) Values() []AccountLinkStatusEnum {
+	return []AccountLinkStatusEnum{
+		"LINKED",
+		"LINKING_FAILED",
+		"LINK_NOT_FOUND",
+		"PENDING_ACCEPTANCE_BY_TARGET_ACCOUNT",
+		"REJECTED",
+	}
+}
+
+type AGAModeForDirectoryEnum string
+
+// Enum values for AGAModeForDirectoryEnum
+const (
+	AGAModeForDirectoryEnumEnabledAuto AGAModeForDirectoryEnum = "ENABLED_AUTO"
+	AGAModeForDirectoryEnumDisabled    AGAModeForDirectoryEnum = "DISABLED"
+)
+
+// Values returns all known values for AGAModeForDirectoryEnum. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AGAModeForDirectoryEnum) Values() []AGAModeForDirectoryEnum {
+	return []AGAModeForDirectoryEnum{
+		"ENABLED_AUTO",
+		"DISABLED",
+	}
+}
+
+type AGAModeForWorkSpaceEnum string
+
+// Enum values for AGAModeForWorkSpaceEnum
+const (
+	AGAModeForWorkSpaceEnumEnabledAuto AGAModeForWorkSpaceEnum = "ENABLED_AUTO"
+	AGAModeForWorkSpaceEnumDisabled    AGAModeForWorkSpaceEnum = "DISABLED"
+	AGAModeForWorkSpaceEnumInherited   AGAModeForWorkSpaceEnum = "INHERITED"
+)
+
+// Values returns all known values for AGAModeForWorkSpaceEnum. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AGAModeForWorkSpaceEnum) Values() []AGAModeForWorkSpaceEnum {
+	return []AGAModeForWorkSpaceEnum{
+		"ENABLED_AUTO",
+		"DISABLED",
+		"INHERITED",
+	}
+}
+
+type AGAPreferredProtocolForDirectory string
+
+// Enum values for AGAPreferredProtocolForDirectory
+const (
+	AGAPreferredProtocolForDirectoryTcp  AGAPreferredProtocolForDirectory = "TCP"
+	AGAPreferredProtocolForDirectoryNone AGAPreferredProtocolForDirectory = "NONE"
+)
+
+// Values returns all known values for AGAPreferredProtocolForDirectory. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AGAPreferredProtocolForDirectory) Values() []AGAPreferredProtocolForDirectory {
+	return []AGAPreferredProtocolForDirectory{
+		"TCP",
+		"NONE",
+	}
+}
+
+type AGAPreferredProtocolForWorkSpace string
+
+// Enum values for AGAPreferredProtocolForWorkSpace
+const (
+	AGAPreferredProtocolForWorkSpaceTcp       AGAPreferredProtocolForWorkSpace = "TCP"
+	AGAPreferredProtocolForWorkSpaceNone      AGAPreferredProtocolForWorkSpace = "NONE"
+	AGAPreferredProtocolForWorkSpaceInherited AGAPreferredProtocolForWorkSpace = "INHERITED"
+)
+
+// Values returns all known values for AGAPreferredProtocolForWorkSpace. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AGAPreferredProtocolForWorkSpace) Values() []AGAPreferredProtocolForWorkSpace {
+	return []AGAPreferredProtocolForWorkSpace{
+		"TCP",
+		"NONE",
+		"INHERITED",
 	}
 }
 
@@ -29,12 +137,113 @@ const (
 )
 
 // Values returns all known values for Application. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Application) Values() []Application {
 	return []Application{
 		"Microsoft_Office_2016",
 		"Microsoft_Office_2019",
+	}
+}
+
+type ApplicationAssociatedResourceType string
+
+// Enum values for ApplicationAssociatedResourceType
+const (
+	ApplicationAssociatedResourceTypeWorkspace ApplicationAssociatedResourceType = "WORKSPACE"
+	ApplicationAssociatedResourceTypeBundle    ApplicationAssociatedResourceType = "BUNDLE"
+	ApplicationAssociatedResourceTypeImage     ApplicationAssociatedResourceType = "IMAGE"
+)
+
+// Values returns all known values for ApplicationAssociatedResourceType. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ApplicationAssociatedResourceType) Values() []ApplicationAssociatedResourceType {
+	return []ApplicationAssociatedResourceType{
+		"WORKSPACE",
+		"BUNDLE",
+		"IMAGE",
+	}
+}
+
+type ApplicationSettingsStatusEnum string
+
+// Enum values for ApplicationSettingsStatusEnum
+const (
+	ApplicationSettingsStatusEnumDisabled ApplicationSettingsStatusEnum = "DISABLED"
+	ApplicationSettingsStatusEnumEnabled  ApplicationSettingsStatusEnum = "ENABLED"
+)
+
+// Values returns all known values for ApplicationSettingsStatusEnum. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ApplicationSettingsStatusEnum) Values() []ApplicationSettingsStatusEnum {
+	return []ApplicationSettingsStatusEnum{
+		"DISABLED",
+		"ENABLED",
+	}
+}
+
+type AssociationErrorCode string
+
+// Enum values for AssociationErrorCode
+const (
+	AssociationErrorCodeInsufficientDiskspace      AssociationErrorCode = "ValidationError.InsufficientDiskSpace"
+	AssociationErrorCodeInsufficientMemory         AssociationErrorCode = "ValidationError.InsufficientMemory"
+	AssociationErrorCodeUnsupportedOperatingSystem AssociationErrorCode = "ValidationError.UnsupportedOperatingSystem"
+	AssociationErrorCodeInternalServerError        AssociationErrorCode = "DeploymentError.InternalServerError"
+	AssociationErrorCodeWorkspaceUnreachable       AssociationErrorCode = "DeploymentError.WorkspaceUnreachable"
+)
+
+// Values returns all known values for AssociationErrorCode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AssociationErrorCode) Values() []AssociationErrorCode {
+	return []AssociationErrorCode{
+		"ValidationError.InsufficientDiskSpace",
+		"ValidationError.InsufficientMemory",
+		"ValidationError.UnsupportedOperatingSystem",
+		"DeploymentError.InternalServerError",
+		"DeploymentError.WorkspaceUnreachable",
+	}
+}
+
+type AssociationState string
+
+// Enum values for AssociationState
+const (
+	AssociationStatePendingInstall             AssociationState = "PENDING_INSTALL"
+	AssociationStatePendingInstallDeployment   AssociationState = "PENDING_INSTALL_DEPLOYMENT"
+	AssociationStatePendingUninstall           AssociationState = "PENDING_UNINSTALL"
+	AssociationStatePendingUninstallDeployment AssociationState = "PENDING_UNINSTALL_DEPLOYMENT"
+	AssociationStateInstalling                 AssociationState = "INSTALLING"
+	AssociationStateUninstalling               AssociationState = "UNINSTALLING"
+	AssociationStateError                      AssociationState = "ERROR"
+	AssociationStateCompleted                  AssociationState = "COMPLETED"
+	AssociationStateRemoved                    AssociationState = "REMOVED"
+)
+
+// Values returns all known values for AssociationState. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AssociationState) Values() []AssociationState {
+	return []AssociationState{
+		"PENDING_INSTALL",
+		"PENDING_INSTALL_DEPLOYMENT",
+		"PENDING_UNINSTALL",
+		"PENDING_UNINSTALL_DEPLOYMENT",
+		"INSTALLING",
+		"UNINSTALLING",
+		"ERROR",
+		"COMPLETED",
+		"REMOVED",
 	}
 }
 
@@ -50,8 +259,9 @@ const (
 )
 
 // Values returns all known values for AssociationStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AssociationStatus) Values() []AssociationStatus {
 	return []AssociationStatus{
 		"NOT_ASSOCIATED",
@@ -59,6 +269,41 @@ func (AssociationStatus) Values() []AssociationStatus {
 		"ASSOCIATED_WITH_SHARED_ACCOUNT",
 		"PENDING_ASSOCIATION",
 		"PENDING_DISASSOCIATION",
+	}
+}
+
+type AuthenticationType string
+
+// Enum values for AuthenticationType
+const (
+	AuthenticationTypeSaml AuthenticationType = "SAML"
+)
+
+// Values returns all known values for AuthenticationType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AuthenticationType) Values() []AuthenticationType {
+	return []AuthenticationType{
+		"SAML",
+	}
+}
+
+type BundleAssociatedResourceType string
+
+// Enum values for BundleAssociatedResourceType
+const (
+	BundleAssociatedResourceTypeApplication BundleAssociatedResourceType = "APPLICATION"
+)
+
+// Values returns all known values for BundleAssociatedResourceType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (BundleAssociatedResourceType) Values() []BundleAssociatedResourceType {
+	return []BundleAssociatedResourceType{
+		"APPLICATION",
 	}
 }
 
@@ -71,8 +316,9 @@ const (
 )
 
 // Values returns all known values for BundleType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BundleType) Values() []BundleType {
 	return []BundleType{
 		"REGULAR",
@@ -90,8 +336,9 @@ const (
 
 // Values returns all known values for CertificateBasedAuthStatusEnum. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CertificateBasedAuthStatusEnum) Values() []CertificateBasedAuthStatusEnum {
 	return []CertificateBasedAuthStatusEnum{
 		"DISABLED",
@@ -112,8 +359,9 @@ const (
 )
 
 // Values returns all known values for ClientDeviceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ClientDeviceType) Values() []ClientDeviceType {
 	return []ClientDeviceType{
 		"DeviceTypeWindows",
@@ -129,20 +377,23 @@ type Compute string
 
 // Enum values for Compute
 const (
-	ComputeValue           Compute = "VALUE"
-	ComputeStandard        Compute = "STANDARD"
-	ComputePerformance     Compute = "PERFORMANCE"
-	ComputePower           Compute = "POWER"
-	ComputeGraphics        Compute = "GRAPHICS"
-	ComputePowerpro        Compute = "POWERPRO"
-	ComputeGraphicspro     Compute = "GRAPHICSPRO"
-	ComputeGraphicsG4dn    Compute = "GRAPHICS_G4DN"
-	ComputeGraphicsproG4dn Compute = "GRAPHICSPRO_G4DN"
+	ComputeValue                 Compute = "VALUE"
+	ComputeStandard              Compute = "STANDARD"
+	ComputePerformance           Compute = "PERFORMANCE"
+	ComputePower                 Compute = "POWER"
+	ComputeGraphics              Compute = "GRAPHICS"
+	ComputePowerpro              Compute = "POWERPRO"
+	ComputeGeneralpurpose4xlarge Compute = "GENERALPURPOSE_4XLARGE"
+	ComputeGeneralpurpose8xlarge Compute = "GENERALPURPOSE_8XLARGE"
+	ComputeGraphicspro           Compute = "GRAPHICSPRO"
+	ComputeGraphicsG4dn          Compute = "GRAPHICS_G4DN"
+	ComputeGraphicsproG4dn       Compute = "GRAPHICSPRO_G4DN"
 )
 
 // Values returns all known values for Compute. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Compute) Values() []Compute {
 	return []Compute{
 		"VALUE",
@@ -151,6 +402,8 @@ func (Compute) Values() []Compute {
 		"POWER",
 		"GRAPHICS",
 		"POWERPRO",
+		"GENERALPURPOSE_4XLARGE",
+		"GENERALPURPOSE_8XLARGE",
 		"GRAPHICSPRO",
 		"GRAPHICS_G4DN",
 		"GRAPHICSPRO_G4DN",
@@ -167,8 +420,9 @@ const (
 )
 
 // Values returns all known values for ConnectionAliasState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConnectionAliasState) Values() []ConnectionAliasState {
 	return []ConnectionAliasState{
 		"CREATING",
@@ -187,13 +441,52 @@ const (
 )
 
 // Values returns all known values for ConnectionState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConnectionState) Values() []ConnectionState {
 	return []ConnectionState{
 		"CONNECTED",
 		"DISCONNECTED",
 		"UNKNOWN",
+	}
+}
+
+type DataReplication string
+
+// Enum values for DataReplication
+const (
+	DataReplicationNoReplication   DataReplication = "NO_REPLICATION"
+	DataReplicationPrimaryAsSource DataReplication = "PRIMARY_AS_SOURCE"
+)
+
+// Values returns all known values for DataReplication. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DataReplication) Values() []DataReplication {
+	return []DataReplication{
+		"NO_REPLICATION",
+		"PRIMARY_AS_SOURCE",
+	}
+}
+
+type DedicatedTenancyAccountType string
+
+// Enum values for DedicatedTenancyAccountType
+const (
+	DedicatedTenancyAccountTypeSourceAccount DedicatedTenancyAccountType = "SOURCE_ACCOUNT"
+	DedicatedTenancyAccountTypeTargetAccount DedicatedTenancyAccountType = "TARGET_ACCOUNT"
+)
+
+// Values returns all known values for DedicatedTenancyAccountType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DedicatedTenancyAccountType) Values() []DedicatedTenancyAccountType {
+	return []DedicatedTenancyAccountType{
+		"SOURCE_ACCOUNT",
+		"TARGET_ACCOUNT",
 	}
 }
 
@@ -208,8 +501,9 @@ const (
 
 // Values returns all known values for DedicatedTenancyModificationStateEnum. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DedicatedTenancyModificationStateEnum) Values() []DedicatedTenancyModificationStateEnum {
 	return []DedicatedTenancyModificationStateEnum{
 		"PENDING",
@@ -227,6 +521,7 @@ const (
 
 // Values returns all known values for DedicatedTenancySupportEnum. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DedicatedTenancySupportEnum) Values() []DedicatedTenancySupportEnum {
 	return []DedicatedTenancySupportEnum{
@@ -244,8 +539,9 @@ const (
 
 // Values returns all known values for DedicatedTenancySupportResultEnum. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DedicatedTenancySupportResultEnum) Values() []DedicatedTenancySupportResultEnum {
 	return []DedicatedTenancySupportResultEnum{
 		"ENABLED",
@@ -262,8 +558,9 @@ const (
 
 // Values returns all known values for DeletableCertificateBasedAuthProperty. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeletableCertificateBasedAuthProperty) Values() []DeletableCertificateBasedAuthProperty {
 	return []DeletableCertificateBasedAuthProperty{
 		"CERTIFICATE_BASED_AUTH_PROPERTIES_CERTIFICATE_AUTHORITY_ARN",
@@ -279,12 +576,92 @@ const (
 )
 
 // Values returns all known values for DeletableSamlProperty. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeletableSamlProperty) Values() []DeletableSamlProperty {
 	return []DeletableSamlProperty{
 		"SAML_PROPERTIES_USER_ACCESS_URL",
 		"SAML_PROPERTIES_RELAY_STATE_PARAMETER_NAME",
+	}
+}
+
+type DescribeWorkspaceDirectoriesFilterName string
+
+// Enum values for DescribeWorkspaceDirectoriesFilterName
+const (
+	DescribeWorkspaceDirectoriesFilterNameUserIdentityType DescribeWorkspaceDirectoriesFilterName = "USER_IDENTITY_TYPE"
+	DescribeWorkspaceDirectoriesFilterNameWorkspaceType    DescribeWorkspaceDirectoriesFilterName = "WORKSPACE_TYPE"
+)
+
+// Values returns all known values for DescribeWorkspaceDirectoriesFilterName.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DescribeWorkspaceDirectoriesFilterName) Values() []DescribeWorkspaceDirectoriesFilterName {
+	return []DescribeWorkspaceDirectoriesFilterName{
+		"USER_IDENTITY_TYPE",
+		"WORKSPACE_TYPE",
+	}
+}
+
+type DescribeWorkspacesPoolsFilterName string
+
+// Enum values for DescribeWorkspacesPoolsFilterName
+const (
+	DescribeWorkspacesPoolsFilterNamePoolname DescribeWorkspacesPoolsFilterName = "PoolName"
+)
+
+// Values returns all known values for DescribeWorkspacesPoolsFilterName. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DescribeWorkspacesPoolsFilterName) Values() []DescribeWorkspacesPoolsFilterName {
+	return []DescribeWorkspacesPoolsFilterName{
+		"PoolName",
+	}
+}
+
+type DescribeWorkspacesPoolsFilterOperator string
+
+// Enum values for DescribeWorkspacesPoolsFilterOperator
+const (
+	DescribeWorkspacesPoolsFilterOperatorEquals      DescribeWorkspacesPoolsFilterOperator = "EQUALS"
+	DescribeWorkspacesPoolsFilterOperatorNotequals   DescribeWorkspacesPoolsFilterOperator = "NOTEQUALS"
+	DescribeWorkspacesPoolsFilterOperatorContains    DescribeWorkspacesPoolsFilterOperator = "CONTAINS"
+	DescribeWorkspacesPoolsFilterOperatorNotcontains DescribeWorkspacesPoolsFilterOperator = "NOTCONTAINS"
+)
+
+// Values returns all known values for DescribeWorkspacesPoolsFilterOperator. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DescribeWorkspacesPoolsFilterOperator) Values() []DescribeWorkspacesPoolsFilterOperator {
+	return []DescribeWorkspacesPoolsFilterOperator{
+		"EQUALS",
+		"NOTEQUALS",
+		"CONTAINS",
+		"NOTCONTAINS",
+	}
+}
+
+type ImageAssociatedResourceType string
+
+// Enum values for ImageAssociatedResourceType
+const (
+	ImageAssociatedResourceTypeApplication ImageAssociatedResourceType = "APPLICATION"
+)
+
+// Values returns all known values for ImageAssociatedResourceType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ImageAssociatedResourceType) Values() []ImageAssociatedResourceType {
+	return []ImageAssociatedResourceType{
+		"APPLICATION",
 	}
 }
 
@@ -297,8 +674,9 @@ const (
 )
 
 // Values returns all known values for ImageType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImageType) Values() []ImageType {
 	return []ImageType{
 		"OWNED",
@@ -315,8 +693,9 @@ const (
 )
 
 // Values returns all known values for LogUploadEnum. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogUploadEnum) Values() []LogUploadEnum {
 	return []LogUploadEnum{
 		"ENABLED",
@@ -335,6 +714,7 @@ const (
 
 // Values returns all known values for ModificationResourceEnum. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ModificationResourceEnum) Values() []ModificationResourceEnum {
 	return []ModificationResourceEnum{
@@ -353,12 +733,54 @@ const (
 )
 
 // Values returns all known values for ModificationStateEnum. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ModificationStateEnum) Values() []ModificationStateEnum {
 	return []ModificationStateEnum{
 		"UPDATE_INITIATED",
 		"UPDATE_IN_PROGRESS",
+	}
+}
+
+type OperatingSystemName string
+
+// Enum values for OperatingSystemName
+const (
+	OperatingSystemNameAmazonLinux2      OperatingSystemName = "AMAZON_LINUX_2"
+	OperatingSystemNameUbuntu1804        OperatingSystemName = "UBUNTU_18_04"
+	OperatingSystemNameUbuntu2004        OperatingSystemName = "UBUNTU_20_04"
+	OperatingSystemNameUbuntu2204        OperatingSystemName = "UBUNTU_22_04"
+	OperatingSystemNameUnknown           OperatingSystemName = "UNKNOWN"
+	OperatingSystemNameWindows10         OperatingSystemName = "WINDOWS_10"
+	OperatingSystemNameWindows11         OperatingSystemName = "WINDOWS_11"
+	OperatingSystemNameWindows7          OperatingSystemName = "WINDOWS_7"
+	OperatingSystemNameWindowsServer2016 OperatingSystemName = "WINDOWS_SERVER_2016"
+	OperatingSystemNameWindowsServer2019 OperatingSystemName = "WINDOWS_SERVER_2019"
+	OperatingSystemNameWindowsServer2022 OperatingSystemName = "WINDOWS_SERVER_2022"
+	OperatingSystemNameRhel8             OperatingSystemName = "RHEL_8"
+	OperatingSystemNameRocky8            OperatingSystemName = "ROCKY_8"
+)
+
+// Values returns all known values for OperatingSystemName. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OperatingSystemName) Values() []OperatingSystemName {
+	return []OperatingSystemName{
+		"AMAZON_LINUX_2",
+		"UBUNTU_18_04",
+		"UBUNTU_20_04",
+		"UBUNTU_22_04",
+		"UNKNOWN",
+		"WINDOWS_10",
+		"WINDOWS_11",
+		"WINDOWS_7",
+		"WINDOWS_SERVER_2016",
+		"WINDOWS_SERVER_2019",
+		"WINDOWS_SERVER_2022",
+		"RHEL_8",
+		"ROCKY_8",
 	}
 }
 
@@ -371,8 +793,9 @@ const (
 )
 
 // Values returns all known values for OperatingSystemType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OperatingSystemType) Values() []OperatingSystemType {
 	return []OperatingSystemType{
 		"WINDOWS",
@@ -389,8 +812,9 @@ const (
 )
 
 // Values returns all known values for Protocol. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Protocol) Values() []Protocol {
 	return []Protocol{
 		"PCOIP",
@@ -407,8 +831,9 @@ const (
 )
 
 // Values returns all known values for ReconnectEnum. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReconnectEnum) Values() []ReconnectEnum {
 	return []ReconnectEnum{
 		"ENABLED",
@@ -426,8 +851,9 @@ const (
 )
 
 // Values returns all known values for RunningMode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RunningMode) Values() []RunningMode {
 	return []RunningMode{
 		"AUTO_STOP",
@@ -446,13 +872,33 @@ const (
 )
 
 // Values returns all known values for SamlStatusEnum. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SamlStatusEnum) Values() []SamlStatusEnum {
 	return []SamlStatusEnum{
 		"DISABLED",
 		"ENABLED",
 		"ENABLED_WITH_DIRECTORY_LOGIN_FALLBACK",
+	}
+}
+
+type SessionConnectionState string
+
+// Enum values for SessionConnectionState
+const (
+	SessionConnectionStateConnected    SessionConnectionState = "CONNECTED"
+	SessionConnectionStateNotConnected SessionConnectionState = "NOT_CONNECTED"
+)
+
+// Values returns all known values for SessionConnectionState. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SessionConnectionState) Values() []SessionConnectionState {
+	return []SessionConnectionState{
+		"CONNECTED",
+		"NOT_CONNECTED",
 	}
 }
 
@@ -466,12 +912,69 @@ const (
 
 // Values returns all known values for StandbyWorkspaceRelationshipType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StandbyWorkspaceRelationshipType) Values() []StandbyWorkspaceRelationshipType {
 	return []StandbyWorkspaceRelationshipType{
 		"PRIMARY",
 		"STANDBY",
+	}
+}
+
+type StorageConnectorStatusEnum string
+
+// Enum values for StorageConnectorStatusEnum
+const (
+	StorageConnectorStatusEnumEnabled  StorageConnectorStatusEnum = "ENABLED"
+	StorageConnectorStatusEnumDisabled StorageConnectorStatusEnum = "DISABLED"
+)
+
+// Values returns all known values for StorageConnectorStatusEnum. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StorageConnectorStatusEnum) Values() []StorageConnectorStatusEnum {
+	return []StorageConnectorStatusEnum{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
+type StorageConnectorTypeEnum string
+
+// Enum values for StorageConnectorTypeEnum
+const (
+	StorageConnectorTypeEnumHomeFolder StorageConnectorTypeEnum = "HOME_FOLDER"
+)
+
+// Values returns all known values for StorageConnectorTypeEnum. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StorageConnectorTypeEnum) Values() []StorageConnectorTypeEnum {
+	return []StorageConnectorTypeEnum{
+		"HOME_FOLDER",
+	}
+}
+
+type StreamingExperiencePreferredProtocolEnum string
+
+// Enum values for StreamingExperiencePreferredProtocolEnum
+const (
+	StreamingExperiencePreferredProtocolEnumTcp StreamingExperiencePreferredProtocolEnum = "TCP"
+	StreamingExperiencePreferredProtocolEnumUdp StreamingExperiencePreferredProtocolEnum = "UDP"
+)
+
+// Values returns all known values for StreamingExperiencePreferredProtocolEnum.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StreamingExperiencePreferredProtocolEnum) Values() []StreamingExperiencePreferredProtocolEnum {
+	return []StreamingExperiencePreferredProtocolEnum{
+		"TCP",
+		"UDP",
 	}
 }
 
@@ -484,8 +987,9 @@ const (
 )
 
 // Values returns all known values for TargetWorkspaceState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TargetWorkspaceState) Values() []TargetWorkspaceState {
 	return []TargetWorkspaceState{
 		"AVAILABLE",
@@ -502,12 +1006,137 @@ const (
 )
 
 // Values returns all known values for Tenancy. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Tenancy) Values() []Tenancy {
 	return []Tenancy{
 		"DEDICATED",
 		"SHARED",
+	}
+}
+
+type UserIdentityType string
+
+// Enum values for UserIdentityType
+const (
+	UserIdentityTypeCustomerManaged      UserIdentityType = "CUSTOMER_MANAGED"
+	UserIdentityTypeAwsDirectoryService  UserIdentityType = "AWS_DIRECTORY_SERVICE"
+	UserIdentityTypeAwsIamIdentityCenter UserIdentityType = "AWS_IAM_IDENTITY_CENTER"
+)
+
+// Values returns all known values for UserIdentityType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UserIdentityType) Values() []UserIdentityType {
+	return []UserIdentityType{
+		"CUSTOMER_MANAGED",
+		"AWS_DIRECTORY_SERVICE",
+		"AWS_IAM_IDENTITY_CENTER",
+	}
+}
+
+type UserSettingActionEnum string
+
+// Enum values for UserSettingActionEnum
+const (
+	UserSettingActionEnumClipboardCopyFromLocalDevice UserSettingActionEnum = "CLIPBOARD_COPY_FROM_LOCAL_DEVICE"
+	UserSettingActionEnumClipboardCopyToLocalDevice   UserSettingActionEnum = "CLIPBOARD_COPY_TO_LOCAL_DEVICE"
+	UserSettingActionEnumPrintingToLocalDevice        UserSettingActionEnum = "PRINTING_TO_LOCAL_DEVICE"
+	UserSettingActionEnumSmartCard                    UserSettingActionEnum = "SMART_CARD"
+)
+
+// Values returns all known values for UserSettingActionEnum. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UserSettingActionEnum) Values() []UserSettingActionEnum {
+	return []UserSettingActionEnum{
+		"CLIPBOARD_COPY_FROM_LOCAL_DEVICE",
+		"CLIPBOARD_COPY_TO_LOCAL_DEVICE",
+		"PRINTING_TO_LOCAL_DEVICE",
+		"SMART_CARD",
+	}
+}
+
+type UserSettingPermissionEnum string
+
+// Enum values for UserSettingPermissionEnum
+const (
+	UserSettingPermissionEnumEnabled  UserSettingPermissionEnum = "ENABLED"
+	UserSettingPermissionEnumDisabled UserSettingPermissionEnum = "DISABLED"
+)
+
+// Values returns all known values for UserSettingPermissionEnum. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UserSettingPermissionEnum) Values() []UserSettingPermissionEnum {
+	return []UserSettingPermissionEnum{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
+type WorkSpaceApplicationLicenseType string
+
+// Enum values for WorkSpaceApplicationLicenseType
+const (
+	WorkSpaceApplicationLicenseTypeLicensed   WorkSpaceApplicationLicenseType = "LICENSED"
+	WorkSpaceApplicationLicenseTypeUnlicensed WorkSpaceApplicationLicenseType = "UNLICENSED"
+)
+
+// Values returns all known values for WorkSpaceApplicationLicenseType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WorkSpaceApplicationLicenseType) Values() []WorkSpaceApplicationLicenseType {
+	return []WorkSpaceApplicationLicenseType{
+		"LICENSED",
+		"UNLICENSED",
+	}
+}
+
+type WorkSpaceApplicationState string
+
+// Enum values for WorkSpaceApplicationState
+const (
+	WorkSpaceApplicationStatePending       WorkSpaceApplicationState = "PENDING"
+	WorkSpaceApplicationStateError         WorkSpaceApplicationState = "ERROR"
+	WorkSpaceApplicationStateAvailable     WorkSpaceApplicationState = "AVAILABLE"
+	WorkSpaceApplicationStateUninstallOnly WorkSpaceApplicationState = "UNINSTALL_ONLY"
+)
+
+// Values returns all known values for WorkSpaceApplicationState. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WorkSpaceApplicationState) Values() []WorkSpaceApplicationState {
+	return []WorkSpaceApplicationState{
+		"PENDING",
+		"ERROR",
+		"AVAILABLE",
+		"UNINSTALL_ONLY",
+	}
+}
+
+type WorkSpaceAssociatedResourceType string
+
+// Enum values for WorkSpaceAssociatedResourceType
+const (
+	WorkSpaceAssociatedResourceTypeApplication WorkSpaceAssociatedResourceType = "APPLICATION"
+)
+
+// Values returns all known values for WorkSpaceAssociatedResourceType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WorkSpaceAssociatedResourceType) Values() []WorkSpaceAssociatedResourceType {
+	return []WorkSpaceAssociatedResourceType{
+		"APPLICATION",
 	}
 }
 
@@ -521,8 +1150,9 @@ const (
 )
 
 // Values returns all known values for WorkspaceBundleState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkspaceBundleState) Values() []WorkspaceBundleState {
 	return []WorkspaceBundleState{
 		"AVAILABLE",
@@ -543,8 +1173,9 @@ const (
 )
 
 // Values returns all known values for WorkspaceDirectoryState. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkspaceDirectoryState) Values() []WorkspaceDirectoryState {
 	return []WorkspaceDirectoryState{
 		"REGISTERING",
@@ -559,17 +1190,128 @@ type WorkspaceDirectoryType string
 
 // Enum values for WorkspaceDirectoryType
 const (
-	WorkspaceDirectoryTypeSimpleAd    WorkspaceDirectoryType = "SIMPLE_AD"
-	WorkspaceDirectoryTypeAdConnector WorkspaceDirectoryType = "AD_CONNECTOR"
+	WorkspaceDirectoryTypeSimpleAd             WorkspaceDirectoryType = "SIMPLE_AD"
+	WorkspaceDirectoryTypeAdConnector          WorkspaceDirectoryType = "AD_CONNECTOR"
+	WorkspaceDirectoryTypeCustomerManaged      WorkspaceDirectoryType = "CUSTOMER_MANAGED"
+	WorkspaceDirectoryTypeAwsIamIdentityCenter WorkspaceDirectoryType = "AWS_IAM_IDENTITY_CENTER"
 )
 
 // Values returns all known values for WorkspaceDirectoryType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkspaceDirectoryType) Values() []WorkspaceDirectoryType {
 	return []WorkspaceDirectoryType{
 		"SIMPLE_AD",
 		"AD_CONNECTOR",
+		"CUSTOMER_MANAGED",
+		"AWS_IAM_IDENTITY_CENTER",
+	}
+}
+
+type WorkspaceImageErrorDetailCode string
+
+// Enum values for WorkspaceImageErrorDetailCode
+const (
+	WorkspaceImageErrorDetailCodeOutdatedPowershellVersion              WorkspaceImageErrorDetailCode = "OutdatedPowershellVersion"
+	WorkspaceImageErrorDetailCodeOfficeInstalled                        WorkspaceImageErrorDetailCode = "OfficeInstalled"
+	WorkspaceImageErrorDetailCodePcoipAgentInstalled                    WorkspaceImageErrorDetailCode = "PCoIPAgentInstalled"
+	WorkspaceImageErrorDetailCodeWindowsUpdatesEnabled                  WorkspaceImageErrorDetailCode = "WindowsUpdatesEnabled"
+	WorkspaceImageErrorDetailCodeAutoMountDisabled                      WorkspaceImageErrorDetailCode = "AutoMountDisabled"
+	WorkspaceImageErrorDetailCodeWorkspacesByolAccountNotFound          WorkspaceImageErrorDetailCode = "WorkspacesBYOLAccountNotFound"
+	WorkspaceImageErrorDetailCodeWorkspacesByolAccountDisabled          WorkspaceImageErrorDetailCode = "WorkspacesBYOLAccountDisabled"
+	WorkspaceImageErrorDetailCodeDhcpDisabled                           WorkspaceImageErrorDetailCode = "DHCPDisabled"
+	WorkspaceImageErrorDetailCodeDiskFreeSpace                          WorkspaceImageErrorDetailCode = "DiskFreeSpace"
+	WorkspaceImageErrorDetailCodeAdditionalDrivesAttached               WorkspaceImageErrorDetailCode = "AdditionalDrivesAttached"
+	WorkspaceImageErrorDetailCodeOsNotSupported                         WorkspaceImageErrorDetailCode = "OSNotSupported"
+	WorkspaceImageErrorDetailCodeDomainJoined                           WorkspaceImageErrorDetailCode = "DomainJoined"
+	WorkspaceImageErrorDetailCodeAzureDomainJoined                      WorkspaceImageErrorDetailCode = "AzureDomainJoined"
+	WorkspaceImageErrorDetailCodeFirewallEnabled                        WorkspaceImageErrorDetailCode = "FirewallEnabled"
+	WorkspaceImageErrorDetailCodeVmwareToolsInstalled                   WorkspaceImageErrorDetailCode = "VMWareToolsInstalled"
+	WorkspaceImageErrorDetailCodeDiskSizeExceeded                       WorkspaceImageErrorDetailCode = "DiskSizeExceeded"
+	WorkspaceImageErrorDetailCodeIncompatiblePartitioning               WorkspaceImageErrorDetailCode = "IncompatiblePartitioning"
+	WorkspaceImageErrorDetailCodePendingReboot                          WorkspaceImageErrorDetailCode = "PendingReboot"
+	WorkspaceImageErrorDetailCodeAutoLogonEnabled                       WorkspaceImageErrorDetailCode = "AutoLogonEnabled"
+	WorkspaceImageErrorDetailCodeRealtimeUniversalDisabled              WorkspaceImageErrorDetailCode = "RealTimeUniversalDisabled"
+	WorkspaceImageErrorDetailCodeMultipleBootPartition                  WorkspaceImageErrorDetailCode = "MultipleBootPartition"
+	WorkspaceImageErrorDetailCodeSixtyFourBitOs                         WorkspaceImageErrorDetailCode = "Requires64BitOS"
+	WorkspaceImageErrorDetailCodeZeroRearmCount                         WorkspaceImageErrorDetailCode = "ZeroRearmCount"
+	WorkspaceImageErrorDetailCodeInPlaceUpgrade                         WorkspaceImageErrorDetailCode = "InPlaceUpgrade"
+	WorkspaceImageErrorDetailCodeAntiVirusInstalled                     WorkspaceImageErrorDetailCode = "AntiVirusInstalled"
+	WorkspaceImageErrorDetailCodeUefiNotSupported                       WorkspaceImageErrorDetailCode = "UEFINotSupported"
+	WorkspaceImageErrorDetailCodeUnknownError                           WorkspaceImageErrorDetailCode = "UnknownError"
+	WorkspaceImageErrorDetailCodeAppxPackagesInstalled                  WorkspaceImageErrorDetailCode = "AppXPackagesInstalled"
+	WorkspaceImageErrorDetailCodeReservedStorageInUse                   WorkspaceImageErrorDetailCode = "ReservedStorageInUse"
+	WorkspaceImageErrorDetailCodeAdditionalDrivesPresent                WorkspaceImageErrorDetailCode = "AdditionalDrivesPresent"
+	WorkspaceImageErrorDetailCodeWindowsUpdatesRequired                 WorkspaceImageErrorDetailCode = "WindowsUpdatesRequired"
+	WorkspaceImageErrorDetailCodeSysprepFileMissing                     WorkspaceImageErrorDetailCode = "SysPrepFileMissing"
+	WorkspaceImageErrorDetailCodeUserProfileMissing                     WorkspaceImageErrorDetailCode = "UserProfileMissing"
+	WorkspaceImageErrorDetailCodeInsufficientDiskSpace                  WorkspaceImageErrorDetailCode = "InsufficientDiskSpace"
+	WorkspaceImageErrorDetailCodeEnvironmentVariablesPathMissingEntries WorkspaceImageErrorDetailCode = "EnvironmentVariablesPathMissingEntries"
+	WorkspaceImageErrorDetailCodeDomainAccountServicesFound             WorkspaceImageErrorDetailCode = "DomainAccountServicesFound"
+	WorkspaceImageErrorDetailCodeInvalidIp                              WorkspaceImageErrorDetailCode = "InvalidIp"
+	WorkspaceImageErrorDetailCodeRemoteDesktopServicesDisabled          WorkspaceImageErrorDetailCode = "RemoteDesktopServicesDisabled"
+	WorkspaceImageErrorDetailCodeWindowsModulesInstallerDisabled        WorkspaceImageErrorDetailCode = "WindowsModulesInstallerDisabled"
+	WorkspaceImageErrorDetailCodeAmazonSsmAgentEnabled                  WorkspaceImageErrorDetailCode = "AmazonSsmAgentEnabled"
+	WorkspaceImageErrorDetailCodeUnsupportedSecurityProtocol            WorkspaceImageErrorDetailCode = "UnsupportedSecurityProtocol"
+	WorkspaceImageErrorDetailCodeMultipleUserProfiles                   WorkspaceImageErrorDetailCode = "MultipleUserProfiles"
+	WorkspaceImageErrorDetailCodeStagedAppxPackage                      WorkspaceImageErrorDetailCode = "StagedAppxPackage"
+	WorkspaceImageErrorDetailCodeUnsupportedOsUpgrade                   WorkspaceImageErrorDetailCode = "UnsupportedOsUpgrade"
+	WorkspaceImageErrorDetailCodeInsufficientRearmCount                 WorkspaceImageErrorDetailCode = "InsufficientRearmCount"
+)
+
+// Values returns all known values for WorkspaceImageErrorDetailCode. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WorkspaceImageErrorDetailCode) Values() []WorkspaceImageErrorDetailCode {
+	return []WorkspaceImageErrorDetailCode{
+		"OutdatedPowershellVersion",
+		"OfficeInstalled",
+		"PCoIPAgentInstalled",
+		"WindowsUpdatesEnabled",
+		"AutoMountDisabled",
+		"WorkspacesBYOLAccountNotFound",
+		"WorkspacesBYOLAccountDisabled",
+		"DHCPDisabled",
+		"DiskFreeSpace",
+		"AdditionalDrivesAttached",
+		"OSNotSupported",
+		"DomainJoined",
+		"AzureDomainJoined",
+		"FirewallEnabled",
+		"VMWareToolsInstalled",
+		"DiskSizeExceeded",
+		"IncompatiblePartitioning",
+		"PendingReboot",
+		"AutoLogonEnabled",
+		"RealTimeUniversalDisabled",
+		"MultipleBootPartition",
+		"Requires64BitOS",
+		"ZeroRearmCount",
+		"InPlaceUpgrade",
+		"AntiVirusInstalled",
+		"UEFINotSupported",
+		"UnknownError",
+		"AppXPackagesInstalled",
+		"ReservedStorageInUse",
+		"AdditionalDrivesPresent",
+		"WindowsUpdatesRequired",
+		"SysPrepFileMissing",
+		"UserProfileMissing",
+		"InsufficientDiskSpace",
+		"EnvironmentVariablesPathMissingEntries",
+		"DomainAccountServicesFound",
+		"InvalidIp",
+		"RemoteDesktopServicesDisabled",
+		"WindowsModulesInstallerDisabled",
+		"AmazonSsmAgentEnabled",
+		"UnsupportedSecurityProtocol",
+		"MultipleUserProfiles",
+		"StagedAppxPackage",
+		"UnsupportedOsUpgrade",
+		"InsufficientRearmCount",
 	}
 }
 
@@ -582,14 +1324,16 @@ const (
 	WorkspaceImageIngestionProcessByolGraphicspro      WorkspaceImageIngestionProcess = "BYOL_GRAPHICSPRO"
 	WorkspaceImageIngestionProcessByolGraphicsG4dn     WorkspaceImageIngestionProcess = "BYOL_GRAPHICS_G4DN"
 	WorkspaceImageIngestionProcessByolRegularWsp       WorkspaceImageIngestionProcess = "BYOL_REGULAR_WSP"
+	WorkspaceImageIngestionProcessByolGraphicsG4dnWsp  WorkspaceImageIngestionProcess = "BYOL_GRAPHICS_G4DN_WSP"
 	WorkspaceImageIngestionProcessByolRegularByop      WorkspaceImageIngestionProcess = "BYOL_REGULAR_BYOP"
 	WorkspaceImageIngestionProcessByolGraphicsG4dnByop WorkspaceImageIngestionProcess = "BYOL_GRAPHICS_G4DN_BYOP"
 )
 
 // Values returns all known values for WorkspaceImageIngestionProcess. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkspaceImageIngestionProcess) Values() []WorkspaceImageIngestionProcess {
 	return []WorkspaceImageIngestionProcess{
 		"BYOL_REGULAR",
@@ -597,6 +1341,7 @@ func (WorkspaceImageIngestionProcess) Values() []WorkspaceImageIngestionProcess 
 		"BYOL_GRAPHICSPRO",
 		"BYOL_GRAPHICS_G4DN",
 		"BYOL_REGULAR_WSP",
+		"BYOL_GRAPHICS_G4DN_WSP",
 		"BYOL_REGULAR_BYOP",
 		"BYOL_GRAPHICS_G4DN_BYOP",
 	}
@@ -612,8 +1357,9 @@ const (
 
 // Values returns all known values for WorkspaceImageRequiredTenancy. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkspaceImageRequiredTenancy) Values() []WorkspaceImageRequiredTenancy {
 	return []WorkspaceImageRequiredTenancy{
 		"DEFAULT",
@@ -631,13 +1377,138 @@ const (
 )
 
 // Values returns all known values for WorkspaceImageState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkspaceImageState) Values() []WorkspaceImageState {
 	return []WorkspaceImageState{
 		"AVAILABLE",
 		"PENDING",
 		"ERROR",
+	}
+}
+
+type WorkspacesPoolErrorCode string
+
+// Enum values for WorkspacesPoolErrorCode
+const (
+	WorkspacesPoolErrorCodeIamServiceRoleIsMissing                           WorkspacesPoolErrorCode = "IAM_SERVICE_ROLE_IS_MISSING"
+	WorkspacesPoolErrorCodeIamServiceRoleMissingEniDescribeAction            WorkspacesPoolErrorCode = "IAM_SERVICE_ROLE_MISSING_ENI_DESCRIBE_ACTION"
+	WorkspacesPoolErrorCodeIamServiceRoleMissingEniCreateAction              WorkspacesPoolErrorCode = "IAM_SERVICE_ROLE_MISSING_ENI_CREATE_ACTION"
+	WorkspacesPoolErrorCodeIamServiceRoleMissingEniDeleteAction              WorkspacesPoolErrorCode = "IAM_SERVICE_ROLE_MISSING_ENI_DELETE_ACTION"
+	WorkspacesPoolErrorCodeNetworkInterfaceLimitExceeded                     WorkspacesPoolErrorCode = "NETWORK_INTERFACE_LIMIT_EXCEEDED"
+	WorkspacesPoolErrorCodeInternalServiceError                              WorkspacesPoolErrorCode = "INTERNAL_SERVICE_ERROR"
+	WorkspacesPoolErrorCodeMachineRoleIsMissing                              WorkspacesPoolErrorCode = "MACHINE_ROLE_IS_MISSING"
+	WorkspacesPoolErrorCodeStsDisabledInRegion                               WorkspacesPoolErrorCode = "STS_DISABLED_IN_REGION"
+	WorkspacesPoolErrorCodeSubnetHasInsufficientIpAddresses                  WorkspacesPoolErrorCode = "SUBNET_HAS_INSUFFICIENT_IP_ADDRESSES"
+	WorkspacesPoolErrorCodeIamServiceRoleMissingDescribeSubnetAction         WorkspacesPoolErrorCode = "IAM_SERVICE_ROLE_MISSING_DESCRIBE_SUBNET_ACTION"
+	WorkspacesPoolErrorCodeSubnetNotFound                                    WorkspacesPoolErrorCode = "SUBNET_NOT_FOUND"
+	WorkspacesPoolErrorCodeImageNotFound                                     WorkspacesPoolErrorCode = "IMAGE_NOT_FOUND"
+	WorkspacesPoolErrorCodeInvalidSubnetConfiguration                        WorkspacesPoolErrorCode = "INVALID_SUBNET_CONFIGURATION"
+	WorkspacesPoolErrorCodeSecurityGroupsNotFound                            WorkspacesPoolErrorCode = "SECURITY_GROUPS_NOT_FOUND"
+	WorkspacesPoolErrorCodeIgwNotAttached                                    WorkspacesPoolErrorCode = "IGW_NOT_ATTACHED"
+	WorkspacesPoolErrorCodeIamServiceRoleMissingDescribeSecurityGroupsAction WorkspacesPoolErrorCode = "IAM_SERVICE_ROLE_MISSING_DESCRIBE_SECURITY_GROUPS_ACTION"
+	WorkspacesPoolErrorCodeWorkspacesPoolStopped                             WorkspacesPoolErrorCode = "WORKSPACES_POOL_STOPPED"
+	WorkspacesPoolErrorCodeWorkspacesPoolInstanceProvisioningFailure         WorkspacesPoolErrorCode = "WORKSPACES_POOL_INSTANCE_PROVISIONING_FAILURE"
+	WorkspacesPoolErrorCodeDomainJoinErrorFileNotFound                       WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_FILE_NOT_FOUND"
+	WorkspacesPoolErrorCodeDomainJoinErrorAccessDenied                       WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_ACCESS_DENIED"
+	WorkspacesPoolErrorCodeDomainJoinErrorLogonFailure                       WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_LOGON_FAILURE"
+	WorkspacesPoolErrorCodeDomainJoinErrorInvalidParameter                   WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_INVALID_PARAMETER"
+	WorkspacesPoolErrorCodeDomainJoinErrorMoreData                           WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_MORE_DATA"
+	WorkspacesPoolErrorCodeDomainJoinErrorNoSuchDomain                       WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_NO_SUCH_DOMAIN"
+	WorkspacesPoolErrorCodeDomainJoinErrorNotSupported                       WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_NOT_SUPPORTED"
+	WorkspacesPoolErrorCodeDomainJoinNerrInvalidWorkgroupName                WorkspacesPoolErrorCode = "DOMAIN_JOIN_NERR_INVALID_WORKGROUP_NAME"
+	WorkspacesPoolErrorCodeDomainJoinNerrWorkstationNotStarted               WorkspacesPoolErrorCode = "DOMAIN_JOIN_NERR_WORKSTATION_NOT_STARTED"
+	WorkspacesPoolErrorCodeDomainJoinErrorDsMachineAccountQuotaExceeded      WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_DS_MACHINE_ACCOUNT_QUOTA_EXCEEDED"
+	WorkspacesPoolErrorCodeDomainJoinNerrPasswordExpired                     WorkspacesPoolErrorCode = "DOMAIN_JOIN_NERR_PASSWORD_EXPIRED"
+	WorkspacesPoolErrorCodeDomainJoinInternalServiceError                    WorkspacesPoolErrorCode = "DOMAIN_JOIN_INTERNAL_SERVICE_ERROR"
+	WorkspacesPoolErrorCodeDomainJoinErrorSecretActionPermissionIsMissing    WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_SECRET_ACTION_PERMISSION_IS_MISSING"
+	WorkspacesPoolErrorCodeDomainJoinErrorSecretDecryptionFailure            WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_SECRET_DECRYPTION_FAILURE"
+	WorkspacesPoolErrorCodeDomainJoinErrorSecretStateInvalid                 WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_SECRET_STATE_INVALID"
+	WorkspacesPoolErrorCodeDomainJoinErrorSecretNotFound                     WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_SECRET_NOT_FOUND"
+	WorkspacesPoolErrorCodeDomainJoinErrorSecretValueKeyNotFound             WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_SECRET_VALUE_KEY_NOT_FOUND"
+	WorkspacesPoolErrorCodeDomainJoinErrorSecretInvalid                      WorkspacesPoolErrorCode = "DOMAIN_JOIN_ERROR_SECRET_INVALID"
+	WorkspacesPoolErrorCodeBundleNotFound                                    WorkspacesPoolErrorCode = "BUNDLE_NOT_FOUND"
+	WorkspacesPoolErrorCodeDirectoryNotFound                                 WorkspacesPoolErrorCode = "DIRECTORY_NOT_FOUND"
+	WorkspacesPoolErrorCodeInsufficientPermissionsError                      WorkspacesPoolErrorCode = "INSUFFICIENT_PERMISSIONS_ERROR"
+	WorkspacesPoolErrorCodeDefaultOuIsMissing                                WorkspacesPoolErrorCode = "DEFAULT_OU_IS_MISSING"
+)
+
+// Values returns all known values for WorkspacesPoolErrorCode. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WorkspacesPoolErrorCode) Values() []WorkspacesPoolErrorCode {
+	return []WorkspacesPoolErrorCode{
+		"IAM_SERVICE_ROLE_IS_MISSING",
+		"IAM_SERVICE_ROLE_MISSING_ENI_DESCRIBE_ACTION",
+		"IAM_SERVICE_ROLE_MISSING_ENI_CREATE_ACTION",
+		"IAM_SERVICE_ROLE_MISSING_ENI_DELETE_ACTION",
+		"NETWORK_INTERFACE_LIMIT_EXCEEDED",
+		"INTERNAL_SERVICE_ERROR",
+		"MACHINE_ROLE_IS_MISSING",
+		"STS_DISABLED_IN_REGION",
+		"SUBNET_HAS_INSUFFICIENT_IP_ADDRESSES",
+		"IAM_SERVICE_ROLE_MISSING_DESCRIBE_SUBNET_ACTION",
+		"SUBNET_NOT_FOUND",
+		"IMAGE_NOT_FOUND",
+		"INVALID_SUBNET_CONFIGURATION",
+		"SECURITY_GROUPS_NOT_FOUND",
+		"IGW_NOT_ATTACHED",
+		"IAM_SERVICE_ROLE_MISSING_DESCRIBE_SECURITY_GROUPS_ACTION",
+		"WORKSPACES_POOL_STOPPED",
+		"WORKSPACES_POOL_INSTANCE_PROVISIONING_FAILURE",
+		"DOMAIN_JOIN_ERROR_FILE_NOT_FOUND",
+		"DOMAIN_JOIN_ERROR_ACCESS_DENIED",
+		"DOMAIN_JOIN_ERROR_LOGON_FAILURE",
+		"DOMAIN_JOIN_ERROR_INVALID_PARAMETER",
+		"DOMAIN_JOIN_ERROR_MORE_DATA",
+		"DOMAIN_JOIN_ERROR_NO_SUCH_DOMAIN",
+		"DOMAIN_JOIN_ERROR_NOT_SUPPORTED",
+		"DOMAIN_JOIN_NERR_INVALID_WORKGROUP_NAME",
+		"DOMAIN_JOIN_NERR_WORKSTATION_NOT_STARTED",
+		"DOMAIN_JOIN_ERROR_DS_MACHINE_ACCOUNT_QUOTA_EXCEEDED",
+		"DOMAIN_JOIN_NERR_PASSWORD_EXPIRED",
+		"DOMAIN_JOIN_INTERNAL_SERVICE_ERROR",
+		"DOMAIN_JOIN_ERROR_SECRET_ACTION_PERMISSION_IS_MISSING",
+		"DOMAIN_JOIN_ERROR_SECRET_DECRYPTION_FAILURE",
+		"DOMAIN_JOIN_ERROR_SECRET_STATE_INVALID",
+		"DOMAIN_JOIN_ERROR_SECRET_NOT_FOUND",
+		"DOMAIN_JOIN_ERROR_SECRET_VALUE_KEY_NOT_FOUND",
+		"DOMAIN_JOIN_ERROR_SECRET_INVALID",
+		"BUNDLE_NOT_FOUND",
+		"DIRECTORY_NOT_FOUND",
+		"INSUFFICIENT_PERMISSIONS_ERROR",
+		"DEFAULT_OU_IS_MISSING",
+	}
+}
+
+type WorkspacesPoolState string
+
+// Enum values for WorkspacesPoolState
+const (
+	WorkspacesPoolStateCreating WorkspacesPoolState = "CREATING"
+	WorkspacesPoolStateDeleting WorkspacesPoolState = "DELETING"
+	WorkspacesPoolStateRunning  WorkspacesPoolState = "RUNNING"
+	WorkspacesPoolStateStarting WorkspacesPoolState = "STARTING"
+	WorkspacesPoolStateStopped  WorkspacesPoolState = "STOPPED"
+	WorkspacesPoolStateStopping WorkspacesPoolState = "STOPPING"
+	WorkspacesPoolStateUpdating WorkspacesPoolState = "UPDATING"
+)
+
+// Values returns all known values for WorkspacesPoolState. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WorkspacesPoolState) Values() []WorkspacesPoolState {
+	return []WorkspacesPoolState{
+		"CREATING",
+		"DELETING",
+		"RUNNING",
+		"STARTING",
+		"STOPPED",
+		"STOPPING",
+		"UPDATING",
 	}
 }
 
@@ -665,8 +1536,9 @@ const (
 )
 
 // Values returns all known values for WorkspaceState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkspaceState) Values() []WorkspaceState {
 	return []WorkspaceState{
 		"PENDING",
@@ -686,5 +1558,24 @@ func (WorkspaceState) Values() []WorkspaceState {
 		"STOPPING",
 		"STOPPED",
 		"ERROR",
+	}
+}
+
+type WorkspaceType string
+
+// Enum values for WorkspaceType
+const (
+	WorkspaceTypePersonal WorkspaceType = "PERSONAL"
+	WorkspaceTypePools    WorkspaceType = "POOLS"
+)
+
+// Values returns all known values for WorkspaceType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WorkspaceType) Values() []WorkspaceType {
+	return []WorkspaceType{
+		"PERSONAL",
+		"POOLS",
 	}
 }

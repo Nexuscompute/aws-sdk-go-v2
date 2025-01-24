@@ -4,21 +4,32 @@ package rbin
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/rbin/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a Recycle Bin retention rule. For more information, see  Create Recycle
-// Bin retention rules (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/recycle-bin-working-with-rules.html#recycle-bin-create-rule)
-// in the Amazon Elastic Compute Cloud User Guide.
+// Creates a Recycle Bin retention rule. You can create two types of retention
+// rules:
+//
+//   - Tag-level retention rules - These retention rules use resource tags to
+//     identify the resources to protect. For each retention rule, you specify one or
+//     more tag key and value pairs. Resources (of the specified type) that have at
+//     least one of these tag key and value pairs are automatically retained in the
+//     Recycle Bin upon deletion. Use this type of retention rule to protect specific
+//     resources in your account based on their tags.
+//
+//   - Region-level retention rules - These retention rules, by default, apply to
+//     all of the resources (of the specified type) in the Region, even if the
+//     resources are not tagged. However, you can specify exclusion tags to exclude
+//     resources that have specific tags. Use this type of retention rule to protect
+//     all resources of a specific type in a Region.
+//
+// For more information, see [Create Recycle Bin retention rules] in the Amazon EBS User Guide.
+//
+// [Create Recycle Bin retention rules]: https://docs.aws.amazon.com/ebs/latest/userguide/recycle-bin.html
 func (c *Client) CreateRule(ctx context.Context, params *CreateRuleInput, optFns ...func(*Options)) (*CreateRuleOutput, error) {
 	if params == nil {
 		params = &CreateRuleInput{}
@@ -52,20 +63,31 @@ type CreateRuleInput struct {
 	// The retention rule description.
 	Description *string
 
+	// [Region-level retention rules only] Specifies the exclusion tags to use to
+	// identify resources that are to be excluded, or ignored, by a Region-level
+	// retention rule. Resources that have any of these tags are not retained by the
+	// retention rule upon deletion.
+	//
+	// You can't specify exclusion tags for tag-level retention rules.
+	ExcludeResourceTags []types.ResourceTag
+
 	// Information about the retention rule lock configuration.
 	LockConfiguration *types.LockConfiguration
 
-	// Specifies the resource tags to use to identify resources that are to be
-	// retained by a tag-level retention rule. For tag-level retention rules, only
-	// deleted resources, of the specified resource type, that have one or more of the
-	// specified tag key and value pairs are retained. If a resource is deleted, but it
-	// does not have any of the specified tag key and value pairs, it is immediately
-	// deleted without being retained by the retention rule. You can add the same tag
-	// key and value pair to a maximum or five retention rules. To create a
-	// Region-level retention rule, omit this parameter. A Region-level retention rule
-	// does not have any resource tags specified. It retains all deleted resources of
-	// the specified resource type in the Region in which the rule is created, even if
-	// the resources are not tagged.
+	// [Tag-level retention rules only] Specifies the resource tags to use to identify
+	// resources that are to be retained by a tag-level retention rule. For tag-level
+	// retention rules, only deleted resources, of the specified resource type, that
+	// have one or more of the specified tag key and value pairs are retained. If a
+	// resource is deleted, but it does not have any of the specified tag key and value
+	// pairs, it is immediately deleted without being retained by the retention rule.
+	//
+	// You can add the same tag key and value pair to a maximum or five retention
+	// rules.
+	//
+	// To create a Region-level retention rule, omit this parameter. A Region-level
+	// retention rule does not have any resource tags specified. It retains all deleted
+	// resources of the specified resource type in the Region in which the rule is
+	// created, even if the resources are not tagged.
 	ResourceTags []types.ResourceTag
 
 	// Information about the tags to assign to the retention rule.
@@ -79,26 +101,35 @@ type CreateRuleOutput struct {
 	// The retention rule description.
 	Description *string
 
+	// [Region-level retention rules only] Information about the exclusion tags used
+	// to identify resources that are to be excluded, or ignored, by the retention
+	// rule.
+	ExcludeResourceTags []types.ResourceTag
+
 	// The unique ID of the retention rule.
 	Identifier *string
 
 	// Information about the retention rule lock configuration.
 	LockConfiguration *types.LockConfiguration
 
-	// The lock state for the retention rule.
+	// [Region-level retention rules only] The lock state for the retention rule.
+	//
 	//   - locked - The retention rule is locked and can't be modified or deleted.
+	//
 	//   - pending_unlock - The retention rule has been unlocked but it is still within
 	//   the unlock delay period. The retention rule can be modified or deleted only
 	//   after the unlock delay period has expired.
+	//
 	//   - unlocked - The retention rule is unlocked and it can be modified or deleted
 	//   by any user with the required permissions.
+	//
 	//   - null - The retention rule has never been locked. Once a retention rule has
 	//   been locked, it can transition between the locked and unlocked states only; it
 	//   can never transition back to null .
 	LockState types.LockState
 
-	// Information about the resource tags used to identify resources that are
-	// retained by the retention rule.
+	// [Tag-level retention rules only] Information about the resource tags used to
+	// identify resources that are retained by the retention rule.
 	ResourceTags []types.ResourceTag
 
 	// The resource type retained by the retention rule.
@@ -107,6 +138,9 @@ type CreateRuleOutput struct {
 	// Information about the retention period for which the retention rule is to
 	// retain resources.
 	RetentionPeriod *types.RetentionPeriod
+
+	// The Amazon Resource Name (ARN) of the retention rule.
+	RuleArn *string
 
 	// The state of the retention rule. Only retention rules that are in the available
 	// state retain resources.
@@ -122,6 +156,9 @@ type CreateRuleOutput struct {
 }
 
 func (c *Client) addOperationCreateRuleMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateRule{}, middleware.After)
 	if err != nil {
 		return err
@@ -130,34 +167,38 @@ func (c *Client) addOperationCreateRuleMiddlewares(stack *middleware.Stack, opti
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateRule"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -169,7 +210,13 @@ func (c *Client) addOperationCreateRuleMiddlewares(stack *middleware.Stack, opti
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateRuleResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateRuleValidationMiddleware(stack); err != nil {
@@ -178,7 +225,7 @@ func (c *Client) addOperationCreateRuleMiddlewares(stack *middleware.Stack, opti
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateRule(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -190,7 +237,19 @@ func (c *Client) addOperationCreateRuleMiddlewares(stack *middleware.Stack, opti
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -200,130 +259,6 @@ func newServiceMetadataMiddleware_opCreateRule(region string) *awsmiddleware.Reg
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "rbin",
 		OperationName: "CreateRule",
 	}
-}
-
-type opCreateRuleResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateRuleResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateRuleResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "rbin"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "rbin"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("rbin")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateRuleResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateRuleResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

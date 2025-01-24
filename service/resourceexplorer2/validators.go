@@ -90,6 +90,26 @@ func (m *validateOpDeleteView) HandleInitialize(ctx context.Context, in middlewa
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetManagedView struct {
+}
+
+func (*validateOpGetManagedView) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetManagedView) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetManagedViewInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetManagedViewInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetView struct {
 }
 
@@ -105,6 +125,46 @@ func (m *validateOpGetView) HandleInitialize(ctx context.Context, in middleware.
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetViewInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListIndexesForMembers struct {
+}
+
+func (*validateOpListIndexesForMembers) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListIndexesForMembers) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListIndexesForMembersInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListIndexesForMembersInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListResources struct {
+}
+
+func (*validateOpListResources) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListResources) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListResourcesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListResourcesInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -246,8 +306,20 @@ func addOpDeleteViewValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteView{}, middleware.After)
 }
 
+func addOpGetManagedViewValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetManagedView{}, middleware.After)
+}
+
 func addOpGetViewValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetView{}, middleware.After)
+}
+
+func addOpListIndexesForMembersValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListIndexesForMembers{}, middleware.After)
+}
+
+func addOpListResourcesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListResources{}, middleware.After)
 }
 
 func addOpListTagsForResourceValidationMiddleware(stack *middleware.Stack) error {
@@ -391,6 +463,21 @@ func validateOpDeleteViewInput(v *DeleteViewInput) error {
 	}
 }
 
+func validateOpGetManagedViewInput(v *GetManagedViewInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetManagedViewInput"}
+	if v.ManagedViewArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ManagedViewArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetViewInput(v *GetViewInput) error {
 	if v == nil {
 		return nil
@@ -398,6 +485,38 @@ func validateOpGetViewInput(v *GetViewInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "GetViewInput"}
 	if v.ViewArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ViewArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListIndexesForMembersInput(v *ListIndexesForMembersInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListIndexesForMembersInput"}
+	if v.AccountIdList == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AccountIdList"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListResourcesInput(v *ListResourcesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListResourcesInput"}
+	if v.Filters != nil {
+		if err := validateSearchFilter(v.Filters); err != nil {
+			invalidParams.AddNested("Filters", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

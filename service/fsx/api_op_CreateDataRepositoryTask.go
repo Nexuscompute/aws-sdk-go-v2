@@ -4,29 +4,34 @@ package fsx
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/fsx/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates an Amazon FSx for Lustre data repository task. You use data repository
-// tasks to perform bulk operations between your Amazon FSx file system and its
-// linked data repositories. An example of a data repository task is exporting any
-// data and metadata changes, including POSIX metadata, to files, directories, and
-// symbolic links (symlinks) from your FSx file system to a linked data repository.
-// A CreateDataRepositoryTask operation will fail if a data repository is not
-// linked to the FSx file system. To learn more about data repository tasks, see
-// Data Repository Tasks (https://docs.aws.amazon.com/fsx/latest/LustreGuide/data-repository-tasks.html)
-// . To learn more about linking a data repository to your file system, see
-// Linking your file system to an S3 bucket (https://docs.aws.amazon.com/fsx/latest/LustreGuide/create-dra-linked-data-repo.html)
-// .
+// Creates an Amazon FSx for Lustre data repository task. A
+// CreateDataRepositoryTask operation will fail if a data repository is not linked
+// to the FSx file system.
+//
+// You use import and export data repository tasks to perform bulk operations
+// between your FSx for Lustre file system and its linked data repositories. An
+// example of a data repository task is exporting any data and metadata changes,
+// including POSIX metadata, to files, directories, and symbolic links (symlinks)
+// from your FSx file system to a linked data repository.
+//
+// You use release data repository tasks to release data from your file system for
+// files that are exported to S3. The metadata of released files remains on the
+// file system so users or applications can still access released files by reading
+// the files again, which will restore data from Amazon S3 to the FSx for Lustre
+// file system.
+//
+// To learn more about data repository tasks, see [Data Repository Tasks]. To learn more about linking a
+// data repository to your file system, see [Linking your file system to an S3 bucket].
+//
+// [Data Repository Tasks]: https://docs.aws.amazon.com/fsx/latest/LustreGuide/data-repository-tasks.html
+// [Linking your file system to an S3 bucket]: https://docs.aws.amazon.com/fsx/latest/LustreGuide/create-dra-linked-data-repo.html
 func (c *Client) CreateDataRepositoryTask(ctx context.Context, params *CreateDataRepositoryTaskInput, optFns ...func(*Options)) (*CreateDataRepositoryTaskOutput, error) {
 	if params == nil {
 		params = &CreateDataRepositoryTaskInput{}
@@ -52,13 +57,27 @@ type CreateDataRepositoryTaskInput struct {
 	// Defines whether or not Amazon FSx provides a CompletionReport once the task has
 	// completed. A CompletionReport provides a detailed report on the files that
 	// Amazon FSx processed that meet the criteria specified by the Scope parameter.
-	// For more information, see Working with Task Completion Reports (https://docs.aws.amazon.com/fsx/latest/LustreGuide/task-completion-report.html)
-	// .
+	// For more information, see [Working with Task Completion Reports].
+	//
+	// [Working with Task Completion Reports]: https://docs.aws.amazon.com/fsx/latest/LustreGuide/task-completion-report.html
 	//
 	// This member is required.
 	Report *types.CompletionReport
 
 	// Specifies the type of data repository task to create.
+	//
+	//   - EXPORT_TO_REPOSITORY tasks export from your Amazon FSx for Lustre file
+	//   system to a linked data repository.
+	//
+	//   - IMPORT_METADATA_FROM_REPOSITORY tasks import metadata changes from a linked
+	//   S3 bucket to your Amazon FSx for Lustre file system.
+	//
+	//   - RELEASE_DATA_FROM_FILESYSTEM tasks release files in your Amazon FSx for
+	//   Lustre file system that have been exported to a linked S3 bucket and that meet
+	//   your specified release criteria.
+	//
+	//   - AUTO_RELEASE_DATA tasks automatically release files from an Amazon File
+	//   Cache resource.
 	//
 	// This member is required.
 	Type types.DataRepositoryTaskType
@@ -73,18 +92,36 @@ type CreateDataRepositoryTaskInput struct {
 	ClientRequestToken *string
 
 	// A list of paths for the data repository task to use when the task is processed.
-	// If a path that you provide isn't valid, the task fails.
-	//   - For export tasks, the list contains paths on the Amazon FSx file system
+	// If a path that you provide isn't valid, the task fails. If you don't provide
+	// paths, the default behavior is to export all files to S3 (for export tasks),
+	// import all files from S3 (for import tasks), or release all exported files that
+	// meet the last accessed time criteria (for release tasks).
+	//
+	//   - For export tasks, the list contains paths on the FSx for Lustre file system
 	//   from which the files are exported to the Amazon S3 bucket. The default path is
 	//   the file system root directory. The paths you provide need to be relative to the
 	//   mount point of the file system. If the mount point is /mnt/fsx and
 	//   /mnt/fsx/path1 is a directory or file on the file system you want to export,
 	//   then the path to provide is path1 .
+	//
 	//   - For import tasks, the list contains paths in the Amazon S3 bucket from
-	//   which POSIX metadata changes are imported to the Amazon FSx file system. The
-	//   path can be an S3 bucket or prefix in the format s3://myBucket/myPrefix (where
-	//   myPrefix is optional).
+	//   which POSIX metadata changes are imported to the FSx for Lustre file system. The
+	//   path can be an S3 bucket or prefix in the format s3://bucket-name/prefix
+	//   (where prefix is optional).
+	//
+	//   - For release tasks, the list contains directory or file paths on the FSx for
+	//   Lustre file system from which to release exported files. If a directory is
+	//   specified, files within the directory are released. If a file path is specified,
+	//   only that file is released. To release all exported files in the file system,
+	//   specify a forward slash (/) as the path.
+	//
+	// A file must also meet the last accessed time criteria specified in for the file
+	//   to be released.
 	Paths []string
+
+	// The configuration that specifies the last accessed time criteria for files that
+	// will be released from an Amazon FSx for Lustre file system.
+	ReleaseConfiguration *types.ReleaseConfiguration
 
 	// A list of Tag values, with a maximum of 50 elements.
 	Tags []types.Tag
@@ -104,6 +141,9 @@ type CreateDataRepositoryTaskOutput struct {
 }
 
 func (c *Client) addOperationCreateDataRepositoryTaskMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateDataRepositoryTask{}, middleware.After)
 	if err != nil {
 		return err
@@ -112,34 +152,38 @@ func (c *Client) addOperationCreateDataRepositoryTaskMiddlewares(stack *middlewa
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateDataRepositoryTask"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -151,7 +195,13 @@ func (c *Client) addOperationCreateDataRepositoryTaskMiddlewares(stack *middlewa
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateDataRepositoryTaskResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateDataRepositoryTaskMiddleware(stack, options); err != nil {
@@ -163,7 +213,7 @@ func (c *Client) addOperationCreateDataRepositoryTaskMiddlewares(stack *middlewa
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateDataRepositoryTask(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -175,7 +225,19 @@ func (c *Client) addOperationCreateDataRepositoryTaskMiddlewares(stack *middlewa
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -218,130 +280,6 @@ func newServiceMetadataMiddleware_opCreateDataRepositoryTask(region string) *aws
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "fsx",
 		OperationName: "CreateDataRepositoryTask",
 	}
-}
-
-type opCreateDataRepositoryTaskResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateDataRepositoryTaskResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateDataRepositoryTaskResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "fsx"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "fsx"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("fsx")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateDataRepositoryTaskResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateDataRepositoryTaskResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

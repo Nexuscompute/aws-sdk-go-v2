@@ -4,28 +4,27 @@ package synthetics
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/synthetics/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // This operation returns a list of the canaries in your account, along with full
-// details about each canary. This operation supports resource-level authorization
-// using an IAM policy and the Names parameter. If you specify the Names
-// parameter, the operation is successful only if you have authorization to view
-// all the canaries that you specify in your request. If you do not have permission
-// to view any of the canaries, the request fails with a 403 response. You are
-// required to use the Names parameter if you are logged on to a user or role that
-// has an IAM policy that restricts which canaries that you are allowed to view.
-// For more information, see Limiting a user to viewing specific canaries (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Restricted.html)
-// .
+// details about each canary.
+//
+// This operation supports resource-level authorization using an IAM policy and
+// the Names parameter. If you specify the Names parameter, the operation is
+// successful only if you have authorization to view all the canaries that you
+// specify in your request. If you do not have permission to view any of the
+// canaries, the request fails with a 403 response.
+//
+// You are required to use the Names parameter if you are logged on to a user or
+// role that has an IAM policy that restricts which canaries that you are allowed
+// to view. For more information, see [Limiting a user to viewing specific canaries].
+//
+// [Limiting a user to viewing specific canaries]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Restricted.html
 func (c *Client) DescribeCanaries(ctx context.Context, params *DescribeCanariesInput, optFns ...func(*Options)) (*DescribeCanariesOutput, error) {
 	if params == nil {
 		params = &DescribeCanariesInput{}
@@ -45,18 +44,22 @@ type DescribeCanariesInput struct {
 
 	// Specify this parameter to limit how many canaries are returned each time you
 	// use the DescribeCanaries operation. If you omit this parameter, the default of
-	// 100 is used.
+	// 20 is used.
 	MaxResults *int32
 
 	// Use this parameter to return only canaries that match the names that you
-	// specify here. You can specify as many as five canary names. If you specify this
-	// parameter, the operation is successful only if you have authorization to view
-	// all the canaries that you specify in your request. If you do not have permission
-	// to view any of the canaries, the request fails with a 403 response. You are
-	// required to use this parameter if you are logged on to a user or role that has
-	// an IAM policy that restricts which canaries that you are allowed to view. For
-	// more information, see Limiting a user to viewing specific canaries (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Restricted.html)
-	// .
+	// specify here. You can specify as many as five canary names.
+	//
+	// If you specify this parameter, the operation is successful only if you have
+	// authorization to view all the canaries that you specify in your request. If you
+	// do not have permission to view any of the canaries, the request fails with a 403
+	// response.
+	//
+	// You are required to use this parameter if you are logged on to a user or role
+	// that has an IAM policy that restricts which canaries that you are allowed to
+	// view. For more information, see [Limiting a user to viewing specific canaries].
+	//
+	// [Limiting a user to viewing specific canaries]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch_Synthetics_Canaries_Restricted.html
 	Names []string
 
 	// A token that indicates that there is more data available. You can use this
@@ -84,6 +87,9 @@ type DescribeCanariesOutput struct {
 }
 
 func (c *Client) addOperationDescribeCanariesMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpDescribeCanaries{}, middleware.After)
 	if err != nil {
 		return err
@@ -92,34 +98,38 @@ func (c *Client) addOperationDescribeCanariesMiddlewares(stack *middleware.Stack
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeCanaries"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -131,13 +141,19 @@ func (c *Client) addOperationDescribeCanariesMiddlewares(stack *middleware.Stack
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeCanariesResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeCanaries(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -149,25 +165,29 @@ func (c *Client) addOperationDescribeCanariesMiddlewares(stack *middleware.Stack
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
 
-// DescribeCanariesAPIClient is a client that implements the DescribeCanaries
-// operation.
-type DescribeCanariesAPIClient interface {
-	DescribeCanaries(context.Context, *DescribeCanariesInput, ...func(*Options)) (*DescribeCanariesOutput, error)
-}
-
-var _ DescribeCanariesAPIClient = (*Client)(nil)
-
 // DescribeCanariesPaginatorOptions is the paginator options for DescribeCanaries
 type DescribeCanariesPaginatorOptions struct {
 	// Specify this parameter to limit how many canaries are returned each time you
 	// use the DescribeCanaries operation. If you omit this parameter, the default of
-	// 100 is used.
+	// 20 is used.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token
@@ -228,6 +248,9 @@ func (p *DescribeCanariesPaginator) NextPage(ctx context.Context, optFns ...func
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeCanaries(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -247,134 +270,18 @@ func (p *DescribeCanariesPaginator) NextPage(ctx context.Context, optFns ...func
 	return result, nil
 }
 
+// DescribeCanariesAPIClient is a client that implements the DescribeCanaries
+// operation.
+type DescribeCanariesAPIClient interface {
+	DescribeCanaries(context.Context, *DescribeCanariesInput, ...func(*Options)) (*DescribeCanariesOutput, error)
+}
+
+var _ DescribeCanariesAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opDescribeCanaries(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "synthetics",
 		OperationName: "DescribeCanaries",
 	}
-}
-
-type opDescribeCanariesResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeCanariesResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeCanariesResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "synthetics"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "synthetics"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("synthetics")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeCanariesResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeCanariesResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

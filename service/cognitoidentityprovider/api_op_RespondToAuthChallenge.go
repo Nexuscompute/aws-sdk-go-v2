@@ -4,32 +4,48 @@ package cognitoidentityprovider
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Responds to the authentication challenge. This action might generate an SMS
-// text message. Starting June 1, 2021, US telecom carriers require you to register
-// an origination phone number before you can send SMS messages to US phone
-// numbers. If you use SMS text messages in Amazon Cognito, you must register a
-// phone number with Amazon Pinpoint (https://console.aws.amazon.com/pinpoint/home/)
-// . Amazon Cognito uses the registered number automatically. Otherwise, Amazon
-// Cognito users who must receive SMS messages might not be able to sign up,
-// activate their accounts, or sign in. If you have never used SMS text messages
-// with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification
-// Service might place your account in the SMS sandbox. In sandbox mode (https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html)
-// , you can send messages only to verified phone numbers. After you test your app
-// while in the sandbox environment, you can move out of the sandbox and into
-// production. For more information, see SMS message settings for Amazon Cognito
-// user pools (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html)
-// in the Amazon Cognito Developer Guide.
+// Some API operations in a user pool generate a challenge, like a prompt for an
+// MFA code, for device authentication that bypasses MFA, or for a custom
+// authentication challenge. A RespondToAuthChallenge API request provides the
+// answer to that challenge, like a code or a secure remote password (SRP). The
+// parameters of a response to an authentication challenge vary with the type of
+// challenge.
+//
+// For more information about custom authentication challenges, see [Custom authentication challenge Lambda triggers].
+//
+// Amazon Cognito doesn't evaluate Identity and Access Management (IAM) policies
+// in requests for this API operation. For this operation, you can't use IAM
+// credentials to authorize requests, and you can't grant IAM permissions in
+// policies. For more information about authorization models in Amazon Cognito, see
+// [Using the Amazon Cognito user pools API and user pool endpoints].
+//
+// This action might generate an SMS text message. Starting June 1, 2021, US
+// telecom carriers require you to register an origination phone number before you
+// can send SMS messages to US phone numbers. If you use SMS text messages in
+// Amazon Cognito, you must register a phone number with [Amazon Pinpoint]. Amazon Cognito uses the
+// registered number automatically. Otherwise, Amazon Cognito users who must
+// receive SMS messages might not be able to sign up, activate their accounts, or
+// sign in.
+//
+// If you have never used SMS text messages with Amazon Cognito or any other
+// Amazon Web Services service, Amazon Simple Notification Service might place your
+// account in the SMS sandbox. In [sandbox mode], you can send messages only to verified phone
+// numbers. After you test your app while in the sandbox environment, you can move
+// out of the sandbox and into production. For more information, see [SMS message settings for Amazon Cognito user pools]in the Amazon
+// Cognito Developer Guide.
+//
+// [SMS message settings for Amazon Cognito user pools]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html
+// [Using the Amazon Cognito user pools API and user pool endpoints]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html
+// [sandbox mode]: https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html
+// [Custom authentication challenge Lambda triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-lambda-challenge.html
+// [Amazon Pinpoint]: https://console.aws.amazon.com/pinpoint/home/
 func (c *Client) RespondToAuthChallenge(ctx context.Context, params *RespondToAuthChallengeInput, optFns ...func(*Options)) (*RespondToAuthChallengeOutput, error) {
 	if params == nil {
 		params = &RespondToAuthChallengeInput{}
@@ -48,8 +64,11 @@ func (c *Client) RespondToAuthChallenge(ctx context.Context, params *RespondToAu
 // The request to respond to an authentication challenge.
 type RespondToAuthChallengeInput struct {
 
-	// The challenge name. For more information, see InitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html)
-	// . ADMIN_NO_SRP_AUTH isn't a valid value.
+	// The challenge name. For more information, see [InitiateAuth].
+	//
+	// ADMIN_NO_SRP_AUTH isn't a valid value.
+	//
+	// [InitiateAuth]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html
 	//
 	// This member is required.
 	ChallengeName types.ChallengeNameType
@@ -63,54 +82,138 @@ type RespondToAuthChallengeInput struct {
 	// RespondToAuthChallenge calls.
 	AnalyticsMetadata *types.AnalyticsMetadataType
 
-	// The challenge responses. These are inputs corresponding to the value of
-	// ChallengeName , for example: SECRET_HASH (if app client is configured with
-	// client secret) applies to all of the inputs that follow (including
-	// SOFTWARE_TOKEN_MFA ).
-	//   - SMS_MFA : SMS_MFA_CODE , USERNAME .
-	//   - PASSWORD_VERIFIER : PASSWORD_CLAIM_SIGNATURE , PASSWORD_CLAIM_SECRET_BLOCK ,
-	//   TIMESTAMP , USERNAME . PASSWORD_VERIFIER requires DEVICE_KEY when you sign in
-	//   with a remembered device.
-	//   - NEW_PASSWORD_REQUIRED : NEW_PASSWORD , USERNAME , SECRET_HASH (if app client
-	//   is configured with client secret). To set any required attributes that Amazon
-	//   Cognito returned as requiredAttributes in the InitiateAuth response, add a
-	//   userAttributes.attributename parameter. This parameter can also set values
-	//   for writable attributes that aren't required by your user pool. In a
-	//   NEW_PASSWORD_REQUIRED challenge response, you can't modify a required
-	//   attribute that already has a value. In RespondToAuthChallenge , set a value
-	//   for any keys that Amazon Cognito returned in the requiredAttributes parameter,
-	//   then use the UpdateUserAttributes API operation to modify the value of any
-	//   additional attributes.
-	//   - SOFTWARE_TOKEN_MFA : USERNAME and SOFTWARE_TOKEN_MFA_CODE are required
-	//   attributes.
-	//   - DEVICE_SRP_AUTH requires USERNAME , DEVICE_KEY , SRP_A (and SECRET_HASH ).
-	//   - DEVICE_PASSWORD_VERIFIER requires everything that PASSWORD_VERIFIER
-	//   requires, plus DEVICE_KEY .
-	//   - MFA_SETUP requires USERNAME , plus you must use the session value returned
-	//   by VerifySoftwareToken in the Session parameter.
+	// The responses to the challenge that you received in the previous request. Each
+	// challenge has its own required response parameters. The following examples are
+	// partial JSON request bodies that highlight challenge-response parameters.
+	//
+	// You must provide a SECRET_HASH parameter in all challenge responses to an app
+	// client that has a client secret. Include a DEVICE_KEY for device authentication.
+	//
+	// SELECT_CHALLENGE "ChallengeName": "SELECT_CHALLENGE", "ChallengeResponses": {
+	// "USERNAME": "[username]", "ANSWER": "[Challenge name]"}
+	//
+	// Available challenges are PASSWORD , PASSWORD_SRP , EMAIL_OTP , SMS_OTP , and
+	// WEB_AUTHN .
+	//
+	// Complete authentication in the SELECT_CHALLENGE response for PASSWORD ,
+	// PASSWORD_SRP , and WEB_AUTHN :
+	//
+	//   - "ChallengeName": "SELECT_CHALLENGE", "ChallengeResponses": { "ANSWER":
+	//   "WEB_AUTHN", "USERNAME": "[username]", "CREDENTIAL":
+	//   "[AuthenticationResponseJSON]"}
+	//
+	// See [AuthenticationResponseJSON].
+	//
+	//   - "ChallengeName": "SELECT_CHALLENGE", "ChallengeResponses": { "ANSWER":
+	//   "PASSWORD", "USERNAME": "[username]", "PASSWORD": "[password]"}
+	//
+	//   - "ChallengeName": "SELECT_CHALLENGE", "ChallengeResponses": { "ANSWER":
+	//   "PASSWORD_SRP", "USERNAME": "[username]", "SRP_A": "[SRP_A]"}
+	//
+	// For SMS_OTP and EMAIL_OTP , respond with the username and answer. Your user pool
+	// will send a code for the user to submit in the next challenge response.
+	//
+	//   - "ChallengeName": "SELECT_CHALLENGE", "ChallengeResponses": { "ANSWER":
+	//   "SMS_OTP", "USERNAME": "[username]"}
+	//
+	//   - "ChallengeName": "SELECT_CHALLENGE", "ChallengeResponses": { "ANSWER":
+	//   "EMAIL_OTP", "USERNAME": "[username]"}
+	//
+	// SMS_OTP "ChallengeName": "SMS_OTP", "ChallengeResponses": {"SMS_OTP_CODE":
+	// "[code]", "USERNAME": "[username]"}
+	//
+	// EMAIL_OTP "ChallengeName": "EMAIL_OTP", "ChallengeResponses":
+	// {"EMAIL_OTP_CODE": "[code]", "USERNAME": "[username]"}
+	//
+	// SMS_MFA "ChallengeName": "SMS_MFA", "ChallengeResponses": {"SMS_MFA_CODE":
+	// "[code]", "USERNAME": "[username]"}
+	//
+	// PASSWORD_VERIFIER This challenge response is part of the SRP flow. Amazon
+	// Cognito requires that your application respond to this challenge within a few
+	// seconds. When the response time exceeds this period, your user pool returns a
+	// NotAuthorizedException error.
+	//
+	//     "ChallengeName": "PASSWORD_VERIFIER", "ChallengeResponses":
+	//     {"PASSWORD_CLAIM_SIGNATURE": "[claim_signature]", "PASSWORD_CLAIM_SECRET_BLOCK":
+	//     "[secret_block]", "TIMESTAMP": [timestamp], "USERNAME": "[username]"}
+	//
+	// Add "DEVICE_KEY" when you sign in with a remembered device.
+	//
+	// CUSTOM_CHALLENGE "ChallengeName": "CUSTOM_CHALLENGE", "ChallengeResponses":
+	// {"USERNAME": "[username]", "ANSWER": "[challenge_answer]"}
+	//
+	// Add "DEVICE_KEY" when you sign in with a remembered device.
+	//
+	// NEW_PASSWORD_REQUIRED "ChallengeName": "NEW_PASSWORD_REQUIRED",
+	// "ChallengeResponses": {"NEW_PASSWORD": "[new_password]", "USERNAME":
+	// "[username]"}
+	//
+	// To set any required attributes that InitiateAuth returned in an
+	// requiredAttributes parameter, add "userAttributes.[attribute_name]":
+	// "[attribute_value]" . This parameter can also set values for writable attributes
+	// that aren't required by your user pool.
+	//
+	// In a NEW_PASSWORD_REQUIRED challenge response, you can't modify a required
+	// attribute that already has a value. In RespondToAuthChallenge , set a value for
+	// any keys that Amazon Cognito returned in the requiredAttributes parameter, then
+	// use the UpdateUserAttributes API operation to modify the value of any
+	// additional attributes.
+	//
+	// SOFTWARE_TOKEN_MFA "ChallengeName": "SOFTWARE_TOKEN_MFA", "ChallengeResponses":
+	// {"USERNAME": "[username]", "SOFTWARE_TOKEN_MFA_CODE": [authenticator_code]}
+	//
+	// DEVICE_SRP_AUTH "ChallengeName": "DEVICE_SRP_AUTH", "ChallengeResponses":
+	// {"USERNAME": "[username]", "DEVICE_KEY": "[device_key]", "SRP_A": "[srp_a]"}
+	//
+	// DEVICE_PASSWORD_VERIFIER "ChallengeName": "DEVICE_PASSWORD_VERIFIER",
+	// "ChallengeResponses": {"DEVICE_KEY": "[device_key]", "PASSWORD_CLAIM_SIGNATURE":
+	// "[claim_signature]", "PASSWORD_CLAIM_SECRET_BLOCK": "[secret_block]",
+	// "TIMESTAMP": [timestamp], "USERNAME": "[username]"}
+	//
+	// MFA_SETUP "ChallengeName": "MFA_SETUP", "ChallengeResponses": {"USERNAME":
+	// "[username]"}, "SESSION": "[Session ID from VerifySoftwareToken]"
+	//
+	// SELECT_MFA_TYPE "ChallengeName": "SELECT_MFA_TYPE", "ChallengeResponses":
+	// {"USERNAME": "[username]", "ANSWER": "[SMS_MFA or SOFTWARE_TOKEN_MFA]"}
+	//
+	// For more information about SECRET_HASH , see [Computing secret hash values]. For information about DEVICE_KEY
+	// , see [Working with user devices in your user pool].
+	//
+	// [Computing secret hash values]: https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash
+	// [AuthenticationResponseJSON]: https://www.w3.org/TR/webauthn-3/#dictdef-authenticationresponsejson
+	// [Working with user devices in your user pool]: https://docs.aws.amazon.com/cognito/latest/developerguide/amazon-cognito-user-pools-device-tracking.html
 	ChallengeResponses map[string]string
 
 	// A map of custom key-value pairs that you can provide as input for any custom
-	// workflows that this action triggers. You create custom workflows by assigning
-	// Lambda functions to user pool triggers. When you use the RespondToAuthChallenge
-	// API action, Amazon Cognito invokes any functions that are assigned to the
-	// following triggers: post authentication, pre token generation, define auth
-	// challenge, create auth challenge, and verify auth challenge. When Amazon Cognito
-	// invokes any of these functions, it passes a JSON payload, which the function
-	// receives as input. This payload contains a clientMetadata attribute, which
-	// provides the data that you assigned to the ClientMetadata parameter in your
-	// RespondToAuthChallenge request. In your function code in Lambda, you can process
-	// the clientMetadata value to enhance your workflow for your specific needs. For
-	// more information, see Customizing user pool Workflows with Lambda Triggers (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html)
-	// in the Amazon Cognito Developer Guide. When you use the ClientMetadata
-	// parameter, remember that Amazon Cognito won't do the following:
+	// workflows that this action triggers.
+	//
+	// You create custom workflows by assigning Lambda functions to user pool
+	// triggers. When you use the RespondToAuthChallenge API action, Amazon Cognito
+	// invokes any functions that are assigned to the following triggers: post
+	// authentication, pre token generation, define auth challenge, create auth
+	// challenge, and verify auth challenge. When Amazon Cognito invokes any of these
+	// functions, it passes a JSON payload, which the function receives as input. This
+	// payload contains a clientMetadata attribute, which provides the data that you
+	// assigned to the ClientMetadata parameter in your RespondToAuthChallenge request.
+	// In your function code in Lambda, you can process the clientMetadata value to
+	// enhance your workflow for your specific needs.
+	//
+	// For more information, see [Customizing user pool Workflows with Lambda Triggers] in the Amazon Cognito Developer Guide.
+	//
+	// When you use the ClientMetadata parameter, note that Amazon Cognito won't do
+	// the following:
+	//
 	//   - Store the ClientMetadata value. This data is available only to Lambda
 	//   triggers that are assigned to a user pool to support custom workflows. If your
 	//   user pool configuration doesn't include triggers, the ClientMetadata parameter
 	//   serves no purpose.
+	//
 	//   - Validate the ClientMetadata value.
-	//   - Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide
-	//   sensitive information.
+	//
+	//   - Encrypt the ClientMetadata value. Don't send sensitive information in this
+	//   parameter.
+	//
+	// [Customizing user pool Workflows with Lambda Triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html
 	ClientMetadata map[string]string
 
 	// The session that should be passed both ways in challenge-response calls to the
@@ -124,6 +227,10 @@ type RespondToAuthChallengeInput struct {
 	// address, or location. Amazon Cognito advanced security evaluates the risk of an
 	// authentication event based on the context that your app generates and passes to
 	// Amazon Cognito when it makes API requests.
+	//
+	// For more information, see [Collecting data for threat protection in applications].
+	//
+	// [Collecting data for threat protection in applications]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-viewing-threat-protection-app.html
 	UserContextData *types.UserContextDataType
 
 	noSmithyDocumentSerde
@@ -136,12 +243,14 @@ type RespondToAuthChallengeOutput struct {
 	// authentication challenge.
 	AuthenticationResult *types.AuthenticationResultType
 
-	// The challenge name. For more information, see InitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html)
-	// .
+	// The challenge name. For more information, see [InitiateAuth].
+	//
+	// [InitiateAuth]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html
 	ChallengeName types.ChallengeNameType
 
-	// The challenge parameters. For more information, see InitiateAuth (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html)
-	// .
+	// The challenge parameters. For more information, see [InitiateAuth].
+	//
+	// [InitiateAuth]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_InitiateAuth.html
 	ChallengeParameters map[string]string
 
 	// The session that should be passed both ways in challenge-response calls to the
@@ -157,6 +266,9 @@ type RespondToAuthChallengeOutput struct {
 }
 
 func (c *Client) addOperationRespondToAuthChallengeMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpRespondToAuthChallenge{}, middleware.After)
 	if err != nil {
 		return err
@@ -165,28 +277,35 @@ func (c *Client) addOperationRespondToAuthChallengeMiddlewares(stack *middleware
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "RespondToAuthChallenge"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
+		return err
+	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -198,7 +317,13 @@ func (c *Client) addOperationRespondToAuthChallengeMiddlewares(stack *middleware
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addRespondToAuthChallengeResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRespondToAuthChallengeValidationMiddleware(stack); err != nil {
@@ -207,7 +332,7 @@ func (c *Client) addOperationRespondToAuthChallengeMiddlewares(stack *middleware
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opRespondToAuthChallenge(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -219,7 +344,19 @@ func (c *Client) addOperationRespondToAuthChallengeMiddlewares(stack *middleware
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -231,127 +368,4 @@ func newServiceMetadataMiddleware_opRespondToAuthChallenge(region string) *awsmi
 		ServiceID:     ServiceID,
 		OperationName: "RespondToAuthChallenge",
 	}
-}
-
-type opRespondToAuthChallengeResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opRespondToAuthChallengeResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opRespondToAuthChallengeResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "cognito-idp"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "cognito-idp"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("cognito-idp")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addRespondToAuthChallengeResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opRespondToAuthChallengeResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -4,19 +4,21 @@ package codebuild
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/codebuild/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Starts running a build.
+// Starts running a build with the settings defined in the project. These setting
+// include: how to run a build, where to get the source code, which build
+// environment to use, which build commands to run, and where to store the build
+// output.
+//
+// You can also start a build run by overriding some of the build settings in the
+// project. The overrides only apply for that specific start build request. The
+// settings in the project are unaltered.
 func (c *Client) StartBuild(ctx context.Context, params *StartBuildInput, optFns ...func(*Options)) (*StartBuildOutput, error) {
 	if params == nil {
 		params = &StartBuildInput{}
@@ -43,22 +45,36 @@ type StartBuildInput struct {
 	// ones already defined in the build project.
 	ArtifactsOverride *types.ProjectArtifacts
 
+	// The maximum number of additional automatic retries after a failed build. For
+	// example, if the auto-retry limit is set to 2, CodeBuild will call the RetryBuild
+	// API to automatically retry your build for up to 2 additional times.
+	AutoRetryLimitOverride *int32
+
 	// Contains information that defines how the build project reports the build
 	// status to the source provider. This option is only used when the source provider
 	// is GITHUB , GITHUB_ENTERPRISE , or BITBUCKET .
 	BuildStatusConfigOverride *types.BuildStatusConfig
 
-	// A buildspec file declaration that overrides, for this build only, the latest
-	// one already defined in the build project. If this value is set, it can be either
-	// an inline buildspec definition, the path to an alternate buildspec file relative
-	// to the value of the built-in CODEBUILD_SRC_DIR environment variable, or the
-	// path to an S3 bucket. The bucket must be in the same Amazon Web Services Region
-	// as the build project. Specify the buildspec file using its ARN (for example,
+	// A buildspec file declaration that overrides the latest one defined in the build
+	// project, for this build only. The buildspec defined on the project is not
+	// changed.
+	//
+	// If this value is set, it can be either an inline buildspec definition, the path
+	// to an alternate buildspec file relative to the value of the built-in
+	// CODEBUILD_SRC_DIR environment variable, or the path to an S3 bucket. The bucket
+	// must be in the same Amazon Web Services Region as the build project. Specify the
+	// buildspec file using its ARN (for example,
 	// arn:aws:s3:::my-codebuild-sample2/buildspec.yml ). If this value is not provided
 	// or is set to an empty string, the source code must contain a buildspec file in
-	// its root directory. For more information, see Buildspec File Name and Storage
-	// Location (https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html#build-spec-ref-name-storage)
-	// .
+	// its root directory. For more information, see [Buildspec File Name and Storage Location].
+	//
+	// Since this property allows you to change the build commands that will run in
+	// the container, you should note that an IAM principal with the ability to call
+	// this API and set this parameter can override the default settings. Moreover, we
+	// encourage that you use a trustworthy buildspec location like a file in your
+	// source repository or a Amazon S3 bucket.
+	//
+	// [Buildspec File Name and Storage Location]: https://docs.aws.amazon.com/codebuild/latest/userguide/build-spec-ref.html#build-spec-ref-name-storage
 	BuildspecOverride *string
 
 	// A ProjectCache object specified for this build that overrides the one defined
@@ -74,16 +90,19 @@ type StartBuildInput struct {
 	ComputeTypeOverride types.ComputeType
 
 	// Specifies if session debugging is enabled for this build. For more information,
-	// see Viewing a running build in Session Manager (https://docs.aws.amazon.com/codebuild/latest/userguide/session-manager.html)
-	// .
+	// see [Viewing a running build in Session Manager].
+	//
+	// [Viewing a running build in Session Manager]: https://docs.aws.amazon.com/codebuild/latest/userguide/session-manager.html
 	DebugSessionEnabled *bool
 
 	// The Key Management Service customer master key (CMK) that overrides the one
 	// specified in the build project. The CMK key encrypts the build output artifacts.
+	//
 	// You can use a cross-account KMS key to encrypt the build output artifacts if
-	// your service role has permission to that key. You can specify either the Amazon
-	// Resource Name (ARN) of the CMK or, if available, the CMK's alias (using the
-	// format alias/ ).
+	// your service role has permission to that key.
+	//
+	// You can specify either the Amazon Resource Name (ARN) of the CMK or, if
+	// available, the CMK's alias (using the format alias/ ).
 	EncryptionKeyOverride *string
 
 	// A container type for this build that overrides the one specified in the build
@@ -94,11 +113,15 @@ type StartBuildInput struct {
 	// ones already defined in the build project.
 	EnvironmentVariablesOverride []types.EnvironmentVariable
 
+	// A ProjectFleet object specified for this build that overrides the one defined
+	// in the build project.
+	FleetOverride *types.ProjectFleet
+
 	// The user-defined depth of history, with a minimum value of 0, that overrides,
 	// for this build only, any previous depth of history defined in the build project.
 	GitCloneDepthOverride *int32
 
-	// Information about the Git submodules configuration for this build of an
+	//  Information about the Git submodules configuration for this build of an
 	// CodeBuild build project.
 	GitSubmodulesConfigOverride *types.GitSubmodulesConfig
 
@@ -113,12 +136,16 @@ type StartBuildInput struct {
 	ImageOverride *string
 
 	// The type of credentials CodeBuild uses to pull images in your build. There are
-	// two valid values: CODEBUILD Specifies that CodeBuild uses its own credentials.
-	// This requires that you modify your ECR repository policy to trust CodeBuild's
-	// service principal. SERVICE_ROLE Specifies that CodeBuild uses your build
-	// project's service role. When using a cross-account or private registry image,
-	// you must use SERVICE_ROLE credentials. When using an CodeBuild curated image,
-	// you must use CODEBUILD credentials.
+	// two valid values:
+	//
+	// CODEBUILD Specifies that CodeBuild uses its own credentials. This requires that
+	// you modify your ECR repository policy to trust CodeBuild's service principal.
+	//
+	// SERVICE_ROLE Specifies that CodeBuild uses your build project's service role.
+	//
+	// When using a cross-account or private registry image, you must use SERVICE_ROLE
+	// credentials. When using an CodeBuild curated image, you must use CODEBUILD
+	// credentials.
 	ImagePullCredentialsTypeOverride types.ImagePullCredentialsType
 
 	// Enable this flag to override the insecure SSL setting that is specified in the
@@ -127,37 +154,42 @@ type StartBuildInput struct {
 	// if the build's source is GitHub Enterprise.
 	InsecureSslOverride *bool
 
-	// Log settings for this build that override the log settings defined in the build
-	// project.
+	//  Log settings for this build that override the log settings defined in the
+	// build project.
 	LogsConfigOverride *types.LogsConfig
 
 	// Enable this flag to override privileged mode in the build project.
 	PrivilegedModeOverride *bool
 
-	// The number of minutes a build is allowed to be queued before it times out.
+	//  The number of minutes a build is allowed to be queued before it times out.
 	QueuedTimeoutInMinutesOverride *int32
 
-	// The credentials for access to a private registry.
+	//  The credentials for access to a private registry.
 	RegistryCredentialOverride *types.RegistryCredential
 
-	// Set to true to report to your source provider the status of a build's start and
-	// completion. If you use this option with a source provider other than GitHub,
-	// GitHub Enterprise, or Bitbucket, an invalidInputException is thrown. To be able
-	// to report the build status to the source provider, the user associated with the
-	// source provider must have write access to the repo. If the user does not have
-	// write access, the build status cannot be updated. For more information, see
-	// Source provider access (https://docs.aws.amazon.com/codebuild/latest/userguide/access-tokens.html)
-	// in the CodeBuild User Guide. The status of a build triggered by a webhook is
-	// always reported to your source provider.
+	//  Set to true to report to your source provider the status of a build's start
+	// and completion. If you use this option with a source provider other than GitHub,
+	// GitHub Enterprise, GitLab, GitLab Self Managed, or Bitbucket, an
+	// invalidInputException is thrown.
+	//
+	// To be able to report the build status to the source provider, the user
+	// associated with the source provider must have write access to the repo. If the
+	// user does not have write access, the build status cannot be updated. For more
+	// information, see [Source provider access]in the CodeBuild User Guide.
+	//
+	// The status of a build triggered by a webhook is always reported to your source
+	// provider.
+	//
+	// [Source provider access]: https://docs.aws.amazon.com/codebuild/latest/userguide/access-tokens.html
 	ReportBuildStatusOverride *bool
 
-	// An array of ProjectArtifacts objects.
+	//  An array of ProjectArtifacts objects.
 	SecondaryArtifactsOverride []types.ProjectArtifacts
 
-	// An array of ProjectSource objects.
+	//  An array of ProjectSource objects.
 	SecondarySourcesOverride []types.ProjectSource
 
-	// An array of ProjectSourceVersion objects that specify one or more versions of
+	//  An array of ProjectSourceVersion objects that specify one or more versions of
 	// the project's secondary sources to be used for this build only.
 	SecondarySourcesVersionOverride []types.ProjectSourceVersion
 
@@ -167,7 +199,7 @@ type StartBuildInput struct {
 
 	// An authorization type for this build that overrides the one defined in the
 	// build project. This override applies only if the build project's source is
-	// BitBucket or GitHub.
+	// BitBucket, GitHub, GitLab, or GitLab Self Managed.
 	SourceAuthOverride *types.SourceAuth
 
 	// A location that overrides, for this build, the source location for the one
@@ -180,22 +212,35 @@ type StartBuildInput struct {
 
 	// The version of the build input to be built, for this build only. If not
 	// specified, the latest version is used. If specified, the contents depends on the
-	// source provider: CodeCommit The commit ID, branch, or Git tag to use. GitHub The
-	// commit ID, pull request ID, branch name, or tag name that corresponds to the
-	// version of the source code you want to build. If a pull request ID is specified,
-	// it must use the format pr/pull-request-ID (for example pr/25 ). If a branch name
-	// is specified, the branch's HEAD commit ID is used. If not specified, the default
-	// branch's HEAD commit ID is used. Bitbucket The commit ID, branch name, or tag
-	// name that corresponds to the version of the source code you want to build. If a
-	// branch name is specified, the branch's HEAD commit ID is used. If not specified,
-	// the default branch's HEAD commit ID is used. Amazon S3 The version ID of the
-	// object that represents the build input ZIP file to use. If sourceVersion is
-	// specified at the project level, then this sourceVersion (at the build level)
-	// takes precedence. For more information, see Source Version Sample with CodeBuild (https://docs.aws.amazon.com/codebuild/latest/userguide/sample-source-version.html)
-	// in the CodeBuild User Guide.
+	// source provider:
+	//
+	// CodeCommit The commit ID, branch, or Git tag to use.
+	//
+	// GitHub The commit ID, pull request ID, branch name, or tag name that
+	// corresponds to the version of the source code you want to build. If a pull
+	// request ID is specified, it must use the format pr/pull-request-ID (for example
+	// pr/25 ). If a branch name is specified, the branch's HEAD commit ID is used. If
+	// not specified, the default branch's HEAD commit ID is used.
+	//
+	// GitLab The commit ID, branch, or Git tag to use.
+	//
+	// Bitbucket The commit ID, branch name, or tag name that corresponds to the
+	// version of the source code you want to build. If a branch name is specified, the
+	// branch's HEAD commit ID is used. If not specified, the default branch's HEAD
+	// commit ID is used.
+	//
+	// Amazon S3 The version ID of the object that represents the build input ZIP file
+	// to use.
+	//
+	// If sourceVersion is specified at the project level, then this sourceVersion (at
+	// the build level) takes precedence.
+	//
+	// For more information, see [Source Version Sample with CodeBuild] in the CodeBuild User Guide.
+	//
+	// [Source Version Sample with CodeBuild]: https://docs.aws.amazon.com/codebuild/latest/userguide/sample-source-version.html
 	SourceVersion *string
 
-	// The number of build timeout minutes, from 5 to 480 (8 hours), that overrides,
+	// The number of build timeout minutes, from 5 to 2160 (36 hours), that overrides,
 	// for this build only, the latest setting already defined in the build project.
 	TimeoutInMinutesOverride *int32
 
@@ -214,6 +259,9 @@ type StartBuildOutput struct {
 }
 
 func (c *Client) addOperationStartBuildMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpStartBuild{}, middleware.After)
 	if err != nil {
 		return err
@@ -222,34 +270,38 @@ func (c *Client) addOperationStartBuildMiddlewares(stack *middleware.Stack, opti
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "StartBuild"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -261,7 +313,13 @@ func (c *Client) addOperationStartBuildMiddlewares(stack *middleware.Stack, opti
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addStartBuildResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartBuildValidationMiddleware(stack); err != nil {
@@ -270,7 +328,7 @@ func (c *Client) addOperationStartBuildMiddlewares(stack *middleware.Stack, opti
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opStartBuild(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -282,7 +340,19 @@ func (c *Client) addOperationStartBuildMiddlewares(stack *middleware.Stack, opti
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -292,130 +362,6 @@ func newServiceMetadataMiddleware_opStartBuild(region string) *awsmiddleware.Reg
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "codebuild",
 		OperationName: "StartBuild",
 	}
-}
-
-type opStartBuildResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opStartBuildResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opStartBuildResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "codebuild"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "codebuild"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("codebuild")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addStartBuildResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opStartBuildResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

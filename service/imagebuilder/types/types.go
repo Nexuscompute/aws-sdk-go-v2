@@ -25,26 +25,35 @@ type AccountAggregation struct {
 
 // In addition to your infrastructure configuration, these settings provide an
 // extra layer of control over your build instances. You can also specify commands
-// to run on launch for all of your build instances. Image Builder does not
-// automatically install the Systems Manager agent on Windows instances. If your
-// base image includes the Systems Manager agent, then the AMI that you create will
-// also include the agent. For Linux instances, if the base image does not already
-// include the Systems Manager agent, Image Builder installs it. For Linux
-// instances where Image Builder installs the Systems Manager agent, you can choose
-// whether to keep it for the AMI that you create.
+// to run on launch for all of your build instances.
+//
+// Image Builder does not automatically install the Systems Manager agent on
+// Windows instances. If your base image includes the Systems Manager agent, then
+// the AMI that you create will also include the agent. For Linux instances, if the
+// base image does not already include the Systems Manager agent, Image Builder
+// installs it. For Linux instances where Image Builder installs the Systems
+// Manager agent, you can choose whether to keep it for the AMI that you create.
 type AdditionalInstanceConfiguration struct {
 
 	// Contains settings for the Systems Manager agent on your build instance.
 	SystemsManagerAgent *SystemsManagerAgent
 
 	// Use this property to provide commands or a command script to run when you
-	// launch your build instance. The userDataOverride property replaces any commands
-	// that Image Builder might have added to ensure that Systems Manager is installed
-	// on your Linux build instance. If you override the user data, make sure that you
-	// add commands to install Systems Manager, if it is not pre-installed on your base
-	// image. The user data is always base 64 encoded. For example, the following
-	// commands are encoded as IyEvYmluL2Jhc2gKbWtkaXIgLXAgL3Zhci9iYi8KdG91Y2ggL3Zhci$
-	// : #!/bin/bash mkdir -p /var/bb/ touch /var
+	// launch your build instance.
+	//
+	// The userDataOverride property replaces any commands that Image Builder might
+	// have added to ensure that Systems Manager is installed on your Linux build
+	// instance. If you override the user data, make sure that you add commands to
+	// install Systems Manager, if it is not pre-installed on your base image.
+	//
+	// The user data is always base 64 encoded. For example, the following commands
+	// are encoded as IyEvYmluL2Jhc2gKbWtkaXIgLXAgL3Zhci9iYi8KdG91Y2ggL3Zhci$ :
+	//
+	// #!/bin/bash
+	//
+	// mkdir -p /var/bb/
+	//
+	// touch /var
 	UserDataOverride *string
 
 	noSmithyDocumentSerde
@@ -107,7 +116,8 @@ type Component struct {
 	// The Amazon Resource Name (ARN) of the component.
 	Arn *string
 
-	// The change description of the component.
+	// Describes what change has been made in this version of the component, or what
+	// makes this version different from other versions of the component.
 	ChangeDescription *string
 
 	// Component data contains the YAML document content for the component.
@@ -142,12 +152,15 @@ type Component struct {
 	// The operating system platform of the component.
 	Platform Platform
 
+	// Contains product codes that are used for billing purposes for Amazon Web
+	// Services Marketplace components.
+	ProductCodes []ProductCodeListItem
+
 	// Contains the name of the publisher if this is a third-party component.
 	// Otherwise, this property is empty.
 	Publisher *string
 
-	// Describes the current status of the component. This is used for components that
-	// are no longer active.
+	// Describes the current status of the component.
 	State *ComponentState
 
 	// The operating system (OS) version supported by the component. If the OS
@@ -223,8 +236,7 @@ type ComponentParameterDetail struct {
 	noSmithyDocumentSerde
 }
 
-// A group of fields that describe the current status of components that are no
-// longer active.
+// A group of fields that describe the current status of components.
 type ComponentState struct {
 
 	// Describes how or why the component changed state.
@@ -293,13 +305,17 @@ type ComponentSummary struct {
 // TOE component.
 type ComponentVersion struct {
 
-	// The Amazon Resource Name (ARN) of the component. Semantic versioning is
-	// included in each object's Amazon Resource Name (ARN), at the level that applies
-	// to that object as follows:
+	// The Amazon Resource Name (ARN) of the component.
+	//
+	// Semantic versioning is included in each object's Amazon Resource Name (ARN), at
+	// the level that applies to that object as follows:
+	//
 	//   - Versionless ARNs and Name ARNs do not include specific values in any of the
 	//   nodes. The nodes are either left off entirely, or they are specified as
 	//   wildcards, for example: x.x.x.
+	//
 	//   - Version ARNs have only the first three nodes: ..
+	//
 	//   - Build version ARNs have all four nodes, and point to a specific build for a
 	//   specific version of an object.
 	Arn *string
@@ -319,6 +335,13 @@ type ComponentVersion struct {
 	// The platform of the component.
 	Platform Platform
 
+	// Contains product codes that are used for billing purposes for Amazon Web
+	// Services Marketplace components.
+	ProductCodes []ProductCodeListItem
+
+	// Describes the current status of the component version.
+	Status ComponentStatus
+
 	// he operating system (OS) version supported by the component. If the OS
 	// information is available, a prefix match is performed against the base image OS
 	// version during image recipe creation.
@@ -328,14 +351,19 @@ type ComponentVersion struct {
 	// image or only to test it.
 	Type ComponentType
 
-	// The semantic version of the component. The semantic version has four nodes:
-	// ../. You can assign values for the first three, and can filter on all of them.
-	// Assignment: For the first three nodes you can assign any positive integer value,
-	// including zero, with an upper limit of 2^30-1, or 1073741823 for each node.
-	// Image Builder automatically assigns the build number to the fourth node.
+	// The semantic version of the component.
+	//
+	// The semantic version has four nodes: ../. You can assign values for the first
+	// three, and can filter on all of them.
+	//
+	// Assignment: For the first three nodes you can assign any positive integer
+	// value, including zero, with an upper limit of 2^30-1, or 1073741823 for each
+	// node. Image Builder automatically assigns the build number to the fourth node.
+	//
 	// Patterns: You can use any numeric pattern that adheres to the assignment
 	// requirements for the nodes that you can assign. For example, you might choose a
 	// software version pattern, such as 1.0.0, or a date, such as 2021.01.01.
+	//
 	// Filtering: With semantic versioning, you have the flexibility to use wildcards
 	// (x) to specify the most recent versions or nodes when selecting the base image
 	// or components for your recipe. When you use a wildcard in any node, all nodes to
@@ -379,13 +407,17 @@ type ContainerDistributionConfiguration struct {
 // A container recipe.
 type ContainerRecipe struct {
 
-	// The Amazon Resource Name (ARN) of the container recipe. Semantic versioning is
-	// included in each object's Amazon Resource Name (ARN), at the level that applies
-	// to that object as follows:
+	// The Amazon Resource Name (ARN) of the container recipe.
+	//
+	// Semantic versioning is included in each object's Amazon Resource Name (ARN), at
+	// the level that applies to that object as follows:
+	//
 	//   - Versionless ARNs and Name ARNs do not include specific values in any of the
 	//   nodes. The nodes are either left off entirely, or they are specified as
 	//   wildcards, for example: x.x.x.
+	//
 	//   - Version ARNs have only the first three nodes: ..
+	//
 	//   - Build version ARNs have all four nodes, and point to a specific build for a
 	//   specific version of an object.
 	Arn *string
@@ -439,14 +471,19 @@ type ContainerRecipe struct {
 	// The destination repository for the container image.
 	TargetRepository *TargetContainerRepository
 
-	// The semantic version of the container recipe. The semantic version has four
-	// nodes: ../. You can assign values for the first three, and can filter on all of
-	// them. Assignment: For the first three nodes you can assign any positive integer
+	// The semantic version of the container recipe.
+	//
+	// The semantic version has four nodes: ../. You can assign values for the first
+	// three, and can filter on all of them.
+	//
+	// Assignment: For the first three nodes you can assign any positive integer
 	// value, including zero, with an upper limit of 2^30-1, or 1073741823 for each
 	// node. Image Builder automatically assigns the build number to the fourth node.
+	//
 	// Patterns: You can use any numeric pattern that adheres to the assignment
 	// requirements for the nodes that you can assign. For example, you might choose a
 	// software version pattern, such as 1.0.0, or a date, such as 2021.01.01.
+	//
 	// Filtering: With semantic versioning, you have the flexibility to use wildcards
 	// (x) to specify the most recent versions or nodes when selecting the base image
 	// or components for your recipe. When you use a wildcard in any node, all nodes to
@@ -494,8 +531,9 @@ type ContainerRecipeSummary struct {
 // vulnerable resources. The score uses the Common Vulnerability Scoring System
 // (CVSS) format. This format is a modification of the base CVSS score that the
 // National Vulnerability Database (NVD) provides. For more information about
-// severity levels, see Severity levels for Amazon Inspector findings (https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-severity.html)
-// in the Amazon Inspector User Guide.
+// severity levels, see [Severity levels for Amazon Inspector findings]in the Amazon Inspector User Guide.
+//
+// [Severity levels for Amazon Inspector findings]: https://docs.aws.amazon.com/inspector/latest/user/findings-understanding-severity.html
 type CvssScore struct {
 
 	// The CVSS base score.
@@ -663,7 +701,7 @@ type EbsInstanceBlockDeviceSpecification struct {
 	// The snapshot that defines the device contents.
 	SnapshotId *string
 
-	// For GP3 volumes only – The throughput in MiB/s that the volume supports.
+	//  For GP3 volumes only – The throughput in MiB/s that the volume supports.
 	Throughput *int32
 
 	// Use to override the device's volume size.
@@ -679,8 +717,8 @@ type EbsInstanceBlockDeviceSpecification struct {
 // container images that Amazon Inspector scans.
 type EcrConfiguration struct {
 
-	// Tags for Image Builder to apply to the output container image that &INS; scans.
-	// Tags can help you identify and manage your scanned images.
+	// Tags for Image Builder to apply to the output container image that Amazon
+	// Inspector scans. Tags can help you identify and manage your scanned images.
 	ContainerTags []string
 
 	// The name of the container repository that Amazon Inspector scans to identify
@@ -724,8 +762,10 @@ type FastLaunchConfiguration struct {
 }
 
 // Identifies the launch template that the associated Windows AMI uses for
-// launching an instance when faster launching is enabled. You can specify either
-// the launchTemplateName or the launchTemplateId , but not both.
+// launching an instance when faster launching is enabled.
+//
+// You can specify either the launchTemplateName or the launchTemplateId , but not
+// both.
 type FastLaunchLaunchTemplateSpecification struct {
 
 	// The ID of the launch template to use for faster launching for a Windows AMI.
@@ -771,24 +811,33 @@ type Filter struct {
 // or an image recipe ( imageRecipe ), which creates an AMI.
 type Image struct {
 
-	// The Amazon Resource Name (ARN) of the image. Semantic versioning is included in
-	// each object's Amazon Resource Name (ARN), at the level that applies to that
-	// object as follows:
+	// The Amazon Resource Name (ARN) of the image.
+	//
+	// Semantic versioning is included in each object's Amazon Resource Name (ARN), at
+	// the level that applies to that object as follows:
+	//
 	//   - Versionless ARNs and Name ARNs do not include specific values in any of the
 	//   nodes. The nodes are either left off entirely, or they are specified as
 	//   wildcards, for example: x.x.x.
+	//
 	//   - Version ARNs have only the first three nodes: ..
+	//
 	//   - Build version ARNs have all four nodes, and point to a specific build for a
 	//   specific version of an object.
 	Arn *string
 
 	// Indicates the type of build that created this image. The build can be initiated
 	// in the following ways:
+	//
 	//   - USER_INITIATED – A manual pipeline build request.
+	//
 	//   - SCHEDULED – A pipeline build initiated by a cron expression in the Image
 	//   Builder pipeline, or from EventBridge.
+	//
 	//   - IMPORT – A VM import created the image to use as the base image for the
 	//   recipe.
+	//
+	//   - IMPORT_ISO – An ISO disk import created the image.
 	BuildType BuildType
 
 	// For container images, this is the container recipe that Image Builder used to
@@ -798,12 +847,20 @@ type Image struct {
 	// The date on which Image Builder created this image.
 	DateCreated *string
 
+	// The time when deprecation occurs for an image resource. This can be a past or
+	// future date.
+	DeprecationTime *time.Time
+
 	// The distribution configuration that Image Builder used to create this image.
 	DistributionConfiguration *DistributionConfiguration
 
 	// Indicates whether Image Builder collects additional information about the
 	// image, such as the operating system (OS) version and package list.
 	EnhancedImageMetadataEnabled *bool
+
+	// The name or Amazon Resource Name (ARN) for the IAM role you create that grants
+	// Image Builder access to perform workflow actions.
+	ExecutionRole *string
 
 	// For images that distribute an AMI, this is the image recipe that Image Builder
 	// used to create the image. For container images, this is empty.
@@ -820,6 +877,10 @@ type Image struct {
 
 	// The infrastructure that Image Builder used to create this image.
 	InfrastructureConfiguration *InfrastructureConfiguration
+
+	// Identifies the last runtime instance of the lifecycle policy to take action on
+	// the image.
+	LifecycleExecutionId *string
 
 	// The name of the image.
 	Name *string
@@ -852,19 +913,27 @@ type Image struct {
 	// Specifies whether this image produces an AMI or a container image.
 	Type ImageType
 
-	// The semantic version of the image. The semantic version has four nodes: ../.
-	// You can assign values for the first three, and can filter on all of them.
-	// Assignment: For the first three nodes you can assign any positive integer value,
-	// including zero, with an upper limit of 2^30-1, or 1073741823 for each node.
-	// Image Builder automatically assigns the build number to the fourth node.
+	// The semantic version of the image.
+	//
+	// The semantic version has four nodes: ../. You can assign values for the first
+	// three, and can filter on all of them.
+	//
+	// Assignment: For the first three nodes you can assign any positive integer
+	// value, including zero, with an upper limit of 2^30-1, or 1073741823 for each
+	// node. Image Builder automatically assigns the build number to the fourth node.
+	//
 	// Patterns: You can use any numeric pattern that adheres to the assignment
 	// requirements for the nodes that you can assign. For example, you might choose a
 	// software version pattern, such as 1.0.0, or a date, such as 2021.01.01.
+	//
 	// Filtering: With semantic versioning, you have the flexibility to use wildcards
 	// (x) to specify the most recent versions or nodes when selecting the base image
 	// or components for your recipe. When you use a wildcard in any node, all nodes to
 	// the right of the first wildcard must also be wildcards.
 	Version *string
+
+	// Contains the build and test workflows that are associated with the image.
+	Workflows []WorkflowConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -882,13 +951,15 @@ type ImageAggregation struct {
 	noSmithyDocumentSerde
 }
 
-// Represents a package installed on an Image Builder image.
+// A software package that's installed on top of the base image to create a
+// customized image.
 type ImagePackage struct {
 
-	// The name of the package as reported to the operating system package manager.
+	// The name of the package that's reported to the operating system package manager.
 	PackageName *string
 
-	// The version of the package as reported to the operating system package manager.
+	// The version of the package that's reported to the operating system package
+	// manager.
 	PackageVersion *string
 
 	noSmithyDocumentSerde
@@ -928,6 +999,10 @@ type ImagePipeline struct {
 	// enhance the overall experience of using EC2 Image Builder. Enabled by default.
 	EnhancedImageMetadataEnabled *bool
 
+	// The name or Amazon Resource Name (ARN) for the IAM role you create that grants
+	// Image Builder access to perform workflow actions.
+	ExecutionRole *string
+
 	// The Amazon Resource Name (ARN) of the image recipe associated with this image
 	// pipeline.
 	ImageRecipeArn *string
@@ -956,6 +1031,9 @@ type ImagePipeline struct {
 
 	// The tags of this image pipeline.
 	Tags map[string]string
+
+	// Contains the workflows that run for the image pipeline.
+	Workflows []WorkflowConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -1187,18 +1265,31 @@ type ImageSummary struct {
 
 	// Indicates the type of build that created this image. The build can be initiated
 	// in the following ways:
+	//
 	//   - USER_INITIATED – A manual pipeline build request.
+	//
 	//   - SCHEDULED – A pipeline build initiated by a cron expression in the Image
 	//   Builder pipeline, or from EventBridge.
+	//
 	//   - IMPORT – A VM import created the image to use as the base image for the
 	//   recipe.
+	//
+	//   - IMPORT_ISO – An ISO disk import created the image.
 	BuildType BuildType
 
 	// The date on which Image Builder created this image.
 	DateCreated *string
 
+	// The time when deprecation occurs for an image resource. This can be a past or
+	// future date.
+	DeprecationTime *time.Time
+
 	// The origin of the base image that Image Builder used to build this image.
 	ImageSource ImageSource
+
+	// Identifies the last runtime instance of the lifecycle policy to take action on
+	// the image.
+	LifecycleExecutionId *string
 
 	// The name of the image.
 	Name *string
@@ -1240,8 +1331,9 @@ type ImageTestsConfiguration struct {
 	// to enable tests to run following the image build, before image distribution.
 	ImageTestsEnabled *bool
 
-	// The maximum time in minutes that tests are permitted to run. The timeoutMinutes
-	// attribute is not currently active. This value is ignored.
+	// The maximum time in minutes that tests are permitted to run.
+	//
+	// The timeout property is not currently active. This value is ignored.
 	TimeoutMinutes *int32
 
 	noSmithyDocumentSerde
@@ -1251,23 +1343,32 @@ type ImageTestsConfiguration struct {
 type ImageVersion struct {
 
 	// The Amazon Resource Name (ARN) of a specific version of an Image Builder image.
+	//
 	// Semantic versioning is included in each object's Amazon Resource Name (ARN), at
 	// the level that applies to that object as follows:
+	//
 	//   - Versionless ARNs and Name ARNs do not include specific values in any of the
 	//   nodes. The nodes are either left off entirely, or they are specified as
 	//   wildcards, for example: x.x.x.
+	//
 	//   - Version ARNs have only the first three nodes: ..
+	//
 	//   - Build version ARNs have all four nodes, and point to a specific build for a
 	//   specific version of an object.
 	Arn *string
 
 	// Indicates the type of build that created this image. The build can be initiated
 	// in the following ways:
+	//
 	//   - USER_INITIATED – A manual pipeline build request.
+	//
 	//   - SCHEDULED – A pipeline build initiated by a cron expression in the Image
 	//   Builder pipeline, or from EventBridge.
+	//
 	//   - IMPORT – A VM import created the image to use as the base image for the
 	//   recipe.
+	//
+	//   - IMPORT_ISO – An ISO disk import created the image.
 	BuildType BuildType
 
 	// The date on which this specific version of the Image Builder image was created.
@@ -1294,18 +1395,23 @@ type ImageVersion struct {
 	Type ImageType
 
 	// Details for a specific version of an Image Builder image. This version follows
-	// the semantic version syntax. The semantic version has four nodes: ../. You can
-	// assign values for the first three, and can filter on all of them. Assignment:
-	// For the first three nodes you can assign any positive integer value, including
-	// zero, with an upper limit of 2^30-1, or 1073741823 for each node. Image Builder
-	// automatically assigns the build number to the fourth node. Patterns: You can use
-	// any numeric pattern that adheres to the assignment requirements for the nodes
-	// that you can assign. For example, you might choose a software version pattern,
-	// such as 1.0.0, or a date, such as 2021.01.01. Filtering: With semantic
-	// versioning, you have the flexibility to use wildcards (x) to specify the most
-	// recent versions or nodes when selecting the base image or components for your
-	// recipe. When you use a wildcard in any node, all nodes to the right of the first
-	// wildcard must also be wildcards.
+	// the semantic version syntax.
+	//
+	// The semantic version has four nodes: ../. You can assign values for the first
+	// three, and can filter on all of them.
+	//
+	// Assignment: For the first three nodes you can assign any positive integer
+	// value, including zero, with an upper limit of 2^30-1, or 1073741823 for each
+	// node. Image Builder automatically assigns the build number to the fourth node.
+	//
+	// Patterns: You can use any numeric pattern that adheres to the assignment
+	// requirements for the nodes that you can assign. For example, you might choose a
+	// software version pattern, such as 1.0.0, or a date, such as 2021.01.01.
+	//
+	// Filtering: With semantic versioning, you have the flexibility to use wildcards
+	// (x) to specify the most recent versions or nodes when selecting the base image
+	// or components for your recipe. When you use a wildcard in any node, all nodes to
+	// the right of the first wildcard must also be wildcards.
 	Version *string
 
 	noSmithyDocumentSerde
@@ -1344,6 +1450,10 @@ type InfrastructureConfiguration struct {
 	// The name of the infrastructure configuration.
 	Name *string
 
+	// The instance placement settings that define where the instances that are
+	// launched from your image will run.
+	Placement *Placement
+
 	// The tags attached to the resource created by Image Builder.
 	ResourceTags map[string]string
 
@@ -1351,10 +1461,11 @@ type InfrastructureConfiguration struct {
 	SecurityGroupIds []string
 
 	// The Amazon Resource Name (ARN) for the SNS topic to which we send image build
-	// event notifications. EC2 Image Builder is unable to send notifications to SNS
-	// topics that are encrypted using keys from other accounts. The key that is used
-	// to encrypt the SNS topic must reside in the account that the Image Builder
-	// service runs under.
+	// event notifications.
+	//
+	// EC2 Image Builder is unable to send notifications to SNS topics that are
+	// encrypted using keys from other accounts. The key that is used to encrypt the
+	// SNS topic must reside in the account that the Image Builder service runs under.
 	SnsTopicArn *string
 
 	// The subnet ID of the infrastructure configuration.
@@ -1393,6 +1504,10 @@ type InfrastructureConfigurationSummary struct {
 
 	// The name of the infrastructure configuration.
 	Name *string
+
+	// The instance placement settings that define where the instances that are
+	// launched from your image will run.
+	Placement *Placement
 
 	// The tags attached to the image created by Image Builder.
 	ResourceTags map[string]string
@@ -1450,10 +1565,10 @@ type InstanceConfiguration struct {
 
 // The instance metadata options that apply to the HTTP requests that pipeline
 // builds use to launch EC2 build and test instances. For more information about
-// instance metadata options, see Configure the instance metadata options (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/configuring-instance-metadata-options.html)
-// in the Amazon EC2 User Guide for Linux instances, or Configure the instance
-// metadata options (https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/configuring-instance-metadata-options.html)
-// in the Amazon EC2 Windows Guide for Windows instances.
+// instance metadata options, see [Configure the instance metadata options]in the Amazon EC2 User Guide for Linux
+// instances, or [Configure the instance metadata options]in the Amazon EC2 Windows Guide for Windows instances.
+//
+// [Configure the instance metadata options]: https://docs.aws.amazon.com/AWSEC2/latest/WindowsGuide/configuring-instance-metadata-options.html
 type InstanceMetadataOptions struct {
 
 	// Limit the number of hops that an instance metadata request can traverse to
@@ -1463,12 +1578,15 @@ type InstanceMetadataOptions struct {
 
 	// Indicates whether a signed token header is required for instance metadata
 	// retrieval requests. The values affect the response as follows:
+	//
 	//   - required – When you retrieve the IAM role credentials, version 2.0
 	//   credentials are returned in all cases.
+	//
 	//   - optional – You can include a signed token header in your request to
 	//   retrieve instance metadata, or you can leave it out. If you include it, version
 	//   2.0 credentials are returned for the IAM role. Otherwise, version 1.0
 	//   credentials are returned.
+	//
 	// The default setting is optional.
 	HttpTokens *string
 
@@ -1476,22 +1594,24 @@ type InstanceMetadataOptions struct {
 }
 
 // Describes the configuration for a launch permission. The launch permission
-// modification request is sent to the Amazon EC2 ModifyImageAttribute (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyImageAttribute.html)
-// API on behalf of the user for each Region they have selected to distribute the
-// AMI. To make an AMI public, set the launch permission authorized accounts to all
-// . See the examples for making an AMI public at Amazon EC2 ModifyImageAttribute (https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyImageAttribute.html)
-// .
+// modification request is sent to the [Amazon EC2 ModifyImageAttribute]API on behalf of the user for each Region
+// they have selected to distribute the AMI. To make an AMI public, set the launch
+// permission authorized accounts to all . See the examples for making an AMI
+// public at [Amazon EC2 ModifyImageAttribute].
+//
+// [Amazon EC2 ModifyImageAttribute]: https://docs.aws.amazon.com/AWSEC2/latest/APIReference/API_ModifyImageAttribute.html
 type LaunchPermissionConfiguration struct {
 
 	// The ARN for an Amazon Web Services Organization that you want to share your AMI
-	// with. For more information, see What is Organizations? (https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html)
-	// .
+	// with. For more information, see [What is Organizations?].
+	//
+	// [What is Organizations?]: https://docs.aws.amazon.com/organizations/latest/userguide/orgs_introduction.html
 	OrganizationArns []string
 
 	// The ARN for an Organizations organizational unit (OU) that you want to share
-	// your AMI with. For more information about key concepts for Organizations, see
-	// Organizations terminology and concepts (https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html)
-	// .
+	// your AMI with. For more information about key concepts for Organizations, see [Organizations terminology and concepts].
+	//
+	// [Organizations terminology and concepts]: https://docs.aws.amazon.com/organizations/latest/userguide/orgs_getting-started_concepts.html
 	OrganizationalUnitArns []string
 
 	// The name of the group.
@@ -1516,7 +1636,392 @@ type LaunchTemplateConfiguration struct {
 
 	// Set the specified Amazon EC2 launch template as the default launch template for
 	// the specified account.
-	SetDefaultVersion bool
+	SetDefaultVersion *bool
+
+	noSmithyDocumentSerde
+}
+
+// Contains metadata from a runtime instance of a lifecycle policy.
+type LifecycleExecution struct {
+
+	// The timestamp when the lifecycle runtime instance completed.
+	EndTime *time.Time
+
+	// Identifies the lifecycle policy runtime instance.
+	LifecycleExecutionId *string
+
+	// The Amazon Resource Name (ARN) of the lifecycle policy that ran.
+	LifecyclePolicyArn *string
+
+	// Contains information about associated resources that are identified for action
+	// by the runtime instance of the lifecycle policy.
+	ResourcesImpactedSummary *LifecycleExecutionResourcesImpactedSummary
+
+	// The timestamp when the lifecycle runtime instance started.
+	StartTime *time.Time
+
+	// Runtime state that reports if the policy action ran successfully, failed, or
+	// was skipped.
+	State *LifecycleExecutionState
+
+	noSmithyDocumentSerde
+}
+
+// Contains details for a resource that the runtime instance of the lifecycle
+// policy identified for action.
+type LifecycleExecutionResource struct {
+
+	// The account that owns the impacted resource.
+	AccountId *string
+
+	// The action to take for the identified resource.
+	Action *LifecycleExecutionResourceAction
+
+	// The ending timestamp from the lifecycle action that was applied to the resource.
+	EndTime *time.Time
+
+	// For an impacted container image, this identifies a list of URIs for associated
+	// container images distributed to ECR repositories.
+	ImageUris []string
+
+	// The Amazon Web Services Region where the lifecycle execution resource is stored.
+	Region *string
+
+	// Identifies the impacted resource. The resource ID depends on the type of
+	// resource, as follows.
+	//
+	//   - Image Builder image resources: Amazon Resource Name (ARN)
+	//
+	//   - Distributed AMIs: AMI ID
+	//
+	//   - Container images distributed to an ECR repository: image URI or SHA Digest
+	ResourceId *string
+
+	// A list of associated resource snapshots for the impacted resource if it’s an
+	// AMI.
+	Snapshots []LifecycleExecutionSnapshotResource
+
+	// The starting timestamp from the lifecycle action that was applied to the
+	// resource.
+	StartTime *time.Time
+
+	// The runtime state for the lifecycle execution.
+	State *LifecycleExecutionResourceState
+
+	noSmithyDocumentSerde
+}
+
+// The lifecycle policy action that was identified for the impacted resource.
+type LifecycleExecutionResourceAction struct {
+
+	// The name of the resource that was identified for a lifecycle policy action.
+	Name LifecycleExecutionResourceActionName
+
+	// The reason why the lifecycle policy action is taken.
+	Reason *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains details for an image resource that was identified for a lifecycle
+// action.
+type LifecycleExecutionResourcesImpactedSummary struct {
+
+	// Indicates whether an image resource that was identified for a lifecycle action
+	// has associated resources that are also impacted.
+	HasImpactedResources bool
+
+	noSmithyDocumentSerde
+}
+
+// Contains the state of an impacted resource that the runtime instance of the
+// lifecycle policy identified for action.
+type LifecycleExecutionResourceState struct {
+
+	// Messaging that clarifies the reason for the assigned status.
+	Reason *string
+
+	// The runtime status of the lifecycle action taken for the impacted resource.
+	Status LifecycleExecutionResourceStatus
+
+	noSmithyDocumentSerde
+}
+
+// Contains the state of an impacted snapshot resource that the runtime instance
+// of the lifecycle policy identified for action.
+type LifecycleExecutionSnapshotResource struct {
+
+	// Identifies the impacted snapshot resource.
+	SnapshotId *string
+
+	// The runtime status of the lifecycle action taken for the snapshot.
+	State *LifecycleExecutionResourceState
+
+	noSmithyDocumentSerde
+}
+
+// The current state of the runtime instance of the lifecycle policy.
+type LifecycleExecutionState struct {
+
+	// The reason for the current status.
+	Reason *string
+
+	// The runtime status of the lifecycle execution.
+	Status LifecycleExecutionStatus
+
+	noSmithyDocumentSerde
+}
+
+// The configuration details for a lifecycle policy resource.
+type LifecyclePolicy struct {
+
+	// The Amazon Resource Name (ARN) of the lifecycle policy resource.
+	Arn *string
+
+	// The timestamp when Image Builder created the lifecycle policy resource.
+	DateCreated *time.Time
+
+	// The timestamp for the last time Image Builder ran the lifecycle policy.
+	DateLastRun *time.Time
+
+	// The timestamp when Image Builder updated the lifecycle policy resource.
+	DateUpdated *time.Time
+
+	// Optional description for the lifecycle policy.
+	Description *string
+
+	// The name or Amazon Resource Name (ARN) of the IAM role that Image Builder uses
+	// to run the lifecycle policy. This is a custom role that you create.
+	ExecutionRole *string
+
+	// The name of the lifecycle policy.
+	Name *string
+
+	// The configuration details for a lifecycle policy resource.
+	PolicyDetails []LifecyclePolicyDetail
+
+	// Resource selection criteria used to run the lifecycle policy.
+	ResourceSelection *LifecyclePolicyResourceSelection
+
+	// The type of resources the lifecycle policy targets.
+	ResourceType LifecyclePolicyResourceType
+
+	// Indicates whether the lifecycle policy resource is enabled.
+	Status LifecyclePolicyStatus
+
+	// To help manage your lifecycle policy resources, you can assign your own
+	// metadata to each resource in the form of tags. Each tag consists of a key and an
+	// optional value, both of which you define.
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration details for a lifecycle policy resource.
+type LifecyclePolicyDetail struct {
+
+	// Configuration details for the policy action.
+	//
+	// This member is required.
+	Action *LifecyclePolicyDetailAction
+
+	// Specifies the resources that the lifecycle policy applies to.
+	//
+	// This member is required.
+	Filter *LifecyclePolicyDetailFilter
+
+	// Additional rules to specify resources that should be exempt from policy actions.
+	ExclusionRules *LifecyclePolicyDetailExclusionRules
+
+	noSmithyDocumentSerde
+}
+
+// Contains selection criteria for the lifecycle policy.
+type LifecyclePolicyDetailAction struct {
+
+	// Specifies the lifecycle action to take.
+	//
+	// This member is required.
+	Type LifecyclePolicyDetailActionType
+
+	// Specifies the resources that the lifecycle policy applies to.
+	IncludeResources *LifecyclePolicyDetailActionIncludeResources
+
+	noSmithyDocumentSerde
+}
+
+// Specifies how the lifecycle policy should apply actions to selected resources.
+type LifecyclePolicyDetailActionIncludeResources struct {
+
+	// Specifies whether the lifecycle action should apply to distributed AMIs.
+	Amis bool
+
+	// Specifies whether the lifecycle action should apply to distributed containers.
+	Containers bool
+
+	// Specifies whether the lifecycle action should apply to snapshots associated
+	// with distributed AMIs.
+	Snapshots bool
+
+	noSmithyDocumentSerde
+}
+
+// Specifies resources that lifecycle policy actions should not apply to.
+type LifecyclePolicyDetailExclusionRules struct {
+
+	// Lists configuration values that apply to AMIs that Image Builder should exclude
+	// from the lifecycle action.
+	Amis *LifecyclePolicyDetailExclusionRulesAmis
+
+	// Contains a list of tags that Image Builder uses to skip lifecycle actions for
+	// Image Builder image resources that have them.
+	TagMap map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// Defines criteria for AMIs that are excluded from lifecycle actions.
+type LifecyclePolicyDetailExclusionRulesAmis struct {
+
+	// Configures whether public AMIs are excluded from the lifecycle action.
+	IsPublic bool
+
+	// Specifies configuration details for Image Builder to exclude the most recent
+	// resources from lifecycle actions.
+	LastLaunched *LifecyclePolicyDetailExclusionRulesAmisLastLaunched
+
+	// Configures Amazon Web Services Regions that are excluded from the lifecycle
+	// action.
+	Regions []string
+
+	// Specifies Amazon Web Services accounts whose resources are excluded from the
+	// lifecycle action.
+	SharedAccounts []string
+
+	// Lists tags that should be excluded from lifecycle actions for the AMIs that
+	// have them.
+	TagMap map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// Defines criteria to exclude AMIs from lifecycle actions based on the last time
+// they were used to launch an instance.
+type LifecyclePolicyDetailExclusionRulesAmisLastLaunched struct {
+
+	// Defines the unit of time that the lifecycle policy uses to calculate elapsed
+	// time since the last instance launched from the AMI. For example: days, weeks,
+	// months, or years.
+	//
+	// This member is required.
+	Unit LifecyclePolicyTimeUnit
+
+	// The integer number of units for the time period. For example 6 (months).
+	//
+	// This member is required.
+	Value *int32
+
+	noSmithyDocumentSerde
+}
+
+// Defines filters that the lifecycle policy uses to determine impacted resource.
+type LifecyclePolicyDetailFilter struct {
+
+	// Filter resources based on either age or count .
+	//
+	// This member is required.
+	Type LifecyclePolicyDetailFilterType
+
+	// The number of units for the time period or for the count. For example, a value
+	// of 6 might refer to six months or six AMIs.
+	//
+	// For count-based filters, this value represents the minimum number of resources
+	// to keep on hand. If you have fewer resources than this number, the resource is
+	// excluded from lifecycle actions.
+	//
+	// This member is required.
+	Value *int32
+
+	// For age-based filters, this is the number of resources to keep on hand after
+	// the lifecycle DELETE action is applied. Impacted resources are only deleted if
+	// you have more than this number of resources. If you have fewer resources than
+	// this number, the impacted resource is not deleted.
+	RetainAtLeast *int32
+
+	// Defines the unit of time that the lifecycle policy uses to determine impacted
+	// resources. This is required for age-based rules.
+	Unit LifecyclePolicyTimeUnit
+
+	noSmithyDocumentSerde
+}
+
+// Resource selection criteria for the lifecycle policy.
+type LifecyclePolicyResourceSelection struct {
+
+	// A list of recipes that are used as selection criteria for the output images
+	// that the lifecycle policy applies to.
+	Recipes []LifecyclePolicyResourceSelectionRecipe
+
+	// A list of tags that are used as selection criteria for the Image Builder image
+	// resources that the lifecycle policy applies to.
+	TagMap map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// Specifies an Image Builder recipe that the lifecycle policy uses for resource
+// selection.
+type LifecyclePolicyResourceSelectionRecipe struct {
+
+	// The name of an Image Builder recipe that the lifecycle policy uses for resource
+	// selection.
+	//
+	// This member is required.
+	Name *string
+
+	// The version of the Image Builder recipe specified by the name field.
+	//
+	// This member is required.
+	SemanticVersion *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains a summary of lifecycle policy resources.
+type LifecyclePolicySummary struct {
+
+	// The Amazon Resource Name (ARN) of the lifecycle policy summary resource.
+	Arn *string
+
+	// The timestamp when Image Builder created the lifecycle policy resource.
+	DateCreated *time.Time
+
+	// The timestamp for the last time Image Builder ran the lifecycle policy.
+	DateLastRun *time.Time
+
+	// The timestamp when Image Builder updated the lifecycle policy resource.
+	DateUpdated *time.Time
+
+	// Optional description for the lifecycle policy.
+	Description *string
+
+	// The name or Amazon Resource Name (ARN) of the IAM role that Image Builder uses
+	// to run the lifecycle policy.
+	ExecutionRole *string
+
+	// The name of the lifecycle policy.
+	Name *string
+
+	// The type of resources the lifecycle policy targets.
+	ResourceType LifecyclePolicyResourceType
+
+	// The lifecycle policy resource status.
+	Status LifecyclePolicyStatus
+
+	// To help manage your lifecycle policy resources, you can assign your own
+	// metadata to each resource in the form of tags. Each tag consists of a key and an
+	// optional value, both of which you define.
+	Tags map[string]string
 
 	noSmithyDocumentSerde
 }
@@ -1585,6 +2090,61 @@ type PackageVulnerabilityDetails struct {
 	noSmithyDocumentSerde
 }
 
+// By default, EC2 instances run on shared tenancy hardware. This means that
+// multiple Amazon Web Services accounts might share the same physical hardware.
+// When you use dedicated hardware, the physical server that hosts your instances
+// is dedicated to your Amazon Web Services account. Instance placement settings
+// contain the details for the physical hardware where instances that Image Builder
+// launches during image creation will run.
+type Placement struct {
+
+	// The Availability Zone where your build and test instances will launch.
+	AvailabilityZone *string
+
+	// The ID of the Dedicated Host on which build and test instances run. This only
+	// applies if tenancy is host . If you specify the host ID, you must not specify
+	// the resource group ARN. If you specify both, Image Builder returns an error.
+	HostId *string
+
+	// The Amazon Resource Name (ARN) of the host resource group in which to launch
+	// build and test instances. This only applies if tenancy is host . If you specify
+	// the resource group ARN, you must not specify the host ID. If you specify both,
+	// Image Builder returns an error.
+	HostResourceGroupArn *string
+
+	// The tenancy of the instance. An instance with a tenancy of dedicated runs on
+	// single-tenant hardware. An instance with a tenancy of host runs on a Dedicated
+	// Host.
+	//
+	// If tenancy is set to host , then you can optionally specify one target for
+	// placement – either host ID or host resource group ARN. If automatic placement is
+	// enabled for your host, and you don't specify any placement target, Amazon EC2
+	// will try to find an available host for your build and test instances.
+	Tenancy TenancyType
+
+	noSmithyDocumentSerde
+}
+
+// Information about a single product code.
+type ProductCodeListItem struct {
+
+	// For Amazon Web Services Marketplace components, this contains the product code
+	// ID that can be stamped onto an EC2 AMI to ensure that components are billed
+	// correctly. If this property is empty, it might mean that the component is not
+	// published.
+	//
+	// This member is required.
+	ProductCodeId *string
+
+	// The owner of the product code that's billed. If this property is empty, it
+	// might mean that the component is not published.
+	//
+	// This member is required.
+	ProductCodeType ProductCodeType
+
+	noSmithyDocumentSerde
+}
+
 // Information about how to remediate a finding.
 type Remediation struct {
 
@@ -1608,15 +2168,54 @@ type RemediationRecommendation struct {
 	noSmithyDocumentSerde
 }
 
+// The current state of an impacted resource.
+type ResourceState struct {
+
+	// Shows the current lifecycle policy action that was applied to an impacted
+	// resource.
+	Status ResourceStatus
+
+	noSmithyDocumentSerde
+}
+
+// Additional rules to specify resources that should be exempt from ad-hoc
+// lifecycle actions.
+type ResourceStateUpdateExclusionRules struct {
+
+	// Defines criteria for AMIs that are excluded from lifecycle actions.
+	Amis *LifecyclePolicyDetailExclusionRulesAmis
+
+	noSmithyDocumentSerde
+}
+
+// Specifies if the lifecycle policy should apply actions to selected resources.
+type ResourceStateUpdateIncludeResources struct {
+
+	// Specifies whether the lifecycle action should apply to distributed AMIs
+	Amis bool
+
+	// Specifies whether the lifecycle action should apply to distributed containers.
+	Containers bool
+
+	// Specifies whether the lifecycle action should apply to snapshots associated
+	// with distributed AMIs.
+	Snapshots bool
+
+	noSmithyDocumentSerde
+}
+
 // Properties that configure export from your build instance to a compatible file
 // format for your VM.
 type S3ExportConfiguration struct {
 
 	// Export the updated image to one of the following supported disk image formats:
+	//
 	//   - Virtual Hard Disk (VHD) – Compatible with Citrix Xen and Microsoft Hyper-V
 	//   virtualization products.
+	//
 	//   - Stream-optimized ESX Virtual Machine Disk (VMDK) – Compatible with VMware
 	//   ESX and VMware vSphere versions 4, 5, and 6.
+	//
 	//   - Raw – Raw format.
 	//
 	// This member is required.
@@ -1652,31 +2251,39 @@ type S3Logs struct {
 	noSmithyDocumentSerde
 }
 
-// A schedule configures how often and when a pipeline will automatically create a
+// A schedule configures when and how often a pipeline will automatically create a
 // new image.
 type Schedule struct {
 
-	// The condition configures when the pipeline should trigger a new image build.
-	// When the pipelineExecutionStartCondition is set to
-	// EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE , and you use semantic version
-	// filters on the base image or components in your image recipe, EC2 Image Builder
-	// will build a new image only when there are new versions of the image or
-	// components in your recipe that match the semantic version filter. When it is set
-	// to EXPRESSION_MATCH_ONLY , it will build a new image every time the CRON
-	// expression matches the current time. For semantic version syntax, see
-	// CreateComponent (https://docs.aws.amazon.com/imagebuilder/latest/APIReference/API_CreateComponent.html)
-	// in the EC2 Image Builder API Reference.
+	// The start condition configures when the pipeline should trigger a new image
+	// build, as follows. If no value is set Image Builder defaults to
+	// EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE .
+	//
+	//   - EXPRESSION_MATCH_AND_DEPENDENCY_UPDATES_AVAILABLE (default) – When you use
+	//   semantic version filters on the base image or components in your image recipe,
+	//   EC2 Image Builder builds a new image only when there are new versions of the
+	//   base image or components in your recipe that match the filter.
+	//
+	// For semantic version syntax, see [CreateComponent].
+	//
+	//   - EXPRESSION_MATCH_ONLY – This condition builds a new image every time the
+	//   CRON expression matches the current time.
+	//
+	// [CreateComponent]: https://docs.aws.amazon.com/imagebuilder/latest/APIReference/API_CreateComponent.html
 	PipelineExecutionStartCondition PipelineExecutionStartCondition
 
 	// The cron expression determines how often EC2 Image Builder evaluates your
-	// pipelineExecutionStartCondition . For information on how to format a cron
-	// expression in Image Builder, see Use cron expressions in EC2 Image Builder (https://docs.aws.amazon.com/imagebuilder/latest/userguide/image-builder-cron.html)
-	// .
+	// pipelineExecutionStartCondition .
+	//
+	// For information on how to format a cron expression in Image Builder, see [Use cron expressions in EC2 Image Builder].
+	//
+	// [Use cron expressions in EC2 Image Builder]: https://docs.aws.amazon.com/imagebuilder/latest/userguide/image-builder-cron.html
 	ScheduleExpression *string
 
 	// The timezone that applies to the scheduling expression. For example, "Etc/UTC",
-	// "America/Los_Angeles" in the IANA timezone format (https://www.joda.org/joda-time/timezones.html)
-	// . If not specified this defaults to UTC.
+	// "America/Los_Angeles" in the [IANA timezone format]. If not specified this defaults to UTC.
+	//
+	// [IANA timezone format]: https://www.joda.org/joda-time/timezones.html
 	Timezone *string
 
 	noSmithyDocumentSerde
@@ -1718,7 +2325,8 @@ type SystemsManagerAgent struct {
 type TargetContainerRepository struct {
 
 	// The name of the container repository where the output container image is
-	// stored. This name is prefixed by the repository location.
+	// stored. This name is prefixed by the repository location. For example,
+	// /repository_name .
 	//
 	// This member is required.
 	RepositoryName *string
@@ -1781,6 +2389,82 @@ type VulnerablePackage struct {
 	noSmithyDocumentSerde
 }
 
+// Defines a process that Image Builder uses to build and test images during the
+// image creation process.
+type Workflow struct {
+
+	// The Amazon Resource Name (ARN) of the workflow resource.
+	Arn *string
+
+	// Describes what change has been made in this version of the workflow, or what
+	// makes this version different from other versions of the workflow.
+	ChangeDescription *string
+
+	// Contains the YAML document content for the workflow.
+	Data *string
+
+	// The timestamp when Image Builder created the workflow resource.
+	DateCreated *string
+
+	// The description of the workflow.
+	Description *string
+
+	// The KMS key identifier used to encrypt the workflow resource.
+	KmsKeyId *string
+
+	// The name of the workflow resource.
+	Name *string
+
+	// The owner of the workflow resource.
+	Owner *string
+
+	// An array of input parameters that that the image workflow uses to control
+	// actions or configure settings.
+	Parameters []WorkflowParameterDetail
+
+	// Describes the current status of the workflow and the reason for that status.
+	State *WorkflowState
+
+	// The tags that apply to the workflow resource
+	Tags map[string]string
+
+	// Specifies the image creation stage that the workflow applies to. Image Builder
+	// currently supports build and test workflows.
+	Type WorkflowType
+
+	// The workflow resource version. Workflow resources are immutable. To make a
+	// change, you can clone a workflow or create a new version.
+	Version *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains control settings and configurable inputs for a workflow resource.
+type WorkflowConfiguration struct {
+
+	// The Amazon Resource Name (ARN) of the workflow resource.
+	//
+	// This member is required.
+	WorkflowArn *string
+
+	// The action to take if the workflow fails.
+	OnFailure OnWorkflowFailure
+
+	// Test workflows are defined within named runtime groups called parallel groups.
+	// The parallel group is the named group that contains this test workflow. Test
+	// workflows within a parallel group can run at the same time. Image Builder starts
+	// up to five test workflows in the group at the same time, and starts additional
+	// workflows as others complete, until all workflows in the group have completed.
+	// This field only applies for test workflows.
+	ParallelGroup *string
+
+	// Contains parameter values for each of the parameters that the workflow document
+	// defined for the workflow resource.
+	Parameters []WorkflowParameter
+
+	noSmithyDocumentSerde
+}
+
 // Metadata that includes details and status from this runtime instance of the
 // workflow.
 type WorkflowExecutionMetadata struct {
@@ -1790,6 +2474,9 @@ type WorkflowExecutionMetadata struct {
 
 	// The runtime output message from the workflow, if applicable.
 	Message *string
+
+	// The name of the test group that included the test workflow resource at runtime.
+	ParallelGroup *string
 
 	// The timestamp when the runtime instance of this workflow started.
 	StartTime *string
@@ -1819,6 +2506,88 @@ type WorkflowExecutionMetadata struct {
 
 	// Unique identifier that Image Builder assigns to keep track of runtime resources
 	// each time it runs a workflow.
+	WorkflowExecutionId *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains a key/value pair that sets the named workflow parameter.
+type WorkflowParameter struct {
+
+	// The name of the workflow parameter to set.
+	//
+	// This member is required.
+	Name *string
+
+	// Sets the value for the named workflow parameter.
+	//
+	// This member is required.
+	Value []string
+
+	noSmithyDocumentSerde
+}
+
+// Defines a parameter that's used to provide configuration details for the
+// workflow.
+type WorkflowParameterDetail struct {
+
+	// The name of this input parameter.
+	//
+	// This member is required.
+	Name *string
+
+	// The type of input this parameter provides. The currently supported value is
+	// "string".
+	//
+	// This member is required.
+	Type *string
+
+	// The default value of this parameter if no input is provided.
+	DefaultValue []string
+
+	// Describes this parameter.
+	Description *string
+
+	noSmithyDocumentSerde
+}
+
+// A group of fields that describe the current status of workflow.
+type WorkflowState struct {
+
+	// Describes how or why the workflow changed state.
+	Reason *string
+
+	// The current state of the workflow.
+	Status WorkflowStatus
+
+	noSmithyDocumentSerde
+}
+
+// Contains runtime details for an instance of a workflow that ran for the
+// associated image build version.
+type WorkflowStepExecution struct {
+
+	// The name of the step action.
+	Action *string
+
+	// The Amazon Resource Name (ARN) of the image build version that ran the workflow.
+	ImageBuildVersionArn *string
+
+	// The name of the workflow step.
+	Name *string
+
+	// The timestamp when the workflow step started.
+	StartTime *string
+
+	// Uniquely identifies the workflow step that ran for the associated image build
+	// version.
+	StepExecutionId *string
+
+	// The ARN of the workflow resource that ran.
+	WorkflowBuildVersionArn *string
+
+	// Uniquely identifies the runtime instance of the workflow that contains the
+	// workflow step that ran for the associated image build version.
 	WorkflowExecutionId *string
 
 	noSmithyDocumentSerde
@@ -1860,6 +2629,72 @@ type WorkflowStepMetadata struct {
 
 	// A unique identifier for the workflow step, assigned at runtime.
 	StepExecutionId *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains metadata about the workflow resource.
+type WorkflowSummary struct {
+
+	// The Amazon Resource Name (ARN) of the workflow resource.
+	Arn *string
+
+	// The change description for the current version of the workflow resource.
+	ChangeDescription *string
+
+	// The original creation date of the workflow resource.
+	DateCreated *string
+
+	// Describes the workflow.
+	Description *string
+
+	// The name of the workflow.
+	Name *string
+
+	// The owner of the workflow resource.
+	Owner *string
+
+	// Describes the current state of the workflow resource.
+	State *WorkflowState
+
+	// Contains a list of tags that are defined for the workflow.
+	Tags map[string]string
+
+	// The image creation stage that this workflow applies to. Image Builder currently
+	// supports build and test stage workflows.
+	Type WorkflowType
+
+	// The version of the workflow.
+	Version *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about this version of the workflow.
+type WorkflowVersion struct {
+
+	// The Amazon Resource Name (ARN) of the workflow resource.
+	Arn *string
+
+	// The timestamp when Image Builder created the workflow version.
+	DateCreated *string
+
+	// Describes the workflow.
+	Description *string
+
+	// The name of the workflow.
+	Name *string
+
+	// The owner of the workflow resource.
+	Owner *string
+
+	// The image creation stage that this workflow applies to. Image Builder currently
+	// supports build and test stage workflows.
+	Type WorkflowType
+
+	// The semantic version of the workflow resource. The format includes three nodes:
+	// ...
+	Version *string
 
 	noSmithyDocumentSerde
 }

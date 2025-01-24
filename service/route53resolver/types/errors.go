@@ -9,6 +9,9 @@ import (
 
 // The current account doesn't have the IAM permissions required to perform the
 // specified Resolver operation.
+//
+// This error can also be thrown when a customer has reached the 5120 character
+// limit for a resource policy for CloudWatch Logs.
 type AccessDeniedException struct {
 	Message *string
 
@@ -438,8 +441,8 @@ func (e *UnknownResourceException) ErrorCode() string {
 }
 func (e *UnknownResourceException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// You have provided an invalid command. Supported values are ADD , REMOVE , or
-// REPLACE a domain.
+// You have provided an invalid command. If you ran the UpdateFirewallDomains
+// request. supported values are ADD , REMOVE , or REPLACE a domain.
 type ValidationException struct {
 	Message *string
 

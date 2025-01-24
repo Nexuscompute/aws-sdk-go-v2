@@ -4,23 +4,20 @@ package lexruntimeservice
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/lexruntimeservice/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"io"
 )
 
 // Creates a new session or modifies an existing session with an Amazon Lex bot.
-// Use this operation to enable your application to set the state of the bot. For
-// more information, see Managing Sessions (https://docs.aws.amazon.com/lex/latest/dg/how-session-api.html)
-// .
+// Use this operation to enable your application to set the state of the bot.
+//
+// For more information, see [Managing Sessions].
+//
+// [Managing Sessions]: https://docs.aws.amazon.com/lex/latest/dg/how-session-api.html
 func (c *Client) PutSession(ctx context.Context, params *PutSessionInput, optFns ...func(*Options)) (*PutSessionOutput, error) {
 	if params == nil {
 		params = &PutSessionInput{}
@@ -56,26 +53,36 @@ type PutSessionInput struct {
 
 	// The message that Amazon Lex returns in the response can be either text or
 	// speech based depending on the value of this field.
+	//
 	//   - If the value is text/plain; charset=utf-8 , Amazon Lex returns text in the
 	//   response.
+	//
 	//   - If the value begins with audio/ , Amazon Lex returns speech in the response.
 	//   Amazon Lex uses Amazon Polly to generate the speech in the configuration that
 	//   you specify. For example, if you specify audio/mpeg as the value, Amazon Lex
 	//   returns speech in the MPEG format.
+	//
 	//   - If the value is audio/pcm , the speech is returned as audio/pcm in 16-bit,
 	//   little endian format.
+	//
 	//   - The following are the accepted values:
+	//
 	//   - audio/mpeg
+	//
 	//   - audio/ogg
+	//
 	//   - audio/pcm
+	//
 	//   - audio/* (defaults to mpeg)
+	//
 	//   - text/plain; charset=utf-8
 	Accept *string
 
 	// A list of contexts active for the request. A context can be activated when a
-	// previous intent is fulfilled, or by including the context in the request, If you
-	// don't specify a list of contexts, Amazon Lex will use the current list of
-	// contexts for the session. If you specify an empty list, all contexts for the
+	// previous intent is fulfilled, or by including the context in the request,
+	//
+	// If you don't specify a list of contexts, Amazon Lex will use the current list
+	// of contexts for the session. If you specify an empty list, all contexts for the
 	// session are cleared.
 	ActiveContexts []types.ActiveContext
 
@@ -84,13 +91,18 @@ type PutSessionInput struct {
 
 	// A summary of the recent intents for the bot. You can use the intent summary
 	// view to set a checkpoint label on an intent and modify attributes of intents.
-	// You can also use it to remove or add intent summary objects to the list. An
-	// intent that you modify or add to the list must make sense for the bot. For
+	// You can also use it to remove or add intent summary objects to the list.
+	//
+	// An intent that you modify or add to the list must make sense for the bot. For
 	// example, the intent name must be valid for the bot. You must provide valid
 	// values for:
+	//
 	//   - intentName
+	//
 	//   - slot names
+	//
 	//   - slotToElict
+	//
 	// If you send the recentIntentSummaryView parameter in a PutSession request, the
 	// contents of the new summary view replaces the old summary view. For example, if
 	// a GetSession request returns three intents in the summary view and you call
@@ -121,29 +133,37 @@ type PutSessionOutput struct {
 
 	//   - ConfirmIntent - Amazon Lex is expecting a "yes" or "no" response to confirm
 	//   the intent before fulfilling an intent.
+	//
 	//   - ElicitIntent - Amazon Lex wants to elicit the user's intent.
+	//
 	//   - ElicitSlot - Amazon Lex is expecting the value of a slot for the current
 	//   intent.
+	//
 	//   - Failed - Conveys that the conversation with the user has failed. This can
 	//   happen for various reasons, including the user does not provide an appropriate
 	//   response to prompts from the service, or if the Lambda function fails to fulfill
 	//   the intent.
+	//
 	//   - Fulfilled - Conveys that the Lambda function has sucessfully fulfilled the
 	//   intent.
+	//
 	//   - ReadyForFulfillment - Conveys that the client has to fulfill the intent.
 	DialogState types.DialogState
 
-	// The next message that should be presented to the user. The encodedMessage field
-	// is base-64 encoded. You must decode the field before you can use the value.
+	// The next message that should be presented to the user.
+	//
+	// The encodedMessage field is base-64 encoded. You must decode the field before
+	// you can use the value.
 	EncodedMessage *string
 
 	// The name of the current intent.
 	IntentName *string
 
-	// The next message that should be presented to the user. You can only use this
-	// field in the de-DE, en-AU, en-GB, en-US, es-419, es-ES, es-US, fr-CA, fr-FR, and
-	// it-IT locales. In all other locales, the message field is null. You should use
-	// the encodedMessage field instead.
+	// The next message that should be presented to the user.
+	//
+	// You can only use this field in the de-DE, en-AU, en-GB, en-US, es-419, es-ES,
+	// es-US, fr-CA, fr-FR, and it-IT locales. In all other locales, the message field
+	// is null. You should use the encodedMessage field instead.
 	//
 	// Deprecated: The message field is deprecated, use the encodedMessage field
 	// instead. The message field is available only in the de-DE, en-AU, en-GB, en-US,
@@ -151,9 +171,13 @@ type PutSessionOutput struct {
 	Message *string
 
 	// The format of the response message. One of the following values:
+	//
 	//   - PlainText - The message contains plain UTF-8 text.
+	//
 	//   - CustomPayload - The message is a custom format for the client.
+	//
 	//   - SSML - The message contains text formatted for voice output.
+	//
 	//   - Composite - The message contains an escaped JSON object containing one or
 	//   more messages from the groups that messages were assigned to when the intent was
 	//   created.
@@ -172,14 +196,16 @@ type PutSessionOutput struct {
 	SlotToElicit *string
 
 	// Map of zero or more intent slots Amazon Lex detected from the user input during
-	// the conversation. Amazon Lex creates a resolution list containing likely values
-	// for a slot. The value that it returns is determined by the
-	// valueSelectionStrategy selected when the slot type was created or updated. If
-	// valueSelectionStrategy is set to ORIGINAL_VALUE , the value provided by the user
-	// is returned, if the user value is similar to the slot values. If
-	// valueSelectionStrategy is set to TOP_RESOLUTION Amazon Lex returns the first
-	// value in the resolution list or, if there is no resolution list, null. If you
-	// don't specify a valueSelectionStrategy the default is ORIGINAL_VALUE .
+	// the conversation.
+	//
+	// Amazon Lex creates a resolution list containing likely values for a slot. The
+	// value that it returns is determined by the valueSelectionStrategy selected when
+	// the slot type was created or updated. If valueSelectionStrategy is set to
+	// ORIGINAL_VALUE , the value provided by the user is returned, if the user value
+	// is similar to the slot values. If valueSelectionStrategy is set to
+	// TOP_RESOLUTION Amazon Lex returns the first value in the resolution list or, if
+	// there is no resolution list, null. If you don't specify a valueSelectionStrategy
+	// the default is ORIGINAL_VALUE .
 	//
 	// This value conforms to the media type: application/json
 	Slots *string
@@ -191,6 +217,9 @@ type PutSessionOutput struct {
 }
 
 func (c *Client) addOperationPutSessionMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpPutSession{}, middleware.After)
 	if err != nil {
 		return err
@@ -199,34 +228,38 @@ func (c *Client) addOperationPutSessionMiddlewares(stack *middleware.Stack, opti
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "PutSession"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -235,7 +268,13 @@ func (c *Client) addOperationPutSessionMiddlewares(stack *middleware.Stack, opti
 	if err = smithyhttp.AddErrorCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addPutSessionResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutSessionValidationMiddleware(stack); err != nil {
@@ -244,7 +283,7 @@ func (c *Client) addOperationPutSessionMiddlewares(stack *middleware.Stack, opti
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opPutSession(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -256,7 +295,19 @@ func (c *Client) addOperationPutSessionMiddlewares(stack *middleware.Stack, opti
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -266,130 +317,6 @@ func newServiceMetadataMiddleware_opPutSession(region string) *awsmiddleware.Reg
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "lex",
 		OperationName: "PutSession",
 	}
-}
-
-type opPutSessionResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opPutSessionResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opPutSessionResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "lex"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "lex"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("lex")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addPutSessionResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opPutSessionResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

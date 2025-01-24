@@ -4,35 +4,33 @@ package ses
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/ses/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Composes an email message and immediately queues it for sending. In order to
-// send email using the SendEmail operation, your message must meet the following
-// requirements:
+// Composes an email message and immediately queues it for sending. To send email
+// using this operation, your message must meet the following requirements:
+//
 //   - The message must be sent from a verified email address or domain. If you
-//     attempt to send email using a non-verified address or domain, the operation will
-//     result in an "Email address not verified" error.
+//     attempt to send email using a non-verified address or domain, the operation
+//     results in an "Email address not verified" error.
+//
 //   - If your account is still in the Amazon SES sandbox, you may only send to
 //     verified addresses or domains, or to email addresses associated with the Amazon
-//     SES Mailbox Simulator. For more information, see Verifying Email Addresses
-//     and Domains (https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html)
-//     in the Amazon SES Developer Guide.
+//     SES Mailbox Simulator. For more information, see [Verifying Email Addresses and Domains]in the Amazon SES Developer
+//     Guide.
+//
 //   - The maximum message size is 10 MB.
+//
 //   - The message must include at least one recipient email address. The
 //     recipient address can be a To: address, a CC: address, or a BCC: address. If a
 //     recipient email address is invalid (that is, it is not in the format
-//     UserName@[SubDomain.]Domain.TopLevelDomain), the entire message will be
-//     rejected, even if the message contains other recipients that are valid.
+//     UserName@[SubDomain.]Domain.TopLevelDomain), the entire message is rejected,
+//     even if the message contains other recipients that are valid.
+//
 //   - The message may not include more than 50 recipients, across the To:, CC:
 //     and BCC: fields. If you need to send an email message to a larger audience, you
 //     can divide your recipient list into groups of 50 or fewer, and then call the
@@ -41,9 +39,11 @@ import (
 // For every message that you send, the total number of recipients (including each
 // recipient in the To:, CC: and BCC: fields) is counted against the maximum number
 // of emails you can send in a 24-hour period (your sending quota). For more
-// information about sending quotas in Amazon SES, see Managing Your Amazon SES
-// Sending Limits (https://docs.aws.amazon.com/ses/latest/DeveloperGuide/manage-sending-limits.html)
-// in the Amazon SES Developer Guide.
+// information about sending quotas in Amazon SES, see [Managing Your Amazon SES Sending Limits]in the Amazon SES Developer
+// Guide.
+//
+// [Verifying Email Addresses and Domains]: https://docs.aws.amazon.com/ses/latest/dg/verify-addresses-and-domains.html
+// [Managing Your Amazon SES Sending Limits]: https://docs.aws.amazon.com/ses/latest/dg/manage-sending-quotas.html
 func (c *Client) SendEmail(ctx context.Context, params *SendEmailInput, optFns ...func(*Options)) (*SendEmailOutput, error) {
 	if params == nil {
 		params = &SendEmailInput{}
@@ -60,8 +60,9 @@ func (c *Client) SendEmail(ctx context.Context, params *SendEmailInput, optFns .
 }
 
 // Represents a request to send a single formatted email using Amazon SES. For
-// more information, see the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-formatted.html)
-// .
+// more information, see the [Amazon SES Developer Guide].
+//
+// [Amazon SES Developer Guide]: https://docs.aws.amazon.com/ses/latest/dg/send-email-formatted.html
 type SendEmailInput struct {
 
 	// The destination for this email, composed of To:, CC:, and BCC: fields.
@@ -76,22 +77,25 @@ type SendEmailInput struct {
 
 	// The email address that is sending the email. This email address must be either
 	// individually verified with Amazon SES, or from a domain that has been verified
-	// with Amazon SES. For information about verifying identities, see the Amazon SES
-	// Developer Guide (https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html)
-	// . If you are sending on behalf of another user and have been permitted to do so
+	// with Amazon SES. For information about verifying identities, see the [Amazon SES Developer Guide].
+	//
+	// If you are sending on behalf of another user and have been permitted to do so
 	// by a sending authorization policy, then you must also specify the SourceArn
-	// parameter. For more information about sending authorization, see the Amazon SES
-	// Developer Guide (https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html)
-	// . Amazon SES does not support the SMTPUTF8 extension, as described in RFC6531 (https://tools.ietf.org/html/rfc6531)
-	// . For this reason, the local part of a source email address (the part of the
-	// email address that precedes the @ sign) may only contain 7-bit ASCII characters (https://en.wikipedia.org/wiki/Email_address#Local-part)
-	// . If the domain part of an address (the part after the @ sign) contains
-	// non-ASCII characters, they must be encoded using Punycode, as described in
-	// RFC3492 (https://tools.ietf.org/html/rfc3492.html) . The sender name (also known
-	// as the friendly name) may contain non-ASCII characters. These characters must be
-	// encoded using MIME encoded-word syntax, as described in RFC 2047 (https://tools.ietf.org/html/rfc2047)
-	// . MIME encoded-word syntax uses the following form:
-	// =?charset?encoding?encoded-text?= .
+	// parameter. For more information about sending authorization, see the [Amazon SES Developer Guide].
+	//
+	// Amazon SES does not support the SMTPUTF8 extension, as described in [RFC6531]. For this
+	// reason, the email address string must be 7-bit ASCII. If you want to send to or
+	// from email addresses that contain Unicode characters in the domain part of an
+	// address, you must encode the domain using Punycode. Punycode is not permitted in
+	// the local part of the email address (the part before the @ sign) nor in the
+	// "friendly from" name. If you want to use Unicode characters in the "friendly
+	// from" name, you must encode the "friendly from" name using MIME encoded-word
+	// syntax, as described in [Sending raw email using the Amazon SES API]. For more information about Punycode, see [RFC 3492].
+	//
+	// [RFC6531]: https://tools.ietf.org/html/rfc6531
+	// [Amazon SES Developer Guide]: https://docs.aws.amazon.com/ses/latest/dg/sending-authorization.html
+	// [Sending raw email using the Amazon SES API]: https://docs.aws.amazon.com/ses/latest/dg/send-email-raw.html
+	// [RFC 3492]: http://tools.ietf.org/html/rfc3492
 	//
 	// This member is required.
 	Source *string
@@ -100,40 +104,46 @@ type SendEmailInput struct {
 	ConfigurationSetName *string
 
 	// The reply-to email address(es) for the message. If the recipient replies to the
-	// message, each reply-to address will receive the reply.
+	// message, each reply-to address receives the reply.
 	ReplyToAddresses []string
 
-	// The email address that bounces and complaints will be forwarded to when
-	// feedback forwarding is enabled. If the message cannot be delivered to the
-	// recipient, then an error message will be returned from the recipient's ISP; this
-	// message will then be forwarded to the email address specified by the ReturnPath
-	// parameter. The ReturnPath parameter is never overwritten. This email address
-	// must be either individually verified with Amazon SES, or from a domain that has
-	// been verified with Amazon SES.
+	// The email address that bounces and complaints are forwarded to when feedback
+	// forwarding is enabled. If the message cannot be delivered to the recipient, then
+	// an error message is returned from the recipient's ISP; this message is forwarded
+	// to the email address specified by the ReturnPath parameter. The ReturnPath
+	// parameter is never overwritten. This email address must be either individually
+	// verified with Amazon SES, or from a domain that has been verified with Amazon
+	// SES.
 	ReturnPath *string
 
 	// This parameter is used only for sending authorization. It is the ARN of the
 	// identity that is associated with the sending authorization policy that permits
-	// you to use the email address specified in the ReturnPath parameter. For
-	// example, if the owner of example.com (which has ARN
+	// you to use the email address specified in the ReturnPath parameter.
+	//
+	// For example, if the owner of example.com (which has ARN
 	// arn:aws:ses:us-east-1:123456789012:identity/example.com ) attaches a policy to
 	// it that authorizes you to use feedback@example.com , then you would specify the
 	// ReturnPathArn to be arn:aws:ses:us-east-1:123456789012:identity/example.com ,
-	// and the ReturnPath to be feedback@example.com . For more information about
-	// sending authorization, see the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html)
-	// .
+	// and the ReturnPath to be feedback@example.com .
+	//
+	// For more information about sending authorization, see the [Amazon SES Developer Guide].
+	//
+	// [Amazon SES Developer Guide]: https://docs.aws.amazon.com/ses/latest/dg/sending-authorization.html
 	ReturnPathArn *string
 
 	// This parameter is used only for sending authorization. It is the ARN of the
 	// identity that is associated with the sending authorization policy that permits
-	// you to send for the email address specified in the Source parameter. For
-	// example, if the owner of example.com (which has ARN
+	// you to send for the email address specified in the Source parameter.
+	//
+	// For example, if the owner of example.com (which has ARN
 	// arn:aws:ses:us-east-1:123456789012:identity/example.com ) attaches a policy to
 	// it that authorizes you to send from user@example.com , then you would specify
 	// the SourceArn to be arn:aws:ses:us-east-1:123456789012:identity/example.com ,
-	// and the Source to be user@example.com . For more information about sending
-	// authorization, see the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html)
-	// .
+	// and the Source to be user@example.com .
+	//
+	// For more information about sending authorization, see the [Amazon SES Developer Guide].
+	//
+	// [Amazon SES Developer Guide]: https://docs.aws.amazon.com/ses/latest/dg/sending-authorization.html
 	SourceArn *string
 
 	// A list of tags, in the form of name/value pairs, to apply to an email that you
@@ -159,6 +169,9 @@ type SendEmailOutput struct {
 }
 
 func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpSendEmail{}, middleware.After)
 	if err != nil {
 		return err
@@ -167,34 +180,38 @@ func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, optio
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "SendEmail"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -206,7 +223,13 @@ func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, optio
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addSendEmailResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSendEmailValidationMiddleware(stack); err != nil {
@@ -215,7 +238,7 @@ func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, optio
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opSendEmail(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -227,7 +250,19 @@ func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, optio
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -237,130 +272,6 @@ func newServiceMetadataMiddleware_opSendEmail(region string) *awsmiddleware.Regi
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "ses",
 		OperationName: "SendEmail",
 	}
-}
-
-type opSendEmailResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opSendEmailResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opSendEmailResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "ses"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "ses"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("ses")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addSendEmailResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opSendEmailResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

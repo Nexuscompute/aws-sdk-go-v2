@@ -4,57 +4,78 @@ package personalize
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/personalize/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Creates a recommender with the recipe (a Domain dataset group use case) you
 // specify. You create recommenders for a Domain dataset group and specify the
-// recommender's Amazon Resource Name (ARN) when you make a GetRecommendations (https://docs.aws.amazon.com/personalize/latest/dg/API_RS_GetRecommendations.html)
-// request. Minimum recommendation requests per second A high
-// minRecommendationRequestsPerSecond will increase your bill. We recommend
+// recommender's Amazon Resource Name (ARN) when you make a [GetRecommendations]request.
+//
+// # Minimum recommendation requests per second
+//
+// A high minRecommendationRequestsPerSecond will increase your bill. We recommend
 // starting with 1 for minRecommendationRequestsPerSecond (the default). Track
 // your usage using Amazon CloudWatch metrics, and increase the
-// minRecommendationRequestsPerSecond as necessary. When you create a recommender,
-// you can configure the recommender's minimum recommendation requests per second.
-// The minimum recommendation requests per second (
-// minRecommendationRequestsPerSecond ) specifies the baseline recommendation
-// request throughput provisioned by Amazon Personalize. The default
+// minRecommendationRequestsPerSecond as necessary.
+//
+// When you create a recommender, you can configure the recommender's minimum
+// recommendation requests per second. The minimum recommendation requests per
+// second ( minRecommendationRequestsPerSecond ) specifies the baseline
+// recommendation request throughput provisioned by Amazon Personalize. The default
 // minRecommendationRequestsPerSecond is 1 . A recommendation request is a single
 // GetRecommendations operation. Request throughput is measured in requests per
 // second and Amazon Personalize uses your requests per second to derive your
-// requests per hour and the price of your recommender usage. If your requests per
-// second increases beyond minRecommendationRequestsPerSecond , Amazon Personalize
-// auto-scales the provisioned capacity up and down, but never below
-// minRecommendationRequestsPerSecond . There's a short time delay while the
-// capacity is increased that might cause loss of requests. Your bill is the
-// greater of either the minimum requests per hour (based on
+// requests per hour and the price of your recommender usage.
+//
+// If your requests per second increases beyond minRecommendationRequestsPerSecond
+// , Amazon Personalize auto-scales the provisioned capacity up and down, but never
+// below minRecommendationRequestsPerSecond . There's a short time delay while the
+// capacity is increased that might cause loss of requests.
+//
+// Your bill is the greater of either the minimum requests per hour (based on
 // minRecommendationRequestsPerSecond) or the actual number of requests. The actual
 // request throughput used is calculated as the average requests/second within a
-// one-hour window. We recommend starting with the default
-// minRecommendationRequestsPerSecond , track your usage using Amazon CloudWatch
-// metrics, and then increase the minRecommendationRequestsPerSecond as necessary.
-// Status A recommender can be in one of the following states:
+// one-hour window.
+//
+// We recommend starting with the default minRecommendationRequestsPerSecond ,
+// track your usage using Amazon CloudWatch metrics, and then increase the
+// minRecommendationRequestsPerSecond as necessary.
+//
+// # Status
+//
+// A recommender can be in one of the following states:
+//
 //   - CREATE PENDING > CREATE IN_PROGRESS > ACTIVE -or- CREATE FAILED
+//
 //   - STOP PENDING > STOP IN_PROGRESS > INACTIVE > START PENDING > START
 //     IN_PROGRESS > ACTIVE
+//
 //   - DELETE PENDING > DELETE IN_PROGRESS
 //
-// To get the recommender status, call DescribeRecommender (https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeRecommender.html)
-// . Wait until the status of the recommender is ACTIVE before asking the
-// recommender for recommendations. Related APIs
-//   - ListRecommenders (https://docs.aws.amazon.com/personalize/latest/dg/API_ListRecommenders.html)
-//   - DescribeRecommender (https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeRecommender.html)
-//   - UpdateRecommender (https://docs.aws.amazon.com/personalize/latest/dg/API_UpdateRecommender.html)
-//   - DeleteRecommender (https://docs.aws.amazon.com/personalize/latest/dg/API_DeleteRecommender.html)
+// To get the recommender status, call [DescribeRecommender].
+//
+// Wait until the status of the recommender is ACTIVE before asking the
+// recommender for recommendations.
+//
+// # Related APIs
+//
+// [ListRecommenders]
+//
+// [DescribeRecommender]
+//
+// [UpdateRecommender]
+//
+// [DeleteRecommender]
+//
+// [ListRecommenders]: https://docs.aws.amazon.com/personalize/latest/dg/API_ListRecommenders.html
+// [GetRecommendations]: https://docs.aws.amazon.com/personalize/latest/dg/API_RS_GetRecommendations.html
+// [UpdateRecommender]: https://docs.aws.amazon.com/personalize/latest/dg/API_UpdateRecommender.html
+// [DeleteRecommender]: https://docs.aws.amazon.com/personalize/latest/dg/API_DeleteRecommender.html
+// [DescribeRecommender]: https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeRecommender.html
 func (c *Client) CreateRecommender(ctx context.Context, params *CreateRecommenderInput, optFns ...func(*Options)) (*CreateRecommenderOutput, error) {
 	if params == nil {
 		params = &CreateRecommenderInput{}
@@ -86,8 +107,9 @@ type CreateRecommenderInput struct {
 	// The Amazon Resource Name (ARN) of the recipe that the recommender will use. For
 	// a recommender, a recipe is a Domain dataset group use case. Only Domain dataset
 	// group use cases can be used to create a recommender. For information about use
-	// cases see Choosing recommender use cases (https://docs.aws.amazon.com/personalize/latest/dg/domain-use-cases.html)
-	// .
+	// cases see [Choosing recommender use cases].
+	//
+	// [Choosing recommender use cases]: https://docs.aws.amazon.com/personalize/latest/dg/domain-use-cases.html
 	//
 	// This member is required.
 	RecipeArn *string
@@ -95,8 +117,9 @@ type CreateRecommenderInput struct {
 	// The configuration details of the recommender.
 	RecommenderConfig *types.RecommenderConfig
 
-	// A list of tags (https://docs.aws.amazon.com/personalize/latest/dg/tagging-resources.html)
-	// to apply to the recommender.
+	// A list of [tags] to apply to the recommender.
+	//
+	// [tags]: https://docs.aws.amazon.com/personalize/latest/dg/tagging-resources.html
 	Tags []types.Tag
 
 	noSmithyDocumentSerde
@@ -114,6 +137,9 @@ type CreateRecommenderOutput struct {
 }
 
 func (c *Client) addOperationCreateRecommenderMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateRecommender{}, middleware.After)
 	if err != nil {
 		return err
@@ -122,34 +148,38 @@ func (c *Client) addOperationCreateRecommenderMiddlewares(stack *middleware.Stac
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateRecommender"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -161,7 +191,13 @@ func (c *Client) addOperationCreateRecommenderMiddlewares(stack *middleware.Stac
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateRecommenderResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateRecommenderValidationMiddleware(stack); err != nil {
@@ -170,7 +206,7 @@ func (c *Client) addOperationCreateRecommenderMiddlewares(stack *middleware.Stac
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateRecommender(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -182,7 +218,19 @@ func (c *Client) addOperationCreateRecommenderMiddlewares(stack *middleware.Stac
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -192,130 +240,6 @@ func newServiceMetadataMiddleware_opCreateRecommender(region string) *awsmiddlew
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "personalize",
 		OperationName: "CreateRecommender",
 	}
-}
-
-type opCreateRecommenderResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateRecommenderResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateRecommenderResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "personalize"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "personalize"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("personalize")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateRecommenderResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateRecommenderResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

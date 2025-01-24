@@ -15,8 +15,9 @@ const (
 
 // Values returns all known values for AssociateResourceErrorReason. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AssociateResourceErrorReason) Values() []AssociateResourceErrorReason {
 	return []AssociateResourceErrorReason{
 		"INVALID_ARN",
@@ -36,8 +37,9 @@ const (
 )
 
 // Values returns all known values for BillingGroupStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BillingGroupStatus) Values() []BillingGroupStatus {
 	return []BillingGroupStatus{
 		"ACTIVE",
@@ -57,8 +59,9 @@ const (
 )
 
 // Values returns all known values for ConflictExceptionReason. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConflictExceptionReason) Values() []ConflictExceptionReason {
 	return []ConflictExceptionReason{
 		"RESOURCE_NAME_CONFLICT",
@@ -78,8 +81,9 @@ const (
 )
 
 // Values returns all known values for CurrencyCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CurrencyCode) Values() []CurrencyCode {
 	return []CurrencyCode{
 		"USD",
@@ -97,6 +101,7 @@ const (
 
 // Values returns all known values for CustomLineItemRelationship. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (CustomLineItemRelationship) Values() []CustomLineItemRelationship {
 	return []CustomLineItemRelationship{
@@ -114,12 +119,83 @@ const (
 )
 
 // Values returns all known values for CustomLineItemType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CustomLineItemType) Values() []CustomLineItemType {
 	return []CustomLineItemType{
 		"CREDIT",
 		"FEE",
+	}
+}
+
+type GroupByAttributeName string
+
+// Enum values for GroupByAttributeName
+const (
+	GroupByAttributeNameProductName   GroupByAttributeName = "PRODUCT_NAME"
+	GroupByAttributeNameBillingPeriod GroupByAttributeName = "BILLING_PERIOD"
+)
+
+// Values returns all known values for GroupByAttributeName. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GroupByAttributeName) Values() []GroupByAttributeName {
+	return []GroupByAttributeName{
+		"PRODUCT_NAME",
+		"BILLING_PERIOD",
+	}
+}
+
+type LineItemFilterAttributeName string
+
+// Enum values for LineItemFilterAttributeName
+const (
+	LineItemFilterAttributeNameLineItemType LineItemFilterAttributeName = "LINE_ITEM_TYPE"
+)
+
+// Values returns all known values for LineItemFilterAttributeName. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LineItemFilterAttributeName) Values() []LineItemFilterAttributeName {
+	return []LineItemFilterAttributeName{
+		"LINE_ITEM_TYPE",
+	}
+}
+
+type LineItemFilterValue string
+
+// Enum values for LineItemFilterValue
+const (
+	LineItemFilterValueSavingsPlanNegation LineItemFilterValue = "SAVINGS_PLAN_NEGATION"
+)
+
+// Values returns all known values for LineItemFilterValue. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LineItemFilterValue) Values() []LineItemFilterValue {
+	return []LineItemFilterValue{
+		"SAVINGS_PLAN_NEGATION",
+	}
+}
+
+type MatchOption string
+
+// Enum values for MatchOption
+const (
+	MatchOptionNotEqual MatchOption = "NOT_EQUAL"
+)
+
+// Values returns all known values for MatchOption. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MatchOption) Values() []MatchOption {
+	return []MatchOption{
+		"NOT_EQUAL",
 	}
 }
 
@@ -134,8 +210,9 @@ const (
 )
 
 // Values returns all known values for PricingRuleScope. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PricingRuleScope) Values() []PricingRuleScope {
 	return []PricingRuleScope{
 		"GLOBAL",
@@ -155,8 +232,9 @@ const (
 )
 
 // Values returns all known values for PricingRuleType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PricingRuleType) Values() []PricingRuleType {
 	return []PricingRuleType{
 		"MARKUP",
@@ -228,10 +306,12 @@ const (
 	ValidationExceptionReasonInvalidFilter                         ValidationExceptionReason = "INVALID_FILTER"
 	ValidationExceptionReasonTooManyAutoAssociateBillingGroups     ValidationExceptionReason = "TOO_MANY_AUTO_ASSOCIATE_BILLING_GROUPS"
 	ValidationExceptionReasonCannotDeleteAutoAssociateBillingGroup ValidationExceptionReason = "CANNOT_DELETE_AUTO_ASSOCIATE_BILLING_GROUP"
+	ValidationExceptionReasonIllegalAccountId                      ValidationExceptionReason = "ILLEGAL_ACCOUNT_ID"
 )
 
 // Values returns all known values for ValidationExceptionReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 	return []ValidationExceptionReason{
@@ -294,5 +374,6 @@ func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 		"INVALID_FILTER",
 		"TOO_MANY_AUTO_ASSOCIATE_BILLING_GROUPS",
 		"CANNOT_DELETE_AUTO_ASSOCIATE_BILLING_GROUP",
+		"ILLEGAL_ACCOUNT_ID",
 	}
 }

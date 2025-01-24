@@ -2,6 +2,27 @@
 
 package types
 
+type ContentResolution string
+
+// Enum values for ContentResolution
+const (
+	ContentResolutionNone ContentResolution = "None"
+	ContentResolutionFhd  ContentResolution = "FHD"
+	ContentResolutionUhd  ContentResolution = "UHD"
+)
+
+// Values returns all known values for ContentResolution. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ContentResolution) Values() []ContentResolution {
+	return []ContentResolution{
+		"None",
+		"FHD",
+		"UHD",
+	}
+}
+
 type MediaCapabilities string
 
 // Enum values for MediaCapabilities
@@ -13,8 +34,9 @@ const (
 )
 
 // Values returns all known values for MediaCapabilities. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MediaCapabilities) Values() []MediaCapabilities {
 	return []MediaCapabilities{
 		"SendReceive",
@@ -33,8 +55,9 @@ const (
 )
 
 // Values returns all known values for MeetingFeatureStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MeetingFeatureStatus) Values() []MeetingFeatureStatus {
 	return []MeetingFeatureStatus{
 		"AVAILABLE",
@@ -51,8 +74,9 @@ const (
 
 // Values returns all known values for TranscribeContentIdentificationType. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscribeContentIdentificationType) Values() []TranscribeContentIdentificationType {
 	return []TranscribeContentIdentificationType{
 		"PII",
@@ -68,8 +92,9 @@ const (
 
 // Values returns all known values for TranscribeContentRedactionType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscribeContentRedactionType) Values() []TranscribeContentRedactionType {
 	return []TranscribeContentRedactionType{
 		"PII",
@@ -97,8 +122,9 @@ const (
 )
 
 // Values returns all known values for TranscribeLanguageCode. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscribeLanguageCode) Values() []TranscribeLanguageCode {
 	return []TranscribeLanguageCode{
 		"en-US",
@@ -127,8 +153,9 @@ const (
 
 // Values returns all known values for TranscribeMedicalContentIdentificationType.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscribeMedicalContentIdentificationType) Values() []TranscribeMedicalContentIdentificationType {
 	return []TranscribeMedicalContentIdentificationType{
 		"PHI",
@@ -144,8 +171,9 @@ const (
 
 // Values returns all known values for TranscribeMedicalLanguageCode. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscribeMedicalLanguageCode) Values() []TranscribeMedicalLanguageCode {
 	return []TranscribeMedicalLanguageCode{
 		"en-US",
@@ -166,8 +194,9 @@ const (
 )
 
 // Values returns all known values for TranscribeMedicalRegion. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscribeMedicalRegion) Values() []TranscribeMedicalRegion {
 	return []TranscribeMedicalRegion{
 		"us-east-1",
@@ -194,6 +223,7 @@ const (
 
 // Values returns all known values for TranscribeMedicalSpecialty. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscribeMedicalSpecialty) Values() []TranscribeMedicalSpecialty {
 	return []TranscribeMedicalSpecialty{
@@ -215,8 +245,9 @@ const (
 )
 
 // Values returns all known values for TranscribeMedicalType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscribeMedicalType) Values() []TranscribeMedicalType {
 	return []TranscribeMedicalType{
 		"CONVERSATION",
@@ -235,8 +266,9 @@ const (
 
 // Values returns all known values for TranscribePartialResultsStability. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscribePartialResultsStability) Values() []TranscribePartialResultsStability {
 	return []TranscribePartialResultsStability{
 		"low",
@@ -265,8 +297,9 @@ const (
 )
 
 // Values returns all known values for TranscribeRegion. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscribeRegion) Values() []TranscribeRegion {
 	return []TranscribeRegion{
 		"us-east-2",
@@ -296,12 +329,34 @@ const (
 
 // Values returns all known values for TranscribeVocabularyFilterMethod. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscribeVocabularyFilterMethod) Values() []TranscribeVocabularyFilterMethod {
 	return []TranscribeVocabularyFilterMethod{
 		"remove",
 		"mask",
 		"tag",
+	}
+}
+
+type VideoResolution string
+
+// Enum values for VideoResolution
+const (
+	VideoResolutionNone VideoResolution = "None"
+	VideoResolutionHd   VideoResolution = "HD"
+	VideoResolutionFhd  VideoResolution = "FHD"
+)
+
+// Values returns all known values for VideoResolution. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VideoResolution) Values() []VideoResolution {
+	return []VideoResolution{
+		"None",
+		"HD",
+		"FHD",
 	}
 }

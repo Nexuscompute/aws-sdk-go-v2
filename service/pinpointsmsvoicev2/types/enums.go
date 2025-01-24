@@ -12,6 +12,7 @@ const (
 
 // Values returns all known values for AccessDeniedExceptionReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (AccessDeniedExceptionReason) Values() []AccessDeniedExceptionReason {
 	return []AccessDeniedExceptionReason{
@@ -24,15 +25,18 @@ type AccountAttributeName string
 
 // Enum values for AccountAttributeName
 const (
-	AccountAttributeNameAccountTier AccountAttributeName = "ACCOUNT_TIER"
+	AccountAttributeNameAccountTier                   AccountAttributeName = "ACCOUNT_TIER"
+	AccountAttributeNameDefaultProtectConfigurationId AccountAttributeName = "DEFAULT_PROTECT_CONFIGURATION_ID"
 )
 
 // Values returns all known values for AccountAttributeName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AccountAttributeName) Values() []AccountAttributeName {
 	return []AccountAttributeName{
 		"ACCOUNT_TIER",
+		"DEFAULT_PROTECT_CONFIGURATION_ID",
 	}
 }
 
@@ -40,21 +44,70 @@ type AccountLimitName string
 
 // Enum values for AccountLimitName
 const (
-	AccountLimitNamePhoneNumbers      AccountLimitName = "PHONE_NUMBERS"
-	AccountLimitNamePools             AccountLimitName = "POOLS"
-	AccountLimitNameConfigurationSets AccountLimitName = "CONFIGURATION_SETS"
-	AccountLimitNameOptOutLists       AccountLimitName = "OPT_OUT_LISTS"
+	AccountLimitNamePhoneNumbers               AccountLimitName = "PHONE_NUMBERS"
+	AccountLimitNamePools                      AccountLimitName = "POOLS"
+	AccountLimitNameConfigurationSets          AccountLimitName = "CONFIGURATION_SETS"
+	AccountLimitNameOptOutLists                AccountLimitName = "OPT_OUT_LISTS"
+	AccountLimitNameSenderIds                  AccountLimitName = "SENDER_IDS"
+	AccountLimitNameRegistrations              AccountLimitName = "REGISTRATIONS"
+	AccountLimitNameRegistrationAttachments    AccountLimitName = "REGISTRATION_ATTACHMENTS"
+	AccountLimitNameVerifiedDestinationNumbers AccountLimitName = "VERIFIED_DESTINATION_NUMBERS"
 )
 
 // Values returns all known values for AccountLimitName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AccountLimitName) Values() []AccountLimitName {
 	return []AccountLimitName{
 		"PHONE_NUMBERS",
 		"POOLS",
 		"CONFIGURATION_SETS",
 		"OPT_OUT_LISTS",
+		"SENDER_IDS",
+		"REGISTRATIONS",
+		"REGISTRATION_ATTACHMENTS",
+		"VERIFIED_DESTINATION_NUMBERS",
+	}
+}
+
+type AttachmentStatus string
+
+// Enum values for AttachmentStatus
+const (
+	AttachmentStatusUploadInProgress AttachmentStatus = "UPLOAD_IN_PROGRESS"
+	AttachmentStatusUploadComplete   AttachmentStatus = "UPLOAD_COMPLETE"
+	AttachmentStatusUploadFailed     AttachmentStatus = "UPLOAD_FAILED"
+	AttachmentStatusDeleted          AttachmentStatus = "DELETED"
+)
+
+// Values returns all known values for AttachmentStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AttachmentStatus) Values() []AttachmentStatus {
+	return []AttachmentStatus{
+		"UPLOAD_IN_PROGRESS",
+		"UPLOAD_COMPLETE",
+		"UPLOAD_FAILED",
+		"DELETED",
+	}
+}
+
+type AttachmentUploadErrorReason string
+
+// Enum values for AttachmentUploadErrorReason
+const (
+	AttachmentUploadErrorReasonInternalError AttachmentUploadErrorReason = "INTERNAL_ERROR"
+)
+
+// Values returns all known values for AttachmentUploadErrorReason. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AttachmentUploadErrorReason) Values() []AttachmentUploadErrorReason {
+	return []AttachmentUploadErrorReason{
+		"INTERNAL_ERROR",
 	}
 }
 
@@ -62,14 +115,17 @@ type ConfigurationSetFilterName string
 
 // Enum values for ConfigurationSetFilterName
 const (
-	ConfigurationSetFilterNameEventDestinationName ConfigurationSetFilterName = "event-destination-name"
-	ConfigurationSetFilterNameMatchingEventTypes   ConfigurationSetFilterName = "matching-event-types"
-	ConfigurationSetFilterNameDefaultMessageType   ConfigurationSetFilterName = "default-message-type"
-	ConfigurationSetFilterNameDefaultSenderId      ConfigurationSetFilterName = "default-sender-id"
+	ConfigurationSetFilterNameEventDestinationName          ConfigurationSetFilterName = "event-destination-name"
+	ConfigurationSetFilterNameMatchingEventTypes            ConfigurationSetFilterName = "matching-event-types"
+	ConfigurationSetFilterNameDefaultMessageType            ConfigurationSetFilterName = "default-message-type"
+	ConfigurationSetFilterNameDefaultSenderId               ConfigurationSetFilterName = "default-sender-id"
+	ConfigurationSetFilterNameDefaultMessageFeedbackEnabled ConfigurationSetFilterName = "default-message-feedback-enabled"
+	ConfigurationSetFilterNameProtectConfigurationId        ConfigurationSetFilterName = "protect-configuration-id"
 )
 
 // Values returns all known values for ConfigurationSetFilterName. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ConfigurationSetFilterName) Values() []ConfigurationSetFilterName {
 	return []ConfigurationSetFilterName{
@@ -77,6 +133,8 @@ func (ConfigurationSetFilterName) Values() []ConfigurationSetFilterName {
 		"matching-event-types",
 		"default-message-type",
 		"default-sender-id",
+		"default-message-feedback-enabled",
+		"protect-configuration-id",
 	}
 }
 
@@ -84,51 +142,86 @@ type ConflictExceptionReason string
 
 // Enum values for ConflictExceptionReason
 const (
-	ConflictExceptionReasonDeletionProtectionEnabled          ConflictExceptionReason = "DELETION_PROTECTION_ENABLED"
-	ConflictExceptionReasonDestinationPhoneNumberNotVerified  ConflictExceptionReason = "DESTINATION_PHONE_NUMBER_NOT_VERIFIED"
-	ConflictExceptionReasonDestinationPhoneNumberOptedOut     ConflictExceptionReason = "DESTINATION_PHONE_NUMBER_OPTED_OUT"
-	ConflictExceptionReasonEventDestinationMismatch           ConflictExceptionReason = "EVENT_DESTINATION_MISMATCH"
-	ConflictExceptionReasonKeywordMismatch                    ConflictExceptionReason = "KEYWORD_MISMATCH"
-	ConflictExceptionReasonLastPhoneNumber                    ConflictExceptionReason = "LAST_PHONE_NUMBER"
-	ConflictExceptionReasonSelfManagedOptOutsMismatch         ConflictExceptionReason = "SELF_MANAGED_OPT_OUTS_MISMATCH"
-	ConflictExceptionReasonMessageTypeMismatch                ConflictExceptionReason = "MESSAGE_TYPE_MISMATCH"
-	ConflictExceptionReasonNoOriginationIdentitiesFound       ConflictExceptionReason = "NO_ORIGINATION_IDENTITIES_FOUND"
-	ConflictExceptionReasonOptOutListMismatch                 ConflictExceptionReason = "OPT_OUT_LIST_MISMATCH"
-	ConflictExceptionReasonPhoneNumberAssociatedToPool        ConflictExceptionReason = "PHONE_NUMBER_ASSOCIATED_TO_POOL"
-	ConflictExceptionReasonPhoneNumberNotAssociatedToPool     ConflictExceptionReason = "PHONE_NUMBER_NOT_ASSOCIATED_TO_POOL"
-	ConflictExceptionReasonPhoneNumberNotInRegistrationRegion ConflictExceptionReason = "PHONE_NUMBER_NOT_IN_REGISTRATION_REGION"
-	ConflictExceptionReasonResourceAlreadyExists              ConflictExceptionReason = "RESOURCE_ALREADY_EXISTS"
-	ConflictExceptionReasonResourceDeletionNotAllowed         ConflictExceptionReason = "RESOURCE_DELETION_NOT_ALLOWED"
-	ConflictExceptionReasonResourceModificationNotAllowed     ConflictExceptionReason = "RESOURCE_MODIFICATION_NOT_ALLOWED"
-	ConflictExceptionReasonResourceNotActive                  ConflictExceptionReason = "RESOURCE_NOT_ACTIVE"
-	ConflictExceptionReasonResourceNotEmpty                   ConflictExceptionReason = "RESOURCE_NOT_EMPTY"
-	ConflictExceptionReasonTwoWayConfigMismatch               ConflictExceptionReason = "TWO_WAY_CONFIG_MISMATCH"
+	ConflictExceptionReasonCreateRegistrationVersionNotAllowed                   ConflictExceptionReason = "CREATE_REGISTRATION_VERSION_NOT_ALLOWED"
+	ConflictExceptionReasonDeletionProtectionEnabled                             ConflictExceptionReason = "DELETION_PROTECTION_ENABLED"
+	ConflictExceptionReasonDestinationPhoneNumberNotVerified                     ConflictExceptionReason = "DESTINATION_PHONE_NUMBER_NOT_VERIFIED"
+	ConflictExceptionReasonDestinationPhoneNumberOptedOut                        ConflictExceptionReason = "DESTINATION_PHONE_NUMBER_OPTED_OUT"
+	ConflictExceptionReasonDisassociateRegistrationNotAllowed                    ConflictExceptionReason = "DISASSOCIATE_REGISTRATION_NOT_ALLOWED"
+	ConflictExceptionReasonDiscardRegistrationVersionNotAllowed                  ConflictExceptionReason = "DISCARD_REGISTRATION_VERSION_NOT_ALLOWED"
+	ConflictExceptionReasonEditRegistrationFieldValuesNotAllowed                 ConflictExceptionReason = "EDIT_REGISTRATION_FIELD_VALUES_NOT_ALLOWED"
+	ConflictExceptionReasonEventDestinationMismatch                              ConflictExceptionReason = "EVENT_DESTINATION_MISMATCH"
+	ConflictExceptionReasonKeywordMismatch                                       ConflictExceptionReason = "KEYWORD_MISMATCH"
+	ConflictExceptionReasonLastPhoneNumber                                       ConflictExceptionReason = "LAST_PHONE_NUMBER"
+	ConflictExceptionReasonNumberCapabilitiesMismatch                            ConflictExceptionReason = "NUMBER_CAPABILITIES_MISMATCH"
+	ConflictExceptionReasonMessageTypeMismatch                                   ConflictExceptionReason = "MESSAGE_TYPE_MISMATCH"
+	ConflictExceptionReasonNoOriginationIdentitiesFound                          ConflictExceptionReason = "NO_ORIGINATION_IDENTITIES_FOUND"
+	ConflictExceptionReasonOptOutListMismatch                                    ConflictExceptionReason = "OPT_OUT_LIST_MISMATCH"
+	ConflictExceptionReasonPhoneNumberAssociatedToPool                           ConflictExceptionReason = "PHONE_NUMBER_ASSOCIATED_TO_POOL"
+	ConflictExceptionReasonPhoneNumberAssociatedToRegistration                   ConflictExceptionReason = "PHONE_NUMBER_ASSOCIATED_TO_REGISTRATION"
+	ConflictExceptionReasonPhoneNumberNotAssociatedToPool                        ConflictExceptionReason = "PHONE_NUMBER_NOT_ASSOCIATED_TO_POOL"
+	ConflictExceptionReasonPhoneNumberNotInRegistrationRegion                    ConflictExceptionReason = "PHONE_NUMBER_NOT_IN_REGISTRATION_REGION"
+	ConflictExceptionReasonRegistrationAlreadySubmitted                          ConflictExceptionReason = "REGISTRATION_ALREADY_SUBMITTED"
+	ConflictExceptionReasonRegistrationNotComplete                               ConflictExceptionReason = "REGISTRATION_NOT_COMPLETE"
+	ConflictExceptionReasonSenderIdAssociatedToPool                              ConflictExceptionReason = "SENDER_ID_ASSOCIATED_TO_POOL"
+	ConflictExceptionReasonResourceAlreadyExists                                 ConflictExceptionReason = "RESOURCE_ALREADY_EXISTS"
+	ConflictExceptionReasonResourceDeletionNotAllowed                            ConflictExceptionReason = "RESOURCE_DELETION_NOT_ALLOWED"
+	ConflictExceptionReasonResourceModificationNotAllowed                        ConflictExceptionReason = "RESOURCE_MODIFICATION_NOT_ALLOWED"
+	ConflictExceptionReasonResourceNotActive                                     ConflictExceptionReason = "RESOURCE_NOT_ACTIVE"
+	ConflictExceptionReasonResourceNotEmpty                                      ConflictExceptionReason = "RESOURCE_NOT_EMPTY"
+	ConflictExceptionReasonSelfManagedOptOutsMismatch                            ConflictExceptionReason = "SELF_MANAGED_OPT_OUTS_MISMATCH"
+	ConflictExceptionReasonSubmitRegistrationVersionNotAllowed                   ConflictExceptionReason = "SUBMIT_REGISTRATION_VERSION_NOT_ALLOWED"
+	ConflictExceptionReasonTwoWayConfigMismatch                                  ConflictExceptionReason = "TWO_WAY_CONFIG_MISMATCH"
+	ConflictExceptionReasonVerificationCodeExpired                               ConflictExceptionReason = "VERIFICATION_CODE_EXPIRED"
+	ConflictExceptionReasonVerificationAlreadyComplete                           ConflictExceptionReason = "VERIFICATION_ALREADY_COMPLETE"
+	ConflictExceptionReasonProtectConfigurationIsAccountDefault                  ConflictExceptionReason = "PROTECT_CONFIGURATION_IS_ACCOUNT_DEFAULT"
+	ConflictExceptionReasonProtectConfigurationAssociatedWithConfigurationSet    ConflictExceptionReason = "PROTECT_CONFIGURATION_ASSOCIATED_WITH_CONFIGURATION_SET"
+	ConflictExceptionReasonProtectConfigurationNotAssociatedWithConfigurationSet ConflictExceptionReason = "PROTECT_CONFIGURATION_NOT_ASSOCIATED_WITH_CONFIGURATION_SET"
+	ConflictExceptionReasonDestinationCountryBlockedByProtectConfiguration       ConflictExceptionReason = "DESTINATION_COUNTRY_BLOCKED_BY_PROTECT_CONFIGURATION"
+	ConflictExceptionReasonDestinationPhoneNumberBlockedByProtectNumberOverride  ConflictExceptionReason = "DESTINATION_PHONE_NUMBER_BLOCKED_BY_PROTECT_NUMBER_OVERRIDE"
 )
 
 // Values returns all known values for ConflictExceptionReason. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConflictExceptionReason) Values() []ConflictExceptionReason {
 	return []ConflictExceptionReason{
+		"CREATE_REGISTRATION_VERSION_NOT_ALLOWED",
 		"DELETION_PROTECTION_ENABLED",
 		"DESTINATION_PHONE_NUMBER_NOT_VERIFIED",
 		"DESTINATION_PHONE_NUMBER_OPTED_OUT",
+		"DISASSOCIATE_REGISTRATION_NOT_ALLOWED",
+		"DISCARD_REGISTRATION_VERSION_NOT_ALLOWED",
+		"EDIT_REGISTRATION_FIELD_VALUES_NOT_ALLOWED",
 		"EVENT_DESTINATION_MISMATCH",
 		"KEYWORD_MISMATCH",
 		"LAST_PHONE_NUMBER",
-		"SELF_MANAGED_OPT_OUTS_MISMATCH",
+		"NUMBER_CAPABILITIES_MISMATCH",
 		"MESSAGE_TYPE_MISMATCH",
 		"NO_ORIGINATION_IDENTITIES_FOUND",
 		"OPT_OUT_LIST_MISMATCH",
 		"PHONE_NUMBER_ASSOCIATED_TO_POOL",
+		"PHONE_NUMBER_ASSOCIATED_TO_REGISTRATION",
 		"PHONE_NUMBER_NOT_ASSOCIATED_TO_POOL",
 		"PHONE_NUMBER_NOT_IN_REGISTRATION_REGION",
+		"REGISTRATION_ALREADY_SUBMITTED",
+		"REGISTRATION_NOT_COMPLETE",
+		"SENDER_ID_ASSOCIATED_TO_POOL",
 		"RESOURCE_ALREADY_EXISTS",
 		"RESOURCE_DELETION_NOT_ALLOWED",
 		"RESOURCE_MODIFICATION_NOT_ALLOWED",
 		"RESOURCE_NOT_ACTIVE",
 		"RESOURCE_NOT_EMPTY",
+		"SELF_MANAGED_OPT_OUTS_MISMATCH",
+		"SUBMIT_REGISTRATION_VERSION_NOT_ALLOWED",
 		"TWO_WAY_CONFIG_MISMATCH",
+		"VERIFICATION_CODE_EXPIRED",
+		"VERIFICATION_ALREADY_COMPLETE",
+		"PROTECT_CONFIGURATION_IS_ACCOUNT_DEFAULT",
+		"PROTECT_CONFIGURATION_ASSOCIATED_WITH_CONFIGURATION_SET",
+		"PROTECT_CONFIGURATION_NOT_ASSOCIATED_WITH_CONFIGURATION_SET",
+		"DESTINATION_COUNTRY_BLOCKED_BY_PROTECT_CONFIGURATION",
+		"DESTINATION_PHONE_NUMBER_BLOCKED_BY_PROTECT_NUMBER_OVERRIDE",
 	}
 }
 
@@ -142,8 +235,9 @@ const (
 
 // Values returns all known values for DestinationCountryParameterKey. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DestinationCountryParameterKey) Values() []DestinationCountryParameterKey {
 	return []DestinationCountryParameterKey{
 		"IN_TEMPLATE_ID",
@@ -155,36 +249,55 @@ type EventType string
 
 // Enum values for EventType
 const (
-	EventTypeAll                    EventType = "ALL"
-	EventTypeTextAll                EventType = "TEXT_ALL"
-	EventTypeTextSent               EventType = "TEXT_SENT"
-	EventTypeTextPending            EventType = "TEXT_PENDING"
-	EventTypeTextQueued             EventType = "TEXT_QUEUED"
-	EventTypeTextSuccessful         EventType = "TEXT_SUCCESSFUL"
-	EventTypeTextDelivered          EventType = "TEXT_DELIVERED"
-	EventTypeTextInvalid            EventType = "TEXT_INVALID"
-	EventTypeTextInvalidMessage     EventType = "TEXT_INVALID_MESSAGE"
-	EventTypeTextUnreachable        EventType = "TEXT_UNREACHABLE"
-	EventTypeTextCarrierUnreachable EventType = "TEXT_CARRIER_UNREACHABLE"
-	EventTypeTextBlocked            EventType = "TEXT_BLOCKED"
-	EventTypeTextCarrierBlocked     EventType = "TEXT_CARRIER_BLOCKED"
-	EventTypeTextSpam               EventType = "TEXT_SPAM"
-	EventTypeTextUnknown            EventType = "TEXT_UNKNOWN"
-	EventTypeTextTtlExpired         EventType = "TEXT_TTL_EXPIRED"
-	EventTypeVoiceAll               EventType = "VOICE_ALL"
-	EventTypeVoiceInitiated         EventType = "VOICE_INITIATED"
-	EventTypeVoiceRinging           EventType = "VOICE_RINGING"
-	EventTypeVoiceAnswered          EventType = "VOICE_ANSWERED"
-	EventTypeVoiceCompleted         EventType = "VOICE_COMPLETED"
-	EventTypeVoiceBusy              EventType = "VOICE_BUSY"
-	EventTypeVoiceNoAnswer          EventType = "VOICE_NO_ANSWER"
-	EventTypeVoiceFailed            EventType = "VOICE_FAILED"
-	EventTypeVoiceTtlExpired        EventType = "VOICE_TTL_EXPIRED"
+	EventTypeAll                      EventType = "ALL"
+	EventTypeTextAll                  EventType = "TEXT_ALL"
+	EventTypeTextSent                 EventType = "TEXT_SENT"
+	EventTypeTextPending              EventType = "TEXT_PENDING"
+	EventTypeTextQueued               EventType = "TEXT_QUEUED"
+	EventTypeTextSuccessful           EventType = "TEXT_SUCCESSFUL"
+	EventTypeTextDelivered            EventType = "TEXT_DELIVERED"
+	EventTypeTextInvalid              EventType = "TEXT_INVALID"
+	EventTypeTextInvalidMessage       EventType = "TEXT_INVALID_MESSAGE"
+	EventTypeTextUnreachable          EventType = "TEXT_UNREACHABLE"
+	EventTypeTextCarrierUnreachable   EventType = "TEXT_CARRIER_UNREACHABLE"
+	EventTypeTextBlocked              EventType = "TEXT_BLOCKED"
+	EventTypeTextCarrierBlocked       EventType = "TEXT_CARRIER_BLOCKED"
+	EventTypeTextSpam                 EventType = "TEXT_SPAM"
+	EventTypeTextUnknown              EventType = "TEXT_UNKNOWN"
+	EventTypeTextTtlExpired           EventType = "TEXT_TTL_EXPIRED"
+	EventTypeTextProtectBlocked       EventType = "TEXT_PROTECT_BLOCKED"
+	EventTypeVoiceAll                 EventType = "VOICE_ALL"
+	EventTypeVoiceInitiated           EventType = "VOICE_INITIATED"
+	EventTypeVoiceRinging             EventType = "VOICE_RINGING"
+	EventTypeVoiceAnswered            EventType = "VOICE_ANSWERED"
+	EventTypeVoiceCompleted           EventType = "VOICE_COMPLETED"
+	EventTypeVoiceBusy                EventType = "VOICE_BUSY"
+	EventTypeVoiceNoAnswer            EventType = "VOICE_NO_ANSWER"
+	EventTypeVoiceFailed              EventType = "VOICE_FAILED"
+	EventTypeVoiceTtlExpired          EventType = "VOICE_TTL_EXPIRED"
+	EventTypeMediaAll                 EventType = "MEDIA_ALL"
+	EventTypeMediaPending             EventType = "MEDIA_PENDING"
+	EventTypeMediaQueued              EventType = "MEDIA_QUEUED"
+	EventTypeMediaSuccessful          EventType = "MEDIA_SUCCESSFUL"
+	EventTypeMediaDelivered           EventType = "MEDIA_DELIVERED"
+	EventTypeMediaInvalid             EventType = "MEDIA_INVALID"
+	EventTypeMediaInvalidMessage      EventType = "MEDIA_INVALID_MESSAGE"
+	EventTypeMediaUnreachable         EventType = "MEDIA_UNREACHABLE"
+	EventTypeMediaCarrierUnreachable  EventType = "MEDIA_CARRIER_UNREACHABLE"
+	EventTypeMediaBlocked             EventType = "MEDIA_BLOCKED"
+	EventTypeMediaCarrierBlocked      EventType = "MEDIA_CARRIER_BLOCKED"
+	EventTypeMediaSpam                EventType = "MEDIA_SPAM"
+	EventTypeMediaUnknown             EventType = "MEDIA_UNKNOWN"
+	EventTypeMediaTtlExpired          EventType = "MEDIA_TTL_EXPIRED"
+	EventTypeMediaFileInaccessible    EventType = "MEDIA_FILE_INACCESSIBLE"
+	EventTypeMediaFileTypeUnsupported EventType = "MEDIA_FILE_TYPE_UNSUPPORTED"
+	EventTypeMediaFileSizeExceeded    EventType = "MEDIA_FILE_SIZE_EXCEEDED"
 )
 
 // Values returns all known values for EventType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EventType) Values() []EventType {
 	return []EventType{
 		"ALL",
@@ -203,6 +316,7 @@ func (EventType) Values() []EventType {
 		"TEXT_SPAM",
 		"TEXT_UNKNOWN",
 		"TEXT_TTL_EXPIRED",
+		"TEXT_PROTECT_BLOCKED",
 		"VOICE_ALL",
 		"VOICE_INITIATED",
 		"VOICE_RINGING",
@@ -212,6 +326,65 @@ func (EventType) Values() []EventType {
 		"VOICE_NO_ANSWER",
 		"VOICE_FAILED",
 		"VOICE_TTL_EXPIRED",
+		"MEDIA_ALL",
+		"MEDIA_PENDING",
+		"MEDIA_QUEUED",
+		"MEDIA_SUCCESSFUL",
+		"MEDIA_DELIVERED",
+		"MEDIA_INVALID",
+		"MEDIA_INVALID_MESSAGE",
+		"MEDIA_UNREACHABLE",
+		"MEDIA_CARRIER_UNREACHABLE",
+		"MEDIA_BLOCKED",
+		"MEDIA_CARRIER_BLOCKED",
+		"MEDIA_SPAM",
+		"MEDIA_UNKNOWN",
+		"MEDIA_TTL_EXPIRED",
+		"MEDIA_FILE_INACCESSIBLE",
+		"MEDIA_FILE_TYPE_UNSUPPORTED",
+		"MEDIA_FILE_SIZE_EXCEEDED",
+	}
+}
+
+type FieldRequirement string
+
+// Enum values for FieldRequirement
+const (
+	FieldRequirementRequired    FieldRequirement = "REQUIRED"
+	FieldRequirementConditional FieldRequirement = "CONDITIONAL"
+	FieldRequirementOptional    FieldRequirement = "OPTIONAL"
+)
+
+// Values returns all known values for FieldRequirement. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FieldRequirement) Values() []FieldRequirement {
+	return []FieldRequirement{
+		"REQUIRED",
+		"CONDITIONAL",
+		"OPTIONAL",
+	}
+}
+
+type FieldType string
+
+// Enum values for FieldType
+const (
+	FieldTypeSelect     FieldType = "SELECT"
+	FieldTypeText       FieldType = "TEXT"
+	FieldTypeAttachment FieldType = "ATTACHMENT"
+)
+
+// Values returns all known values for FieldType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FieldType) Values() []FieldType {
+	return []FieldType{
+		"SELECT",
+		"TEXT",
+		"ATTACHMENT",
 	}
 }
 
@@ -225,8 +398,9 @@ const (
 )
 
 // Values returns all known values for KeywordAction. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KeywordAction) Values() []KeywordAction {
 	return []KeywordAction{
 		"AUTOMATIC_RESPONSE",
@@ -243,11 +417,72 @@ const (
 )
 
 // Values returns all known values for KeywordFilterName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KeywordFilterName) Values() []KeywordFilterName {
 	return []KeywordFilterName{
 		"keyword-action",
+	}
+}
+
+type LanguageCode string
+
+// Enum values for LanguageCode
+const (
+	LanguageCodeDeDe  LanguageCode = "DE_DE"
+	LanguageCodeEnGb  LanguageCode = "EN_GB"
+	LanguageCodeEnUs  LanguageCode = "EN_US"
+	LanguageCodeEs419 LanguageCode = "ES_419"
+	LanguageCodeEsEs  LanguageCode = "ES_ES"
+	LanguageCodeFrCa  LanguageCode = "FR_CA"
+	LanguageCodeFrFr  LanguageCode = "FR_FR"
+	LanguageCodeItIt  LanguageCode = "IT_IT"
+	LanguageCodeJaJp  LanguageCode = "JA_JP"
+	LanguageCodeKoKr  LanguageCode = "KO_KR"
+	LanguageCodePtBr  LanguageCode = "PT_BR"
+	LanguageCodeZhCn  LanguageCode = "ZH_CN"
+	LanguageCodeZhTw  LanguageCode = "ZH_TW"
+)
+
+// Values returns all known values for LanguageCode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LanguageCode) Values() []LanguageCode {
+	return []LanguageCode{
+		"DE_DE",
+		"EN_GB",
+		"EN_US",
+		"ES_419",
+		"ES_ES",
+		"FR_CA",
+		"FR_FR",
+		"IT_IT",
+		"JA_JP",
+		"KO_KR",
+		"PT_BR",
+		"ZH_CN",
+		"ZH_TW",
+	}
+}
+
+type MessageFeedbackStatus string
+
+// Enum values for MessageFeedbackStatus
+const (
+	MessageFeedbackStatusReceived MessageFeedbackStatus = "RECEIVED"
+	MessageFeedbackStatusFailed   MessageFeedbackStatus = "FAILED"
+)
+
+// Values returns all known values for MessageFeedbackStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MessageFeedbackStatus) Values() []MessageFeedbackStatus {
+	return []MessageFeedbackStatus{
+		"RECEIVED",
+		"FAILED",
 	}
 }
 
@@ -260,8 +495,9 @@ const (
 )
 
 // Values returns all known values for MessageType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MessageType) Values() []MessageType {
 	return []MessageType{
 		"TRANSACTIONAL",
@@ -275,15 +511,18 @@ type NumberCapability string
 const (
 	NumberCapabilitySms   NumberCapability = "SMS"
 	NumberCapabilityVoice NumberCapability = "VOICE"
+	NumberCapabilityMms   NumberCapability = "MMS"
 )
 
 // Values returns all known values for NumberCapability. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NumberCapability) Values() []NumberCapability {
 	return []NumberCapability{
 		"SMS",
 		"VOICE",
+		"MMS",
 	}
 }
 
@@ -299,8 +538,9 @@ const (
 )
 
 // Values returns all known values for NumberStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NumberStatus) Values() []NumberStatus {
 	return []NumberStatus{
 		"PENDING",
@@ -319,17 +559,20 @@ const (
 	NumberTypeLongCode  NumberType = "LONG_CODE"
 	NumberTypeTollFree  NumberType = "TOLL_FREE"
 	NumberTypeTenDlc    NumberType = "TEN_DLC"
+	NumberTypeSimulator NumberType = "SIMULATOR"
 )
 
 // Values returns all known values for NumberType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NumberType) Values() []NumberType {
 	return []NumberType{
 		"SHORT_CODE",
 		"LONG_CODE",
 		"TOLL_FREE",
 		"TEN_DLC",
+		"SIMULATOR",
 	}
 }
 
@@ -341,11 +584,31 @@ const (
 )
 
 // Values returns all known values for OptedOutFilterName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OptedOutFilterName) Values() []OptedOutFilterName {
 	return []OptedOutFilterName{
 		"end-user-opted-out",
+	}
+}
+
+type Owner string
+
+// Enum values for Owner
+const (
+	OwnerSelf   Owner = "SELF"
+	OwnerShared Owner = "SHARED"
+)
+
+// Values returns all known values for Owner. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Owner) Values() []Owner {
+	return []Owner{
+		"SELF",
+		"SHARED",
 	}
 }
 
@@ -362,11 +625,13 @@ const (
 	PhoneNumberFilterNameSelfManagedOptOutsEnabled PhoneNumberFilterName = "self-managed-opt-outs-enabled"
 	PhoneNumberFilterNameOptOutListName            PhoneNumberFilterName = "opt-out-list-name"
 	PhoneNumberFilterNameDeletionProtectionEnabled PhoneNumberFilterName = "deletion-protection-enabled"
+	PhoneNumberFilterNameTwoWayChannelArn          PhoneNumberFilterName = "two-way-channel-arn"
 )
 
 // Values returns all known values for PhoneNumberFilterName. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PhoneNumberFilterName) Values() []PhoneNumberFilterName {
 	return []PhoneNumberFilterName{
 		"status",
@@ -378,6 +643,7 @@ func (PhoneNumberFilterName) Values() []PhoneNumberFilterName {
 		"self-managed-opt-outs-enabled",
 		"opt-out-list-name",
 		"deletion-protection-enabled",
+		"two-way-channel-arn",
 	}
 }
 
@@ -392,11 +658,13 @@ const (
 	PoolFilterNameOptOutListName            PoolFilterName = "opt-out-list-name"
 	PoolFilterNameSharedRoutesEnabled       PoolFilterName = "shared-routes-enabled"
 	PoolFilterNameDeletionProtectionEnabled PoolFilterName = "deletion-protection-enabled"
+	PoolFilterNameTwoWayChannelArn          PoolFilterName = "two-way-channel-arn"
 )
 
 // Values returns all known values for PoolFilterName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PoolFilterName) Values() []PoolFilterName {
 	return []PoolFilterName{
 		"status",
@@ -406,6 +674,7 @@ func (PoolFilterName) Values() []PoolFilterName {
 		"opt-out-list-name",
 		"shared-routes-enabled",
 		"deletion-protection-enabled",
+		"two-way-channel-arn",
 	}
 }
 
@@ -419,8 +688,9 @@ const (
 
 // Values returns all known values for PoolOriginationIdentitiesFilterName. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PoolOriginationIdentitiesFilterName) Values() []PoolOriginationIdentitiesFilterName {
 	return []PoolOriginationIdentitiesFilterName{
 		"iso-country-code",
@@ -438,8 +708,9 @@ const (
 )
 
 // Values returns all known values for PoolStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PoolStatus) Values() []PoolStatus {
 	return []PoolStatus{
 		"CREATING",
@@ -448,23 +719,319 @@ func (PoolStatus) Values() []PoolStatus {
 	}
 }
 
+type ProtectConfigurationFilterName string
+
+// Enum values for ProtectConfigurationFilterName
+const (
+	ProtectConfigurationFilterNameAccountDefault            ProtectConfigurationFilterName = "account-default"
+	ProtectConfigurationFilterNameDeletionProtectionEnabled ProtectConfigurationFilterName = "deletion-protection-enabled"
+)
+
+// Values returns all known values for ProtectConfigurationFilterName. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ProtectConfigurationFilterName) Values() []ProtectConfigurationFilterName {
+	return []ProtectConfigurationFilterName{
+		"account-default",
+		"deletion-protection-enabled",
+	}
+}
+
+type ProtectConfigurationRuleOverrideAction string
+
+// Enum values for ProtectConfigurationRuleOverrideAction
+const (
+	ProtectConfigurationRuleOverrideActionAllow ProtectConfigurationRuleOverrideAction = "ALLOW"
+	ProtectConfigurationRuleOverrideActionBlock ProtectConfigurationRuleOverrideAction = "BLOCK"
+)
+
+// Values returns all known values for ProtectConfigurationRuleOverrideAction.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ProtectConfigurationRuleOverrideAction) Values() []ProtectConfigurationRuleOverrideAction {
+	return []ProtectConfigurationRuleOverrideAction{
+		"ALLOW",
+		"BLOCK",
+	}
+}
+
+type ProtectConfigurationRuleSetNumberOverrideFilterName string
+
+// Enum values for ProtectConfigurationRuleSetNumberOverrideFilterName
+const (
+	ProtectConfigurationRuleSetNumberOverrideFilterNameIsoCountryCode                   ProtectConfigurationRuleSetNumberOverrideFilterName = "iso-country-code"
+	ProtectConfigurationRuleSetNumberOverrideFilterNameDestinationPhoneNumberBeginsWith ProtectConfigurationRuleSetNumberOverrideFilterName = "destination-phone-number-begins-with"
+	ProtectConfigurationRuleSetNumberOverrideFilterNameAction                           ProtectConfigurationRuleSetNumberOverrideFilterName = "action"
+	ProtectConfigurationRuleSetNumberOverrideFilterNameExpiresBefore                    ProtectConfigurationRuleSetNumberOverrideFilterName = "expires-before"
+	ProtectConfigurationRuleSetNumberOverrideFilterNameExpiresAfter                     ProtectConfigurationRuleSetNumberOverrideFilterName = "expires-after"
+	ProtectConfigurationRuleSetNumberOverrideFilterNameCreatedBefore                    ProtectConfigurationRuleSetNumberOverrideFilterName = "created-before"
+	ProtectConfigurationRuleSetNumberOverrideFilterNameCreatedAfter                     ProtectConfigurationRuleSetNumberOverrideFilterName = "created-after"
+)
+
+// Values returns all known values for
+// ProtectConfigurationRuleSetNumberOverrideFilterName. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ProtectConfigurationRuleSetNumberOverrideFilterName) Values() []ProtectConfigurationRuleSetNumberOverrideFilterName {
+	return []ProtectConfigurationRuleSetNumberOverrideFilterName{
+		"iso-country-code",
+		"destination-phone-number-begins-with",
+		"action",
+		"expires-before",
+		"expires-after",
+		"created-before",
+		"created-after",
+	}
+}
+
+type ProtectStatus string
+
+// Enum values for ProtectStatus
+const (
+	ProtectStatusAllow ProtectStatus = "ALLOW"
+	ProtectStatusBlock ProtectStatus = "BLOCK"
+)
+
+// Values returns all known values for ProtectStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ProtectStatus) Values() []ProtectStatus {
+	return []ProtectStatus{
+		"ALLOW",
+		"BLOCK",
+	}
+}
+
+type RegistrationAssociationBehavior string
+
+// Enum values for RegistrationAssociationBehavior
+const (
+	RegistrationAssociationBehaviorAssociateBeforeSubmit  RegistrationAssociationBehavior = "ASSOCIATE_BEFORE_SUBMIT"
+	RegistrationAssociationBehaviorAssociateOnApproval    RegistrationAssociationBehavior = "ASSOCIATE_ON_APPROVAL"
+	RegistrationAssociationBehaviorAssociateAfterComplete RegistrationAssociationBehavior = "ASSOCIATE_AFTER_COMPLETE"
+)
+
+// Values returns all known values for RegistrationAssociationBehavior. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RegistrationAssociationBehavior) Values() []RegistrationAssociationBehavior {
+	return []RegistrationAssociationBehavior{
+		"ASSOCIATE_BEFORE_SUBMIT",
+		"ASSOCIATE_ON_APPROVAL",
+		"ASSOCIATE_AFTER_COMPLETE",
+	}
+}
+
+type RegistrationAssociationFilterName string
+
+// Enum values for RegistrationAssociationFilterName
+const (
+	RegistrationAssociationFilterNameResourceType   RegistrationAssociationFilterName = "resource-type"
+	RegistrationAssociationFilterNameIsoCountryCode RegistrationAssociationFilterName = "iso-country-code"
+)
+
+// Values returns all known values for RegistrationAssociationFilterName. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RegistrationAssociationFilterName) Values() []RegistrationAssociationFilterName {
+	return []RegistrationAssociationFilterName{
+		"resource-type",
+		"iso-country-code",
+	}
+}
+
+type RegistrationAttachmentFilterName string
+
+// Enum values for RegistrationAttachmentFilterName
+const (
+	RegistrationAttachmentFilterNameAttachmentStatus RegistrationAttachmentFilterName = "attachment-status"
+)
+
+// Values returns all known values for RegistrationAttachmentFilterName. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RegistrationAttachmentFilterName) Values() []RegistrationAttachmentFilterName {
+	return []RegistrationAttachmentFilterName{
+		"attachment-status",
+	}
+}
+
+type RegistrationDisassociationBehavior string
+
+// Enum values for RegistrationDisassociationBehavior
+const (
+	RegistrationDisassociationBehaviorDisassociateAllClosesRegistration       RegistrationDisassociationBehavior = "DISASSOCIATE_ALL_CLOSES_REGISTRATION"
+	RegistrationDisassociationBehaviorDisassociateAllAllowsDeleteRegistration RegistrationDisassociationBehavior = "DISASSOCIATE_ALL_ALLOWS_DELETE_REGISTRATION"
+	RegistrationDisassociationBehaviorDeleteRegistrationDisassociates         RegistrationDisassociationBehavior = "DELETE_REGISTRATION_DISASSOCIATES"
+)
+
+// Values returns all known values for RegistrationDisassociationBehavior. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RegistrationDisassociationBehavior) Values() []RegistrationDisassociationBehavior {
+	return []RegistrationDisassociationBehavior{
+		"DISASSOCIATE_ALL_CLOSES_REGISTRATION",
+		"DISASSOCIATE_ALL_ALLOWS_DELETE_REGISTRATION",
+		"DELETE_REGISTRATION_DISASSOCIATES",
+	}
+}
+
+type RegistrationFilterName string
+
+// Enum values for RegistrationFilterName
+const (
+	RegistrationFilterNameRegistrationType   RegistrationFilterName = "registration-type"
+	RegistrationFilterNameRegistrationStatus RegistrationFilterName = "registration-status"
+)
+
+// Values returns all known values for RegistrationFilterName. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RegistrationFilterName) Values() []RegistrationFilterName {
+	return []RegistrationFilterName{
+		"registration-type",
+		"registration-status",
+	}
+}
+
+type RegistrationStatus string
+
+// Enum values for RegistrationStatus
+const (
+	RegistrationStatusCreated                RegistrationStatus = "CREATED"
+	RegistrationStatusSubmitted              RegistrationStatus = "SUBMITTED"
+	RegistrationStatusReviewing              RegistrationStatus = "REVIEWING"
+	RegistrationStatusRequiresAuthentication RegistrationStatus = "REQUIRES_AUTHENTICATION"
+	RegistrationStatusProvisioning           RegistrationStatus = "PROVISIONING"
+	RegistrationStatusComplete               RegistrationStatus = "COMPLETE"
+	RegistrationStatusRequiresUpdates        RegistrationStatus = "REQUIRES_UPDATES"
+	RegistrationStatusClosed                 RegistrationStatus = "CLOSED"
+	RegistrationStatusDeleted                RegistrationStatus = "DELETED"
+)
+
+// Values returns all known values for RegistrationStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RegistrationStatus) Values() []RegistrationStatus {
+	return []RegistrationStatus{
+		"CREATED",
+		"SUBMITTED",
+		"REVIEWING",
+		"REQUIRES_AUTHENTICATION",
+		"PROVISIONING",
+		"COMPLETE",
+		"REQUIRES_UPDATES",
+		"CLOSED",
+		"DELETED",
+	}
+}
+
+type RegistrationTypeFilterName string
+
+// Enum values for RegistrationTypeFilterName
+const (
+	RegistrationTypeFilterNameSupportedAssociationResourceType   RegistrationTypeFilterName = "supported-association-resource-type"
+	RegistrationTypeFilterNameSupportedAssociationIsoCountryCode RegistrationTypeFilterName = "supported-association-iso-country-code"
+)
+
+// Values returns all known values for RegistrationTypeFilterName. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RegistrationTypeFilterName) Values() []RegistrationTypeFilterName {
+	return []RegistrationTypeFilterName{
+		"supported-association-resource-type",
+		"supported-association-iso-country-code",
+	}
+}
+
+type RegistrationVersionFilterName string
+
+// Enum values for RegistrationVersionFilterName
+const (
+	RegistrationVersionFilterNameRegistrationVersionStatus RegistrationVersionFilterName = "registration-version-status"
+)
+
+// Values returns all known values for RegistrationVersionFilterName. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RegistrationVersionFilterName) Values() []RegistrationVersionFilterName {
+	return []RegistrationVersionFilterName{
+		"registration-version-status",
+	}
+}
+
+type RegistrationVersionStatus string
+
+// Enum values for RegistrationVersionStatus
+const (
+	RegistrationVersionStatusDraft                  RegistrationVersionStatus = "DRAFT"
+	RegistrationVersionStatusSubmitted              RegistrationVersionStatus = "SUBMITTED"
+	RegistrationVersionStatusReviewing              RegistrationVersionStatus = "REVIEWING"
+	RegistrationVersionStatusRequiresAuthentication RegistrationVersionStatus = "REQUIRES_AUTHENTICATION"
+	RegistrationVersionStatusApproved               RegistrationVersionStatus = "APPROVED"
+	RegistrationVersionStatusDiscarded              RegistrationVersionStatus = "DISCARDED"
+	RegistrationVersionStatusDenied                 RegistrationVersionStatus = "DENIED"
+	RegistrationVersionStatusRevoked                RegistrationVersionStatus = "REVOKED"
+	RegistrationVersionStatusArchived               RegistrationVersionStatus = "ARCHIVED"
+)
+
+// Values returns all known values for RegistrationVersionStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RegistrationVersionStatus) Values() []RegistrationVersionStatus {
+	return []RegistrationVersionStatus{
+		"DRAFT",
+		"SUBMITTED",
+		"REVIEWING",
+		"REQUIRES_AUTHENTICATION",
+		"APPROVED",
+		"DISCARDED",
+		"DENIED",
+		"REVOKED",
+		"ARCHIVED",
+	}
+}
+
 type RequestableNumberType string
 
 // Enum values for RequestableNumberType
 const (
-	RequestableNumberTypeLongCode RequestableNumberType = "LONG_CODE"
-	RequestableNumberTypeTollFree RequestableNumberType = "TOLL_FREE"
-	RequestableNumberTypeTenDlc   RequestableNumberType = "TEN_DLC"
+	RequestableNumberTypeLongCode  RequestableNumberType = "LONG_CODE"
+	RequestableNumberTypeTollFree  RequestableNumberType = "TOLL_FREE"
+	RequestableNumberTypeTenDlc    RequestableNumberType = "TEN_DLC"
+	RequestableNumberTypeSimulator RequestableNumberType = "SIMULATOR"
 )
 
 // Values returns all known values for RequestableNumberType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RequestableNumberType) Values() []RequestableNumberType {
 	return []RequestableNumberType{
 		"LONG_CODE",
 		"TOLL_FREE",
 		"TEN_DLC",
+		"SIMULATOR",
 	}
 }
 
@@ -472,21 +1039,27 @@ type ResourceType string
 
 // Enum values for ResourceType
 const (
-	ResourceTypeAccount          ResourceType = "account"
-	ResourceTypePhoneNumber      ResourceType = "phone-number"
-	ResourceTypeSenderId         ResourceType = "sender-id"
-	ResourceTypePool             ResourceType = "pool"
-	ResourceTypeConfigurationSet ResourceType = "configuration-set"
-	ResourceTypeOptOutList       ResourceType = "opt-out-list"
-	ResourceTypeEventDestination ResourceType = "event-destination"
-	ResourceTypeKeyword          ResourceType = "keyword"
-	ResourceTypeOptedOutNumber   ResourceType = "opted-out-number"
-	ResourceTypeRegistration     ResourceType = "registration"
+	ResourceTypeAccount                   ResourceType = "account"
+	ResourceTypePhoneNumber               ResourceType = "phone-number"
+	ResourceTypeSenderId                  ResourceType = "sender-id"
+	ResourceTypePool                      ResourceType = "pool"
+	ResourceTypeConfigurationSet          ResourceType = "configuration-set"
+	ResourceTypeOptOutList                ResourceType = "opt-out-list"
+	ResourceTypeEventDestination          ResourceType = "event-destination"
+	ResourceTypeKeyword                   ResourceType = "keyword"
+	ResourceTypeOptedOutNumber            ResourceType = "opted-out-number"
+	ResourceTypeRegistration              ResourceType = "registration"
+	ResourceTypeRegistrationAttachment    ResourceType = "registration-attachment"
+	ResourceTypeVerifiedDestinationNumber ResourceType = "verified-destination-number"
+	ResourceTypeProtectConfiguration      ResourceType = "protect-configuration"
+	ResourceTypePolicy                    ResourceType = "policy"
+	ResourceTypeMessage                   ResourceType = "message"
 )
 
 // Values returns all known values for ResourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceType) Values() []ResourceType {
 	return []ResourceType{
 		"account",
@@ -499,6 +1072,11 @@ func (ResourceType) Values() []ResourceType {
 		"keyword",
 		"opted-out-number",
 		"registration",
+		"registration-attachment",
+		"verified-destination-number",
+		"protect-configuration",
+		"policy",
+		"message",
 	}
 }
 
@@ -506,19 +1084,24 @@ type SenderIdFilterName string
 
 // Enum values for SenderIdFilterName
 const (
-	SenderIdFilterNameSenderId       SenderIdFilterName = "sender-id"
-	SenderIdFilterNameIsoCountryCode SenderIdFilterName = "iso-country-code"
-	SenderIdFilterNameMessageType    SenderIdFilterName = "message-type"
+	SenderIdFilterNameSenderId                  SenderIdFilterName = "sender-id"
+	SenderIdFilterNameIsoCountryCode            SenderIdFilterName = "iso-country-code"
+	SenderIdFilterNameMessageType               SenderIdFilterName = "message-type"
+	SenderIdFilterNameDeletionProtectionEnabled SenderIdFilterName = "deletion-protection-enabled"
+	SenderIdFilterNameRegistered                SenderIdFilterName = "registered"
 )
 
 // Values returns all known values for SenderIdFilterName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SenderIdFilterName) Values() []SenderIdFilterName {
 	return []SenderIdFilterName{
 		"sender-id",
 		"iso-country-code",
 		"message-type",
+		"deletion-protection-enabled",
+		"registered",
 	}
 }
 
@@ -526,11 +1109,13 @@ type ServiceQuotaExceededExceptionReason string
 
 // Enum values for ServiceQuotaExceededExceptionReason
 const (
+	ServiceQuotaExceededExceptionReasonAssociationsPerRegistration          ServiceQuotaExceededExceptionReason = "ASSOCIATIONS_PER_REGISTRATION"
 	ServiceQuotaExceededExceptionReasonConfigurationSetsPerAccount          ServiceQuotaExceededExceptionReason = "CONFIGURATION_SETS_PER_ACCOUNT"
 	ServiceQuotaExceededExceptionReasonDailyDestinationCallLimit            ServiceQuotaExceededExceptionReason = "DAILY_DESTINATION_CALL_LIMIT"
 	ServiceQuotaExceededExceptionReasonEventDestinationsPerConfigurationSet ServiceQuotaExceededExceptionReason = "EVENT_DESTINATIONS_PER_CONFIGURATION_SET"
 	ServiceQuotaExceededExceptionReasonKeywordsPerPhoneNumber               ServiceQuotaExceededExceptionReason = "KEYWORDS_PER_PHONE_NUMBER"
 	ServiceQuotaExceededExceptionReasonKeywordsPerPool                      ServiceQuotaExceededExceptionReason = "KEYWORDS_PER_POOL"
+	ServiceQuotaExceededExceptionReasonMonthlySpendLimitReachedForMedia     ServiceQuotaExceededExceptionReason = "MONTHLY_SPEND_LIMIT_REACHED_FOR_MEDIA"
 	ServiceQuotaExceededExceptionReasonMonthlySpendLimitReachedForText      ServiceQuotaExceededExceptionReason = "MONTHLY_SPEND_LIMIT_REACHED_FOR_TEXT"
 	ServiceQuotaExceededExceptionReasonMonthlySpendLimitReachedForVoice     ServiceQuotaExceededExceptionReason = "MONTHLY_SPEND_LIMIT_REACHED_FOR_VOICE"
 	ServiceQuotaExceededExceptionReasonOptOutListsPerAccount                ServiceQuotaExceededExceptionReason = "OPT_OUT_LISTS_PER_ACCOUNT"
@@ -538,20 +1123,31 @@ const (
 	ServiceQuotaExceededExceptionReasonPhoneNumbersPerAccount               ServiceQuotaExceededExceptionReason = "PHONE_NUMBERS_PER_ACCOUNT"
 	ServiceQuotaExceededExceptionReasonPhoneNumbersPerRegistration          ServiceQuotaExceededExceptionReason = "PHONE_NUMBERS_PER_REGISTRATION"
 	ServiceQuotaExceededExceptionReasonPoolsPerAccount                      ServiceQuotaExceededExceptionReason = "POOLS_PER_ACCOUNT"
+	ServiceQuotaExceededExceptionReasonRegistrationAttachmentsCreatedPerDay ServiceQuotaExceededExceptionReason = "REGISTRATION_ATTACHMENTS_CREATED_PER_DAY"
+	ServiceQuotaExceededExceptionReasonRegistrationAttachmentsPerAccount    ServiceQuotaExceededExceptionReason = "REGISTRATION_ATTACHMENTS_PER_ACCOUNT"
+	ServiceQuotaExceededExceptionReasonRegistrationVersionsCreatedPerDay    ServiceQuotaExceededExceptionReason = "REGISTRATION_VERSIONS_CREATED_PER_DAY"
+	ServiceQuotaExceededExceptionReasonRegistrationsPerAccount              ServiceQuotaExceededExceptionReason = "REGISTRATIONS_PER_ACCOUNT"
+	ServiceQuotaExceededExceptionReasonSenderIdsPerAccount                  ServiceQuotaExceededExceptionReason = "SENDER_IDS_PER_ACCOUNT"
 	ServiceQuotaExceededExceptionReasonTagsPerResource                      ServiceQuotaExceededExceptionReason = "TAGS_PER_RESOURCE"
+	ServiceQuotaExceededExceptionReasonVerifiedDestinationNumbersPerAccount ServiceQuotaExceededExceptionReason = "VERIFIED_DESTINATION_NUMBERS_PER_ACCOUNT"
+	ServiceQuotaExceededExceptionReasonVerificationAttemptsPerDay           ServiceQuotaExceededExceptionReason = "VERIFICATION_ATTEMPTS_PER_DAY"
+	ServiceQuotaExceededExceptionReasonProtectConfigurationsPerAccount      ServiceQuotaExceededExceptionReason = "PROTECT_CONFIGURATIONS_PER_ACCOUNT"
 )
 
 // Values returns all known values for ServiceQuotaExceededExceptionReason. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ServiceQuotaExceededExceptionReason) Values() []ServiceQuotaExceededExceptionReason {
 	return []ServiceQuotaExceededExceptionReason{
+		"ASSOCIATIONS_PER_REGISTRATION",
 		"CONFIGURATION_SETS_PER_ACCOUNT",
 		"DAILY_DESTINATION_CALL_LIMIT",
 		"EVENT_DESTINATIONS_PER_CONFIGURATION_SET",
 		"KEYWORDS_PER_PHONE_NUMBER",
 		"KEYWORDS_PER_POOL",
+		"MONTHLY_SPEND_LIMIT_REACHED_FOR_MEDIA",
 		"MONTHLY_SPEND_LIMIT_REACHED_FOR_TEXT",
 		"MONTHLY_SPEND_LIMIT_REACHED_FOR_VOICE",
 		"OPT_OUT_LISTS_PER_ACCOUNT",
@@ -559,7 +1155,15 @@ func (ServiceQuotaExceededExceptionReason) Values() []ServiceQuotaExceededExcept
 		"PHONE_NUMBERS_PER_ACCOUNT",
 		"PHONE_NUMBERS_PER_REGISTRATION",
 		"POOLS_PER_ACCOUNT",
+		"REGISTRATION_ATTACHMENTS_CREATED_PER_DAY",
+		"REGISTRATION_ATTACHMENTS_PER_ACCOUNT",
+		"REGISTRATION_VERSIONS_CREATED_PER_DAY",
+		"REGISTRATIONS_PER_ACCOUNT",
+		"SENDER_IDS_PER_ACCOUNT",
 		"TAGS_PER_RESOURCE",
+		"VERIFIED_DESTINATION_NUMBERS_PER_ACCOUNT",
+		"VERIFICATION_ATTEMPTS_PER_DAY",
+		"PROTECT_CONFIGURATIONS_PER_ACCOUNT",
 	}
 }
 
@@ -569,15 +1173,18 @@ type SpendLimitName string
 const (
 	SpendLimitNameTextMessageMonthlySpendLimit  SpendLimitName = "TEXT_MESSAGE_MONTHLY_SPEND_LIMIT"
 	SpendLimitNameVoiceMessageMonthlySpendLimit SpendLimitName = "VOICE_MESSAGE_MONTHLY_SPEND_LIMIT"
+	SpendLimitNameMediaMessageMonthlySpendLimit SpendLimitName = "MEDIA_MESSAGE_MONTHLY_SPEND_LIMIT"
 )
 
 // Values returns all known values for SpendLimitName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SpendLimitName) Values() []SpendLimitName {
 	return []SpendLimitName{
 		"TEXT_MESSAGE_MONTHLY_SPEND_LIMIT",
 		"VOICE_MESSAGE_MONTHLY_SPEND_LIMIT",
+		"MEDIA_MESSAGE_MONTHLY_SPEND_LIMIT",
 	}
 }
 
@@ -585,61 +1192,150 @@ type ValidationExceptionReason string
 
 // Enum values for ValidationExceptionReason
 const (
-	ValidationExceptionReasonUnknownOperation                          ValidationExceptionReason = "UNKNOWN_OPERATION"
-	ValidationExceptionReasonCannotParse                               ValidationExceptionReason = "CANNOT_PARSE"
-	ValidationExceptionReasonFieldValidationFailed                     ValidationExceptionReason = "FIELD_VALIDATION_FAILED"
-	ValidationExceptionReasonOther                                     ValidationExceptionReason = "OTHER"
-	ValidationExceptionReasonInvalidParameter                          ValidationExceptionReason = "INVALID_PARAMETER"
-	ValidationExceptionReasonInvalidArn                                ValidationExceptionReason = "INVALID_ARN"
-	ValidationExceptionReasonInvalidIdentityForDestinationCountry      ValidationExceptionReason = "INVALID_IDENTITY_FOR_DESTINATION_COUNTRY"
-	ValidationExceptionReasonDestinationCountryBlocked                 ValidationExceptionReason = "DESTINATION_COUNTRY_BLOCKED"
 	ValidationExceptionReasonCannotAddOptedOutNumber                   ValidationExceptionReason = "CANNOT_ADD_OPTED_OUT_NUMBER"
+	ValidationExceptionReasonCannotParse                               ValidationExceptionReason = "CANNOT_PARSE"
 	ValidationExceptionReasonCountryCodeMismatch                       ValidationExceptionReason = "COUNTRY_CODE_MISMATCH"
+	ValidationExceptionReasonDestinationCountryBlocked                 ValidationExceptionReason = "DESTINATION_COUNTRY_BLOCKED"
+	ValidationExceptionReasonFieldValidationFailed                     ValidationExceptionReason = "FIELD_VALIDATION_FAILED"
+	ValidationExceptionReasonAttachmentTypeNotSupported                ValidationExceptionReason = "ATTACHMENT_TYPE_NOT_SUPPORTED"
+	ValidationExceptionReasonInvalidArn                                ValidationExceptionReason = "INVALID_ARN"
 	ValidationExceptionReasonInvalidFilterValues                       ValidationExceptionReason = "INVALID_FILTER_VALUES"
+	ValidationExceptionReasonInvalidIdentityForDestinationCountry      ValidationExceptionReason = "INVALID_IDENTITY_FOR_DESTINATION_COUNTRY"
 	ValidationExceptionReasonInvalidNextToken                          ValidationExceptionReason = "INVALID_NEXT_TOKEN"
+	ValidationExceptionReasonInvalidParameter                          ValidationExceptionReason = "INVALID_PARAMETER"
+	ValidationExceptionReasonInvalidRequest                            ValidationExceptionReason = "INVALID_REQUEST"
+	ValidationExceptionReasonInvalidRegistrationAssociation            ValidationExceptionReason = "INVALID_REGISTRATION_ASSOCIATION"
+	ValidationExceptionReasonMaximumSizeExceeded                       ValidationExceptionReason = "MAXIMUM_SIZE_EXCEEDED"
+	ValidationExceptionReasonMediaTypeNotSupported                     ValidationExceptionReason = "MEDIA_TYPE_NOT_SUPPORTED"
 	ValidationExceptionReasonMissingParameter                          ValidationExceptionReason = "MISSING_PARAMETER"
 	ValidationExceptionReasonParametersCannotBeUsedTogether            ValidationExceptionReason = "PARAMETERS_CANNOT_BE_USED_TOGETHER"
 	ValidationExceptionReasonPhoneNumberCannotBeOptedIn                ValidationExceptionReason = "PHONE_NUMBER_CANNOT_BE_OPTED_IN"
 	ValidationExceptionReasonPhoneNumberCannotBeReleased               ValidationExceptionReason = "PHONE_NUMBER_CANNOT_BE_RELEASED"
 	ValidationExceptionReasonPriceOverThreshold                        ValidationExceptionReason = "PRICE_OVER_THRESHOLD"
+	ValidationExceptionReasonResourceNotAccessible                     ValidationExceptionReason = "RESOURCE_NOT_ACCESSIBLE"
 	ValidationExceptionReasonRequestedSpendLimitHigherThanServiceLimit ValidationExceptionReason = "REQUESTED_SPEND_LIMIT_HIGHER_THAN_SERVICE_LIMIT"
 	ValidationExceptionReasonSenderIdNotRegistered                     ValidationExceptionReason = "SENDER_ID_NOT_REGISTERED"
 	ValidationExceptionReasonSenderIdNotSupported                      ValidationExceptionReason = "SENDER_ID_NOT_SUPPORTED"
+	ValidationExceptionReasonSenderIdRequiresRegistration              ValidationExceptionReason = "SENDER_ID_REQUIRES_REGISTRATION"
+	ValidationExceptionReasonTwoWayTopicNotPresent                     ValidationExceptionReason = "TWO_WAY_TOPIC_NOT_PRESENT"
 	ValidationExceptionReasonTwoWayNotEnabled                          ValidationExceptionReason = "TWO_WAY_NOT_ENABLED"
 	ValidationExceptionReasonTwoWayNotSupportedInCountry               ValidationExceptionReason = "TWO_WAY_NOT_SUPPORTED_IN_COUNTRY"
 	ValidationExceptionReasonTwoWayNotSupportedInRegion                ValidationExceptionReason = "TWO_WAY_NOT_SUPPORTED_IN_REGION"
-	ValidationExceptionReasonTwoWayTopicNotPresent                     ValidationExceptionReason = "TWO_WAY_TOPIC_NOT_PRESENT"
+	ValidationExceptionReasonTwoWayChannelNotPresent                   ValidationExceptionReason = "TWO_WAY_CHANNEL_NOT_PRESENT"
+	ValidationExceptionReasonUnknownRegistrationField                  ValidationExceptionReason = "UNKNOWN_REGISTRATION_FIELD"
+	ValidationExceptionReasonUnknownRegistrationSection                ValidationExceptionReason = "UNKNOWN_REGISTRATION_SECTION"
+	ValidationExceptionReasonUnknownRegistrationType                   ValidationExceptionReason = "UNKNOWN_REGISTRATION_TYPE"
+	ValidationExceptionReasonUnknownRegistrationVersion                ValidationExceptionReason = "UNKNOWN_REGISTRATION_VERSION"
+	ValidationExceptionReasonUnknownOperation                          ValidationExceptionReason = "UNKNOWN_OPERATION"
+	ValidationExceptionReasonRegistrationFieldCannotBeDeleted          ValidationExceptionReason = "REGISTRATION_FIELD_CANNOT_BE_DELETED"
+	ValidationExceptionReasonVerificationCodeMismatch                  ValidationExceptionReason = "VERIFICATION_CODE_MISMATCH"
+	ValidationExceptionReasonVoiceCapabilityNotAvailable               ValidationExceptionReason = "VOICE_CAPABILITY_NOT_AVAILABLE"
+	ValidationExceptionReasonUnspecifiedParameterNotSupported          ValidationExceptionReason = "UNSPECIFIED_PARAMETER_NOT_SUPPORTED"
+	ValidationExceptionReasonOther                                     ValidationExceptionReason = "OTHER"
 )
 
 // Values returns all known values for ValidationExceptionReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 	return []ValidationExceptionReason{
-		"UNKNOWN_OPERATION",
-		"CANNOT_PARSE",
-		"FIELD_VALIDATION_FAILED",
-		"OTHER",
-		"INVALID_PARAMETER",
-		"INVALID_ARN",
-		"INVALID_IDENTITY_FOR_DESTINATION_COUNTRY",
-		"DESTINATION_COUNTRY_BLOCKED",
 		"CANNOT_ADD_OPTED_OUT_NUMBER",
+		"CANNOT_PARSE",
 		"COUNTRY_CODE_MISMATCH",
+		"DESTINATION_COUNTRY_BLOCKED",
+		"FIELD_VALIDATION_FAILED",
+		"ATTACHMENT_TYPE_NOT_SUPPORTED",
+		"INVALID_ARN",
 		"INVALID_FILTER_VALUES",
+		"INVALID_IDENTITY_FOR_DESTINATION_COUNTRY",
 		"INVALID_NEXT_TOKEN",
+		"INVALID_PARAMETER",
+		"INVALID_REQUEST",
+		"INVALID_REGISTRATION_ASSOCIATION",
+		"MAXIMUM_SIZE_EXCEEDED",
+		"MEDIA_TYPE_NOT_SUPPORTED",
 		"MISSING_PARAMETER",
 		"PARAMETERS_CANNOT_BE_USED_TOGETHER",
 		"PHONE_NUMBER_CANNOT_BE_OPTED_IN",
 		"PHONE_NUMBER_CANNOT_BE_RELEASED",
 		"PRICE_OVER_THRESHOLD",
+		"RESOURCE_NOT_ACCESSIBLE",
 		"REQUESTED_SPEND_LIMIT_HIGHER_THAN_SERVICE_LIMIT",
 		"SENDER_ID_NOT_REGISTERED",
 		"SENDER_ID_NOT_SUPPORTED",
+		"SENDER_ID_REQUIRES_REGISTRATION",
+		"TWO_WAY_TOPIC_NOT_PRESENT",
 		"TWO_WAY_NOT_ENABLED",
 		"TWO_WAY_NOT_SUPPORTED_IN_COUNTRY",
 		"TWO_WAY_NOT_SUPPORTED_IN_REGION",
-		"TWO_WAY_TOPIC_NOT_PRESENT",
+		"TWO_WAY_CHANNEL_NOT_PRESENT",
+		"UNKNOWN_REGISTRATION_FIELD",
+		"UNKNOWN_REGISTRATION_SECTION",
+		"UNKNOWN_REGISTRATION_TYPE",
+		"UNKNOWN_REGISTRATION_VERSION",
+		"UNKNOWN_OPERATION",
+		"REGISTRATION_FIELD_CANNOT_BE_DELETED",
+		"VERIFICATION_CODE_MISMATCH",
+		"VOICE_CAPABILITY_NOT_AVAILABLE",
+		"UNSPECIFIED_PARAMETER_NOT_SUPPORTED",
+		"OTHER",
+	}
+}
+
+type VerificationChannel string
+
+// Enum values for VerificationChannel
+const (
+	VerificationChannelText  VerificationChannel = "TEXT"
+	VerificationChannelVoice VerificationChannel = "VOICE"
+)
+
+// Values returns all known values for VerificationChannel. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VerificationChannel) Values() []VerificationChannel {
+	return []VerificationChannel{
+		"TEXT",
+		"VOICE",
+	}
+}
+
+type VerificationStatus string
+
+// Enum values for VerificationStatus
+const (
+	VerificationStatusPending  VerificationStatus = "PENDING"
+	VerificationStatusVerified VerificationStatus = "VERIFIED"
+)
+
+// Values returns all known values for VerificationStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VerificationStatus) Values() []VerificationStatus {
+	return []VerificationStatus{
+		"PENDING",
+		"VERIFIED",
+	}
+}
+
+type VerifiedDestinationNumberFilterName string
+
+// Enum values for VerifiedDestinationNumberFilterName
+const (
+	VerifiedDestinationNumberFilterNameStatus VerifiedDestinationNumberFilterName = "status"
+)
+
+// Values returns all known values for VerifiedDestinationNumberFilterName. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VerifiedDestinationNumberFilterName) Values() []VerifiedDestinationNumberFilterName {
+	return []VerifiedDestinationNumberFilterName{
+		"status",
 	}
 }
 
@@ -709,8 +1405,9 @@ const (
 )
 
 // Values returns all known values for VoiceId. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VoiceId) Values() []VoiceId {
 	return []VoiceId{
 		"AMY",
@@ -785,6 +1482,7 @@ const (
 
 // Values returns all known values for VoiceMessageBodyTextType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (VoiceMessageBodyTextType) Values() []VoiceMessageBodyTextType {
 	return []VoiceMessageBodyTextType{

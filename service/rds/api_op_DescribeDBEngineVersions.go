@@ -4,19 +4,14 @@ package rds
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/rds/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns a list of the available DB engines.
+// Describes the properties of specific versions of DB engines.
 func (c *Client) DescribeDBEngineVersions(ctx context.Context, params *DescribeDBEngineVersionsInput, optFns ...func(*Options)) (*DescribeDBEngineVersionsOutput, error) {
 	if params == nil {
 		params = &DescribeDBEngineVersionsInput{}
@@ -35,76 +30,123 @@ func (c *Client) DescribeDBEngineVersions(ctx context.Context, params *DescribeD
 type DescribeDBEngineVersionsInput struct {
 
 	// The name of a specific DB parameter group family to return details for.
+	//
 	// Constraints:
-	//   - If supplied, must match an existing DBParameterGroupFamily.
+	//
+	//   - If supplied, must match an existing DB parameter group family.
 	DBParameterGroupFamily *string
 
-	// A value that indicates whether only the default version of the specified engine
-	// or engine and major version combination is returned.
-	DefaultOnly bool
+	// Specifies whether to return only the default version of the specified engine or
+	// the engine and major version combination.
+	DefaultOnly *bool
 
-	// The database engine to return. Valid Values:
+	// The database engine to return version details for.
+	//
+	// Valid Values:
+	//
 	//   - aurora-mysql
+	//
 	//   - aurora-postgresql
+	//
 	//   - custom-oracle-ee
+	//
+	//   - custom-oracle-ee-cdb
+	//
+	//   - custom-oracle-se2
+	//
+	//   - custom-oracle-se2-cdb
+	//
+	//   - db2-ae
+	//
+	//   - db2-se
+	//
 	//   - mariadb
+	//
 	//   - mysql
+	//
 	//   - oracle-ee
+	//
 	//   - oracle-ee-cdb
+	//
 	//   - oracle-se2
+	//
 	//   - oracle-se2-cdb
+	//
 	//   - postgres
+	//
 	//   - sqlserver-ee
+	//
 	//   - sqlserver-se
+	//
 	//   - sqlserver-ex
+	//
 	//   - sqlserver-web
 	Engine *string
 
-	// The database engine version to return. Example: 5.1.49
+	// A specific database engine version to return details for.
+	//
+	// Example: 5.1.49
 	EngineVersion *string
 
-	// A filter that specifies one or more DB engine versions to describe. Supported
-	// filters:
+	// A filter that specifies one or more DB engine versions to describe.
+	//
+	// Supported filters:
+	//
 	//   - db-parameter-group-family - Accepts parameter groups family names. The
 	//   results list only includes information about the DB engine versions for these
 	//   parameter group families.
+	//
 	//   - engine - Accepts engine names. The results list only includes information
 	//   about the DB engine versions for these engines.
+	//
 	//   - engine-mode - Accepts DB engine modes. The results list only includes
 	//   information about the DB engine versions for these engine modes. Valid DB engine
 	//   modes are the following:
+	//
 	//   - global
+	//
 	//   - multimaster
+	//
 	//   - parallelquery
+	//
 	//   - provisioned
+	//
 	//   - serverless
+	//
 	//   - engine-version - Accepts engine versions. The results list only includes
 	//   information about the DB engine versions for these engine versions.
+	//
 	//   - status - Accepts engine version statuses. The results list only includes
 	//   information about the DB engine versions for these statuses. Valid statuses are
 	//   the following:
+	//
 	//   - available
+	//
 	//   - deprecated
 	Filters []types.Filter
 
-	// A value that indicates whether to include engine versions that aren't available
-	// in the list. The default is to list only available engine versions.
+	// Specifies whether to also list the engine versions that aren't available. The
+	// default is to list only available engine versions.
 	IncludeAll *bool
 
-	// A value that indicates whether to list the supported character sets for each
-	// engine version. If this parameter is enabled and the requested engine supports
-	// the CharacterSetName parameter for CreateDBInstance , the response includes a
-	// list of supported character sets for each engine version. For RDS Custom, the
-	// default is not to list supported character sets. If you set
-	// ListSupportedCharacterSets to true , RDS Custom returns no results.
+	// Specifies whether to list the supported character sets for each engine version.
+	//
+	// If this parameter is enabled and the requested engine supports the
+	// CharacterSetName parameter for CreateDBInstance , the response includes a list
+	// of supported character sets for each engine version.
+	//
+	// For RDS Custom, the default is not to list supported character sets. If you
+	// enable this parameter, RDS Custom returns no results.
 	ListSupportedCharacterSets *bool
 
-	// A value that indicates whether to list the supported time zones for each engine
-	// version. If this parameter is enabled and the requested engine supports the
-	// TimeZone parameter for CreateDBInstance , the response includes a list of
-	// supported time zones for each engine version. For RDS Custom, the default is not
-	// to list supported time zones. If you set ListSupportedTimezones to true , RDS
-	// Custom returns no results.
+	// Specifies whether to list the supported time zones for each engine version.
+	//
+	// If this parameter is enabled and the requested engine supports the TimeZone
+	// parameter for CreateDBInstance , the response includes a list of supported time
+	// zones for each engine version.
+	//
+	// For RDS Custom, the default is not to list supported time zones. If you enable
+	// this parameter, RDS Custom returns no results.
 	ListSupportedTimezones *bool
 
 	// An optional pagination token provided by a previous request. If this parameter
@@ -114,7 +156,10 @@ type DescribeDBEngineVersionsInput struct {
 
 	// The maximum number of records to include in the response. If more than the
 	// MaxRecords value is available, a pagination token called a marker is included in
-	// the response so you can retrieve the remaining results. Default: 100
+	// the response so you can retrieve the remaining results.
+	//
+	// Default: 100
+	//
 	// Constraints: Minimum 20, maximum 100.
 	MaxRecords *int32
 
@@ -140,6 +185,9 @@ type DescribeDBEngineVersionsOutput struct {
 }
 
 func (c *Client) addOperationDescribeDBEngineVersionsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpDescribeDBEngineVersions{}, middleware.After)
 	if err != nil {
 		return err
@@ -148,34 +196,38 @@ func (c *Client) addOperationDescribeDBEngineVersionsMiddlewares(stack *middlewa
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeDBEngineVersions"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -187,7 +239,13 @@ func (c *Client) addOperationDescribeDBEngineVersionsMiddlewares(stack *middlewa
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeDBEngineVersionsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeDBEngineVersionsValidationMiddleware(stack); err != nil {
@@ -196,7 +254,7 @@ func (c *Client) addOperationDescribeDBEngineVersionsMiddlewares(stack *middlewa
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeDBEngineVersions(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -208,26 +266,33 @@ func (c *Client) addOperationDescribeDBEngineVersionsMiddlewares(stack *middlewa
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// DescribeDBEngineVersionsAPIClient is a client that implements the
-// DescribeDBEngineVersions operation.
-type DescribeDBEngineVersionsAPIClient interface {
-	DescribeDBEngineVersions(context.Context, *DescribeDBEngineVersionsInput, ...func(*Options)) (*DescribeDBEngineVersionsOutput, error)
-}
-
-var _ DescribeDBEngineVersionsAPIClient = (*Client)(nil)
 
 // DescribeDBEngineVersionsPaginatorOptions is the paginator options for
 // DescribeDBEngineVersions
 type DescribeDBEngineVersionsPaginatorOptions struct {
 	// The maximum number of records to include in the response. If more than the
 	// MaxRecords value is available, a pagination token called a marker is included in
-	// the response so you can retrieve the remaining results. Default: 100
+	// the response so you can retrieve the remaining results.
+	//
+	// Default: 100
+	//
 	// Constraints: Minimum 20, maximum 100.
 	Limit int32
 
@@ -290,6 +355,9 @@ func (p *DescribeDBEngineVersionsPaginator) NextPage(ctx context.Context, optFns
 	}
 	params.MaxRecords = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeDBEngineVersions(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -309,134 +377,18 @@ func (p *DescribeDBEngineVersionsPaginator) NextPage(ctx context.Context, optFns
 	return result, nil
 }
 
+// DescribeDBEngineVersionsAPIClient is a client that implements the
+// DescribeDBEngineVersions operation.
+type DescribeDBEngineVersionsAPIClient interface {
+	DescribeDBEngineVersions(context.Context, *DescribeDBEngineVersionsInput, ...func(*Options)) (*DescribeDBEngineVersionsOutput, error)
+}
+
+var _ DescribeDBEngineVersionsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opDescribeDBEngineVersions(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "rds",
 		OperationName: "DescribeDBEngineVersions",
 	}
-}
-
-type opDescribeDBEngineVersionsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeDBEngineVersionsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeDBEngineVersionsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "rds"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "rds"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("rds")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeDBEngineVersionsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeDBEngineVersionsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

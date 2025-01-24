@@ -4,20 +4,16 @@ package codeartifact
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/codeartifact/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns a list of AssetSummary (https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_AssetSummary.html)
-// objects for assets in a package version.
+//	Returns a list of [AssetSummary] objects for assets in a package version.
+//
+// [AssetSummary]: https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_AssetSummary.html
 func (c *Client) ListPackageVersionAssets(ctx context.Context, params *ListPackageVersionAssetsInput, optFns ...func(*Options)) (*ListPackageVersionAssetsOutput, error) {
 	if params == nil {
 		params = &ListPackageVersionAssetsInput{}
@@ -35,51 +31,65 @@ func (c *Client) ListPackageVersionAssets(ctx context.Context, params *ListPacka
 
 type ListPackageVersionAssetsInput struct {
 
-	// The name of the domain that contains the repository associated with the package
-	// version assets.
+	//  The name of the domain that contains the repository associated with the
+	// package version assets.
 	//
 	// This member is required.
 	Domain *string
 
-	// The format of the package that contains the requested package version assets.
+	//  The format of the package that contains the requested package version assets.
 	//
 	// This member is required.
 	Format types.PackageFormat
 
-	// The name of the package that contains the requested package version assets.
+	//  The name of the package that contains the requested package version assets.
 	//
 	// This member is required.
 	Package *string
 
-	// A string that contains the package version (for example, 3.5.2 ).
+	//  A string that contains the package version (for example, 3.5.2 ).
 	//
 	// This member is required.
 	PackageVersion *string
 
-	// The name of the repository that contains the package that contains the
+	//  The name of the repository that contains the package that contains the
 	// requested package version assets.
 	//
 	// This member is required.
 	Repository *string
 
-	// The 12-digit account number of the Amazon Web Services account that owns the
+	//  The 12-digit account number of the Amazon Web Services account that owns the
 	// domain. It does not include dashes or spaces.
 	DomainOwner *string
 
-	// The maximum number of results to return per page.
+	//  The maximum number of results to return per page.
 	MaxResults *int32
 
 	// The namespace of the package version that contains the requested package
-	// version assets. The package version component that specifies its namespace
-	// depends on its type. For example:
+	// version assets. The package component that specifies its namespace depends on
+	// its type. For example:
+	//
+	// The namespace is required requesting assets from package versions of the
+	// following formats:
+	//
+	//   - Maven
+	//
+	//   - Swift
+	//
+	//   - generic
+	//
 	//   - The namespace of a Maven package version is its groupId .
-	//   - The namespace of an npm package version is its scope .
-	//   - Python and NuGet package versions do not contain a corresponding component,
-	//   package versions of those formats do not have a namespace.
+	//
+	//   - The namespace of an npm or Swift package version is its scope .
+	//
 	//   - The namespace of a generic package is its namespace .
+	//
+	//   - Python, NuGet, Ruby, and Cargo package versions do not contain a
+	//   corresponding component, package versions of those formats do not have a
+	//   namespace.
 	Namespace *string
 
-	// The token for the next set of results. Use the value returned in the previous
+	//  The token for the next set of results. Use the value returned in the previous
 	// response in the next request to retrieve the next set of results.
 	NextToken *string
 
@@ -88,32 +98,40 @@ type ListPackageVersionAssetsInput struct {
 
 type ListPackageVersionAssetsOutput struct {
 
-	// The returned list of AssetSummary (https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_AssetSummary.html)
-	// objects.
+	//  The returned list of [AssetSummary] objects.
+	//
+	// [AssetSummary]: https://docs.aws.amazon.com/codeartifact/latest/APIReference/API_AssetSummary.html
 	Assets []types.AssetSummary
 
-	// The format of the package that contains the requested package version assets.
+	//  The format of the package that contains the requested package version assets.
 	Format types.PackageFormat
 
 	// The namespace of the package version that contains the requested package
-	// version assets. The package version component that specifies its namespace
-	// depends on its type. For example:
+	// version assets. The package component that specifies its namespace depends on
+	// its type. For example:
+	//
 	//   - The namespace of a Maven package version is its groupId .
-	//   - The namespace of an npm package version is its scope .
-	//   - Python and NuGet package versions do not contain a corresponding component,
-	//   package versions of those formats do not have a namespace.
+	//
+	//   - The namespace of an npm or Swift package version is its scope .
+	//
+	//   - The namespace of a generic package is its namespace .
+	//
+	//   - Python, NuGet, Ruby, and Cargo package versions do not contain a
+	//   corresponding component, package versions of those formats do not have a
+	//   namespace.
 	Namespace *string
 
-	// If there are additional results, this is the token for the next set of results.
+	//  If there are additional results, this is the token for the next set of
+	// results.
 	NextToken *string
 
-	// The name of the package that contains the requested package version assets.
+	//  The name of the package that contains the requested package version assets.
 	Package *string
 
-	// The version of the package associated with the requested assets.
+	//  The version of the package associated with the requested assets.
 	Version *string
 
-	// The current revision associated with the package version.
+	//  The current revision associated with the package version.
 	VersionRevision *string
 
 	// Metadata pertaining to the operation's result.
@@ -123,6 +141,9 @@ type ListPackageVersionAssetsOutput struct {
 }
 
 func (c *Client) addOperationListPackageVersionAssetsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpListPackageVersionAssets{}, middleware.After)
 	if err != nil {
 		return err
@@ -131,34 +152,38 @@ func (c *Client) addOperationListPackageVersionAssetsMiddlewares(stack *middlewa
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListPackageVersionAssets"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -170,7 +195,13 @@ func (c *Client) addOperationListPackageVersionAssetsMiddlewares(stack *middlewa
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListPackageVersionAssetsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListPackageVersionAssetsValidationMiddleware(stack); err != nil {
@@ -179,7 +210,7 @@ func (c *Client) addOperationListPackageVersionAssetsMiddlewares(stack *middlewa
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListPackageVersionAssets(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -191,24 +222,28 @@ func (c *Client) addOperationListPackageVersionAssetsMiddlewares(stack *middlewa
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
 
-// ListPackageVersionAssetsAPIClient is a client that implements the
-// ListPackageVersionAssets operation.
-type ListPackageVersionAssetsAPIClient interface {
-	ListPackageVersionAssets(context.Context, *ListPackageVersionAssetsInput, ...func(*Options)) (*ListPackageVersionAssetsOutput, error)
-}
-
-var _ ListPackageVersionAssetsAPIClient = (*Client)(nil)
-
 // ListPackageVersionAssetsPaginatorOptions is the paginator options for
 // ListPackageVersionAssets
 type ListPackageVersionAssetsPaginatorOptions struct {
-	// The maximum number of results to return per page.
+	//  The maximum number of results to return per page.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token
@@ -270,6 +305,9 @@ func (p *ListPackageVersionAssetsPaginator) NextPage(ctx context.Context, optFns
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListPackageVersionAssets(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -289,134 +327,18 @@ func (p *ListPackageVersionAssetsPaginator) NextPage(ctx context.Context, optFns
 	return result, nil
 }
 
+// ListPackageVersionAssetsAPIClient is a client that implements the
+// ListPackageVersionAssets operation.
+type ListPackageVersionAssetsAPIClient interface {
+	ListPackageVersionAssets(context.Context, *ListPackageVersionAssetsInput, ...func(*Options)) (*ListPackageVersionAssetsOutput, error)
+}
+
+var _ ListPackageVersionAssetsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListPackageVersionAssets(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "codeartifact",
 		OperationName: "ListPackageVersionAssets",
 	}
-}
-
-type opListPackageVersionAssetsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListPackageVersionAssetsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListPackageVersionAssetsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "codeartifact"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "codeartifact"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("codeartifact")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListPackageVersionAssetsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListPackageVersionAssetsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -7,11 +7,12 @@ import (
 	smithy "github.com/aws/smithy-go"
 )
 
-// You don't have permissions to perform the requested operation. The user or role
-// that is making the request must have at least one IAM permissions policy
-// attached that grants the required permissions. For more information, see Access
-// Management (https://docs.aws.amazon.com/IAM/latest/UserGuide/access.html) in the
-// IAM User Guide.
+// You don't have permissions to perform the requested operation. The [IAM principal] making the
+// request must have at least one IAM permissions policy attached that grants the
+// required permissions. For more information, see [Access management]in the IAM User Guide.
+//
+// [Access management]: https://docs.aws.amazon.com/IAM/latest/UserGuide/access.html
+// [IAM principal]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html
 type AccessDeniedException struct {
 	Message *string
 
@@ -65,16 +66,19 @@ func (e *BadRequestException) ErrorCode() string {
 func (e *BadRequestException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // These errors are usually caused by a client action. Actions can include using
-// an action or resource on behalf of a user that doesn't have permissions to use
-// the action or resource or specifying an identifier that is not valid.
+// an action or resource on behalf of an [IAM principal]that doesn't have permissions to use the
+// action or resource or specifying an identifier that is not valid.
+//
+// [IAM principal]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_roles_terms-and-concepts.html
 type ClientException struct {
 	Message *string
 
 	ErrorCodeOverride *string
 
-	ClusterName   *string
-	NodegroupName *string
-	AddonName     *string
+	ClusterName    *string
+	NodegroupName  *string
+	AddonName      *string
+	SubscriptionId *string
 
 	noSmithyDocumentSerde
 }
@@ -107,6 +111,7 @@ type InvalidParameterException struct {
 	NodegroupName      *string
 	FargateProfileName *string
 	AddonName          *string
+	SubscriptionId     *string
 
 	noSmithyDocumentSerde
 }
@@ -135,9 +140,10 @@ type InvalidRequestException struct {
 
 	ErrorCodeOverride *string
 
-	ClusterName   *string
-	NodegroupName *string
-	AddonName     *string
+	ClusterName    *string
+	NodegroupName  *string
+	AddonName      *string
+	SubscriptionId *string
 
 	noSmithyDocumentSerde
 }
@@ -222,8 +228,9 @@ type ResourceLimitExceededException struct {
 
 	ErrorCodeOverride *string
 
-	ClusterName   *string
-	NodegroupName *string
+	ClusterName    *string
+	NodegroupName  *string
+	SubscriptionId *string
 
 	noSmithyDocumentSerde
 }
@@ -247,7 +254,8 @@ func (e *ResourceLimitExceededException) ErrorFault() smithy.ErrorFault { return
 
 // The specified resource could not be found. You can view your available clusters
 // with ListClusters . You can view your available managed node groups with
-// ListNodegroups . Amazon EKS clusters and node groups are Region-specific.
+// ListNodegroups . Amazon EKS clusters and node groups are Amazon Web Services
+// Region specific.
 type ResourceNotFoundException struct {
 	Message *string
 
@@ -257,6 +265,7 @@ type ResourceNotFoundException struct {
 	NodegroupName      *string
 	FargateProfileName *string
 	AddonName          *string
+	SubscriptionId     *string
 
 	noSmithyDocumentSerde
 }
@@ -311,9 +320,10 @@ type ServerException struct {
 
 	ErrorCodeOverride *string
 
-	ClusterName   *string
-	NodegroupName *string
-	AddonName     *string
+	ClusterName    *string
+	NodegroupName  *string
+	AddonName      *string
+	SubscriptionId *string
 
 	noSmithyDocumentSerde
 }

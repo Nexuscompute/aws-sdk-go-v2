@@ -61,6 +61,12 @@
                         "smithy.api#enumValue": "SMART_ON_FHIR_V1"
                     }
                 },
+                "SMART_ON_FHIR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "SMART_ON_FHIR"
+                    }
+                },
                 "AWS_AUTH": {
                     "target": "smithy.api#Unit",
                     "traits": {
@@ -367,6 +373,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The identity provider that you selected when you created the data store.</p>"
                     }
+                },
+                "ErrorCause": {
+                    "target": "com.amazonaws.healthlake#ErrorCause",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error cause for the current data store operation.</p>"
+                    }
                 }
             },
             "traits": {
@@ -404,6 +416,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "DELETED"
+                    }
+                },
+                "CREATE_FAILED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CREATE_FAILED"
                     }
                 }
             }
@@ -664,7 +682,7 @@
                 "ImportJobProperties": {
                     "target": "com.amazonaws.healthlake#ImportJobProperties",
                     "traits": {
-                        "smithy.api#documentation": "<p>The properties of the Import job request, including the ID, ARN, name, and the status of the job.</p>",
+                        "smithy.api#documentation": "<p>The properties of the Import job request, including the ID, ARN, name, status of the job, and the progress report of the job.</p>",
                         "smithy.api#required": {}
                     }
                 }
@@ -681,6 +699,52 @@
                     "max": 400
                 },
                 "smithy.api#pattern": "^(arn:aws((-us-gov)|(-iso)|(-iso-b)|(-cn))?:kms:)?([a-z]{2}-[a-z]+(-[a-z]+)?-\\d:)?(\\d{12}:)?(((key/)?[a-zA-Z0-9-_]+)|(alias/[a-zA-Z0-9:/_-]+))$"
+            }
+        },
+        "com.amazonaws.healthlake#ErrorCategory": {
+            "type": "enum",
+            "members": {
+                "RETRYABLE_ERROR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RETRYABLE_ERROR"
+                    }
+                },
+                "NON_RETRYABLE_ERROR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "NON_RETRYABLE_ERROR"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.healthlake#ErrorCause": {
+            "type": "structure",
+            "members": {
+                "ErrorMessage": {
+                    "target": "com.amazonaws.healthlake#ErrorMessage",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The text of the error message.</p>"
+                    }
+                },
+                "ErrorCategory": {
+                    "target": "com.amazonaws.healthlake#ErrorCategory",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error category of the create/delete data store operation. Possible statuses are RETRYABLE_ERROR or NON_RETRYABLE_ERROR.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The error info of the create/delete data store operation.</p>"
+            }
+        },
+        "com.amazonaws.healthlake#ErrorMessage": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 4096
+                }
             }
         },
         "com.amazonaws.healthlake#ExportJobProperties": {
@@ -766,6 +830,12 @@
                     }
                 }
             }
+        },
+        "com.amazonaws.healthlake#GenericDouble": {
+            "type": "double"
+        },
+        "com.amazonaws.healthlake#GenericLong": {
+            "type": "long"
         },
         "com.amazonaws.healthlake#HealthLake": {
             "type": "service",
@@ -867,7 +937,6 @@
                                     ]
                                 }
                             ],
-                            "type": "tree",
                             "rules": [
                                 {
                                     "conditions": [
@@ -885,9 +954,187 @@
                                     "type": "error"
                                 },
                                 {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                                    "type": "error"
+                                },
+                                {
                                     "conditions": [],
-                                    "type": "tree",
+                                    "endpoint": {
+                                        "url": {
+                                            "ref": "Endpoint"
+                                        },
+                                        "properties": {},
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "aws.partition",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                }
+                                            ],
+                                            "assign": "PartitionResult"
+                                        }
+                                    ],
                                     "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseDualStack"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                true,
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsFIPS"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                true,
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsDualStack"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://healthlake-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsFIPS"
+                                                                    ]
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://healthlake-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "FIPS is enabled but this partition does not support FIPS",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
                                         {
                                             "conditions": [
                                                 {
@@ -900,278 +1147,65 @@
                                                     ]
                                                 }
                                             ],
-                                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
-                                            "type": "error"
-                                        },
-                                        {
-                                            "conditions": [],
-                                            "endpoint": {
-                                                "url": {
-                                                    "ref": "Endpoint"
-                                                },
-                                                "properties": {},
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "isSet",
-                                            "argv": [
-                                                {
-                                                    "ref": "Region"
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "type": "tree",
-                                    "rules": [
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "aws.partition",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "Region"
-                                                        }
-                                                    ],
-                                                    "assign": "PartitionResult"
-                                                }
-                                            ],
-                                            "type": "tree",
                                             "rules": [
                                                 {
                                                     "conditions": [
                                                         {
                                                             "fn": "booleanEquals",
                                                             "argv": [
+                                                                true,
                                                                 {
-                                                                    "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        },
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsDualStack"
+                                                                    ]
+                                                                }
                                                             ]
                                                         }
                                                     ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsFIPS"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsDualStack"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://healthlake-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsFIPS"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://healthlake-fips.{Region}.{PartitionResult#dnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "FIPS is enabled but this partition does not support FIPS",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsDualStack"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://healthlake.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "DualStack is enabled but this partition does not support DualStack",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [],
-                                                    "type": "tree",
                                                     "rules": [
                                                         {
                                                             "conditions": [],
                                                             "endpoint": {
-                                                                "url": "https://healthlake.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "url": "https://healthlake.{Region}.{PartitionResult#dualStackDnsSuffix}",
                                                                 "properties": {},
                                                                 "headers": {}
                                                             },
                                                             "type": "endpoint"
                                                         }
-                                                    ]
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "DualStack is enabled but this partition does not support DualStack",
+                                                    "type": "error"
                                                 }
-                                            ]
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://healthlake.{Region}.{PartitionResult#dnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
                                         }
-                                    ]
-                                },
-                                {
-                                    "conditions": [],
-                                    "error": "Invalid Configuration: Missing Region",
-                                    "type": "error"
+                                    ],
+                                    "type": "tree"
                                 }
-                            ]
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Missing Region",
+                            "type": "error"
                         }
                     ]
                 },
@@ -1614,6 +1648,12 @@
                 "JobOutputDataConfig": {
                     "target": "com.amazonaws.healthlake#OutputDataConfig"
                 },
+                "JobProgressReport": {
+                    "target": "com.amazonaws.healthlake#JobProgressReport",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Displays the progress of the import job, including total resources scanned, total resources ingested, and total size of data ingested.</p>"
+                    }
+                },
                 "DataAccessRoleArn": {
                     "target": "com.amazonaws.healthlake#IamRoleArn",
                     "traits": {
@@ -1628,7 +1668,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Displays the properties of the import job, including the ID, Arn, Name, and the status of the data store.</p>"
+                "smithy.api#documentation": "<p>Displays the properties of the import job, including the ID, Arn, Name, the status of the job, and the progress report of the job.</p>"
             }
         },
         "com.amazonaws.healthlake#ImportJobPropertiesList": {
@@ -1684,6 +1724,62 @@
                 "smithy.api#pattern": "^([\\p{L}\\p{Z}\\p{N}_.:/=+\\-%@]*)$"
             }
         },
+        "com.amazonaws.healthlake#JobProgressReport": {
+            "type": "structure",
+            "members": {
+                "TotalNumberOfScannedFiles": {
+                    "target": "com.amazonaws.healthlake#GenericLong",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of files scanned from input S3 bucket.</p>"
+                    }
+                },
+                "TotalSizeOfScannedFilesInMB": {
+                    "target": "com.amazonaws.healthlake#GenericDouble",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The size (in MB) of the files scanned from the input S3 bucket.</p>"
+                    }
+                },
+                "TotalNumberOfImportedFiles": {
+                    "target": "com.amazonaws.healthlake#GenericLong",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of files imported so far.</p>"
+                    }
+                },
+                "TotalNumberOfResourcesScanned": {
+                    "target": "com.amazonaws.healthlake#GenericLong",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of resources scanned from the input S3 bucket.</p>"
+                    }
+                },
+                "TotalNumberOfResourcesImported": {
+                    "target": "com.amazonaws.healthlake#GenericLong",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of resources imported so far.</p>"
+                    }
+                },
+                "TotalNumberOfResourcesWithCustomerError": {
+                    "target": "com.amazonaws.healthlake#GenericLong",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of resources that failed due to customer error.</p>"
+                    }
+                },
+                "TotalNumberOfFilesReadWithCustomerError": {
+                    "target": "com.amazonaws.healthlake#GenericLong",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The number of files that failed to be read from the input S3 bucket due to customer error.</p>"
+                    }
+                },
+                "Throughput": {
+                    "target": "com.amazonaws.healthlake#GenericDouble",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The throughput (in MB/sec) of the import job.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The progress report of an import job.</p>"
+            }
+        },
         "com.amazonaws.healthlake#JobStatus": {
             "type": "enum",
             "members": {
@@ -1691,6 +1787,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "SUBMITTED"
+                    }
+                },
+                "QUEUED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "QUEUED"
                     }
                 },
                 "IN_PROGRESS": {
@@ -2046,7 +2148,7 @@
                 "ImportJobPropertiesList": {
                     "target": "com.amazonaws.healthlake#ImportJobPropertiesList",
                     "traits": {
-                        "smithy.api#documentation": "<p>\n            The properties of a listed FHIR import jobs, including the ID, ARN, name, and the status of the job.\n         </p>",
+                        "smithy.api#documentation": "<p>\n            The properties of a listed FHIR import jobs, including the ID, ARN, name, the status of the job, and the progress report of the job.\n         </p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -2302,8 +2404,7 @@
                     "target": "com.amazonaws.healthlake#ClientTokenString",
                     "traits": {
                         "smithy.api#documentation": "<p>An optional user provided token used for ensuring idempotency.</p>",
-                        "smithy.api#idempotencyToken": {},
-                        "smithy.api#required": {}
+                        "smithy.api#idempotencyToken": {}
                     }
                 }
             },
@@ -2408,8 +2509,7 @@
                     "target": "com.amazonaws.healthlake#ClientTokenString",
                     "traits": {
                         "smithy.api#documentation": "<p>Optional user provided token used for ensuring idempotency.</p>",
-                        "smithy.api#idempotencyToken": {},
-                        "smithy.api#required": {}
+                        "smithy.api#idempotencyToken": {}
                     }
                 }
             },

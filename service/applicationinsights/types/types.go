@@ -14,17 +14,17 @@ type ApplicationComponent struct {
 	// The name of the component.
 	ComponentName *string
 
-	// If logging is supported for the resource type, indicates whether the component
+	//  If logging is supported for the resource type, indicates whether the component
 	// has configured logs to be monitored.
 	ComponentRemarks *string
 
-	// Workloads detected in the application component.
+	//  Workloads detected in the application component.
 	DetectedWorkload map[string]map[string]string
 
 	// Indicates whether the application component is monitored.
 	Monitor *bool
 
-	// The operating system of the component.
+	//  The operating system of the component.
 	OsType OsType
 
 	// The resource type. Supported resource types include EC2 instances, Auto Scaling
@@ -40,39 +40,49 @@ type ApplicationComponent struct {
 // Describes the status of the application.
 type ApplicationInfo struct {
 
-	// The AWS account ID for the owner of the application.
+	// The Amazon Web Services account ID for the owner of the application.
 	AccountId *string
 
-	// Indicates whether auto-configuration is turned on for this application.
+	// If set to true, the managed policies for SSM and CW will be attached to the
+	// instance roles if they are missing.
+	AttachMissingPermission *bool
+
+	//  Indicates whether auto-configuration is turned on for this application.
 	AutoConfigEnabled *bool
 
-	// Indicates whether Application Insights can listen to CloudWatch events for the
+	//  Indicates whether Application Insights can listen to CloudWatch events for the
 	// application resources, such as instance terminated , failed deployment , and
 	// others.
 	CWEMonitorEnabled *bool
 
-	// The method used by Application Insights to onboard your resources.
+	//  The method used by Application Insights to onboard your resources.
 	DiscoveryType DiscoveryType
 
 	// The lifecycle of the application.
 	LifeCycle *string
 
-	// Indicates whether Application Insights will create opsItems for any problem
+	//  Indicates whether Application Insights will create opsItems for any problem
 	// detected by Application Insights for an application.
 	OpsCenterEnabled *bool
 
-	// The SNS topic provided to Application Insights that is associated to the
+	//  The SNS topic provided to Application Insights that is associated to the
 	// created opsItems to receive SNS notifications for opsItem updates.
 	OpsItemSNSTopicArn *string
 
 	// The issues on the user side that block Application Insights from successfully
 	// monitoring an application. Example remarks include:
+	//
 	//   - “Configuring application, detected 1 Errors, 3 Warnings”
+	//
 	//   - “Configuring application, detected 1 Unconfigured Components”
 	Remarks *string
 
 	// The name of the resource group used for the application.
 	ResourceGroupName *string
+
+	//  The SNS topic ARN that is associated with SNS notifications for updates or
+	// issues.
+	SNSNotificationArn *string
 
 	noSmithyDocumentSerde
 }
@@ -80,28 +90,28 @@ type ApplicationInfo struct {
 // The event information.
 type ConfigurationEvent struct {
 
-	// The AWS account ID for the owner of the application to which the configuration
-	// event belongs.
+	// The Amazon Web Services account ID for the owner of the application to which
+	// the configuration event belongs.
 	AccountId *string
 
-	// The details of the event in plain text.
+	//  The details of the event in plain text.
 	EventDetail *string
 
-	// The name of the resource Application Insights attempted to configure.
+	//  The name of the resource Application Insights attempted to configure.
 	EventResourceName *string
 
-	// The resource type that Application Insights attempted to configure, for
+	//  The resource type that Application Insights attempted to configure, for
 	// example, CLOUDWATCH_ALARM.
 	EventResourceType ConfigurationEventResourceType
 
-	// The status of the configuration update event. Possible values include INFO,
+	//  The status of the configuration update event. Possible values include INFO,
 	// WARN, and ERROR.
 	EventStatus ConfigurationEventStatus
 
-	// The timestamp of the event.
+	//  The timestamp of the event.
 	EventTime *time.Time
 
-	// The resource monitored by Application Insights.
+	//  The resource monitored by Application Insights.
 	MonitoredResourceARN *string
 
 	// The name of the resource group of the application to which the configuration
@@ -137,7 +147,8 @@ type LogPattern struct {
 	// configure custom log patterns from the console, a Low severity pattern
 	// translates to a 750,000 rank. A Medium severity pattern translates to a 500,000
 	// rank. And a High severity pattern translates to a 250,000 rank. Rank values
-	// less than 1 or greater than 1,000,000 are reserved for AWS-provided patterns.
+	// less than 1 or greater than 1,000,000 are reserved for Amazon Web Services
+	// provided patterns.
 	Rank int32
 
 	noSmithyDocumentSerde
@@ -146,66 +157,66 @@ type LogPattern struct {
 // Describes an anomaly or error with the application.
 type Observation struct {
 
-	// The detail type of the CloudWatch Event-based observation, for example, EC2
+	//  The detail type of the CloudWatch Event-based observation, for example, EC2
 	// Instance State-change Notification .
 	CloudWatchEventDetailType *string
 
-	// The ID of the CloudWatch Event-based observation related to the detected
+	//  The ID of the CloudWatch Event-based observation related to the detected
 	// problem.
 	CloudWatchEventId *string
 
-	// The source of the CloudWatch Event.
+	//  The source of the CloudWatch Event.
 	CloudWatchEventSource CloudWatchEventSource
 
-	// The CodeDeploy application to which the deployment belongs.
+	//  The CodeDeploy application to which the deployment belongs.
 	CodeDeployApplication *string
 
-	// The deployment group to which the CodeDeploy deployment belongs.
+	//  The deployment group to which the CodeDeploy deployment belongs.
 	CodeDeployDeploymentGroup *string
 
-	// The deployment ID of the CodeDeploy-based observation related to the detected
+	//  The deployment ID of the CodeDeploy-based observation related to the detected
 	// problem.
 	CodeDeployDeploymentId *string
 
-	// The instance group to which the CodeDeploy instance belongs.
+	//  The instance group to which the CodeDeploy instance belongs.
 	CodeDeployInstanceGroupId *string
 
-	// The status of the CodeDeploy deployment, for example SUCCESS or  FAILURE .
+	//  The status of the CodeDeploy deployment, for example SUCCESS or  FAILURE .
 	CodeDeployState *string
 
-	// The cause of an EBS CloudWatch event.
+	//  The cause of an EBS CloudWatch event.
 	EbsCause *string
 
-	// The type of EBS CloudWatch event, such as createVolume , deleteVolume or
+	//  The type of EBS CloudWatch event, such as createVolume , deleteVolume or
 	// attachVolume .
 	EbsEvent *string
 
-	// The request ID of an EBS CloudWatch event.
+	//  The request ID of an EBS CloudWatch event.
 	EbsRequestId *string
 
-	// The result of an EBS CloudWatch event, such as failed or succeeded .
+	//  The result of an EBS CloudWatch event, such as failed or succeeded .
 	EbsResult *string
 
-	// The state of the instance, such as STOPPING or TERMINATING .
+	//  The state of the instance, such as STOPPING or TERMINATING .
 	Ec2State *string
 
 	// The time when the observation ended, in epoch seconds.
 	EndTime *time.Time
 
-	// The Amazon Resource Name (ARN) of the AWS Health Event-based observation.
+	//  The Amazon Resource Name (ARN) of the Health Event-based observation.
 	HealthEventArn *string
 
-	// The description of the AWS Health event provided by the service, such as Amazon
+	//  The description of the Health event provided by the service, such as Amazon
 	// EC2.
 	HealthEventDescription *string
 
-	// The category of the AWS Health event, such as issue .
+	//  The category of the Health event, such as issue .
 	HealthEventTypeCategory *string
 
-	// The type of the AWS Health event, for example, AWS_EC2_POWER_CONNECTIVITY_ISSUE .
+	//  The type of the Health event, for example, AWS_EC2_POWER_CONNECTIVITY_ISSUE .
 	HealthEventTypeCode *string
 
-	// The service to which the AWS Health Event belongs, such as EC2.
+	//  The service to which the Health Event belongs, such as EC2.
 	HealthService *string
 
 	// The ID of the observation type.
@@ -230,13 +241,13 @@ type Observation struct {
 	// The namespace of the observation metric.
 	MetricNamespace *string
 
-	// The category of an RDS event.
+	//  The category of an RDS event.
 	RdsEventCategories *string
 
-	// The message of an RDS event.
+	//  The message of an RDS event.
 	RdsEventMessage *string
 
-	// The name of the S3 CloudWatch Event-based observation.
+	//  The name of the S3 CloudWatch Event-based observation.
 	S3EventName *string
 
 	// The source resource ARN of the observation.
@@ -248,16 +259,17 @@ type Observation struct {
 	// The time when the observation was first detected, in epoch seconds.
 	StartTime *time.Time
 
-	// The Amazon Resource Name (ARN) of the step function-based observation.
+	//  The Amazon Resource Name (ARN) of the step function-based observation.
 	StatesArn *string
 
-	// The Amazon Resource Name (ARN) of the step function execution-based observation.
+	//  The Amazon Resource Name (ARN) of the step function execution-based
+	// observation.
 	StatesExecutionArn *string
 
-	// The input to the step function-based observation.
+	//  The input to the step function-based observation.
 	StatesInput *string
 
-	// The status of the step function-related observation.
+	//  The status of the step function-related observation.
 	StatesStatus *string
 
 	// The unit of the source observation metric.
@@ -266,25 +278,25 @@ type Observation struct {
 	// The value of the source observation metric.
 	Value *float64
 
-	// The X-Ray request error percentage for this node.
+	//  The X-Ray request error percentage for this node.
 	XRayErrorPercent *int32
 
-	// The X-Ray request fault percentage for this node.
+	//  The X-Ray request fault percentage for this node.
 	XRayFaultPercent *int32
 
-	// The name of the X-Ray node.
+	//  The name of the X-Ray node.
 	XRayNodeName *string
 
-	// The type of the X-Ray node.
+	//  The type of the X-Ray node.
 	XRayNodeType *string
 
-	// The X-Ray node request average latency for this node.
+	//  The X-Ray node request average latency for this node.
 	XRayRequestAverageLatency *int64
 
-	// The X-Ray request count for this node.
+	//  The X-Ray request count for this node.
 	XRayRequestCount *int32
 
-	// The X-Ray request throttle percentage for this node.
+	//  The X-Ray request throttle percentage for this node.
 	XRayThrottlePercent *int32
 
 	noSmithyDocumentSerde
@@ -293,7 +305,8 @@ type Observation struct {
 // Describes a problem that is detected by correlating observations.
 type Problem struct {
 
-	// The AWS account ID for the owner of the resource group affected by the problem.
+	// The Amazon Web Services account ID for the owner of the resource group affected
+	// by the problem.
 	AccountId *string
 
 	// The resource affected by the problem.
@@ -311,10 +324,10 @@ type Problem struct {
 	// A detailed analysis of the problem using machine learning.
 	Insights *string
 
-	// The last time that the problem reoccurred after its last resolution.
+	//  The last time that the problem reoccurred after its last resolution.
 	LastRecurrenceTime *time.Time
 
-	// The number of times that the same problem reoccurred after the first time it
+	//  The number of times that the same problem reoccurred after the first time it
 	// was resolved.
 	RecurringCount *int64
 
@@ -328,6 +341,9 @@ type Problem struct {
 
 	// A measure of the level of impact of the problem.
 	SeverityLevel SeverityLevel
+
+	//  The short name of the problem associated with the SNS notification.
+	ShortName *string
 
 	// The time when the problem started, in epoch seconds.
 	StartTime *time.Time
@@ -357,19 +373,24 @@ type RelatedObservations struct {
 // An object that defines the tags associated with an application. A tag is a
 // label that you optionally define and associate with an application. Tags can
 // help you categorize and manage resources in different ways, such as by purpose,
-// owner, environment, or other criteria. Each tag consists of a required tag key
-// and an associated tag value, both of which you define. A tag key is a general
-// label that acts as a category for a more specific tag value. A tag value acts as
-// a descriptor within a tag key. A tag key can contain as many as 128 characters.
-// A tag value can contain as many as 256 characters. The characters can be Unicode
-// letters, digits, white space, or one of the following symbols: _ . : / = + -.
-// The following additional restrictions apply to tags:
+// owner, environment, or other criteria.
+//
+// Each tag consists of a required tag key and an associated tag value, both of
+// which you define. A tag key is a general label that acts as a category for a
+// more specific tag value. A tag value acts as a descriptor within a tag key. A
+// tag key can contain as many as 128 characters. A tag value can contain as many
+// as 256 characters. The characters can be Unicode letters, digits, white space,
+// or one of the following symbols: _ . : / = + -. The following additional
+// restrictions apply to tags:
+//
 //   - Tag keys and values are case sensitive.
+//
 //   - For each associated resource, each tag key must be unique and it can have
 //     only one value.
-//   - The aws: prefix is reserved for use by AWS; you can’t use it in any tag keys
-//     or values that you define. In addition, you can't edit or remove tag keys or
-//     values that use this prefix.
+//
+//   - The aws: prefix is reserved for use by Amazon Web Services; you can’t use it
+//     in any tag keys or values that you define. In addition, you can't edit or remove
+//     tag keys or values that use this prefix.
 type Tag struct {
 
 	// One part of a key-value pair that defines a tag. The maximum length of a tag
@@ -394,6 +415,10 @@ type Workload struct {
 
 	// The name of the component.
 	ComponentName *string
+
+	// Indicates whether all of the component configurations required to monitor a
+	// workload were provided.
+	MissingWorkloadConfig *bool
 
 	// The tier of the workload.
 	Tier Tier

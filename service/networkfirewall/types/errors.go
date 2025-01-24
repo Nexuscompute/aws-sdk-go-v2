@@ -34,7 +34,7 @@ func (e *InsufficientCapacityException) ErrorCode() string {
 }
 func (e *InsufficientCapacityException) ErrorFault() smithy.ErrorFault { return smithy.FaultServer }
 
-// Your request is valid, but Network Firewall couldn’t perform the operation
+// Your request is valid, but Network Firewall couldn't perform the operation
 // because of a system problem. Retry your request.
 type InternalServerError struct {
 	Message *string
@@ -89,9 +89,12 @@ func (e *InvalidOperationException) ErrorCode() string {
 func (e *InvalidOperationException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The operation failed because of a problem with your request. Examples include:
+//
 //   - You specified an unsupported parameter name or value.
+//
 //   - You tried to update a property with a value that isn't among the available
 //     types.
+//
 //   - Your request references an ARN that is malformed, or corresponds to a
 //     resource that isn't valid in the context of the request.
 type InvalidRequestException struct {
