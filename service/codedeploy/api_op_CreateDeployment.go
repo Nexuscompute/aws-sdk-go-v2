@@ -4,14 +4,9 @@ package codedeploy
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/codedeploy/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -35,8 +30,8 @@ func (c *Client) CreateDeployment(ctx context.Context, params *CreateDeploymentI
 // Represents the input of a CreateDeployment operation.
 type CreateDeploymentInput struct {
 
-	// The name of an CodeDeploy application associated with the IAM user or Amazon
-	// Web Services account.
+	// The name of an CodeDeploy application associated with the user or Amazon Web
+	// Services account.
 	//
 	// This member is required.
 	ApplicationName *string
@@ -45,11 +40,12 @@ type CreateDeploymentInput struct {
 	// deployment is created.
 	AutoRollbackConfiguration *types.AutoRollbackConfiguration
 
-	// The name of a deployment configuration associated with the IAM user or Amazon
-	// Web Services account. If not specified, the value configured in the deployment
-	// group is used as the default. If the deployment group does not have a deployment
-	// configuration associated with it, CodeDeployDefault . OneAtATime is used by
-	// default.
+	// The name of a deployment configuration associated with the user or Amazon Web
+	// Services account.
+	//
+	// If not specified, the value configured in the deployment group is used as the
+	// default. If the deployment group does not have a deployment configuration
+	// associated with it, CodeDeployDefault . OneAtATime is used by default.
 	DeploymentConfigName *string
 
 	// The name of the deployment group.
@@ -60,34 +56,43 @@ type CreateDeploymentInput struct {
 
 	// Information about how CodeDeploy handles files that already exist in a
 	// deployment target location but weren't part of the previous successful
-	// deployment. The fileExistsBehavior parameter takes any of the following values:
+	// deployment.
+	//
+	// The fileExistsBehavior parameter takes any of the following values:
+	//
 	//   - DISALLOW: The deployment fails. This is also the default behavior if no
 	//   option is specified.
+	//
 	//   - OVERWRITE: The version of the file from the application revision currently
 	//   being deployed replaces the version already on the instance.
+	//
 	//   - RETAIN: The version of the file already on the instance is kept and used as
 	//   part of the new deployment.
 	FileExistsBehavior types.FileExistsBehavior
 
-	// If true, then if an ApplicationStop , BeforeBlockTraffic , or AfterBlockTraffic
+	//  If true, then if an ApplicationStop , BeforeBlockTraffic , or AfterBlockTraffic
 	// deployment lifecycle event to an instance fails, then the deployment continues
 	// to the next deployment lifecycle event. For example, if ApplicationStop fails,
 	// the deployment continues with DownloadBundle . If BeforeBlockTraffic fails, the
 	// deployment continues with BlockTraffic . If AfterBlockTraffic fails, the
-	// deployment continues with ApplicationStop . If false or not specified, then if a
-	// lifecycle event fails during a deployment to an instance, that deployment fails.
-	// If deployment to that instance is part of an overall deployment and the number
-	// of healthy hosts is not less than the minimum number of healthy hosts, then a
-	// deployment to the next instance is attempted. During a deployment, the
-	// CodeDeploy agent runs the scripts specified for ApplicationStop ,
-	// BeforeBlockTraffic , and AfterBlockTraffic in the AppSpec file from the
-	// previous successful deployment. (All other scripts are run from the AppSpec file
-	// in the current deployment.) If one of these scripts contains an error and does
-	// not run successfully, the deployment can fail. If the cause of the failure is a
-	// script from the last successful deployment that will never run successfully,
-	// create a new deployment and use ignoreApplicationStopFailures to specify that
-	// the ApplicationStop , BeforeBlockTraffic , and AfterBlockTraffic failures
-	// should be ignored.
+	// deployment continues with ApplicationStop .
+	//
+	// If false or not specified, then if a lifecycle event fails during a deployment
+	// to an instance, that deployment fails. If deployment to that instance is part of
+	// an overall deployment and the number of healthy hosts is not less than the
+	// minimum number of healthy hosts, then a deployment to the next instance is
+	// attempted.
+	//
+	// During a deployment, the CodeDeploy agent runs the scripts specified for
+	// ApplicationStop , BeforeBlockTraffic , and AfterBlockTraffic in the AppSpec
+	// file from the previous successful deployment. (All other scripts are run from
+	// the AppSpec file in the current deployment.) If one of these scripts contains an
+	// error and does not run successfully, the deployment can fail.
+	//
+	// If the cause of the failure is a script from the last successful deployment
+	// that will never run successfully, create a new deployment and use
+	// ignoreApplicationStopFailures to specify that the ApplicationStop ,
+	// BeforeBlockTraffic , and AfterBlockTraffic failures should be ignored.
 	IgnoreApplicationStopFailures bool
 
 	// Allows you to specify information about alarms associated with a deployment.
@@ -98,19 +103,20 @@ type CreateDeploymentInput struct {
 	// create a new deployment that uses a previous application revision that is known
 	// to work, and set its alarm configuration to turn off alarm polling. Turning off
 	// alarm polling ensures that the new deployment proceeds without being blocked by
-	// the alarm that was generated by the previous, failed, deployment. If you specify
-	// an overrideAlarmConfiguration , you need the UpdateDeploymentGroup IAM
-	// permission when calling CreateDeployment .
+	// the alarm that was generated by the previous, failed, deployment.
+	//
+	// If you specify an overrideAlarmConfiguration , you need the
+	// UpdateDeploymentGroup IAM permission when calling CreateDeployment .
 	OverrideAlarmConfiguration *types.AlarmConfiguration
 
-	// The type and location of the revision to deploy.
+	//  The type and location of the revision to deploy.
 	Revision *types.RevisionLocation
 
-	// Information about the instances that belong to the replacement environment in a
-	// blue/green deployment.
+	//  Information about the instances that belong to the replacement environment in
+	// a blue/green deployment.
 	TargetInstances *types.TargetInstances
 
-	// Indicates whether to deploy to all instances or only to instances that are not
+	//  Indicates whether to deploy to all instances or only to instances that are not
 	// running the latest application revision.
 	UpdateOutdatedInstancesOnly bool
 
@@ -120,7 +126,7 @@ type CreateDeploymentInput struct {
 // Represents the output of a CreateDeployment operation.
 type CreateDeploymentOutput struct {
 
-	// The unique ID of a deployment.
+	//  The unique ID of a deployment.
 	DeploymentId *string
 
 	// Metadata pertaining to the operation's result.
@@ -130,6 +136,9 @@ type CreateDeploymentOutput struct {
 }
 
 func (c *Client) addOperationCreateDeploymentMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateDeployment{}, middleware.After)
 	if err != nil {
 		return err
@@ -138,34 +147,38 @@ func (c *Client) addOperationCreateDeploymentMiddlewares(stack *middleware.Stack
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateDeployment"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -177,7 +190,13 @@ func (c *Client) addOperationCreateDeploymentMiddlewares(stack *middleware.Stack
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateDeploymentResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateDeploymentValidationMiddleware(stack); err != nil {
@@ -186,7 +205,7 @@ func (c *Client) addOperationCreateDeploymentMiddlewares(stack *middleware.Stack
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateDeployment(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -198,7 +217,19 @@ func (c *Client) addOperationCreateDeploymentMiddlewares(stack *middleware.Stack
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -208,130 +239,6 @@ func newServiceMetadataMiddleware_opCreateDeployment(region string) *awsmiddlewa
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "codedeploy",
 		OperationName: "CreateDeployment",
 	}
-}
-
-type opCreateDeploymentResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateDeploymentResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateDeploymentResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "codedeploy"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "codedeploy"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("codedeploy")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateDeploymentResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateDeploymentResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

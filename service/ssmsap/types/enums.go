@@ -2,6 +2,29 @@
 
 package types
 
+type AllocationType string
+
+// Enum values for AllocationType
+const (
+	AllocationTypeVpcSubnet AllocationType = "VPC_SUBNET"
+	AllocationTypeElasticIp AllocationType = "ELASTIC_IP"
+	AllocationTypeOverlay   AllocationType = "OVERLAY"
+	AllocationTypeUnknown   AllocationType = "UNKNOWN"
+)
+
+// Values returns all known values for AllocationType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AllocationType) Values() []AllocationType {
+	return []AllocationType{
+		"VPC_SUBNET",
+		"ELASTIC_IP",
+		"OVERLAY",
+		"UNKNOWN",
+	}
+}
+
 type ApplicationDiscoveryStatus string
 
 // Enum values for ApplicationDiscoveryStatus
@@ -15,6 +38,7 @@ const (
 
 // Values returns all known values for ApplicationDiscoveryStatus. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ApplicationDiscoveryStatus) Values() []ApplicationDiscoveryStatus {
 	return []ApplicationDiscoveryStatus{
@@ -41,8 +65,9 @@ const (
 )
 
 // Values returns all known values for ApplicationStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ApplicationStatus) Values() []ApplicationStatus {
 	return []ApplicationStatus{
 		"ACTIVATED",
@@ -60,15 +85,18 @@ type ApplicationType string
 
 // Enum values for ApplicationType
 const (
-	ApplicationTypeHana ApplicationType = "HANA"
+	ApplicationTypeHana    ApplicationType = "HANA"
+	ApplicationTypeSapAbap ApplicationType = "SAP_ABAP"
 )
 
 // Values returns all known values for ApplicationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ApplicationType) Values() []ApplicationType {
 	return []ApplicationType{
 		"HANA",
+		"SAP_ABAP",
 	}
 }
 
@@ -80,8 +108,9 @@ const (
 )
 
 // Values returns all known values for BackintMode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BackintMode) Values() []BackintMode {
 	return []BackintMode{
 		"AWSBackup",
@@ -100,8 +129,9 @@ const (
 )
 
 // Values returns all known values for ClusterStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ClusterStatus) Values() []ClusterStatus {
 	return []ClusterStatus{
 		"ONLINE",
@@ -126,8 +156,9 @@ const (
 )
 
 // Values returns all known values for ComponentStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ComponentStatus) Values() []ComponentStatus {
 	return []ComponentStatus{
 		"ACTIVATED",
@@ -146,15 +177,45 @@ type ComponentType string
 const (
 	ComponentTypeHana     ComponentType = "HANA"
 	ComponentTypeHanaNode ComponentType = "HANA_NODE"
+	ComponentTypeAbap     ComponentType = "ABAP"
+	ComponentTypeAscs     ComponentType = "ASCS"
+	ComponentTypeDialog   ComponentType = "DIALOG"
+	ComponentTypeWebdisp  ComponentType = "WEBDISP"
+	ComponentTypeWd       ComponentType = "WD"
+	ComponentTypeErs      ComponentType = "ERS"
 )
 
 // Values returns all known values for ComponentType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ComponentType) Values() []ComponentType {
 	return []ComponentType{
 		"HANA",
 		"HANA_NODE",
+		"ABAP",
+		"ASCS",
+		"DIALOG",
+		"WEBDISP",
+		"WD",
+		"ERS",
+	}
+}
+
+type ConnectedEntityType string
+
+// Enum values for ConnectedEntityType
+const (
+	ConnectedEntityTypeDbms ConnectedEntityType = "DBMS"
+)
+
+// Values returns all known values for ConnectedEntityType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ConnectedEntityType) Values() []ConnectedEntityType {
+	return []ConnectedEntityType{
+		"DBMS",
 	}
 }
 
@@ -166,11 +227,31 @@ const (
 )
 
 // Values returns all known values for CredentialType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CredentialType) Values() []CredentialType {
 	return []CredentialType{
 		"ADMIN",
+	}
+}
+
+type DatabaseConnectionMethod string
+
+// Enum values for DatabaseConnectionMethod
+const (
+	DatabaseConnectionMethodDirect  DatabaseConnectionMethod = "DIRECT"
+	DatabaseConnectionMethodOverlay DatabaseConnectionMethod = "OVERLAY"
+)
+
+// Values returns all known values for DatabaseConnectionMethod. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DatabaseConnectionMethod) Values() []DatabaseConnectionMethod {
+	return []DatabaseConnectionMethod{
+		"DIRECT",
+		"OVERLAY",
 	}
 }
 
@@ -187,8 +268,9 @@ const (
 )
 
 // Values returns all known values for DatabaseStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DatabaseStatus) Values() []DatabaseStatus {
 	return []DatabaseStatus{
 		"RUNNING",
@@ -209,8 +291,9 @@ const (
 )
 
 // Values returns all known values for DatabaseType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DatabaseType) Values() []DatabaseType {
 	return []DatabaseType{
 		"SYSTEM",
@@ -228,8 +311,9 @@ const (
 )
 
 // Values returns all known values for FilterOperator. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FilterOperator) Values() []FilterOperator {
 	return []FilterOperator{
 		"Equals",
@@ -249,14 +333,36 @@ const (
 )
 
 // Values returns all known values for HostRole. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HostRole) Values() []HostRole {
 	return []HostRole{
 		"LEADER",
 		"WORKER",
 		"STANDBY",
 		"UNKNOWN",
+	}
+}
+
+type OperationEventStatus string
+
+// Enum values for OperationEventStatus
+const (
+	OperationEventStatusInProgress OperationEventStatus = "IN_PROGRESS"
+	OperationEventStatusCompleted  OperationEventStatus = "COMPLETED"
+	OperationEventStatusFailed     OperationEventStatus = "FAILED"
+)
+
+// Values returns all known values for OperationEventStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OperationEventStatus) Values() []OperationEventStatus {
+	return []OperationEventStatus{
+		"IN_PROGRESS",
+		"COMPLETED",
+		"FAILED",
 	}
 }
 
@@ -272,8 +378,9 @@ const (
 )
 
 // Values returns all known values for OperationMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OperationMode) Values() []OperationMode {
 	return []OperationMode{
 		"PRIMARY",
@@ -294,8 +401,9 @@ const (
 )
 
 // Values returns all known values for OperationStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OperationStatus) Values() []OperationStatus {
 	return []OperationStatus{
 		"INPROGRESS",
@@ -312,8 +420,9 @@ const (
 )
 
 // Values returns all known values for PermissionActionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PermissionActionType) Values() []PermissionActionType {
 	return []PermissionActionType{
 		"RESTORE",
@@ -332,8 +441,9 @@ const (
 )
 
 // Values returns all known values for ReplicationMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReplicationMode) Values() []ReplicationMode {
 	return []ReplicationMode{
 		"PRIMARY",

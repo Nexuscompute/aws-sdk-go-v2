@@ -7,6 +7,29 @@ import (
 	"time"
 )
 
+// Details of an Amazon MSK Cluster.
+type AmazonMskCluster struct {
+
+	// The Amazon Resource Name (ARN) of an Amazon MSK cluster.
+	//
+	// This member is required.
+	MskClusterArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Information regarding UpdateBrokerCount.
+type BrokerCountUpdateInfo struct {
+
+	// Kafka Broker IDs of brokers being created.
+	CreatedBrokerIds []float64
+
+	// Kafka Broker IDs of brokers being deleted.
+	DeletedBrokerIds []float64
+
+	noSmithyDocumentSerde
+}
+
 // Specifies the EBS volume upgrade information. The broker identifier must be set
 // to the keyword ALL. This means the changes apply to all the brokers in the
 // cluster.
@@ -21,7 +44,7 @@ type BrokerEBSVolumeInfo struct {
 	ProvisionedThroughput *ProvisionedThroughput
 
 	// Size of the EBS volume to update.
-	VolumeSizeGB int32
+	VolumeSizeGB *int32
 
 	noSmithyDocumentSerde
 }
@@ -57,9 +80,10 @@ type BrokerNodeGroupInfo struct {
 	// The distribution of broker nodes across Availability Zones. This is an optional
 	// parameter. If you don't specify it, Amazon MSK gives it the value DEFAULT. You
 	// can also explicitly set this parameter to the value DEFAULT. No other values are
-	// currently allowed. Amazon MSK distributes the broker nodes evenly across the
-	// Availability Zones that correspond to the subnets you provide when you create
-	// the cluster.
+	// currently allowed.
+	//
+	// Amazon MSK distributes the broker nodes evenly across the Availability Zones
+	// that correspond to the subnets you provide when you create the cluster.
 	BrokerAZDistribution BrokerAZDistribution
 
 	// Information about the broker access configuration.
@@ -87,7 +111,7 @@ type BrokerNodeInfo struct {
 	AttachedENIId *string
 
 	// The ID of the broker.
-	BrokerId float64
+	BrokerId *float64
 
 	// The client subnet to which this broker node belongs.
 	ClientSubnet *string
@@ -114,7 +138,7 @@ type BrokerSoftwareInfo struct {
 
 	// The revision of the configuration to use. This field isn't visible in this
 	// preview release.
-	ConfigurationRevision int64
+	ConfigurationRevision *int64
 
 	// The version of Apache Kafka.
 	KafkaVersion *string
@@ -163,7 +187,7 @@ type ClientVpcConnection struct {
 type CloudWatchLogs struct {
 
 	// This member is required.
-	Enabled bool
+	Enabled *bool
 
 	LogGroup *string
 
@@ -238,20 +262,24 @@ type ClusterInfo struct {
 	// The current version of the MSK cluster.
 	CurrentVersion *string
 
+	// Determines if there is an action required from the customer.
+	CustomerActionStatus CustomerActionStatus
+
 	// Includes all encryption-related information.
 	EncryptionInfo *EncryptionInfo
 
 	// Specifies which metrics are gathered for the MSK cluster. This property has the
 	// following possible values: DEFAULT, PER_BROKER, PER_TOPIC_PER_BROKER, and
 	// PER_TOPIC_PER_PARTITION. For a list of the metrics associated with each of these
-	// levels of monitoring, see Monitoring (https://docs.aws.amazon.com/msk/latest/developerguide/monitoring.html)
-	// .
+	// levels of monitoring, see [Monitoring].
+	//
+	// [Monitoring]: https://docs.aws.amazon.com/msk/latest/developerguide/monitoring.html
 	EnhancedMonitoring EnhancedMonitoring
 
 	LoggingInfo *LoggingInfo
 
 	// The number of broker nodes in the cluster.
-	NumberOfBrokerNodes int32
+	NumberOfBrokerNodes *int32
 
 	// Settings for open monitoring using Prometheus.
 	OpenMonitoring *OpenMonitoring
@@ -501,7 +529,7 @@ type ConfigurationInfo struct {
 	// The revision of the configuration to use.
 	//
 	// This member is required.
-	Revision int64
+	Revision *int64
 
 	noSmithyDocumentSerde
 }
@@ -517,7 +545,7 @@ type ConfigurationRevision struct {
 	// The revision number.
 	//
 	// This member is required.
-	Revision int64
+	Revision *int64
 
 	// The description of the configuration revision.
 	Description *string
@@ -537,6 +565,65 @@ type ConnectivityInfo struct {
 	noSmithyDocumentSerde
 }
 
+// Details about consumer group replication.
+type ConsumerGroupReplication struct {
+
+	// List of regular expression patterns indicating the consumer groups to copy.
+	//
+	// This member is required.
+	ConsumerGroupsToReplicate []string
+
+	// List of regular expression patterns indicating the consumer groups that should
+	// not be replicated.
+	ConsumerGroupsToExclude []string
+
+	// Enables synchronization of consumer groups to target cluster.
+	DetectAndCopyNewConsumerGroups *bool
+
+	// Enables synchronization of consumer group offsets to target cluster. The
+	// translated offsets will be written to topic __consumer_offsets.
+	SynchroniseConsumerGroupOffsets *bool
+
+	noSmithyDocumentSerde
+}
+
+// Details about consumer group replication.
+type ConsumerGroupReplicationUpdate struct {
+
+	// List of regular expression patterns indicating the consumer groups that should
+	// not be replicated.
+	//
+	// This member is required.
+	ConsumerGroupsToExclude []string
+
+	// List of regular expression patterns indicating the consumer groups to copy.
+	//
+	// This member is required.
+	ConsumerGroupsToReplicate []string
+
+	// Enables synchronization of consumer groups to target cluster.
+	//
+	// This member is required.
+	DetectAndCopyNewConsumerGroups *bool
+
+	// Enables synchronization of consumer group offsets to target cluster. The
+	// translated offsets will be written to topic __consumer_offsets.
+	//
+	// This member is required.
+	SynchroniseConsumerGroupOffsets *bool
+
+	noSmithyDocumentSerde
+}
+
+// Controller node information.
+type ControllerNodeInfo struct {
+
+	// Endpoints for accessing the Controller.
+	Endpoints []string
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about the EBS storage volumes attached to Apache Kafka
 // broker nodes.
 type EBSStorageInfo struct {
@@ -545,7 +632,7 @@ type EBSStorageInfo struct {
 	ProvisionedThroughput *ProvisionedThroughput
 
 	// The size in GiB of the EBS volume for the data drive on each broker node.
-	VolumeSize int32
+	VolumeSize *int32
 
 	noSmithyDocumentSerde
 }
@@ -580,17 +667,24 @@ type EncryptionInfo struct {
 type EncryptionInTransit struct {
 
 	// Indicates the encryption setting for data in transit between clients and
-	// brokers. The following are the possible values. TLS means that client-broker
-	// communication is enabled with TLS only. TLS_PLAINTEXT means that client-broker
-	// communication is enabled for both TLS-encrypted, as well as plaintext data.
+	// brokers. The following are the possible values.
+	//
+	// TLS means that client-broker communication is enabled with TLS only.
+	//
+	// TLS_PLAINTEXT means that client-broker communication is enabled for both
+	// TLS-encrypted, as well as plaintext data.
+	//
 	// PLAINTEXT means that client-broker communication is enabled in plaintext only.
+	//
 	// The default value is TLS_PLAINTEXT.
 	ClientBroker ClientBroker
 
 	// When set to true, it indicates that data communication among the broker nodes
 	// of the cluster is encrypted. When set to false, the communication happens in
-	// plaintext. The default value is true.
-	InCluster bool
+	// plaintext.
+	//
+	// The default value is true.
+	InCluster *bool
 
 	noSmithyDocumentSerde
 }
@@ -610,7 +704,7 @@ type ErrorInfo struct {
 type Firehose struct {
 
 	// This member is required.
-	Enabled bool
+	Enabled *bool
 
 	DeliveryStream *string
 
@@ -621,7 +715,7 @@ type Firehose struct {
 type Iam struct {
 
 	// Indicates whether IAM access control is enabled.
-	Enabled bool
+	Enabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -632,7 +726,7 @@ type JmxExporter struct {
 	// Indicates whether you want to turn on or turn off the JMX Exporter.
 	//
 	// This member is required.
-	EnabledInBroker bool
+	EnabledInBroker *bool
 
 	noSmithyDocumentSerde
 }
@@ -643,7 +737,68 @@ type JmxExporterInfo struct {
 	// Indicates whether you want to turn on or turn off the JMX Exporter.
 	//
 	// This member is required.
-	EnabledInBroker bool
+	EnabledInBroker *bool
+
+	noSmithyDocumentSerde
+}
+
+// Information about Kafka Cluster to be used as source / target for replication.
+type KafkaCluster struct {
+
+	// Details of an Amazon MSK Cluster.
+	//
+	// This member is required.
+	AmazonMskCluster *AmazonMskCluster
+
+	// Details of an Amazon VPC which has network connectivity to the Apache Kafka
+	// cluster.
+	//
+	// This member is required.
+	VpcConfig *KafkaClusterClientVpcConfig
+
+	noSmithyDocumentSerde
+}
+
+// Details of an Amazon VPC which has network connectivity to the Apache Kafka
+// cluster.
+type KafkaClusterClientVpcConfig struct {
+
+	// The list of subnets in the client VPC to connect to.
+	//
+	// This member is required.
+	SubnetIds []string
+
+	// The security groups to attach to the ENIs for the broker nodes.
+	SecurityGroupIds []string
+
+	noSmithyDocumentSerde
+}
+
+// Information about Kafka Cluster used as source / target for replication.
+type KafkaClusterDescription struct {
+
+	// Details of an Amazon MSK Cluster.
+	AmazonMskCluster *AmazonMskCluster
+
+	// The alias of the Kafka cluster. Used to prefix names of replicated topics.
+	KafkaClusterAlias *string
+
+	// Details of an Amazon VPC which has network connectivity to the Apache Kafka
+	// cluster.
+	VpcConfig *KafkaClusterClientVpcConfig
+
+	noSmithyDocumentSerde
+}
+
+// Summarized information about Kafka Cluster used as source / target for
+// replication.
+type KafkaClusterSummary struct {
+
+	// Details of an Amazon MSK Cluster.
+	AmazonMskCluster *AmazonMskCluster
+
+	// The alias of the Kafka cluster. Used to prefix names of replicated topics.
+	KafkaClusterAlias *string
 
 	noSmithyDocumentSerde
 }
@@ -666,6 +821,9 @@ type LoggingInfo struct {
 
 // Information about cluster attributes that can be updated via update APIs.
 type MutableClusterInfo struct {
+
+	// Describes brokers being changed during a broker count update.
+	BrokerCountUpdateInfo *BrokerCountUpdateInfo
 
 	// Specifies the size of the EBS volume and the ID of the associated broker.
 	BrokerEBSVolumeInfo []BrokerEBSVolumeInfo
@@ -697,7 +855,7 @@ type MutableClusterInfo struct {
 	LoggingInfo *LoggingInfo
 
 	// The number of broker nodes in the cluster.
-	NumberOfBrokerNodes int32
+	NumberOfBrokerNodes *int32
 
 	// The settings for open monitoring.
 	OpenMonitoring *OpenMonitoring
@@ -714,7 +872,7 @@ type NodeExporter struct {
 	// Indicates whether you want to turn on or turn off the Node Exporter.
 	//
 	// This member is required.
-	EnabledInBroker bool
+	EnabledInBroker *bool
 
 	noSmithyDocumentSerde
 }
@@ -725,7 +883,7 @@ type NodeExporterInfo struct {
 	// Indicates whether you want to turn on or turn off the Node Exporter.
 	//
 	// This member is required.
-	EnabledInBroker bool
+	EnabledInBroker *bool
 
 	noSmithyDocumentSerde
 }
@@ -738,6 +896,9 @@ type NodeInfo struct {
 
 	// The broker node info.
 	BrokerNodeInfo *BrokerNodeInfo
+
+	// The ControllerNodeInfo.
+	ControllerNodeInfo *ControllerNodeInfo
 
 	// The instance type.
 	InstanceType *string
@@ -811,13 +972,16 @@ type Provisioned struct {
 	// The number of broker nodes in the cluster.
 	//
 	// This member is required.
-	NumberOfBrokerNodes int32
+	NumberOfBrokerNodes *int32
 
 	// Includes all client authentication information.
 	ClientAuthentication *ClientAuthentication
 
 	// Information about the Apache Kafka version deployed on the brokers.
 	CurrentBrokerSoftwareInfo *BrokerSoftwareInfo
+
+	// Determines if there is an action required from the customer.
+	CustomerActionStatus CustomerActionStatus
 
 	// Includes all encryption-related information.
 	EncryptionInfo *EncryptionInfo
@@ -861,7 +1025,7 @@ type ProvisionedRequest struct {
 	// The number of broker nodes in the cluster.
 	//
 	// This member is required.
-	NumberOfBrokerNodes int32
+	NumberOfBrokerNodes *int32
 
 	// Includes all client authentication information.
 	ClientAuthentication *ClientAuthentication
@@ -894,11 +1058,11 @@ type ProvisionedRequest struct {
 type ProvisionedThroughput struct {
 
 	// Provisioned throughput is enabled or not.
-	Enabled bool
+	Enabled *bool
 
 	// Throughput value of the EBS volumes for the data drive on each kafka broker
 	// node in MiB per second.
-	VolumeThroughput int32
+	VolumeThroughput *int32
 
 	noSmithyDocumentSerde
 }
@@ -913,10 +1077,142 @@ type PublicAccess struct {
 	noSmithyDocumentSerde
 }
 
+// Specifies configuration for replication between a source and target Kafka
+// cluster.
+type ReplicationInfo struct {
+
+	// Configuration relating to consumer group replication.
+	//
+	// This member is required.
+	ConsumerGroupReplication *ConsumerGroupReplication
+
+	// The ARN of the source Kafka cluster.
+	//
+	// This member is required.
+	SourceKafkaClusterArn *string
+
+	// The compression type to use when producing records to target cluster.
+	//
+	// This member is required.
+	TargetCompressionType TargetCompressionType
+
+	// The ARN of the target Kafka cluster.
+	//
+	// This member is required.
+	TargetKafkaClusterArn *string
+
+	// Configuration relating to topic replication.
+	//
+	// This member is required.
+	TopicReplication *TopicReplication
+
+	noSmithyDocumentSerde
+}
+
+// Specifies configuration for replication between a source and target Kafka
+// cluster (sourceKafkaClusterAlias -> targetKafkaClusterAlias)
+type ReplicationInfoDescription struct {
+
+	// Configuration relating to consumer group replication.
+	ConsumerGroupReplication *ConsumerGroupReplication
+
+	// The alias of the source Kafka cluster.
+	SourceKafkaClusterAlias *string
+
+	// The compression type to use when producing records to target cluster.
+	TargetCompressionType TargetCompressionType
+
+	// The alias of the target Kafka cluster.
+	TargetKafkaClusterAlias *string
+
+	// Configuration relating to topic replication.
+	TopicReplication *TopicReplication
+
+	noSmithyDocumentSerde
+}
+
+// Summarized information of replication between clusters.
+type ReplicationInfoSummary struct {
+
+	// The alias of the source Kafka cluster.
+	SourceKafkaClusterAlias *string
+
+	// The alias of the target Kafka cluster.
+	TargetKafkaClusterAlias *string
+
+	noSmithyDocumentSerde
+}
+
+// Configuration for specifying the position in the topics to start replicating
+// from.
+type ReplicationStartingPosition struct {
+
+	// The type of replication starting position.
+	Type ReplicationStartingPositionType
+
+	noSmithyDocumentSerde
+}
+
+// Details about the state of a replicator
+type ReplicationStateInfo struct {
+
+	// Code that describes the current state of the replicator.
+	Code *string
+
+	// Message that describes the state of the replicator.
+	Message *string
+
+	noSmithyDocumentSerde
+}
+
+// Configuration for specifying replicated topic names should be the same as their
+// corresponding upstream topics or prefixed with source cluster alias.
+type ReplicationTopicNameConfiguration struct {
+
+	// The type of replicated topic name.
+	Type ReplicationTopicNameConfigurationType
+
+	noSmithyDocumentSerde
+}
+
+// Information about a replicator.
+type ReplicatorSummary struct {
+
+	// The time the replicator was created.
+	CreationTime *time.Time
+
+	// The current version of the replicator.
+	CurrentVersion *string
+
+	// Whether this resource is a replicator reference.
+	IsReplicatorReference *bool
+
+	// Kafka Clusters used in setting up sources / targets for replication.
+	KafkaClustersSummary []KafkaClusterSummary
+
+	// A list of summarized information of replications between clusters.
+	ReplicationInfoSummaryList []ReplicationInfoSummary
+
+	// The Amazon Resource Name (ARN) of the replicator.
+	ReplicatorArn *string
+
+	// The name of the replicator.
+	ReplicatorName *string
+
+	// The Amazon Resource Name (ARN) of the replicator resource in the region where
+	// the replicator was created.
+	ReplicatorResourceArn *string
+
+	// State of the replicator.
+	ReplicatorState ReplicatorState
+
+	noSmithyDocumentSerde
+}
+
 type S3 struct {
 
 	// This member is required.
-	Enabled bool
+	Enabled *bool
 
 	Bucket *string
 
@@ -941,7 +1237,7 @@ type Sasl struct {
 type Scram struct {
 
 	// SASL/SCRAM authentication is enabled or not.
-	Enabled bool
+	Enabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -1016,7 +1312,75 @@ type Tls struct {
 	CertificateAuthorityArnList []string
 
 	// Specifies whether you want to turn on or turn off TLS authentication.
-	Enabled bool
+	Enabled *bool
+
+	noSmithyDocumentSerde
+}
+
+// Details about topic replication.
+type TopicReplication struct {
+
+	// List of regular expression patterns indicating the topics to copy.
+	//
+	// This member is required.
+	TopicsToReplicate []string
+
+	// Whether to periodically configure remote topic ACLs to match their
+	// corresponding upstream topics.
+	CopyAccessControlListsForTopics *bool
+
+	// Whether to periodically configure remote topics to match their corresponding
+	// upstream topics.
+	CopyTopicConfigurations *bool
+
+	// Whether to periodically check for new topics and partitions.
+	DetectAndCopyNewTopics *bool
+
+	// Configuration for specifying the position in the topics to start replicating
+	// from.
+	StartingPosition *ReplicationStartingPosition
+
+	// Configuration for specifying replicated topic names should be the same as their
+	// corresponding upstream topics or prefixed with source cluster alias.
+	TopicNameConfiguration *ReplicationTopicNameConfiguration
+
+	// List of regular expression patterns indicating the topics that should not be
+	// replicated.
+	TopicsToExclude []string
+
+	noSmithyDocumentSerde
+}
+
+// Details for updating the topic replication of a replicator.
+type TopicReplicationUpdate struct {
+
+	// Whether to periodically configure remote topic ACLs to match their
+	// corresponding upstream topics.
+	//
+	// This member is required.
+	CopyAccessControlListsForTopics *bool
+
+	// Whether to periodically configure remote topics to match their corresponding
+	// upstream topics.
+	//
+	// This member is required.
+	CopyTopicConfigurations *bool
+
+	// Whether to periodically check for new topics and partitions.
+	//
+	// This member is required.
+	DetectAndCopyNewTopics *bool
+
+	// List of regular expression patterns indicating the topics that should not be
+	// replicated.
+	//
+	// This member is required.
+	TopicsToExclude []string
+
+	// List of regular expression patterns indicating the topics to copy.
+	//
+	// This member is required.
+	TopicsToReplicate []string
 
 	noSmithyDocumentSerde
 }
@@ -1025,7 +1389,7 @@ type Unauthenticated struct {
 
 	// Specifies whether you want to turn on or turn off unauthenticated traffic to
 	// your cluster.
-	Enabled bool
+	Enabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -1160,7 +1524,7 @@ type VpcConnectivityClientAuthentication struct {
 type VpcConnectivityIam struct {
 
 	// SASL/IAM authentication is on or off for VPC connectivity.
-	Enabled bool
+	Enabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -1181,7 +1545,7 @@ type VpcConnectivitySasl struct {
 type VpcConnectivityScram struct {
 
 	// SASL/SCRAM authentication is on or off for VPC connectivity.
-	Enabled bool
+	Enabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -1190,7 +1554,7 @@ type VpcConnectivityScram struct {
 type VpcConnectivityTls struct {
 
 	// TLS authentication is on or off for VPC connectivity.
-	Enabled bool
+	Enabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -1208,7 +1572,7 @@ type ZookeeperNodeInfo struct {
 	Endpoints []string
 
 	// The role-specific ID for Zookeeper.
-	ZookeeperId float64
+	ZookeeperId *float64
 
 	// The version of Zookeeper.
 	ZookeeperVersion *string

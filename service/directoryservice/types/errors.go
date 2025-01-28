@@ -7,7 +7,7 @@ import (
 	smithy "github.com/aws/smithy-go"
 )
 
-// Client authentication is not available in this region at this time.
+// You do not have sufficient access to perform this action.
 type AccessDeniedException struct {
 	Message *string
 
@@ -321,8 +321,7 @@ func (e *DirectoryInDesiredStateException) ErrorCode() string {
 func (e *DirectoryInDesiredStateException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The maximum number of directories in the region has been reached. You can use
-// the GetDirectoryLimits operation to determine your directory limits in the
-// region.
+// the GetDirectoryLimitsoperation to determine your directory limits in the region.
 type DirectoryLimitExceededException struct {
 	Message *string
 
@@ -379,7 +378,7 @@ func (e *DirectoryNotSharedException) ErrorCode() string {
 }
 func (e *DirectoryNotSharedException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The specified directory is unavailable or could not be found.
+// The specified directory is unavailable.
 type DirectoryUnavailableException struct {
 	Message *string
 
@@ -922,8 +921,7 @@ func (e *ShareLimitExceededException) ErrorCode() string {
 func (e *ShareLimitExceededException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The maximum number of manual snapshots for the directory has been reached. You
-// can use the GetSnapshotLimits operation to determine the snapshot limits for a
-// directory.
+// can use the GetSnapshotLimitsoperation to determine the snapshot limits for a directory.
 type SnapshotLimitExceededException struct {
 	Message *string
 

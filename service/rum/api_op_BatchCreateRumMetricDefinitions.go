@@ -4,53 +4,62 @@ package rum
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/rum/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Specifies the extended metrics and custom metrics that you want a CloudWatch
 // RUM app monitor to send to a destination. Valid destinations include CloudWatch
-// and Evidently. By default, RUM app monitors send some metrics to CloudWatch.
-// These default metrics are listed in CloudWatch metrics that you can collect
-// with CloudWatch RUM (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-metrics.html)
-// . In addition to these default metrics, you can choose to send extended metrics
-// or custom metrics or both.
-//   - Extended metrics enable you to send metrics with additional dimensions not
-//     included in the default metrics. You can also send extended metrics to Evidently
-//     as well as CloudWatch. The valid dimension names for the additional dimensions
-//     for extended metrics are BrowserName , CountryCode , DeviceType , FileType ,
-//     OSName , and PageId . For more information, see Extended metrics that you can
-//     send to CloudWatch and CloudWatch Evidently (https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-vended-metrics.html)
-//     .
+// and Evidently.
+//
+// By default, RUM app monitors send some metrics to CloudWatch. These default
+// metrics are listed in [CloudWatch metrics that you can collect with CloudWatch RUM].
+//
+// In addition to these default metrics, you can choose to send extended metrics,
+// custom metrics, or both.
+//
+//   - Extended metrics let you send metrics with additional dimensions that
+//     aren't included in the default metrics. You can also send extended metrics to
+//     both Evidently and CloudWatch. The valid dimension names for the additional
+//     dimensions for extended metrics are BrowserName , CountryCode , DeviceType ,
+//     FileType , OSName , and PageId . For more information, see [Extended metrics that you can send to CloudWatch and CloudWatch Evidently].
+//
 //   - Custom metrics are metrics that you define. You can send custom metrics to
-//     CloudWatch or to CloudWatch Evidently or to both. With custom metrics, you can
-//     use any metric name and namespace, and to derive the metrics you can use any
-//     custom events, built-in events, custom attributes, or default attributes. You
-//     can't send custom metrics to the AWS/RUM namespace. You must send custom
-//     metrics to a custom namespace that you define. The namespace that you use can't
-//     start with AWS/ . CloudWatch RUM prepends RUM/CustomMetrics/ to the custom
-//     namespace that you define, so the final namespace for your metrics in CloudWatch
-//     is RUM/CustomMetrics/your-custom-namespace .
+//     CloudWatch. CloudWatch Evidently, or both. With custom metrics, you can use any
+//     metric name and namespace. To derive the metrics, you can use any custom events,
+//     built-in events, custom attributes, or default attributes.
+//
+// You can't send custom metrics to the AWS/RUM namespace. You must send custom
+//
+//	metrics to a custom namespace that you define. The namespace that you use can't
+//	start with AWS/ . CloudWatch RUM prepends RUM/CustomMetrics/ to the custom
+//	namespace that you define, so the final namespace for your metrics in CloudWatch
+//	is RUM/CustomMetrics/your-custom-namespace .
 //
 // The maximum number of metric definitions that you can specify in one
-// BatchCreateRumMetricDefinitions operation is 200. The maximum number of metric
-// definitions that one destination can contain is 2000. Extended metrics sent to
-// CloudWatch and RUM custom metrics are charged as CloudWatch custom metrics. Each
-// combination of additional dimension name and dimension value counts as a custom
-// metric. For more information, see Amazon CloudWatch Pricing (https://aws.amazon.com/cloudwatch/pricing/)
-// . You must have already created a destination for the metrics before you send
-// them. For more information, see PutRumMetricsDestination (https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_PutRumMetricsDestination.html)
-// . If some metric definitions specified in a BatchCreateRumMetricDefinitions
+// BatchCreateRumMetricDefinitions operation is 200.
+//
+// The maximum number of metric definitions that one destination can contain is
+// 2000.
+//
+// Extended metrics sent to CloudWatch and RUM custom metrics are charged as
+// CloudWatch custom metrics. Each combination of additional dimension name and
+// dimension value counts as a custom metric. For more information, see [Amazon CloudWatch Pricing].
+//
+// You must have already created a destination for the metrics before you send
+// them. For more information, see [PutRumMetricsDestination].
+//
+// If some metric definitions specified in a BatchCreateRumMetricDefinitions
 // operations are not valid, those metric definitions fail and return errors, but
 // all valid metric definitions in the same operation still succeed.
+//
+// [PutRumMetricsDestination]: https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_PutRumMetricsDestination.html
+// [Extended metrics that you can send to CloudWatch and CloudWatch Evidently]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-vended-metrics.html
+// [CloudWatch metrics that you can collect with CloudWatch RUM]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/monitoring/CloudWatch-RUM-metrics.html
+// [Amazon CloudWatch Pricing]: https://aws.amazon.com/cloudwatch/pricing/
 func (c *Client) BatchCreateRumMetricDefinitions(ctx context.Context, params *BatchCreateRumMetricDefinitionsInput, optFns ...func(*Options)) (*BatchCreateRumMetricDefinitionsOutput, error) {
 	if params == nil {
 		params = &BatchCreateRumMetricDefinitionsInput{}
@@ -74,9 +83,9 @@ type BatchCreateRumMetricDefinitionsInput struct {
 	AppMonitorName *string
 
 	// The destination to send the metrics to. Valid values are CloudWatch and
-	// Evidently . If you specify Evidently , you must also specify the ARN of the
-	// CloudWatchEvidently experiment that will receive the metrics and an IAM role
-	// that has permission to write to the experiment.
+	// Evidently . If you specify Evidently , you must also specify the Amazon Resource
+	// Name (ARN) of the CloudWatchEvidently experiment that will receive the metrics
+	// and an IAM role that has permission to write to the experiment.
 	//
 	// This member is required.
 	Destination types.MetricDestination
@@ -87,11 +96,13 @@ type BatchCreateRumMetricDefinitionsInput struct {
 	MetricDefinitions []types.MetricDefinitionRequest
 
 	// This parameter is required if Destination is Evidently . If Destination is
-	// CloudWatch , do not use this parameter. This parameter specifies the ARN of the
-	// Evidently experiment that is to receive the metrics. You must have already
-	// defined this experiment as a valid destination. For more information, see
-	// PutRumMetricsDestination (https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_PutRumMetricsDestination.html)
-	// .
+	// CloudWatch , do not use this parameter.
+	//
+	// This parameter specifies the ARN of the Evidently experiment that is to receive
+	// the metrics. You must have already defined this experiment as a valid
+	// destination. For more information, see [PutRumMetricsDestination].
+	//
+	// [PutRumMetricsDestination]: https://docs.aws.amazon.com/cloudwatchrum/latest/APIReference/API_PutRumMetricsDestination.html
 	DestinationArn *string
 
 	noSmithyDocumentSerde
@@ -114,6 +125,9 @@ type BatchCreateRumMetricDefinitionsOutput struct {
 }
 
 func (c *Client) addOperationBatchCreateRumMetricDefinitionsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpBatchCreateRumMetricDefinitions{}, middleware.After)
 	if err != nil {
 		return err
@@ -122,34 +136,38 @@ func (c *Client) addOperationBatchCreateRumMetricDefinitionsMiddlewares(stack *m
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "BatchCreateRumMetricDefinitions"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -161,7 +179,13 @@ func (c *Client) addOperationBatchCreateRumMetricDefinitionsMiddlewares(stack *m
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addBatchCreateRumMetricDefinitionsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpBatchCreateRumMetricDefinitionsValidationMiddleware(stack); err != nil {
@@ -170,7 +194,7 @@ func (c *Client) addOperationBatchCreateRumMetricDefinitionsMiddlewares(stack *m
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opBatchCreateRumMetricDefinitions(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -182,7 +206,19 @@ func (c *Client) addOperationBatchCreateRumMetricDefinitionsMiddlewares(stack *m
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -192,130 +228,6 @@ func newServiceMetadataMiddleware_opBatchCreateRumMetricDefinitions(region strin
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "rum",
 		OperationName: "BatchCreateRumMetricDefinitions",
 	}
-}
-
-type opBatchCreateRumMetricDefinitionsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opBatchCreateRumMetricDefinitionsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opBatchCreateRumMetricDefinitionsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "rum"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "rum"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("rum")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addBatchCreateRumMetricDefinitionsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opBatchCreateRumMetricDefinitionsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

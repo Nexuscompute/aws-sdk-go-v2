@@ -4,14 +4,9 @@ package athena
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/athena/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -19,6 +14,17 @@ import (
 // Creates (registers) a data catalog with the specified name and properties.
 // Catalogs created are visible to all users of the same Amazon Web Services
 // account.
+//
+// This API operation creates the following resources.
+//
+//   - CFN Stack Name with a maximum length of 128 characters and prefix
+//     athenafederatedcatalog-CATALOG_NAME_SANITIZED with length 23 characters.
+//
+//   - Lambda Function Name with a maximum length of 64 characters and prefix
+//     athenafederatedcatalog_CATALOG_NAME_SANITIZED with length 23 characters.
+//
+//   - Glue Connection Name with a maximum length of 255 characters and a prefix
+//     athenafederatedcatalog_CATALOG_NAME_SANITIZED with length 23 characters.
 func (c *Client) CreateDataCatalog(ctx context.Context, params *CreateDataCatalogInput, optFns ...func(*Options)) (*CreateDataCatalogOutput, error) {
 	if params == nil {
 		params = &CreateDataCatalogInput{}
@@ -41,11 +47,25 @@ type CreateDataCatalogInput struct {
 	// underscore, at sign, or hyphen characters. The remainder of the length
 	// constraint of 256 is reserved for use by Athena.
 	//
+	// For FEDERATED type the catalog name has following considerations and limits:
+	//
+	//   - The catalog name allows special characters such as _ , @ , \ , - . These
+	//   characters are replaced with a hyphen (-) when creating the CFN Stack Name and
+	//   with an underscore (_) when creating the Lambda Function and Glue Connection
+	//   Name.
+	//
+	//   - The catalog name has a theoretical limit of 128 characters. However, since
+	//   we use it to create other resources that allow less characters and we prepend a
+	//   prefix to it, the actual catalog name limit for FEDERATED catalog is 64 - 23 =
+	//   41 characters.
+	//
 	// This member is required.
 	Name *string
 
-	// The type of data catalog to create: LAMBDA for a federated catalog, HIVE for an
-	// external hive metastore, or GLUE for an Glue Data Catalog.
+	// The type of data catalog to create: LAMBDA for a federated catalog, GLUE for an
+	// Glue Data Catalog, and HIVE for an external Apache Hive metastore. FEDERATED is
+	// a federated catalog for which Athena creates the connection and the Lambda
+	// function for you based on the parameters that you pass.
 	//
 	// This member is required.
 	Type types.DataCatalogType
@@ -55,37 +75,72 @@ type CreateDataCatalogInput struct {
 
 	// Specifies the Lambda function or functions to use for creating the data
 	// catalog. This is a mapping whose values depend on the catalog type.
+	//
 	//   - For the HIVE data catalog type, use the following syntax. The
 	//   metadata-function parameter is required. The sdk-version parameter is optional
 	//   and defaults to the currently supported version.
-	//   metadata-function=lambda_arn, sdk-version=version_number
+	//
+	// metadata-function=lambda_arn, sdk-version=version_number
+	//
 	//   - For the LAMBDA data catalog type, use one of the following sets of required
 	//   parameters, but not both.
+	//
 	//   - If you have one Lambda function that processes metadata and another for
 	//   reading the actual data, use the following syntax. Both parameters are required.
-	//   metadata-function=lambda_arn, record-function=lambda_arn
+	//
+	// metadata-function=lambda_arn, record-function=lambda_arn
+	//
 	//   - If you have a composite Lambda function that processes both metadata and
 	//   data, use the following syntax to specify your Lambda function.
-	//   function=lambda_arn
+	//
+	// function=lambda_arn
+	//
 	//   - The GLUE type takes a catalog ID parameter and is required. The catalog_id
 	//   is the account ID of the Amazon Web Services account to which the Glue Data
-	//   Catalog belongs. catalog-id=catalog_id
+	//   Catalog belongs.
+	//
+	// catalog-id=catalog_id
+	//
 	//   - The GLUE data catalog type also applies to the default AwsDataCatalog that
 	//   already exists in your account, of which you can have only one and cannot
 	//   modify.
-	//   - Queries that specify a Glue Data Catalog other than the default
-	//   AwsDataCatalog must be run on Athena engine version 2.
-	//   - In Regions where Athena engine version 2 is not available, creating new
-	//   Glue data catalogs results in an INVALID_INPUT error.
+	//
+	//   - The FEDERATED data catalog type uses one of the following parameters, but
+	//   not both. Use connection-arn for an existing Glue connection. Use
+	//   connection-type and connection-properties to specify the configuration setting
+	//   for a new connection.
+	//
+	//   - connection-arn:
+	//
+	//   - lambda-role-arn (optional): The execution role to use for the Lambda
+	//   function. If not provided, one is created.
+	//
+	//   - connection-type:MYSQL|REDSHIFT|...., connection-properties:""
+	//
+	// For , use escaped JSON text, as in the following example.
+	//
+	//   "{\"spill_bucket\":\"my_spill\",\"spill_prefix\":\"athena-spill\",\"host\":\"abc12345.snowflakecomputing.com\",\"port\":\"1234\",\"warehouse\":\"DEV_WH\",\"database\":\"TEST\",\"schema\":\"PUBLIC\",\"SecretArn\":\"arn:aws:secretsmanager:ap-south-1:111122223333:secret:snowflake-XHb67j\"}"
 	Parameters map[string]string
 
-	// A list of comma separated tags to add to the data catalog that is created.
+	// A list of comma separated tags to add to the data catalog that is created. All
+	// the resources that are created by the CreateDataCatalog API operation with
+	// FEDERATED type will have the tag federated_athena_datacatalog="true" . This
+	// includes the CFN Stack, Glue Connection, Athena DataCatalog, and all the
+	// resources created as part of the CFN Stack (Lambda Function, IAM
+	// policies/roles).
 	Tags []types.Tag
 
 	noSmithyDocumentSerde
 }
 
 type CreateDataCatalogOutput struct {
+
+	// Contains information about a data catalog in an Amazon Web Services account.
+	//
+	// In the Athena console, data catalogs are listed as "data sources" on the Data
+	// sources page under the Data source name column.
+	DataCatalog *types.DataCatalog
+
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
 
@@ -93,6 +148,9 @@ type CreateDataCatalogOutput struct {
 }
 
 func (c *Client) addOperationCreateDataCatalogMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateDataCatalog{}, middleware.After)
 	if err != nil {
 		return err
@@ -101,34 +159,38 @@ func (c *Client) addOperationCreateDataCatalogMiddlewares(stack *middleware.Stac
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateDataCatalog"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -140,7 +202,13 @@ func (c *Client) addOperationCreateDataCatalogMiddlewares(stack *middleware.Stac
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateDataCatalogResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateDataCatalogValidationMiddleware(stack); err != nil {
@@ -149,7 +217,7 @@ func (c *Client) addOperationCreateDataCatalogMiddlewares(stack *middleware.Stac
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateDataCatalog(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -161,7 +229,19 @@ func (c *Client) addOperationCreateDataCatalogMiddlewares(stack *middleware.Stac
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -171,130 +251,6 @@ func newServiceMetadataMiddleware_opCreateDataCatalog(region string) *awsmiddlew
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "athena",
 		OperationName: "CreateDataCatalog",
 	}
-}
-
-type opCreateDataCatalogResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateDataCatalogResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateDataCatalogResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "athena"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "athena"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("athena")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateDataCatalogResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateDataCatalogResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

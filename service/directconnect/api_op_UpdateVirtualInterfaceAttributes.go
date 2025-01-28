@@ -4,26 +4,21 @@ package directconnect
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/directconnect/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Updates the specified attributes of the specified virtual private interface.
-// Setting the MTU of a virtual interface to 9001 (jumbo frames) can cause an
+//
+// Setting the MTU of a virtual interface to 8500 (jumbo frames) can cause an
 // update to the underlying physical connection if it wasn't updated to support
 // jumbo frames. Updating the connection disrupts network connectivity for all
 // virtual interfaces associated with the connection for up to 30 seconds. To check
-// whether your connection supports jumbo frames, call DescribeConnections . To
-// check whether your virtual interface supports jumbo frames, call
-// DescribeVirtualInterfaces .
+// whether your connection supports jumbo frames, call DescribeConnections. To check whether your
+// virtual interface supports jumbo frames, call DescribeVirtualInterfaces.
 func (c *Client) UpdateVirtualInterfaceAttributes(ctx context.Context, params *UpdateVirtualInterfaceAttributesInput, optFns ...func(*Options)) (*UpdateVirtualInterfaceAttributesOutput, error) {
 	if params == nil {
 		params = &UpdateVirtualInterfaceAttributesInput{}
@@ -50,7 +45,7 @@ type UpdateVirtualInterfaceAttributesInput struct {
 	EnableSiteLink *bool
 
 	// The maximum transmission unit (MTU), in bytes. The supported values are 1500
-	// and 9001. The default value is 1500.
+	// and 8500. The default value is 1500.
 	Mtu *int32
 
 	// The name of the virtual private interface.
@@ -72,7 +67,9 @@ type UpdateVirtualInterfaceAttributesOutput struct {
 	AmazonSideAsn *int64
 
 	// The autonomous system (AS) number for Border Gateway Protocol (BGP)
-	// configuration. The valid values are 1-2147483647.
+	// configuration.
+	//
+	// The valid values are 1-2147483647.
 	Asn int32
 
 	// The authentication key for BGP configuration. This string has a minimum length
@@ -140,28 +137,38 @@ type UpdateVirtualInterfaceAttributesOutput struct {
 	VirtualInterfaceName *string
 
 	// The state of the virtual interface. The following are the possible values:
+	//
 	//   - confirming : The creation of the virtual interface is pending confirmation
 	//   from the virtual interface owner. If the owner of the virtual interface is
 	//   different from the owner of the connection on which it is provisioned, then the
 	//   virtual interface will remain in this state until it is confirmed by the virtual
 	//   interface owner.
+	//
 	//   - verifying : This state only applies to public virtual interfaces. Each
 	//   public virtual interface needs validation before the virtual interface can be
 	//   created.
+	//
 	//   - pending : A virtual interface is in this state from the time that it is
 	//   created until the virtual interface is ready to forward traffic.
+	//
 	//   - available : A virtual interface that is able to forward traffic.
+	//
 	//   - down : A virtual interface that is BGP down.
-	//   - deleting : A virtual interface is in this state immediately after calling
-	//   DeleteVirtualInterface until it can no longer forward traffic.
+	//
+	//   - deleting : A virtual interface is in this state immediately after calling DeleteVirtualInterface
+	//   until it can no longer forward traffic.
+	//
 	//   - deleted : A virtual interface that cannot forward traffic.
+	//
 	//   - rejected : The virtual interface owner has declined creation of the virtual
 	//   interface. If a virtual interface in the Confirming state is deleted by the
 	//   virtual interface owner, the virtual interface enters the Rejected state.
+	//
 	//   - unknown : The state of the virtual interface is not available.
 	VirtualInterfaceState types.VirtualInterfaceState
 
-	// The type of virtual interface. The possible values are private and public .
+	// The type of virtual interface. The possible values are private , public and
+	// transit .
 	VirtualInterfaceType *string
 
 	// The ID of the VLAN.
@@ -174,6 +181,9 @@ type UpdateVirtualInterfaceAttributesOutput struct {
 }
 
 func (c *Client) addOperationUpdateVirtualInterfaceAttributesMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpUpdateVirtualInterfaceAttributes{}, middleware.After)
 	if err != nil {
 		return err
@@ -182,34 +192,38 @@ func (c *Client) addOperationUpdateVirtualInterfaceAttributesMiddlewares(stack *
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateVirtualInterfaceAttributes"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -221,7 +235,13 @@ func (c *Client) addOperationUpdateVirtualInterfaceAttributesMiddlewares(stack *
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateVirtualInterfaceAttributesResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateVirtualInterfaceAttributesValidationMiddleware(stack); err != nil {
@@ -230,7 +250,7 @@ func (c *Client) addOperationUpdateVirtualInterfaceAttributesMiddlewares(stack *
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateVirtualInterfaceAttributes(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -242,7 +262,19 @@ func (c *Client) addOperationUpdateVirtualInterfaceAttributesMiddlewares(stack *
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -252,130 +284,6 @@ func newServiceMetadataMiddleware_opUpdateVirtualInterfaceAttributes(region stri
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "directconnect",
 		OperationName: "UpdateVirtualInterfaceAttributes",
 	}
-}
-
-type opUpdateVirtualInterfaceAttributesResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateVirtualInterfaceAttributesResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateVirtualInterfaceAttributesResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "directconnect"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "directconnect"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("directconnect")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateVirtualInterfaceAttributesResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateVirtualInterfaceAttributesResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

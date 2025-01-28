@@ -76,6 +76,10 @@ type CopySourceImageSetInformation struct {
 	// This member is required.
 	LatestVersionId *string
 
+	// Contains MetadataCopies structure and wraps information related to specific
+	// copy use cases. For example, when copying subsets.
+	DICOMCopies *MetadataCopies
+
 	noSmithyDocumentSerde
 }
 
@@ -134,8 +138,8 @@ type DatastoreProperties struct {
 	// The Amazon Resource Name (ARN) for the data store.
 	DatastoreArn *string
 
-	// The Amazon Resource Name (ARN) assigned to the AWS Key Management Service (AWS
-	// KMS) key for accessing encrypted data.
+	// The Amazon Resource Name (ARN) assigned to the Key Management Service (KMS) key
+	// for accessing encrypted data.
 	KmsKeyArn *string
 
 	// The timestamp when the data store was last updated.
@@ -306,16 +310,28 @@ type DICOMTags struct {
 	// The patient sex.
 	DICOMPatientSex *string
 
+	// The DICOM provided identifier for the series Body Part Examined.
+	DICOMSeriesBodyPart *string
+
+	// The DICOM provided identifier for the Series Instance UID.
+	DICOMSeriesInstanceUID *string
+
+	// The DICOM provided identifier for the series Modality.
+	DICOMSeriesModality *string
+
+	// The DICOM provided identifier for the Series Number.
+	DICOMSeriesNumber *int32
+
 	// The study date.
 	DICOMStudyDate *string
 
-	// The description of the study.
+	// The DICOM provided Study Description.
 	DICOMStudyDescription *string
 
-	// The DICOM provided studyId.
+	// The DICOM provided identifier for the Study ID.
 	DICOMStudyId *string
 
-	// The DICOM provided identifier for studyInstanceUid.>
+	// The DICOM provided identifier for the Study Instance UID.
 	DICOMStudyInstanceUID *string
 
 	// The study time.
@@ -377,6 +393,11 @@ type ImageSetProperties struct {
 	// The error message thrown if an image set action fails.
 	Message *string
 
+	// Contains details on overrides used when creating the returned version of an
+	// image set. For example, if forced exists, the forced flag was used when
+	// creating the image set.
+	Overrides *Overrides
+
 	// The timestamp when the image set properties were updated.
 	UpdatedAt *time.Time
 
@@ -391,18 +412,31 @@ type ImageSetsMetadataSummary struct {
 	// This member is required.
 	ImageSetId *string
 
-	// The time an image set is created in AWS HealthImaging. Sample creation date is
-	// provided in 1985-04-12T23:20:50.52Z format.
+	// The time an image set is created. Sample creation date is provided in
+	// 1985-04-12T23:20:50.52Z format.
 	CreatedAt *time.Time
 
 	// The DICOM tags associated with the image set.
 	DICOMTags *DICOMTags
 
-	// The time when an image was last updated in AWS HealthImaging.
+	// The time an image set was last updated.
 	UpdatedAt *time.Time
 
 	// The image set version.
 	Version *int32
+
+	noSmithyDocumentSerde
+}
+
+// Contains copiable Attributes structure and wraps information related to
+// specific copy use cases. For example, when copying subsets.
+type MetadataCopies struct {
+
+	// The JSON string used to specify a subset of SOP Instances to copy from source
+	// to destination image set.
+	//
+	// This member is required.
+	CopiableAttributes *string
 
 	noSmithyDocumentSerde
 }
@@ -412,6 +446,7 @@ type ImageSetsMetadataSummary struct {
 // The following types satisfy this interface:
 //
 //	MetadataUpdatesMemberDICOMUpdates
+//	MetadataUpdatesMemberRevertToVersionId
 type MetadataUpdates interface {
 	isMetadataUpdates()
 }
@@ -425,6 +460,31 @@ type MetadataUpdatesMemberDICOMUpdates struct {
 
 func (*MetadataUpdatesMemberDICOMUpdates) isMetadataUpdates() {}
 
+// Specifies the previous image set version ID to revert the current image set
+// back to.
+//
+// You must provide either revertToVersionId or DICOMUpdates in your request. A
+// ValidationException error is thrown if both parameters are provided at the same
+// time.
+type MetadataUpdatesMemberRevertToVersionId struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*MetadataUpdatesMemberRevertToVersionId) isMetadataUpdates() {}
+
+// Specifies the overrides used in image set modification calls to CopyImageSet
+// and UpdateImageSetMetadata .
+type Overrides struct {
+
+	// Setting this flag will force the CopyImageSet and UpdateImageSetMetadata
+	// operations, even if Patient, Study, or Series level metadata are mismatched.
+	Forced *bool
+
+	noSmithyDocumentSerde
+}
+
 // The search input attribute value.
 //
 // The following types satisfy this interface:
@@ -432,9 +492,11 @@ func (*MetadataUpdatesMemberDICOMUpdates) isMetadataUpdates() {}
 //	SearchByAttributeValueMemberCreatedAt
 //	SearchByAttributeValueMemberDICOMAccessionNumber
 //	SearchByAttributeValueMemberDICOMPatientId
+//	SearchByAttributeValueMemberDICOMSeriesInstanceUID
 //	SearchByAttributeValueMemberDICOMStudyDateAndTime
 //	SearchByAttributeValueMemberDICOMStudyId
 //	SearchByAttributeValueMemberDICOMStudyInstanceUID
+//	SearchByAttributeValueMemberUpdatedAt
 type SearchByAttributeValue interface {
 	isSearchByAttributeValue()
 }
@@ -466,6 +528,15 @@ type SearchByAttributeValueMemberDICOMPatientId struct {
 
 func (*SearchByAttributeValueMemberDICOMPatientId) isSearchByAttributeValue() {}
 
+// The Series Instance UID input for search.
+type SearchByAttributeValueMemberDICOMSeriesInstanceUID struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*SearchByAttributeValueMemberDICOMSeriesInstanceUID) isSearchByAttributeValue() {}
+
 // The aggregated structure containing DICOM study date and study time for search.
 type SearchByAttributeValueMemberDICOMStudyDateAndTime struct {
 	Value DICOMStudyDateAndTime
@@ -493,11 +564,23 @@ type SearchByAttributeValueMemberDICOMStudyInstanceUID struct {
 
 func (*SearchByAttributeValueMemberDICOMStudyInstanceUID) isSearchByAttributeValue() {}
 
+// The timestamp input for search.
+type SearchByAttributeValueMemberUpdatedAt struct {
+	Value time.Time
+
+	noSmithyDocumentSerde
+}
+
+func (*SearchByAttributeValueMemberUpdatedAt) isSearchByAttributeValue() {}
+
 // The search criteria.
 type SearchCriteria struct {
 
 	// The filters for the search criteria.
 	Filters []SearchFilter
+
+	// The sort input for search criteria.
+	Sort *Sort
 
 	noSmithyDocumentSerde
 }
@@ -514,6 +597,22 @@ type SearchFilter struct {
 	//
 	// This member is required.
 	Values []SearchByAttributeValue
+
+	noSmithyDocumentSerde
+}
+
+// Sort search results.
+type Sort struct {
+
+	// The sort field for search criteria.
+	//
+	// This member is required.
+	SortField SortField
+
+	// The sort order for search criteria.
+	//
+	// This member is required.
+	SortOrder SortOrder
 
 	noSmithyDocumentSerde
 }

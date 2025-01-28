@@ -4,14 +4,9 @@ package acmpca
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/acmpca/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -27,14 +22,18 @@ import (
 // expiration period in days (the validity period of the CRL), the Amazon S3 bucket
 // that will contain the CRL, and a CNAME alias for the S3 bucket that is included
 // in certificates issued by the CA. If successful, this action returns the Amazon
-// Resource Name (ARN) of the CA. Both Amazon Web Services Private CA and the IAM
-// principal must have permission to write to the S3 bucket that you specify. If
-// the IAM principal making the call does not have permission to write to the
-// bucket, then an exception is thrown. For more information, see Access policies
-// for CRLs in Amazon S3 (https://docs.aws.amazon.com/privateca/latest/userguide/crl-planning.html#s3-policies)
-// . Amazon Web Services Private CA assets that are stored in Amazon S3 can be
-// protected with encryption. For more information, see Encrypting Your CRLs (https://docs.aws.amazon.com/privateca/latest/userguide/PcaCreateCa.html#crl-encryption)
-// .
+// Resource Name (ARN) of the CA.
+//
+// Both Amazon Web Services Private CA and the IAM principal must have permission
+// to write to the S3 bucket that you specify. If the IAM principal making the call
+// does not have permission to write to the bucket, then an exception is thrown.
+// For more information, see [Access policies for CRLs in Amazon S3].
+//
+// Amazon Web Services Private CA assets that are stored in Amazon S3 can be
+// protected with encryption. For more information, see [Encrypting Your CRLs].
+//
+// [Access policies for CRLs in Amazon S3]: https://docs.aws.amazon.com/privateca/latest/userguide/crl-planning.html#s3-policies
+// [Encrypting Your CRLs]: https://docs.aws.amazon.com/privateca/latest/userguide/crl-planning.html#crl-encryption
 func (c *Client) CreateCertificateAuthority(ctx context.Context, params *CreateCertificateAuthorityInput, optFns ...func(*Options)) (*CreateCertificateAuthorityOutput, error) {
 	if params == nil {
 		params = &CreateCertificateAuthorityInput{}
@@ -74,47 +73,61 @@ type CreateCertificateAuthorityInput struct {
 	IdempotencyToken *string
 
 	// Specifies a cryptographic key management compliance standard used for handling
-	// CA keys. Default: FIPS_140_2_LEVEL_3_OR_HIGHER Some Amazon Web Services Regions
-	// do not support the default. When creating a CA in these Regions, you must
-	// provide FIPS_140_2_LEVEL_2_OR_HIGHER as the argument for
-	// KeyStorageSecurityStandard . Failure to do this results in an
+	// CA keys.
+	//
+	// Default: FIPS_140_2_LEVEL_3_OR_HIGHER
+	//
+	// Some Amazon Web Services Regions do not support the default. When creating a CA
+	// in these Regions, you must provide FIPS_140_2_LEVEL_2_OR_HIGHER as the argument
+	// for KeyStorageSecurityStandard . Failure to do this results in an
 	// InvalidArgsException with the message, "A certificate authority cannot be
-	// created in this region with the specified security standard." For information
-	// about security standard support in various Regions, see Storage and security
-	// compliance of Amazon Web Services Private CA private keys (https://docs.aws.amazon.com/privateca/latest/userguide/data-protection.html#private-keys)
-	// .
+	// created in this region with the specified security standard."
+	//
+	// For information about security standard support in various Regions, see [Storage and security compliance of Amazon Web Services Private CA private keys].
+	//
+	// [Storage and security compliance of Amazon Web Services Private CA private keys]: https://docs.aws.amazon.com/privateca/latest/userguide/data-protection.html#private-keys
 	KeyStorageSecurityStandard types.KeyStorageSecurityStandard
 
-	// Contains information to enable Online Certificate Status Protocol (OCSP)
-	// support, to enable a certificate revocation list (CRL), to enable both, or to
-	// enable neither. The default is for both certificate validation mechanisms to be
-	// disabled. The following requirements apply to revocation configurations.
+	// Contains information to enable support for Online Certificate Status Protocol
+	// (OCSP), certificate revocation list (CRL), both protocols, or neither. By
+	// default, both certificate validation mechanisms are disabled.
+	//
+	// The following requirements apply to revocation configurations.
+	//
 	//   - A configuration disabling CRLs or OCSP must contain only the Enabled=False
 	//   parameter, and will fail if other parameters such as CustomCname or
 	//   ExpirationInDays are included.
-	//   - In a CRL configuration, the S3BucketName parameter must conform to Amazon
-	//   S3 bucket naming rules (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html)
-	//   .
+	//
+	//   - In a CRL configuration, the S3BucketName parameter must conform to [Amazon S3 bucket naming rules].
+	//
 	//   - A configuration containing a custom Canonical Name (CNAME) parameter for
-	//   CRLs or OCSP must conform to RFC2396 (https://www.ietf.org/rfc/rfc2396.txt)
-	//   restrictions on the use of special characters in a CNAME.
+	//   CRLs or OCSP must conform to [RFC2396]restrictions on the use of special characters in
+	//   a CNAME.
+	//
 	//   - In a CRL or OCSP configuration, the value of a CNAME parameter must not
 	//   include a protocol prefix such as "http://" or "https://".
-	// For more information, see the OcspConfiguration (https://docs.aws.amazon.com/privateca/latest/APIReference/API_OcspConfiguration.html)
-	// and CrlConfiguration (https://docs.aws.amazon.com/privateca/latest/APIReference/API_CrlConfiguration.html)
-	// types.
+	//
+	// For more information, see the [OcspConfiguration] and [CrlConfiguration] types.
+	//
+	// [RFC2396]: https://www.ietf.org/rfc/rfc2396.txt
+	// [OcspConfiguration]: https://docs.aws.amazon.com/privateca/latest/APIReference/API_OcspConfiguration.html
+	// [Amazon S3 bucket naming rules]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html
+	// [CrlConfiguration]: https://docs.aws.amazon.com/privateca/latest/APIReference/API_CrlConfiguration.html
 	RevocationConfiguration *types.RevocationConfiguration
 
 	// Key-value pairs that will be attached to the new private CA. You can associate
 	// up to 50 tags with a private CA. For information using tags with IAM to manage
-	// permissions, see Controlling Access Using IAM Tags (https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html)
-	// .
+	// permissions, see [Controlling Access Using IAM Tags].
+	//
+	// [Controlling Access Using IAM Tags]: https://docs.aws.amazon.com/IAM/latest/UserGuide/access_iam-tags.html
 	Tags []types.Tag
 
 	// Specifies whether the CA issues general-purpose certificates that typically
 	// require a revocation mechanism, or short-lived certificates that may optionally
 	// omit revocation because they expire quickly. Short-lived certificate validity is
-	// limited to seven days. The default value is GENERAL_PURPOSE.
+	// limited to seven days.
+	//
+	// The default value is GENERAL_PURPOSE.
 	UsageMode types.CertificateAuthorityUsageMode
 
 	noSmithyDocumentSerde
@@ -124,6 +137,7 @@ type CreateCertificateAuthorityOutput struct {
 
 	// If successful, the Amazon Resource Name (ARN) of the certificate authority
 	// (CA). This is of the form:
+	//
 	// arn:aws:acm-pca:region:account:certificate-authority/12345678-1234-1234-1234-123456789012
 	// .
 	CertificateAuthorityArn *string
@@ -135,6 +149,9 @@ type CreateCertificateAuthorityOutput struct {
 }
 
 func (c *Client) addOperationCreateCertificateAuthorityMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateCertificateAuthority{}, middleware.After)
 	if err != nil {
 		return err
@@ -143,34 +160,38 @@ func (c *Client) addOperationCreateCertificateAuthorityMiddlewares(stack *middle
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateCertificateAuthority"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -182,7 +203,13 @@ func (c *Client) addOperationCreateCertificateAuthorityMiddlewares(stack *middle
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateCertificateAuthorityResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateCertificateAuthorityValidationMiddleware(stack); err != nil {
@@ -191,7 +218,7 @@ func (c *Client) addOperationCreateCertificateAuthorityMiddlewares(stack *middle
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateCertificateAuthority(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -203,7 +230,19 @@ func (c *Client) addOperationCreateCertificateAuthorityMiddlewares(stack *middle
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -213,130 +252,6 @@ func newServiceMetadataMiddleware_opCreateCertificateAuthority(region string) *a
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "acm-pca",
 		OperationName: "CreateCertificateAuthority",
 	}
-}
-
-type opCreateCertificateAuthorityResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateCertificateAuthorityResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateCertificateAuthorityResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "acm-pca"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "acm-pca"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("acm-pca")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateCertificateAuthorityResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateCertificateAuthorityResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

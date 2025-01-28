@@ -13,8 +13,9 @@ const (
 )
 
 // Values returns all known values for ActionOnFailure. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ActionOnFailure) Values() []ActionOnFailure {
 	return []ActionOnFailure{
 		"TERMINATE_JOB_FLOW",
@@ -34,8 +35,9 @@ const (
 )
 
 // Values returns all known values for AdjustmentType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AdjustmentType) Values() []AdjustmentType {
 	return []AdjustmentType{
 		"CHANGE_IN_CAPACITY",
@@ -53,8 +55,9 @@ const (
 )
 
 // Values returns all known values for AuthMode. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AuthMode) Values() []AuthMode {
 	return []AuthMode{
 		"SSO",
@@ -75,8 +78,9 @@ const (
 )
 
 // Values returns all known values for AutoScalingPolicyState. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AutoScalingPolicyState) Values() []AutoScalingPolicyState {
 	return []AutoScalingPolicyState{
 		"PENDING",
@@ -99,8 +103,9 @@ const (
 
 // Values returns all known values for AutoScalingPolicyStateChangeReasonCode.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AutoScalingPolicyStateChangeReasonCode) Values() []AutoScalingPolicyStateChangeReasonCode {
 	return []AutoScalingPolicyStateChangeReasonCode{
 		"USER_REQUEST",
@@ -119,6 +124,7 @@ const (
 
 // Values returns all known values for CancelStepsRequestStatus. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (CancelStepsRequestStatus) Values() []CancelStepsRequestStatus {
 	return []CancelStepsRequestStatus{
@@ -141,8 +147,9 @@ const (
 )
 
 // Values returns all known values for ClusterState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ClusterState) Values() []ClusterState {
 	return []ClusterState{
 		"STARTING",
@@ -171,8 +178,9 @@ const (
 
 // Values returns all known values for ClusterStateChangeReasonCode. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ClusterStateChangeReasonCode) Values() []ClusterStateChangeReasonCode {
 	return []ClusterStateChangeReasonCode{
 		"INTERNAL_ERROR",
@@ -197,8 +205,9 @@ const (
 )
 
 // Values returns all known values for ComparisonOperator. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ComparisonOperator) Values() []ComparisonOperator {
 	return []ComparisonOperator{
 		"GREATER_THAN_OR_EQUAL",
@@ -218,8 +227,9 @@ const (
 )
 
 // Values returns all known values for ComputeLimitsUnitType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ComputeLimitsUnitType) Values() []ComputeLimitsUnitType {
 	return []ComputeLimitsUnitType{
 		"InstanceFleetUnits",
@@ -236,11 +246,31 @@ const (
 )
 
 // Values returns all known values for ExecutionEngineType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExecutionEngineType) Values() []ExecutionEngineType {
 	return []ExecutionEngineType{
 		"EMR",
+	}
+}
+
+type IdcUserAssignment string
+
+// Enum values for IdcUserAssignment
+const (
+	IdcUserAssignmentRequired IdcUserAssignment = "REQUIRED"
+	IdcUserAssignmentOptional IdcUserAssignment = "OPTIONAL"
+)
+
+// Values returns all known values for IdcUserAssignment. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IdcUserAssignment) Values() []IdcUserAssignment {
+	return []IdcUserAssignment{
+		"REQUIRED",
+		"OPTIONAL",
 	}
 }
 
@@ -253,8 +283,9 @@ const (
 )
 
 // Values returns all known values for IdentityType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (IdentityType) Values() []IdentityType {
 	return []IdentityType{
 		"USER",
@@ -271,8 +302,9 @@ const (
 )
 
 // Values returns all known values for InstanceCollectionType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceCollectionType) Values() []InstanceCollectionType {
 	return []InstanceCollectionType{
 		"INSTANCE_FLEET",
@@ -294,8 +326,9 @@ const (
 )
 
 // Values returns all known values for InstanceFleetState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceFleetState) Values() []InstanceFleetState {
 	return []InstanceFleetState{
 		"PROVISIONING",
@@ -320,8 +353,9 @@ const (
 
 // Values returns all known values for InstanceFleetStateChangeReasonCode. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceFleetStateChangeReasonCode) Values() []InstanceFleetStateChangeReasonCode {
 	return []InstanceFleetStateChangeReasonCode{
 		"INTERNAL_ERROR",
@@ -341,8 +375,9 @@ const (
 )
 
 // Values returns all known values for InstanceFleetType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceFleetType) Values() []InstanceFleetType {
 	return []InstanceFleetType{
 		"MASTER",
@@ -369,8 +404,9 @@ const (
 )
 
 // Values returns all known values for InstanceGroupState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceGroupState) Values() []InstanceGroupState {
 	return []InstanceGroupState{
 		"PROVISIONING",
@@ -399,8 +435,9 @@ const (
 
 // Values returns all known values for InstanceGroupStateChangeReasonCode. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceGroupStateChangeReasonCode) Values() []InstanceGroupStateChangeReasonCode {
 	return []InstanceGroupStateChangeReasonCode{
 		"INTERNAL_ERROR",
@@ -420,8 +457,9 @@ const (
 )
 
 // Values returns all known values for InstanceGroupType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceGroupType) Values() []InstanceGroupType {
 	return []InstanceGroupType{
 		"MASTER",
@@ -440,8 +478,9 @@ const (
 )
 
 // Values returns all known values for InstanceRoleType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceRoleType) Values() []InstanceRoleType {
 	return []InstanceRoleType{
 		"MASTER",
@@ -462,8 +501,9 @@ const (
 )
 
 // Values returns all known values for InstanceState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceState) Values() []InstanceState {
 	return []InstanceState{
 		"AWAITING_FULFILLMENT",
@@ -487,8 +527,9 @@ const (
 
 // Values returns all known values for InstanceStateChangeReasonCode. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceStateChangeReasonCode) Values() []InstanceStateChangeReasonCode {
 	return []InstanceStateChangeReasonCode{
 		"INTERNAL_ERROR",
@@ -514,8 +555,9 @@ const (
 )
 
 // Values returns all known values for JobFlowExecutionState. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobFlowExecutionState) Values() []JobFlowExecutionState {
 	return []JobFlowExecutionState{
 		"STARTING",
@@ -538,8 +580,9 @@ const (
 )
 
 // Values returns all known values for MarketType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MarketType) Values() []MarketType {
 	return []MarketType{
 		"ON_DEMAND",
@@ -564,8 +607,9 @@ const (
 )
 
 // Values returns all known values for NotebookExecutionStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NotebookExecutionStatus) Values() []NotebookExecutionStatus {
 	return []NotebookExecutionStatus{
 		"START_PENDING",
@@ -591,8 +635,9 @@ const (
 
 // Values returns all known values for OnDemandCapacityReservationPreference. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OnDemandCapacityReservationPreference) Values() []OnDemandCapacityReservationPreference {
 	return []OnDemandCapacityReservationPreference{
 		"open",
@@ -609,8 +654,9 @@ const (
 
 // Values returns all known values for OnDemandCapacityReservationUsageStrategy.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OnDemandCapacityReservationUsageStrategy) Values() []OnDemandCapacityReservationUsageStrategy {
 	return []OnDemandCapacityReservationUsageStrategy{
 		"use-capacity-reservations-first",
@@ -622,15 +668,18 @@ type OnDemandProvisioningAllocationStrategy string
 // Enum values for OnDemandProvisioningAllocationStrategy
 const (
 	OnDemandProvisioningAllocationStrategyLowestPrice OnDemandProvisioningAllocationStrategy = "lowest-price"
+	OnDemandProvisioningAllocationStrategyPrioritized OnDemandProvisioningAllocationStrategy = "prioritized"
 )
 
 // Values returns all known values for OnDemandProvisioningAllocationStrategy.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OnDemandProvisioningAllocationStrategy) Values() []OnDemandProvisioningAllocationStrategy {
 	return []OnDemandProvisioningAllocationStrategy{
 		"lowest-price",
+		"prioritized",
 	}
 }
 
@@ -642,8 +691,9 @@ const (
 )
 
 // Values returns all known values for OutputNotebookFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OutputNotebookFormat) Values() []OutputNotebookFormat {
 	return []OutputNotebookFormat{
 		"HTML",
@@ -661,8 +711,9 @@ const (
 )
 
 // Values returns all known values for PlacementGroupStrategy. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PlacementGroupStrategy) Values() []PlacementGroupStrategy {
 	return []PlacementGroupStrategy{
 		"SPREAD",
@@ -681,8 +732,9 @@ const (
 )
 
 // Values returns all known values for ReconfigurationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReconfigurationType) Values() []ReconfigurationType {
 	return []ReconfigurationType{
 		"OVERWRITE",
@@ -699,8 +751,9 @@ const (
 )
 
 // Values returns all known values for RepoUpgradeOnBoot. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RepoUpgradeOnBoot) Values() []RepoUpgradeOnBoot {
 	return []RepoUpgradeOnBoot{
 		"SECURITY",
@@ -717,8 +770,9 @@ const (
 )
 
 // Values returns all known values for ScaleDownBehavior. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScaleDownBehavior) Values() []ScaleDownBehavior {
 	return []ScaleDownBehavior{
 		"TERMINATE_AT_INSTANCE_HOUR",
@@ -726,26 +780,48 @@ func (ScaleDownBehavior) Values() []ScaleDownBehavior {
 	}
 }
 
+type ScalingStrategy string
+
+// Enum values for ScalingStrategy
+const (
+	ScalingStrategyDefault  ScalingStrategy = "DEFAULT"
+	ScalingStrategyAdvanced ScalingStrategy = "ADVANCED"
+)
+
+// Values returns all known values for ScalingStrategy. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ScalingStrategy) Values() []ScalingStrategy {
+	return []ScalingStrategy{
+		"DEFAULT",
+		"ADVANCED",
+	}
+}
+
 type SpotProvisioningAllocationStrategy string
 
 // Enum values for SpotProvisioningAllocationStrategy
 const (
-	SpotProvisioningAllocationStrategyCapacityOptimized      SpotProvisioningAllocationStrategy = "capacity-optimized"
-	SpotProvisioningAllocationStrategyPriceCapacityOptimized SpotProvisioningAllocationStrategy = "price-capacity-optimized"
-	SpotProvisioningAllocationStrategyLowestPrice            SpotProvisioningAllocationStrategy = "lowest-price"
-	SpotProvisioningAllocationStrategyDiversified            SpotProvisioningAllocationStrategy = "diversified"
+	SpotProvisioningAllocationStrategyCapacityOptimized            SpotProvisioningAllocationStrategy = "capacity-optimized"
+	SpotProvisioningAllocationStrategyPriceCapacityOptimized       SpotProvisioningAllocationStrategy = "price-capacity-optimized"
+	SpotProvisioningAllocationStrategyLowestPrice                  SpotProvisioningAllocationStrategy = "lowest-price"
+	SpotProvisioningAllocationStrategyDiversified                  SpotProvisioningAllocationStrategy = "diversified"
+	SpotProvisioningAllocationStrategyCapacityOptimizedPrioritized SpotProvisioningAllocationStrategy = "capacity-optimized-prioritized"
 )
 
 // Values returns all known values for SpotProvisioningAllocationStrategy. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SpotProvisioningAllocationStrategy) Values() []SpotProvisioningAllocationStrategy {
 	return []SpotProvisioningAllocationStrategy{
 		"capacity-optimized",
 		"price-capacity-optimized",
 		"lowest-price",
 		"diversified",
+		"capacity-optimized-prioritized",
 	}
 }
 
@@ -759,8 +835,9 @@ const (
 
 // Values returns all known values for SpotProvisioningTimeoutAction. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SpotProvisioningTimeoutAction) Values() []SpotProvisioningTimeoutAction {
 	return []SpotProvisioningTimeoutAction{
 		"SWITCH_TO_ON_DEMAND",
@@ -780,8 +857,9 @@ const (
 )
 
 // Values returns all known values for Statistic. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Statistic) Values() []Statistic {
 	return []Statistic{
 		"SAMPLE_COUNT",
@@ -801,8 +879,9 @@ const (
 )
 
 // Values returns all known values for StepCancellationOption. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StepCancellationOption) Values() []StepCancellationOption {
 	return []StepCancellationOption{
 		"SEND_INTERRUPT",
@@ -824,8 +903,9 @@ const (
 )
 
 // Values returns all known values for StepExecutionState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StepExecutionState) Values() []StepExecutionState {
 	return []StepExecutionState{
 		"PENDING",
@@ -852,8 +932,9 @@ const (
 )
 
 // Values returns all known values for StepState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StepState) Values() []StepState {
 	return []StepState{
 		"PENDING",
@@ -875,6 +956,7 @@ const (
 
 // Values returns all known values for StepStateChangeReasonCode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (StepStateChangeReasonCode) Values() []StepStateChangeReasonCode {
 	return []StepStateChangeReasonCode{
@@ -916,8 +998,9 @@ const (
 )
 
 // Values returns all known values for Unit. Note that this can be expanded in the
-// future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Unit) Values() []Unit {
 	return []Unit{
 		"NONE",

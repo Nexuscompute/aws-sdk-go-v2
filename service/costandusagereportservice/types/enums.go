@@ -12,8 +12,9 @@ const (
 )
 
 // Values returns all known values for AdditionalArtifact. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AdditionalArtifact) Values() []AdditionalArtifact {
 	return []AdditionalArtifact{
 		"REDSHIFT",
@@ -57,8 +58,9 @@ const (
 )
 
 // Values returns all known values for AWSRegion. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AWSRegion) Values() []AWSRegion {
 	return []AWSRegion{
 		"af-south-1",
@@ -102,13 +104,35 @@ const (
 )
 
 // Values returns all known values for CompressionFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CompressionFormat) Values() []CompressionFormat {
 	return []CompressionFormat{
 		"ZIP",
 		"GZIP",
 		"Parquet",
+	}
+}
+
+type LastStatus string
+
+// Enum values for LastStatus
+const (
+	LastStatusSuccess          LastStatus = "SUCCESS"
+	LastStatusErrorPermissions LastStatus = "ERROR_PERMISSIONS"
+	LastStatusErrorNoBucket    LastStatus = "ERROR_NO_BUCKET"
+)
+
+// Values returns all known values for LastStatus. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LastStatus) Values() []LastStatus {
+	return []LastStatus{
+		"SUCCESS",
+		"ERROR_PERMISSIONS",
+		"ERROR_NO_BUCKET",
 	}
 }
 
@@ -121,8 +145,9 @@ const (
 )
 
 // Values returns all known values for ReportFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportFormat) Values() []ReportFormat {
 	return []ReportFormat{
 		"textORcsv",
@@ -139,8 +164,9 @@ const (
 )
 
 // Values returns all known values for ReportVersioning. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportVersioning) Values() []ReportVersioning {
 	return []ReportVersioning{
 		"CREATE_NEW_REPORT",
@@ -152,17 +178,20 @@ type SchemaElement string
 
 // Enum values for SchemaElement
 const (
-	SchemaElementResources               SchemaElement = "RESOURCES"
-	SchemaElementSplitCostAllocationData SchemaElement = "SPLIT_COST_ALLOCATION_DATA"
+	SchemaElementResources                   SchemaElement = "RESOURCES"
+	SchemaElementSplitCostAllocationData     SchemaElement = "SPLIT_COST_ALLOCATION_DATA"
+	SchemaElementManualDiscountCompatibility SchemaElement = "MANUAL_DISCOUNT_COMPATIBILITY"
 )
 
 // Values returns all known values for SchemaElement. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SchemaElement) Values() []SchemaElement {
 	return []SchemaElement{
 		"RESOURCES",
 		"SPLIT_COST_ALLOCATION_DATA",
+		"MANUAL_DISCOUNT_COMPATIBILITY",
 	}
 }
 
@@ -176,8 +205,9 @@ const (
 )
 
 // Values returns all known values for TimeUnit. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TimeUnit) Values() []TimeUnit {
 	return []TimeUnit{
 		"HOURLY",

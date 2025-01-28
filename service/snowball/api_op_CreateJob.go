@@ -4,14 +4,9 @@ package snowball
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/snowball/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -20,45 +15,88 @@ import (
 // data center. Your Amazon Web Services account must have the right trust policies
 // and permissions in place to create a job for a Snow device. If you're creating a
 // job for a node in a cluster, you only need to provide the clusterId value; the
-// other job attributes are inherited from the cluster. Only the Snowball; Edge
-// device type is supported when ordering clustered jobs. The device capacity is
-// optional. Availability of device types differ by Amazon Web Services Region. For
-// more information about Region availability, see Amazon Web Services Regional
-// Services (https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/?p=ngi&loc=4)
-// . Snow Family devices and their capacities.
+// other job attributes are inherited from the cluster.
+//
+// Only the Snowball; Edge device type is supported when ordering clustered jobs.
+//
+// The device capacity is optional.
+//
+// Availability of device types differ by Amazon Web Services Region. For more
+// information about Region availability, see [Amazon Web Services Regional Services].
+//
+// Snow Family devices and their capacities.
+//
 //   - Device type: SNC1_SSD
+//
 //   - Capacity: T14
+//
 //   - Description: Snowcone
+//
 //   - Device type: SNC1_HDD
+//
 //   - Capacity: T8
+//
 //   - Description: Snowcone
+//
 //   - Device type: EDGE_S
+//
 //   - Capacity: T98
+//
 //   - Description: Snowball Edge Storage Optimized for data transfer only
+//
 //   - Device type: EDGE_CG
+//
 //   - Capacity: T42
+//
 //   - Description: Snowball Edge Compute Optimized with GPU
+//
 //   - Device type: EDGE_C
+//
 //   - Capacity: T42
+//
 //   - Description: Snowball Edge Compute Optimized without GPU
+//
 //   - Device type: EDGE
+//
 //   - Capacity: T100
-//   - Description: Snowball Edge Storage Optimized with EC2 Compute This device
-//     is replaced with T98.
+//
+//   - Description: Snowball Edge Storage Optimized with EC2 Compute
+//
+// This device is replaced with T98.
+//
 //   - Device type: STANDARD
+//
 //   - Capacity: T50
-//   - Description: Original Snowball device This device is only available in the
-//     Ningxia, Beijing, and Singapore Amazon Web Services Region
-//   - Device type: STANDARD
-//   - Capacity: T80
-//   - Description: Original Snowball device This device is only available in the
-//     Ningxia, Beijing, and Singapore Amazon Web Services Region.
-//   - Snow Family device type: RACK_5U_C
-//   - Capacity: T13
-//   - Description: Snowblade.
-//   - Device type: V3_5S
-//   - Capacity: T240
-//   - Description: Snowball Edge Storage Optimized 210TB
+//
+//   - Description: Original Snowball device
+//
+// This device is only available in the Ningxia, Beijing, and Singapore Amazon Web
+//
+//	Services Region
+//
+//	- Device type: STANDARD
+//
+//	- Capacity: T80
+//
+//	- Description: Original Snowball device
+//
+// This device is only available in the Ningxia, Beijing, and Singapore Amazon Web
+//
+//	Services Region.
+//
+//	- Snow Family device type: RACK_5U_C
+//
+//	- Capacity: T13
+//
+//	- Description: Snowblade.
+//
+//	- Device type: V3_5S
+//
+//	- Capacity: T240
+//
+//	- Description: Snowball Edge Storage Optimized 210TB
+//
+// [Amazon Web Services Regional Services]: https://aws.amazon.com/about-aws/global-infrastructure/regional-product-services/?p=ngi&loc=4
 func (c *Client) CreateJob(ctx context.Context, params *CreateJobInput, optFns ...func(*Options)) (*CreateJobOutput, error) {
 	if params == nil {
 		params = &CreateJobInput{}
@@ -88,7 +126,9 @@ type CreateJobInput struct {
 	// Photos 2016-08-11 .
 	Description *string
 
-	// Defines the device configuration for an Snowcone job. For more information, see
+	// Defines the device configuration for an Snowcone job.
+	//
+	// For more information, see
 	// "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html"
 	// (Snow Family Devices and Capacity) in the Snowcone User Guide or
 	// "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html"
@@ -107,8 +147,9 @@ type CreateJobInput struct {
 	JobType types.JobType
 
 	// The KmsKeyARN that you want to associate with this job. KmsKeyARN s are created
-	// using the CreateKey (https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html)
-	// Key Management Service (KMS) API action.
+	// using the [CreateKey]Key Management Service (KMS) API action.
+	//
+	// [CreateKey]: https://docs.aws.amazon.com/kms/latest/APIReference/API_CreateKey.html
 	KmsKeyARN *string
 
 	// The ID of the long-term pricing type for the device.
@@ -135,8 +176,11 @@ type CreateJobInput struct {
 	// the device.
 	RemoteManagement types.RemoteManagement
 
-	// Defines the Amazon S3 buckets associated with this job. With IMPORT jobs, you
-	// specify the bucket or buckets that your transferred data will be imported into.
+	// Defines the Amazon S3 buckets associated with this job.
+	//
+	// With IMPORT jobs, you specify the bucket or buckets that your transferred data
+	// will be imported into.
+	//
 	// With EXPORT jobs, you specify the bucket or buckets that your transferred data
 	// will be exported from. Optionally, you can also specify a KeyRange value. If
 	// you choose to export a range, you define the length of the range by providing
@@ -145,42 +189,56 @@ type CreateJobInput struct {
 	Resources *types.JobResource
 
 	// The RoleARN that you want to associate with this job. RoleArn s are created
-	// using the CreateRole (https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html)
-	// Identity and Access Management (IAM) API action.
+	// using the [CreateRole]Identity and Access Management (IAM) API action.
+	//
+	// [CreateRole]: https://docs.aws.amazon.com/IAM/latest/APIReference/API_CreateRole.html
 	RoleARN *string
 
 	// The shipping speed for this job. This speed doesn't dictate how soon you'll get
 	// the Snow device, rather it represents how quickly the Snow device moves to its
 	// destination while in transit. Regional shipping speeds are as follows:
+	//
 	//   - In Australia, you have access to express shipping. Typically, Snow devices
 	//   shipped express are delivered in about a day.
+	//
 	//   - In the European Union (EU), you have access to express shipping. Typically,
 	//   Snow devices shipped express are delivered in about a day. In addition, most
 	//   countries in the EU have access to standard shipping, which typically takes less
 	//   than a week, one way.
+	//
 	//   - In India, Snow devices are delivered in one to seven days.
+	//
 	//   - In the US, you have access to one-day shipping and two-day shipping.
 	ShippingOption types.ShippingOption
 
 	// If your job is being created in one of the US regions, you have the option of
 	// specifying what size Snow device you'd like for this job. In all other regions,
-	// Snowballs come with 80 TB in storage capacity. For more information, see
+	// Snowballs come with 80 TB in storage capacity.
+	//
+	// For more information, see
 	// "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html"
 	// (Snow Family Devices and Capacity) in the Snowcone User Guide or
 	// "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html"
 	// (Snow Family Devices and Capacity) in the Snowcone User Guide.
 	SnowballCapacityPreference types.SnowballCapacity
 
-	// The type of Snow Family devices to use for this job. For cluster jobs, Amazon
-	// Web Services Snow Family currently supports only the EDGE device type. The type
-	// of Amazon Web Services Snow device to use for this job. Currently, the only
-	// supported device type for cluster jobs is EDGE . For more information, see
-	// Snowball Edge Device Options (https://docs.aws.amazon.com/snowball/latest/developer-guide/device-differences.html)
-	// in the Snowball Edge Developer Guide. For more information, see
+	// The type of Snow Family devices to use for this job.
+	//
+	// For cluster jobs, Amazon Web Services Snow Family currently supports only the
+	// EDGE device type.
+	//
+	// The type of Amazon Web Services Snow device to use for this job. Currently, the
+	// only supported device type for cluster jobs is EDGE .
+	//
+	// For more information, see [Snowball Edge Device Options] in the Snowball Edge Developer Guide.
+	//
+	// For more information, see
 	// "https://docs.aws.amazon.com/snowball/latest/snowcone-guide/snow-device-types.html"
 	// (Snow Family Devices and Capacity) in the Snowcone User Guide or
 	// "https://docs.aws.amazon.com/snowball/latest/developer-guide/snow-device-types.html"
 	// (Snow Family Devices and Capacity) in the Snowcone User Guide.
+	//
+	// [Snowball Edge Device Options]: https://docs.aws.amazon.com/snowball/latest/developer-guide/device-differences.html
 	SnowballType types.SnowballType
 
 	// The tax documents required in your Amazon Web Services Region.
@@ -202,6 +260,9 @@ type CreateJobOutput struct {
 }
 
 func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateJob{}, middleware.After)
 	if err != nil {
 		return err
@@ -210,34 +271,38 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateJob"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -249,7 +314,13 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateJobResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateJobValidationMiddleware(stack); err != nil {
@@ -258,7 +329,7 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateJob(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -270,7 +341,19 @@ func (c *Client) addOperationCreateJobMiddlewares(stack *middleware.Stack, optio
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -280,130 +363,6 @@ func newServiceMetadataMiddleware_opCreateJob(region string) *awsmiddleware.Regi
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "snowball",
 		OperationName: "CreateJob",
 	}
-}
-
-type opCreateJobResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateJobResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateJobResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "snowball"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "snowball"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("snowball")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateJobResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateJobResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -15,14 +15,18 @@ import software.amazon.smithy.codegen.core.SymbolProvider;
 import software.amazon.smithy.go.codegen.GoCodegenPlugin;
 import software.amazon.smithy.go.codegen.GoDelegator;
 import software.amazon.smithy.go.codegen.GoSettings;
+import software.amazon.smithy.go.codegen.GoUniverseTypes;
 import software.amazon.smithy.go.codegen.GoWriter;
 import software.amazon.smithy.go.codegen.SmithyGoDependency;
 import software.amazon.smithy.go.codegen.SymbolUtils;
+import software.amazon.smithy.go.codegen.integration.ConfigField;
 import software.amazon.smithy.go.codegen.integration.GoIntegration;
 import software.amazon.smithy.go.codegen.integration.MiddlewareRegistrar;
 import software.amazon.smithy.go.codegen.integration.RuntimeClientPlugin;
 import software.amazon.smithy.model.Model;
+import software.amazon.smithy.model.knowledge.TopDownIndex;
 import software.amazon.smithy.model.shapes.MemberShape;
+import software.amazon.smithy.model.shapes.ShapeType;
 import software.amazon.smithy.model.shapes.OperationShape;
 import software.amazon.smithy.model.shapes.ServiceShape;
 import software.amazon.smithy.aws.traits.HttpChecksumTrait;
@@ -51,6 +55,10 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
         return String.format("get%s%s", operationName, "RequestValidationModeMember");
     }
 
+    private static String setRequestValidationModeAccessorFuncName(String operationName) {
+        return String.format("set%s%s", operationName, "RequestValidationModeMember");
+    }
+
     private static String getAddInputMiddlewareFuncName(String operationName) {
         return String.format("add%sInputChecksumMiddlewares", operationName);
     }
@@ -73,9 +81,7 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
     @Override
     public void processFinalizedModel(GoSettings settings, Model model) {
         ServiceShape service = settings.getService(model);
-        for (ShapeId operationId : service.getAllOperations()) {
-            final OperationShape operation = model.expectShape(operationId, OperationShape.class);
-
+        for (OperationShape operation : TopDownIndex.of(model).getContainedOperations(service)) {
             // Create a symbol provider because one is not available in this call.
             SymbolProvider symbolProvider = GoCodegenPlugin.createSymbolProvider(model, settings);
 
@@ -114,6 +120,18 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
                             .useClientOptions()
                             .build())
                     .build());
+
+            var outputChecksumConfigs = RuntimeClientPlugin.builder()
+                    .servicePredicate(AwsHttpChecksumGenerator::hasOutputChecksumTrait)
+                    .addConfigField(
+                            ConfigField.builder()
+                                    .name("DisableLogOutputChecksumValidationSkipped")
+                                    .type(GoUniverseTypes.Bool)
+                                    .documentation("Disables logging when the client skips output checksum validation due to lack of algorithm support.")
+                                    .build()
+                    )
+                    .build();
+            runtimeClientPlugins.add(outputChecksumConfigs);
         }
     }
 
@@ -128,8 +146,7 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
         boolean supportsComputeInputChecksumsWorkflow = false;
         boolean supportsChecksumValidationWorkflow = false;
 
-        for (ShapeId operationID : service.getAllOperations()) {
-            OperationShape operation = model.expectShape(operationID, OperationShape.class);
+        for (OperationShape operation : TopDownIndex.of(model).getContainedOperations(service)) {
             if (!hasChecksumTrait(model, service, operation)) {
                 continue;
             }
@@ -146,7 +163,7 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
 
             goDelegator.useShapeWriter(operation, writer -> {
                 // generate getter helper function to access input member value
-                writeGetInputMemberAccessorHelper(writer, model, symbolProvider, operation);
+                writeInputMemberAccessorHelper(writer, model, symbolProvider, operation);
 
                 // generate middleware helper function
                 if (generateComputeInputChecksums) {
@@ -162,6 +179,7 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
         if (supportsComputeInputChecksumsWorkflow) {
             goDelegator.useShapeWriter(service, writer -> {
                 generateInputComputedChecksumMetadataHelpers(writer, model, symbolProvider, service);
+                writePackageLevelAddInputChecksumMiddleware(writer);
             });
         }
 
@@ -178,11 +196,11 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
     }
 
     // return true if operation shape is decorated with `httpChecksum` trait.
-    private boolean hasChecksumTrait(Model model, ServiceShape service, OperationShape operation) {
+    private static boolean hasChecksumTrait(Model model, ServiceShape service, OperationShape operation) {
         return operation.hasTrait(HttpChecksumTrait.class);
     }
 
-    private boolean hasInputChecksumTrait(Model model, ServiceShape service, OperationShape operation) {
+    private static boolean hasInputChecksumTrait(Model model, ServiceShape service, OperationShape operation) {
         if (!hasChecksumTrait(model, service, operation)) {
             return false;
         }
@@ -190,12 +208,30 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
         return trait.isRequestChecksumRequired() || trait.getRequestAlgorithmMember().isPresent();
     }
 
-    private boolean hasOutputChecksumTrait(Model model, ServiceShape service, OperationShape operation) {
+    public static boolean hasInputChecksumTrait(Model model, ServiceShape service) {
+        for (OperationShape operation : TopDownIndex.of(model).getContainedOperations(service)) {
+                if (hasInputChecksumTrait(model, service, operation)) {
+                    return true;
+                }
+        }
+        return false;
+    }
+
+    private static boolean hasOutputChecksumTrait(Model model, ServiceShape service, OperationShape operation) {
         if (!hasChecksumTrait(model, service, operation)) {
             return false;
         }
         HttpChecksumTrait trait = operation.expectTrait(HttpChecksumTrait.class);
         return trait.getRequestValidationModeMember().isPresent() && !trait.getResponseAlgorithms().isEmpty();
+    }
+
+    public static boolean hasOutputChecksumTrait(Model model, ServiceShape service) {
+        for (OperationShape operation : TopDownIndex.of(model).getContainedOperations(service)) {
+            if (hasOutputChecksumTrait(model, service, operation)) {
+                return true;
+            }
+        }
+        return false;
     }
 
     private boolean isS3ServiceShape(Model model, ServiceShape service) {
@@ -241,15 +277,14 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
         writer.openBlock("func $L(stack *middleware.Stack, options Options) error {", "}",
                 getAddInputMiddlewareFuncName(operationName), () -> {
                     writer.write("""
-                                    return $T(stack, $T{
+                                    return addInputChecksumMiddleware(stack, $T{
                                         GetAlgorithm: $L,
                                         RequireChecksum: $L,
+                                        RequestChecksumCalculation: options.RequestChecksumCalculation,
                                         EnableTrailingChecksum: $L,
                                         EnableComputeSHA256PayloadHash: true,
                                         EnableDecodedContentLengthHeader: $L,
                                     })""",
-                            SymbolUtils.createValueSymbolBuilder("AddInputMiddleware",
-                                    AwsGoDependency.SERVICE_INTERNAL_CHECKSUM).build(),
                             SymbolUtils.createValueSymbolBuilder("InputMiddlewareOptions",
                                     AwsGoDependency.SERVICE_INTERNAL_CHECKSUM).build(),
                             hasRequestAlgorithmMember ?
@@ -260,6 +295,48 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
                 }
         );
         writer.insertTrailingNewline();
+    }
+
+    // adapted (service/internal/checksum).AddInputMiddleware to give the service client control over its middleware stack,
+    // per #2507
+    private void writePackageLevelAddInputChecksumMiddleware(GoWriter writer) {
+        writer.addUseImports(SmithyGoDependency.SMITHY_MIDDLEWARE);
+        writer.addUseImports(AwsGoDependency.SERVICE_INTERNAL_CHECKSUM);
+        writer.write("""
+                func addInputChecksumMiddleware(stack *middleware.Stack, options internalChecksum.InputMiddlewareOptions) (err error) {
+                    err = stack.Initialize.Add(&internalChecksum.SetupInputContext{
+                        GetAlgorithm:               options.GetAlgorithm,
+                        RequireChecksum:            options.RequireChecksum,
+                        RequestChecksumCalculation: options.RequestChecksumCalculation,
+                    }, middleware.Before)
+                    if err != nil {
+                        return err
+                    }
+
+                    stack.Build.Remove("ContentChecksum")
+
+                    inputChecksum := &internalChecksum.ComputeInputPayloadChecksum{
+                        EnableTrailingChecksum:           options.EnableTrailingChecksum,
+                        EnableComputePayloadHash:         options.EnableComputeSHA256PayloadHash,
+                        EnableDecodedContentLengthHeader: options.EnableDecodedContentLengthHeader,
+                    }
+                    if err := stack.Finalize.Insert(inputChecksum, "ResolveEndpointV2", middleware.After); err != nil {
+                        return err
+                    }
+
+                    if options.EnableTrailingChecksum {
+                        trailerMiddleware := &internalChecksum.AddInputChecksumTrailer{
+                            EnableTrailingChecksum:           inputChecksum.EnableTrailingChecksum,
+                            EnableComputePayloadHash:         inputChecksum.EnableComputePayloadHash,
+                            EnableDecodedContentLengthHeader: inputChecksum.EnableDecodedContentLengthHeader,
+                        }
+                        if err := stack.Finalize.Insert(trailerMiddleware, inputChecksum.ID(), middleware.After); err != nil {
+                            return err
+                        }
+                    }
+
+                    return nil
+                }""");
     }
 
     private void writeOutputMiddlewareHelper(
@@ -284,17 +361,19 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
                     writer.write("""
                                     return $T(stack, $T{
                                         GetValidationMode: $L,
+                                        SetValidationMode: $L,
+                                        ResponseChecksumValidation: options.ResponseChecksumValidation,
                                         ValidationAlgorithms: $L,
                                         IgnoreMultipartValidation: $L,
-                                        LogValidationSkipped: true,
-                                        LogMultipartValidationSkipped: true,
+                                        LogValidationSkipped: !options.DisableLogOutputChecksumValidationSkipped,
+                                        LogMultipartValidationSkipped: !options.DisableLogOutputChecksumValidationSkipped,
                                     })""",
                             SymbolUtils.createValueSymbolBuilder("AddOutputMiddleware",
                                     AwsGoDependency.SERVICE_INTERNAL_CHECKSUM).build(),
                             SymbolUtils.createValueSymbolBuilder("OutputMiddlewareOptions",
                                     AwsGoDependency.SERVICE_INTERNAL_CHECKSUM).build(),
-
                             getRequestValidationModeAccessorFuncName(operationName),
+                            setRequestValidationModeAccessorFuncName(operationName),
                             convertToGoStringList(responseAlgorithms),
                             ignoreMultipartChecksumValidationMap.getOrDefault(
                                     service.toShapeId(), new HashSet<>()).contains(operation.toShapeId())
@@ -317,7 +396,7 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
         return sb.toString();
     }
 
-    private void writeGetInputMemberAccessorHelper(
+    private void writeInputMemberAccessorHelper(
             GoWriter writer,
             Model model,
             SymbolProvider symbolProvider,
@@ -366,6 +445,9 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
                     String.format("%s gets the request checksum validation mode provided as input.", funcName));
             getInputTemplate(writer, symbolProvider, input, funcName, memberName);
             writer.insertTrailingNewline();
+            funcName = setRequestValidationModeAccessorFuncName(operationSymbol.getName());
+            setInputTemplate(writer, symbolProvider, input, funcName, memberName);
+            writer.insertTrailingNewline();
         }
     }
 
@@ -384,6 +466,26 @@ public class AwsHttpChecksumGenerator implements GoIntegration {
                     });
                     writer.write("return string(in.$L), true", memberName);
                 });
+        writer.write("");
+    }
+
+    private void setInputTemplate(
+            GoWriter writer,
+            SymbolProvider symbolProvider,
+            StructureShape input,
+            String funcName,
+            String memberName
+    ) {
+        writer.write(GoWriter.goTemplate("""
+                func $fn:L(input interface{}, mode string) {
+                    in := input.(*$inputType:L)
+                    in.$member:L = types.$member:L(mode)
+                }""",
+                Map.of(
+                        "fn", funcName,
+                        "inputType", symbolProvider.toSymbol(input).getName(),
+                        "member", memberName
+                )));
         writer.write("");
     }
 

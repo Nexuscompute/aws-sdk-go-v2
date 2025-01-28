@@ -37,7 +37,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The current account doesn't have the IAM permissions required to perform the specified Resolver operation.</p>",
+                "smithy.api#documentation": "<p>The current account doesn't have the IAM permissions required to perform the specified Resolver operation.</p>\n         <p>This error can also be thrown when a customer has reached the 5120 character limit for a\n\t\t\tresource policy for CloudWatch Logs.</p>",
                 "smithy.api#error": "client"
             }
         },
@@ -493,6 +493,29 @@
                 "smithy.api#default": false
             }
         },
+        "com.amazonaws.route53resolver#ConfidenceThreshold": {
+            "type": "enum",
+            "members": {
+                "LOW": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "LOW"
+                    }
+                },
+                "MEDIUM": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "MEDIUM"
+                    }
+                },
+                "HIGH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "HIGH"
+                    }
+                }
+            }
+        },
         "com.amazonaws.route53resolver#ConflictException": {
             "type": "structure",
             "members": {
@@ -575,7 +598,7 @@
                 "FirewallDomainList": {
                     "target": "com.amazonaws.route53resolver#FirewallDomainList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The\n\t\t\tdomain list that you just created.</p>"
+                        "smithy.api#documentation": "<p>The domain list that you just created.</p>"
                     }
                 }
             },
@@ -708,8 +731,7 @@
                 "FirewallDomainListId": {
                     "target": "com.amazonaws.route53resolver#ResourceId",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ID of the domain list that you want to use in the rule. </p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The ID of the domain list that you want to use in the rule. Can't be used together with <code>DnsThreatProtecton</code>.</p>"
                     }
                 },
                 "Priority": {
@@ -722,7 +744,7 @@
                 "Action": {
                     "target": "com.amazonaws.route53resolver#Action",
                     "traits": {
-                        "smithy.api#documentation": "<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ALLOW</code> - Permit the request to go through.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ALERT</code> - Permit the request and send metrics and logs to Cloud Watch.</p>\n            </li>\n            <li>\n               <p>\n                  <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>. </p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ALLOW</code> - Permit the request to go through. Not available for DNS Firewall Advanced rules.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ALERT</code> - Permit the request and send metrics and logs to Cloud Watch.</p>\n            </li>\n            <li>\n               <p>\n                  <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>. </p>\n            </li>\n         </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -755,6 +777,30 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A name that lets you identify the rule in the rule group.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "FirewallDomainRedirectionAction": {
+                    "target": "com.amazonaws.route53resolver#FirewallDomainRedirectionAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tHow you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. \n\t\t</p>\n         <p>\n            <code>INSPECT_REDIRECTION_DOMAIN</code>: (Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be \n\t\t\tadded to the domain list.</p>\n         <p>\n            <code>TRUST_REDIRECTION_DOMAIN</code>: Inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to \n\t\t\tthe domain list.</p>"
+                    }
+                },
+                "Qtype": {
+                    "target": "com.amazonaws.route53resolver#Qtype",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe DNS query type you want the rule to evaluate. Allowed values are;\n\t\t</p>\n         <ul>\n            <li>\n               <p>\n\t\t\t\tA: Returns an IPv4 address.</p>\n            </li>\n            <li>\n               <p>AAAA: Returns an Ipv6 address.</p>\n            </li>\n            <li>\n               <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p>\n            </li>\n            <li>\n               <p>CNAME: Returns another domain name.</p>\n            </li>\n            <li>\n               <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p>\n            </li>\n            <li>\n               <p>MX: Specifies mail servers.</p>\n            </li>\n            <li>\n               <p>NAPTR: Regular-expression-based rewriting of domain names.</p>\n            </li>\n            <li>\n               <p>NS: Authoritative name servers.</p>\n            </li>\n            <li>\n               <p>PTR: Maps an IP address to a domain name.</p>\n            </li>\n            <li>\n               <p>SOA: Start of authority record for the zone.</p>\n            </li>\n            <li>\n               <p>SPF: Lists the servers authorized to send emails from a domain.</p>\n            </li>\n            <li>\n               <p>SRV: Application specific values that identify servers.</p>\n            </li>\n            <li>\n               <p>TXT: Verifies email senders and application-specific values.</p>\n            </li>\n            <li>\n               <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be\n\t\t\t\tdefined as TYPENUMBER, where the\n\t\t\t\tNUMBER can be 1-65334, for\n\t\t\t\texample, TYPE28. For more information, see \n\t\t\t\t<a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "DnsThreatProtection": {
+                    "target": "com.amazonaws.route53resolver#DnsThreatProtection",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tUse to create a DNS Firewall Advanced rule.\n\t\t</p>"
+                    }
+                },
+                "ConfidenceThreshold": {
+                    "target": "com.amazonaws.route53resolver#ConfidenceThreshold",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe confidence threshold for DNS Firewall Advanced. You must provide this value when you create a DNS Firewall Advanced rule. The confidence\n\t\t\tlevel values mean:\n\t\t</p>\n         <ul>\n            <li>\n               <p>\n                  <code>LOW</code>: Provides the highest detection rate for threats, but also increases false positives.</p>\n            </li>\n            <li>\n               <p>\n                  <code>MEDIUM</code>: Provides a balance between detecting threats and false positives.</p>\n            </li>\n            <li>\n               <p>\n                  <code>HIGH</code>: Detects only the most well corroborated threats with a low rate of false positives. </p>\n            </li>\n         </ul>"
                     }
                 }
             },
@@ -805,7 +851,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Creates an Route 53 Resolver on an Outpost.</p>"
+                "smithy.api#documentation": "<p>Creates a Route 53 Resolver on an Outpost.</p>"
             }
         },
         "com.amazonaws.route53resolver#CreateOutpostResolverRequest": {
@@ -880,6 +926,9 @@
             },
             "errors": [
                 {
+                    "target": "com.amazonaws.route53resolver#AccessDeniedException"
+                },
+                {
                     "target": "com.amazonaws.route53resolver#InternalServiceErrorException"
                 },
                 {
@@ -924,7 +973,7 @@
                 "SecurityGroupIds": {
                     "target": "com.amazonaws.route53resolver#SecurityGroupIds",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ID of one or more security groups that you want to use to control access to this VPC. The security group that you specify \n\t\t\tmust include one or more inbound rules (for inbound Resolver endpoints) or outbound rules (for outbound Resolver endpoints). \n\t\t\tInbound and outbound rules must allow TCP and UDP access. For inbound access, open port 53. For outbound access, open the port \n\t\t\tthat you're using for DNS queries on your network.</p>",
+                        "smithy.api#documentation": "<p>The ID of one or more security groups that you want to use to control access to this VPC. The security group that you specify \n\t\t\tmust include one or more inbound rules (for inbound Resolver endpoints) or outbound rules (for outbound Resolver endpoints). \n\t\t\tInbound and outbound rules must allow TCP and UDP access. For inbound access, open port 53. For outbound access, open the port \n\t\t\tthat you're using for DNS queries on your network.</p>\n         <p>Some security group rules will cause your connection to be tracked. For outbound resolver endpoint, it can potentially impact the \n\t\t\tmaximum queries per second from outbound endpoint to your target name server. For inbound resolver endpoint, it can bring down the overall maximum queries per second per IP address to as low as 1500. \n\t\t\tTo avoid connection tracking caused by security group, see  \n\t\t\t<a href=\"https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/security-group-connection-tracking.html#untracked-connectionsl\">Untracked connections</a>.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -938,8 +987,20 @@
                 "IpAddresses": {
                     "target": "com.amazonaws.route53resolver#IpAddressesRequest",
                     "traits": {
-                        "smithy.api#documentation": "<p>The subnets and IP addresses in your VPC that DNS queries originate from (for outbound endpoints) or that you forward \n\t\t\tDNS queries to (for inbound endpoints). The subnet ID uniquely identifies a VPC. </p>",
+                        "smithy.api#documentation": "<p>The subnets and IP addresses in your VPC that DNS queries originate from (for outbound endpoints) or that you forward \n\t\t\tDNS queries to (for inbound endpoints). The subnet ID uniquely identifies a VPC. </p>\n         <note>\n            <p>Even though the minimum is 1, Route 53 requires that you create at least two.</p>\n         </note>",
                         "smithy.api#required": {}
+                    }
+                },
+                "OutpostArn": {
+                    "target": "com.amazonaws.route53resolver#OutpostArn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the Outpost. If you specify this, you must also specify a\n\t\t\tvalue for the <code>PreferredInstanceType</code>. </p>"
+                    }
+                },
+                "PreferredInstanceType": {
+                    "target": "com.amazonaws.route53resolver#OutpostInstanceType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The  instance type. If you specify this, you must also specify a value for the <code>OutpostArn</code>.</p>"
                     }
                 },
                 "Tags": {
@@ -954,16 +1015,10 @@
                         "smithy.api#documentation": "<p>\n\t\t\tFor the endpoint type you can choose either IPv4, IPv6, or dual-stack.\n\t\t\tA dual-stack endpoint means that it will resolve via both IPv4 and IPv6. This\n\t\t\tendpoint type is applied to all IP addresses.\n\t\t</p>"
                     }
                 },
-                "OutpostArn": {
-                    "target": "com.amazonaws.route53resolver#OutpostArn",
+                "Protocols": {
+                    "target": "com.amazonaws.route53resolver#ProtocolList",
                     "traits": {
-                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the Outpost. If you specify this, you must also specify a\n\t\t\tvalue for the <code>PreferredInstanceType</code>. </p>"
-                    }
-                },
-                "PreferredInstanceType": {
-                    "target": "com.amazonaws.route53resolver#OutpostInstanceType",
-                    "traits": {
-                        "smithy.api#documentation": "<p>The  instance type. If you specify this, you must also specify a value for the <code>OutpostArn</code>.</p>"
+                        "smithy.api#documentation": "<p>\n\t\t\tThe protocols you want to use for the endpoint. DoH-FIPS is applicable for inbound endpoints only.\n\t\t</p>\n         <p>For an inbound endpoint you can apply the protocols as follows:</p>\n         <ul>\n            <li>\n               <p> Do53  and DoH in combination.</p>\n            </li>\n            <li>\n               <p>Do53  and DoH-FIPS in combination.</p>\n            </li>\n            <li>\n               <p>Do53 alone.</p>\n            </li>\n            <li>\n               <p>DoH alone.</p>\n            </li>\n            <li>\n               <p>DoH-FIPS alone.</p>\n            </li>\n            <li>\n               <p>None, which is treated as Do53.</p>\n            </li>\n         </ul>\n         <p>For an outbound endpoint you can apply the protocols as follows:</p>\n         <ul>\n            <li>\n               <p> Do53  and DoH in combination.</p>\n            </li>\n            <li>\n               <p>Do53 alone.</p>\n            </li>\n            <li>\n               <p>DoH alone.</p>\n            </li>\n            <li>\n               <p>None, which is treated as Do53.</p>\n            </li>\n         </ul>"
                     }
                 }
             },
@@ -1036,7 +1091,7 @@
                 "DestinationArn": {
                     "target": "com.amazonaws.route53resolver#DestinationArn",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ARN of the resource that you want Resolver to send query logs. You can send query logs to an S3 bucket, a CloudWatch Logs log group, \n\t\t\tor a Kinesis Data Firehose delivery stream. Examples of valid values include the following:</p>\n         <ul>\n            <li>\n               <p>\n                  <b>S3 bucket</b>: </p>\n               <p>\n                  <code>arn:aws:s3:::examplebucket</code>\n               </p>\n               <p>You can optionally append a file prefix to the end of the ARN.</p>\n               <p>\n                  <code>arn:aws:s3:::examplebucket/development/</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <b>CloudWatch Logs log group</b>: </p>\n               <p>\n                  <code>arn:aws:logs:us-west-1:123456789012:log-group:/mystack-testgroup-12ABC1AB12A1:*</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <b>Kinesis Data Firehose delivery stream</b>:</p>\n               <p>\n                  <code>arn:aws:kinesis:us-east-2:0123456789:stream/my_stream_name</code>\n               </p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>The ARN of the resource that you want Resolver to send query logs. You can send query logs to an S3 bucket, a CloudWatch Logs log group, \n\t\t\tor a Kinesis Data Firehose delivery stream. Examples of valid values include the following:</p>\n         <ul>\n            <li>\n               <p>\n                  <b>S3 bucket</b>: </p>\n               <p>\n                  <code>arn:aws:s3:::amzn-s3-demo-bucket</code>\n               </p>\n               <p>You can optionally append a file prefix to the end of the ARN.</p>\n               <p>\n                  <code>arn:aws:s3:::amzn-s3-demo-bucket/development/</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <b>CloudWatch Logs log group</b>: </p>\n               <p>\n                  <code>arn:aws:logs:us-west-1:123456789012:log-group:/mystack-testgroup-12ABC1AB12A1:*</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <b>Kinesis Data Firehose delivery stream</b>:</p>\n               <p>\n                  <code>arn:aws:kinesis:us-east-2:0123456789:stream/my_stream_name</code>\n               </p>\n            </li>\n         </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -1082,6 +1137,9 @@
                 "target": "com.amazonaws.route53resolver#CreateResolverRuleResponse"
             },
             "errors": [
+                {
+                    "target": "com.amazonaws.route53resolver#AccessDeniedException"
+                },
                 {
                     "target": "com.amazonaws.route53resolver#InternalServiceErrorException"
                 },
@@ -1137,8 +1195,7 @@
                 "DomainName": {
                     "target": "com.amazonaws.route53resolver#DomainName",
                     "traits": {
-                        "smithy.api#documentation": "<p>DNS queries for this domain name are forwarded to the IP addresses that you specify in <code>TargetIps</code>. If a query matches \n\t\t\tmultiple Resolver rules (example.com and www.example.com), outbound DNS queries are routed using the Resolver rule that contains \n\t\t\tthe most specific domain name (www.example.com).</p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>DNS queries for this domain name are forwarded to the IP addresses that you specify in <code>TargetIps</code>. If a query matches \n\t\t\tmultiple Resolver rules (example.com and www.example.com), outbound DNS queries are routed using the Resolver rule that contains \n\t\t\tthe most specific domain name (www.example.com).</p>"
                     }
                 },
                 "TargetIps": {
@@ -1265,6 +1322,9 @@
                 },
                 {
                     "target": "com.amazonaws.route53resolver#ThrottlingException"
+                },
+                {
+                    "target": "com.amazonaws.route53resolver#ValidationException"
                 }
             ],
             "traits": {
@@ -1345,8 +1405,19 @@
                 "FirewallDomainListId": {
                     "target": "com.amazonaws.route53resolver#ResourceId",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ID of the domain list that's used in the rule.  </p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The ID of the domain list that's used in the rule.  </p>"
+                    }
+                },
+                "FirewallThreatProtectionId": {
+                    "target": "com.amazonaws.route53resolver#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe ID that is created for a DNS Firewall Advanced rule.\n\t\t</p>"
+                    }
+                },
+                "Qtype": {
+                    "target": "com.amazonaws.route53resolver#Qtype",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe DNS query type that the rule you are deleting evaluates. Allowed values are;\n\t\t</p>\n         <ul>\n            <li>\n               <p>\n\t\t\t\tA: Returns an IPv4 address.</p>\n            </li>\n            <li>\n               <p>AAAA: Returns an Ipv6 address.</p>\n            </li>\n            <li>\n               <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p>\n            </li>\n            <li>\n               <p>CNAME: Returns another domain name.</p>\n            </li>\n            <li>\n               <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p>\n            </li>\n            <li>\n               <p>MX: Specifies mail servers.</p>\n            </li>\n            <li>\n               <p>NAPTR: Regular-expression-based rewriting of domain names.</p>\n            </li>\n            <li>\n               <p>NS: Authoritative name servers.</p>\n            </li>\n            <li>\n               <p>PTR: Maps an IP address to a domain name.</p>\n            </li>\n            <li>\n               <p>SOA: Start of authority record for the zone.</p>\n            </li>\n            <li>\n               <p>SPF: Lists the servers authorized to send emails from a domain.</p>\n            </li>\n            <li>\n               <p>SRV: Application specific values that identify servers.</p>\n            </li>\n            <li>\n               <p>TXT: Verifies email senders and application-specific values.</p>\n            </li>\n            <li>\n               <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be\n\t\t\t\tdefined as TYPENUMBER, where the\n\t\t\t\tNUMBER can be 1-65334, for\n\t\t\t\texample, TYPE28. For more information, see \n\t\t\t\t<a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p>\n            </li>\n         </ul>"
                     }
                 }
             },
@@ -1874,6 +1945,23 @@
                 "smithy.api#output": {}
             }
         },
+        "com.amazonaws.route53resolver#DnsThreatProtection": {
+            "type": "enum",
+            "members": {
+                "DGA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DGA"
+                    }
+                },
+                "DNS_TUNNELING": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DNS_TUNNELING"
+                    }
+                }
+            }
+        },
         "com.amazonaws.route53resolver#DomainListFileUrl": {
             "type": "string",
             "traits": {
@@ -2150,6 +2238,23 @@
                 }
             }
         },
+        "com.amazonaws.route53resolver#FirewallDomainRedirectionAction": {
+            "type": "enum",
+            "members": {
+                "INSPECT_REDIRECTION_DOMAIN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "INSPECT_REDIRECTION_DOMAIN"
+                    }
+                },
+                "TRUST_REDIRECTION_DOMAIN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "TRUST_REDIRECTION_DOMAIN"
+                    }
+                }
+            }
+        },
         "com.amazonaws.route53resolver#FirewallDomainUpdateOperation": {
             "type": "enum",
             "members": {
@@ -2208,13 +2313,19 @@
                 "FirewallRuleGroupId": {
                     "target": "com.amazonaws.route53resolver#ResourceId",
                     "traits": {
-                        "smithy.api#documentation": "<p>The unique identifier of the firewall rule group of the rule. </p>"
+                        "smithy.api#documentation": "<p>The unique identifier of the Firewall rule group of the rule. </p>"
                     }
                 },
                 "FirewallDomainListId": {
                     "target": "com.amazonaws.route53resolver#ResourceId",
                     "traits": {
                         "smithy.api#documentation": "<p>The ID of the domain list that's used in the rule. </p>"
+                    }
+                },
+                "FirewallThreatProtectionId": {
+                    "target": "com.amazonaws.route53resolver#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tID of the DNS Firewall Advanced rule.\n\t\t</p>"
                     }
                 },
                 "Name": {
@@ -2232,7 +2343,7 @@
                 "Action": {
                     "target": "com.amazonaws.route53resolver#Action",
                     "traits": {
-                        "smithy.api#documentation": "<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ALLOW</code> - Permit the request to go through.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p>\n            </li>\n            <li>\n               <p>\n                  <code>BLOCK</code> - Disallow the request. If this is specified, additional handling details are provided in the rule's <code>BlockResponse</code> setting. </p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ALLOW</code> - Permit the request to go through. Not available for DNS Firewall Advanced rules.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p>\n            </li>\n            <li>\n               <p>\n                  <code>BLOCK</code> - Disallow the request. If this is specified, additional handling details are provided in the rule's <code>BlockResponse</code> setting. </p>\n            </li>\n         </ul>"
                     }
                 },
                 "BlockResponse": {
@@ -2275,6 +2386,30 @@
                     "target": "com.amazonaws.route53resolver#Rfc3339TimeString",
                     "traits": {
                         "smithy.api#documentation": "<p>The date and time that the rule was last modified, in Unix time format and Coordinated Universal Time (UTC).</p>"
+                    }
+                },
+                "FirewallDomainRedirectionAction": {
+                    "target": "com.amazonaws.route53resolver#FirewallDomainRedirectionAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tHow you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. \n\t\t</p>\n         <p>\n            <code>INSPECT_REDIRECTION_DOMAIN</code>: (Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be \n\t\t\tadded to the domain list.</p>\n         <p>\n            <code>TRUST_REDIRECTION_DOMAIN</code>: Inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to \n\t\t\tthe domain list.</p>"
+                    }
+                },
+                "Qtype": {
+                    "target": "com.amazonaws.route53resolver#Qtype",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe DNS query type you want the rule to evaluate. Allowed values are;\n\t\t</p>\n         <ul>\n            <li>\n               <p>\n\t\t\t\tA: Returns an IPv4 address.</p>\n            </li>\n            <li>\n               <p>AAAA: Returns an Ipv6 address.</p>\n            </li>\n            <li>\n               <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p>\n            </li>\n            <li>\n               <p>CNAME: Returns another domain name.</p>\n            </li>\n            <li>\n               <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p>\n            </li>\n            <li>\n               <p>MX: Specifies mail servers.</p>\n            </li>\n            <li>\n               <p>NAPTR: Regular-expression-based rewriting of domain names.</p>\n            </li>\n            <li>\n               <p>NS: Authoritative name servers.</p>\n            </li>\n            <li>\n               <p>PTR: Maps an IP address to a domain name.</p>\n            </li>\n            <li>\n               <p>SOA: Start of authority record for the zone.</p>\n            </li>\n            <li>\n               <p>SPF: Lists the servers authorized to send emails from a domain.</p>\n            </li>\n            <li>\n               <p>SRV: Application specific values that identify servers.</p>\n            </li>\n            <li>\n               <p>TXT: Verifies email senders and application-specific values.</p>\n            </li>\n            <li>\n               <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be\n\t\t\t\tdefined as TYPENUMBER, where the\n\t\t\t\tNUMBER can be 1-65334, for\n\t\t\t\texample, TYPE28. For more information, see \n\t\t\t\t<a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "DnsThreatProtection": {
+                    "target": "com.amazonaws.route53resolver#DnsThreatProtection",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe type of the DNS Firewall Advanced rule. Valid values are:\n\t\t</p>\n         <ul>\n            <li>\n               <p>\n                  <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains \n\t\t\t\tto to launch malware attacks.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without \n\t\t\t\tmaking a network connection to the client.</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "ConfidenceThreshold": {
+                    "target": "com.amazonaws.route53resolver#ConfidenceThreshold",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe confidence threshold for DNS Firewall Advanced. You must provide this value when you create a DNS Firewall Advanced rule. The confidence\n\t\t\tlevel values mean:\n\t\t</p>\n         <ul>\n            <li>\n               <p>\n                  <code>LOW</code>: Provides the highest detection rate for threats, but also increases false positives.</p>\n            </li>\n            <li>\n               <p>\n                  <code>MEDIUM</code>: Provides a balance between detecting threats and false positives.</p>\n            </li>\n            <li>\n               <p>\n                  <code>HIGH</code>: Detects only the most well corroborated threats with a low rate of false positives. </p>\n            </li>\n         </ul>"
                     }
                 }
             },
@@ -3811,7 +3946,7 @@
             },
             "traits": {
                 "smithy.api#length": {
-                    "min": 1,
+                    "min": 2,
                     "max": 20
                 }
             }
@@ -4315,7 +4450,7 @@
                 "Action": {
                     "target": "com.amazonaws.route53resolver#Action",
                     "traits": {
-                        "smithy.api#documentation": "<p>Optional additional filter for the rules to retrieve.</p>\n         <p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ALLOW</code> - Permit the request to go through.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p>\n            </li>\n            <li>\n               <p>\n                  <code>BLOCK</code> - Disallow the request. If this is specified, additional handling details are provided in the rule's <code>BlockResponse</code> setting. </p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>Optional additional filter for the rules to retrieve.</p>\n         <p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ALLOW</code> - Permit the request to go through. Not availabe for DNS Firewall Advanced rules.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p>\n            </li>\n            <li>\n               <p>\n                  <code>BLOCK</code> - Disallow the request. If this is specified, additional handling details are provided in the rule's <code>BlockResponse</code> setting. </p>\n            </li>\n         </ul>"
                     }
                 },
                 "MaxResults": {
@@ -4602,7 +4737,7 @@
                 "ResolverDnssecConfigs": {
                     "target": "com.amazonaws.route53resolver#ResolverDnssecConfigList",
                     "traits": {
-                        "smithy.api#documentation": "<p>An array that contains one \n\t\t\t<a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_ResolverDnssecConfig.html\">ResolverDnssecConfig</a> element \n\t\t\tfor each configuration for DNSSEC validation that is associated with the current Amazon Web Services account.</p>"
+                        "smithy.api#documentation": "<p>An array that contains one \n\t\t\t<a href=\"https://docs.aws.amazon.com/Route53/latest/APIReference/API_ResolverDnssecConfig.html\">ResolverDnssecConfig</a> element \n\t\t\tfor each configuration for DNSSEC validation that is associated with the current Amazon Web Services account. \n\t\t\t It doesn't contain disabled DNSSEC configurations for the resource.</p>"
                     }
                 }
             },
@@ -4730,7 +4865,20 @@
                     "outputToken": "NextToken",
                     "items": "ResolverEndpoints",
                     "pageSize": "MaxResults"
-                }
+                },
+                "smithy.test#smokeTests": [
+                    {
+                        "id": "ListResolverEndpointsSuccess",
+                        "params": {},
+                        "vendorParams": {
+                            "region": "us-west-2"
+                        },
+                        "vendorParamsShape": "aws.test#AwsVendorParams",
+                        "expect": {
+                            "success": {}
+                        }
+                    }
+                ]
             }
         },
         "com.amazonaws.route53resolver#ListResolverEndpointsRequest": {
@@ -5479,6 +5627,41 @@
         "com.amazonaws.route53resolver#Priority": {
             "type": "integer"
         },
+        "com.amazonaws.route53resolver#Protocol": {
+            "type": "enum",
+            "members": {
+                "DOH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DoH"
+                    }
+                },
+                "DO53": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "Do53"
+                    }
+                },
+                "DOHFIPS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "DoH-FIPS"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.route53resolver#ProtocolList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.route53resolver#Protocol"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2
+                }
+            }
+        },
         "com.amazonaws.route53resolver#PutFirewallRuleGroupPolicy": {
             "type": "operation",
             "input": {
@@ -5680,6 +5863,15 @@
             "traits": {
                 "smithy.api#documentation": "<p>The response to a <code>PutResolverRulePolicy</code> request.</p>",
                 "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.route53resolver#Qtype": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 16
+                }
             }
         },
         "com.amazonaws.route53resolver#ResolverAutodefinedReverseStatus": {
@@ -5915,12 +6107,6 @@
                         "smithy.api#documentation": "<p>The date and time that the endpoint was last modified, in Unix time format and Coordinated Universal Time (UTC).</p>"
                     }
                 },
-                "ResolverEndpointType": {
-                    "target": "com.amazonaws.route53resolver#ResolverEndpointType",
-                    "traits": {
-                        "smithy.api#documentation": "<p>\n\t\t\tThe Resolver endpoint IP address type.\n\t\t</p>"
-                    }
-                },
                 "OutpostArn": {
                     "target": "com.amazonaws.route53resolver#OutpostArn",
                     "traits": {
@@ -5931,6 +6117,18 @@
                     "target": "com.amazonaws.route53resolver#OutpostInstanceType",
                     "traits": {
                         "smithy.api#documentation": "<p>\n\t\t\tThe Amazon EC2 instance type.\n\t\t</p>"
+                    }
+                },
+                "ResolverEndpointType": {
+                    "target": "com.amazonaws.route53resolver#ResolverEndpointType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe Resolver endpoint IP address type.\n\t\t</p>"
+                    }
+                },
+                "Protocols": {
+                    "target": "com.amazonaws.route53resolver#ProtocolList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tProtocols used for the endpoint. DoH-FIPS is applicable for inbound endpoints only.\n\t\t</p>\n         <p>For an inbound endpoint you can apply the protocols as follows:</p>\n         <ul>\n            <li>\n               <p> Do53  and DoH in combination.</p>\n            </li>\n            <li>\n               <p>Do53  and DoH-FIPS in combination.</p>\n            </li>\n            <li>\n               <p>Do53 alone.</p>\n            </li>\n            <li>\n               <p>DoH alone.</p>\n            </li>\n            <li>\n               <p>DoH-FIPS alone.</p>\n            </li>\n            <li>\n               <p>None, which is treated as Do53.</p>\n            </li>\n         </ul>\n         <p>For an outbound endpoint you can apply the protocols as follows:</p>\n         <ul>\n            <li>\n               <p> Do53  and DoH in combination.</p>\n            </li>\n            <li>\n               <p>Do53 alone.</p>\n            </li>\n            <li>\n               <p>DoH alone.</p>\n            </li>\n            <li>\n               <p>None, which is treated as Do53.</p>\n            </li>\n         </ul>"
                     }
                 }
             },
@@ -6118,7 +6316,7 @@
                 "Status": {
                     "target": "com.amazonaws.route53resolver#ResolverQueryLogConfigAssociationStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>The status of the specified query logging association. Valid values include the following:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>CREATING</code>: Resolver is creating an association between an Amazon VPC and a query logging configuration.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CREATED</code>: The association between an Amazon VPC and a query logging configuration \n\t\t\t\twas successfully created. Resolver is logging queries that originate in the specified VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DELETING</code>: Resolver is deleting this query logging association.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FAILED</code>: Resolver either couldn't create or couldn't delete the query logging association.</p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>The status of the specified query logging association. Valid values include the following:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>CREATING</code>: Resolver is creating an association between an Amazon VPC and a query logging configuration.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ACTIVE</code>: The association between an Amazon VPC and a query logging configuration \n\t\t\t\twas successfully created. Resolver is logging queries that originate in the specified VPC.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DELETING</code>: Resolver is deleting this query logging association.</p>\n            </li>\n            <li>\n               <p>\n                  <code>FAILED</code>: Resolver either couldn't create or couldn't delete the query logging association.</p>\n            </li>\n         </ul>"
                     }
                 },
                 "Error": {
@@ -6873,7 +7071,6 @@
                                     ]
                                 }
                             ],
-                            "type": "tree",
                             "rules": [
                                 {
                                     "conditions": [
@@ -6891,9 +7088,225 @@
                                     "type": "error"
                                 },
                                 {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                                    "type": "error"
+                                },
+                                {
                                     "conditions": [],
-                                    "type": "tree",
+                                    "endpoint": {
+                                        "url": {
+                                            "ref": "Endpoint"
+                                        },
+                                        "properties": {},
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "aws.partition",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                }
+                                            ],
+                                            "assign": "PartitionResult"
+                                        }
+                                    ],
                                     "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseDualStack"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                true,
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsFIPS"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                true,
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsDualStack"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://route53resolver-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsFIPS"
+                                                                    ]
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "us-gov-east-1"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://route53resolver.us-gov-east-1.amazonaws.com",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "us-gov-west-1"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://route53resolver.us-gov-west-1.amazonaws.com",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://route53resolver-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "FIPS is enabled but this partition does not support FIPS",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
                                         {
                                             "conditions": [
                                                 {
@@ -6906,278 +7319,65 @@
                                                     ]
                                                 }
                                             ],
-                                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
-                                            "type": "error"
-                                        },
-                                        {
-                                            "conditions": [],
-                                            "endpoint": {
-                                                "url": {
-                                                    "ref": "Endpoint"
-                                                },
-                                                "properties": {},
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "isSet",
-                                            "argv": [
-                                                {
-                                                    "ref": "Region"
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "type": "tree",
-                                    "rules": [
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "aws.partition",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "Region"
-                                                        }
-                                                    ],
-                                                    "assign": "PartitionResult"
-                                                }
-                                            ],
-                                            "type": "tree",
                                             "rules": [
                                                 {
                                                     "conditions": [
                                                         {
                                                             "fn": "booleanEquals",
                                                             "argv": [
+                                                                true,
                                                                 {
-                                                                    "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        },
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsDualStack"
+                                                                    ]
+                                                                }
                                                             ]
                                                         }
                                                     ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsFIPS"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsDualStack"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://route53resolver-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsFIPS"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://route53resolver-fips.{Region}.{PartitionResult#dnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "FIPS is enabled but this partition does not support FIPS",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsDualStack"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://route53resolver.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "DualStack is enabled but this partition does not support DualStack",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [],
-                                                    "type": "tree",
                                                     "rules": [
                                                         {
                                                             "conditions": [],
                                                             "endpoint": {
-                                                                "url": "https://route53resolver.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "url": "https://route53resolver.{Region}.{PartitionResult#dualStackDnsSuffix}",
                                                                 "properties": {},
                                                                 "headers": {}
                                                             },
                                                             "type": "endpoint"
                                                         }
-                                                    ]
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "DualStack is enabled but this partition does not support DualStack",
+                                                    "type": "error"
                                                 }
-                                            ]
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://route53resolver.{Region}.{PartitionResult#dnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
                                         }
-                                    ]
-                                },
-                                {
-                                    "conditions": [],
-                                    "error": "Invalid Configuration: Missing Region",
-                                    "type": "error"
+                                    ],
+                                    "type": "tree"
                                 }
-                            ]
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Missing Region",
+                            "type": "error"
                         }
                     ]
                 },
@@ -7587,6 +7787,19 @@
                             }
                         },
                         {
+                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://route53resolver.us-gov-east-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
                             "documentation": "For region us-gov-west-1 with FIPS disabled and DualStack disabled",
                             "expect": {
                                 "endpoint": {
@@ -7596,6 +7809,19 @@
                             "params": {
                                 "Region": "us-gov-west-1",
                                 "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-west-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://route53resolver.us-gov-west-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-west-1",
+                                "UseFIPS": true,
                                 "UseDualStack": false
                             }
                         },
@@ -7610,19 +7836,6 @@
                                 "Region": "us-gov-east-1",
                                 "UseFIPS": true,
                                 "UseDualStack": true
-                            }
-                        },
-                        {
-                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://route53resolver-fips.us-gov-east-1.amazonaws.com"
-                                }
-                            },
-                            "params": {
-                                "Region": "us-gov-east-1",
-                                "UseFIPS": true,
-                                "UseDualStack": false
                             }
                         },
                         {
@@ -7823,6 +8036,15 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.route53resolver#ResourceId"
+            }
+        },
+        "com.amazonaws.route53resolver#ServerNameIndication": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 255
+                }
             }
         },
         "com.amazonaws.route53resolver#ServicePrinciple": {
@@ -8063,6 +8285,18 @@
                     "target": "com.amazonaws.route53resolver#Ipv6",
                     "traits": {
                         "smithy.api#documentation": "<p>\n\t\t\tOne IPv6 address that you want to forward DNS queries to.\n\t\t</p>"
+                    }
+                },
+                "Protocol": {
+                    "target": "com.amazonaws.route53resolver#Protocol",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe protocols for the target address. The protocol you choose needs to be supported by the outbound endpoint of the Resolver rule.</p>"
+                    }
+                },
+                "ServerNameIndication": {
+                    "target": "com.amazonaws.route53resolver#ServerNameIndication",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe Server Name Indication of the DoH server that you want to forward queries to. \n\t\t\tThis is only used if the Protocol of the <code>TargetAddress</code> is <code>DoH</code>.\n\t\t</p>"
                     }
                 }
             },
@@ -8451,8 +8685,13 @@
                 "FirewallDomainListId": {
                     "target": "com.amazonaws.route53resolver#ResourceId",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ID of the domain list to use in the rule.  </p>",
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>The ID of the domain list to use in the rule.  </p>"
+                    }
+                },
+                "FirewallThreatProtectionId": {
+                    "target": "com.amazonaws.route53resolver#ResourceId",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe DNS Firewall Advanced rule ID.\n\t\t</p>"
                     }
                 },
                 "Priority": {
@@ -8464,7 +8703,7 @@
                 "Action": {
                     "target": "com.amazonaws.route53resolver#Action",
                     "traits": {
-                        "smithy.api#documentation": "<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ALLOW</code> - Permit the request to go through.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p>\n            </li>\n            <li>\n               <p>\n                  <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>. </p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>The action that DNS Firewall should take on a DNS query when it matches one of the domains in the rule's domain list, or a threat in a DNS Firewall Advanced rule:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>ALLOW</code> - Permit the request to go through. Not available for DNS Firewall Advanced rules.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ALERT</code> - Permit the request to go through but send an alert to the logs.</p>\n            </li>\n            <li>\n               <p>\n                  <code>BLOCK</code> - Disallow the request. This option requires additional details in the rule's <code>BlockResponse</code>. </p>\n            </li>\n         </ul>"
                     }
                 },
                 "BlockResponse": {
@@ -8495,6 +8734,30 @@
                     "target": "com.amazonaws.route53resolver#Name",
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the rule.</p>"
+                    }
+                },
+                "FirewallDomainRedirectionAction": {
+                    "target": "com.amazonaws.route53resolver#FirewallDomainRedirectionAction",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tHow you want the the rule to evaluate DNS redirection in the DNS redirection chain, such as CNAME or DNAME. \n\t\t</p>\n         <p>\n            <code>INSPECT_REDIRECTION_DOMAIN</code>: (Default) inspects all domains in the redirection chain. The individual domains in the redirection chain must be \n\t\t\tadded to the domain list.</p>\n         <p>\n            <code>TRUST_REDIRECTION_DOMAIN</code>: Inspects only the first domain in the redirection chain. You don't need to add the subsequent domains in the domain in the redirection list to \n\t\t\tthe domain list.</p>"
+                    }
+                },
+                "Qtype": {
+                    "target": "com.amazonaws.route53resolver#Qtype",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe DNS query type you want the rule to evaluate. Allowed values are;\n\t\t</p>\n         <ul>\n            <li>\n               <p>\n\t\t\t\tA: Returns an IPv4 address.</p>\n            </li>\n            <li>\n               <p>AAAA: Returns an Ipv6 address.</p>\n            </li>\n            <li>\n               <p>CAA: Restricts CAs that can create SSL/TLS certifications for the domain.</p>\n            </li>\n            <li>\n               <p>CNAME: Returns another domain name.</p>\n            </li>\n            <li>\n               <p>DS: Record that identifies the DNSSEC signing key of a delegated zone.</p>\n            </li>\n            <li>\n               <p>MX: Specifies mail servers.</p>\n            </li>\n            <li>\n               <p>NAPTR: Regular-expression-based rewriting of domain names.</p>\n            </li>\n            <li>\n               <p>NS: Authoritative name servers.</p>\n            </li>\n            <li>\n               <p>PTR: Maps an IP address to a domain name.</p>\n            </li>\n            <li>\n               <p>SOA: Start of authority record for the zone.</p>\n            </li>\n            <li>\n               <p>SPF: Lists the servers authorized to send emails from a domain.</p>\n            </li>\n            <li>\n               <p>SRV: Application specific values that identify servers.</p>\n            </li>\n            <li>\n               <p>TXT: Verifies email senders and application-specific values.</p>\n            </li>\n            <li>\n               <p>A query type you define by using the DNS type ID, for example 28 for AAAA. The values must be\n\t\t\t\tdefined as TYPENUMBER, where the\n\t\t\t\tNUMBER can be 1-65334, for\n\t\t\t\texample, TYPE28. For more information, see \n\t\t\t\t<a href=\"https://en.wikipedia.org/wiki/List_of_DNS_record_types\">List of DNS record types</a>.</p>\n               <note>\n                  <p>If you set up a firewall BLOCK rule with action NXDOMAIN on query type equals AAAA, \n\t\t\t\t\tthis action will not be applied to synthetic IPv6 addresses generated when DNS64 is enabled. </p>\n               </note>\n            </li>\n         </ul>"
+                    }
+                },
+                "DnsThreatProtection": {
+                    "target": "com.amazonaws.route53resolver#DnsThreatProtection",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe type of the DNS Firewall Advanced rule. Valid values are:\n\t\t</p>\n         <ul>\n            <li>\n               <p>\n                  <code>DGA</code>: Domain generation algorithms detection. DGAs are used by attackers to generate a large number of domains \n\t\t\t\tto to launch malware attacks.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DNS_TUNNELING</code>: DNS tunneling detection. DNS tunneling is used by attackers to exfiltrate data from the client by using the DNS tunnel without\n\t\t\t\tmaking a network connection to the client.</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "ConfidenceThreshold": {
+                    "target": "com.amazonaws.route53resolver#ConfidenceThreshold",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe confidence threshold for DNS Firewall Advanced. You must provide this value when you create a DNS Firewall Advanced rule. The confidence\n\t\t\tlevel values mean:\n\t\t</p>\n         <ul>\n            <li>\n               <p>\n                  <code>LOW</code>: Provides the highest detection rate for threats, but also increases false positives.</p>\n            </li>\n            <li>\n               <p>\n                  <code>MEDIUM</code>: Provides a balance between detecting threats and false positives.</p>\n            </li>\n            <li>\n               <p>\n                  <code>HIGH</code>: Detects only the most well corroborated threats with a low rate of false positives. </p>\n            </li>\n         </ul>"
                     }
                 }
             },
@@ -8787,6 +9050,9 @@
             },
             "errors": [
                 {
+                    "target": "com.amazonaws.route53resolver#AccessDeniedException"
+                },
+                {
                     "target": "com.amazonaws.route53resolver#InternalServiceErrorException"
                 },
                 {
@@ -8803,7 +9069,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Updates the name, or enpoint type for an inbound or an outbound Resolver endpoint. \n\t\t\tYou can only update between IPV4 and DUALSTACK, IPV6 endpoint type can't be updated to other type. </p>"
+                "smithy.api#documentation": "<p>Updates the name, or endpoint type for an inbound or an outbound Resolver endpoint. \n\t\t\tYou can only update between IPV4 and DUALSTACK, IPV6 endpoint type can't be updated to other type. </p>"
             }
         },
         "com.amazonaws.route53resolver#UpdateResolverEndpointRequest": {
@@ -8832,6 +9098,12 @@
                     "target": "com.amazonaws.route53resolver#UpdateIpAddresses",
                     "traits": {
                         "smithy.api#documentation": "<p>\n\t\t\tSpecifies the IPv6 address when you update the Resolver endpoint from IPv4 to dual-stack. \n\t\t\tIf you don't specify an IPv6 address, one will be automatically chosen from your subnet.\n\t\t</p>"
+                    }
+                },
+                "Protocols": {
+                    "target": "com.amazonaws.route53resolver#ProtocolList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n\t\t\tThe protocols you want to use for the endpoint. DoH-FIPS is applicable for inbound endpoints only.\n\t\t</p>\n         <p>For an inbound endpoint you can apply the protocols as follows:</p>\n         <ul>\n            <li>\n               <p> Do53  and DoH in combination.</p>\n            </li>\n            <li>\n               <p>Do53  and DoH-FIPS in combination.</p>\n            </li>\n            <li>\n               <p>Do53 alone.</p>\n            </li>\n            <li>\n               <p>DoH alone.</p>\n            </li>\n            <li>\n               <p>DoH-FIPS alone.</p>\n            </li>\n            <li>\n               <p>None, which is treated as Do53.</p>\n            </li>\n         </ul>\n         <p>For an outbound endpoint you can apply the protocols as follows:</p>\n         <ul>\n            <li>\n               <p> Do53  and DoH in combination.</p>\n            </li>\n            <li>\n               <p>Do53 alone.</p>\n            </li>\n            <li>\n               <p>DoH alone.</p>\n            </li>\n            <li>\n               <p>None, which is treated as Do53.</p>\n            </li>\n         </ul>\n         <important>\n            <p> You can't change the protocol of an inbound endpoint directly from only Do53 to only DoH, or DoH-FIPS.\n\t\t\tThis is to prevent a sudden disruption to incoming traffic that\n\t\t\trelies on Do53. To change the protocol from Do53 to DoH, or DoH-FIPS, you must\n\t\t\tfirst enable both Do53 and DoH, or Do53 and DoH-FIPS, to make sure that all incoming traffic\n\t\t\thas transferred to using the DoH protocol, or DoH-FIPS, and then remove the\n\t\t\tDo53.</p>\n         </important>"
                     }
                 }
             },
@@ -8862,6 +9134,9 @@
                 "target": "com.amazonaws.route53resolver#UpdateResolverRuleResponse"
             },
             "errors": [
+                {
+                    "target": "com.amazonaws.route53resolver#AccessDeniedException"
+                },
                 {
                     "target": "com.amazonaws.route53resolver#InternalServiceErrorException"
                 },
@@ -8955,7 +9230,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>You have provided an invalid command. Supported values are <code>ADD</code>,\n\t\t\t<code>REMOVE</code>, or <code>REPLACE</code> a domain.</p>",
+                "smithy.api#documentation": "<p>You have provided an invalid command. If you ran the <code>UpdateFirewallDomains</code> request. supported values are <code>ADD</code>,\n\t\t\t<code>REMOVE</code>, or <code>REPLACE</code> a domain.</p>",
                 "smithy.api#error": "client"
             }
         }

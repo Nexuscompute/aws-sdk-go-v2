@@ -110,6 +110,46 @@ func (m *validateOpGetResourcePermission) HandleInitialize(ctx context.Context, 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListApplications struct {
+}
+
+func (*validateOpListApplications) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListApplications) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListApplicationsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListApplicationsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListOperationEvents struct {
+}
+
+func (*validateOpListOperationEvents) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListOperationEvents) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListOperationEventsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListOperationEventsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListOperations struct {
 }
 
@@ -190,6 +230,26 @@ func (m *validateOpRegisterApplication) HandleInitialize(ctx context.Context, in
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpStartApplication struct {
+}
+
+func (*validateOpStartApplication) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStartApplication) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StartApplicationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStartApplicationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpStartApplicationRefresh struct {
 }
 
@@ -205,6 +265,26 @@ func (m *validateOpStartApplicationRefresh) HandleInitialize(ctx context.Context
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpStartApplicationRefreshInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpStopApplication struct {
+}
+
+func (*validateOpStopApplication) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStopApplication) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StopApplicationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStopApplicationInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -290,6 +370,14 @@ func addOpGetResourcePermissionValidationMiddleware(stack *middleware.Stack) err
 	return stack.Initialize.Add(&validateOpGetResourcePermission{}, middleware.After)
 }
 
+func addOpListApplicationsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListApplications{}, middleware.After)
+}
+
+func addOpListOperationEventsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListOperationEvents{}, middleware.After)
+}
+
 func addOpListOperationsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListOperations{}, middleware.After)
 }
@@ -306,8 +394,16 @@ func addOpRegisterApplicationValidationMiddleware(stack *middleware.Stack) error
 	return stack.Initialize.Add(&validateOpRegisterApplication{}, middleware.After)
 }
 
+func addOpStartApplicationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStartApplication{}, middleware.After)
+}
+
 func addOpStartApplicationRefreshValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpStartApplicationRefresh{}, middleware.After)
+}
+
+func addOpStopApplicationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStopApplication{}, middleware.After)
 }
 
 func addOpTagResourceValidationMiddleware(stack *middleware.Stack) error {
@@ -370,6 +466,44 @@ func validateBackintConfig(v *types.BackintConfig) error {
 	}
 	if v.EnsureNoBackupInProcess == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("EnsureNoBackupInProcess"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateComponentInfo(v *types.ComponentInfo) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ComponentInfo"}
+	if len(v.ComponentType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("ComponentType"))
+	}
+	if v.Sid == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Sid"))
+	}
+	if v.Ec2InstanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Ec2InstanceId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateComponentInfoList(v []types.ComponentInfo) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ComponentInfoList"}
+	for i := range v {
+		if err := validateComponentInfo(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -494,6 +628,43 @@ func validateOpGetResourcePermissionInput(v *GetResourcePermissionInput) error {
 	}
 }
 
+func validateOpListApplicationsInput(v *ListApplicationsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListApplicationsInput"}
+	if v.Filters != nil {
+		if err := validateFilterList(v.Filters); err != nil {
+			invalidParams.AddNested("Filters", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListOperationEventsInput(v *ListOperationEventsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListOperationEventsInput"}
+	if v.OperationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OperationId"))
+	}
+	if v.Filters != nil {
+		if err := validateFilterList(v.Filters); err != nil {
+			invalidParams.AddNested("Filters", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListOperationsInput(v *ListOperationsInput) error {
 	if v == nil {
 		return nil
@@ -564,12 +735,30 @@ func validateOpRegisterApplicationInput(v *RegisterApplicationInput) error {
 	if v.Instances == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Instances"))
 	}
-	if v.Credentials == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Credentials"))
-	} else if v.Credentials != nil {
+	if v.Credentials != nil {
 		if err := validateApplicationCredentialList(v.Credentials); err != nil {
 			invalidParams.AddNested("Credentials", err.(smithy.InvalidParamsError))
 		}
+	}
+	if v.ComponentsInfo != nil {
+		if err := validateComponentInfoList(v.ComponentsInfo); err != nil {
+			invalidParams.AddNested("ComponentsInfo", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStartApplicationInput(v *StartApplicationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StartApplicationInput"}
+	if v.ApplicationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ApplicationId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -583,6 +772,21 @@ func validateOpStartApplicationRefreshInput(v *StartApplicationRefreshInput) err
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "StartApplicationRefreshInput"}
+	if v.ApplicationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ApplicationId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStopApplicationInput(v *StopApplicationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StopApplicationInput"}
 	if v.ApplicationId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ApplicationId"))
 	}

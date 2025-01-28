@@ -2,29 +2,84 @@
 
 package types
 
+type AdapterVersionStatus string
+
+// Enum values for AdapterVersionStatus
+const (
+	AdapterVersionStatusActive             AdapterVersionStatus = "ACTIVE"
+	AdapterVersionStatusAtRisk             AdapterVersionStatus = "AT_RISK"
+	AdapterVersionStatusDeprecated         AdapterVersionStatus = "DEPRECATED"
+	AdapterVersionStatusCreationError      AdapterVersionStatus = "CREATION_ERROR"
+	AdapterVersionStatusCreationInProgress AdapterVersionStatus = "CREATION_IN_PROGRESS"
+)
+
+// Values returns all known values for AdapterVersionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AdapterVersionStatus) Values() []AdapterVersionStatus {
+	return []AdapterVersionStatus{
+		"ACTIVE",
+		"AT_RISK",
+		"DEPRECATED",
+		"CREATION_ERROR",
+		"CREATION_IN_PROGRESS",
+	}
+}
+
+type AutoUpdate string
+
+// Enum values for AutoUpdate
+const (
+	AutoUpdateEnabled  AutoUpdate = "ENABLED"
+	AutoUpdateDisabled AutoUpdate = "DISABLED"
+)
+
+// Values returns all known values for AutoUpdate. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AutoUpdate) Values() []AutoUpdate {
+	return []AutoUpdate{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type BlockType string
 
 // Enum values for BlockType
 const (
-	BlockTypeKeyValueSet      BlockType = "KEY_VALUE_SET"
-	BlockTypePage             BlockType = "PAGE"
-	BlockTypeLine             BlockType = "LINE"
-	BlockTypeWord             BlockType = "WORD"
-	BlockTypeTable            BlockType = "TABLE"
-	BlockTypeCell             BlockType = "CELL"
-	BlockTypeSelectionElement BlockType = "SELECTION_ELEMENT"
-	BlockTypeMergedCell       BlockType = "MERGED_CELL"
-	BlockTypeTitle            BlockType = "TITLE"
-	BlockTypeQuery            BlockType = "QUERY"
-	BlockTypeQueryResult      BlockType = "QUERY_RESULT"
-	BlockTypeSignature        BlockType = "SIGNATURE"
-	BlockTypeTableTitle       BlockType = "TABLE_TITLE"
-	BlockTypeTableFooter      BlockType = "TABLE_FOOTER"
+	BlockTypeKeyValueSet         BlockType = "KEY_VALUE_SET"
+	BlockTypePage                BlockType = "PAGE"
+	BlockTypeLine                BlockType = "LINE"
+	BlockTypeWord                BlockType = "WORD"
+	BlockTypeTable               BlockType = "TABLE"
+	BlockTypeCell                BlockType = "CELL"
+	BlockTypeSelectionElement    BlockType = "SELECTION_ELEMENT"
+	BlockTypeMergedCell          BlockType = "MERGED_CELL"
+	BlockTypeTitle               BlockType = "TITLE"
+	BlockTypeQuery               BlockType = "QUERY"
+	BlockTypeQueryResult         BlockType = "QUERY_RESULT"
+	BlockTypeSignature           BlockType = "SIGNATURE"
+	BlockTypeTableTitle          BlockType = "TABLE_TITLE"
+	BlockTypeTableFooter         BlockType = "TABLE_FOOTER"
+	BlockTypeLayoutText          BlockType = "LAYOUT_TEXT"
+	BlockTypeLayoutTitle         BlockType = "LAYOUT_TITLE"
+	BlockTypeLayoutHeader        BlockType = "LAYOUT_HEADER"
+	BlockTypeLayoutFooter        BlockType = "LAYOUT_FOOTER"
+	BlockTypeLayoutSectionHeader BlockType = "LAYOUT_SECTION_HEADER"
+	BlockTypeLayoutPageNumber    BlockType = "LAYOUT_PAGE_NUMBER"
+	BlockTypeLayoutList          BlockType = "LAYOUT_LIST"
+	BlockTypeLayoutFigure        BlockType = "LAYOUT_FIGURE"
+	BlockTypeLayoutTable         BlockType = "LAYOUT_TABLE"
+	BlockTypeLayoutKeyValue      BlockType = "LAYOUT_KEY_VALUE"
 )
 
 // Values returns all known values for BlockType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BlockType) Values() []BlockType {
 	return []BlockType{
 		"KEY_VALUE_SET",
@@ -41,6 +96,16 @@ func (BlockType) Values() []BlockType {
 		"SIGNATURE",
 		"TABLE_TITLE",
 		"TABLE_FOOTER",
+		"LAYOUT_TEXT",
+		"LAYOUT_TITLE",
+		"LAYOUT_HEADER",
+		"LAYOUT_FOOTER",
+		"LAYOUT_SECTION_HEADER",
+		"LAYOUT_PAGE_NUMBER",
+		"LAYOUT_LIST",
+		"LAYOUT_FIGURE",
+		"LAYOUT_TABLE",
+		"LAYOUT_KEY_VALUE",
 	}
 }
 
@@ -53,8 +118,9 @@ const (
 )
 
 // Values returns all known values for ContentClassifier. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ContentClassifier) Values() []ContentClassifier {
 	return []ContentClassifier{
 		"FreeOfPersonallyIdentifiableInformation",
@@ -78,8 +144,9 @@ const (
 )
 
 // Values returns all known values for EntityType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EntityType) Values() []EntityType {
 	return []EntityType{
 		"KEY",
@@ -102,17 +169,20 @@ const (
 	FeatureTypeForms      FeatureType = "FORMS"
 	FeatureTypeQueries    FeatureType = "QUERIES"
 	FeatureTypeSignatures FeatureType = "SIGNATURES"
+	FeatureTypeLayout     FeatureType = "LAYOUT"
 )
 
 // Values returns all known values for FeatureType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FeatureType) Values() []FeatureType {
 	return []FeatureType{
 		"TABLES",
 		"FORMS",
 		"QUERIES",
 		"SIGNATURES",
+		"LAYOUT",
 	}
 }
 
@@ -127,8 +197,9 @@ const (
 )
 
 // Values returns all known values for JobStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobStatus) Values() []JobStatus {
 	return []JobStatus{
 		"IN_PROGRESS",
@@ -154,8 +225,9 @@ const (
 )
 
 // Values returns all known values for RelationshipType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RelationshipType) Values() []RelationshipType {
 	return []RelationshipType{
 		"VALUE",
@@ -179,8 +251,9 @@ const (
 )
 
 // Values returns all known values for SelectionStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SelectionStatus) Values() []SelectionStatus {
 	return []SelectionStatus{
 		"SELECTED",
@@ -197,8 +270,9 @@ const (
 )
 
 // Values returns all known values for TextType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TextType) Values() []TextType {
 	return []TextType{
 		"HANDWRITING",
@@ -214,8 +288,9 @@ const (
 )
 
 // Values returns all known values for ValueType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ValueType) Values() []ValueType {
 	return []ValueType{
 		"DATE",

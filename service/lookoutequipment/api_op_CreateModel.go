@@ -4,28 +4,26 @@ package lookoutequipment
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/lookoutequipment/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
 )
 
-// Creates an ML model for data inference. A machine-learning (ML) model is a
-// mathematical model that finds patterns in your data. In Amazon Lookout for
-// Equipment, the model learns the patterns of normal behavior and detects abnormal
-// behavior that could be potential equipment failure (or maintenance events). The
-// models are made by analyzing normal data and abnormalities in machine behavior
-// that have already occurred. Your model is trained using a portion of the data
-// from your dataset and uses that data to learn patterns of normal behavior and
-// abnormal patterns that lead to equipment failure. Another portion of the data is
-// used to evaluate the model's accuracy.
+// Creates a machine learning model for data inference.
+//
+// A machine-learning (ML) model is a mathematical model that finds patterns in
+// your data. In Amazon Lookout for Equipment, the model learns the patterns of
+// normal behavior and detects abnormal behavior that could be potential equipment
+// failure (or maintenance events). The models are made by analyzing normal data
+// and abnormalities in machine behavior that have already occurred.
+//
+// Your model is trained using a portion of the data from your dataset and uses
+// that data to learn patterns of normal behavior and abnormal patterns that lead
+// to equipment failure. Another portion of the data is used to evaluate the
+// model's accuracy.
 func (c *Client) CreateModel(ctx context.Context, params *CreateModelInput, optFns ...func(*Options)) (*CreateModelOutput, error) {
 	if params == nil {
 		params = &CreateModelInput{}
@@ -49,12 +47,12 @@ type CreateModelInput struct {
 	// This member is required.
 	ClientToken *string
 
-	// The name of the dataset for the ML model being created.
+	// The name of the dataset for the machine learning model being created.
 	//
 	// This member is required.
 	DatasetName *string
 
-	// The name for the ML model to be created.
+	// The name for the machine learning model to be created.
 	//
 	// This member is required.
 	ModelName *string
@@ -63,49 +61,56 @@ type CreateModelInput struct {
 	// data after post processing by Amazon Lookout for Equipment. For example, if you
 	// provide data that has been collected at a 1 second level and you want the system
 	// to resample the data at a 1 minute rate before training, the TargetSamplingRate
-	// is 1 minute. When providing a value for the TargetSamplingRate , you must attach
-	// the prefix "PT" to the rate you want. The value for a 1 second rate is therefore
-	// PT1S, the value for a 15 minute rate is PT15M, and the value for a 1 hour rate
-	// is PT1H
+	// is 1 minute.
+	//
+	// When providing a value for the TargetSamplingRate , you must attach the prefix
+	// "PT" to the rate you want. The value for a 1 second rate is therefore PT1S, the
+	// value for a 15 minute rate is PT15M, and the value for a 1 hour rate is PT1H
 	DataPreProcessingConfiguration *types.DataPreProcessingConfiguration
 
-	// The data schema for the ML model being created.
+	// The data schema for the machine learning model being created.
 	DatasetSchema *types.DatasetSchema
 
-	// Indicates the time reference in the dataset that should be used to end the
-	// subset of evaluation data for the ML model.
+	//  Indicates the time reference in the dataset that should be used to end the
+	// subset of evaluation data for the machine learning model.
 	EvaluationDataEndTime *time.Time
 
 	// Indicates the time reference in the dataset that should be used to begin the
-	// subset of evaluation data for the ML model.
+	// subset of evaluation data for the machine learning model.
 	EvaluationDataStartTime *time.Time
 
-	// The input configuration for the labels being used for the ML model that's being
-	// created.
+	// The input configuration for the labels being used for the machine learning
+	// model that's being created.
 	LabelsInputConfiguration *types.LabelsInputConfiguration
+
+	// The Amazon S3 location where you want Amazon Lookout for Equipment to save the
+	// pointwise model diagnostics.
+	//
+	// You must also specify the RoleArn request parameter.
+	ModelDiagnosticsOutputConfiguration *types.ModelDiagnosticsOutputConfiguration
 
 	// Indicates that the asset associated with this sensor has been shut off. As long
 	// as this condition is met, Lookout for Equipment will not use data from this
 	// asset for training, evaluation, or inference.
 	OffCondition *string
 
-	// The Amazon Resource Name (ARN) of a role with permission to access the data
-	// source being used to create the ML model.
+	//  The Amazon Resource Name (ARN) of a role with permission to access the data
+	// source being used to create the machine learning model.
 	RoleArn *string
 
 	// Provides the identifier of the KMS key used to encrypt model data by Amazon
 	// Lookout for Equipment.
 	ServerSideKmsKeyId *string
 
-	// Any tags associated with the ML model being created.
+	//  Any tags associated with the machine learning model being created.
 	Tags []types.Tag
 
 	// Indicates the time reference in the dataset that should be used to end the
-	// subset of training data for the ML model.
+	// subset of training data for the machine learning model.
 	TrainingDataEndTime *time.Time
 
 	// Indicates the time reference in the dataset that should be used to begin the
-	// subset of training data for the ML model.
+	// subset of training data for the machine learning model.
 	TrainingDataStartTime *time.Time
 
 	noSmithyDocumentSerde
@@ -126,6 +131,9 @@ type CreateModelOutput struct {
 }
 
 func (c *Client) addOperationCreateModelMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson10_serializeOpCreateModel{}, middleware.After)
 	if err != nil {
 		return err
@@ -134,34 +142,38 @@ func (c *Client) addOperationCreateModelMiddlewares(stack *middleware.Stack, opt
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateModel"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -173,7 +185,13 @@ func (c *Client) addOperationCreateModelMiddlewares(stack *middleware.Stack, opt
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateModelResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateModelMiddleware(stack, options); err != nil {
@@ -185,7 +203,7 @@ func (c *Client) addOperationCreateModelMiddlewares(stack *middleware.Stack, opt
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateModel(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -197,7 +215,19 @@ func (c *Client) addOperationCreateModelMiddlewares(stack *middleware.Stack, opt
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -240,130 +270,6 @@ func newServiceMetadataMiddleware_opCreateModel(region string) *awsmiddleware.Re
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "lookoutequipment",
 		OperationName: "CreateModel",
 	}
-}
-
-type opCreateModelResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateModelResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateModelResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "lookoutequipment"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "lookoutequipment"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("lookoutequipment")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateModelResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateModelResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

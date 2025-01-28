@@ -1609,6 +1609,24 @@ func validateConfigurationSet(v *types.ConfigurationSet) error {
 	}
 }
 
+func validateConnectAction(v *types.ConnectAction) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ConnectAction"}
+	if v.InstanceARN == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceARN"))
+	}
+	if v.IAMRoleARN == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IAMRoleARN"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateContent(v *types.Content) error {
 	if v == nil {
 		return nil
@@ -1859,6 +1877,11 @@ func validateReceiptAction(v *types.ReceiptAction) error {
 	if v.SNSAction != nil {
 		if err := validateSNSAction(v.SNSAction); err != nil {
 			invalidParams.AddNested("SNSAction", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ConnectAction != nil {
+		if err := validateConnectAction(v.ConnectAction); err != nil {
+			invalidParams.AddNested("ConnectAction", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -2684,6 +2707,9 @@ func validateOpSendBulkTemplatedEmailInput(v *SendBulkTemplatedEmailInput) error
 	}
 	if v.Template == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Template"))
+	}
+	if v.DefaultTemplateData == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DefaultTemplateData"))
 	}
 	if v.Destinations == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Destinations"))

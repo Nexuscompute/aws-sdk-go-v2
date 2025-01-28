@@ -4,27 +4,29 @@ package sagemaker
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/sagemaker/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Create a new FeatureGroup . A FeatureGroup is a group of Features defined in
-// the FeatureStore to describe a Record . The FeatureGroup defines the schema and
-// features contained in the FeatureGroup. A FeatureGroup definition is composed
-// of a list of Features , a RecordIdentifierFeatureName , an EventTimeFeatureName
-// and configurations for its OnlineStore and OfflineStore . Check Amazon Web
-// Services service quotas (https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html)
-// to see the FeatureGroup s quota for your Amazon Web Services account. You must
-// include at least one of OnlineStoreConfig and OfflineStoreConfig to create a
-// FeatureGroup .
+// the FeatureStore to describe a Record .
+//
+// The FeatureGroup defines the schema and features contained in the FeatureGroup .
+// A FeatureGroup definition is composed of a list of Features , a
+// RecordIdentifierFeatureName , an EventTimeFeatureName and configurations for
+// its OnlineStore and OfflineStore . Check [Amazon Web Services service quotas] to see the FeatureGroup s quota for
+// your Amazon Web Services account.
+//
+// Note that it can take approximately 10-15 minutes to provision an OnlineStore
+// FeatureGroup with the InMemory StorageType .
+//
+// You must include at least one of OnlineStoreConfig and OfflineStoreConfig to
+// create a FeatureGroup .
+//
+// [Amazon Web Services service quotas]: https://docs.aws.amazon.com/general/latest/gr/aws_service_limits.html
 func (c *Client) CreateFeatureGroup(ctx context.Context, params *CreateFeatureGroupInput, optFns ...func(*Options)) (*CreateFeatureGroupOutput, error) {
 	if params == nil {
 		params = &CreateFeatureGroupInput{}
@@ -42,12 +44,16 @@ func (c *Client) CreateFeatureGroup(ctx context.Context, params *CreateFeatureGr
 
 type CreateFeatureGroupInput struct {
 
-	// The name of the feature that stores the EventTime of a Record in a FeatureGroup
-	// . An EventTime is a point in time when a new event occurs that corresponds to
-	// the creation or update of a Record in a FeatureGroup . All Records in the
-	// FeatureGroup must have a corresponding EventTime . An EventTime can be a String
-	// or Fractional .
+	// The name of the feature that stores the EventTime of a Record in a FeatureGroup .
+	//
+	// An EventTime is a point in time when a new event occurs that corresponds to the
+	// creation or update of a Record in a FeatureGroup . All Records in the
+	// FeatureGroup must have a corresponding EventTime .
+	//
+	// An EventTime can be a String or Fractional .
+	//
 	//   - Fractional : EventTime feature values must be a Unix timestamp in seconds.
+	//
 	//   - String : EventTime feature values must be an ISO-8601 string in the format.
 	//   The following formats are supported yyyy-MM-dd'T'HH:mm:ssZ and
 	//   yyyy-MM-dd'T'HH:mm:ss.SSSZ where yyyy , MM , and dd represent the year, month,
@@ -58,18 +64,26 @@ type CreateFeatureGroupInput struct {
 	EventTimeFeatureName *string
 
 	// A list of Feature names and types. Name and Type is compulsory per Feature .
-	// Valid feature FeatureType s are Integral , Fractional and String . FeatureName s
-	// cannot be any of the following: is_deleted , write_time , api_invocation_time
+	//
+	// Valid feature FeatureType s are Integral , Fractional and String .
+	//
+	// FeatureName s cannot be any of the following: is_deleted , write_time ,
+	// api_invocation_time
+	//
 	// You can create up to 2,500 FeatureDefinition s per FeatureGroup .
 	//
 	// This member is required.
 	FeatureDefinitions []types.FeatureDefinition
 
 	// The name of the FeatureGroup . The name must be unique within an Amazon Web
-	// Services Region in an Amazon Web Services account. The name:
-	//   - Must start and end with an alphanumeric character.
-	//   - Can only contain alphanumeric character and hyphens. Spaces are not
-	//   allowed.
+	// Services Region in an Amazon Web Services account.
+	//
+	// The name:
+	//
+	//   - Must start with an alphanumeric character.
+	//
+	//   - Can only include alphanumeric characters, underscores, and hyphens. Spaces
+	//   are not allowed.
 	//
 	// This member is required.
 	FeatureGroupName *string
@@ -77,9 +91,14 @@ type CreateFeatureGroupInput struct {
 	// The name of the Feature whose value uniquely identifies a Record defined in the
 	// FeatureStore . Only the latest record per identifier value will be stored in the
 	// OnlineStore . RecordIdentifierFeatureName must be one of feature definitions'
-	// names. You use the RecordIdentifierFeatureName to access data in a FeatureStore
-	// . This name:
-	//   - Must start and end with an alphanumeric character.
+	// names.
+	//
+	// You use the RecordIdentifierFeatureName to access data in a FeatureStore .
+	//
+	// This name:
+	//
+	//   - Must start with an alphanumeric character.
+	//
 	//   - Can only contains alphanumeric characters, hyphens, underscores. Spaces are
 	//   not allowed.
 	//
@@ -91,25 +110,34 @@ type CreateFeatureGroupInput struct {
 
 	// Use this to configure an OfflineFeatureStore . This parameter allows you to
 	// specify:
+	//
 	//   - The Amazon Simple Storage Service (Amazon S3) location of an OfflineStore .
+	//
 	//   - A configuration for an Amazon Web Services Glue or Amazon Web Services Hive
 	//   data catalog.
+	//
 	//   - An KMS encryption key to encrypt the Amazon S3 location used for
 	//   OfflineStore . If KMS encryption key is not specified, by default we encrypt
-	//   all data at rest using Amazon Web Services KMS key. By defining your
-	//   bucket-level key (https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html)
-	//   for SSE, you can reduce Amazon Web Services KMS requests costs by up to 99
-	//   percent.
+	//   all data at rest using Amazon Web Services KMS key. By defining your [bucket-level key]for SSE,
+	//   you can reduce Amazon Web Services KMS requests costs by up to 99 percent.
+	//
 	//   - Format for the offline store table. Supported formats are Glue (Default)
-	//   and Apache Iceberg (https://iceberg.apache.org/) .
-	// To learn more about this parameter, see OfflineStoreConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OfflineStoreConfig.html)
-	// .
+	//   and [Apache Iceberg].
+	//
+	// To learn more about this parameter, see [OfflineStoreConfig].
+	//
+	// [Apache Iceberg]: https://iceberg.apache.org/
+	// [OfflineStoreConfig]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OfflineStoreConfig.html
+	// [bucket-level key]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucket-key.html
 	OfflineStoreConfig *types.OfflineStoreConfig
 
 	// You can turn the OnlineStore on or off by specifying True for the
-	// EnableOnlineStore flag in OnlineStoreConfig . You can also include an Amazon Web
-	// Services KMS key ID ( KMSKeyId ) for at-rest encryption of the OnlineStore . The
-	// default value is False .
+	// EnableOnlineStore flag in OnlineStoreConfig .
+	//
+	// You can also include an Amazon Web Services KMS key ID ( KMSKeyId ) for at-rest
+	// encryption of the OnlineStore .
+	//
+	// The default value is False .
 	OnlineStoreConfig *types.OnlineStoreConfig
 
 	// The Amazon Resource Name (ARN) of the IAM execution role used to persist data
@@ -118,6 +146,22 @@ type CreateFeatureGroupInput struct {
 
 	// Tags used to identify Features in each FeatureGroup .
 	Tags []types.Tag
+
+	// Used to set feature group throughput configuration. There are two modes:
+	// ON_DEMAND and PROVISIONED . With on-demand mode, you are charged for data reads
+	// and writes that your application performs on your feature group. You do not need
+	// to specify read and write throughput because Feature Store accommodates your
+	// workloads as they ramp up and down. You can switch a feature group to on-demand
+	// only once in a 24 hour period. With provisioned throughput mode, you specify the
+	// read and write capacity per second that you expect your application to require,
+	// and you are billed based on those limits. Exceeding provisioned throughput will
+	// result in your requests being throttled.
+	//
+	// Note: PROVISIONED throughput mode is supported only for feature groups that are
+	// offline-only, or use the [Standard]Standard tier online store.
+	//
+	// [Standard]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_OnlineStoreConfig.html#sagemaker-Type-OnlineStoreConfig-StorageType
+	ThroughputConfig *types.ThroughputConfig
 
 	noSmithyDocumentSerde
 }
@@ -137,6 +181,9 @@ type CreateFeatureGroupOutput struct {
 }
 
 func (c *Client) addOperationCreateFeatureGroupMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateFeatureGroup{}, middleware.After)
 	if err != nil {
 		return err
@@ -145,34 +192,38 @@ func (c *Client) addOperationCreateFeatureGroupMiddlewares(stack *middleware.Sta
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateFeatureGroup"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -184,7 +235,13 @@ func (c *Client) addOperationCreateFeatureGroupMiddlewares(stack *middleware.Sta
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateFeatureGroupResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateFeatureGroupValidationMiddleware(stack); err != nil {
@@ -193,7 +250,7 @@ func (c *Client) addOperationCreateFeatureGroupMiddlewares(stack *middleware.Sta
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateFeatureGroup(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -205,7 +262,19 @@ func (c *Client) addOperationCreateFeatureGroupMiddlewares(stack *middleware.Sta
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -215,130 +284,6 @@ func newServiceMetadataMiddleware_opCreateFeatureGroup(region string) *awsmiddle
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "sagemaker",
 		OperationName: "CreateFeatureGroup",
 	}
-}
-
-type opCreateFeatureGroupResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateFeatureGroupResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateFeatureGroupResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "sagemaker"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "sagemaker"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("sagemaker")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateFeatureGroupResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateFeatureGroupResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

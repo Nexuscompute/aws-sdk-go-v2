@@ -290,6 +290,26 @@ func (m *validateOpDisassociatePricingRules) HandleInitialize(ctx context.Contex
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetBillingGroupCostReport struct {
+}
+
+func (*validateOpGetBillingGroupCostReport) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetBillingGroupCostReport) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetBillingGroupCostReportInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetBillingGroupCostReportInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListCustomLineItemVersions struct {
 }
 
@@ -566,6 +586,10 @@ func addOpDisassociatePricingRulesValidationMiddleware(stack *middleware.Stack) 
 	return stack.Initialize.Add(&validateOpDisassociatePricingRules{}, middleware.After)
 }
 
+func addOpGetBillingGroupCostReportValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetBillingGroupCostReport{}, middleware.After)
+}
+
 func addOpListCustomLineItemVersionsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListCustomLineItemVersions{}, middleware.After)
 }
@@ -617,6 +641,24 @@ func validateAccountGrouping(v *types.AccountGrouping) error {
 	invalidParams := smithy.InvalidParamsError{Context: "AccountGrouping"}
 	if v.LinkedAccountIds == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("LinkedAccountIds"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateBillingPeriodRange(v *types.BillingPeriodRange) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BillingPeriodRange"}
+	if v.InclusiveStartBillingPeriod == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InclusiveStartBillingPeriod"))
+	}
+	if v.ExclusiveEndBillingPeriod == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ExclusiveEndBillingPeriod"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -707,6 +749,11 @@ func validateCustomLineItemChargeDetails(v *types.CustomLineItemChargeDetails) e
 	if len(v.Type) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Type"))
 	}
+	if v.LineItemFilters != nil {
+		if err := validateLineItemFiltersList(v.LineItemFilters); err != nil {
+			invalidParams.AddNested("LineItemFilters", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -744,6 +791,44 @@ func validateCustomLineItemPercentageChargeDetails(v *types.CustomLineItemPercen
 	}
 }
 
+func validateLineItemFilter(v *types.LineItemFilter) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "LineItemFilter"}
+	if len(v.Attribute) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Attribute"))
+	}
+	if len(v.MatchOption) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("MatchOption"))
+	}
+	if v.Values == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Values"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateLineItemFiltersList(v []types.LineItemFilter) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "LineItemFiltersList"}
+	for i := range v {
+		if err := validateLineItemFilter(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateUpdateCustomLineItemChargeDetails(v *types.UpdateCustomLineItemChargeDetails) error {
 	if v == nil {
 		return nil
@@ -757,6 +842,11 @@ func validateUpdateCustomLineItemChargeDetails(v *types.UpdateCustomLineItemChar
 	if v.Percentage != nil {
 		if err := validateUpdateCustomLineItemPercentageChargeDetails(v.Percentage); err != nil {
 			invalidParams.AddNested("Percentage", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.LineItemFilters != nil {
+		if err := validateLineItemFiltersList(v.LineItemFilters); err != nil {
+			invalidParams.AddNested("LineItemFilters", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1108,6 +1198,26 @@ func validateOpDisassociatePricingRulesInput(v *DisassociatePricingRulesInput) e
 	}
 	if v.PricingRuleArns == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("PricingRuleArns"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetBillingGroupCostReportInput(v *GetBillingGroupCostReportInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetBillingGroupCostReportInput"}
+	if v.Arn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Arn"))
+	}
+	if v.BillingPeriodRange != nil {
+		if err := validateBillingPeriodRange(v.BillingPeriodRange); err != nil {
+			invalidParams.AddNested("BillingPeriodRange", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

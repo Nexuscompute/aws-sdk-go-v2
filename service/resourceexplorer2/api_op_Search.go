@@ -4,30 +4,29 @@ package resourceexplorer2
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/resourceexplorer2/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Searches for resources and displays details about all resources that match the
-// specified criteria. You must specify a query string. All search queries must use
-// a view. If you don't explicitly specify a view, then Amazon Web Services
-// Resource Explorer uses the default view for the Amazon Web Services Region in
-// which you call this operation. The results are the logical intersection of the
-// results that match both the QueryString parameter supplied to this operation
-// and the SearchFilter parameter attached to the view. For the complete syntax
-// supported by the QueryString parameter, see Search query syntax reference for
-// Resource Explorer (https://docs.aws.amazon.com/resource-explorer/latest/APIReference/about-query-syntax.html)
-// . If your search results are empty, or are missing results that you think should
-// be there, see Troubleshooting Resource Explorer search (https://docs.aws.amazon.com/resource-explorer/latest/userguide/troubleshooting_search.html)
-// .
+// specified criteria. You must specify a query string.
+//
+// All search queries must use a view. If you don't explicitly specify a view,
+// then Amazon Web Services Resource Explorer uses the default view for the Amazon
+// Web Services Region in which you call this operation. The results are the
+// logical intersection of the results that match both the QueryString parameter
+// supplied to this operation and the SearchFilter parameter attached to the view.
+//
+// For the complete syntax supported by the QueryString parameter, see [Search query syntax reference for Resource Explorer].
+//
+// If your search results are empty, or are missing results that you think should
+// be there, see [Troubleshooting Resource Explorer search].
+//
+// [Troubleshooting Resource Explorer search]: https://docs.aws.amazon.com/resource-explorer/latest/userguide/troubleshooting_search.html
+// [Search query syntax reference for Resource Explorer]: https://docs.aws.amazon.com/resource-explorer/latest/APIReference/about-query-syntax.html
 func (c *Client) Search(ctx context.Context, params *SearchInput, optFns ...func(*Options)) (*SearchOutput, error) {
 	if params == nil {
 		params = &SearchInput{}
@@ -46,12 +45,18 @@ func (c *Client) Search(ctx context.Context, params *SearchInput, optFns ...func
 type SearchInput struct {
 
 	// A string that includes keywords and filters that specify the resources that you
-	// want to include in the results. For the complete syntax supported by the
-	// QueryString parameter, see Search query syntax reference for Resource Explorer (https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html)
-	// . The search is completely case insensitive. You can specify an empty string to
-	// return all results up to the limit of 1,000 total results. The operation can
-	// return only the first 1,000 results. If the resource you want is not included,
-	// then use a different value for QueryString to refine the results.
+	// want to include in the results.
+	//
+	// For the complete syntax supported by the QueryString parameter, see [Search query syntax reference for Resource Explorer].
+	//
+	// The search is completely case insensitive. You can specify an empty string to
+	// return all results up to the limit of 1,000 total results.
+	//
+	// The operation can return only the first 1,000 results. If the resource you want
+	// is not included, then use a different value for QueryString to refine the
+	// results.
+	//
+	// [Search query syntax reference for Resource Explorer]: https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html
 	//
 	// This member is required.
 	QueryString *string
@@ -61,24 +66,27 @@ type SearchInput struct {
 	// appropriate to the operation. If additional items exist beyond those included in
 	// the current response, the NextToken response element is present and has a value
 	// (is not null). Include that value as the NextToken request parameter in the
-	// next call to the operation to get the next part of the results. An API operation
-	// can return fewer results than the maximum even when there are more results
-	// available. You should check NextToken after every operation to ensure that you
-	// receive all of the results.
+	// next call to the operation to get the next part of the results.
+	//
+	// An API operation can return fewer results than the maximum even when there are
+	// more results available. You should check NextToken after every operation to
+	// ensure that you receive all of the results.
 	MaxResults *int32
 
 	// The parameter for receiving additional results if you receive a NextToken
 	// response in a previous request. A NextToken response indicates that more output
 	// is available. Set this parameter to the value of the previous call's NextToken
-	// response to indicate where the output should continue from.
+	// response to indicate where the output should continue from. The pagination
+	// tokens expire after 24 hours.
 	NextToken *string
 
-	// Specifies the Amazon resource name (ARN) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
-	// of the view to use for the query. If you don't specify a value for this
-	// parameter, then the operation automatically uses the default view for the Amazon
-	// Web Services Region in which you called this operation. If the Region either
-	// doesn't have a default view or if you don't have permission to use the default
-	// view, then the operation fails with a 401 Unauthorized exception.
+	// Specifies the [Amazon resource name (ARN)] of the view to use for the query. If you don't specify a value
+	// for this parameter, then the operation automatically uses the default view for
+	// the Amazon Web Services Region in which you called this operation. If the Region
+	// either doesn't have a default view or if you don't have permission to use the
+	// default view, then the operation fails with a 401 Unauthorized exception.
+	//
+	// [Amazon resource name (ARN)]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 	ViewArn *string
 
 	noSmithyDocumentSerde
@@ -92,14 +100,16 @@ type SearchOutput struct {
 	// If present, indicates that more output is available than is included in the
 	// current response. Use this value in the NextToken request parameter in a
 	// subsequent call to the operation to get the next part of the output. You should
-	// repeat this until the NextToken response element comes back as null .
+	// repeat this until the NextToken response element comes back as null . The
+	// pagination tokens expire after 24 hours.
 	NextToken *string
 
 	// The list of structures that describe the resources that match the query.
 	Resources []types.Resource
 
-	// The Amazon resource name (ARN) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
-	// of the view that this operation used to perform the search.
+	// The [Amazon resource name (ARN)] of the view that this operation used to perform the search.
+	//
+	// [Amazon resource name (ARN)]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 	ViewArn *string
 
 	// Metadata pertaining to the operation's result.
@@ -109,6 +119,9 @@ type SearchOutput struct {
 }
 
 func (c *Client) addOperationSearchMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpSearch{}, middleware.After)
 	if err != nil {
 		return err
@@ -117,34 +130,38 @@ func (c *Client) addOperationSearchMiddlewares(stack *middleware.Stack, options 
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "Search"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -156,7 +173,13 @@ func (c *Client) addOperationSearchMiddlewares(stack *middleware.Stack, options 
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addSearchResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSearchValidationMiddleware(stack); err != nil {
@@ -165,7 +188,7 @@ func (c *Client) addOperationSearchMiddlewares(stack *middleware.Stack, options 
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opSearch(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -177,18 +200,23 @@ func (c *Client) addOperationSearchMiddlewares(stack *middleware.Stack, options 
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// SearchAPIClient is a client that implements the Search operation.
-type SearchAPIClient interface {
-	Search(context.Context, *SearchInput, ...func(*Options)) (*SearchOutput, error)
-}
-
-var _ SearchAPIClient = (*Client)(nil)
 
 // SearchPaginatorOptions is the paginator options for Search
 type SearchPaginatorOptions struct {
@@ -197,10 +225,11 @@ type SearchPaginatorOptions struct {
 	// appropriate to the operation. If additional items exist beyond those included in
 	// the current response, the NextToken response element is present and has a value
 	// (is not null). Include that value as the NextToken request parameter in the
-	// next call to the operation to get the next part of the results. An API operation
-	// can return fewer results than the maximum even when there are more results
-	// available. You should check NextToken after every operation to ensure that you
-	// receive all of the results.
+	// next call to the operation to get the next part of the results.
+	//
+	// An API operation can return fewer results than the maximum even when there are
+	// more results available. You should check NextToken after every operation to
+	// ensure that you receive all of the results.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token
@@ -261,6 +290,9 @@ func (p *SearchPaginator) NextPage(ctx context.Context, optFns ...func(*Options)
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.Search(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -280,133 +312,17 @@ func (p *SearchPaginator) NextPage(ctx context.Context, optFns ...func(*Options)
 	return result, nil
 }
 
+// SearchAPIClient is a client that implements the Search operation.
+type SearchAPIClient interface {
+	Search(context.Context, *SearchInput, ...func(*Options)) (*SearchOutput, error)
+}
+
+var _ SearchAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opSearch(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "resource-explorer-2",
 		OperationName: "Search",
 	}
-}
-
-type opSearchResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opSearchResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opSearchResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "resource-explorer-2"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "resource-explorer-2"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("resource-explorer-2")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addSearchResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opSearchResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:   options.Region,
-			UseFIPS:  options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint: options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

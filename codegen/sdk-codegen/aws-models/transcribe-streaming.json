@@ -96,7 +96,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>An encoded stream of audio blobs. Audio streams are encoded as either HTTP/2 or WebSocket \n      data frames.</p> \n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html\">Transcribing streaming audio</a>.</p>",
+                "smithy.api#documentation": "<p>An encoded stream of audio blobs. Audio streams are encoded as either HTTP/2 or WebSocket \n      data frames.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html\">Transcribing streaming audio</a>.</p>",
                 "smithy.api#streaming": {}
             }
         },
@@ -108,7 +108,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>One or more arguments to the <code>StartStreamTranscription</code>, \n      <code>StartMedicalStreamTranscription</code>, or <code>StartCallAnalyticsStreamTranscription</code> \n      operation was not valid. For example, <code>MediaEncoding</code> or <code>LanguageCode</code> \n      used not valid values. Check the specified parameters and try your request again.</p>",
+                "smithy.api#documentation": "<p>One or more arguments to the <code>StartStreamTranscription</code>, \n      <code>StartMedicalStreamTranscription</code>, or <code>StartCallAnalyticsStreamTranscription</code> \n      operation was not valid. For example, <code>MediaEncoding</code> or <code>LanguageCode</code> \n      used unsupported values. Check the specified parameters and try your request again.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 400
             }
@@ -317,7 +317,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Contains detailed information about your Call Analytics streaming session. These details are \n      provided in the <code>UtteranceEvent</code> and <code>CategoryEvent</code> objects.</p>",
+                "smithy.api#documentation": "<p>Contains detailed information about your real-time Call Analytics session. These details are \n      provided in the <code>UtteranceEvent</code> and <code>CategoryEvent</code> objects.</p>",
                 "smithy.api#streaming": {}
             }
         },
@@ -421,7 +421,7 @@
                 "PostCallAnalyticsSettings": {
                     "target": "com.amazonaws.transcribestreaming#PostCallAnalyticsSettings",
                     "traits": {
-                        "smithy.api#documentation": "<p>Provides additional optional settings for your Call Analytics post-call request, including \n      encryption and output locations for your redacted and unredacted transcript.</p>"
+                        "smithy.api#documentation": "<p>Provides additional optional settings for your Call Analytics post-call request, including \n      encryption and output locations for your redacted transcript.</p>\n         <p>\n            <code>PostCallAnalyticsSettings</code> provides you with the same insights as a \n      Call Analytics post-call transcription. Refer to <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/tca-post-call.html\">Post-call analytics</a> for more information \n      on this feature.</p>"
                     }
                 }
             },
@@ -732,16 +732,256 @@
                         "smithy.api#enumValue": "zh-CN"
                     }
                 },
+                "TH_TH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "th-TH"
+                    }
+                },
+                "ES_ES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "es-ES"
+                    }
+                },
+                "AR_SA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ar-SA"
+                    }
+                },
+                "PT_PT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "pt-PT"
+                    }
+                },
+                "CA_ES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ca-ES"
+                    }
+                },
+                "AR_AE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ar-AE"
+                    }
+                },
                 "HI_IN": {
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "hi-IN"
                     }
                 },
-                "TH_TH": {
+                "ZH_HK": {
                     "target": "smithy.api#Unit",
                     "traits": {
-                        "smithy.api#enumValue": "th-TH"
+                        "smithy.api#enumValue": "zh-HK"
+                    }
+                },
+                "NL_NL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "nl-NL"
+                    }
+                },
+                "NO_NO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "no-NO"
+                    }
+                },
+                "SV_SE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sv-SE"
+                    }
+                },
+                "PL_PL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "pl-PL"
+                    }
+                },
+                "FI_FI": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "fi-FI"
+                    }
+                },
+                "ZH_TW": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "zh-TW"
+                    }
+                },
+                "EN_IN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-IN"
+                    }
+                },
+                "EN_IE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-IE"
+                    }
+                },
+                "EN_NZ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-NZ"
+                    }
+                },
+                "EN_AB": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-AB"
+                    }
+                },
+                "EN_ZA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-ZA"
+                    }
+                },
+                "EN_WL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "en-WL"
+                    }
+                },
+                "DE_CH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "de-CH"
+                    }
+                },
+                "AF_ZA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "af-ZA"
+                    }
+                },
+                "EU_ES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "eu-ES"
+                    }
+                },
+                "HR_HR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "hr-HR"
+                    }
+                },
+                "CS_CZ": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "cs-CZ"
+                    }
+                },
+                "DA_DK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "da-DK"
+                    }
+                },
+                "FA_IR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "fa-IR"
+                    }
+                },
+                "GL_ES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "gl-ES"
+                    }
+                },
+                "EL_GR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "el-GR"
+                    }
+                },
+                "HE_IL": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "he-IL"
+                    }
+                },
+                "ID_ID": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "id-ID"
+                    }
+                },
+                "LV_LV": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "lv-LV"
+                    }
+                },
+                "MS_MY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ms-MY"
+                    }
+                },
+                "RO_RO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ro-RO"
+                    }
+                },
+                "RU_RU": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ru-RU"
+                    }
+                },
+                "SR_RS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sr-RS"
+                    }
+                },
+                "SK_SK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "sk-SK"
+                    }
+                },
+                "SO_SO": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "so-SO"
+                    }
+                },
+                "TL_PH": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "tl-PH"
+                    }
+                },
+                "UK_UA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "uk-UA"
+                    }
+                },
+                "VI_VN": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "vi-VN"
+                    }
+                },
+                "ZU_ZA": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "zu-ZA"
                     }
                 }
             }
@@ -915,7 +1155,7 @@
                 "Confidence": {
                     "target": "com.amazonaws.transcribestreaming#Confidence",
                     "traits": {
-                        "smithy.api#documentation": "<p>The confidence score associated with the identified PHI entity in your audio.</p>\n        <p>Confidence scores are values between 0 and 1. A larger value indicates a higher\n            probability that the identified entity correctly matches the entity spoken in your\n            media.</p>"
+                        "smithy.api#documentation": "<p>The confidence score associated with the identified PHI entity in your audio.</p>\n         <p>Confidence scores are values between 0 and 1. A larger value indicates a higher\n            probability that the identified entity correctly matches the entity spoken in your\n            media.</p>"
                     }
                 }
             },
@@ -961,7 +1201,7 @@
                 "Confidence": {
                     "target": "com.amazonaws.transcribestreaming#Confidence",
                     "traits": {
-                        "smithy.api#documentation": "<p>The confidence score associated with a word or phrase in your transcript.</p>\n        <p>Confidence scores are values between 0 and 1. A larger value indicates a higher\n            probability that the identified item correctly matches the item spoken in your\n            media.</p>"
+                        "smithy.api#documentation": "<p>The confidence score associated with a word or phrase in your transcript.</p>\n         <p>Confidence scores are values between 0 and 1. A larger value indicates a higher\n            probability that the identified item correctly matches the item spoken in your\n            media.</p>"
                     }
                 },
                 "Speaker": {
@@ -1008,7 +1248,7 @@
                     "target": "com.amazonaws.transcribestreaming#Boolean",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>Indicates if the segment is complete.</p>\n        <p>If <code>IsPartial</code> is <code>true</code>, the segment is not complete. If\n                <code>IsPartial</code> is <code>false</code>, the segment is complete.</p>"
+                        "smithy.api#documentation": "<p>Indicates if the segment is complete.</p>\n         <p>If <code>IsPartial</code> is <code>true</code>, the segment is not complete. If\n                <code>IsPartial</code> is <code>false</code>, the segment is complete.</p>"
                     }
                 },
                 "Alternatives": {
@@ -1025,7 +1265,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The <code>Result</code> associated with a \n            <code></code>.</p>\n        <p>Contains a set of transcription results from one or more audio segments, along with\n            additional information per your request parameters. This can include information relating to\n            alternative transcriptions, channel identification, partial result stabilization, language \n            identification, and other transcription-related data.</p>"
+                "smithy.api#documentation": "<p>The <code>Result</code> associated with a \n            <code></code>.</p>\n         <p>Contains a set of transcription results from one or more audio segments, along with\n            additional information per your request parameters. This can include information relating to\n            alternative transcriptions, channel identification, partial result stabilization, language \n            identification, and other transcription-related data.</p>"
             }
         },
         "com.amazonaws.transcribestreaming#MedicalResultList": {
@@ -1045,7 +1285,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The <code>MedicalTranscript</code> associated with a \n            <code></code>.</p>\n        <p>\n            <code>MedicalTranscript</code> contains <code>Results</code>, which contains a set of \n            transcription results from one or more audio segments, along with additional information per your \n            request parameters.</p>"
+                "smithy.api#documentation": "<p>The <code>MedicalTranscript</code> associated with a \n            <code></code>.</p>\n         <p>\n            <code>MedicalTranscript</code> contains <code>Results</code>, which contains a set of \n            transcription results from one or more audio segments, along with additional information per your \n            request parameters.</p>"
             }
         },
         "com.amazonaws.transcribestreaming#MedicalTranscriptEvent": {
@@ -1059,7 +1299,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The <code>MedicalTranscriptEvent</code> associated with a \n            <code>MedicalTranscriptResultStream</code>.</p>\n        <p>Contains a set of transcription results from one or more audio segments, along with additional \n            information per your request parameters.</p>"
+                "smithy.api#documentation": "<p>The <code>MedicalTranscriptEvent</code> associated with a \n            <code>MedicalTranscriptResultStream</code>.</p>\n         <p>Contains a set of transcription results from one or more audio segments, along with additional \n            information per your request parameters.</p>"
             }
         },
         "com.amazonaws.transcribestreaming#MedicalTranscriptResultStream": {
@@ -1068,7 +1308,7 @@
                 "TranscriptEvent": {
                     "target": "com.amazonaws.transcribestreaming#MedicalTranscriptEvent",
                     "traits": {
-                        "smithy.api#documentation": "<p>The <code>MedicalTranscriptEvent</code> associated with a \n            <code>MedicalTranscriptResultStream</code>.</p>\n        <p>Contains a set of transcription results from one or more audio segments, along with \n            additional information per your request parameters. This can include information relating to\n            alternative transcriptions, channel identification, partial result stabilization, language \n            identification, and other transcription-related data.</p>"
+                        "smithy.api#documentation": "<p>The <code>MedicalTranscriptEvent</code> associated with a \n            <code>MedicalTranscriptResultStream</code>.</p>\n         <p>Contains a set of transcription results from one or more audio segments, along with \n            additional information per your request parameters. This can include information relating to\n            alternative transcriptions, channel identification, partial result stabilization, language \n            identification, and other transcription-related data.</p>"
                     }
                 },
                 "BadRequestException": {
@@ -1200,12 +1440,12 @@
                 "OutputEncryptionKMSKeyId": {
                     "target": "com.amazonaws.transcribestreaming#String",
                     "traits": {
-                        "smithy.api#documentation": "<p>The KMS key you want to use to encrypt your Call Analytics post-call\n      output.</p>\n         <p>If using a key located in the <b>current</b>\n      Amazon Web Services account, you can specify your KMS key in one of four\n      ways:</p>\n         <ol>\n            <li>\n               <p>Use the KMS key ID itself. For example,\n          <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p>\n            </li>\n            <li>\n               <p>Use an alias for the KMS key ID. For example,\n          <code>alias/ExampleAlias</code>.</p>\n            </li>\n            <li>\n               <p>Use the Amazon Resource Name (ARN) for the KMS key ID. For\n          example,\n          <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p>\n            </li>\n            <li>\n               <p>Use the ARN for the KMS key alias. For example,\n          <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p>\n            </li>\n         </ol>\n         <p>If using a key located in a <b>different</b>\n      Amazon Web Services account than the current Amazon Web Services account, you can specify\n      your KMS key in one of two ways:</p>\n         <ol>\n            <li>\n               <p>Use the ARN for the KMS key ID. For example,\n          <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p>\n            </li>\n            <li>\n               <p>Use the ARN for the KMS key alias. For example,\n          <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p>\n            </li>\n         </ol>\n         <p>Note that the user making the  request must\n      have permission to use the specified KMS key.</p>"
+                        "smithy.api#documentation": "<p>The KMS key you want to use to encrypt your Call Analytics post-call\n      output.</p>\n         <p>If using a key located in the <b>current</b>\n      Amazon Web Services account, you can specify your KMS key in one of four\n      ways:</p>\n         <ol>\n            <li>\n               <p>Use the KMS key ID itself. For example,\n          <code>1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p>\n            </li>\n            <li>\n               <p>Use an alias for the KMS key ID. For example,\n          <code>alias/ExampleAlias</code>.</p>\n            </li>\n            <li>\n               <p>Use the Amazon Resource Name (ARN) for the KMS key ID. For\n          example,\n          <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p>\n            </li>\n            <li>\n               <p>Use the ARN for the KMS key alias. For example,\n          <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p>\n            </li>\n         </ol>\n         <p>If using a key located in a <b>different</b>\n      Amazon Web Services account than the current Amazon Web Services account, you can specify\n      your KMS key in one of two ways:</p>\n         <ol>\n            <li>\n               <p>Use the ARN for the KMS key ID. For example,\n          <code>arn:aws:kms:region:account-ID:key/1234abcd-12ab-34cd-56ef-1234567890ab</code>.</p>\n            </li>\n            <li>\n               <p>Use the ARN for the KMS key alias. For example,\n          <code>arn:aws:kms:region:account-ID:alias/ExampleAlias</code>.</p>\n            </li>\n         </ol>\n         <p>Note that the role making the \n      request must have permission to use the specified KMS key.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>Allows you to specify additional settings for your streaming Call Analytics \n      post-call request, including output locations for your redacted and unredacted \n      transcript, which IAM role to use, and, optionally, which encryption key to \n      use.</p>\n         <p>\n            <code>ContentRedactionOutput</code>, <code>DataAccessRoleArn</code>, and\n      <code>OutputLocation</code> are required fields.</p>"
+                "smithy.api#documentation": "<p>Allows you to specify additional settings for your Call Analytics post-call request, \n      including output locations for your redacted transcript, which IAM role to use, \n      and which encryption key to use.</p>\n         <p>\n            <code>DataAccessRoleArn</code> and <code>OutputLocation</code> are required \n      fields.</p>\n         <p>\n            <code>PostCallAnalyticsSettings</code> provides you with the same insights as a \n      Call Analytics post-call transcription. Refer to <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/tca-post-call.html\">Post-call analytics</a> for more information \n      on this feature.</p>"
             }
         },
         "com.amazonaws.transcribestreaming#RequestId": {
@@ -1412,7 +1652,7 @@
                 "LanguageCode": {
                     "target": "com.amazonaws.transcribestreaming#CallAnalyticsLanguageCode",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the language code that represents the language spoken in your audio.</p>\n         <p>If you're unsure of the language spoken in your audio, consider using \n      <code>IdentifyLanguage</code> to enable automatic language identification.</p>\n         <p>For a list of languages supported with streaming Call Analytics, refer to the \n      <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html\">Supported \n        languages</a> table.</p>",
+                        "smithy.api#documentation": "<p>Specify the language code that represents the language spoken in your audio.</p>\n         <p>For a list of languages supported with real-time Call Analytics, refer to the \n      <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html\">Supported \n        languages</a> table.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-language-code",
                         "smithy.api#required": {}
                     }
@@ -1443,13 +1683,14 @@
                 "SessionId": {
                     "target": "com.amazonaws.transcribestreaming#SessionId",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify a name for your Call Analytics transcription session. If you don't include this parameter\n      in your request, Amazon Transcribe generates an ID and returns it in the response.</p>\n         <p>You can use a session ID to retry a streaming session.</p>",
+                        "smithy.api#documentation": "<p>Specify a name for your Call Analytics transcription session. If you don't include this parameter\n      in your request, Amazon Transcribe generates an ID and returns it in the response.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-session-id"
                     }
                 },
                 "AudioStream": {
                     "target": "com.amazonaws.transcribestreaming#AudioStream",
                     "traits": {
+                        "smithy.api#documentation": "<p>An encoded stream of audio blobs. Audio streams are encoded as either HTTP/2 or WebSocket \n      data frames.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html\">Transcribing streaming audio</a>.</p>",
                         "smithy.api#httpPayload": {},
                         "smithy.api#required": {}
                     }
@@ -1457,7 +1698,7 @@
                 "VocabularyFilterName": {
                     "target": "com.amazonaws.transcribestreaming#VocabularyFilterName",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the name of the custom vocabulary filter that you want to use when processing your\n      transcription. Note that vocabulary filter names are case sensitive.</p>\n         <p>If the language of the specified custom vocabulary filter doesn't match the language identified in\n      your media, the vocabulary filter is not applied to your transcription.</p>  \n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html\">Using vocabulary filtering with unwanted \n      words</a>.</p>",
+                        "smithy.api#documentation": "<p>Specify the name of the custom vocabulary filter that you want to use when processing your\n      transcription. Note that vocabulary filter names are case sensitive.</p>\n         <p>If the language of the specified custom vocabulary filter doesn't match the language identified in\n      your media, the vocabulary filter is not applied to your transcription.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html\">Using vocabulary filtering with unwanted \n      words</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-vocabulary-filter-name"
                     }
                 },
@@ -1471,7 +1712,7 @@
                 "LanguageModelName": {
                     "target": "com.amazonaws.transcribestreaming#ModelName",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the name of the custom language model that you want to use when processing your\n      transcription. Note that language model names are case sensitive.</p>\n         <p>The language of the specified language model must match the language code you specify\n      in your transcription request. If the languages don't match, the custom language model isn't applied. \n      There are no errors or warnings associated with a language mismatch.</p> \n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html\">Custom language models</a>.</p>",
+                        "smithy.api#documentation": "<p>Specify the name of the custom language model that you want to use when processing your\n      transcription. Note that language model names are case sensitive.</p>\n         <p>The language of the specified language model must match the language code you specify\n      in your transcription request. If the languages don't match, the custom language model isn't applied. \n      There are no errors or warnings associated with a language mismatch.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html\">Custom language models</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-language-model-name"
                     }
                 },
@@ -1486,31 +1727,34 @@
                 "PartialResultsStability": {
                     "target": "com.amazonaws.transcribestreaming#PartialResultsStability",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the level of stability to use when you enable partial results stabilization \n      (<code>EnablePartialResultsStabilization</code>).</p> \n         <p>Low stability provides the highest accuracy. High stability transcribes faster, but with slightly\n      lower accuracy.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization\">Partial-result \n      stabilization</a>.</p>",
+                        "smithy.api#documentation": "<p>Specify the level of stability to use when you enable partial results stabilization \n      (<code>EnablePartialResultsStabilization</code>).</p>\n         <p>Low stability provides the highest accuracy. High stability transcribes faster, but with slightly\n      lower accuracy.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization\">Partial-result \n      stabilization</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-partial-results-stability"
                     }
                 },
                 "ContentIdentificationType": {
                     "target": "com.amazonaws.transcribestreaming#ContentIdentificationType",
                     "traits": {
-                        "smithy.api#documentation": "<p>Labels all personally identifiable information (PII) identified in your transcript.</p>     \n         <p>Content identification is performed at the segment level; PII specified in \n      <code>PiiEntityTypes</code> is flagged upon complete transcription of an audio segment.</p> \n         <p>You can’t set <code>ContentIdentificationType</code> and <code>ContentRedactionType</code>\n      in the same request. If you set both, your request returns a\n      <code>BadRequestException</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html\">Redacting or identifying personally identifiable\n      information</a>.</p>",
+                        "smithy.api#documentation": "<p>Labels all personally identifiable information (PII) identified in your transcript.</p>\n         <p>Content identification is performed at the segment level; PII specified in \n      <code>PiiEntityTypes</code> is flagged upon complete transcription of an audio segment. If you don't\n      include <code>PiiEntityTypes</code> in your request, all PII is identified.</p>\n         <p>You can’t set <code>ContentIdentificationType</code> and <code>ContentRedactionType</code>\n      in the same request. If you set both, your request returns a\n      <code>BadRequestException</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html\">Redacting or identifying personally identifiable\n      information</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-content-identification-type"
                     }
                 },
                 "ContentRedactionType": {
                     "target": "com.amazonaws.transcribestreaming#ContentRedactionType",
                     "traits": {
-                        "smithy.api#documentation": "<p>Redacts all personally identifiable information (PII) identified in your transcript.</p>     \n         <p>Content redaction is performed at the segment level; PII specified in \n      <code>PiiEntityTypes</code> is redacted upon complete transcription of an audio segment.</p> \n         <p>You can’t set <code>ContentRedactionType</code> and <code>ContentIdentificationType</code>\n      in the same request. If you set both, your request returns a\n      <code>BadRequestException</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html\">Redacting or identifying personally identifiable\n      information</a>.</p>",
+                        "smithy.api#documentation": "<p>Redacts all personally identifiable information (PII) identified in your transcript.</p>\n         <p>Content redaction is performed at the segment level; PII specified in \n      <code>PiiEntityTypes</code> is redacted upon complete transcription of an audio segment. If you don't\n      include <code>PiiEntityTypes</code> in your request, all PII is redacted.</p>\n         <p>You can’t set <code>ContentRedactionType</code> and <code>ContentIdentificationType</code>\n      in the same request. If you set both, your request returns a <code>BadRequestException</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html\">Redacting or identifying personally identifiable\n      information</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-content-redaction-type"
                     }
                 },
                 "PiiEntityTypes": {
                     "target": "com.amazonaws.transcribestreaming#PiiEntityTypes",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify which types of personally identifiable information (PII) you want to redact in your \n      transcript. You can include as many types as you'd like, or you can select \n      <code>ALL</code>.</p>\n         <p>To include <code>PiiEntityTypes</code> in your Call Analytics request, you must also include \n      either <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>.</p>\n         <p>Values must be comma-separated and can include:\n      <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING</code>,\n      <code>CREDIT_DEBIT_NUMBER</code>, <code>CREDIT_DEBIT_CVV</code>, \n      <code>CREDIT_DEBIT_EXPIRY</code>, <code>PIN</code>, <code>EMAIL</code>, \n      <code>ADDRESS</code>, <code>NAME</code>, <code>PHONE</code>, \n      <code>SSN</code>, or <code>ALL</code>.</p>",
+                        "smithy.api#documentation": "<p>Specify which types of personally identifiable information (PII) you want to redact in your \n      transcript. You can include as many types as you'd like, or you can select \n      <code>ALL</code>.</p>\n         <p>Values must be comma-separated and can include: <code>ADDRESS</code>, \n      <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING</code>,\n      <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code>,\n      <code>CREDIT_DEBIT_NUMBER</code>, <code>EMAIL</code>, \n      <code>NAME</code>, <code>PHONE</code>, <code>PIN</code>, \n      <code>SSN</code>, or <code>ALL</code>.</p>\n         <p>Note that if you include <code>PiiEntityTypes</code> in your request, you must also include \n      <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>.</p>\n         <p>If you include <code>ContentRedactionType</code> or \n      <code>ContentIdentificationType</code> in your request, but do not include \n      <code>PiiEntityTypes</code>, all PII is redacted or identified.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-pii-entity-types"
                     }
                 }
+            },
+            "traits": {
+                "smithy.api#input": {}
             }
         },
         "com.amazonaws.transcribestreaming#StartCallAnalyticsStreamTranscriptionResponse": {
@@ -1519,7 +1763,7 @@
                 "RequestId": {
                     "target": "com.amazonaws.transcribestreaming#RequestId",
                     "traits": {
-                        "smithy.api#documentation": "<p>Provides the identifier for your Call Analytics streaming request.</p>",
+                        "smithy.api#documentation": "<p>Provides the identifier for your real-time Call Analytics request.</p>",
                         "smithy.api#httpHeader": "x-amzn-request-id"
                     }
                 },
@@ -1561,7 +1805,7 @@
                 "CallAnalyticsTranscriptResultStream": {
                     "target": "com.amazonaws.transcribestreaming#CallAnalyticsTranscriptResultStream",
                     "traits": {
-                        "smithy.api#documentation": "<p>Provides detailed information about your Call Analytics streaming session.</p>",
+                        "smithy.api#documentation": "<p>Provides detailed information about your real-time Call Analytics session.</p>",
                         "smithy.api#httpPayload": {}
                     }
                 },
@@ -1622,6 +1866,9 @@
                         "smithy.api#httpHeader": "x-amzn-transcribe-pii-entity-types"
                     }
                 }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.transcribestreaming#StartMedicalStreamTranscription": {
@@ -1650,7 +1897,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Starts a bidirectional HTTP/2 or WebSocket stream where audio is streamed to \n            Amazon Transcribe Medical and the transcription results are streamed to your\n            application.</p>  \n        <p>The following parameters are required:</p>\n        <ul>\n            <li>\n                <p>\n                  <code>language-code</code>\n               </p>\n            </li>\n            <li>\n                <p>\n                  <code>media-encoding</code>\n               </p>\n            </li>\n            <li>\n                <p>\n                  <code>sample-rate</code>\n               </p>\n            </li>\n         </ul>\n        <p>For more information on streaming with Amazon Transcribe Medical, see \n            <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html\">Transcribing\n                streaming audio</a>.</p>",
+                "smithy.api#documentation": "<p>Starts a bidirectional HTTP/2 or WebSocket stream where audio is streamed to \n            Amazon Transcribe Medical and the transcription results are streamed to your\n            application.</p>\n         <p>The following parameters are required:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>language-code</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>media-encoding</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>sample-rate</code>\n               </p>\n            </li>\n         </ul>\n         <p>For more information on streaming with Amazon Transcribe Medical, see \n            <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html\">Transcribing\n                streaming audio</a>.</p>",
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/medical-stream-transcription",
@@ -1664,7 +1911,7 @@
                 "LanguageCode": {
                     "target": "com.amazonaws.transcribestreaming#LanguageCode",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the language code that represents the language spoken in your audio.</p>\n        <important>\n            <p>Amazon Transcribe Medical only supports US English (<code>en-US</code>).</p>\n        </important>",
+                        "smithy.api#documentation": "<p>Specify the language code that represents the language spoken in your audio.</p>\n         <important>\n            <p>Amazon Transcribe Medical only supports US English (<code>en-US</code>).</p>\n         </important>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-language-code",
                         "smithy.api#required": {}
                     }
@@ -1680,7 +1927,7 @@
                 "MediaEncoding": {
                     "target": "com.amazonaws.transcribestreaming#MediaEncoding",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the encoding used for the input audio. Supported formats are:</p>\n        <ul>\n            <li>\n                <p>FLAC</p>\n            </li>\n            <li>\n                <p>OPUS-encoded audio in an Ogg container</p>\n            </li>\n            <li>\n                <p>PCM (only signed 16-bit little-endian audio formats, which does not include\n                    WAV)</p>\n            </li>\n         </ul>\n        <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/how-input.html#how-input-audio\">Media formats</a>.</p>",
+                        "smithy.api#documentation": "<p>Specify the encoding used for the input audio. Supported formats are:</p>\n         <ul>\n            <li>\n               <p>FLAC</p>\n            </li>\n            <li>\n               <p>OPUS-encoded audio in an Ogg container</p>\n            </li>\n            <li>\n               <p>PCM (only signed 16-bit little-endian audio formats, which does not include\n                    WAV)</p>\n            </li>\n         </ul>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/how-input.html#how-input-audio\">Media formats</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-media-encoding",
                         "smithy.api#required": {}
                     }
@@ -1712,14 +1959,14 @@
                     "target": "com.amazonaws.transcribestreaming#Boolean",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>Enables speaker partitioning (diarization) in your transcription output. Speaker\n            partitioning labels the speech from individual speakers in your media file.</p> \n        <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/diarization.html\">Partitioning speakers (diarization)</a>.</p>",
+                        "smithy.api#documentation": "<p>Enables speaker partitioning (diarization) in your transcription output. Speaker\n            partitioning labels the speech from individual speakers in your media file.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/diarization.html\">Partitioning speakers (diarization)</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-show-speaker-label"
                     }
                 },
                 "SessionId": {
                     "target": "com.amazonaws.transcribestreaming#SessionId",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify a name for your transcription session. If you don't include this parameter in \n            your request, Amazon Transcribe Medical generates an ID and returns it in the\n            response.</p>\n        <p>You can use a session ID to retry a streaming session.</p>",
+                        "smithy.api#documentation": "<p>Specify a name for your transcription session. If you don't include this parameter in \n            your request, Amazon Transcribe Medical generates an ID and returns it in the\n            response.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-session-id"
                     }
                 },
@@ -1734,24 +1981,27 @@
                     "target": "com.amazonaws.transcribestreaming#Boolean",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>Enables channel identification in multi-channel audio.</p>\n        <p>Channel identification transcribes the audio on each channel independently, then appends\n            the output for each channel into one transcript.</p>\n        <p>If you have multi-channel audio and do not enable channel identification, your audio is \n            transcribed in a continuous manner and your transcript is not separated by channel.</p>\n        <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html\">Transcribing multi-channel audio</a>.</p>",
+                        "smithy.api#documentation": "<p>Enables channel identification in multi-channel audio.</p>\n         <p>Channel identification transcribes the audio on each channel independently, then appends\n            the output for each channel into one transcript.</p>\n         <p>If you have multi-channel audio and do not enable channel identification, your audio is \n            transcribed in a continuous manner and your transcript is not separated by channel.</p>\n         <p>If you include <code>EnableChannelIdentification</code> in your request, you must also \n            include <code>NumberOfChannels</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html\">Transcribing multi-channel audio</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-enable-channel-identification"
                     }
                 },
                 "NumberOfChannels": {
                     "target": "com.amazonaws.transcribestreaming#NumberOfChannels",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the number of channels in your audio stream. Up to two channels are\n            supported.</p>",
+                        "smithy.api#documentation": "<p>Specify the number of channels in your audio stream. This value must be \n            <code>2</code>, as only two channels are supported. If your audio doesn't contain \n            multiple channels, do not include this parameter in your request.</p>\n         <p>If you include <code>NumberOfChannels</code> in your request, you must also \n            include <code>EnableChannelIdentification</code>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-number-of-channels"
                     }
                 },
                 "ContentIdentificationType": {
                     "target": "com.amazonaws.transcribestreaming#MedicalContentIdentificationType",
                     "traits": {
-                        "smithy.api#documentation": "<p>Labels all personal health information (PHI) identified in your transcript.</p>     \n        <p>Content identification is performed at the segment level; PHI is flagged upon complete\n            transcription of an audio segment.</p> \n        <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/phi-id.html\">Identifying personal health information (PHI) in a\n            transcription</a>.</p>",
+                        "smithy.api#documentation": "<p>Labels all personal health information (PHI) identified in your transcript.</p>\n         <p>Content identification is performed at the segment level; PHI is flagged upon complete\n            transcription of an audio segment.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/phi-id.html\">Identifying personal health information (PHI) in a\n            transcription</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-content-identification-type"
                     }
                 }
+            },
+            "traits": {
+                "smithy.api#input": {}
             }
         },
         "com.amazonaws.transcribestreaming#StartMedicalStreamTranscriptionResponse": {
@@ -1850,6 +2100,9 @@
                         "smithy.api#httpHeader": "x-amzn-transcribe-content-identification-type"
                     }
                 }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.transcribestreaming#StartStreamTranscription": {
@@ -1878,7 +2131,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Starts a bidirectional HTTP/2 or WebSocket stream where audio is streamed to \n      Amazon Transcribe and the transcription results are streamed to your application.</p>\n         <p>The following parameters are required:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>language-code</code> or <code>identify-language</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>media-encoding</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>sample-rate</code>\n               </p>\n            </li>\n         </ul>\n         <p>For more information on streaming with Amazon Transcribe, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html\">Transcribing streaming audio</a>.</p>",
+                "smithy.api#documentation": "<p>Starts a bidirectional HTTP/2 or WebSocket stream where audio is streamed to \n      Amazon Transcribe and the transcription results are streamed to your application.</p>\n         <p>The following parameters are required:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>language-code</code> or <code>identify-language</code> or <code>identify-multiple-language</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>media-encoding</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>sample-rate</code>\n               </p>\n            </li>\n         </ul>\n         <p>For more information on streaming with Amazon Transcribe, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html\">Transcribing streaming audio</a>.</p>",
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/stream-transcription",
@@ -1922,14 +2175,14 @@
                 "SessionId": {
                     "target": "com.amazonaws.transcribestreaming#SessionId",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify a name for your transcription session. If you don't include this parameter in your request, \n      Amazon Transcribe generates an ID and returns it in the response.</p>\n         <p>You can use a session ID to retry a streaming session.</p>",
+                        "smithy.api#documentation": "<p>Specify a name for your transcription session. If you don't include this parameter in your request, \n      Amazon Transcribe generates an ID and returns it in the response.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-session-id"
                     }
                 },
                 "AudioStream": {
                     "target": "com.amazonaws.transcribestreaming#AudioStream",
                     "traits": {
-                        "smithy.api#documentation": "<p>An encoded stream of audio blobs. Audio streams are encoded as either HTTP/2 or WebSocket \n      data frames.</p> \n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html\">Transcribing streaming audio</a>.</p>",
+                        "smithy.api#documentation": "<p>An encoded stream of audio blobs. Audio streams are encoded as either HTTP/2 or WebSocket \n      data frames.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html\">Transcribing streaming audio</a>.</p>",
                         "smithy.api#httpPayload": {},
                         "smithy.api#required": {}
                     }
@@ -1937,7 +2190,7 @@
                 "VocabularyFilterName": {
                     "target": "com.amazonaws.transcribestreaming#VocabularyFilterName",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the name of the custom vocabulary filter that you want to use when processing your\n      transcription. Note that vocabulary filter names are case sensitive.</p>\n         <p>If the language of the specified custom vocabulary filter doesn't match the language identified in\n      your media, the vocabulary filter is not applied to your transcription.</p>    \n         <important>\n            <p>This parameter is <b>not</b> intended for use with the\n          <code>IdentifyLanguage</code> parameter. If you're including <code>IdentifyLanguage</code>\n        in your request and want to use one or more vocabulary filters with your transcription, use\n        the <code>VocabularyFilterNames</code> parameter instead.</p>\n         </important>    \n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html\">Using vocabulary filtering with unwanted \n      words</a>.</p>",
+                        "smithy.api#documentation": "<p>Specify the name of the custom vocabulary filter that you want to use when processing your\n      transcription. Note that vocabulary filter names are case sensitive.</p>\n         <p>If the language of the specified custom vocabulary filter doesn't match the language identified in\n      your media, the vocabulary filter is not applied to your transcription.</p>\n         <important>\n            <p>This parameter is <b>not</b> intended for use with the\n          <code>IdentifyLanguage</code> parameter. If you're including <code>IdentifyLanguage</code>\n        in your request and want to use one or more vocabulary filters with your transcription, use\n        the <code>VocabularyFilterNames</code> parameter instead.</p>\n         </important>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html\">Using vocabulary filtering with unwanted \n      words</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-vocabulary-filter-name"
                     }
                 },
@@ -1952,7 +2205,7 @@
                     "target": "com.amazonaws.transcribestreaming#Boolean",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>Enables speaker partitioning (diarization) in your transcription output. Speaker partitioning \n      labels the speech from individual speakers in your media file.</p> \n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/diarization.html\">Partitioning speakers (diarization)</a>.</p>",
+                        "smithy.api#documentation": "<p>Enables speaker partitioning (diarization) in your transcription output. Speaker partitioning \n      labels the speech from individual speakers in your media file.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/diarization.html\">Partitioning speakers (diarization)</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-show-speaker-label"
                     }
                 },
@@ -1960,14 +2213,14 @@
                     "target": "com.amazonaws.transcribestreaming#Boolean",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>Enables channel identification in multi-channel audio.</p>\n         <p>Channel identification transcribes the audio on each channel independently, then appends the \n      output for each channel into one transcript.</p>\n         <p>If you have multi-channel audio and do not enable channel identification, your audio is \n      transcribed in a continuous manner and your transcript is not separated by channel.</p>        \n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html\">Transcribing multi-channel audio</a>.</p>",
+                        "smithy.api#documentation": "<p>Enables channel identification in multi-channel audio.</p>\n         <p>Channel identification transcribes the audio on each channel independently, then appends the \n      output for each channel into one transcript.</p>\n         <p>If you have multi-channel audio and do not enable channel identification, your audio is \n      transcribed in a continuous manner and your transcript is not separated by channel.</p>\n         <p>If you include <code>EnableChannelIdentification</code> in your request, you must also \n      include <code>NumberOfChannels</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html\">Transcribing multi-channel audio</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-enable-channel-identification"
                     }
                 },
                 "NumberOfChannels": {
                     "target": "com.amazonaws.transcribestreaming#NumberOfChannels",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the number of channels in your audio stream. Up to two channels are\n      supported.</p>",
+                        "smithy.api#documentation": "<p>Specify the number of channels in your audio stream. This value must be \n      <code>2</code>, as only two channels are supported. If your audio doesn't contain \n      multiple channels, do not include this parameter in your request.</p>\n         <p>If you include <code>NumberOfChannels</code> in your request, you must also \n      include <code>EnableChannelIdentification</code>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-number-of-channels"
                     }
                 },
@@ -1982,35 +2235,35 @@
                 "PartialResultsStability": {
                     "target": "com.amazonaws.transcribestreaming#PartialResultsStability",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the level of stability to use when you enable partial results stabilization \n      (<code>EnablePartialResultsStabilization</code>).</p> \n         <p>Low stability provides the highest accuracy. High stability transcribes faster, but with slightly\n      lower accuracy.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization\">Partial-result \n      stabilization</a>.</p>",
+                        "smithy.api#documentation": "<p>Specify the level of stability to use when you enable partial results stabilization \n      (<code>EnablePartialResultsStabilization</code>).</p>\n         <p>Low stability provides the highest accuracy. High stability transcribes faster, but with slightly\n      lower accuracy.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization\">Partial-result \n      stabilization</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-partial-results-stability"
                     }
                 },
                 "ContentIdentificationType": {
                     "target": "com.amazonaws.transcribestreaming#ContentIdentificationType",
                     "traits": {
-                        "smithy.api#documentation": "<p>Labels all personally identifiable information (PII) identified in your transcript.</p>     \n         <p>Content identification is performed at the segment level; PII specified in \n      <code>PiiEntityTypes</code> is flagged upon complete transcription of an audio segment.</p> \n         <p>You can’t set <code>ContentIdentificationType</code> and <code>ContentRedactionType</code>\n      in the same request. If you set both, your request returns a\n      <code>BadRequestException</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html\">Redacting or identifying personally identifiable\n      information</a>.</p>",
+                        "smithy.api#documentation": "<p>Labels all personally identifiable information (PII) identified in your transcript.</p>\n         <p>Content identification is performed at the segment level; PII specified in \n      <code>PiiEntityTypes</code> is flagged upon complete transcription of an audio segment. If you don't\n      include <code>PiiEntityTypes</code> in your request, all PII is identified.</p>\n         <p>You can’t set <code>ContentIdentificationType</code> and <code>ContentRedactionType</code>\n      in the same request. If you set both, your request returns a\n      <code>BadRequestException</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html\">Redacting or identifying personally identifiable\n      information</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-content-identification-type"
                     }
                 },
                 "ContentRedactionType": {
                     "target": "com.amazonaws.transcribestreaming#ContentRedactionType",
                     "traits": {
-                        "smithy.api#documentation": "<p>Redacts all personally identifiable information (PII) identified in your transcript.</p>     \n         <p>Content redaction is performed at the segment level; PII specified in \n      <code>PiiEntityTypes</code> is redacted upon complete transcription of an audio segment.</p> \n         <p>You can’t set <code>ContentRedactionType</code> and <code>ContentIdentificationType</code>\n      in the same request. If you set both, your request returns a\n      <code>BadRequestException</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html\">Redacting or identifying personally identifiable\n      information</a>.</p>",
+                        "smithy.api#documentation": "<p>Redacts all personally identifiable information (PII) identified in your transcript.</p>\n         <p>Content redaction is performed at the segment level; PII specified in \n      <code>PiiEntityTypes</code> is redacted upon complete transcription of an audio segment. If you don't\n      include <code>PiiEntityTypes</code> in your request, all PII is redacted.</p>\n         <p>You can’t set <code>ContentRedactionType</code> and <code>ContentIdentificationType</code>\n      in the same request. If you set both, your request returns a <code>BadRequestException</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html\">Redacting or identifying personally identifiable\n      information</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-content-redaction-type"
                     }
                 },
                 "PiiEntityTypes": {
                     "target": "com.amazonaws.transcribestreaming#PiiEntityTypes",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify which types of personally identifiable information (PII) you want to redact in your \n      transcript. You can include as many types as you'd like, or you can select \n      <code>ALL</code>.</p>\n         <p>To include <code>PiiEntityTypes</code> in your request, you must also include either \n      <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>.</p>\n         <p>Values must be comma-separated and can include:\n      <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING</code>,\n      <code>CREDIT_DEBIT_NUMBER</code>, <code>CREDIT_DEBIT_CVV</code>, \n      <code>CREDIT_DEBIT_EXPIRY</code>, <code>PIN</code>, <code>EMAIL</code>, \n      <code>ADDRESS</code>, <code>NAME</code>, <code>PHONE</code>, \n      <code>SSN</code>, or <code>ALL</code>.</p>",
+                        "smithy.api#documentation": "<p>Specify which types of personally identifiable information (PII) you want to redact in your \n      transcript. You can include as many types as you'd like, or you can select \n      <code>ALL</code>.</p>\n         <p>Values must be comma-separated and can include: <code>ADDRESS</code>, \n      <code>BANK_ACCOUNT_NUMBER</code>, <code>BANK_ROUTING</code>,\n      <code>CREDIT_DEBIT_CVV</code>, <code>CREDIT_DEBIT_EXPIRY</code>,\n      <code>CREDIT_DEBIT_NUMBER</code>, <code>EMAIL</code>, \n      <code>NAME</code>, <code>PHONE</code>, <code>PIN</code>, \n      <code>SSN</code>, or <code>ALL</code>.</p>\n         <p>Note that if you include <code>PiiEntityTypes</code> in your request, you must also include \n      <code>ContentIdentificationType</code> or <code>ContentRedactionType</code>.</p>\n         <p>If you include <code>ContentRedactionType</code> or \n      <code>ContentIdentificationType</code> in your request, but do not include \n      <code>PiiEntityTypes</code>, all PII is redacted or identified.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-pii-entity-types"
                     }
                 },
                 "LanguageModelName": {
                     "target": "com.amazonaws.transcribestreaming#ModelName",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the name of the custom language model that you want to use when processing your\n      transcription. Note that language model names are case sensitive.</p>\n         <p>The language of the specified language model must match the language code you specify\n      in your transcription request. If the languages don't match, the custom language model isn't applied. \n      There are no errors or warnings associated with a language mismatch.</p> \n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html\">Custom language models</a>.</p>",
+                        "smithy.api#documentation": "<p>Specify the name of the custom language model that you want to use when processing your\n      transcription. Note that language model names are case sensitive.</p>\n         <p>The language of the specified language model must match the language code you specify\n      in your transcription request. If the languages don't match, the custom language model isn't applied. \n      There are no errors or warnings associated with a language mismatch.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html\">Custom language models</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-language-model-name"
                     }
                 },
@@ -2018,14 +2271,14 @@
                     "target": "com.amazonaws.transcribestreaming#Boolean",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>Enables automatic language identification for your transcription.</p>\n         <p>If you include <code>IdentifyLanguage</code>, you can optionally include a list of \n      language codes, using <code>LanguageOptions</code>, that you think may be present in \n      your audio stream. Including language options can improve transcription accuracy.</p>  \n         <p>You can also include a preferred language using <code>PreferredLanguage</code>. Adding a \n      preferred language can help Amazon Transcribe identify the language faster than if you omit this \n      parameter.</p>\n         <p>If you have multi-channel audio that contains different languages on each channel, and you've \n      enabled channel identification, automatic language identification identifies the dominant language on \n      each audio channel.</p>\n         <p>Note that you must include either <code>LanguageCode</code> or \n      <code>IdentifyLanguage</code> in your request. If you include both parameters, your request\n      fails.</p>\n         <p>Streaming language identification can't be combined with custom language models or \n      redaction.</p>",
+                        "smithy.api#documentation": "<p>Enables automatic language identification for your transcription.</p>\n         <p>If you include <code>IdentifyLanguage</code>, you must include a list of\n      language codes, using <code>LanguageOptions</code>, that you think may be present in \n      your audio stream. </p>\n         <p>You can also include a preferred language using <code>PreferredLanguage</code>. Adding a \n      preferred language can help Amazon Transcribe identify the language faster than if you omit this \n      parameter.</p>\n         <p>If you have multi-channel audio that contains different languages on each channel, and you've \n      enabled channel identification, automatic language identification identifies the dominant language on \n      each audio channel.</p>\n         <p>Note that you must include either <code>LanguageCode</code> or \n      <code>IdentifyLanguage</code> or <code>IdentifyMultipleLanguages</code> in your request. If you include more than one of these parameters, your transcription job\n      fails.</p>\n         <p>Streaming language identification can't be combined with custom language models or \n      redaction.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-identify-language"
                     }
                 },
                 "LanguageOptions": {
                     "target": "com.amazonaws.transcribestreaming#LanguageOptions",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify two or more language codes that represent the languages you think may be present \n      in your media; including more than five is not recommended. If you're unsure what languages are present, do\n      not include this parameter.</p>\n         <p>Including language options can improve the accuracy of language identification.</p>\n         <p>If you include <code>LanguageOptions</code> in your request, you must also include \n      <code>IdentifyLanguage</code>.</p>\n         <p>For a list of languages supported with Amazon Transcribe streaming, refer to the \n      <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html\">Supported \n        languages</a> table.</p>\n         <important>\n            <p>You can only include one language dialect per language per stream. For example, you\n        cannot include <code>en-US</code> and <code>en-AU</code> in the same request.</p>\n         </important>",
+                        "smithy.api#documentation": "<p>Specify two or more language codes that represent the languages you think may be present \n      in your media; including more than five is not recommended.</p>\n         <p>Including language options can improve the accuracy of language identification.</p>\n         <p>If you include <code>LanguageOptions</code> in your request, you must also include \n      <code>IdentifyLanguage</code> or <code>IdentifyMultipleLanguages</code>.</p>\n         <p>For a list of languages supported with Amazon Transcribe streaming, refer to the \n      <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html\">Supported \n        languages</a> table.</p>\n         <important>\n            <p>You can only include one language dialect per language per stream. For example, you\n        cannot include <code>en-US</code> and <code>en-AU</code> in the same request.</p>\n         </important>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-language-options"
                     }
                 },
@@ -2036,20 +2289,31 @@
                         "smithy.api#httpHeader": "x-amzn-transcribe-preferred-language"
                     }
                 },
+                "IdentifyMultipleLanguages": {
+                    "target": "com.amazonaws.transcribestreaming#Boolean",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Enables automatic multi-language identification in your transcription job request. Use this parameter if your stream contains more than one language. If your stream contains only one language, use IdentifyLanguage instead.</p>\n         <p>If you include <code>IdentifyMultipleLanguages</code>, you must include a list of language codes, using <code>LanguageOptions</code>, that you think may be present in your stream.</p>\n         <p>If you want to apply a custom vocabulary or a custom vocabulary filter to your automatic multiple language identification request, include <code>VocabularyNames</code> or <code>VocabularyFilterNames</code>.</p>\n         <p>Note that you must include one of <code>LanguageCode</code>, <code>IdentifyLanguage</code>, or <code>IdentifyMultipleLanguages</code> in your request. If you include more than one of these parameters, your transcription job fails.</p>",
+                        "smithy.api#httpHeader": "x-amzn-transcribe-identify-multiple-languages"
+                    }
+                },
                 "VocabularyNames": {
                     "target": "com.amazonaws.transcribestreaming#VocabularyNames",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the names of the custom vocabularies that you want to use when processing your\n      transcription. Note that vocabulary names are case sensitive.</p>    \n         <p>If none of the languages of the specified custom vocabularies match the language identified in \n      your media, your job fails.</p>\n         <important>\n            <p>This parameter is only intended for use <b>with</b> the\n          <code>IdentifyLanguage</code> parameter. If you're <b>not</b>\n        including <code>IdentifyLanguage</code> in your request and want to use a custom vocabulary\n        with your transcription, use the <code>VocabularyName</code> parameter instead.</p>\n         </important>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html\">Custom vocabularies</a>.</p>",
+                        "smithy.api#documentation": "<p>Specify the names of the custom vocabularies that you want to use when processing your\n      transcription. Note that vocabulary names are case sensitive.</p>\n         <p>If none of the languages of the specified custom vocabularies match the language identified in \n      your media, your job fails.</p>\n         <important>\n            <p>This parameter is only intended for use <b>with</b> the\n          <code>IdentifyLanguage</code> parameter. If you're <b>not</b>\n        including <code>IdentifyLanguage</code> in your request and want to use a custom vocabulary\n        with your transcription, use the <code>VocabularyName</code> parameter instead.</p>\n         </important>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html\">Custom vocabularies</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-vocabulary-names"
                     }
                 },
                 "VocabularyFilterNames": {
                     "target": "com.amazonaws.transcribestreaming#VocabularyFilterNames",
                     "traits": {
-                        "smithy.api#documentation": "<p>Specify the names of the custom vocabulary filters that you want to use when processing\n      your transcription. Note that vocabulary filter names are case sensitive.</p>    \n         <p>If none of the languages of the specified custom vocabulary filters match the language identified\n      in your media, your job fails.</p>\n         <important>\n            <p>This parameter is only intended for use <b>with</b> \n        the <code>IdentifyLanguage</code> parameter. If you're <b>not</b> \n        including <code>IdentifyLanguage</code> in your request and want to use a custom vocabulary filter \n        with your transcription, use the <code>VocabularyFilterName</code> parameter instead.</p>\n         </important>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html\">Using vocabulary filtering with unwanted \n      words</a>.</p>",
+                        "smithy.api#documentation": "<p>Specify the names of the custom vocabulary filters that you want to use when processing\n      your transcription. Note that vocabulary filter names are case sensitive.</p>\n         <p>If none of the languages of the specified custom vocabulary filters match the language identified\n      in your media, your job fails.</p>\n         <important>\n            <p>This parameter is only intended for use <b>with</b> \n        the <code>IdentifyLanguage</code> parameter. If you're <b>not</b> \n        including <code>IdentifyLanguage</code> in your request and want to use a custom vocabulary filter \n        with your transcription, use the <code>VocabularyFilterName</code> parameter instead.</p>\n         </important>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html\">Using vocabulary filtering with unwanted \n      words</a>.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-vocabulary-filter-names"
                     }
                 }
+            },
+            "traits": {
+                "smithy.api#input": {}
             }
         },
         "com.amazonaws.transcribestreaming#StartStreamTranscriptionResponse": {
@@ -2130,7 +2394,7 @@
                     "target": "com.amazonaws.transcribestreaming#Boolean",
                     "traits": {
                         "smithy.api#default": false,
-                        "smithy.api#documentation": "<p>Shows whether  channel identification was enabled for your transcription.</p>",
+                        "smithy.api#documentation": "<p>Shows whether channel identification was enabled for your transcription.</p>",
                         "smithy.api#httpHeader": "x-amzn-transcribe-enable-channel-identification"
                     }
                 },
@@ -2206,6 +2470,14 @@
                         "smithy.api#httpHeader": "x-amzn-transcribe-preferred-language"
                     }
                 },
+                "IdentifyMultipleLanguages": {
+                    "target": "com.amazonaws.transcribestreaming#Boolean",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Shows whether automatic multi-language identification was enabled for your transcription.</p>",
+                        "smithy.api#httpHeader": "x-amzn-transcribe-identify-multiple-languages"
+                    }
+                },
                 "VocabularyNames": {
                     "target": "com.amazonaws.transcribestreaming#VocabularyNames",
                     "traits": {
@@ -2220,6 +2492,9 @@
                         "smithy.api#httpHeader": "x-amzn-transcribe-vocabulary-filter-names"
                     }
                 }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.transcribestreaming#String": {
@@ -2291,7 +2566,7 @@
                         "h2"
                     ]
                 },
-                "smithy.api#documentation": "<p>Amazon Transcribe streaming offers three main types of real-time transcription: \n      <b>Standard</b>, <b>Medical</b>, and \n      <b>Call Analytics</b>.</p>\n         <ul>\n            <li>\n               <p>\n                  <b>Standard transcriptions</b> are the most common option. Refer\n      to  for details.</p> \n            </li>\n            <li>\n               <p>\n                  <b>Medical transcriptions</b> are tailored to medical professionals \n      and incorporate medical terms. A common use case for this service is transcribing doctor-patient \n      dialogue in real time, so doctors can focus on their patient instead of taking notes. Refer to\n       for details.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Call Analytics transcriptions</b> are designed for use with call\n          center audio on two different channels; if you're looking for insight into customer service calls, use this \n          option. Refer to  for details.</p> \n            </li>\n         </ul>",
+                "smithy.api#documentation": "<p>Amazon Transcribe streaming offers three main types of real-time transcription: \n      <b>Standard</b>, <b>Medical</b>, and \n      <b>Call Analytics</b>.</p>\n         <ul>\n            <li>\n               <p>\n                  <b>Standard transcriptions</b> are the most common option. Refer\n      to  for details.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Medical transcriptions</b> are tailored to medical professionals \n      and incorporate medical terms. A common use case for this service is transcribing doctor-patient \n      dialogue in real time, so doctors can focus on their patient instead of taking notes. Refer to\n       for details.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Call Analytics transcriptions</b> are designed for use with call\n          center audio on two different channels; if you're looking for insight into customer service calls, use this \n          option. Refer to  for details.</p>\n            </li>\n         </ul>",
                 "smithy.api#title": "Amazon Transcribe Streaming Service",
                 "smithy.rules#endpointRuleSet": {
                     "version": "1.0",
@@ -2335,7 +2610,6 @@
                                     ]
                                 }
                             ],
-                            "type": "tree",
                             "rules": [
                                 {
                                     "conditions": [
@@ -2353,9 +2627,187 @@
                                     "type": "error"
                                 },
                                 {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                                    "type": "error"
+                                },
+                                {
                                     "conditions": [],
-                                    "type": "tree",
+                                    "endpoint": {
+                                        "url": {
+                                            "ref": "Endpoint"
+                                        },
+                                        "properties": {},
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "aws.partition",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                }
+                                            ],
+                                            "assign": "PartitionResult"
+                                        }
+                                    ],
                                     "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseDualStack"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                true,
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsFIPS"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                true,
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsDualStack"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://transcribestreaming-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsFIPS"
+                                                                    ]
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://transcribestreaming-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "FIPS is enabled but this partition does not support FIPS",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
                                         {
                                             "conditions": [
                                                 {
@@ -2368,278 +2820,65 @@
                                                     ]
                                                 }
                                             ],
-                                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
-                                            "type": "error"
-                                        },
-                                        {
-                                            "conditions": [],
-                                            "endpoint": {
-                                                "url": {
-                                                    "ref": "Endpoint"
-                                                },
-                                                "properties": {},
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "isSet",
-                                            "argv": [
-                                                {
-                                                    "ref": "Region"
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "type": "tree",
-                                    "rules": [
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "aws.partition",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "Region"
-                                                        }
-                                                    ],
-                                                    "assign": "PartitionResult"
-                                                }
-                                            ],
-                                            "type": "tree",
                                             "rules": [
                                                 {
                                                     "conditions": [
                                                         {
                                                             "fn": "booleanEquals",
                                                             "argv": [
+                                                                true,
                                                                 {
-                                                                    "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        },
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsDualStack"
+                                                                    ]
+                                                                }
                                                             ]
                                                         }
                                                     ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsFIPS"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsDualStack"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://transcribestreaming-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsFIPS"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://transcribestreaming-fips.{Region}.{PartitionResult#dnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "FIPS is enabled but this partition does not support FIPS",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsDualStack"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://transcribestreaming.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "DualStack is enabled but this partition does not support DualStack",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [],
-                                                    "type": "tree",
                                                     "rules": [
                                                         {
                                                             "conditions": [],
                                                             "endpoint": {
-                                                                "url": "https://transcribestreaming.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "url": "https://transcribestreaming.{Region}.{PartitionResult#dualStackDnsSuffix}",
                                                                 "properties": {},
                                                                 "headers": {}
                                                             },
                                                             "type": "endpoint"
                                                         }
-                                                    ]
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "DualStack is enabled but this partition does not support DualStack",
+                                                    "type": "error"
                                                 }
-                                            ]
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://transcribestreaming.{Region}.{PartitionResult#dnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
                                         }
-                                    ]
-                                },
-                                {
-                                    "conditions": [],
-                                    "error": "Invalid Configuration: Missing Region",
-                                    "type": "error"
+                                    ],
+                                    "type": "tree"
                                 }
-                            ]
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Missing Region",
+                            "type": "error"
                         }
                     ]
                 },
@@ -2654,8 +2893,8 @@
                             },
                             "params": {
                                 "Region": "ap-northeast-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2667,8 +2906,8 @@
                             },
                             "params": {
                                 "Region": "ap-northeast-2",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2680,8 +2919,8 @@
                             },
                             "params": {
                                 "Region": "ap-southeast-2",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2693,8 +2932,8 @@
                             },
                             "params": {
                                 "Region": "ca-central-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2706,8 +2945,8 @@
                             },
                             "params": {
                                 "Region": "eu-central-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2719,8 +2958,8 @@
                             },
                             "params": {
                                 "Region": "eu-west-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2732,8 +2971,8 @@
                             },
                             "params": {
                                 "Region": "eu-west-2",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2745,8 +2984,8 @@
                             },
                             "params": {
                                 "Region": "sa-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2758,8 +2997,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2771,8 +3010,8 @@
                             },
                             "params": {
                                 "Region": "us-east-2",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2784,8 +3023,8 @@
                             },
                             "params": {
                                 "Region": "us-west-2",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2797,8 +3036,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -2810,8 +3049,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2823,8 +3062,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -2836,8 +3075,8 @@
                             },
                             "params": {
                                 "Region": "cn-north-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2849,8 +3088,8 @@
                             },
                             "params": {
                                 "Region": "cn-northwest-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2862,8 +3101,8 @@
                             },
                             "params": {
                                 "Region": "cn-north-1",
-                                "UseDualStack": true,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -2875,8 +3114,8 @@
                             },
                             "params": {
                                 "Region": "cn-north-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2888,8 +3127,8 @@
                             },
                             "params": {
                                 "Region": "cn-north-1",
-                                "UseDualStack": true,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -2901,8 +3140,8 @@
                             },
                             "params": {
                                 "Region": "us-gov-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2914,8 +3153,8 @@
                             },
                             "params": {
                                 "Region": "us-gov-west-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2927,8 +3166,8 @@
                             },
                             "params": {
                                 "Region": "us-gov-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -2940,8 +3179,8 @@
                             },
                             "params": {
                                 "Region": "us-gov-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -2953,8 +3192,8 @@
                             },
                             "params": {
                                 "Region": "us-gov-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -2966,8 +3205,19 @@
                             },
                             "params": {
                                 "Region": "us-iso-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -2979,8 +3229,30 @@
                             },
                             "params": {
                                 "Region": "us-iso-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "error": "DualStack is enabled but this partition does not support DualStack"
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -2992,8 +3264,19 @@
                             },
                             "params": {
                                 "Region": "us-isob-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "error": "DualStack is enabled but this partition does not support DualStack"
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -3005,8 +3288,8 @@
                             },
                             "params": {
                                 "Region": "us-isob-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -3018,8 +3301,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": false,
                                 "UseFIPS": false,
+                                "UseDualStack": false,
                                 "Endpoint": "https://example.com"
                             }
                         },
@@ -3031,8 +3314,8 @@
                                 }
                             },
                             "params": {
-                                "UseDualStack": false,
                                 "UseFIPS": false,
+                                "UseDualStack": false,
                                 "Endpoint": "https://example.com"
                             }
                         },
@@ -3043,8 +3326,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": false,
                                 "UseFIPS": true,
+                                "UseDualStack": false,
                                 "Endpoint": "https://example.com"
                             }
                         },
@@ -3055,9 +3338,15 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": true,
                                 "UseFIPS": false,
+                                "UseDualStack": true,
                                 "Endpoint": "https://example.com"
+                            }
+                        },
+                        {
+                            "documentation": "Missing region",
+                            "expect": {
+                                "error": "Invalid Configuration: Missing Region"
                             }
                         }
                     ],

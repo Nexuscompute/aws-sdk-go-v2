@@ -30,6 +30,26 @@ func (m *validateOpAssociateBrowserSettings) HandleInitialize(ctx context.Contex
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpAssociateDataProtectionSettings struct {
+}
+
+func (*validateOpAssociateDataProtectionSettings) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpAssociateDataProtectionSettings) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*AssociateDataProtectionSettingsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpAssociateDataProtectionSettingsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpAssociateIpAccessSettings struct {
 }
 
@@ -145,6 +165,26 @@ func (m *validateOpCreateBrowserSettings) HandleInitialize(ctx context.Context, 
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpCreateBrowserSettingsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateDataProtectionSettings struct {
+}
+
+func (*validateOpCreateDataProtectionSettings) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateDataProtectionSettings) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateDataProtectionSettingsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateDataProtectionSettingsInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -310,6 +350,26 @@ func (m *validateOpDeleteBrowserSettings) HandleInitialize(ctx context.Context, 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeleteDataProtectionSettings struct {
+}
+
+func (*validateOpDeleteDataProtectionSettings) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteDataProtectionSettings) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteDataProtectionSettingsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteDataProtectionSettingsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteIdentityProvider struct {
 }
 
@@ -470,6 +530,26 @@ func (m *validateOpDisassociateBrowserSettings) HandleInitialize(ctx context.Con
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDisassociateDataProtectionSettings struct {
+}
+
+func (*validateOpDisassociateDataProtectionSettings) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDisassociateDataProtectionSettings) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DisassociateDataProtectionSettingsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDisassociateDataProtectionSettingsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDisassociateIpAccessSettings struct {
 }
 
@@ -570,6 +650,26 @@ func (m *validateOpDisassociateUserSettings) HandleInitialize(ctx context.Contex
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpExpireSession struct {
+}
+
+func (*validateOpExpireSession) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpExpireSession) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ExpireSessionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpExpireSessionInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetBrowserSettings struct {
 }
 
@@ -585,6 +685,26 @@ func (m *validateOpGetBrowserSettings) HandleInitialize(ctx context.Context, in 
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetBrowserSettingsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetDataProtectionSettings struct {
+}
+
+func (*validateOpGetDataProtectionSettings) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetDataProtectionSettings) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetDataProtectionSettingsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetDataProtectionSettingsInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -690,6 +810,26 @@ func (m *validateOpGetPortalServiceProviderMetadata) HandleInitialize(ctx contex
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetSession struct {
+}
+
+func (*validateOpGetSession) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetSession) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetSessionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetSessionInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetTrustStoreCertificate struct {
 }
 
@@ -790,6 +930,26 @@ func (m *validateOpListIdentityProviders) HandleInitialize(ctx context.Context, 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListSessions struct {
+}
+
+func (*validateOpListSessions) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListSessions) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListSessionsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListSessionsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListTagsForResource struct {
 }
 
@@ -885,6 +1045,26 @@ func (m *validateOpUpdateBrowserSettings) HandleInitialize(ctx context.Context, 
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpUpdateBrowserSettingsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateDataProtectionSettings struct {
+}
+
+func (*validateOpUpdateDataProtectionSettings) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateDataProtectionSettings) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateDataProtectionSettingsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateDataProtectionSettingsInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1034,6 +1214,10 @@ func addOpAssociateBrowserSettingsValidationMiddleware(stack *middleware.Stack) 
 	return stack.Initialize.Add(&validateOpAssociateBrowserSettings{}, middleware.After)
 }
 
+func addOpAssociateDataProtectionSettingsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpAssociateDataProtectionSettings{}, middleware.After)
+}
+
 func addOpAssociateIpAccessSettingsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpAssociateIpAccessSettings{}, middleware.After)
 }
@@ -1056,6 +1240,10 @@ func addOpAssociateUserSettingsValidationMiddleware(stack *middleware.Stack) err
 
 func addOpCreateBrowserSettingsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateBrowserSettings{}, middleware.After)
+}
+
+func addOpCreateDataProtectionSettingsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateDataProtectionSettings{}, middleware.After)
 }
 
 func addOpCreateIdentityProviderValidationMiddleware(stack *middleware.Stack) error {
@@ -1090,6 +1278,10 @@ func addOpDeleteBrowserSettingsValidationMiddleware(stack *middleware.Stack) err
 	return stack.Initialize.Add(&validateOpDeleteBrowserSettings{}, middleware.After)
 }
 
+func addOpDeleteDataProtectionSettingsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteDataProtectionSettings{}, middleware.After)
+}
+
 func addOpDeleteIdentityProviderValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteIdentityProvider{}, middleware.After)
 }
@@ -1122,6 +1314,10 @@ func addOpDisassociateBrowserSettingsValidationMiddleware(stack *middleware.Stac
 	return stack.Initialize.Add(&validateOpDisassociateBrowserSettings{}, middleware.After)
 }
 
+func addOpDisassociateDataProtectionSettingsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDisassociateDataProtectionSettings{}, middleware.After)
+}
+
 func addOpDisassociateIpAccessSettingsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDisassociateIpAccessSettings{}, middleware.After)
 }
@@ -1142,8 +1338,16 @@ func addOpDisassociateUserSettingsValidationMiddleware(stack *middleware.Stack) 
 	return stack.Initialize.Add(&validateOpDisassociateUserSettings{}, middleware.After)
 }
 
+func addOpExpireSessionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpExpireSession{}, middleware.After)
+}
+
 func addOpGetBrowserSettingsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetBrowserSettings{}, middleware.After)
+}
+
+func addOpGetDataProtectionSettingsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetDataProtectionSettings{}, middleware.After)
 }
 
 func addOpGetIdentityProviderValidationMiddleware(stack *middleware.Stack) error {
@@ -1166,6 +1370,10 @@ func addOpGetPortalServiceProviderMetadataValidationMiddleware(stack *middleware
 	return stack.Initialize.Add(&validateOpGetPortalServiceProviderMetadata{}, middleware.After)
 }
 
+func addOpGetSessionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetSession{}, middleware.After)
+}
+
 func addOpGetTrustStoreCertificateValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetTrustStoreCertificate{}, middleware.After)
 }
@@ -1186,6 +1394,10 @@ func addOpListIdentityProvidersValidationMiddleware(stack *middleware.Stack) err
 	return stack.Initialize.Add(&validateOpListIdentityProviders{}, middleware.After)
 }
 
+func addOpListSessionsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListSessions{}, middleware.After)
+}
+
 func addOpListTagsForResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListTagsForResource{}, middleware.After)
 }
@@ -1204,6 +1416,10 @@ func addOpUntagResourceValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpUpdateBrowserSettingsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateBrowserSettings{}, middleware.After)
+}
+
+func addOpUpdateDataProtectionSettingsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateDataProtectionSettings{}, middleware.After)
 }
 
 func addOpUpdateIdentityProviderValidationMiddleware(stack *middleware.Stack) error {
@@ -1234,6 +1450,140 @@ func addOpUpdateUserSettingsValidationMiddleware(stack *middleware.Stack) error 
 	return stack.Initialize.Add(&validateOpUpdateUserSettings{}, middleware.After)
 }
 
+func validateCookieSpecification(v *types.CookieSpecification) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CookieSpecification"}
+	if v.Domain == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Domain"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateCookieSpecifications(v []types.CookieSpecification) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CookieSpecifications"}
+	for i := range v {
+		if err := validateCookieSpecification(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateCookieSynchronizationConfiguration(v *types.CookieSynchronizationConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CookieSynchronizationConfiguration"}
+	if v.Allowlist == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Allowlist"))
+	} else if v.Allowlist != nil {
+		if err := validateCookieSpecifications(v.Allowlist); err != nil {
+			invalidParams.AddNested("Allowlist", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.Blocklist != nil {
+		if err := validateCookieSpecifications(v.Blocklist); err != nil {
+			invalidParams.AddNested("Blocklist", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateCustomPattern(v *types.CustomPattern) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CustomPattern"}
+	if v.PatternName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PatternName"))
+	}
+	if v.PatternRegex == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PatternRegex"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateInlineRedactionConfiguration(v *types.InlineRedactionConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "InlineRedactionConfiguration"}
+	if v.InlineRedactionPatterns == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InlineRedactionPatterns"))
+	} else if v.InlineRedactionPatterns != nil {
+		if err := validateInlineRedactionPatterns(v.InlineRedactionPatterns); err != nil {
+			invalidParams.AddNested("InlineRedactionPatterns", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateInlineRedactionPattern(v *types.InlineRedactionPattern) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "InlineRedactionPattern"}
+	if v.CustomPattern != nil {
+		if err := validateCustomPattern(v.CustomPattern); err != nil {
+			invalidParams.AddNested("CustomPattern", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.RedactionPlaceHolder == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RedactionPlaceHolder"))
+	} else if v.RedactionPlaceHolder != nil {
+		if err := validateRedactionPlaceHolder(v.RedactionPlaceHolder); err != nil {
+			invalidParams.AddNested("RedactionPlaceHolder", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateInlineRedactionPatterns(v []types.InlineRedactionPattern) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "InlineRedactionPatterns"}
+	for i := range v {
+		if err := validateInlineRedactionPattern(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateIpRule(v *types.IpRule) error {
 	if v == nil {
 		return nil
@@ -1258,6 +1608,21 @@ func validateIpRuleList(v []types.IpRule) error {
 		if err := validateIpRule(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRedactionPlaceHolder(v *types.RedactionPlaceHolder) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RedactionPlaceHolder"}
+	if len(v.RedactionPlaceHolderType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("RedactionPlaceHolderType"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1311,6 +1676,24 @@ func validateOpAssociateBrowserSettingsInput(v *AssociateBrowserSettingsInput) e
 	}
 	if v.BrowserSettingsArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("BrowserSettingsArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpAssociateDataProtectionSettingsInput(v *AssociateDataProtectionSettingsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AssociateDataProtectionSettingsInput"}
+	if v.PortalArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PortalArn"))
+	}
+	if v.DataProtectionSettingsArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataProtectionSettingsArn"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1429,6 +1812,28 @@ func validateOpCreateBrowserSettingsInput(v *CreateBrowserSettingsInput) error {
 	}
 }
 
+func validateOpCreateDataProtectionSettingsInput(v *CreateDataProtectionSettingsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateDataProtectionSettingsInput"}
+	if v.Tags != nil {
+		if err := validateTagList(v.Tags); err != nil {
+			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.InlineRedactionConfiguration != nil {
+		if err := validateInlineRedactionConfiguration(v.InlineRedactionConfiguration); err != nil {
+			invalidParams.AddNested("InlineRedactionConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpCreateIdentityProviderInput(v *CreateIdentityProviderInput) error {
 	if v == nil {
 		return nil
@@ -1445,6 +1850,11 @@ func validateOpCreateIdentityProviderInput(v *CreateIdentityProviderInput) error
 	}
 	if v.IdentityProviderDetails == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("IdentityProviderDetails"))
+	}
+	if v.Tags != nil {
+		if err := validateTagList(v.Tags); err != nil {
+			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1585,6 +1995,11 @@ func validateOpCreateUserSettingsInput(v *CreateUserSettingsInput) error {
 			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.CookieSynchronizationConfiguration != nil {
+		if err := validateCookieSynchronizationConfiguration(v.CookieSynchronizationConfiguration); err != nil {
+			invalidParams.AddNested("CookieSynchronizationConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1599,6 +2014,21 @@ func validateOpDeleteBrowserSettingsInput(v *DeleteBrowserSettingsInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "DeleteBrowserSettingsInput"}
 	if v.BrowserSettingsArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("BrowserSettingsArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteDataProtectionSettingsInput(v *DeleteDataProtectionSettingsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteDataProtectionSettingsInput"}
+	if v.DataProtectionSettingsArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataProtectionSettingsArn"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1727,6 +2157,21 @@ func validateOpDisassociateBrowserSettingsInput(v *DisassociateBrowserSettingsIn
 	}
 }
 
+func validateOpDisassociateDataProtectionSettingsInput(v *DisassociateDataProtectionSettingsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DisassociateDataProtectionSettingsInput"}
+	if v.PortalArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PortalArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDisassociateIpAccessSettingsInput(v *DisassociateIpAccessSettingsInput) error {
 	if v == nil {
 		return nil
@@ -1802,6 +2247,24 @@ func validateOpDisassociateUserSettingsInput(v *DisassociateUserSettingsInput) e
 	}
 }
 
+func validateOpExpireSessionInput(v *ExpireSessionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ExpireSessionInput"}
+	if v.PortalId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PortalId"))
+	}
+	if v.SessionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SessionId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetBrowserSettingsInput(v *GetBrowserSettingsInput) error {
 	if v == nil {
 		return nil
@@ -1809,6 +2272,21 @@ func validateOpGetBrowserSettingsInput(v *GetBrowserSettingsInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "GetBrowserSettingsInput"}
 	if v.BrowserSettingsArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("BrowserSettingsArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetDataProtectionSettingsInput(v *GetDataProtectionSettingsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetDataProtectionSettingsInput"}
+	if v.DataProtectionSettingsArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataProtectionSettingsArn"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1884,6 +2362,24 @@ func validateOpGetPortalServiceProviderMetadataInput(v *GetPortalServiceProvider
 	invalidParams := smithy.InvalidParamsError{Context: "GetPortalServiceProviderMetadataInput"}
 	if v.PortalArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("PortalArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetSessionInput(v *GetSessionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetSessionInput"}
+	if v.PortalId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PortalId"))
+	}
+	if v.SessionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SessionId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1970,6 +2466,21 @@ func validateOpListIdentityProvidersInput(v *ListIdentityProvidersInput) error {
 	}
 }
 
+func validateOpListSessionsInput(v *ListSessionsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListSessionsInput"}
+	if v.PortalId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PortalId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListTagsForResourceInput(v *ListTagsForResourceInput) error {
 	if v == nil {
 		return nil
@@ -2047,6 +2558,26 @@ func validateOpUpdateBrowserSettingsInput(v *UpdateBrowserSettingsInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "UpdateBrowserSettingsInput"}
 	if v.BrowserSettingsArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("BrowserSettingsArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateDataProtectionSettingsInput(v *UpdateDataProtectionSettingsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateDataProtectionSettingsInput"}
+	if v.DataProtectionSettingsArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataProtectionSettingsArn"))
+	}
+	if v.InlineRedactionConfiguration != nil {
+		if err := validateInlineRedactionConfiguration(v.InlineRedactionConfiguration); err != nil {
+			invalidParams.AddNested("InlineRedactionConfiguration", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2157,6 +2688,11 @@ func validateOpUpdateUserSettingsInput(v *UpdateUserSettingsInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "UpdateUserSettingsInput"}
 	if v.UserSettingsArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("UserSettingsArn"))
+	}
+	if v.CookieSynchronizationConfiguration != nil {
+		if err := validateCookieSynchronizationConfiguration(v.CookieSynchronizationConfiguration); err != nil {
+			invalidParams.AddNested("CookieSynchronizationConfiguration", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

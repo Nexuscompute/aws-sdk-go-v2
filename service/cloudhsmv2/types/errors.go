@@ -34,8 +34,8 @@ func (e *CloudHsmAccessDeniedException) ErrorCode() string {
 }
 func (e *CloudHsmAccessDeniedException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The request was rejected because of an AWS CloudHSM internal failure. The
-// request can be retried.
+// The request was rejected because of an CloudHSM internal failure. The request
+// can be retried.
 type CloudHsmInternalFailureException struct {
 	Message *string
 
@@ -86,6 +86,34 @@ func (e *CloudHsmInvalidRequestException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *CloudHsmInvalidRequestException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The request was rejected because it exceeds an CloudHSM limit.
+type CloudHsmResourceLimitExceededException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *CloudHsmResourceLimitExceededException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *CloudHsmResourceLimitExceededException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *CloudHsmResourceLimitExceededException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "CloudHsmResourceLimitExceededException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *CloudHsmResourceLimitExceededException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
 
 // The request was rejected because it refers to a resource that cannot be found.
 type CloudHsmResourceNotFoundException struct {

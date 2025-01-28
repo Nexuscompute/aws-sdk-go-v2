@@ -4,14 +4,9 @@ package resourceexplorer2
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/resourceexplorer2/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -21,35 +16,53 @@ import (
 // Region in which you called this operation by creating an index. Resource
 // Explorer begins discovering the resources in this Region and stores the details
 // about the resources in the index so that they can be queried by using the Search
-// operation. You can create only one index in a Region. This operation creates
-// only a local index. To promote the local index in one Amazon Web Services Region
-// into the aggregator index for the Amazon Web Services account, use the
-// UpdateIndexType operation. For more information, see Turning on cross-Region
-// search by creating an aggregator index (https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-aggregator-region.html)
-// in the Amazon Web Services Resource Explorer User Guide. For more details about
-// what happens when you turn on Resource Explorer in an Amazon Web Services
-// Region, see Turn on Resource Explorer to index your resources in an Amazon Web
-// Services Region (https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-service-activate.html)
-// in the Amazon Web Services Resource Explorer User Guide. If this is the first
-// Amazon Web Services Region in which you've created an index for Resource
-// Explorer, then this operation also creates a service-linked role (https://docs.aws.amazon.com/resource-explorer/latest/userguide/security_iam_service-linked-roles.html)
-// in your Amazon Web Services account that allows Resource Explorer to enumerate
-// your resources to populate the index.
-//   - Action: resource-explorer-2:CreateIndex Resource: The ARN of the index (as
-//     it will exist after the operation completes) in the Amazon Web Services Region
-//     and account in which you're trying to create the index. Use the wildcard
-//     character ( * ) at the end of the string to match the eventual UUID. For
-//     example, the following Resource element restricts the role or user to creating
-//     an index in only the us-east-2 Region of the specified account. "Resource":
-//     "arn:aws:resource-explorer-2:us-west-2:<account-id>:index/*" Alternatively,
-//     you can use "Resource": "*" to allow the role or user to create an index in
-//     any Region.
-//   - Action: iam:CreateServiceLinkedRole Resource: No specific resource (*). This
-//     permission is required only the first time you create an index to turn on
-//     Resource Explorer in the account. Resource Explorer uses this to create the
-//     service-linked role needed to index the resources in your account (https://docs.aws.amazon.com/resource-explorer/latest/userguide/security_iam_service-linked-roles.html)
-//     . Resource Explorer uses the same service-linked role for all additional indexes
-//     you create afterwards.
+// operation. You can create only one index in a Region.
+//
+// This operation creates only a local index. To promote the local index in one
+// Amazon Web Services Region into the aggregator index for the Amazon Web Services
+// account, use the UpdateIndexTypeoperation. For more information, see [Turning on cross-Region search by creating an aggregator index] in the Amazon Web
+// Services Resource Explorer User Guide.
+//
+// For more details about what happens when you turn on Resource Explorer in an
+// Amazon Web Services Region, see [Turn on Resource Explorer to index your resources in an Amazon Web Services Region]in the Amazon Web Services Resource Explorer
+// User Guide.
+//
+// If this is the first Amazon Web Services Region in which you've created an
+// index for Resource Explorer, then this operation also [creates a service-linked role]in your Amazon Web
+// Services account that allows Resource Explorer to enumerate your resources to
+// populate the index.
+//
+//   - Action: resource-explorer-2:CreateIndex
+//
+// Resource: The ARN of the index (as it will exist after the operation completes)
+//
+//	in the Amazon Web Services Region and account in which you're trying to create
+//	the index. Use the wildcard character ( * ) at the end of the string to match
+//	the eventual UUID. For example, the following Resource element restricts the
+//	role or user to creating an index in only the us-east-2 Region of the
+//	specified account.
+//
+// "Resource": "arn:aws:resource-explorer-2:us-west-2:<account-id>:index/*"
+//
+// Alternatively, you can use "Resource": "*" to allow the role or user to create
+//
+//	an index in any Region.
+//
+//	- Action: iam:CreateServiceLinkedRole
+//
+// Resource: No specific resource (*).
+//
+// This permission is required only the first time you create an index to turn on
+//
+//	Resource Explorer in the account. Resource Explorer uses this to create the [service-linked role needed to index the resources in your account].
+//	Resource Explorer uses the same service-linked role for all additional indexes
+//	you create afterwards.
+//
+// [Turning on cross-Region search by creating an aggregator index]: https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-aggregator-region.html
+// [creates a service-linked role]: https://docs.aws.amazon.com/resource-explorer/latest/userguide/security_iam_service-linked-roles.html
+// [Turn on Resource Explorer to index your resources in an Amazon Web Services Region]: https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-service-activate.html
+//
+// [service-linked role needed to index the resources in your account]: https://docs.aws.amazon.com/resource-explorer/latest/userguide/security_iam_service-linked-roles.html
 func (c *Client) CreateIndex(ctx context.Context, params *CreateIndexInput, optFns ...func(*Options)) (*CreateIndexOutput, error) {
 	if params == nil {
 		params = &CreateIndexInput{}
@@ -69,8 +82,9 @@ type CreateIndexInput struct {
 
 	// This value helps ensure idempotency. Resource Explorer uses this value to
 	// prevent the accidental creation of duplicate versions. We recommend that you
-	// generate a UUID-type value (https://wikipedia.org/wiki/Universally_unique_identifier)
-	// to ensure the uniqueness of your views.
+	// generate a [UUID-type value]to ensure the uniqueness of your index.
+	//
+	// [UUID-type value]: https://wikipedia.org/wiki/Universally_unique_identifier
 	ClientToken *string
 
 	// The specified tags are attached only to the index created in this Amazon Web
@@ -84,17 +98,18 @@ type CreateIndexInput struct {
 type CreateIndexOutput struct {
 
 	// The ARN of the new local index for the Region. You can reference this ARN in
-	// IAM permission policies to authorize the following operations: DeleteIndex |
-	// GetIndex | UpdateIndexType | CreateView
+	// IAM permission policies to authorize the following operations: DeleteIndex| GetIndex | UpdateIndexType | CreateView
 	Arn *string
 
 	// The date and timestamp when the index was created.
 	CreatedAt *time.Time
 
 	// Indicates the current state of the index. You can check for changes to the
-	// state for asynchronous operations by calling the GetIndex operation. The state
-	// can remain in the CREATING or UPDATING state for several hours as Resource
-	// Explorer discovers the information about your resources and populates the index.
+	// state for asynchronous operations by calling the GetIndexoperation.
+	//
+	// The state can remain in the CREATING or UPDATING state for several hours as
+	// Resource Explorer discovers the information about your resources and populates
+	// the index.
 	State types.IndexState
 
 	// Metadata pertaining to the operation's result.
@@ -104,6 +119,9 @@ type CreateIndexOutput struct {
 }
 
 func (c *Client) addOperationCreateIndexMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateIndex{}, middleware.After)
 	if err != nil {
 		return err
@@ -112,34 +130,38 @@ func (c *Client) addOperationCreateIndexMiddlewares(stack *middleware.Stack, opt
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateIndex"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -151,7 +173,13 @@ func (c *Client) addOperationCreateIndexMiddlewares(stack *middleware.Stack, opt
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateIndexResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateIndexMiddleware(stack, options); err != nil {
@@ -160,7 +188,7 @@ func (c *Client) addOperationCreateIndexMiddlewares(stack *middleware.Stack, opt
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateIndex(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -172,7 +200,19 @@ func (c *Client) addOperationCreateIndexMiddlewares(stack *middleware.Stack, opt
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -215,129 +255,6 @@ func newServiceMetadataMiddleware_opCreateIndex(region string) *awsmiddleware.Re
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "resource-explorer-2",
 		OperationName: "CreateIndex",
 	}
-}
-
-type opCreateIndexResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateIndexResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateIndexResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "resource-explorer-2"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "resource-explorer-2"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("resource-explorer-2")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateIndexResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateIndexResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:   options.Region,
-			UseFIPS:  options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint: options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

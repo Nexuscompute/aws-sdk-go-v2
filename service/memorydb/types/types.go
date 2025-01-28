@@ -8,6 +8,7 @@ import (
 )
 
 // An Access Control List. You can authenticate users with Access Contol Lists.
+//
 // ACLs enable you to control cluster access by grouping users. These Access
 // control lists are designed as a way to organize access to clusters.
 type ACL struct {
@@ -116,17 +117,21 @@ type Cluster struct {
 
 	// Enables data tiering. Data tiering is only supported for clusters using the
 	// r6gd node type. This parameter must be set when using r6gd nodes. For more
-	// information, see Data tiering (https://docs.aws.amazon.com/memorydb/latest/devguide/data-tiering.html)
-	// .
+	// information, see [Data tiering].
+	//
+	// [Data tiering]: https://docs.aws.amazon.com/memorydb/latest/devguide/data-tiering.html
 	DataTiering DataTieringStatus
 
 	// A description of the cluster
 	Description *string
 
-	// The Redis engine patch version used by the cluster
+	// The name of the engine used by the cluster.
+	Engine *string
+
+	// The Redis OSS engine patch version used by the cluster
 	EnginePatchVersion *string
 
-	// The Redis engine version used by the cluster
+	// The Redis OSS engine version used by the cluster
 	EngineVersion *string
 
 	// The ID of the KMS key used to encrypt the cluster
@@ -136,6 +141,9 @@ type Cluster struct {
 	// performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H
 	// Clock UTC). The minimum maintenance window is a 60 minute period.
 	MaintenanceWindow *string
+
+	// The name of the multi-Region cluster that this cluster belongs to.
+	MultiRegionClusterName *string
 
 	// The user-supplied name of the cluster. This identifier is a unique key that
 	// identifies a cluster.
@@ -169,8 +177,12 @@ type Cluster struct {
 	SnapshotRetentionLimit *int32
 
 	// The daily time range (in UTC) during which MemoryDB begins taking a daily
-	// snapshot of your shard. Example: 05:00-09:00 If you do not specify this
-	// parameter, MemoryDB automatically chooses an appropriate time range.
+	// snapshot of your shard.
+	//
+	// Example: 05:00-09:00
+	//
+	// If you do not specify this parameter, MemoryDB automatically chooses an
+	// appropriate time range.
 	SnapshotWindow *string
 
 	// The Amazon Resource Name (ARN) of the SNS notification topic
@@ -197,11 +209,21 @@ type ClusterConfiguration struct {
 	// The description of the cluster configuration
 	Description *string
 
-	// The Redis engine version used by the cluster
+	// The name of the engine used by the cluster configuration.
+	Engine *string
+
+	// The Redis OSS engine version used by the cluster
 	EngineVersion *string
 
 	// The specified maintenance window for the cluster
 	MaintenanceWindow *string
+
+	// The name for the multi-Region cluster associated with the cluster configuration.
+	MultiRegionClusterName *string
+
+	// The name of the multi-Region parameter group associated with the cluster
+	// configuration.
+	MultiRegionParameterGroupName *string
 
 	// The name of the cluster
 	Name *string
@@ -267,8 +289,11 @@ type Endpoint struct {
 	noSmithyDocumentSerde
 }
 
-// Provides details of the Redis engine version
+// Provides details of the Redis OSS engine version
 type EngineVersionInfo struct {
+
+	// The name of the engine for which version information is provided.
+	Engine *string
 
 	// The patched engine version
 	EnginePatchVersion *string
@@ -316,6 +341,45 @@ type Filter struct {
 	//
 	// This member is required.
 	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// Represents a multi-Region cluster.
+type MultiRegionCluster struct {
+
+	// The Amazon Resource Name (ARN) of the multi-Region cluster.
+	ARN *string
+
+	// The clusters in this multi-Region cluster.
+	Clusters []RegionalCluster
+
+	// The description of the multi-Region cluster.
+	Description *string
+
+	// The name of the engine used by the multi-Region cluster.
+	Engine *string
+
+	// The version of the engine used by the multi-Region cluster.
+	EngineVersion *string
+
+	// The name of the multi-Region cluster.
+	MultiRegionClusterName *string
+
+	// The name of the multi-Region parameter group associated with the cluster.
+	MultiRegionParameterGroupName *string
+
+	// The node type used by the multi-Region cluster.
+	NodeType *string
+
+	// The number of shards in the multi-Region cluster.
+	NumberOfShards *int32
+
+	// The current status of the multi-Region cluster.
+	Status *string
+
+	// Indiciates if the multi-Region cluster is TLS enabled.
+	TLSEnabled *bool
 
 	noSmithyDocumentSerde
 }
@@ -426,6 +490,24 @@ type RecurringCharge struct {
 	noSmithyDocumentSerde
 }
 
+// Represents a Regional cluster
+type RegionalCluster struct {
+
+	// The Amazon Resource Name (ARN) the Regional cluster
+	ARN *string
+
+	// The name of the Regional cluster
+	ClusterName *string
+
+	// The Region the current Regional cluster is assigned to.
+	Region *string
+
+	// The status of the Regional cluster.
+	Status *string
+
+	noSmithyDocumentSerde
+}
+
 // A request to configure the number of replicas in a shard
 type ReplicaConfigurationRequest struct {
 
@@ -483,9 +565,9 @@ type ReservedNodesOffering struct {
 	// The fixed price charged for this reserved node.
 	FixedPrice float64
 
-	// The node type for the reserved nodes. For more information, see Supported node
-	// types (https://docs.aws.amazon.com/memorydb/latest/devguide/nodes.reserved.html#reserved-nodes-supported)
-	// .
+	// The node type for the reserved nodes. For more information, see [Supported node types].
+	//
+	// [Supported node types]: https://docs.aws.amazon.com/memorydb/latest/devguide/nodes.reserved.html#reserved-nodes-supported
 	NodeType *string
 
 	// The offering type of this reserved node.
@@ -534,6 +616,9 @@ type ServiceUpdate struct {
 
 	// Provides details of the service update
 	Description *string
+
+	// The name of the engine for which a service update is available.
+	Engine *string
 
 	// A list of nodes updated by the service update
 	NodesUpdated *string
@@ -647,8 +732,9 @@ type Snapshot struct {
 
 	// Enables data tiering. Data tiering is only supported for clusters using the
 	// r6gd node type. This parameter must be set when using r6gd nodes. For more
-	// information, see Data tiering (https://docs.aws.amazon.com/memorydb/latest/devguide/data-tiering.html)
-	// .
+	// information, see [Data tiering].
+	//
+	// [Data tiering]: https://docs.aws.amazon.com/memorydb/latest/devguide/data-tiering.html
 	DataTiering DataTieringStatus
 
 	// The ID of the KMS key used to encrypt the snapshot.
@@ -683,7 +769,9 @@ type Subnet struct {
 }
 
 // Represents the output of one of the following operations:
+//
 //   - CreateSubnetGroup
+//
 //   - UpdateSubnetGroup
 //
 // A subnet group is a collection of subnets (typically private) that you can
@@ -713,7 +801,9 @@ type SubnetGroup struct {
 // Key/Value pair. You can use tags to categorize and track all your MemoryDB
 // resources. When you add or remove tags on clusters, those actions will be
 // replicated to all nodes in the cluster. A tag with a null Value is permitted.
-// For more information, see Tagging your MemoryDB resources (https://docs.aws.amazon.com/MemoryDB/latest/devguide/tagging-resources.html)
+// For more information, see [Tagging your MemoryDB resources]
+//
+// [Tagging your MemoryDB resources]: https://docs.aws.amazon.com/MemoryDB/latest/devguide/tagging-resources.html
 type Tag struct {
 
 	// The key for the tag. May not be null.

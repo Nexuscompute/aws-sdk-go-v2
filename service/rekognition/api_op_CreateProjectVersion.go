@@ -4,41 +4,42 @@ package rekognition
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/rekognition/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a new version of a model and begins training. Models are managed as
-// part of an Amazon Rekognition Custom Labels project. The response from
-// CreateProjectVersion is an Amazon Resource Name (ARN) for the version of the
-// model. Training uses the training and test datasets associated with the project.
-// For more information, see Creating training and test dataset in the Amazon
-// Rekognition Custom Labels Developer Guide. You can train a model in a project
-// that doesn't have associated datasets by specifying manifest files in the
-// TrainingData and TestingData fields. If you open the console after training a
-// model with manifest files, Amazon Rekognition Custom Labels creates the datasets
-// for you using the most recent manifest files. You can no longer train a model
-// version for the project by specifying manifest files. Instead of training with a
-// project without associated datasets, we recommend that you use the manifest
-// files to create training and test datasets for the project. Training takes a
-// while to complete. You can get the current status by calling
-// DescribeProjectVersions . Training completed successfully if the value of the
-// Status field is TRAINING_COMPLETED . If training fails, see Debugging a failed
-// model training in the Amazon Rekognition Custom Labels developer guide. Once
-// training has successfully completed, call DescribeProjectVersions to get the
-// training results and evaluate the model. For more information, see Improving a
-// trained Amazon Rekognition Custom Labels model in the Amazon Rekognition Custom
-// Labels developers guide. After evaluating the model, you start the model by
-// calling StartProjectVersion . This operation requires permissions to perform the
+// Creates a new version of Amazon Rekognition project (like a Custom Labels model
+// or a custom adapter) and begins training. Models and adapters are managed as
+// part of a Rekognition project. The response from CreateProjectVersion is an
+// Amazon Resource Name (ARN) for the project version.
+//
+// The FeatureConfig operation argument allows you to configure specific model or
+// adapter settings. You can provide a description to the project version by using
+// the VersionDescription argment. Training can take a while to complete. You can
+// get the current status by calling DescribeProjectVersions. Training completed successfully if the
+// value of the Status field is TRAINING_COMPLETED . Once training has successfully
+// completed, call DescribeProjectVersionsto get the training results and evaluate the model.
+//
+// This operation requires permissions to perform the
 // rekognition:CreateProjectVersion action.
+//
+// The following applies only to projects with Amazon Rekognition Custom Labels as
+// the chosen feature:
+//
+// You can train a model in a project that doesn't have associated datasets by
+// specifying manifest files in the TrainingData and TestingData fields.
+//
+// If you open the console after training a model with manifest files, Amazon
+// Rekognition Custom Labels creates the datasets for you using the most recent
+// manifest files. You can no longer train a model version for the project by
+// specifying manifest files.
+//
+// Instead of training with a project without associated datasets, we recommend
+// that you use the manifest files to create training and test datasets for the
+// project.
 func (c *Client) CreateProjectVersion(ctx context.Context, params *CreateProjectVersionInput, optFns ...func(*Options)) (*CreateProjectVersionOutput, error) {
 	if params == nil {
 		params = &CreateProjectVersionInput{}
@@ -56,59 +57,76 @@ func (c *Client) CreateProjectVersion(ctx context.Context, params *CreateProject
 
 type CreateProjectVersionInput struct {
 
-	// The Amazon S3 bucket location to store the results of training. The S3 bucket
-	// can be in any AWS account as long as the caller has s3:PutObject permissions on
-	// the S3 bucket.
+	// The Amazon S3 bucket location to store the results of training. The bucket can
+	// be any S3 bucket in your AWS account. You need s3:PutObject permission on the
+	// bucket.
 	//
 	// This member is required.
 	OutputConfig *types.OutputConfig
 
-	// The ARN of the Amazon Rekognition Custom Labels project that manages the model
-	// that you want to train.
+	// The ARN of the Amazon Rekognition project that will manage the project version
+	// you want to train.
 	//
 	// This member is required.
 	ProjectArn *string
 
-	// A name for the version of the model. This value must be unique.
+	// A name for the version of the project version. This value must be unique.
 	//
 	// This member is required.
 	VersionName *string
 
+	// Feature-specific configuration of the training job. If the job configuration
+	// does not match the feature type associated with the project, an
+	// InvalidParameterException is returned.
+	FeatureConfig *types.CustomizationFeatureConfig
+
 	// The identifier for your AWS Key Management Service key (AWS KMS key). You can
 	// supply the Amazon Resource Name (ARN) of your KMS key, the ID of your KMS key,
 	// an alias for your KMS key, or an alias ARN. The key is used to encrypt training
-	// and test images copied into the service for model training. Your source images
-	// are unaffected. The key is also used to encrypt training results and manifest
-	// files written to the output Amazon S3 bucket ( OutputConfig ). If you choose to
-	// use your own KMS key, you need the following permissions on the KMS key.
+	// images, test images, and manifest files copied into the service for the project
+	// version. Your source images are unaffected. The key is also used to encrypt
+	// training results and manifest files written to the output Amazon S3 bucket (
+	// OutputConfig ).
+	//
+	// If you choose to use your own KMS key, you need the following permissions on
+	// the KMS key.
+	//
 	//   - kms:CreateGrant
+	//
 	//   - kms:DescribeKey
+	//
 	//   - kms:GenerateDataKey
+	//
 	//   - kms:Decrypt
+	//
 	// If you don't specify a value for KmsKeyId , images copied into the service are
 	// encrypted using a key that AWS owns and manages.
 	KmsKeyId *string
 
-	// A set of tags (key-value pairs) that you want to attach to the model.
+	//  A set of tags (key-value pairs) that you want to attach to the project
+	// version.
 	Tags map[string]string
 
-	// Specifies an external manifest that the service uses to test the model. If you
-	// specify TestingData you must also specify TrainingData . The project must not
-	// have any associated datasets.
+	// Specifies an external manifest that the service uses to test the project
+	// version. If you specify TestingData you must also specify TrainingData . The
+	// project must not have any associated datasets.
 	TestingData *types.TestingData
 
-	// Specifies an external manifest that the services uses to train the model. If
-	// you specify TrainingData you must also specify TestingData . The project must
-	// not have any associated datasets.
+	// Specifies an external manifest that the services uses to train the project
+	// version. If you specify TrainingData you must also specify TestingData . The
+	// project must not have any associated datasets.
 	TrainingData *types.TrainingData
+
+	// A description applied to the project version being created.
+	VersionDescription *string
 
 	noSmithyDocumentSerde
 }
 
 type CreateProjectVersionOutput struct {
 
-	// The ARN of the model version that was created. Use DescribeProjectVersion to
-	// get the current status of the training operation.
+	// The ARN of the model or the project version that was created. Use
+	// DescribeProjectVersion to get the current status of the training operation.
 	ProjectVersionArn *string
 
 	// Metadata pertaining to the operation's result.
@@ -118,6 +136,9 @@ type CreateProjectVersionOutput struct {
 }
 
 func (c *Client) addOperationCreateProjectVersionMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateProjectVersion{}, middleware.After)
 	if err != nil {
 		return err
@@ -126,34 +147,38 @@ func (c *Client) addOperationCreateProjectVersionMiddlewares(stack *middleware.S
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateProjectVersion"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -165,7 +190,13 @@ func (c *Client) addOperationCreateProjectVersionMiddlewares(stack *middleware.S
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateProjectVersionResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateProjectVersionValidationMiddleware(stack); err != nil {
@@ -174,7 +205,7 @@ func (c *Client) addOperationCreateProjectVersionMiddlewares(stack *middleware.S
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateProjectVersion(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -186,7 +217,19 @@ func (c *Client) addOperationCreateProjectVersionMiddlewares(stack *middleware.S
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -196,130 +239,6 @@ func newServiceMetadataMiddleware_opCreateProjectVersion(region string) *awsmidd
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "rekognition",
 		OperationName: "CreateProjectVersion",
 	}
-}
-
-type opCreateProjectVersionResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateProjectVersionResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateProjectVersionResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "rekognition"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "rekognition"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("rekognition")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateProjectVersionResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateProjectVersionResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

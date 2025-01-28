@@ -12,8 +12,9 @@ const (
 )
 
 // Values returns all known values for ConfirmationState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConfirmationState) Values() []ConfirmationState {
 	return []ConfirmationState{
 		"Confirmed",
@@ -31,8 +32,9 @@ const (
 )
 
 // Values returns all known values for ConversationMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConversationMode) Values() []ConversationMode {
 	return []ConversationMode{
 		"AUDIO",
@@ -53,8 +55,9 @@ const (
 )
 
 // Values returns all known values for DialogActionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DialogActionType) Values() []DialogActionType {
 	return []DialogActionType{
 		"Close",
@@ -76,8 +79,9 @@ const (
 )
 
 // Values returns all known values for InputMode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputMode) Values() []InputMode {
 	return []InputMode{
 		"Text",
@@ -99,8 +103,9 @@ const (
 )
 
 // Values returns all known values for IntentState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (IntentState) Values() []IntentState {
 	return []IntentState{
 		"Failed",
@@ -109,6 +114,25 @@ func (IntentState) Values() []IntentState {
 		"ReadyForFulfillment",
 		"Waiting",
 		"FulfillmentInProgress",
+	}
+}
+
+type InterpretationSource string
+
+// Enum values for InterpretationSource
+const (
+	InterpretationSourceBedrock InterpretationSource = "Bedrock"
+	InterpretationSourceLex     InterpretationSource = "Lex"
+)
+
+// Values returns all known values for InterpretationSource. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InterpretationSource) Values() []InterpretationSource {
+	return []InterpretationSource{
+		"Bedrock",
+		"Lex",
 	}
 }
 
@@ -123,8 +147,9 @@ const (
 )
 
 // Values returns all known values for MessageContentType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MessageContentType) Values() []MessageContentType {
 	return []MessageContentType{
 		"CustomPayload",
@@ -145,6 +170,7 @@ const (
 
 // Values returns all known values for PlaybackInterruptionReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (PlaybackInterruptionReason) Values() []PlaybackInterruptionReason {
 	return []PlaybackInterruptionReason{
@@ -165,8 +191,9 @@ const (
 )
 
 // Values returns all known values for SentimentType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SentimentType) Values() []SentimentType {
 	return []SentimentType{
 		"MIXED",
@@ -186,8 +213,9 @@ const (
 )
 
 // Values returns all known values for Shape. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Shape) Values() []Shape {
 	return []Shape{
 		"Scalar",
@@ -206,8 +234,9 @@ const (
 )
 
 // Values returns all known values for StyleType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StyleType) Values() []StyleType {
 	return []StyleType{
 		"Default",

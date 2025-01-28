@@ -185,9 +185,9 @@ type AutoExportRevisionDestinationEntry struct {
 	Bucket *string
 
 	// A string representing the pattern for generated names of the individual assets
-	// in the revision. For more information about key patterns, see Key patterns when
-	// exporting revisions (https://docs.aws.amazon.com/data-exchange/latest/userguide/jobs.html#revision-export-keypatterns)
-	// .
+	// in the revision. For more information about key patterns, see [Key patterns when exporting revisions].
+	//
+	// [Key patterns when exporting revisions]: https://docs.aws.amazon.com/data-exchange/latest/userguide/jobs.html#revision-export-keypatterns
 	KeyPattern *string
 
 	noSmithyDocumentSerde
@@ -279,6 +279,68 @@ type DatabaseLFTagPolicyAndPermissions struct {
 	noSmithyDocumentSerde
 }
 
+// Information about a data grant.
+type DataGrantSummaryEntry struct {
+
+	// The acceptance state of the data grant.
+	//
+	// This member is required.
+	AcceptanceState DataGrantAcceptanceState
+
+	// The Amazon Resource Name (ARN) of the data grant.
+	//
+	// This member is required.
+	Arn *string
+
+	// The timestamp of when the data grant was created.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// The ID of the data set associated to the data grant.
+	//
+	// This member is required.
+	DataSetId *string
+
+	// The ID of the data grant.
+	//
+	// This member is required.
+	Id *string
+
+	// The name of the data grant.
+	//
+	// This member is required.
+	Name *string
+
+	// The Amazon Web Services account ID of the data grant receiver.
+	//
+	// This member is required.
+	ReceiverPrincipal *string
+
+	// The Amazon Web Services account ID of the data grant sender.
+	//
+	// This member is required.
+	SenderPrincipal *string
+
+	// The ID of the data set used to create the data grant.
+	//
+	// This member is required.
+	SourceDataSetId *string
+
+	// The timestamp of when the data grant was last updated.
+	//
+	// This member is required.
+	UpdatedAt *time.Time
+
+	// The timestamp of when the data grant was accepted.
+	AcceptedAt *time.Time
+
+	// The timestamp of when access to the associated data set ends.
+	EndsAt *time.Time
+
+	noSmithyDocumentSerde
+}
+
 // A data set is an AWS resource with one or more revisions.
 type DataSetEntry struct {
 
@@ -331,6 +393,27 @@ type DataSetEntry struct {
 	// being viewed. This parameter is returned when a data set owner is viewing the
 	// entitled copy of its owned data set.
 	SourceId *string
+
+	noSmithyDocumentSerde
+}
+
+// Extra details specific to a data update type notification.
+type DataUpdateRequestDetails struct {
+
+	// A datetime in the past when the data was updated. This typically means that the
+	// underlying resource supporting the data set was updated.
+	DataUpdatedAt *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Extra details specific to a deprecation type notification.
+type DeprecationRequestDetails struct {
+
+	// A datetime in the future when the data set will be deprecated.
+	//
+	// This member is required.
+	DeprecationAt *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -1003,6 +1086,18 @@ type LakeFormationDataPermissionDetails struct {
 	noSmithyDocumentSerde
 }
 
+// Extra details specific to the affected scope in this LF data set.
+type LakeFormationTagPolicyDetails struct {
+
+	// The underlying Glue database that the notification is referring to.
+	Database *string
+
+	// The underlying Glue table that the notification is referring to.
+	Table *string
+
+	noSmithyDocumentSerde
+}
+
 // Details about the AWS Lake Formation resource (Table or Database) included in
 // the AWS Lake Formation data permission.
 type LFResourceDetails struct {
@@ -1055,13 +1150,86 @@ type LFTagPolicyDetails struct {
 	noSmithyDocumentSerde
 }
 
+// Extra details specific to this notification.
+type NotificationDetails struct {
+
+	// Extra details specific to a data update type notification.
+	DataUpdate *DataUpdateRequestDetails
+
+	// Extra details specific to a deprecation type notification.
+	Deprecation *DeprecationRequestDetails
+
+	// Extra details specific to a schema change type notification.
+	SchemaChange *SchemaChangeRequestDetails
+
+	noSmithyDocumentSerde
+}
+
 // Details about the origin of the data set.
 type OriginDetails struct {
 
+	// The ID of the data grant.
+	DataGrantId *string
+
 	// The product ID of the origin of the data set.
+	ProductId *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about a received data grant.
+type ReceivedDataGrantSummariesEntry struct {
+
+	// The acceptance state of the data grant.
 	//
 	// This member is required.
-	ProductId *string
+	AcceptanceState DataGrantAcceptanceState
+
+	// The Amazon Resource Name (ARN) of the data grant.
+	//
+	// This member is required.
+	Arn *string
+
+	// The timestamp of when the data grant was created.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// The ID of the data set associated to the data grant.
+	//
+	// This member is required.
+	DataSetId *string
+
+	// The ID of the data grant.
+	//
+	// This member is required.
+	Id *string
+
+	// The name of the data grant.
+	//
+	// This member is required.
+	Name *string
+
+	// The Amazon Web Services account ID of the data grant receiver.
+	//
+	// This member is required.
+	ReceiverPrincipal *string
+
+	// The Amazon Web Services account ID of the data grant sender.
+	//
+	// This member is required.
+	SenderPrincipal *string
+
+	// The timestamp of when the data grant was last updated.
+	//
+	// This member is required.
+	UpdatedAt *time.Time
+
+	// The timestamp of when the data grant was accepted.
+	AcceptedAt *time.Time
+
+	// The timestamp of when access to the associated data set ends.
+	EndsAt *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -1084,6 +1252,40 @@ type RedshiftDataShareAssetSourceEntry struct {
 	//
 	// This member is required.
 	DataShareArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Extra details specific to the affected scope in this Redshift data set.
+type RedshiftDataShareDetails struct {
+
+	// The ARN of the underlying Redshift data share that is being affected by this
+	// notification.
+	//
+	// This member is required.
+	Arn *string
+
+	// The database name in the Redshift data share that is being affected by this
+	// notification.
+	//
+	// This member is required.
+	Database *string
+
+	// A function name in the Redshift database that is being affected by this
+	// notification.
+	Function *string
+
+	// A schema name in the Redshift database that is being affected by this
+	// notification.
+	Schema *string
+
+	// A table name in the Redshift database that is being affected by this
+	// notification.
+	Table *string
+
+	// A view name in the Redshift database that is being affected by this
+	// notification.
+	View *string
 
 	noSmithyDocumentSerde
 }
@@ -1168,9 +1370,9 @@ type RevisionDestinationEntry struct {
 	RevisionId *string
 
 	// A string representing the pattern for generated names of the individual assets
-	// in the revision. For more information about key patterns, see Key patterns when
-	// exporting revisions (https://docs.aws.amazon.com/data-exchange/latest/userguide/jobs.html#revision-export-keypatterns)
-	// .
+	// in the revision. For more information about key patterns, see [Key patterns when exporting revisions].
+	//
+	// [Key patterns when exporting revisions]: https://docs.aws.amazon.com/data-exchange/latest/userguide/jobs.html#revision-export-keypatterns
 	KeyPattern *string
 
 	noSmithyDocumentSerde
@@ -1259,7 +1461,7 @@ type S3DataAccessAsset struct {
 	// S3 keys made available using this asset.
 	Keys []string
 
-	// List of AWS KMS CMKs (Key Management System Customer Managed Keys) and ARNs
+	//  List of AWS KMS CMKs (Key Management System Customer Managed Keys) and ARNs
 	// used to encrypt S3 objects being shared in this S3 Data Access asset. Providers
 	// must include all AWS KMS keys used to encrypt these shared S3 objects.
 	KmsKeysToGrant []KmsKeyToGrant
@@ -1296,6 +1498,20 @@ type S3DataAccessAssetSourceEntry struct {
 	noSmithyDocumentSerde
 }
 
+// Extra details specific to the affected scope in this S3 Data Access data set.
+type S3DataAccessDetails struct {
+
+	// A list of the key prefixes affected by this notification. This can have up to
+	// 50 entries.
+	KeyPrefixes []string
+
+	// A list of the keys affected by this notification. This can have up to 50
+	// entries.
+	Keys []string
+
+	noSmithyDocumentSerde
+}
+
 // The Amazon S3 object that is the asset.
 type S3SnapshotAsset struct {
 
@@ -1303,6 +1519,57 @@ type S3SnapshotAsset struct {
 	//
 	// This member is required.
 	Size float64
+
+	noSmithyDocumentSerde
+}
+
+// Object encompassing information about a schema change to a single, particular
+// field, a notification can have up to 100 of these.
+type SchemaChangeDetails struct {
+
+	// Name of the changing field. This value can be up to 255 characters long.
+	//
+	// This member is required.
+	Name *string
+
+	// Is the field being added, removed, or modified?
+	//
+	// This member is required.
+	Type SchemaChangeType
+
+	// Description of what's changing about this field. This value can be up to 512
+	// characters long.
+	Description *string
+
+	noSmithyDocumentSerde
+}
+
+// Extra details specific to this schema change type notification.
+type SchemaChangeRequestDetails struct {
+
+	// A date in the future when the schema change is taking effect.
+	//
+	// This member is required.
+	SchemaChangeAt *time.Time
+
+	// List of schema changes happening in the scope of this notification. This can
+	// have up to 100 entries.
+	Changes []SchemaChangeDetails
+
+	noSmithyDocumentSerde
+}
+
+// Details about the scope of the notifications such as the affected resources.
+type ScopeDetails struct {
+
+	// Underlying LF resources that will be affected by this notification.
+	LakeFormationTagPolicies []LakeFormationTagPolicyDetails
+
+	// Underlying Redshift resources that will be affected by this notification.
+	RedshiftDataShares []RedshiftDataShareDetails
+
+	// Underlying S3 resources that will be affected by this notification.
+	S3DataAccesses []S3DataAccessDetails
 
 	noSmithyDocumentSerde
 }

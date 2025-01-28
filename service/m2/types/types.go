@@ -185,8 +185,10 @@ type BatchJobExecutionSummary struct {
 	JobType BatchJobType
 
 	// The batch job return code from either the Blu Age or Micro Focus runtime
-	// engines. For more information, see Batch return codes (https://www.ibm.com/docs/en/was/8.5.5?topic=model-batch-return-codes)
-	// in the IBM WebSphere Application Server documentation.
+	// engines. For more information, see [Batch return codes]in the IBM WebSphere Application Server
+	// documentation.
+	//
+	// [Batch return codes]: https://www.ibm.com/docs/en/was/8.5.5?topic=model-batch-return-codes
 	ReturnCode *string
 
 	noSmithyDocumentSerde
@@ -197,6 +199,8 @@ type BatchJobExecutionSummary struct {
 // The following types satisfy this interface:
 //
 //	BatchJobIdentifierMemberFileBatchJobIdentifier
+//	BatchJobIdentifierMemberRestartBatchJobIdentifier
+//	BatchJobIdentifierMemberS3BatchJobIdentifier
 //	BatchJobIdentifierMemberScriptBatchJobIdentifier
 type BatchJobIdentifier interface {
 	isBatchJobIdentifier()
@@ -210,6 +214,26 @@ type BatchJobIdentifierMemberFileBatchJobIdentifier struct {
 }
 
 func (*BatchJobIdentifierMemberFileBatchJobIdentifier) isBatchJobIdentifier() {}
+
+// Specifies the required information for restart, including executionId and
+// JobStepRestartMarker .
+type BatchJobIdentifierMemberRestartBatchJobIdentifier struct {
+	Value RestartBatchJobIdentifier
+
+	noSmithyDocumentSerde
+}
+
+func (*BatchJobIdentifierMemberRestartBatchJobIdentifier) isBatchJobIdentifier() {}
+
+// Specifies an Amazon S3 location that identifies the batch jobs that you want to
+// run. Use this identifier to run ad hoc batch jobs.
+type BatchJobIdentifierMemberS3BatchJobIdentifier struct {
+	Value S3BatchJobIdentifier
+
+	noSmithyDocumentSerde
+}
+
+func (*BatchJobIdentifierMemberS3BatchJobIdentifier) isBatchJobIdentifier() {}
 
 // A batch job identifier in which the batch job to run is identified by the
 // script name.
@@ -300,8 +324,7 @@ type DatasetDetailOrgAttributesMemberVsam struct {
 
 func (*DatasetDetailOrgAttributesMemberVsam) isDatasetDetailOrgAttributes() {}
 
-// Identifies one or more data sets you want to import with the
-// CreateDataSetImportTask operation.
+// Identifies one or more data sets you want to import with the CreateDataSetImportTask operation.
 //
 // The following types satisfy this interface:
 //
@@ -393,6 +416,9 @@ type DataSetImportTask struct {
 	//
 	// This member is required.
 	TaskId *string
+
+	// If dataset import failed, the failure reason will show here.
+	StatusReason *string
 
 	noSmithyDocumentSerde
 }
@@ -636,6 +662,9 @@ type EnvironmentSummary struct {
 	// This member is required.
 	Status EnvironmentLifecycle
 
+	// The network type supported by the runtime environment.
+	NetworkType NetworkType
+
 	noSmithyDocumentSerde
 }
 
@@ -705,9 +734,9 @@ type FsxStorageConfiguration struct {
 // The required attributes for a generation data group data set. A generation data
 // set is one of a collection of successive, historically related, catalogued data
 // sets that together are known as a generation data group (GDG). Use this
-// structure when you want to import a GDG. For more information on GDG, see
-// Generation data sets (https://www.ibm.com/docs/en/zos/2.3.0?topic=guide-generation-data-sets)
-// .
+// structure when you want to import a GDG. For more information on GDG, see [Generation data sets].
+//
+// [Generation data sets]: https://www.ibm.com/docs/en/zos/2.3.0?topic=guide-generation-data-sets
 type GdgAttributes struct {
 
 	// The maximum number of generation data sets, up to 255, in a GDG.
@@ -722,9 +751,9 @@ type GdgAttributes struct {
 // The required attributes for a generation data group data set. A generation data
 // set is one of a collection of successive, historically related, catalogued data
 // sets that together are known as a generation data group (GDG). Use this
-// structure when you want to import a GDG. For more information on GDG, see
-// Generation data sets (https://www.ibm.com/docs/en/zos/2.3.0?topic=guide-generation-data-sets)
-// .
+// structure when you want to import a GDG. For more information on GDG, see [Generation data sets].
+//
+// [Generation data sets]: https://www.ibm.com/docs/en/zos/2.3.0?topic=guide-generation-data-sets
 type GdgDetailAttributes struct {
 
 	// The maximum number of generation data sets, up to 255, in a GDG.
@@ -744,6 +773,78 @@ type HighAvailabilityConfig struct {
 	//
 	// This member is required.
 	DesiredCapacity *int32
+
+	noSmithyDocumentSerde
+}
+
+// Identifies a specific batch job.
+//
+// The following types satisfy this interface:
+//
+//	JobIdentifierMemberFileName
+//	JobIdentifierMemberScriptName
+type JobIdentifier interface {
+	isJobIdentifier()
+}
+
+// The name of the file that contains the batch job definition.
+type JobIdentifierMemberFileName struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*JobIdentifierMemberFileName) isJobIdentifier() {}
+
+// The name of the script that contains the batch job definition.
+type JobIdentifierMemberScriptName struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*JobIdentifierMemberScriptName) isJobIdentifier() {}
+
+// Provides information related to a job step.
+type JobStep struct {
+
+	// The name of a procedure step.
+	ProcStepName *string
+
+	// The number of a procedure step.
+	ProcStepNumber int32
+
+	// The condition code of a step.
+	StepCondCode *string
+
+	// The name of a step.
+	StepName *string
+
+	// The number of a step.
+	StepNumber int32
+
+	// Specifies if a step can be restarted or not.
+	StepRestartable bool
+
+	noSmithyDocumentSerde
+}
+
+// Provides step/procedure step information for a restart batch job operation.
+type JobStepRestartMarker struct {
+
+	// The step name that a batch job was restarted from.
+	//
+	// This member is required.
+	FromStep *string
+
+	// The procedure step name that a batch job was restarted from.
+	FromProcStep *string
+
+	// The procedure step name that a batch job was restarted to.
+	ToProcStep *string
+
+	// The step name that a batch job was restarted to.
+	ToStep *string
 
 	noSmithyDocumentSerde
 }
@@ -893,6 +994,46 @@ type RecordLength struct {
 	noSmithyDocumentSerde
 }
 
+// An identifier for the StartBatchJob API to show that it is a restart operation.
+type RestartBatchJobIdentifier struct {
+
+	// The executionId from the StartBatchJob response when the job ran for the first
+	// time.
+	//
+	// This member is required.
+	ExecutionId *string
+
+	// The step/procedure step information for a restart batch job operation.
+	//
+	// This member is required.
+	JobStepRestartMarker *JobStepRestartMarker
+
+	noSmithyDocumentSerde
+}
+
+// A batch job identifier in which the batch jobs to run are identified by an
+// Amazon S3 location.
+type S3BatchJobIdentifier struct {
+
+	// The Amazon S3 bucket that contains the batch job definitions.
+	//
+	// This member is required.
+	Bucket *string
+
+	// Identifies the batch job definition. This identifier can also point to any
+	// batch job definition that already exists in the application or to one of the
+	// batch job definitions within the directory that is specified in keyPrefix .
+	//
+	// This member is required.
+	Identifier JobIdentifier
+
+	// The key prefix that specifies the path to the folder in the S3 bucket that has
+	// the batch job definitions.
+	KeyPrefix *string
+
+	noSmithyDocumentSerde
+}
+
 // A batch job definition contained in a script.
 type ScriptBatchJobDefinition struct {
 
@@ -1034,4 +1175,5 @@ func (*UnknownUnionMember) isDataSetImportConfig()        {}
 func (*UnknownUnionMember) isDatasetOrgAttributes()       {}
 func (*UnknownUnionMember) isDefinition()                 {}
 func (*UnknownUnionMember) isExternalLocation()           {}
+func (*UnknownUnionMember) isJobIdentifier()              {}
 func (*UnknownUnionMember) isStorageConfiguration()       {}

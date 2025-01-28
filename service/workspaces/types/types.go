@@ -7,6 +7,24 @@ import (
 	"time"
 )
 
+// Information about about the account link.
+type AccountLink struct {
+
+	// The identifier of the account link.
+	AccountLinkId *string
+
+	// The status of the account link.
+	AccountLinkStatus AccountLinkStatusEnum
+
+	// The identifier of the source account.
+	SourceAccountId *string
+
+	// The identifier of the target account.
+	TargetAccountId *string
+
+	noSmithyDocumentSerde
+}
+
 // Describes a modification to the configuration of Bring Your Own License (BYOL)
 // for the specified account.
 type AccountModification struct {
@@ -30,6 +48,172 @@ type AccountModification struct {
 
 	// The timestamp when the modification of the BYOL configuration was started.
 	StartTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Information about the Active Directory config.
+type ActiveDirectoryConfig struct {
+
+	// The name of the domain.
+	//
+	// This member is required.
+	DomainName *string
+
+	// Indicates the secret ARN on the service account.
+	//
+	// This member is required.
+	ServiceAccountSecretArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the association between an application and an application resource.
+type ApplicationResourceAssociation struct {
+
+	// The identifier of the application.
+	ApplicationId *string
+
+	// The identifier of the associated resource.
+	AssociatedResourceId *string
+
+	// The resource type of the associated resource.
+	AssociatedResourceType ApplicationAssociatedResourceType
+
+	// The time the association was created.
+	Created *time.Time
+
+	// The time the association status was last updated.
+	LastUpdatedTime *time.Time
+
+	// The status of the application resource association.
+	State AssociationState
+
+	// The reason the association deployment failed.
+	StateReason *AssociationStateReason
+
+	noSmithyDocumentSerde
+}
+
+// The persistent application settings for WorkSpaces Pools users.
+type ApplicationSettingsRequest struct {
+
+	// Enables or disables persistent application settings for users during their pool
+	// sessions.
+	//
+	// This member is required.
+	Status ApplicationSettingsStatusEnum
+
+	// The path prefix for the S3 bucket where users’ persistent application settings
+	// are stored. You can allow the same persistent application settings to be used
+	// across multiple pools by specifying the same settings group for each pool.
+	SettingsGroup *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the persistent application settings for WorkSpaces Pools users.
+type ApplicationSettingsResponse struct {
+
+	// Specifies whether persistent application settings are enabled for users during
+	// their pool sessions.
+	//
+	// This member is required.
+	Status ApplicationSettingsStatusEnum
+
+	// The S3 bucket where users’ persistent application settings are stored. When
+	// persistent application settings are enabled for the first time for an account in
+	// an Amazon Web Services Region, an S3 bucket is created. The bucket is unique to
+	// the Amazon Web Services account and the Region.
+	S3BucketName *string
+
+	// The path prefix for the S3 bucket where users’ persistent application settings
+	// are stored.
+	SettingsGroup *string
+
+	noSmithyDocumentSerde
+}
+
+// Indicates the reason that the association deployment failed, including the
+// error code and error message.
+type AssociationStateReason struct {
+
+	// The error code of the association deployment failure.
+	ErrorCode AssociationErrorCode
+
+	// The error message of the association deployment failure.
+	ErrorMessage *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the association between an application and a bundle resource.
+type BundleResourceAssociation struct {
+
+	// The identifier of the associated resource.
+	AssociatedResourceId *string
+
+	// The resource type of the associated resources.
+	AssociatedResourceType BundleAssociatedResourceType
+
+	// The identifier of the bundle.
+	BundleId *string
+
+	// The time the association is created.
+	Created *time.Time
+
+	// The time the association status was last updated.
+	LastUpdatedTime *time.Time
+
+	// The status of the bundle resource association.
+	State AssociationState
+
+	// The reason the association deployment failed.
+	StateReason *AssociationStateReason
+
+	noSmithyDocumentSerde
+}
+
+// Describes the user capacity for a pool of WorkSpaces.
+type Capacity struct {
+
+	// The desired number of user sessions for the WorkSpaces in the pool.
+	//
+	// This member is required.
+	DesiredUserSessions *int32
+
+	noSmithyDocumentSerde
+}
+
+// Describes the capacity status for a pool of WorkSpaces.
+type CapacityStatus struct {
+
+	// The number of user sessions currently being used for your pool.
+	//
+	// This member is required.
+	ActiveUserSessions *int32
+
+	// The total number of user sessions that are available for streaming or are
+	// currently streaming in your pool.
+	//
+	// ActualUserSessions = AvailableUserSessions + ActiveUserSessions
+	//
+	// This member is required.
+	ActualUserSessions *int32
+
+	// The number of user sessions currently available for streaming from your pool.
+	//
+	// AvailableUserSessions = ActualUserSessions - ActiveUserSessions
+	//
+	// This member is required.
+	AvailableUserSessions *int32
+
+	// The total number of sessions slots that are either running or pending. This
+	// represents the total number of concurrent streaming sessions your pool can
+	// support in a steady state.
+	//
+	// This member is required.
+	DesiredUserSessions *int32
 
 	noSmithyDocumentSerde
 }
@@ -105,9 +289,9 @@ type ConnectClientAddIn struct {
 }
 
 // Describes a connection alias. Connection aliases are used for cross-Region
-// redirection. For more information, see Cross-Region Redirection for Amazon
-// WorkSpaces (https://docs.aws.amazon.com/workspaces/latest/adminguide/cross-region-redirection.html)
-// .
+// redirection. For more information, see [Cross-Region Redirection for Amazon WorkSpaces].
+//
+// [Cross-Region Redirection for Amazon WorkSpaces]: https://docs.aws.amazon.com/workspaces/latest/adminguide/cross-region-redirection.html
 type ConnectionAlias struct {
 
 	// The identifier of the connection alias.
@@ -132,9 +316,9 @@ type ConnectionAlias struct {
 }
 
 // Describes a connection alias association that is used for cross-Region
-// redirection. For more information, see Cross-Region Redirection for Amazon
-// WorkSpaces (https://docs.aws.amazon.com/workspaces/latest/adminguide/cross-region-redirection.html)
-// .
+// redirection. For more information, see [Cross-Region Redirection for Amazon WorkSpaces].
+//
+// [Cross-Region Redirection for Amazon WorkSpaces]: https://docs.aws.amazon.com/workspaces/latest/adminguide/cross-region-redirection.html
 type ConnectionAliasAssociation struct {
 
 	// The identifier of the Amazon Web Services account that associated the
@@ -156,9 +340,9 @@ type ConnectionAliasAssociation struct {
 }
 
 // Describes the permissions for a connection alias. Connection aliases are used
-// for cross-Region redirection. For more information, see Cross-Region
-// Redirection for Amazon WorkSpaces (https://docs.aws.amazon.com/workspaces/latest/adminguide/cross-region-redirection.html)
-// .
+// for cross-Region redirection. For more information, see [Cross-Region Redirection for Amazon WorkSpaces].
+//
+// [Cross-Region Redirection for Amazon WorkSpaces]: https://docs.aws.amazon.com/workspaces/latest/adminguide/cross-region-redirection.html
 type ConnectionAliasPermission struct {
 
 	// Indicates whether the specified Amazon Web Services account is allowed to
@@ -176,9 +360,25 @@ type ConnectionAliasPermission struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the data replication settings.
+type DataReplicationSettings struct {
+
+	// Indicates whether data replication is enabled, and if enabled, the type of data
+	// replication.
+	DataReplication DataReplication
+
+	// The date and time at which the last successful snapshot was taken of the
+	// primary WorkSpace used for replicating data.
+	RecoverySnapshotTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
 // Returns default client branding attributes that were imported. These attributes
-// display on the client login screen. Client branding attributes are public
-// facing. Ensure that you don't include sensitive information.
+// display on the client login screen.
+//
+// Client branding attributes are public facing. Ensure that you don't include
+// sensitive information.
 type DefaultClientBrandingAttributes struct {
 
 	// The forgotten password link. This is the web address that users can go to if
@@ -197,17 +397,21 @@ type DefaultClientBrandingAttributes struct {
 	LogoUrl *string
 
 	// The support email. The company's customer support email address.
+	//
 	//   - In each platform type, the SupportEmail and SupportLink parameters are
 	//   mutually exclusive. You can specify one parameter for each platform type, but
 	//   not both.
+	//
 	//   - The default email is workspaces-feedback@amazon.com .
 	SupportEmail *string
 
 	// The support link. The link for the company's customer support page for their
 	// WorkSpace.
+	//
 	//   - In each platform type, the SupportEmail and SupportLink parameters are
 	//   mutually exclusive.You can specify one parameter for each platform type, but not
 	//   both.
+	//
 	//   - The default support link is workspaces-feedback@amazon.com .
 	SupportLink *string
 
@@ -215,8 +419,10 @@ type DefaultClientBrandingAttributes struct {
 }
 
 // The default client branding attributes to be imported. These attributes display
-// on the client login screen. Client branding attributes are public facing. Ensure
-// that you do not include sensitive information.
+// on the client login screen.
+//
+// Client branding attributes are public facing. Ensure that you do not include
+// sensitive information.
 type DefaultImportClientBrandingAttributes struct {
 
 	// The forgotten password link. This is the web address that users can go to if
@@ -235,17 +441,21 @@ type DefaultImportClientBrandingAttributes struct {
 	Logo []byte
 
 	// The support email. The company's customer support email address.
+	//
 	//   - In each platform type, the SupportEmail and SupportLink parameters are
 	//   mutually exclusive. You can specify one parameter for each platform type, but
 	//   not both.
+	//
 	//   - The default email is workspaces-feedback@amazon.com .
 	SupportEmail *string
 
 	// The support link. The link for the company's customer support page for their
 	// WorkSpace.
+	//
 	//   - In each platform type, the SupportEmail and SupportLink parameters are
 	//   mutually exclusive. You can specify one parameter for each platform type, but
 	//   not both.
+	//
 	//   - The default support link is workspaces-feedback@amazon.com .
 	SupportLink *string
 
@@ -253,13 +463,15 @@ type DefaultImportClientBrandingAttributes struct {
 }
 
 // Describes the default values that are used to create WorkSpaces. For more
-// information, see Update Directory Details for Your WorkSpaces (https://docs.aws.amazon.com/workspaces/latest/adminguide/update-directory-details.html)
-// .
+// information, see [Update Directory Details for Your WorkSpaces].
+//
+// [Update Directory Details for Your WorkSpaces]: https://docs.aws.amazon.com/workspaces/latest/adminguide/update-directory-details.html
 type DefaultWorkspaceCreationProperties struct {
 
 	// The identifier of the default security group to apply to WorkSpaces when they
-	// are created. For more information, see Security Groups for Your WorkSpaces (https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-security-groups.html)
-	// .
+	// are created. For more information, see [Security Groups for Your WorkSpaces].
+	//
+	// [Security Groups for Your WorkSpaces]: https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-security-groups.html
 	CustomSecurityGroupId *string
 
 	// The organizational unit (OU) in the directory for the WorkSpace machine
@@ -274,20 +486,75 @@ type DefaultWorkspaceCreationProperties struct {
 	// access from your VPC, or if your WorkSpaces are in public subnets and you
 	// manually assign them Elastic IP addresses, you should disable this setting. This
 	// setting applies to new WorkSpaces that you launch or to existing WorkSpaces that
-	// you rebuild. For more information, see Configure a VPC for Amazon WorkSpaces (https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-vpc.html)
-	// .
+	// you rebuild. For more information, see [Configure a VPC for Amazon WorkSpaces].
+	//
+	// [Configure a VPC for Amazon WorkSpaces]: https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-vpc.html
 	EnableInternetAccess *bool
 
 	// Specifies whether maintenance mode is enabled for WorkSpaces. For more
-	// information, see WorkSpace Maintenance (https://docs.aws.amazon.com/workspaces/latest/adminguide/workspace-maintenance.html)
-	// .
+	// information, see [WorkSpace Maintenance].
+	//
+	// [WorkSpace Maintenance]: https://docs.aws.amazon.com/workspaces/latest/adminguide/workspace-maintenance.html
 	EnableMaintenanceMode *bool
 
 	// Specifies whether the directory is enabled for Amazon WorkDocs.
 	EnableWorkDocs *bool
 
+	// Indicates the IAM role ARN of the instance.
+	InstanceIamRoleArn *string
+
 	// Specifies whether WorkSpace users are local administrators on their WorkSpaces.
 	UserEnabledAsLocalAdministrator *bool
+
+	noSmithyDocumentSerde
+}
+
+// Describes the filter conditions for the WorkSpaces to return.
+type DescribeWorkspaceDirectoriesFilter struct {
+
+	// The name of the WorkSpaces to filter.
+	//
+	// This member is required.
+	Name DescribeWorkspaceDirectoriesFilterName
+
+	// The values for filtering WorkSpaces
+	//
+	// This member is required.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the filter conditions for WorkSpaces Pools to return.
+type DescribeWorkspacesPoolsFilter struct {
+
+	// The name of the pool to filter.
+	//
+	// This member is required.
+	Name DescribeWorkspacesPoolsFilterName
+
+	// The operator values for filtering WorkSpaces Pools.
+	//
+	// This member is required.
+	Operator DescribeWorkspacesPoolsFilterOperator
+
+	// The values for filtering WorkSpaces Pools.
+	//
+	// This member is required.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// Describes in-depth details about the error. These details include the possible
+// causes of the error and troubleshooting information.
+type ErrorDetails struct {
+
+	// Indicates the error code returned.
+	ErrorCode WorkspaceImageErrorDetailCode
+
+	// The text of the error message related the error code.
+	ErrorMessage *string
 
 	noSmithyDocumentSerde
 }
@@ -324,10 +591,8 @@ type FailedCreateWorkspaceRequest struct {
 	noSmithyDocumentSerde
 }
 
-// Describes a WorkSpace that could not be rebooted. ( RebootWorkspaces ), rebuilt (
-// RebuildWorkspaces ), restored ( RestoreWorkspace ), terminated (
-// TerminateWorkspaces ), started ( StartWorkspaces ), or stopped ( StopWorkspaces
-// ).
+// Describes a WorkSpace that could not be rebooted. (RebootWorkspaces ), rebuilt (RebuildWorkspaces ), restored (RestoreWorkspace
+// ), terminated (TerminateWorkspaces ), started (StartWorkspaces ), or stopped (StopWorkspaces ).
 type FailedWorkspaceChangeRequest struct {
 
 	// The error code that is returned if the WorkSpace cannot be rebooted.
@@ -343,10 +608,51 @@ type FailedWorkspaceChangeRequest struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the Global Accelerator for directory
+type GlobalAcceleratorForDirectory struct {
+
+	// Indicates if Global Accelerator for directory is enabled or disabled.
+	//
+	// This member is required.
+	Mode AGAModeForDirectoryEnum
+
+	// Indicates the preferred protocol for Global Accelerator.
+	PreferredProtocol AGAPreferredProtocolForDirectory
+
+	noSmithyDocumentSerde
+}
+
+// Describes the Global Accelerator for WorkSpaces.
+type GlobalAcceleratorForWorkSpace struct {
+
+	// Indicates if Global Accelerator for WorkSpaces is enabled, disabled, or the
+	// same mode as the associated directory.
+	//
+	// This member is required.
+	Mode AGAModeForWorkSpaceEnum
+
+	// Indicates the preferred protocol for Global Accelerator.
+	PreferredProtocol AGAPreferredProtocolForWorkSpace
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the configurations of the identity center.
+type IDCConfig struct {
+
+	// The Amazon Resource Name (ARN) of the application.
+	ApplicationArn *string
+
+	// The Amazon Resource Name (ARN) of the identity center instance.
+	InstanceArn *string
+
+	noSmithyDocumentSerde
+}
+
 // Describes the Amazon Web Services accounts that have been granted permission to
-// use a shared image. For more information about sharing images, see Share or
-// Unshare a Custom WorkSpaces Image (https://docs.aws.amazon.com/workspaces/latest/adminguide/share-custom-image.html)
-// .
+// use a shared image. For more information about sharing images, see [Share or Unshare a Custom WorkSpaces Image].
+//
+// [Share or Unshare a Custom WorkSpaces Image]: https://docs.aws.amazon.com/workspaces/latest/adminguide/share-custom-image.html
 type ImagePermission struct {
 
 	// The identifier of the Amazon Web Services account that an image has been shared
@@ -356,9 +662,38 @@ type ImagePermission struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the association between an application and an image resource.
+type ImageResourceAssociation struct {
+
+	// The identifier of the associated resource.
+	AssociatedResourceId *string
+
+	// The resource type of the associated resources.
+	AssociatedResourceType ImageAssociatedResourceType
+
+	// The time the association is created.
+	Created *time.Time
+
+	// The identifier of the image.
+	ImageId *string
+
+	// The time the association status was last updated.
+	LastUpdatedTime *time.Time
+
+	// The status of the image resource association.
+	State AssociationState
+
+	// The reason the association deployment failed.
+	StateReason *AssociationStateReason
+
+	noSmithyDocumentSerde
+}
+
 // The client branding attributes for iOS device types. These attributes are
-// displayed on the iOS client login screen only. Client branding attributes are
-// public facing. Ensure you do not include sensitive information.
+// displayed on the iOS client login screen only.
+//
+// Client branding attributes are public facing. Ensure you do not include
+// sensitive information.
 type IosClientBrandingAttributes struct {
 
 	// The forgotten password link. This is the web address that users can go to if
@@ -374,16 +709,22 @@ type IosClientBrandingAttributes struct {
 
 	// The @2x version of the logo. This is the higher resolution display that offers
 	// a scale factor of 2.0 (or @2x). The only image format accepted is a binary data
-	// object that is converted from a .png file. For more information about iOS image
-	// size and resolution, see Image Size and Resolution  (https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/)
-	// in the Apple Human Interface Guidelines.
+	// object that is converted from a .png file.
+	//
+	// For more information about iOS image size and resolution, see [Image Size and Resolution] in the Apple
+	// Human Interface Guidelines.
+	//
+	// [Image Size and Resolution]: https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/
 	Logo2xUrl *string
 
 	// The @3x version of the logo. This is the higher resolution display that offers
 	// a scale factor of 3.0 (or @3x).The only image format accepted is a binary data
-	// object that is converted from a .png file. For more information about iOS image
-	// size and resolution, see Image Size and Resolution  (https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/)
-	// in the Apple Human Interface Guidelines.
+	// object that is converted from a .png file.
+	//
+	// For more information about iOS image size and resolution, see [Image Size and Resolution] in the Apple
+	// Human Interface Guidelines.
+	//
+	// [Image Size and Resolution]: https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/
 	Logo3xUrl *string
 
 	// The logo. This is the standard-resolution display that has a 1:1 pixel density
@@ -392,17 +733,21 @@ type IosClientBrandingAttributes struct {
 	LogoUrl *string
 
 	// The support email. The company's customer support email address.
+	//
 	//   - In each platform type, the SupportEmail and SupportLink parameters are
 	//   mutually exclusive. You can specify one parameter for each platform type, but
 	//   not both.
+	//
 	//   - The default email is workspaces-feedback@amazon.com .
 	SupportEmail *string
 
 	// The support link. The link for the company's customer support page for their
 	// WorkSpace.
+	//
 	//   - In each platform type, the SupportEmail and SupportLink parameters are
 	//   mutually exclusive. You can specify one parameter for each platform type, but
 	//   not both.
+	//
 	//   - The default support link is workspaces-feedback@amazon.com .
 	SupportLink *string
 
@@ -410,8 +755,10 @@ type IosClientBrandingAttributes struct {
 }
 
 // The client branding attributes to import for iOS device types. These attributes
-// are displayed on the iOS client login screen. Client branding attributes are
-// public facing. Ensure you do not include sensitive information.
+// are displayed on the iOS client login screen.
+//
+// Client branding attributes are public facing. Ensure you do not include
+// sensitive information.
 type IosImportClientBrandingAttributes struct {
 
 	// The forgotten password link. This is the web address that users can go to if
@@ -432,30 +779,40 @@ type IosImportClientBrandingAttributes struct {
 
 	// The @2x version of the logo. This is the higher resolution display that offers
 	// a scale factor of 2.0 (or @2x). The only image format accepted is a binary data
-	// object that is converted from a .png file. For more information about iOS image
-	// size and resolution, see Image Size and Resolution  (https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/)
-	// in the Apple Human Interface Guidelines.
+	// object that is converted from a .png file.
+	//
+	// For more information about iOS image size and resolution, see [Image Size and Resolution] in the Apple
+	// Human Interface Guidelines.
+	//
+	// [Image Size and Resolution]: https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/
 	Logo2x []byte
 
 	// The @3x version of the logo. This is the higher resolution display that offers
 	// a scale factor of 3.0 (or @3x). The only image format accepted is a binary data
-	// object that is converted from a .png file. For more information about iOS image
-	// size and resolution, see Image Size and Resolution  (https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/)
-	// in the Apple Human Interface Guidelines.
+	// object that is converted from a .png file.
+	//
+	// For more information about iOS image size and resolution, see [Image Size and Resolution] in the Apple
+	// Human Interface Guidelines.
+	//
+	// [Image Size and Resolution]: https://developer.apple.com/design/human-interface-guidelines/ios/icons-and-images/image-size-and-resolution/
 	Logo3x []byte
 
 	// The support email. The company's customer support email address.
+	//
 	//   - In each platform type, the SupportEmail and SupportLink parameters are
 	//   mutually exclusive. You can specify one parameter for each platform type, but
 	//   not both.
+	//
 	//   - The default email is workspaces-feedback@amazon.com .
 	SupportEmail *string
 
 	// The support link. The link for the company's customer support page for their
 	// WorkSpace.
+	//
 	//   - In each platform type, the SupportEmail and SupportLink parameters are
 	//   mutually exclusive. You can specify one parameter for each platform type, but
 	//   not both.
+	//
 	//   - The default support link is workspaces-feedback@amazon.com .
 	SupportLink *string
 
@@ -474,6 +831,18 @@ type IpRuleItem struct {
 	noSmithyDocumentSerde
 }
 
+// Specifies the configurations of the Microsoft Entra.
+type MicrosoftEntraConfig struct {
+
+	// The Amazon Resource Name (ARN) of the application config.
+	ApplicationConfigSecretArn *string
+
+	// The identifier of the tenant.
+	TenantId *string
+
+	noSmithyDocumentSerde
+}
+
 // Describes a WorkSpace modification.
 type ModificationState struct {
 
@@ -482,6 +851,21 @@ type ModificationState struct {
 
 	// The modification state.
 	State ModificationStateEnum
+
+	noSmithyDocumentSerde
+}
+
+// Describes the network details of a WorkSpaces Pool.
+type NetworkAccessConfiguration struct {
+
+	// The resource identifier of the elastic network interface that is attached to
+	// instances in your VPC. All network interfaces have the eni-xxxxxxxx resource
+	// identifier.
+	EniId *string
+
+	// The private IP address of the elastic network interface that is attached to
+	// instances in your VPC.
+	EniPrivateIpAddress *string
 
 	noSmithyDocumentSerde
 }
@@ -504,10 +888,13 @@ type PendingCreateStandbyWorkspacesRequest struct {
 	// The operational state of the standby WorkSpace.
 	State WorkspaceState
 
-	// Describes the standby WorkSpace that was created. Because this operation is
-	// asynchronous, the identifier returned is not immediately available for use with
-	// other operations. For example, if you call DescribeWorkspaces (https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html)
+	// Describes the standby WorkSpace that was created.
+	//
+	// Because this operation is asynchronous, the identifier returned is not
+	// immediately available for use with other operations. For example, if you call [DescribeWorkspaces]
 	// before the WorkSpace is created, the information returned can be incomplete.
+	//
+	// [DescribeWorkspaces]: https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html
 	UserName *string
 
 	// The identifier of the standby WorkSpace.
@@ -561,6 +948,8 @@ type RelatedWorkspaceProperties struct {
 type RootStorage struct {
 
 	// The size of the root volume.
+	//
+	// This member is required.
 	Capacity *string
 
 	noSmithyDocumentSerde
@@ -575,18 +964,23 @@ type SamlProperties struct {
 	// (IdP). When the end user is redirected to the user access URL from the
 	// WorkSpaces client application, this relay state parameter name is appended as a
 	// query parameter to the URL along with the relay state endpoint to return the
-	// user to the client application session. To use SAML 2.0 authentication with
-	// WorkSpaces, the IdP must support IdP-initiated deep linking for the relay state
-	// URL. Consult your IdP documentation for more information.
+	// user to the client application session.
+	//
+	// To use SAML 2.0 authentication with WorkSpaces, the IdP must support
+	// IdP-initiated deep linking for the relay state URL. Consult your IdP
+	// documentation for more information.
 	RelayStateParameterName *string
 
 	// Indicates the status of SAML 2.0 authentication. These statuses include the
 	// following.
+	//
 	//   - If the setting is DISABLED , end users will be directed to login with their
 	//   directory credentials.
+	//
 	//   - If the setting is ENABLED , end users will be directed to login via the user
 	//   access URL. Users attempting to connect to WorkSpaces from a client application
 	//   that does not support SAML 2.0 authentication will not be able to connect.
+	//
 	//   - If the setting is ENABLED_WITH_DIRECTORY_LOGIN_FALLBACK , end users will be
 	//   directed to login via the user access URL on supported client applications, but
 	//   will not prevent clients that do not support SAML 2.0 authentication from
@@ -602,8 +996,9 @@ type SamlProperties struct {
 }
 
 // Describes the self-service permissions for a directory. For more information,
-// see Enable Self-Service WorkSpace Management Capabilities for Your Users (https://docs.aws.amazon.com/workspaces/latest/adminguide/enable-user-self-service-workspace-management.html)
-// .
+// see [Enable Self-Service WorkSpace Management Capabilities for Your Users].
+//
+// [Enable Self-Service WorkSpace Management Capabilities for Your Users]: https://docs.aws.amazon.com/workspaces/latest/adminguide/enable-user-self-service-workspace-management.html
 type SelfservicePermissions struct {
 
 	// Specifies whether users can change the compute type (bundle) for their
@@ -649,11 +1044,32 @@ type StandbyWorkspace struct {
 	// This member is required.
 	PrimaryWorkspaceId *string
 
+	// Indicates whether data replication is enabled, and if enabled, the type of data
+	// replication.
+	DataReplication DataReplication
+
 	// The tags associated with the standby WorkSpace.
 	Tags []Tag
 
 	// The volume encryption key of the standby WorkSpace.
 	VolumeEncryptionKey *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the properties of the related standby WorkSpaces.
+type StandbyWorkspacesProperties struct {
+
+	// Indicates whether data replication is enabled, and if enabled, the type of data
+	// replication.
+	DataReplication DataReplication
+
+	// The date and time at which the last successful snapshot was taken of the
+	// primary WorkSpace used for replicating data.
+	RecoverySnapshotTime *time.Time
+
+	// The identifier of the standby WorkSpace
+	StandbyWorkspaceId *string
 
 	noSmithyDocumentSerde
 }
@@ -672,6 +1088,40 @@ type StopRequest struct {
 
 	// The identifier of the WorkSpace.
 	WorkspaceId *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the storage connector.
+type StorageConnector struct {
+
+	// The type of connector used to save user files.
+	//
+	// This member is required.
+	ConnectorType StorageConnectorTypeEnum
+
+	// Indicates if the storage connetor is enabled or disabled.
+	//
+	// This member is required.
+	Status StorageConnectorStatusEnum
+
+	noSmithyDocumentSerde
+}
+
+// Describes the streaming properties.
+type StreamingProperties struct {
+
+	// Indicates the Global Accelerator properties.
+	GlobalAccelerator *GlobalAcceleratorForDirectory
+
+	// Indicates the storage connector used
+	StorageConnectors []StorageConnector
+
+	// Indicates the type of preferred protocol for the streaming experience.
+	StreamingExperiencePreferredProtocol StreamingExperiencePreferredProtocolEnum
+
+	// Indicates the permission settings asscoiated with the user.
+	UserSettings []UserSetting
 
 	noSmithyDocumentSerde
 }
@@ -701,9 +1151,33 @@ type TerminateRequest struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the timeout settings for a pool of WorkSpaces.
+type TimeoutSettings struct {
+
+	// Specifies the amount of time, in seconds, that a streaming session remains
+	// active after users disconnect. If users try to reconnect to the streaming
+	// session after a disconnection or network interruption within the time set, they
+	// are connected to their previous session. Otherwise, they are connected to a new
+	// session with a new streaming instance.
+	DisconnectTimeoutInSeconds *int32
+
+	// The amount of time in seconds a connection will stay active while idle.
+	IdleDisconnectTimeoutInSeconds *int32
+
+	// Specifies the maximum amount of time, in seconds, that a streaming session can
+	// remain active. If users are still connected to a streaming instance five minutes
+	// before this limit is reached, they are prompted to save any open documents
+	// before being disconnected. After this time elapses, the instance is terminated
+	// and replaced by a new instance.
+	MaxUserDurationInSeconds *int32
+
+	noSmithyDocumentSerde
+}
+
 // Describes whether a WorkSpace image needs to be updated with the latest drivers
-// and other components required by Amazon WorkSpaces. Only Windows 10 WorkSpace
-// images can be programmatically updated at this time.
+// and other components required by Amazon WorkSpaces.
+//
+// Only Windows 10 WorkSpace images can be programmatically updated at this time.
 type UpdateResult struct {
 
 	// A description of whether updates for the WorkSpace image are pending or
@@ -717,10 +1191,31 @@ type UpdateResult struct {
 	noSmithyDocumentSerde
 }
 
+// Information about the user's permission settings.
+type UserSetting struct {
+
+	// Indicates the type of action.
+	//
+	// This member is required.
+	Action UserSettingActionEnum
+
+	// Indicates if the setting is enabled or disabled.
+	//
+	// This member is required.
+	Permission UserSettingPermissionEnum
+
+	// Indicates the maximum character length for the specified user setting.
+	MaximumLength *int32
+
+	noSmithyDocumentSerde
+}
+
 // Describes the user volume for a WorkSpace bundle.
 type UserStorage struct {
 
 	// The size of the user volume.
+	//
+	// This member is required.
 	Capacity *string
 
 	noSmithyDocumentSerde
@@ -733,9 +1228,13 @@ type Workspace struct {
 	BundleId *string
 
 	// The name of the WorkSpace, as seen by the operating system. The format of this
-	// name varies. For more information, see Launch a WorkSpace (https://docs.aws.amazon.com/workspaces/latest/adminguide/launch-workspaces-tutorials.html)
-	// .
+	// name varies. For more information, see [Launch a WorkSpace].
+	//
+	// [Launch a WorkSpace]: https://docs.aws.amazon.com/workspaces/latest/adminguide/launch-workspaces-tutorials.html
 	ComputerName *string
+
+	// Indicates the settings of the data replication.
+	DataReplicationSettings *DataReplicationSettings
 
 	// The identifier of the Directory Service directory for the WorkSpace.
 	DirectoryId *string
@@ -759,12 +1258,56 @@ type Workspace struct {
 	// Indicates whether the data stored on the root volume is encrypted.
 	RootVolumeEncryptionEnabled *bool
 
-	// The operational state of the WorkSpace. After a WorkSpace is terminated, the
-	// TERMINATED state is returned only briefly before the WorkSpace directory
-	// metadata is cleaned up, so this state is rarely returned. To confirm that a
-	// WorkSpace is terminated, check for the WorkSpace ID by using DescribeWorkSpaces (https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html)
-	// . If the WorkSpace ID isn't returned, then the WorkSpace has been successfully
-	// terminated.
+	// The properties of the standby WorkSpace
+	StandbyWorkspacesProperties []StandbyWorkspacesProperties
+
+	// The operational state of the WorkSpace.
+	//
+	//   - PENDING – The WorkSpace is in a waiting state (for example, the WorkSpace is
+	//   being created).
+	//
+	//   - AVAILABLE – The WorkSpace is running and has passed the health checks.
+	//
+	//   - IMPAIRED – Refer to UNHEALTHY state.
+	//
+	//   - UNHEALTHY – The WorkSpace is not responding to health checks.
+	//
+	//   - REBOOTING – The WorkSpace is being rebooted (restarted).
+	//
+	//   - STARTING – The WorkSpace is starting up and health checks are being run.
+	//
+	//   - REBUILDING – The WorkSpace is being rebuilt.
+	//
+	//   - RESTORING – The WorkSpace is being restored.
+	//
+	//   - MAINTENANCE – The WorkSpace is undergoing scheduled maintenance by Amazon
+	//   Web Services.
+	//
+	//   - ADMIN_MAINTENANCE – The WorkSpace is undergoing maintenance by the
+	//   WorkSpaces administrator.
+	//
+	//   - TERMINATING – The WorkSpace is being deleted.
+	//
+	//   - TERMINATED – The WorkSpace has been deleted.
+	//
+	//   - SUSPENDED – The WorkSpace has been suspended for image creation.
+	//
+	//   - UPDATING – The WorkSpace is undergoing an update.
+	//
+	//   - STOPPING – The WorkSpace is being stopped.
+	//
+	//   - STOPPED – The WorkSpace has been stopped.
+	//
+	//   - ERROR – The WorkSpace is an error state (for example, an error occurred
+	//   during startup).
+	//
+	// After a WorkSpace is terminated, the TERMINATED state is returned only briefly
+	// before the WorkSpace directory metadata is cleaned up, so this state is rarely
+	// returned. To confirm that a WorkSpace is terminated, check for the WorkSpace ID
+	// by using [DescribeWorkSpaces]. If the WorkSpace ID isn't returned, then the WorkSpace has been
+	// successfully terminated.
+	//
+	// [DescribeWorkSpaces]: https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaces.html
 	State WorkspaceState
 
 	// The identifier of the subnet for the WorkSpace.
@@ -783,6 +1326,9 @@ type Workspace struct {
 	// The identifier of the WorkSpace.
 	WorkspaceId *string
 
+	// The name of the user-decoupled WorkSpace.
+	WorkspaceName *string
+
 	// The properties of the WorkSpace.
 	WorkspaceProperties *WorkspaceProperties
 
@@ -790,8 +1336,9 @@ type Workspace struct {
 }
 
 // The device types and operating systems that can be used to access a WorkSpace.
-// For more information, see Amazon WorkSpaces Client Network Requirements (https://docs.aws.amazon.com/workspaces/latest/adminguide/workspaces-network-requirements.html)
-// .
+// For more information, see [Amazon WorkSpaces Client Network Requirements].
+//
+// [Amazon WorkSpaces Client Network Requirements]: https://docs.aws.amazon.com/workspaces/latest/adminguide/workspaces-network-requirements.html
 type WorkspaceAccessProperties struct {
 
 	// Indicates whether users can use Android and Android-compatible Chrome OS
@@ -822,6 +1369,48 @@ type WorkspaceAccessProperties struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the WorkSpace application.
+type WorkSpaceApplication struct {
+
+	// The identifier of the application.
+	ApplicationId *string
+
+	// The time the application is created.
+	Created *time.Time
+
+	// The description of the WorkSpace application.
+	Description *string
+
+	// The license availability for the applications.
+	LicenseType WorkSpaceApplicationLicenseType
+
+	// The name of the WorkSpace application.
+	Name *string
+
+	// The owner of the WorkSpace application.
+	Owner *string
+
+	// The status of WorkSpace application.
+	State WorkSpaceApplicationState
+
+	// The supported compute types of the WorkSpace application.
+	SupportedComputeTypeNames []Compute
+
+	// The supported operating systems of the WorkSpace application.
+	SupportedOperatingSystemNames []OperatingSystemName
+
+	noSmithyDocumentSerde
+}
+
+// Describes the WorkSpace application deployment.
+type WorkSpaceApplicationDeployment struct {
+
+	// The associations between the applications and the associated resources.
+	Associations []WorkspaceResourceAssociation
+
+	noSmithyDocumentSerde
+}
+
 // Describes a WorkSpace bundle.
 type WorkspaceBundle struct {
 
@@ -831,8 +1420,9 @@ type WorkspaceBundle struct {
 	// The type of WorkSpace bundle.
 	BundleType BundleType
 
-	// The compute type of the bundle. For more information, see Amazon WorkSpaces
-	// Bundles (http://aws.amazon.com/workspaces/details/#Amazon_WorkSpaces_Bundles) .
+	// The compute type of the bundle. For more information, see [Amazon WorkSpaces Bundles].
+	//
+	// [Amazon WorkSpaces Bundles]: http://aws.amazon.com/workspaces/details/#Amazon_WorkSpaces_Bundles
 	ComputeType *ComputeType
 
 	// The time when the bundle was created.
@@ -886,8 +1476,9 @@ type WorkspaceConnectionStatus struct {
 }
 
 // Describes the default properties that are used for creating WorkSpaces. For
-// more information, see Update Directory Details for Your WorkSpaces (https://docs.aws.amazon.com/workspaces/latest/adminguide/update-directory-details.html)
-// .
+// more information, see [Update Directory Details for Your WorkSpaces].
+//
+// [Update Directory Details for Your WorkSpaces]: https://docs.aws.amazon.com/workspaces/latest/adminguide/update-directory-details.html
 type WorkspaceCreationProperties struct {
 
 	// The identifier of your custom security group.
@@ -899,32 +1490,43 @@ type WorkspaceCreationProperties struct {
 	// "OU=value,DC=value,DC=value" , where value is any string of characters, and the
 	// number of domain components (DCs) is two or more. For example,
 	// OU=WorkSpaces_machines,DC=machines,DC=example,DC=com .
+	//
 	//   - To avoid errors, certain characters in the distinguished name must be
-	//   escaped. For more information, see Distinguished Names (https://docs.microsoft.com/previous-versions/windows/desktop/ldap/distinguished-names)
-	//   in the Microsoft documentation.
+	//   escaped. For more information, see [Distinguished Names]in the Microsoft documentation.
+	//
 	//   - The API doesn't validate whether the OU exists.
+	//
+	// [Distinguished Names]: https://docs.microsoft.com/previous-versions/windows/desktop/ldap/distinguished-names
 	DefaultOu *string
 
 	// Indicates whether internet access is enabled for your WorkSpaces.
 	EnableInternetAccess *bool
 
 	// Indicates whether maintenance mode is enabled for your WorkSpaces. For more
-	// information, see WorkSpace Maintenance (https://docs.aws.amazon.com/workspaces/latest/adminguide/workspace-maintenance.html)
-	// .
+	// information, see [WorkSpace Maintenance].
+	//
+	// [WorkSpace Maintenance]: https://docs.aws.amazon.com/workspaces/latest/adminguide/workspace-maintenance.html
 	EnableMaintenanceMode *bool
 
-	// Indicates whether Amazon WorkDocs is enabled for your WorkSpaces. If WorkDocs
-	// is already enabled for a WorkSpaces directory and you disable it, new WorkSpaces
-	// launched in the directory will not have WorkDocs enabled. However, WorkDocs
-	// remains enabled for any existing WorkSpaces, unless you either disable users'
-	// access to WorkDocs or you delete the WorkDocs site. To disable users' access to
-	// WorkDocs, see Disabling Users (https://docs.aws.amazon.com/workdocs/latest/adminguide/inactive-user.html)
-	// in the Amazon WorkDocs Administration Guide. To delete a WorkDocs site, see
-	// Deleting a Site (https://docs.aws.amazon.com/workdocs/latest/adminguide/manage-sites.html)
-	// in the Amazon WorkDocs Administration Guide. If you enable WorkDocs on a
-	// directory that already has existing WorkSpaces, the existing WorkSpaces and any
-	// new WorkSpaces that are launched in the directory will have WorkDocs enabled.
+	// Indicates whether Amazon WorkDocs is enabled for your WorkSpaces.
+	//
+	// If WorkDocs is already enabled for a WorkSpaces directory and you disable it,
+	// new WorkSpaces launched in the directory will not have WorkDocs enabled.
+	// However, WorkDocs remains enabled for any existing WorkSpaces, unless you either
+	// disable users' access to WorkDocs or you delete the WorkDocs site. To disable
+	// users' access to WorkDocs, see [Disabling Users]in the Amazon WorkDocs Administration Guide. To
+	// delete a WorkDocs site, see [Deleting a Site]in the Amazon WorkDocs Administration Guide.
+	//
+	// If you enable WorkDocs on a directory that already has existing WorkSpaces, the
+	// existing WorkSpaces and any new WorkSpaces that are launched in the directory
+	// will have WorkDocs enabled.
+	//
+	// [Deleting a Site]: https://docs.aws.amazon.com/workdocs/latest/adminguide/manage-sites.html
+	// [Disabling Users]: https://docs.aws.amazon.com/workdocs/latest/adminguide/inactive-user.html
 	EnableWorkDocs *bool
+
+	// Indicates the IAM role ARN of the instance.
+	InstanceIamRoleArn *string
 
 	// Indicates whether users are local administrators of their WorkSpaces.
 	UserEnabledAsLocalAdministrator *bool
@@ -934,6 +1536,9 @@ type WorkspaceCreationProperties struct {
 
 // Describes a directory that is used with Amazon WorkSpaces.
 type WorkspaceDirectory struct {
+
+	// Information about the Active Directory config.
+	ActiveDirectoryConfig *ActiveDirectoryConfig
 
 	// The directory alias.
 	Alias *string
@@ -958,12 +1563,21 @@ type WorkspaceDirectory struct {
 	// The IP addresses of the DNS servers for the directory.
 	DnsIpAddresses []string
 
+	// The error message returned.
+	ErrorMessage *string
+
+	// Specifies details about identity center configurations.
+	IDCConfig *IDCConfig
+
 	// The identifier of the IAM role. This is the role that allows Amazon WorkSpaces
 	// to make calls to other services, such as Amazon EC2, on your behalf.
 	IamRoleId *string
 
 	// The identifiers of the IP access control groups associated with the directory.
 	IpGroupIds []string
+
+	// Specifies details about Microsoft Entra configurations.
+	MicrosoftEntraConfig *MicrosoftEntraConfig
 
 	// The registration code for the directory. This is the code that users enter in
 	// their Amazon WorkSpaces client application to connect to the directory.
@@ -981,19 +1595,27 @@ type WorkspaceDirectory struct {
 	// directory is deregistered, the DEREGISTERED state is returned very briefly
 	// before the directory metadata is cleaned up, so this state is rarely returned.
 	// To confirm that a directory is deregistered, check for the directory ID by using
-	// DescribeWorkspaceDirectories (https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaceDirectories.html)
-	// . If the directory ID isn't returned, then the directory has been successfully
+	// [DescribeWorkspaceDirectories]. If the directory ID isn't returned, then the directory has been successfully
 	// deregistered.
+	//
+	// [DescribeWorkspaceDirectories]: https://docs.aws.amazon.com/workspaces/latest/api/API_DescribeWorkspaceDirectories.html
 	State WorkspaceDirectoryState
+
+	// The streaming properties to configure.
+	StreamingProperties *StreamingProperties
 
 	// The identifiers of the subnets used with the directory.
 	SubnetIds []string
 
 	// Specifies whether the directory is dedicated or shared. To use Bring Your Own
-	// License (BYOL), this value must be set to DEDICATED . For more information, see
-	// Bring Your Own Windows Desktop Images (https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html)
+	// License (BYOL), this value must be set to DEDICATED . For more information, see [Bring Your Own Windows Desktop Images]
 	// .
+	//
+	// [Bring Your Own Windows Desktop Images]: https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html
 	Tenancy Tenancy
+
+	// Indicates the identity type of the specifired user.
+	UserIdentityType UserIdentityType
 
 	// The devices and operating systems that users can use to access WorkSpaces.
 	WorkspaceAccessProperties *WorkspaceAccessProperties
@@ -1001,8 +1623,17 @@ type WorkspaceDirectory struct {
 	// The default creation properties for all WorkSpaces in the directory.
 	WorkspaceCreationProperties *DefaultWorkspaceCreationProperties
 
+	// The description of the WorkSpace directory
+	WorkspaceDirectoryDescription *string
+
+	// The name fo the WorkSpace directory.
+	WorkspaceDirectoryName *string
+
 	// The identifier of the security group that is assigned to new WorkSpaces.
 	WorkspaceSecurityGroupId *string
+
+	// Indicates whether the directory's WorkSpace type is personal or pools.
+	WorkspaceType WorkspaceType
 
 	noSmithyDocumentSerde
 }
@@ -1021,6 +1652,10 @@ type WorkspaceImage struct {
 	// The error code that is returned for the image.
 	ErrorCode *string
 
+	// Additional details of the error returned for the image, including the possible
+	// causes of the errors and troubleshooting information.
+	ErrorDetails []ErrorDetails
+
 	// The text of the error message that is returned for the image.
 	ErrorMessage *string
 
@@ -1038,8 +1673,9 @@ type WorkspaceImage struct {
 
 	// Specifies whether the image is running on dedicated hardware. When Bring Your
 	// Own License (BYOL) is enabled, this value is set to DEDICATED . For more
-	// information, see Bring Your Own Windows Desktop Images (https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html)
-	// .
+	// information, see [Bring Your Own Windows Desktop Images].
+	//
+	// [Bring Your Own Windows Desktop Images]: https://docs.aws.amazon.com/workspaces/latest/adminguide/byol-windows-images.html
 	RequiredTenancy WorkspaceImageRequiredTenancy
 
 	// The status of the image.
@@ -1054,27 +1690,47 @@ type WorkspaceImage struct {
 // Describes a WorkSpace.
 type WorkspaceProperties struct {
 
-	// The compute type. For more information, see Amazon WorkSpaces Bundles (http://aws.amazon.com/workspaces/details/#Amazon_WorkSpaces_Bundles)
-	// .
+	// The compute type. For more information, see [Amazon WorkSpaces Bundles].
+	//
+	// [Amazon WorkSpaces Bundles]: http://aws.amazon.com/workspaces/details/#Amazon_WorkSpaces_Bundles
 	ComputeTypeName Compute
 
-	// The protocol. For more information, see  Protocols for Amazon WorkSpaces (https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-protocols.html)
-	// .
+	// Indicates the Global Accelerator properties.
+	GlobalAccelerator *GlobalAcceleratorForWorkSpace
+
+	// The name of the operating system.
+	OperatingSystemName OperatingSystemName
+
+	// The protocol. For more information, see [Protocols for Amazon WorkSpaces].
+	//
 	//   - Only available for WorkSpaces created with PCoIP bundles.
-	//   - The Protocols property is case sensitive. Ensure you use PCOIP or WSP .
+	//
+	//   - The Protocols property is case sensitive. Ensure you use PCOIP or DCV
+	//   (formerly WSP).
+	//
 	//   - Unavailable for Windows 7 WorkSpaces and WorkSpaces using GPU-based bundles
 	//   (Graphics, GraphicsPro, Graphics.g4dn, and GraphicsPro.g4dn).
+	//
+	// [Protocols for Amazon WorkSpaces]: https://docs.aws.amazon.com/workspaces/latest/adminguide/amazon-workspaces-protocols.html
 	Protocols []Protocol
 
 	// The size of the root volume. For important information about how to modify the
-	// size of the root and user volumes, see Modify a WorkSpace (https://docs.aws.amazon.com/workspaces/latest/adminguide/modify-workspaces.html)
-	// .
+	// size of the root and user volumes, see [Modify a WorkSpace].
+	//
+	// [Modify a WorkSpace]: https://docs.aws.amazon.com/workspaces/latest/adminguide/modify-workspaces.html
 	RootVolumeSizeGib *int32
 
-	// The running mode. For more information, see Manage the WorkSpace Running Mode (https://docs.aws.amazon.com/workspaces/latest/adminguide/running-mode.html)
-	// . The MANUAL value is only supported by Amazon WorkSpaces Core. Contact your
-	// account team to be allow-listed to use this value. For more information, see
-	// Amazon WorkSpaces Core (http://aws.amazon.com/workspaces/core/) .
+	// The running mode. For more information, see [Manage the WorkSpace Running Mode].
+	//
+	// The MANUAL value is only supported by Amazon WorkSpaces Core. Contact your
+	// account team to be allow-listed to use this value. For more information, see [Amazon WorkSpaces Core].
+	//
+	// Review your running mode to ensure you are using one that is optimal for your
+	// needs and budget. For more information on switching running modes, see [Can I switch between hourly and monthly billing?]
+	//
+	// [Manage the WorkSpace Running Mode]: https://docs.aws.amazon.com/workspaces/latest/adminguide/running-mode.html
+	// [Can I switch between hourly and monthly billing?]: http://aws.amazon.com/workspaces-family/workspaces/faqs/#:~:text=Can%20I%20switch%20between%20hourly%20and%20monthly%20billing%20on%20WorkSpaces%20Personal%3F
+	// [Amazon WorkSpaces Core]: http://aws.amazon.com/workspaces/core/
 	RunningMode RunningMode
 
 	// The time after a user logs off when WorkSpaces are automatically stopped.
@@ -1082,8 +1738,9 @@ type WorkspaceProperties struct {
 	RunningModeAutoStopTimeoutInMinutes *int32
 
 	// The size of the user storage. For important information about how to modify the
-	// size of the root and user volumes, see Modify a WorkSpace (https://docs.aws.amazon.com/workspaces/latest/adminguide/modify-workspaces.html)
-	// .
+	// size of the root and user volumes, see [Modify a WorkSpace].
+	//
+	// [Modify a WorkSpace]: https://docs.aws.amazon.com/workspaces/latest/adminguide/modify-workspaces.html
 	UserVolumeSizeGib *int32
 
 	noSmithyDocumentSerde
@@ -1092,20 +1749,26 @@ type WorkspaceProperties struct {
 // Describes the information used to create a WorkSpace.
 type WorkspaceRequest struct {
 
-	// The identifier of the bundle for the WorkSpace. You can use
-	// DescribeWorkspaceBundles to list the available bundles.
+	// The identifier of the bundle for the WorkSpace. You can use DescribeWorkspaceBundles to list the
+	// available bundles.
 	//
 	// This member is required.
 	BundleId *string
 
 	// The identifier of the Directory Service directory for the WorkSpace. You can
-	// use DescribeWorkspaceDirectories to list the available directories.
+	// use DescribeWorkspaceDirectoriesto list the available directories.
 	//
 	// This member is required.
 	DirectoryId *string
 
 	// The user name of the user for the WorkSpace. This user name must exist in the
 	// Directory Service directory for the WorkSpace.
+	//
+	// The username is not case-sensitive, but we recommend matching the case in the
+	// Directory Service directory to avoid potential incompatibilities.
+	//
+	// The reserved keyword, [UNDEFINED] , is used when creating user-decoupled
+	// WorkSpaces.
 	//
 	// This member is required.
 	UserName *string
@@ -1123,8 +1786,42 @@ type WorkspaceRequest struct {
 	// Amazon WorkSpaces does not support asymmetric KMS keys.
 	VolumeEncryptionKey *string
 
+	// The name of the user-decoupled WorkSpace.
+	//
+	// WorkspaceName is required if UserName is [UNDEFINED] for user-decoupled
+	// WorkSpaces. WorkspaceName is not applicable if UserName is specified for
+	// user-assigned WorkSpaces.
+	WorkspaceName *string
+
 	// The WorkSpace properties.
 	WorkspaceProperties *WorkspaceProperties
+
+	noSmithyDocumentSerde
+}
+
+// Describes the association between an application and a WorkSpace resource.
+type WorkspaceResourceAssociation struct {
+
+	// The identifier of the associated resource.
+	AssociatedResourceId *string
+
+	// The resource types of the associated resource.
+	AssociatedResourceType WorkSpaceAssociatedResourceType
+
+	// The time the association is created.
+	Created *time.Time
+
+	// The time the association status was last updated.
+	LastUpdatedTime *time.Time
+
+	// The status of the WorkSpace resource association.
+	State AssociationState
+
+	// The reason the association deployment failed.
+	StateReason *AssociationStateReason
+
+	// The identifier of the WorkSpace.
+	WorkspaceId *string
 
 	noSmithyDocumentSerde
 }
@@ -1143,6 +1840,120 @@ type WorkspacesIpGroup struct {
 
 	// The rules.
 	UserRules []IpRuleItem
+
+	noSmithyDocumentSerde
+}
+
+// Describes a pool of WorkSpaces.
+type WorkspacesPool struct {
+
+	// The identifier of the bundle used by the pool.
+	//
+	// This member is required.
+	BundleId *string
+
+	// The capacity status for the pool
+	//
+	// This member is required.
+	CapacityStatus *CapacityStatus
+
+	// The time the pool was created.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// The identifier of the directory used by the pool.
+	//
+	// This member is required.
+	DirectoryId *string
+
+	// The Amazon Resource Name (ARN) for the pool.
+	//
+	// This member is required.
+	PoolArn *string
+
+	// The identifier of a pool.
+	//
+	// This member is required.
+	PoolId *string
+
+	// The name of the pool,
+	//
+	// This member is required.
+	PoolName *string
+
+	// The current state of the pool.
+	//
+	// This member is required.
+	State WorkspacesPoolState
+
+	// The persistent application settings for users of the pool.
+	ApplicationSettings *ApplicationSettingsResponse
+
+	// The description of the pool.
+	Description *string
+
+	// The pool errors.
+	Errors []WorkspacesPoolError
+
+	// The amount of time that a pool session remains active after users disconnect.
+	// If they try to reconnect to the pool session after a disconnection or network
+	// interruption within this time interval, they are connected to their previous
+	// session. Otherwise, they are connected to a new session with a new pool
+	// instance.
+	TimeoutSettings *TimeoutSettings
+
+	noSmithyDocumentSerde
+}
+
+// Describes a pool error.
+type WorkspacesPoolError struct {
+
+	// The error code.
+	ErrorCode WorkspacesPoolErrorCode
+
+	// The error message.
+	ErrorMessage *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a pool session.
+type WorkspacesPoolSession struct {
+
+	// The identifier of the pool.
+	//
+	// This member is required.
+	PoolId *string
+
+	// The identifier of the session.
+	//
+	// This member is required.
+	SessionId *string
+
+	// The identifier of the user.
+	//
+	// This member is required.
+	UserId *string
+
+	// The authentication method. The user is authenticated using a WorkSpaces Pools
+	// URL (API) or SAML 2.0 federation (SAML).
+	AuthenticationType AuthenticationType
+
+	// Specifies whether a user is connected to the pool session.
+	ConnectionState SessionConnectionState
+
+	// The time that the pool session ended.
+	ExpirationTime *time.Time
+
+	// The identifier for the instance hosting the session.
+	InstanceId *string
+
+	// Describes the network details of the pool.
+	NetworkAccessConfiguration *NetworkAccessConfiguration
+
+	// The time that the pool sission started.
+	StartTime *time.Time
 
 	noSmithyDocumentSerde
 }

@@ -88,6 +88,21 @@ type AuthenticationProfile struct {
 	noSmithyDocumentSerde
 }
 
+// The authorized token issuer for the Amazon Redshift IAM Identity Center
+// application.
+type AuthorizedTokenIssuer struct {
+
+	// The list of audiences for the authorized token issuer for integrating Amazon
+	// Redshift with IDC Identity Center.
+	AuthorizedAudiencesList []string
+
+	// The ARN for the authorized token issuer for integrating Amazon Redshift with
+	// IDC Identity Center.
+	TrustedTokenIssuerArn *string
+
+	noSmithyDocumentSerde
+}
+
 // Describes an availability zone.
 type AvailabilityZone struct {
 
@@ -118,14 +133,14 @@ type Cluster struct {
 
 	// A boolean value that, if true , indicates that major version upgrades will be
 	// applied automatically to the cluster during the maintenance window.
-	AllowVersionUpgrade bool
+	AllowVersionUpgrade *bool
 
 	// This field is retired. Amazon Redshift automatically determines whether to use
 	// AQUA (Advanced Query Accelerator).
 	AquaConfiguration *AquaConfiguration
 
 	// The number of days that automatic cluster snapshots are retained.
-	AutomatedSnapshotRetentionPeriod int32
+	AutomatedSnapshotRetentionPeriod *int32
 
 	// The name of the Availability Zone in which the cluster is located.
 	AvailabilityZone *string
@@ -135,12 +150,17 @@ type Cluster struct {
 
 	// The availability status of the cluster for queries. Possible values are the
 	// following:
+	//
 	//   - Available - The cluster is available for queries.
+	//
 	//   - Unavailable - The cluster is not available for queries.
+	//
 	//   - Maintenance - The cluster is intermittently available for queries due to
 	//   maintenance activities.
+	//
 	//   - Modifying - The cluster is intermittently available for queries due to
 	//   changes that modify the cluster.
+	//
 	//   - Failed - The cluster failed and is not available for queries.
 	ClusterAvailabilityStatus *string
 
@@ -168,36 +188,57 @@ type Cluster struct {
 
 	// A list of cluster security group that are associated with the cluster. Each
 	// security group is represented by an element that contains
-	// ClusterSecurityGroup.Name and ClusterSecurityGroup.Status subelements. Cluster
-	// security groups are used when the cluster is not created in an Amazon Virtual
-	// Private Cloud (VPC). Clusters that are created in a VPC use VPC security groups,
-	// which are listed by the VpcSecurityGroups parameter.
+	// ClusterSecurityGroup.Name and ClusterSecurityGroup.Status subelements.
+	//
+	// Cluster security groups are used when the cluster is not created in an Amazon
+	// Virtual Private Cloud (VPC). Clusters that are created in a VPC use VPC security
+	// groups, which are listed by the VpcSecurityGroups parameter.
 	ClusterSecurityGroups []ClusterSecurityGroupMembership
 
 	// A value that returns the destination region and retention period that are
 	// configured for cross-region snapshot copy.
 	ClusterSnapshotCopyStatus *ClusterSnapshotCopyStatus
 
-	// The current state of the cluster. Possible values are the following:
+	//  The current state of the cluster. Possible values are the following:
+	//
 	//   - available
+	//
 	//   - available, prep-for-resize
+	//
 	//   - available, resize-cleanup
+	//
 	//   - cancelling-resize
+	//
 	//   - creating
+	//
 	//   - deleting
+	//
 	//   - final-snapshot
+	//
 	//   - hardware-failure
+	//
 	//   - incompatible-hsm
+	//
 	//   - incompatible-network
+	//
 	//   - incompatible-parameters
+	//
 	//   - incompatible-restore
+	//
 	//   - modifying
+	//
 	//   - paused
+	//
 	//   - rebooting
+	//
 	//   - renaming
+	//
 	//   - resizing
+	//
 	//   - rotating-keys
+	//
 	//   - storage-full
+	//
 	//   - updating-hsm
 	ClusterStatus *string
 
@@ -240,36 +281,48 @@ type Cluster struct {
 
 	// A boolean value that, if true , indicates that data in the cluster is encrypted
 	// at rest.
-	Encrypted bool
+	Encrypted *bool
 
 	// The connection endpoint.
 	Endpoint *Endpoint
 
 	// An option that specifies whether to create the cluster with enhanced VPC
 	// routing enabled. To create a cluster that uses enhanced VPC routing, the cluster
-	// must be in a VPC. For more information, see Enhanced VPC Routing (https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html)
-	// in the Amazon Redshift Cluster Management Guide. If this option is true ,
-	// enhanced VPC routing is enabled. Default: false
-	EnhancedVpcRouting bool
+	// must be in a VPC. For more information, see [Enhanced VPC Routing]in the Amazon Redshift Cluster
+	// Management Guide.
+	//
+	// If this option is true , enhanced VPC routing is enabled.
+	//
+	// Default: false
+	//
+	// [Enhanced VPC Routing]: https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html
+	EnhancedVpcRouting *bool
 
 	// The date and time when the next snapshot is expected to be taken for clusters
 	// with a valid snapshot schedule and backups enabled.
 	ExpectedNextSnapshotScheduleTime *time.Time
 
-	// The status of next expected snapshot for clusters having a valid snapshot
+	//  The status of next expected snapshot for clusters having a valid snapshot
 	// schedule and backups enabled. Possible values are the following:
+	//
 	//   - OnTrack - The next snapshot is expected to be taken on time.
+	//
 	//   - Pending - The next snapshot is pending to be taken.
 	ExpectedNextSnapshotScheduleTimeStatus *string
 
 	// A value that reports whether the Amazon Redshift cluster has finished applying
 	// any hardware security module (HSM) settings changes specified in a modify
-	// cluster command. Values: active, applying
+	// cluster command.
+	//
+	// Values: active, applying
 	HsmStatus *HsmStatus
 
 	// A list of Identity and Access Management (IAM) roles that can be used by the
 	// cluster to access other Amazon Web Services services.
 	IamRoles []ClusterIamRole
+
+	// The IP address type for the cluster. Possible values are ipv4 and dualstack .
+	IpAddressType *string
 
 	// The Key Management Service (KMS) key ID of the encryption key used to encrypt
 	// data in the cluster.
@@ -280,9 +333,17 @@ type Cluster struct {
 
 	// The default number of days to retain a manual snapshot. If the value is -1, the
 	// snapshot is retained indefinitely. This setting doesn't change the retention
-	// period of existing snapshots. The value must be either -1 or an integer between
-	// 1 and 3,653.
-	ManualSnapshotRetentionPeriod int32
+	// period of existing snapshots.
+	//
+	// The value must be either -1 or an integer between 1 and 3,653.
+	ManualSnapshotRetentionPeriod *int32
+
+	// The Amazon Resource Name (ARN) for the cluster's admin user credentials secret.
+	MasterPasswordSecretArn *string
+
+	// The ID of the Key Management Service (KMS) key used to encrypt and store the
+	// cluster's admin credentials secret.
+	MasterPasswordSecretKmsKeyId *string
 
 	// The admin user name for the cluster. This name is used to connect to the
 	// database that is specified in the DBName parameter.
@@ -291,6 +352,13 @@ type Cluster struct {
 	// The status of a modify operation, if any, initiated for the cluster.
 	ModifyStatus *string
 
+	// A boolean value that, if true, indicates that the cluster is deployed in two
+	// Availability Zones.
+	MultiAZ *string
+
+	// The secondary compute unit of a cluster, if Multi-AZ deployment is turned on.
+	MultiAZSecondary *SecondaryClusterInfo
+
 	// The date and time in UTC when system maintenance can begin.
 	NextMaintenanceWindowStartTime *time.Time
 
@@ -298,7 +366,7 @@ type Cluster struct {
 	NodeType *string
 
 	// The number of compute nodes in the cluster.
-	NumberOfNodes int32
+	NumberOfNodes *int32
 
 	// Cluster operations that are waiting to be started.
 	PendingActions []string
@@ -313,15 +381,19 @@ type Cluster struct {
 
 	// A boolean value that, if true , indicates that the cluster can be accessed from
 	// a public network.
-	PubliclyAccessible bool
+	//
+	// Default: false
+	PubliclyAccessible *bool
 
 	// The status of the reserved-node exchange request. Statuses include in-progress
 	// and requested.
 	ReservedNodeExchangeStatus *ReservedNodeExchangeStatus
 
 	// Returns the following:
+	//
 	//   - AllowCancelResize: a boolean value indicating if the resize operation can
 	//   be cancelled.
+	//
 	//   - ResizeType: Returns ClassicResize
 	ResizeInfo *ResizeInfo
 
@@ -387,9 +459,14 @@ type ClusterDbRevision struct {
 type ClusterIamRole struct {
 
 	// A value that describes the status of the IAM role's association with an Amazon
-	// Redshift cluster. The following are possible statuses and descriptions.
+	// Redshift cluster.
+	//
+	// The following are possible statuses and descriptions.
+	//
 	//   - in-sync : The role is available for use by the cluster.
+	//
 	//   - adding : The role is in the process of being associated with the cluster.
+	//
 	//   - removing : The role is in the process of being disassociated with the
 	//   cluster.
 	ApplyStatus *string
@@ -438,9 +515,12 @@ type ClusterParameterGroup struct {
 // Describes the status of a parameter group.
 type ClusterParameterGroupStatus struct {
 
-	// The list of parameter statuses. For more information about parameters and
-	// parameter groups, go to Amazon Redshift Parameter Groups (https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html)
-	// in the Amazon Redshift Cluster Management Guide.
+	// The list of parameter statuses.
+	//
+	// For more information about parameters and parameter groups, go to [Amazon Redshift Parameter Groups] in the
+	// Amazon Redshift Cluster Management Guide.
+	//
+	// [Amazon Redshift Parameter Groups]: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html
 	ClusterParameterStatusList []ClusterParameterStatus
 
 	// The status of parameter updates.
@@ -460,17 +540,26 @@ type ClusterParameterStatus struct {
 
 	// The status of the parameter that indicates whether the parameter is in sync
 	// with the database, waiting for a cluster reboot, or encountered an error when
-	// being applied. The following are possible statuses and descriptions.
+	// being applied.
+	//
+	// The following are possible statuses and descriptions.
+	//
 	//   - in-sync : The parameter value is in sync with the database.
+	//
 	//   - pending-reboot : The parameter value will be applied after the cluster
 	//   reboots.
+	//
 	//   - applying : The parameter value is being applied to the database.
+	//
 	//   - invalid-parameter : Cannot apply the parameter value because it has an
 	//   invalid value or syntax.
+	//
 	//   - apply-deferred : The parameter contains static property changes. The changes
 	//   are deferred until the cluster reboots.
+	//
 	//   - apply-error : Cannot connect to the cluster. The parameter change will be
 	//   applied after the cluster reboots.
+	//
 	//   - unknown-error : Cannot apply the parameter change right now. The change will
 	//   be applied after the cluster reboots.
 	ParameterApplyStatus *string
@@ -526,13 +615,14 @@ type ClusterSnapshotCopyStatus struct {
 
 	// The number of days that automated snapshots are retained in the destination
 	// region after they are copied from a source region. If the value is -1, the
-	// manual snapshot is retained indefinitely. The value must be either -1 or an
-	// integer between 1 and 3,653.
-	ManualSnapshotRetentionPeriod int32
+	// manual snapshot is retained indefinitely.
+	//
+	// The value must be either -1 or an integer between 1 and 3,653.
+	ManualSnapshotRetentionPeriod *int32
 
 	// The number of days that automated snapshots are retained in the destination
 	// region after they are copied from a source region.
-	RetentionPeriod int64
+	RetentionPeriod *int64
 
 	// The name of the snapshot copy grant.
 	SnapshotCopyGrantName *string
@@ -555,6 +645,10 @@ type ClusterSubnetGroup struct {
 
 	// A list of the VPC Subnet elements.
 	Subnets []Subnet
+
+	// The IP address types supported by this cluster subnet group. Possible values
+	// are ipv4 and dualstack .
+	SupportedClusterIpAddressTypes []string
 
 	// The list of tags for the cluster subnet group.
 	Tags []Tag
@@ -585,22 +679,22 @@ type DataShare struct {
 
 	// A value that specifies whether the datashare can be shared to a publicly
 	// accessible cluster.
-	AllowPubliclyAccessibleConsumers bool
+	AllowPubliclyAccessibleConsumers *bool
 
-	// An Amazon Resource Name (ARN) that references the datashare that is owned by a
-	// specific namespace of the producer cluster. A datashare ARN is in the
-	// arn:aws:redshift:{region}:{account-id}:{datashare}:{namespace-guid}/{datashare-name}
-	// format.
+	// The Amazon Resource Name (ARN) of the datashare that the consumer is to use.
 	DataShareArn *string
 
 	// A value that specifies when the datashare has an association between producer
 	// and data consumers.
 	DataShareAssociations []DataShareAssociation
 
+	//  The type of the datashare created by RegisterNamespace.
+	DataShareType DataShareType
+
 	// The identifier of a datashare to show its managing entity.
 	ManagedBy *string
 
-	// The Amazon Resource Name (ARN) of the producer.
+	// The Amazon Resource Name (ARN) of the producer namespace.
 	ProducerArn *string
 
 	noSmithyDocumentSerde
@@ -608,6 +702,9 @@ type DataShare struct {
 
 // The association of a datashare from a producer account with a data consumer.
 type DataShareAssociation struct {
+
+	// Specifies whether write operations were allowed during data share association.
+	ConsumerAcceptedWrites *bool
 
 	// The name of the consumer accounts that have an association with a producer
 	// datashare.
@@ -619,6 +716,9 @@ type DataShareAssociation struct {
 
 	// The creation date of the datashare that is associated.
 	CreatedDate *time.Time
+
+	// Specifies whether write operations were allowed during data share authorization.
+	ProducerAllowedWrites *bool
 
 	// The status of the datashare that is associated.
 	Status DataShareStatus
@@ -637,7 +737,7 @@ type DataTransferProgress struct {
 	CurrentRateInMegaBytesPerSecond *float64
 
 	// Describes the total amount of data that has been transfered in MB's.
-	DataTransferredInMegaBytes int64
+	DataTransferredInMegaBytes *int64
 
 	// Describes the number of seconds that have elapsed during the data transfer.
 	ElapsedTimeInSeconds *int64
@@ -650,7 +750,7 @@ type DataTransferProgress struct {
 	Status *string
 
 	// Describes the total amount of data to be transfered in megabytes.
-	TotalDataInMegaBytes int64
+	TotalDataInMegaBytes *int64
 
 	noSmithyDocumentSerde
 }
@@ -678,13 +778,13 @@ type DefaultClusterParameters struct {
 // Describes a deferred maintenance window
 type DeferredMaintenanceWindow struct {
 
-	// A timestamp for the end of the time period when we defer maintenance.
+	//  A timestamp for the end of the time period when we defer maintenance.
 	DeferMaintenanceEndTime *time.Time
 
 	// A unique identifier for the maintenance window.
 	DeferMaintenanceIdentifier *string
 
-	// A timestamp for the beginning of the time period when we defer maintenance.
+	//  A timestamp for the beginning of the time period when we defer maintenance.
 	DeferMaintenanceStartTime *time.Time
 
 	noSmithyDocumentSerde
@@ -692,9 +792,10 @@ type DeferredMaintenanceWindow struct {
 
 type DeleteClusterSnapshotMessage struct {
 
-	// The unique identifier of the manual snapshot to be deleted. Constraints: Must
-	// be the name of an existing snapshot that is in the available , failed , or
-	// cancelled state.
+	// The unique identifier of the manual snapshot to be deleted.
+	//
+	// Constraints: Must be the name of an existing snapshot that is in the available ,
+	// failed , or cancelled state.
 	//
 	// This member is required.
 	SnapshotIdentifier *string
@@ -702,8 +803,25 @@ type DeleteClusterSnapshotMessage struct {
 	// The unique identifier of the cluster the snapshot was created from. This
 	// parameter is required if your IAM user has a policy containing a snapshot
 	// resource element that specifies anything other than * for the cluster name.
+	//
 	// Constraints: Must be the name of valid cluster.
 	SnapshotClusterIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// A set of elements to filter the returned integrations.
+type DescribeIntegrationsFilter struct {
+
+	// Specifies the type of integration filter.
+	//
+	// This member is required.
+	Name DescribeIntegrationsFilterName
+
+	// Specifies the values to filter on.
+	//
+	// This member is required.
+	Values []string
 
 	noSmithyDocumentSerde
 }
@@ -746,7 +864,7 @@ type Endpoint struct {
 	Address *string
 
 	// The port that the database engine is listening on.
-	Port int32
+	Port *int32
 
 	// Describes a connection endpoint.
 	VpcEndpoints []VpcEndpoint
@@ -773,7 +891,7 @@ type EndpointAccess struct {
 	EndpointStatus *string
 
 	// The port number on which the cluster accepts incoming connections.
-	Port int32
+	Port *int32
 
 	// The Amazon Web Services account ID of the owner of the cluster.
 	ResourceOwner *string
@@ -797,7 +915,7 @@ type EndpointAuthorization struct {
 
 	// Indicates whether all VPCs in the grantee account are allowed access to the
 	// cluster.
-	AllowedAllVPCs bool
+	AllowedAllVPCs *bool
 
 	// The VPCs allowed access to the cluster.
 	AllowedVPCs []string
@@ -812,7 +930,7 @@ type EndpointAuthorization struct {
 	ClusterStatus *string
 
 	// The number of Redshift-managed VPC endpoints created for the authorization.
-	EndpointCount int32
+	EndpointCount *int32
 
 	// The Amazon Web Services account ID of the grantee of the cluster.
 	Grantee *string
@@ -832,8 +950,9 @@ type Event struct {
 	// The date and time of the event.
 	Date *time.Time
 
-	// A list of the event categories. Values: Configuration, Management, Monitoring,
-	// Security, Pending
+	// A list of the event categories.
+	//
+	// Values: Configuration, Management, Monitoring, Security, Pending
 	EventCategories []string
 
 	// The identifier of the event.
@@ -842,7 +961,9 @@ type Event struct {
 	// The text of this event.
 	Message *string
 
-	// The severity of the event. Values: ERROR, INFO
+	// The severity of the event.
+	//
+	// Values: ERROR, INFO
 	Severity *string
 
 	// The identifier for the source of the event.
@@ -879,7 +1000,9 @@ type EventInfoMap struct {
 	// The identifier of an Amazon Redshift event.
 	EventId *string
 
-	// The severity of the event. Values: ERROR, INFO
+	// The severity of the event.
+	//
+	// Values: ERROR, INFO
 	Severity *string
 
 	noSmithyDocumentSerde
@@ -897,15 +1020,18 @@ type EventSubscription struct {
 
 	// A boolean value indicating whether the subscription is enabled; true indicates
 	// that the subscription is enabled.
-	Enabled bool
+	Enabled *bool
 
 	// The list of Amazon Redshift event categories specified in the event
-	// notification subscription. Values: Configuration, Management, Monitoring,
-	// Security, Pending
+	// notification subscription.
+	//
+	// Values: Configuration, Management, Monitoring, Security, Pending
 	EventCategoriesList []string
 
 	// The event severity specified in the Amazon Redshift event notification
-	// subscription. Values: ERROR, INFO
+	// subscription.
+	//
+	// Values: ERROR, INFO
 	Severity *string
 
 	// The Amazon Resource Name (ARN) of the Amazon SNS topic used by the event
@@ -921,8 +1047,12 @@ type EventSubscription struct {
 	// cluster-security-group, or scheduled-action.
 	SourceType *string
 
-	// The status of the Amazon Redshift event notification subscription. Constraints:
+	// The status of the Amazon Redshift event notification subscription.
+	//
+	// Constraints:
+	//
 	//   - Can be one of the following: active | no-permission | topic-not-exist
+	//
 	//   - The status "no-permission" indicates that Amazon Redshift no longer has
 	//   permission to post to the Amazon SNS topic. The status "topic-not-exist"
 	//   indicates that the topic was deleted after the subscription was created.
@@ -992,8 +1122,93 @@ type HsmStatus struct {
 	HsmConfigurationIdentifier *string
 
 	// Reports whether the Amazon Redshift cluster has finished applying any HSM
-	// settings changes specified in a modify cluster command. Values: active, applying
+	// settings changes specified in a modify cluster command.
+	//
+	// Values: active, applying
 	Status *string
+
+	noSmithyDocumentSerde
+}
+
+// The content of an inbound integration.
+type InboundIntegration struct {
+
+	// The creation time of an inbound integration.
+	CreateTime *time.Time
+
+	// The outstanding errors of an inbound integration. Each item is an
+	// "IntegrationError". This is null if there is no error.
+	Errors []IntegrationError
+
+	// The Amazon Resource Name (ARN) of an inbound integration.
+	IntegrationArn *string
+
+	// The Amazon Resource Name (ARN) of the source of an inbound integration.
+	SourceArn *string
+
+	// The status of an inbound integration.
+	Status ZeroETLIntegrationStatus
+
+	// The Amazon Resource Name (ARN) of the target of an inbound integration.
+	TargetArn *string
+
+	noSmithyDocumentSerde
+}
+
+type Integration struct {
+
+	// The encryption context for the integration. For more information, see [Encryption context] in the
+	// Amazon Web Services Key Management Service Developer Guide.
+	//
+	// [Encryption context]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context
+	AdditionalEncryptionContext map[string]string
+
+	// The time (UTC) when the integration was created.
+	CreateTime *time.Time
+
+	// The description of the integration.
+	Description *string
+
+	// Any errors associated with the integration.
+	Errors []IntegrationError
+
+	// The Amazon Resource Name (ARN) of the integration.
+	IntegrationArn *string
+
+	// The name of the integration.
+	IntegrationName *string
+
+	// The Key Management Service (KMS) key identifier for the key used to encrypt the
+	// integration.
+	KMSKeyId *string
+
+	// The Amazon Resource Name (ARN) of the database used as the source for
+	// replication.
+	SourceArn *string
+
+	// The current status of the integration.
+	Status ZeroETLIntegrationStatus
+
+	// The list of tags associated with the integration.
+	Tags []Tag
+
+	// The Amazon Resource Name (ARN) of the Amazon Redshift data warehouse to use as
+	// the target for replication.
+	TargetArn *string
+
+	noSmithyDocumentSerde
+}
+
+// The error of an inbound integration.
+type IntegrationError struct {
+
+	// The error code of an inbound integration error.
+	//
+	// This member is required.
+	ErrorCode *string
+
+	// The error message of an inbound integration error.
+	ErrorMessage *string
 
 	noSmithyDocumentSerde
 }
@@ -1012,6 +1227,35 @@ type IPRange struct {
 
 	noSmithyDocumentSerde
 }
+
+// The Lake Formation scope.
+type LakeFormationQuery struct {
+
+	// Determines whether the query scope is enabled or disabled.
+	//
+	// This member is required.
+	Authorization ServiceAuthorization
+
+	noSmithyDocumentSerde
+}
+
+// A list of scopes set up for Lake Formation integration.
+//
+// The following types satisfy this interface:
+//
+//	LakeFormationScopeUnionMemberLakeFormationQuery
+type LakeFormationScopeUnion interface {
+	isLakeFormationScopeUnion()
+}
+
+// The Lake Formation scope.
+type LakeFormationScopeUnionMemberLakeFormationQuery struct {
+	Value LakeFormationQuery
+
+	noSmithyDocumentSerde
+}
+
+func (*LakeFormationScopeUnionMemberLakeFormationQuery) isLakeFormationScopeUnion() {}
 
 // Defines a maintenance track that determines which Amazon Redshift version to
 // apply during a maintenance window. If the value for MaintenanceTrack is current
@@ -1032,11 +1276,43 @@ type MaintenanceTrack struct {
 	noSmithyDocumentSerde
 }
 
+// Object to store union of values for a provisioned cluster or serverless
+// namespace’s identifier.
+//
+// The following types satisfy this interface:
+//
+//	NamespaceIdentifierUnionMemberProvisionedIdentifier
+//	NamespaceIdentifierUnionMemberServerlessIdentifier
+type NamespaceIdentifierUnion interface {
+	isNamespaceIdentifierUnion()
+}
+
+// The identifier for a provisioned cluster.
+type NamespaceIdentifierUnionMemberProvisionedIdentifier struct {
+	Value ProvisionedIdentifier
+
+	noSmithyDocumentSerde
+}
+
+func (*NamespaceIdentifierUnionMemberProvisionedIdentifier) isNamespaceIdentifierUnion() {}
+
+// The identifier for a serverless namespace.
+type NamespaceIdentifierUnionMemberServerlessIdentifier struct {
+	Value ServerlessIdentifier
+
+	noSmithyDocumentSerde
+}
+
+func (*NamespaceIdentifierUnionMemberServerlessIdentifier) isNamespaceIdentifierUnion() {}
+
 // Describes a network interface.
 type NetworkInterface struct {
 
 	// The Availability Zone.
 	AvailabilityZone *string
+
+	// The IPv6 address of the network interface within the subnet.
+	Ipv6Address *string
 
 	// The network interface identifier.
 	NetworkInterfaceId *string
@@ -1059,11 +1335,11 @@ type NodeConfigurationOption struct {
 	// The category of the node configuration recommendation.
 	Mode Mode
 
-	// The node type, such as, "ds2.8xlarge".
+	// The node type, such as, "ra3.4xlarge".
 	NodeType *string
 
 	// The number of nodes.
-	NumberOfNodes int32
+	NumberOfNodes *int32
 
 	noSmithyDocumentSerde
 }
@@ -1115,8 +1391,10 @@ type Parameter struct {
 	// Specifies how to apply the WLM configuration parameter. Some properties can be
 	// applied dynamically, while other properties require that any associated clusters
 	// be rebooted for the configuration changes to be applied. For more information
-	// about parameters and parameter groups, go to Amazon Redshift Parameter Groups (https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html)
-	// in the Amazon Redshift Cluster Management Guide.
+	// about parameters and parameter groups, go to [Amazon Redshift Parameter Groups]in the Amazon Redshift Cluster
+	// Management Guide.
+	//
+	// [Amazon Redshift Parameter Groups]: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-parameter-groups.html
 	ApplyType ParameterApplyType
 
 	// The data type of the parameter.
@@ -1127,7 +1405,7 @@ type Parameter struct {
 
 	// If true , the parameter can be modified. Some parameters have security or
 	// operational implications that prevent them from being changed.
-	IsModifiable bool
+	IsModifiable *bool
 
 	// The earliest engine version to which the parameter can apply.
 	MinimumEngineVersion *string
@@ -1203,9 +1481,14 @@ type PendingModifiedValues struct {
 
 	// An option that specifies whether to create the cluster with enhanced VPC
 	// routing enabled. To create a cluster that uses enhanced VPC routing, the cluster
-	// must be in a VPC. For more information, see Enhanced VPC Routing (https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html)
-	// in the Amazon Redshift Cluster Management Guide. If this option is true ,
-	// enhanced VPC routing is enabled. Default: false
+	// must be in a VPC. For more information, see [Enhanced VPC Routing]in the Amazon Redshift Cluster
+	// Management Guide.
+	//
+	// If this option is true , enhanced VPC routing is enabled.
+	//
+	// Default: false
+	//
+	// [Enhanced VPC Routing]: https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html
 	EnhancedVpcRouting *bool
 
 	// The name of the maintenance track that the cluster will change to during the
@@ -1228,12 +1511,97 @@ type PendingModifiedValues struct {
 	noSmithyDocumentSerde
 }
 
+// The identifier for a provisioned cluster.
+type ProvisionedIdentifier struct {
+
+	// The unique identifier for the provisioned cluster.
+	//
+	// This member is required.
+	ClusterIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// The S3 Access Grants scope.
+type ReadWriteAccess struct {
+
+	// Determines whether the read/write scope is enabled or disabled.
+	//
+	// This member is required.
+	Authorization ServiceAuthorization
+
+	noSmithyDocumentSerde
+}
+
+// An Amazon Redshift Advisor recommended action on the Amazon Redshift cluster.
+type Recommendation struct {
+
+	// The unique identifier of the cluster for which the recommendation is returned.
+	ClusterIdentifier *string
+
+	// The date and time (UTC) that the recommendation was created.
+	CreatedAt *time.Time
+
+	// The description of the recommendation.
+	Description *string
+
+	// A unique identifier of the Advisor recommendation.
+	Id *string
+
+	// The scale of the impact that the Advisor recommendation has to the performance
+	// and cost of the cluster.
+	ImpactRanking ImpactRankingType
+
+	// The Amazon Redshift cluster namespace ARN for which the recommendations is
+	// returned.
+	NamespaceArn *string
+
+	// The description of what was observed about your cluster.
+	Observation *string
+
+	// The description of the recommendation.
+	RecommendationText *string
+
+	// The type of Advisor recommendation.
+	RecommendationType *string
+
+	// List of Amazon Redshift recommended actions.
+	RecommendedActions []RecommendedAction
+
+	// List of helpful links for more information about the Advisor recommendation.
+	ReferenceLinks []ReferenceLink
+
+	// The title of the recommendation.
+	Title *string
+
+	noSmithyDocumentSerde
+}
+
+// The recommended action from the Amazon Redshift Advisor recommendation.
+type RecommendedAction struct {
+
+	// The command to run.
+	Command *string
+
+	// The database name to perform the action on. Only applicable if the type of
+	// command is SQL.
+	Database *string
+
+	// The specific instruction about the command.
+	Text *string
+
+	// The type of command.
+	Type RecommendedActionType
+
+	noSmithyDocumentSerde
+}
+
 // Describes a recurring charge.
 type RecurringCharge struct {
 
 	// The amount charged per the period of time specified by the recurring charge
 	// frequency.
-	RecurringChargeAmount float64
+	RecurringChargeAmount *float64
 
 	// The frequency at which the recurring charge amount is applied.
 	RecurringChargeFrequency *string
@@ -1241,21 +1609,74 @@ type RecurringCharge struct {
 	noSmithyDocumentSerde
 }
 
-// Describes a reserved node. You can call the DescribeReservedNodeOfferings API
-// to obtain the available reserved node offerings.
+// Contains properties for the Redshift IDC application.
+type RedshiftIdcApplication struct {
+
+	// The authorized token issuer list for the Amazon Redshift IAM Identity Center
+	// application.
+	AuthorizedTokenIssuerList []AuthorizedTokenIssuer
+
+	// The ARN for the Amazon Redshift IAM Identity Center application. It has the
+	// required permissions to be assumed and invoke the IDC Identity Center API.
+	IamRoleArn *string
+
+	// The display name for the Amazon Redshift IAM Identity Center application. It
+	// appears on the console.
+	IdcDisplayName *string
+
+	// The ARN for the IAM Identity Center instance that Redshift integrates with.
+	IdcInstanceArn *string
+
+	// The ARN for the Amazon Redshift IAM Identity Center application.
+	IdcManagedApplicationArn *string
+
+	// The onboarding status for the Amazon Redshift IAM Identity Center application.
+	IdcOnboardStatus *string
+
+	// The identity namespace for the Amazon Redshift IAM Identity Center application.
+	// It determines which managed application verifies the connection token.
+	IdentityNamespace *string
+
+	// The ARN for the Redshift application that integrates with IAM Identity Center.
+	RedshiftIdcApplicationArn *string
+
+	// The name of the Redshift application in IAM Identity Center.
+	RedshiftIdcApplicationName *string
+
+	// A list of service integrations for the Redshift IAM Identity Center application.
+	ServiceIntegrations []ServiceIntegrationsUnion
+
+	noSmithyDocumentSerde
+}
+
+// A link to an Amazon Redshift Advisor reference for more information about a
+// recommendation.
+type ReferenceLink struct {
+
+	// The URL address to find more information.
+	Link *string
+
+	// The hyperlink text that describes the link to more information.
+	Text *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a reserved node. You can call the DescribeReservedNodeOfferings API to obtain the available
+// reserved node offerings.
 type ReservedNode struct {
 
 	// The currency code for the reserved cluster.
 	CurrencyCode *string
 
 	// The duration of the node reservation in seconds.
-	Duration int32
+	Duration *int32
 
 	// The fixed cost Amazon Redshift charges you for this reserved node.
-	FixedPrice float64
+	FixedPrice *float64
 
 	// The number of reserved compute nodes.
-	NodeCount int32
+	NodeCount *int32
 
 	// The node type of the reserved node.
 	NodeType *string
@@ -1280,18 +1701,25 @@ type ReservedNode struct {
 	// duration. This is the start time of that duration.
 	StartTime *time.Time
 
-	// The state of the reserved compute node. Possible Values:
+	// The state of the reserved compute node.
+	//
+	// Possible Values:
+	//
 	//   - pending-payment-This reserved node has recently been purchased, and the
 	//   sale has been approved, but payment has not yet been confirmed.
+	//
 	//   - active-This reserved node is owned by the caller and is available for use.
+	//
 	//   - payment-failed-Payment failed for the purchase attempt.
+	//
 	//   - retired-The reserved node is no longer available.
+	//
 	//   - exchanging-The owner is exchanging the reserved node for another reserved
 	//   node.
 	State *string
 
 	// The hourly rate Amazon Redshift charges you for this reserved node.
-	UsagePrice float64
+	UsagePrice *float64
 
 	noSmithyDocumentSerde
 }
@@ -1300,12 +1728,12 @@ type ReservedNode struct {
 // reserved node, the price for a node, the node's state, and other details.
 type ReservedNodeConfigurationOption struct {
 
-	// Describes a reserved node. You can call the DescribeReservedNodeOfferings API
-	// to obtain the available reserved node offerings.
+	// Describes a reserved node. You can call the DescribeReservedNodeOfferings API to obtain the available
+	// reserved node offerings.
 	SourceReservedNode *ReservedNode
 
 	// The target reserved-node count.
-	TargetReservedNodeCount int32
+	TargetReservedNodeCount *int32
 
 	// Describes a reserved node offering.
 	TargetReservedNodeOffering *ReservedNodeOffering
@@ -1325,12 +1753,12 @@ type ReservedNodeExchangeStatus struct {
 	ReservedNodeExchangeRequestId *string
 
 	// The source reserved-node count in the cluster.
-	SourceReservedNodeCount int32
+	SourceReservedNodeCount *int32
 
 	// The identifier of the source reserved node.
 	SourceReservedNodeId *string
 
-	// The source reserved-node type, for example ds2.xlarge.
+	// The source reserved-node type, for example ra3.4xlarge.
 	SourceReservedNodeType *string
 
 	// The status of the reserved-node exchange request. Statuses include in-progress
@@ -1338,7 +1766,7 @@ type ReservedNodeExchangeStatus struct {
 	Status ReservedNodeExchangeStatusType
 
 	// The count of target reserved nodes in the cluster.
-	TargetReservedNodeCount int32
+	TargetReservedNodeCount *int32
 
 	// The identifier of the target reserved node offering.
 	TargetReservedNodeOfferingId *string
@@ -1356,11 +1784,11 @@ type ReservedNodeOffering struct {
 	CurrencyCode *string
 
 	// The duration, in seconds, for which the offering will reserve the node.
-	Duration int32
+	Duration *int32
 
 	// The upfront fixed charge you will pay to purchase the specific reserved node
 	// offering.
-	FixedPrice float64
+	FixedPrice *float64
 
 	// The node type offered by the reserved node offering.
 	NodeType *string
@@ -1382,7 +1810,7 @@ type ReservedNodeOffering struct {
 
 	// The rate you are charged for each hour the cluster that is using the offering
 	// is running.
-	UsagePrice float64
+	UsagePrice *float64
 
 	noSmithyDocumentSerde
 }
@@ -1425,10 +1853,22 @@ type ResizeClusterMessage struct {
 type ResizeInfo struct {
 
 	// A boolean value indicating if the resize operation can be cancelled.
-	AllowCancelResize bool
+	AllowCancelResize *bool
 
 	// Returns the value ClassicResize .
 	ResizeType *string
+
+	noSmithyDocumentSerde
+}
+
+// The policy that is attached to a resource.
+type ResourcePolicy struct {
+
+	// The content of a resource policy.
+	Policy *string
+
+	// The resources that a policy is attached to.
+	ResourceArn *string
 
 	noSmithyDocumentSerde
 }
@@ -1439,26 +1879,26 @@ type RestoreStatus struct {
 
 	// The number of megabytes per second being transferred from the backup storage.
 	// Returns the average rate for a completed backup. This field is only updated when
-	// you restore to DC2 and DS2 node types.
-	CurrentRestoreRateInMegaBytesPerSecond float64
+	// you restore to DC2 node types.
+	CurrentRestoreRateInMegaBytesPerSecond *float64
 
 	// The amount of time an in-progress restore has been running, or the amount of
 	// time it took a completed restore to finish. This field is only updated when you
-	// restore to DC2 and DS2 node types.
-	ElapsedTimeInSeconds int64
+	// restore to DC2 node types.
+	ElapsedTimeInSeconds *int64
 
 	// The estimate of the time remaining before the restore will complete. Returns 0
-	// for a completed restore. This field is only updated when you restore to DC2 and
-	// DS2 node types.
-	EstimatedTimeToCompletionInSeconds int64
+	// for a completed restore. This field is only updated when you restore to DC2 node
+	// types.
+	EstimatedTimeToCompletionInSeconds *int64
 
 	// The number of megabytes that have been transferred from snapshot storage. This
-	// field is only updated when you restore to DC2 and DS2 node types.
-	ProgressInMegaBytes int64
+	// field is only updated when you restore to DC2 node types.
+	ProgressInMegaBytes *int64
 
 	// The size of the set of snapshot data used to restore the cluster. This field is
-	// only updated when you restore to DC2 and DS2 node types.
-	SnapshotSizeInMegaBytes int64
+	// only updated when you restore to DC2 node types.
+	SnapshotSizeInMegaBytes *int64
 
 	// The status of the restore action. Returns starting, restoring, completed, or
 	// failed.
@@ -1483,22 +1923,40 @@ type ResumeClusterMessage struct {
 type RevisionTarget struct {
 
 	// A unique string that identifies the version to update the cluster to. You can
-	// use this value in ModifyClusterDbRevision .
+	// use this value in ModifyClusterDbRevision.
 	DatabaseRevision *string
 
 	// The date on which the database revision was released.
 	DatabaseRevisionReleaseDate *time.Time
 
 	// A string that describes the changes and features that will be applied to the
-	// cluster when it is updated to the corresponding ClusterDbRevision .
+	// cluster when it is updated to the corresponding ClusterDbRevision.
 	Description *string
 
 	noSmithyDocumentSerde
 }
 
+// A list of scopes set up for S3 Access Grants integration.
+//
+// The following types satisfy this interface:
+//
+//	S3AccessGrantsScopeUnionMemberReadWriteAccess
+type S3AccessGrantsScopeUnion interface {
+	isS3AccessGrantsScopeUnion()
+}
+
+// The S3 Access Grants scope.
+type S3AccessGrantsScopeUnionMemberReadWriteAccess struct {
+	Value ReadWriteAccess
+
+	noSmithyDocumentSerde
+}
+
+func (*S3AccessGrantsScopeUnionMemberReadWriteAccess) isS3AccessGrantsScopeUnion() {}
+
 // Describes a scheduled action. You can use a scheduled action to trigger some
 // Amazon Redshift API operations on a schedule. For information about which API
-// operations can be scheduled, see ScheduledActionType .
+// operations can be scheduled, see ScheduledActionType.
 type ScheduledAction struct {
 
 	// The end time in UTC when the schedule is no longer active. After this time, the
@@ -1508,22 +1966,28 @@ type ScheduledAction struct {
 	// The IAM role to assume to run the scheduled action. This IAM role must have
 	// permission to run the Amazon Redshift API operation in the scheduled action.
 	// This IAM role must allow the Amazon Redshift scheduler (Principal
-	// scheduler.redshift.amazonaws.com) to assume permissions on your behalf. For more
-	// information about the IAM role to use with the Amazon Redshift scheduler, see
-	// Using Identity-Based Policies for Amazon Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html)
-	// in the Amazon Redshift Cluster Management Guide.
+	// scheduler.redshift.amazonaws.com) to assume permissions on your behalf.
+	//
+	// For more information about the IAM role to use with the Amazon Redshift
+	// scheduler, see [Using Identity-Based Policies for Amazon Redshift]in the Amazon Redshift Cluster Management Guide.
+	//
+	// [Using Identity-Based Policies for Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-identity-based.html
 	IamRole *string
 
 	// List of times when the scheduled action will run.
 	NextInvocations []time.Time
 
 	// The schedule for a one-time (at format) or recurring (cron format) scheduled
-	// action. Schedule invocations must be separated by at least one hour. Format of
-	// at expressions is " at(yyyy-mm-ddThh:mm:ss) ". For example, "
-	// at(2016-03-04T17:27:00) ". Format of cron expressions is " cron(Minutes Hours
-	// Day-of-month Month Day-of-week Year) ". For example, " cron(0 10 ? * MON *) ".
-	// For more information, see Cron Expressions (https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#CronExpressions)
-	// in the Amazon CloudWatch Events User Guide.
+	// action. Schedule invocations must be separated by at least one hour.
+	//
+	// Format of at expressions is " at(yyyy-mm-ddThh:mm:ss) ". For example, "
+	// at(2016-03-04T17:27:00) ".
+	//
+	// Format of cron expressions is " cron(Minutes Hours Day-of-month Month
+	// Day-of-week Year) ". For example, " cron(0 10 ? * MON *) ". For more
+	// information, see [Cron Expressions]in the Amazon CloudWatch Events User Guide.
+	//
+	// [Cron Expressions]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/events/ScheduledEvents.html#CronExpressions
 	Schedule *string
 
 	// The description of the scheduled action.
@@ -1540,8 +2004,10 @@ type ScheduledAction struct {
 	State ScheduledActionState
 
 	// A JSON format string of the Amazon Redshift API operation with input
-	// parameters. "
-	// {\"ResizeCluster\":{\"NodeType\":\"ds2.8xlarge\",\"ClusterIdentifier\":\"my-test-cluster\",\"NumberOfNodes\":3}}
+	// parameters.
+	//
+	// "
+	// {\"ResizeCluster\":{\"NodeType\":\"ra3.4xlarge\",\"ClusterIdentifier\":\"my-test-cluster\",\"NumberOfNodes\":3}}
 	// ".
 	TargetAction *ScheduledActionType
 
@@ -1581,6 +2047,64 @@ type ScheduledActionType struct {
 	noSmithyDocumentSerde
 }
 
+// The AvailabilityZone and ClusterNodes information of the secondary compute unit.
+type SecondaryClusterInfo struct {
+
+	// The name of the Availability Zone in which the secondary compute unit of the
+	// cluster is located.
+	AvailabilityZone *string
+
+	// The nodes in the secondary compute unit.
+	ClusterNodes []ClusterNode
+
+	noSmithyDocumentSerde
+}
+
+// The identifier for a serverless namespace.
+type ServerlessIdentifier struct {
+
+	// The unique identifier for the serverless namespace.
+	//
+	// This member is required.
+	NamespaceIdentifier *string
+
+	// The unique identifier for the workgroup associated with the serverless
+	// namespace.
+	//
+	// This member is required.
+	WorkgroupIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// A list of service integrations.
+//
+// The following types satisfy this interface:
+//
+//	ServiceIntegrationsUnionMemberLakeFormation
+//	ServiceIntegrationsUnionMemberS3AccessGrants
+type ServiceIntegrationsUnion interface {
+	isServiceIntegrationsUnion()
+}
+
+// A list of scopes set up for Lake Formation integration.
+type ServiceIntegrationsUnionMemberLakeFormation struct {
+	Value []LakeFormationScopeUnion
+
+	noSmithyDocumentSerde
+}
+
+func (*ServiceIntegrationsUnionMemberLakeFormation) isServiceIntegrationsUnion() {}
+
+// A list of scopes set up for S3 Access Grants integration.
+type ServiceIntegrationsUnionMemberS3AccessGrants struct {
+	Value []S3AccessGrantsScopeUnion
+
+	noSmithyDocumentSerde
+}
+
+func (*ServiceIntegrationsUnionMemberS3AccessGrants) isServiceIntegrationsUnion() {}
+
 // Describes a snapshot.
 type Snapshot struct {
 
@@ -1589,13 +2113,13 @@ type Snapshot struct {
 	AccountsWithRestoreAccess []AccountWithRestoreAccess
 
 	// The size of the incremental backup.
-	ActualIncrementalBackupSizeInMegaBytes float64
+	ActualIncrementalBackupSizeInMegaBytes *float64
 
 	// The Availability Zone in which the cluster was created.
 	AvailabilityZone *string
 
 	// The number of megabytes that have been transferred to the snapshot backup.
-	BackupProgressInMegaBytes float64
+	BackupProgressInMegaBytes *float64
 
 	// The time (UTC) when the cluster was originally created.
 	ClusterCreateTime *time.Time
@@ -1608,22 +2132,22 @@ type Snapshot struct {
 
 	// The number of megabytes per second being transferred to the snapshot backup.
 	// Returns 0 for a completed backup.
-	CurrentBackupRateInMegaBytesPerSecond float64
+	CurrentBackupRateInMegaBytesPerSecond *float64
 
 	// The name of the database that was created when the cluster was created.
 	DBName *string
 
 	// The amount of time an in-progress snapshot backup has been running, or the
 	// amount of time it took a completed backup to finish.
-	ElapsedTimeInSeconds int64
+	ElapsedTimeInSeconds *int64
 
 	// If true , the data in the snapshot is encrypted at rest.
-	Encrypted bool
+	Encrypted *bool
 
 	// A boolean that indicates whether the snapshot data is encrypted using the HSM
 	// keys of the source cluster. true indicates that the data is encrypted using HSM
 	// keys.
-	EncryptedWithHSM bool
+	EncryptedWithHSM *bool
 
 	// The cluster version of the cluster used to create the snapshot. For example,
 	// 1.0.15503.
@@ -1631,14 +2155,19 @@ type Snapshot struct {
 
 	// An option that specifies whether to create the cluster with enhanced VPC
 	// routing enabled. To create a cluster that uses enhanced VPC routing, the cluster
-	// must be in a VPC. For more information, see Enhanced VPC Routing (https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html)
-	// in the Amazon Redshift Cluster Management Guide. If this option is true ,
-	// enhanced VPC routing is enabled. Default: false
-	EnhancedVpcRouting bool
+	// must be in a VPC. For more information, see [Enhanced VPC Routing]in the Amazon Redshift Cluster
+	// Management Guide.
+	//
+	// If this option is true , enhanced VPC routing is enabled.
+	//
+	// Default: false
+	//
+	// [Enhanced VPC Routing]: https://docs.aws.amazon.com/redshift/latest/mgmt/enhanced-vpc-routing.html
+	EnhancedVpcRouting *bool
 
 	// The estimate of the time remaining before the snapshot backup will complete.
 	// Returns 0 for a completed backup.
-	EstimatedSecondsToCompletion int64
+	EstimatedSecondsToCompletion *int64
 
 	// The Key Management Service (KMS) key ID of the encryption key that was used to
 	// encrypt data in the cluster from which the snapshot was taken.
@@ -1651,9 +2180,17 @@ type Snapshot struct {
 	ManualSnapshotRemainingDays *int32
 
 	// The number of days that a manual snapshot is retained. If the value is -1, the
-	// manual snapshot is retained indefinitely. The value must be either -1 or an
-	// integer between 1 and 3,653.
+	// manual snapshot is retained indefinitely.
+	//
+	// The value must be either -1 or an integer between 1 and 3,653.
 	ManualSnapshotRetentionPeriod *int32
+
+	// The Amazon Resource Name (ARN) for the cluster's admin user credentials secret.
+	MasterPasswordSecretArn *string
+
+	// The ID of the Key Management Service (KMS) key used to encrypt and store the
+	// cluster's admin credentials secret.
+	MasterPasswordSecretKmsKeyId *string
 
 	// The admin user name for the cluster.
 	MasterUsername *string
@@ -1662,7 +2199,7 @@ type Snapshot struct {
 	NodeType *string
 
 	// The number of nodes in the cluster.
-	NumberOfNodes int32
+	NumberOfNodes *int32
 
 	// For manual snapshots, the Amazon Web Services account used to create or copy
 	// the snapshot. For automatic snapshots, the owner of the cluster. The owner can
@@ -1670,10 +2207,13 @@ type Snapshot struct {
 	OwnerAccount *string
 
 	// The port that the cluster is listening on.
-	Port int32
+	Port *int32
 
 	// The list of node types that this cluster snapshot is able to restore into.
 	RestorableNodeTypes []string
+
+	// The Amazon Resource Name (ARN) of the snapshot.
+	SnapshotArn *string
 
 	// The time (in UTC format) when Amazon Redshift began the snapshot. A snapshot
 	// contains a copy of the cluster data as of this exact time.
@@ -1685,18 +2225,22 @@ type Snapshot struct {
 	// A timestamp representing the start of the retention period for the snapshot.
 	SnapshotRetentionStartTime *time.Time
 
-	// The snapshot type. Snapshots created using CreateClusterSnapshot and
-	// CopyClusterSnapshot are of type "manual".
+	// The snapshot type. Snapshots created using CreateClusterSnapshot and CopyClusterSnapshot are of type "manual".
 	SnapshotType *string
 
 	// The source region from which the snapshot was copied.
 	SourceRegion *string
 
 	// The snapshot status. The value of the status depends on the API operation used:
-	//   - CreateClusterSnapshot and CopyClusterSnapshot returns status as "creating".
-	//   - DescribeClusterSnapshots returns status as "creating", "available", "final
-	//   snapshot", or "failed".
-	//   - DeleteClusterSnapshot returns status as "deleted".
+	//
+	// CreateClusterSnapshot
+	//   - and CopyClusterSnapshotreturns status as "creating".
+	//
+	// DescribeClusterSnapshots
+	//   - returns status as "creating", "available", "final snapshot", or "failed".
+	//
+	// DeleteClusterSnapshot
+	//   - returns status as "deleted".
 	Status *string
 
 	// The list of tags for the cluster snapshot.
@@ -1704,7 +2248,7 @@ type Snapshot struct {
 
 	// The size of the complete set of backup data that would be used to restore the
 	// cluster.
-	TotalBackupSizeInMegaBytes float64
+	TotalBackupSizeInMegaBytes *float64
 
 	// The VPC identifier of the cluster if the snapshot is from a cluster in a VPC.
 	// Otherwise, this field is not in the output.
@@ -1715,9 +2259,12 @@ type Snapshot struct {
 
 // The snapshot copy grant that grants Amazon Redshift permission to encrypt
 // copied snapshots with the specified encrypted symmetric key from Amazon Web
-// Services KMS in the destination region. For more information about managing
-// snapshot copy grants, go to Amazon Redshift Database Encryption (https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-db-encryption.html)
-// in the Amazon Redshift Cluster Management Guide.
+// Services KMS in the destination region.
+//
+// For more information about managing snapshot copy grants, go to [Amazon Redshift Database Encryption] in the Amazon
+// Redshift Cluster Management Guide.
+//
+// [Amazon Redshift Database Encryption]: https://docs.aws.amazon.com/redshift/latest/mgmt/working-with-db-encryption.html
 type SnapshotCopyGrant struct {
 
 	// The unique identifier of the encrypted symmetric key in Amazon Web Services KMS
@@ -1860,8 +2407,9 @@ type TableRestoreStatus struct {
 	// The name of the source table being restored.
 	SourceTableName *string
 
-	// A value that describes the current state of the table restore request. Valid
-	// Values: SUCCEEDED , FAILED , CANCELED , PENDING , IN_PROGRESS
+	// A value that describes the current state of the table restore request.
+	//
+	// Valid Values: SUCCEEDED , FAILED , CANCELED , PENDING , IN_PROGRESS
 	Status TableRestoreStatusType
 
 	// The unique identifier for the table restore request.
@@ -1900,18 +2448,29 @@ type TaggedResource struct {
 
 	// The type of resource with which the tag is associated. Valid resource types
 	// are:
+	//
 	//   - Cluster
+	//
 	//   - CIDR/IP
+	//
 	//   - EC2 security group
+	//
 	//   - Snapshot
+	//
 	//   - Cluster security group
+	//
 	//   - Subnet group
+	//
 	//   - HSM connection
+	//
 	//   - HSM certificate
+	//
 	//   - Parameter group
+	//
 	// For more information about Amazon Redshift resource types and constructing
-	// ARNs, go to Constructing an Amazon Redshift Amazon Resource Name (ARN) (https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-overview.html#redshift-iam-access-control-specify-actions)
-	// in the Amazon Redshift Cluster Management Guide.
+	// ARNs, go to [Constructing an Amazon Redshift Amazon Resource Name (ARN)]in the Amazon Redshift Cluster Management Guide.
+	//
+	// [Constructing an Amazon Redshift Amazon Resource Name (ARN)]: https://docs.aws.amazon.com/redshift/latest/mgmt/redshift-iam-access-control-overview.html#redshift-iam-access-control-specify-actions
 	ResourceType *string
 
 	// The tag for the resource.
@@ -1940,12 +2499,15 @@ type UsageLimit struct {
 
 	// The limit amount. If time-based, this amount is in minutes. If data-based, this
 	// amount is in terabytes (TB).
-	Amount int64
+	Amount *int64
 
 	// The action that Amazon Redshift takes when the limit is reached. Possible
 	// values are:
+	//
 	//   - log - To log an event in a system table. The default is log.
+	//
 	//   - emit-metric - To emit CloudWatch metrics.
+	//
 	//   - disable - To disable the feature until the next usage period begins.
 	BreachAction UsageLimitBreachAction
 
@@ -2003,3 +2565,17 @@ type VpcSecurityGroupMembership struct {
 }
 
 type noSmithyDocumentSerde = smithydocument.NoSerde
+
+// UnknownUnionMember is returned when a union member is returned over the wire,
+// but has an unknown tag.
+type UnknownUnionMember struct {
+	Tag   string
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*UnknownUnionMember) isLakeFormationScopeUnion()  {}
+func (*UnknownUnionMember) isNamespaceIdentifierUnion() {}
+func (*UnknownUnionMember) isS3AccessGrantsScopeUnion() {}
+func (*UnknownUnionMember) isServiceIntegrationsUnion() {}

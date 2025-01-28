@@ -14,8 +14,9 @@ const (
 )
 
 // Values returns all known values for ContactType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ContactType) Values() []ContactType {
 	return []ContactType{
 		"PERSON",
@@ -284,8 +285,9 @@ const (
 )
 
 // Values returns all known values for CountryCode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CountryCode) Values() []CountryCode {
 	return []CountryCode{
 		"AC",
@@ -554,11 +556,14 @@ const (
 	DomainAvailabilityUnavailableRestricted DomainAvailability = "UNAVAILABLE_RESTRICTED"
 	DomainAvailabilityReserved              DomainAvailability = "RESERVED"
 	DomainAvailabilityDontKnow              DomainAvailability = "DONT_KNOW"
+	DomainAvailabilityInvalidNameForTld     DomainAvailability = "INVALID_NAME_FOR_TLD"
+	DomainAvailabilityPending               DomainAvailability = "PENDING"
 )
 
 // Values returns all known values for DomainAvailability. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DomainAvailability) Values() []DomainAvailability {
 	return []DomainAvailability{
 		"AVAILABLE",
@@ -569,6 +574,8 @@ func (DomainAvailability) Values() []DomainAvailability {
 		"UNAVAILABLE_RESTRICTED",
 		"RESERVED",
 		"DONT_KNOW",
+		"INVALID_NAME_FOR_TLD",
+		"PENDING",
 	}
 }
 
@@ -610,8 +617,9 @@ const (
 )
 
 // Values returns all known values for ExtraParamName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExtraParamName) Values() []ExtraParamName {
 	return []ExtraParamName{
 		"DUNS_NUMBER",
@@ -658,6 +666,7 @@ const (
 
 // Values returns all known values for ListDomainsAttributeName. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ListDomainsAttributeName) Values() []ListDomainsAttributeName {
 	return []ListDomainsAttributeName{
@@ -675,8 +684,9 @@ const (
 
 // Values returns all known values for ListOperationsSortAttributeName. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ListOperationsSortAttributeName) Values() []ListOperationsSortAttributeName {
 	return []ListOperationsSortAttributeName{
 		"SubmittedDate",
@@ -695,8 +705,9 @@ const (
 )
 
 // Values returns all known values for OperationStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OperationStatus) Values() []OperationStatus {
 	return []OperationStatus{
 		"SUBMITTED",
@@ -729,11 +740,15 @@ const (
 	OperationTypePushDomain                OperationType = "PUSH_DOMAIN"
 	OperationTypeInternalTransferOutDomain OperationType = "INTERNAL_TRANSFER_OUT_DOMAIN"
 	OperationTypeInternalTransferInDomain  OperationType = "INTERNAL_TRANSFER_IN_DOMAIN"
+	OperationTypeReleaseToGandi            OperationType = "RELEASE_TO_GANDI"
+	OperationTypeTransferOnRenew           OperationType = "TRANSFER_ON_RENEW"
+	OperationTypeRestoreDomain             OperationType = "RESTORE_DOMAIN"
 )
 
 // Values returns all known values for OperationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OperationType) Values() []OperationType {
 	return []OperationType{
 		"REGISTER_DOMAIN",
@@ -754,6 +769,9 @@ func (OperationType) Values() []OperationType {
 		"PUSH_DOMAIN",
 		"INTERNAL_TRANSFER_OUT_DOMAIN",
 		"INTERNAL_TRANSFER_IN_DOMAIN",
+		"RELEASE_TO_GANDI",
+		"TRANSFER_ON_RENEW",
+		"RESTORE_DOMAIN",
 	}
 }
 
@@ -767,8 +785,9 @@ const (
 )
 
 // Values returns all known values for Operator. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Operator) Values() []Operator {
 	return []Operator{
 		"LE",
@@ -787,8 +806,9 @@ const (
 )
 
 // Values returns all known values for ReachabilityStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReachabilityStatus) Values() []ReachabilityStatus {
 	return []ReachabilityStatus{
 		"PENDING",
@@ -806,8 +826,9 @@ const (
 )
 
 // Values returns all known values for SortOrder. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SortOrder) Values() []SortOrder {
 	return []SortOrder{
 		"ASC",
@@ -827,8 +848,9 @@ const (
 )
 
 // Values returns all known values for StatusFlag. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StatusFlag) Values() []StatusFlag {
 	return []StatusFlag{
 		"PENDING_ACCEPTANCE",
@@ -852,8 +874,9 @@ const (
 )
 
 // Values returns all known values for Transferable. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Transferable) Values() []Transferable {
 	return []Transferable{
 		"TRANSFERABLE",

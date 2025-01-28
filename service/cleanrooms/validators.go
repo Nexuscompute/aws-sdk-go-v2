@@ -30,6 +30,26 @@ func (m *validateOpBatchGetCollaborationAnalysisTemplate) HandleInitialize(ctx c
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpBatchGetSchemaAnalysisRule struct {
+}
+
+func (*validateOpBatchGetSchemaAnalysisRule) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpBatchGetSchemaAnalysisRule) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*BatchGetSchemaAnalysisRuleInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpBatchGetSchemaAnalysisRuleInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpBatchGetSchema struct {
 }
 
@@ -90,6 +110,26 @@ func (m *validateOpCreateCollaboration) HandleInitialize(ctx context.Context, in
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateConfiguredAudienceModelAssociation struct {
+}
+
+func (*validateOpCreateConfiguredAudienceModelAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateConfiguredAudienceModelAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateConfiguredAudienceModelAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateConfiguredAudienceModelAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateConfiguredTableAnalysisRule struct {
 }
 
@@ -105,6 +145,26 @@ func (m *validateOpCreateConfiguredTableAnalysisRule) HandleInitialize(ctx conte
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpCreateConfiguredTableAnalysisRuleInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateConfiguredTableAssociationAnalysisRule struct {
+}
+
+func (*validateOpCreateConfiguredTableAssociationAnalysisRule) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateConfiguredTableAssociationAnalysisRule) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateConfiguredTableAssociationAnalysisRuleInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateConfiguredTableAssociationAnalysisRuleInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -150,6 +210,46 @@ func (m *validateOpCreateConfiguredTable) HandleInitialize(ctx context.Context, 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateIdMappingTable struct {
+}
+
+func (*validateOpCreateIdMappingTable) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateIdMappingTable) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateIdMappingTableInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateIdMappingTableInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateIdNamespaceAssociation struct {
+}
+
+func (*validateOpCreateIdNamespaceAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateIdNamespaceAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateIdNamespaceAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateIdNamespaceAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateMembership struct {
 }
 
@@ -165,6 +265,26 @@ func (m *validateOpCreateMembership) HandleInitialize(ctx context.Context, in mi
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpCreateMembershipInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreatePrivacyBudgetTemplate struct {
+}
+
+func (*validateOpCreatePrivacyBudgetTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreatePrivacyBudgetTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreatePrivacyBudgetTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreatePrivacyBudgetTemplateInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -210,6 +330,26 @@ func (m *validateOpDeleteCollaboration) HandleInitialize(ctx context.Context, in
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeleteConfiguredAudienceModelAssociation struct {
+}
+
+func (*validateOpDeleteConfiguredAudienceModelAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteConfiguredAudienceModelAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteConfiguredAudienceModelAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteConfiguredAudienceModelAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteConfiguredTableAnalysisRule struct {
 }
 
@@ -225,6 +365,26 @@ func (m *validateOpDeleteConfiguredTableAnalysisRule) HandleInitialize(ctx conte
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeleteConfiguredTableAnalysisRuleInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteConfiguredTableAssociationAnalysisRule struct {
+}
+
+func (*validateOpDeleteConfiguredTableAssociationAnalysisRule) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteConfiguredTableAssociationAnalysisRule) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteConfiguredTableAssociationAnalysisRuleInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteConfiguredTableAssociationAnalysisRuleInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -270,6 +430,46 @@ func (m *validateOpDeleteConfiguredTable) HandleInitialize(ctx context.Context, 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeleteIdMappingTable struct {
+}
+
+func (*validateOpDeleteIdMappingTable) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteIdMappingTable) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteIdMappingTableInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteIdMappingTableInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteIdNamespaceAssociation struct {
+}
+
+func (*validateOpDeleteIdNamespaceAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteIdNamespaceAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteIdNamespaceAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteIdNamespaceAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteMember struct {
 }
 
@@ -305,6 +505,26 @@ func (m *validateOpDeleteMembership) HandleInitialize(ctx context.Context, in mi
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeleteMembershipInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeletePrivacyBudgetTemplate struct {
+}
+
+func (*validateOpDeletePrivacyBudgetTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeletePrivacyBudgetTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeletePrivacyBudgetTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeletePrivacyBudgetTemplateInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -350,6 +570,46 @@ func (m *validateOpGetCollaborationAnalysisTemplate) HandleInitialize(ctx contex
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetCollaborationConfiguredAudienceModelAssociation struct {
+}
+
+func (*validateOpGetCollaborationConfiguredAudienceModelAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetCollaborationConfiguredAudienceModelAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetCollaborationConfiguredAudienceModelAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetCollaborationConfiguredAudienceModelAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetCollaborationIdNamespaceAssociation struct {
+}
+
+func (*validateOpGetCollaborationIdNamespaceAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetCollaborationIdNamespaceAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetCollaborationIdNamespaceAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetCollaborationIdNamespaceAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetCollaboration struct {
 }
 
@@ -370,6 +630,46 @@ func (m *validateOpGetCollaboration) HandleInitialize(ctx context.Context, in mi
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetCollaborationPrivacyBudgetTemplate struct {
+}
+
+func (*validateOpGetCollaborationPrivacyBudgetTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetCollaborationPrivacyBudgetTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetCollaborationPrivacyBudgetTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetCollaborationPrivacyBudgetTemplateInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetConfiguredAudienceModelAssociation struct {
+}
+
+func (*validateOpGetConfiguredAudienceModelAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetConfiguredAudienceModelAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetConfiguredAudienceModelAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetConfiguredAudienceModelAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetConfiguredTableAnalysisRule struct {
 }
 
@@ -385,6 +685,26 @@ func (m *validateOpGetConfiguredTableAnalysisRule) HandleInitialize(ctx context.
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetConfiguredTableAnalysisRuleInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetConfiguredTableAssociationAnalysisRule struct {
+}
+
+func (*validateOpGetConfiguredTableAssociationAnalysisRule) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetConfiguredTableAssociationAnalysisRule) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetConfiguredTableAssociationAnalysisRuleInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetConfiguredTableAssociationAnalysisRuleInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -430,6 +750,46 @@ func (m *validateOpGetConfiguredTable) HandleInitialize(ctx context.Context, in 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetIdMappingTable struct {
+}
+
+func (*validateOpGetIdMappingTable) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetIdMappingTable) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetIdMappingTableInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetIdMappingTableInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetIdNamespaceAssociation struct {
+}
+
+func (*validateOpGetIdNamespaceAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetIdNamespaceAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetIdNamespaceAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetIdNamespaceAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetMembership struct {
 }
 
@@ -445,6 +805,26 @@ func (m *validateOpGetMembership) HandleInitialize(ctx context.Context, in middl
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetMembershipInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetPrivacyBudgetTemplate struct {
+}
+
+func (*validateOpGetPrivacyBudgetTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetPrivacyBudgetTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetPrivacyBudgetTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetPrivacyBudgetTemplateInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -550,6 +930,106 @@ func (m *validateOpListCollaborationAnalysisTemplates) HandleInitialize(ctx cont
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListCollaborationConfiguredAudienceModelAssociations struct {
+}
+
+func (*validateOpListCollaborationConfiguredAudienceModelAssociations) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListCollaborationConfiguredAudienceModelAssociations) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListCollaborationConfiguredAudienceModelAssociationsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListCollaborationConfiguredAudienceModelAssociationsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListCollaborationIdNamespaceAssociations struct {
+}
+
+func (*validateOpListCollaborationIdNamespaceAssociations) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListCollaborationIdNamespaceAssociations) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListCollaborationIdNamespaceAssociationsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListCollaborationIdNamespaceAssociationsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListCollaborationPrivacyBudgets struct {
+}
+
+func (*validateOpListCollaborationPrivacyBudgets) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListCollaborationPrivacyBudgets) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListCollaborationPrivacyBudgetsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListCollaborationPrivacyBudgetsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListCollaborationPrivacyBudgetTemplates struct {
+}
+
+func (*validateOpListCollaborationPrivacyBudgetTemplates) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListCollaborationPrivacyBudgetTemplates) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListCollaborationPrivacyBudgetTemplatesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListCollaborationPrivacyBudgetTemplatesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListConfiguredAudienceModelAssociations struct {
+}
+
+func (*validateOpListConfiguredAudienceModelAssociations) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListConfiguredAudienceModelAssociations) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListConfiguredAudienceModelAssociationsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListConfiguredAudienceModelAssociationsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListConfiguredTableAssociations struct {
 }
 
@@ -570,6 +1050,46 @@ func (m *validateOpListConfiguredTableAssociations) HandleInitialize(ctx context
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListIdMappingTables struct {
+}
+
+func (*validateOpListIdMappingTables) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListIdMappingTables) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListIdMappingTablesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListIdMappingTablesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListIdNamespaceAssociations struct {
+}
+
+func (*validateOpListIdNamespaceAssociations) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListIdNamespaceAssociations) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListIdNamespaceAssociationsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListIdNamespaceAssociationsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListMembers struct {
 }
 
@@ -585,6 +1105,46 @@ func (m *validateOpListMembers) HandleInitialize(ctx context.Context, in middlew
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListMembersInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListPrivacyBudgets struct {
+}
+
+func (*validateOpListPrivacyBudgets) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListPrivacyBudgets) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListPrivacyBudgetsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListPrivacyBudgetsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListPrivacyBudgetTemplates struct {
+}
+
+func (*validateOpListPrivacyBudgetTemplates) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListPrivacyBudgetTemplates) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListPrivacyBudgetTemplatesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListPrivacyBudgetTemplatesInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -645,6 +1205,46 @@ func (m *validateOpListTagsForResource) HandleInitialize(ctx context.Context, in
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListTagsForResourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpPopulateIdMappingTable struct {
+}
+
+func (*validateOpPopulateIdMappingTable) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpPopulateIdMappingTable) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*PopulateIdMappingTableInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpPopulateIdMappingTableInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpPreviewPrivacyImpact struct {
+}
+
+func (*validateOpPreviewPrivacyImpact) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpPreviewPrivacyImpact) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*PreviewPrivacyImpactInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpPreviewPrivacyImpactInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -750,6 +1350,26 @@ func (m *validateOpUpdateCollaboration) HandleInitialize(ctx context.Context, in
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateConfiguredAudienceModelAssociation struct {
+}
+
+func (*validateOpUpdateConfiguredAudienceModelAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateConfiguredAudienceModelAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateConfiguredAudienceModelAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateConfiguredAudienceModelAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateConfiguredTableAnalysisRule struct {
 }
 
@@ -765,6 +1385,26 @@ func (m *validateOpUpdateConfiguredTableAnalysisRule) HandleInitialize(ctx conte
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpUpdateConfiguredTableAnalysisRuleInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateConfiguredTableAssociationAnalysisRule struct {
+}
+
+func (*validateOpUpdateConfiguredTableAssociationAnalysisRule) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateConfiguredTableAssociationAnalysisRule) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateConfiguredTableAssociationAnalysisRuleInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateConfiguredTableAssociationAnalysisRuleInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -810,6 +1450,46 @@ func (m *validateOpUpdateConfiguredTable) HandleInitialize(ctx context.Context, 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateIdMappingTable struct {
+}
+
+func (*validateOpUpdateIdMappingTable) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateIdMappingTable) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateIdMappingTableInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateIdMappingTableInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateIdNamespaceAssociation struct {
+}
+
+func (*validateOpUpdateIdNamespaceAssociation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateIdNamespaceAssociation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateIdNamespaceAssociationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateIdNamespaceAssociationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateMembership struct {
 }
 
@@ -825,6 +1505,26 @@ func (m *validateOpUpdateMembership) HandleInitialize(ctx context.Context, in mi
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpUpdateMembershipInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdatePrivacyBudgetTemplate struct {
+}
+
+func (*validateOpUpdatePrivacyBudgetTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdatePrivacyBudgetTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdatePrivacyBudgetTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdatePrivacyBudgetTemplateInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -854,6 +1554,10 @@ func addOpBatchGetCollaborationAnalysisTemplateValidationMiddleware(stack *middl
 	return stack.Initialize.Add(&validateOpBatchGetCollaborationAnalysisTemplate{}, middleware.After)
 }
 
+func addOpBatchGetSchemaAnalysisRuleValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpBatchGetSchemaAnalysisRule{}, middleware.After)
+}
+
 func addOpBatchGetSchemaValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpBatchGetSchema{}, middleware.After)
 }
@@ -866,8 +1570,16 @@ func addOpCreateCollaborationValidationMiddleware(stack *middleware.Stack) error
 	return stack.Initialize.Add(&validateOpCreateCollaboration{}, middleware.After)
 }
 
+func addOpCreateConfiguredAudienceModelAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateConfiguredAudienceModelAssociation{}, middleware.After)
+}
+
 func addOpCreateConfiguredTableAnalysisRuleValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateConfiguredTableAnalysisRule{}, middleware.After)
+}
+
+func addOpCreateConfiguredTableAssociationAnalysisRuleValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateConfiguredTableAssociationAnalysisRule{}, middleware.After)
 }
 
 func addOpCreateConfiguredTableAssociationValidationMiddleware(stack *middleware.Stack) error {
@@ -878,8 +1590,20 @@ func addOpCreateConfiguredTableValidationMiddleware(stack *middleware.Stack) err
 	return stack.Initialize.Add(&validateOpCreateConfiguredTable{}, middleware.After)
 }
 
+func addOpCreateIdMappingTableValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateIdMappingTable{}, middleware.After)
+}
+
+func addOpCreateIdNamespaceAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateIdNamespaceAssociation{}, middleware.After)
+}
+
 func addOpCreateMembershipValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateMembership{}, middleware.After)
+}
+
+func addOpCreatePrivacyBudgetTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreatePrivacyBudgetTemplate{}, middleware.After)
 }
 
 func addOpDeleteAnalysisTemplateValidationMiddleware(stack *middleware.Stack) error {
@@ -890,8 +1614,16 @@ func addOpDeleteCollaborationValidationMiddleware(stack *middleware.Stack) error
 	return stack.Initialize.Add(&validateOpDeleteCollaboration{}, middleware.After)
 }
 
+func addOpDeleteConfiguredAudienceModelAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteConfiguredAudienceModelAssociation{}, middleware.After)
+}
+
 func addOpDeleteConfiguredTableAnalysisRuleValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteConfiguredTableAnalysisRule{}, middleware.After)
+}
+
+func addOpDeleteConfiguredTableAssociationAnalysisRuleValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteConfiguredTableAssociationAnalysisRule{}, middleware.After)
 }
 
 func addOpDeleteConfiguredTableAssociationValidationMiddleware(stack *middleware.Stack) error {
@@ -902,12 +1634,24 @@ func addOpDeleteConfiguredTableValidationMiddleware(stack *middleware.Stack) err
 	return stack.Initialize.Add(&validateOpDeleteConfiguredTable{}, middleware.After)
 }
 
+func addOpDeleteIdMappingTableValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteIdMappingTable{}, middleware.After)
+}
+
+func addOpDeleteIdNamespaceAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteIdNamespaceAssociation{}, middleware.After)
+}
+
 func addOpDeleteMemberValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteMember{}, middleware.After)
 }
 
 func addOpDeleteMembershipValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteMembership{}, middleware.After)
+}
+
+func addOpDeletePrivacyBudgetTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeletePrivacyBudgetTemplate{}, middleware.After)
 }
 
 func addOpGetAnalysisTemplateValidationMiddleware(stack *middleware.Stack) error {
@@ -918,12 +1662,32 @@ func addOpGetCollaborationAnalysisTemplateValidationMiddleware(stack *middleware
 	return stack.Initialize.Add(&validateOpGetCollaborationAnalysisTemplate{}, middleware.After)
 }
 
+func addOpGetCollaborationConfiguredAudienceModelAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetCollaborationConfiguredAudienceModelAssociation{}, middleware.After)
+}
+
+func addOpGetCollaborationIdNamespaceAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetCollaborationIdNamespaceAssociation{}, middleware.After)
+}
+
 func addOpGetCollaborationValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetCollaboration{}, middleware.After)
 }
 
+func addOpGetCollaborationPrivacyBudgetTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetCollaborationPrivacyBudgetTemplate{}, middleware.After)
+}
+
+func addOpGetConfiguredAudienceModelAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetConfiguredAudienceModelAssociation{}, middleware.After)
+}
+
 func addOpGetConfiguredTableAnalysisRuleValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetConfiguredTableAnalysisRule{}, middleware.After)
+}
+
+func addOpGetConfiguredTableAssociationAnalysisRuleValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetConfiguredTableAssociationAnalysisRule{}, middleware.After)
 }
 
 func addOpGetConfiguredTableAssociationValidationMiddleware(stack *middleware.Stack) error {
@@ -934,8 +1698,20 @@ func addOpGetConfiguredTableValidationMiddleware(stack *middleware.Stack) error 
 	return stack.Initialize.Add(&validateOpGetConfiguredTable{}, middleware.After)
 }
 
+func addOpGetIdMappingTableValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetIdMappingTable{}, middleware.After)
+}
+
+func addOpGetIdNamespaceAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetIdNamespaceAssociation{}, middleware.After)
+}
+
 func addOpGetMembershipValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetMembership{}, middleware.After)
+}
+
+func addOpGetPrivacyBudgetTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetPrivacyBudgetTemplate{}, middleware.After)
 }
 
 func addOpGetProtectedQueryValidationMiddleware(stack *middleware.Stack) error {
@@ -958,12 +1734,48 @@ func addOpListCollaborationAnalysisTemplatesValidationMiddleware(stack *middlewa
 	return stack.Initialize.Add(&validateOpListCollaborationAnalysisTemplates{}, middleware.After)
 }
 
+func addOpListCollaborationConfiguredAudienceModelAssociationsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListCollaborationConfiguredAudienceModelAssociations{}, middleware.After)
+}
+
+func addOpListCollaborationIdNamespaceAssociationsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListCollaborationIdNamespaceAssociations{}, middleware.After)
+}
+
+func addOpListCollaborationPrivacyBudgetsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListCollaborationPrivacyBudgets{}, middleware.After)
+}
+
+func addOpListCollaborationPrivacyBudgetTemplatesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListCollaborationPrivacyBudgetTemplates{}, middleware.After)
+}
+
+func addOpListConfiguredAudienceModelAssociationsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListConfiguredAudienceModelAssociations{}, middleware.After)
+}
+
 func addOpListConfiguredTableAssociationsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListConfiguredTableAssociations{}, middleware.After)
 }
 
+func addOpListIdMappingTablesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListIdMappingTables{}, middleware.After)
+}
+
+func addOpListIdNamespaceAssociationsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListIdNamespaceAssociations{}, middleware.After)
+}
+
 func addOpListMembersValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListMembers{}, middleware.After)
+}
+
+func addOpListPrivacyBudgetsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListPrivacyBudgets{}, middleware.After)
+}
+
+func addOpListPrivacyBudgetTemplatesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListPrivacyBudgetTemplates{}, middleware.After)
 }
 
 func addOpListProtectedQueriesValidationMiddleware(stack *middleware.Stack) error {
@@ -976,6 +1788,14 @@ func addOpListSchemasValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpListTagsForResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListTagsForResource{}, middleware.After)
+}
+
+func addOpPopulateIdMappingTableValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpPopulateIdMappingTable{}, middleware.After)
+}
+
+func addOpPreviewPrivacyImpactValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpPreviewPrivacyImpact{}, middleware.After)
 }
 
 func addOpStartProtectedQueryValidationMiddleware(stack *middleware.Stack) error {
@@ -998,8 +1818,16 @@ func addOpUpdateCollaborationValidationMiddleware(stack *middleware.Stack) error
 	return stack.Initialize.Add(&validateOpUpdateCollaboration{}, middleware.After)
 }
 
+func addOpUpdateConfiguredAudienceModelAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateConfiguredAudienceModelAssociation{}, middleware.After)
+}
+
 func addOpUpdateConfiguredTableAnalysisRuleValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateConfiguredTableAnalysisRule{}, middleware.After)
+}
+
+func addOpUpdateConfiguredTableAssociationAnalysisRuleValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateConfiguredTableAssociationAnalysisRule{}, middleware.After)
 }
 
 func addOpUpdateConfiguredTableAssociationValidationMiddleware(stack *middleware.Stack) error {
@@ -1010,8 +1838,20 @@ func addOpUpdateConfiguredTableValidationMiddleware(stack *middleware.Stack) err
 	return stack.Initialize.Add(&validateOpUpdateConfiguredTable{}, middleware.After)
 }
 
+func addOpUpdateIdMappingTableValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateIdMappingTable{}, middleware.After)
+}
+
+func addOpUpdateIdNamespaceAssociationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateIdNamespaceAssociation{}, middleware.After)
+}
+
 func addOpUpdateMembershipValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateMembership{}, middleware.After)
+}
+
+func addOpUpdatePrivacyBudgetTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdatePrivacyBudgetTemplate{}, middleware.After)
 }
 
 func addOpUpdateProtectedQueryValidationMiddleware(stack *middleware.Stack) error {
@@ -1169,6 +2009,11 @@ func validateAnalysisRuleCustom(v *types.AnalysisRuleCustom) error {
 	if v.AllowedAnalyses == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("AllowedAnalyses"))
 	}
+	if v.DifferentialPrivacy != nil {
+		if err := validateDifferentialPrivacyConfiguration(v.DifferentialPrivacy); err != nil {
+			invalidParams.AddNested("DifferentialPrivacy", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1186,6 +2031,27 @@ func validateAnalysisRuleList(v *types.AnalysisRuleList) error {
 	}
 	if v.ListColumns == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ListColumns"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateAthenaTableReference(v *types.AthenaTableReference) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AthenaTableReference"}
+	if v.WorkGroup == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WorkGroup"))
+	}
+	if v.DatabaseName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DatabaseName"))
+	}
+	if v.TableName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TableName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1266,6 +2132,93 @@ func validateDataEncryptionMetadata(v *types.DataEncryptionMetadata) error {
 	}
 }
 
+func validateDifferentialPrivacyColumn(v *types.DifferentialPrivacyColumn) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DifferentialPrivacyColumn"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDifferentialPrivacyColumnList(v []types.DifferentialPrivacyColumn) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DifferentialPrivacyColumnList"}
+	for i := range v {
+		if err := validateDifferentialPrivacyColumn(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDifferentialPrivacyConfiguration(v *types.DifferentialPrivacyConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DifferentialPrivacyConfiguration"}
+	if v.Columns == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Columns"))
+	} else if v.Columns != nil {
+		if err := validateDifferentialPrivacyColumnList(v.Columns); err != nil {
+			invalidParams.AddNested("Columns", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDifferentialPrivacyPreviewParametersInput(v *types.DifferentialPrivacyPreviewParametersInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DifferentialPrivacyPreviewParametersInput"}
+	if v.Epsilon == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Epsilon"))
+	}
+	if v.UsersNoisePerQuery == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("UsersNoisePerQuery"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDifferentialPrivacyTemplateParametersInput(v *types.DifferentialPrivacyTemplateParametersInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DifferentialPrivacyTemplateParametersInput"}
+	if v.Epsilon == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Epsilon"))
+	}
+	if v.UsersNoisePerQuery == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("UsersNoisePerQuery"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateGlueTableReference(v *types.GlueTableReference) error {
 	if v == nil {
 		return nil
@@ -1276,6 +2229,54 @@ func validateGlueTableReference(v *types.GlueTableReference) error {
 	}
 	if v.DatabaseName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DatabaseName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateIdMappingConfig(v *types.IdMappingConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "IdMappingConfig"}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateIdMappingTableInputReferenceConfig(v *types.IdMappingTableInputReferenceConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "IdMappingTableInputReferenceConfig"}
+	if v.InputReferenceArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InputReferenceArn"))
+	}
+	if v.ManageResourcePolicies == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ManageResourcePolicies"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateIdNamespaceAssociationInputReferenceConfig(v *types.IdNamespaceAssociationInputReferenceConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "IdNamespaceAssociationInputReferenceConfig"}
+	if v.InputReferenceArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InputReferenceArn"))
+	}
+	if v.ManageResourcePolicies == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ManageResourcePolicies"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1301,6 +2302,135 @@ func validateMemberList(v []types.MemberSpecification) error {
 	}
 }
 
+func validateMembershipMLPaymentConfig(v *types.MembershipMLPaymentConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MembershipMLPaymentConfig"}
+	if v.ModelTraining != nil {
+		if err := validateMembershipModelTrainingPaymentConfig(v.ModelTraining); err != nil {
+			invalidParams.AddNested("ModelTraining", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ModelInference != nil {
+		if err := validateMembershipModelInferencePaymentConfig(v.ModelInference); err != nil {
+			invalidParams.AddNested("ModelInference", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMembershipModelInferencePaymentConfig(v *types.MembershipModelInferencePaymentConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MembershipModelInferencePaymentConfig"}
+	if v.IsResponsible == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IsResponsible"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMembershipModelTrainingPaymentConfig(v *types.MembershipModelTrainingPaymentConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MembershipModelTrainingPaymentConfig"}
+	if v.IsResponsible == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IsResponsible"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMembershipPaymentConfiguration(v *types.MembershipPaymentConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MembershipPaymentConfiguration"}
+	if v.QueryCompute == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("QueryCompute"))
+	} else if v.QueryCompute != nil {
+		if err := validateMembershipQueryComputePaymentConfig(v.QueryCompute); err != nil {
+			invalidParams.AddNested("QueryCompute", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.MachineLearning != nil {
+		if err := validateMembershipMLPaymentConfig(v.MachineLearning); err != nil {
+			invalidParams.AddNested("MachineLearning", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMembershipProtectedQueryOutputConfiguration(v types.MembershipProtectedQueryOutputConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MembershipProtectedQueryOutputConfiguration"}
+	switch uv := v.(type) {
+	case *types.MembershipProtectedQueryOutputConfigurationMemberS3:
+		if err := validateProtectedQueryS3OutputConfiguration(&uv.Value); err != nil {
+			invalidParams.AddNested("[s3]", err.(smithy.InvalidParamsError))
+		}
+
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMembershipProtectedQueryResultConfiguration(v *types.MembershipProtectedQueryResultConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MembershipProtectedQueryResultConfiguration"}
+	if v.OutputConfiguration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OutputConfiguration"))
+	} else if v.OutputConfiguration != nil {
+		if err := validateMembershipProtectedQueryOutputConfiguration(v.OutputConfiguration); err != nil {
+			invalidParams.AddNested("OutputConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMembershipQueryComputePaymentConfig(v *types.MembershipQueryComputePaymentConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MembershipQueryComputePaymentConfig"}
+	if v.IsResponsible == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IsResponsible"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateMemberSpecification(v *types.MemberSpecification) error {
 	if v == nil {
 		return nil
@@ -1312,8 +2442,162 @@ func validateMemberSpecification(v *types.MemberSpecification) error {
 	if v.MemberAbilities == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("MemberAbilities"))
 	}
+	if v.MlMemberAbilities != nil {
+		if err := validateMLMemberAbilities(v.MlMemberAbilities); err != nil {
+			invalidParams.AddNested("MlMemberAbilities", err.(smithy.InvalidParamsError))
+		}
+	}
 	if v.DisplayName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DisplayName"))
+	}
+	if v.PaymentConfiguration != nil {
+		if err := validatePaymentConfiguration(v.PaymentConfiguration); err != nil {
+			invalidParams.AddNested("PaymentConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMLMemberAbilities(v *types.MLMemberAbilities) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MLMemberAbilities"}
+	if v.CustomMLMemberAbilities == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CustomMLMemberAbilities"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMLPaymentConfig(v *types.MLPaymentConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MLPaymentConfig"}
+	if v.ModelTraining != nil {
+		if err := validateModelTrainingPaymentConfig(v.ModelTraining); err != nil {
+			invalidParams.AddNested("ModelTraining", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ModelInference != nil {
+		if err := validateModelInferencePaymentConfig(v.ModelInference); err != nil {
+			invalidParams.AddNested("ModelInference", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateModelInferencePaymentConfig(v *types.ModelInferencePaymentConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ModelInferencePaymentConfig"}
+	if v.IsResponsible == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IsResponsible"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateModelTrainingPaymentConfig(v *types.ModelTrainingPaymentConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ModelTrainingPaymentConfig"}
+	if v.IsResponsible == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IsResponsible"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePaymentConfiguration(v *types.PaymentConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PaymentConfiguration"}
+	if v.QueryCompute == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("QueryCompute"))
+	} else if v.QueryCompute != nil {
+		if err := validateQueryComputePaymentConfig(v.QueryCompute); err != nil {
+			invalidParams.AddNested("QueryCompute", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.MachineLearning != nil {
+		if err := validateMLPaymentConfig(v.MachineLearning); err != nil {
+			invalidParams.AddNested("MachineLearning", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePreviewPrivacyImpactParametersInput(v types.PreviewPrivacyImpactParametersInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PreviewPrivacyImpactParametersInput"}
+	switch uv := v.(type) {
+	case *types.PreviewPrivacyImpactParametersInputMemberDifferentialPrivacy:
+		if err := validateDifferentialPrivacyPreviewParametersInput(&uv.Value); err != nil {
+			invalidParams.AddNested("[differentialPrivacy]", err.(smithy.InvalidParamsError))
+		}
+
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePrivacyBudgetTemplateParametersInput(v types.PrivacyBudgetTemplateParametersInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PrivacyBudgetTemplateParametersInput"}
+	switch uv := v.(type) {
+	case *types.PrivacyBudgetTemplateParametersInputMemberDifferentialPrivacy:
+		if err := validateDifferentialPrivacyTemplateParametersInput(&uv.Value); err != nil {
+			invalidParams.AddNested("[differentialPrivacy]", err.(smithy.InvalidParamsError))
+		}
+
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateProtectedQueryMemberOutputConfiguration(v *types.ProtectedQueryMemberOutputConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ProtectedQueryMemberOutputConfiguration"}
+	if v.AccountId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AccountId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1328,6 +2612,11 @@ func validateProtectedQueryOutputConfiguration(v types.ProtectedQueryOutputConfi
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "ProtectedQueryOutputConfiguration"}
 	switch uv := v.(type) {
+	case *types.ProtectedQueryOutputConfigurationMemberMember:
+		if err := validateProtectedQueryMemberOutputConfiguration(&uv.Value); err != nil {
+			invalidParams.AddNested("[member]", err.(smithy.InvalidParamsError))
+		}
+
 	case *types.ProtectedQueryOutputConfigurationMemberS3:
 		if err := validateProtectedQueryS3OutputConfiguration(&uv.Value); err != nil {
 			invalidParams.AddNested("[s3]", err.(smithy.InvalidParamsError))
@@ -1378,15 +2667,163 @@ func validateProtectedQueryS3OutputConfiguration(v *types.ProtectedQueryS3Output
 	}
 }
 
+func validateQueryComputePaymentConfig(v *types.QueryComputePaymentConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "QueryComputePaymentConfig"}
+	if v.IsResponsible == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IsResponsible"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSchemaAnalysisRuleRequest(v *types.SchemaAnalysisRuleRequest) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SchemaAnalysisRuleRequest"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if len(v.Type) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Type"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSchemaAnalysisRuleRequestList(v []types.SchemaAnalysisRuleRequest) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SchemaAnalysisRuleRequestList"}
+	for i := range v {
+		if err := validateSchemaAnalysisRuleRequest(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSnowflakeTableReference(v *types.SnowflakeTableReference) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SnowflakeTableReference"}
+	if v.SecretArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SecretArn"))
+	}
+	if v.AccountIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AccountIdentifier"))
+	}
+	if v.DatabaseName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DatabaseName"))
+	}
+	if v.TableName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TableName"))
+	}
+	if v.SchemaName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SchemaName"))
+	}
+	if v.TableSchema == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TableSchema"))
+	} else if v.TableSchema != nil {
+		if err := validateSnowflakeTableSchema(v.TableSchema); err != nil {
+			invalidParams.AddNested("TableSchema", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSnowflakeTableSchema(v types.SnowflakeTableSchema) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SnowflakeTableSchema"}
+	switch uv := v.(type) {
+	case *types.SnowflakeTableSchemaMemberV1:
+		if err := validateSnowflakeTableSchemaList(uv.Value); err != nil {
+			invalidParams.AddNested("[v1]", err.(smithy.InvalidParamsError))
+		}
+
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSnowflakeTableSchemaList(v []types.SnowflakeTableSchemaV1) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SnowflakeTableSchemaList"}
+	for i := range v {
+		if err := validateSnowflakeTableSchemaV1(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSnowflakeTableSchemaV1(v *types.SnowflakeTableSchemaV1) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SnowflakeTableSchemaV1"}
+	if v.ColumnName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ColumnName"))
+	}
+	if v.ColumnType == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ColumnType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateTableReference(v types.TableReference) error {
 	if v == nil {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "TableReference"}
 	switch uv := v.(type) {
+	case *types.TableReferenceMemberAthena:
+		if err := validateAthenaTableReference(&uv.Value); err != nil {
+			invalidParams.AddNested("[athena]", err.(smithy.InvalidParamsError))
+		}
+
 	case *types.TableReferenceMemberGlue:
 		if err := validateGlueTableReference(&uv.Value); err != nil {
 			invalidParams.AddNested("[glue]", err.(smithy.InvalidParamsError))
+		}
+
+	case *types.TableReferenceMemberSnowflake:
+		if err := validateSnowflakeTableReference(&uv.Value); err != nil {
+			invalidParams.AddNested("[snowflake]", err.(smithy.InvalidParamsError))
 		}
 
 	}
@@ -1407,6 +2844,28 @@ func validateOpBatchGetCollaborationAnalysisTemplateInput(v *BatchGetCollaborati
 	}
 	if v.AnalysisTemplateArns == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("AnalysisTemplateArns"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpBatchGetSchemaAnalysisRuleInput(v *BatchGetSchemaAnalysisRuleInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BatchGetSchemaAnalysisRuleInput"}
+	if v.CollaborationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CollaborationIdentifier"))
+	}
+	if v.SchemaAnalysisRuleRequests == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SchemaAnalysisRuleRequests"))
+	} else if v.SchemaAnalysisRuleRequests != nil {
+		if err := validateSchemaAnalysisRuleRequestList(v.SchemaAnalysisRuleRequests); err != nil {
+			invalidParams.AddNested("SchemaAnalysisRuleRequests", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1483,6 +2942,11 @@ func validateOpCreateCollaborationInput(v *CreateCollaborationInput) error {
 	if v.CreatorMemberAbilities == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("CreatorMemberAbilities"))
 	}
+	if v.CreatorMLMemberAbilities != nil {
+		if err := validateMLMemberAbilities(v.CreatorMLMemberAbilities); err != nil {
+			invalidParams.AddNested("CreatorMLMemberAbilities", err.(smithy.InvalidParamsError))
+		}
+	}
 	if v.CreatorDisplayName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("CreatorDisplayName"))
 	}
@@ -1493,6 +2957,35 @@ func validateOpCreateCollaborationInput(v *CreateCollaborationInput) error {
 	}
 	if len(v.QueryLogStatus) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("QueryLogStatus"))
+	}
+	if v.CreatorPaymentConfiguration != nil {
+		if err := validatePaymentConfiguration(v.CreatorPaymentConfiguration); err != nil {
+			invalidParams.AddNested("CreatorPaymentConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateConfiguredAudienceModelAssociationInput(v *CreateConfiguredAudienceModelAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateConfiguredAudienceModelAssociationInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.ConfiguredAudienceModelArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConfiguredAudienceModelArn"))
+	}
+	if v.ConfiguredAudienceModelAssociationName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConfiguredAudienceModelAssociationName"))
+	}
+	if v.ManageResourcePolicies == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ManageResourcePolicies"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1518,6 +3011,30 @@ func validateOpCreateConfiguredTableAnalysisRuleInput(v *CreateConfiguredTableAn
 		if err := validateConfiguredTableAnalysisRulePolicy(v.AnalysisRulePolicy); err != nil {
 			invalidParams.AddNested("AnalysisRulePolicy", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateConfiguredTableAssociationAnalysisRuleInput(v *CreateConfiguredTableAssociationAnalysisRuleInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateConfiguredTableAssociationAnalysisRuleInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.ConfiguredTableAssociationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConfiguredTableAssociationIdentifier"))
+	}
+	if len(v.AnalysisRuleType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalysisRuleType"))
+	}
+	if v.AnalysisRulePolicy == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalysisRulePolicy"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1578,6 +3095,61 @@ func validateOpCreateConfiguredTableInput(v *CreateConfiguredTableInput) error {
 	}
 }
 
+func validateOpCreateIdMappingTableInput(v *CreateIdMappingTableInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateIdMappingTableInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.InputReferenceConfig == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InputReferenceConfig"))
+	} else if v.InputReferenceConfig != nil {
+		if err := validateIdMappingTableInputReferenceConfig(v.InputReferenceConfig); err != nil {
+			invalidParams.AddNested("InputReferenceConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateIdNamespaceAssociationInput(v *CreateIdNamespaceAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateIdNamespaceAssociationInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.InputReferenceConfig == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InputReferenceConfig"))
+	} else if v.InputReferenceConfig != nil {
+		if err := validateIdNamespaceAssociationInputReferenceConfig(v.InputReferenceConfig); err != nil {
+			invalidParams.AddNested("InputReferenceConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.IdMappingConfig != nil {
+		if err := validateIdMappingConfig(v.IdMappingConfig); err != nil {
+			invalidParams.AddNested("IdMappingConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpCreateMembershipInput(v *CreateMembershipInput) error {
 	if v == nil {
 		return nil
@@ -1588,6 +3160,44 @@ func validateOpCreateMembershipInput(v *CreateMembershipInput) error {
 	}
 	if len(v.QueryLogStatus) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("QueryLogStatus"))
+	}
+	if v.DefaultResultConfiguration != nil {
+		if err := validateMembershipProtectedQueryResultConfiguration(v.DefaultResultConfiguration); err != nil {
+			invalidParams.AddNested("DefaultResultConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.PaymentConfiguration != nil {
+		if err := validateMembershipPaymentConfiguration(v.PaymentConfiguration); err != nil {
+			invalidParams.AddNested("PaymentConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreatePrivacyBudgetTemplateInput(v *CreatePrivacyBudgetTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreatePrivacyBudgetTemplateInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if len(v.AutoRefresh) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("AutoRefresh"))
+	}
+	if len(v.PrivacyBudgetType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("PrivacyBudgetType"))
+	}
+	if v.Parameters == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Parameters"))
+	} else if v.Parameters != nil {
+		if err := validatePrivacyBudgetTemplateParametersInput(v.Parameters); err != nil {
+			invalidParams.AddNested("Parameters", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1629,6 +3239,24 @@ func validateOpDeleteCollaborationInput(v *DeleteCollaborationInput) error {
 	}
 }
 
+func validateOpDeleteConfiguredAudienceModelAssociationInput(v *DeleteConfiguredAudienceModelAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteConfiguredAudienceModelAssociationInput"}
+	if v.ConfiguredAudienceModelAssociationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConfiguredAudienceModelAssociationIdentifier"))
+	}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDeleteConfiguredTableAnalysisRuleInput(v *DeleteConfiguredTableAnalysisRuleInput) error {
 	if v == nil {
 		return nil
@@ -1636,6 +3264,27 @@ func validateOpDeleteConfiguredTableAnalysisRuleInput(v *DeleteConfiguredTableAn
 	invalidParams := smithy.InvalidParamsError{Context: "DeleteConfiguredTableAnalysisRuleInput"}
 	if v.ConfiguredTableIdentifier == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ConfiguredTableIdentifier"))
+	}
+	if len(v.AnalysisRuleType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalysisRuleType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteConfiguredTableAssociationAnalysisRuleInput(v *DeleteConfiguredTableAssociationAnalysisRuleInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteConfiguredTableAssociationAnalysisRuleInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.ConfiguredTableAssociationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConfiguredTableAssociationIdentifier"))
 	}
 	if len(v.AnalysisRuleType) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("AnalysisRuleType"))
@@ -1680,6 +3329,42 @@ func validateOpDeleteConfiguredTableInput(v *DeleteConfiguredTableInput) error {
 	}
 }
 
+func validateOpDeleteIdMappingTableInput(v *DeleteIdMappingTableInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteIdMappingTableInput"}
+	if v.IdMappingTableIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IdMappingTableIdentifier"))
+	}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteIdNamespaceAssociationInput(v *DeleteIdNamespaceAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteIdNamespaceAssociationInput"}
+	if v.IdNamespaceAssociationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IdNamespaceAssociationIdentifier"))
+	}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDeleteMemberInput(v *DeleteMemberInput) error {
 	if v == nil {
 		return nil
@@ -1705,6 +3390,24 @@ func validateOpDeleteMembershipInput(v *DeleteMembershipInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "DeleteMembershipInput"}
 	if v.MembershipIdentifier == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeletePrivacyBudgetTemplateInput(v *DeletePrivacyBudgetTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeletePrivacyBudgetTemplateInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.PrivacyBudgetTemplateIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PrivacyBudgetTemplateIdentifier"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1749,6 +3452,42 @@ func validateOpGetCollaborationAnalysisTemplateInput(v *GetCollaborationAnalysis
 	}
 }
 
+func validateOpGetCollaborationConfiguredAudienceModelAssociationInput(v *GetCollaborationConfiguredAudienceModelAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetCollaborationConfiguredAudienceModelAssociationInput"}
+	if v.CollaborationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CollaborationIdentifier"))
+	}
+	if v.ConfiguredAudienceModelAssociationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConfiguredAudienceModelAssociationIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetCollaborationIdNamespaceAssociationInput(v *GetCollaborationIdNamespaceAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetCollaborationIdNamespaceAssociationInput"}
+	if v.CollaborationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CollaborationIdentifier"))
+	}
+	if v.IdNamespaceAssociationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IdNamespaceAssociationIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetCollaborationInput(v *GetCollaborationInput) error {
 	if v == nil {
 		return nil
@@ -1764,6 +3503,42 @@ func validateOpGetCollaborationInput(v *GetCollaborationInput) error {
 	}
 }
 
+func validateOpGetCollaborationPrivacyBudgetTemplateInput(v *GetCollaborationPrivacyBudgetTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetCollaborationPrivacyBudgetTemplateInput"}
+	if v.CollaborationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CollaborationIdentifier"))
+	}
+	if v.PrivacyBudgetTemplateIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PrivacyBudgetTemplateIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetConfiguredAudienceModelAssociationInput(v *GetConfiguredAudienceModelAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetConfiguredAudienceModelAssociationInput"}
+	if v.ConfiguredAudienceModelAssociationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConfiguredAudienceModelAssociationIdentifier"))
+	}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetConfiguredTableAnalysisRuleInput(v *GetConfiguredTableAnalysisRuleInput) error {
 	if v == nil {
 		return nil
@@ -1771,6 +3546,27 @@ func validateOpGetConfiguredTableAnalysisRuleInput(v *GetConfiguredTableAnalysis
 	invalidParams := smithy.InvalidParamsError{Context: "GetConfiguredTableAnalysisRuleInput"}
 	if v.ConfiguredTableIdentifier == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ConfiguredTableIdentifier"))
+	}
+	if len(v.AnalysisRuleType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalysisRuleType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetConfiguredTableAssociationAnalysisRuleInput(v *GetConfiguredTableAssociationAnalysisRuleInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetConfiguredTableAssociationAnalysisRuleInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.ConfiguredTableAssociationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConfiguredTableAssociationIdentifier"))
 	}
 	if len(v.AnalysisRuleType) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("AnalysisRuleType"))
@@ -1815,6 +3611,42 @@ func validateOpGetConfiguredTableInput(v *GetConfiguredTableInput) error {
 	}
 }
 
+func validateOpGetIdMappingTableInput(v *GetIdMappingTableInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetIdMappingTableInput"}
+	if v.IdMappingTableIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IdMappingTableIdentifier"))
+	}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetIdNamespaceAssociationInput(v *GetIdNamespaceAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetIdNamespaceAssociationInput"}
+	if v.IdNamespaceAssociationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IdNamespaceAssociationIdentifier"))
+	}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetMembershipInput(v *GetMembershipInput) error {
 	if v == nil {
 		return nil
@@ -1822,6 +3654,24 @@ func validateOpGetMembershipInput(v *GetMembershipInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "GetMembershipInput"}
 	if v.MembershipIdentifier == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetPrivacyBudgetTemplateInput(v *GetPrivacyBudgetTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetPrivacyBudgetTemplateInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.PrivacyBudgetTemplateIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PrivacyBudgetTemplateIdentifier"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1917,11 +3767,119 @@ func validateOpListCollaborationAnalysisTemplatesInput(v *ListCollaborationAnaly
 	}
 }
 
+func validateOpListCollaborationConfiguredAudienceModelAssociationsInput(v *ListCollaborationConfiguredAudienceModelAssociationsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListCollaborationConfiguredAudienceModelAssociationsInput"}
+	if v.CollaborationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CollaborationIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListCollaborationIdNamespaceAssociationsInput(v *ListCollaborationIdNamespaceAssociationsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListCollaborationIdNamespaceAssociationsInput"}
+	if v.CollaborationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CollaborationIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListCollaborationPrivacyBudgetsInput(v *ListCollaborationPrivacyBudgetsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListCollaborationPrivacyBudgetsInput"}
+	if v.CollaborationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CollaborationIdentifier"))
+	}
+	if len(v.PrivacyBudgetType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("PrivacyBudgetType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListCollaborationPrivacyBudgetTemplatesInput(v *ListCollaborationPrivacyBudgetTemplatesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListCollaborationPrivacyBudgetTemplatesInput"}
+	if v.CollaborationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CollaborationIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListConfiguredAudienceModelAssociationsInput(v *ListConfiguredAudienceModelAssociationsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListConfiguredAudienceModelAssociationsInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListConfiguredTableAssociationsInput(v *ListConfiguredTableAssociationsInput) error {
 	if v == nil {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "ListConfiguredTableAssociationsInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListIdMappingTablesInput(v *ListIdMappingTablesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListIdMappingTablesInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListIdNamespaceAssociationsInput(v *ListIdNamespaceAssociationsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListIdNamespaceAssociationsInput"}
 	if v.MembershipIdentifier == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
 	}
@@ -1939,6 +3897,39 @@ func validateOpListMembersInput(v *ListMembersInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ListMembersInput"}
 	if v.CollaborationIdentifier == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("CollaborationIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListPrivacyBudgetsInput(v *ListPrivacyBudgetsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListPrivacyBudgetsInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if len(v.PrivacyBudgetType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("PrivacyBudgetType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListPrivacyBudgetTemplatesInput(v *ListPrivacyBudgetTemplatesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListPrivacyBudgetTemplatesInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1992,6 +3983,46 @@ func validateOpListTagsForResourceInput(v *ListTagsForResourceInput) error {
 	}
 }
 
+func validateOpPopulateIdMappingTableInput(v *PopulateIdMappingTableInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PopulateIdMappingTableInput"}
+	if v.IdMappingTableIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IdMappingTableIdentifier"))
+	}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpPreviewPrivacyImpactInput(v *PreviewPrivacyImpactInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PreviewPrivacyImpactInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.Parameters == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Parameters"))
+	} else if v.Parameters != nil {
+		if err := validatePreviewPrivacyImpactParametersInput(v.Parameters); err != nil {
+			invalidParams.AddNested("Parameters", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpStartProtectedQueryInput(v *StartProtectedQueryInput) error {
 	if v == nil {
 		return nil
@@ -2006,9 +4037,7 @@ func validateOpStartProtectedQueryInput(v *StartProtectedQueryInput) error {
 	if v.SqlParameters == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("SqlParameters"))
 	}
-	if v.ResultConfiguration == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("ResultConfiguration"))
-	} else if v.ResultConfiguration != nil {
+	if v.ResultConfiguration != nil {
 		if err := validateProtectedQueryResultConfiguration(v.ResultConfiguration); err != nil {
 			invalidParams.AddNested("ResultConfiguration", err.(smithy.InvalidParamsError))
 		}
@@ -2089,6 +4118,24 @@ func validateOpUpdateCollaborationInput(v *UpdateCollaborationInput) error {
 	}
 }
 
+func validateOpUpdateConfiguredAudienceModelAssociationInput(v *UpdateConfiguredAudienceModelAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateConfiguredAudienceModelAssociationInput"}
+	if v.ConfiguredAudienceModelAssociationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConfiguredAudienceModelAssociationIdentifier"))
+	}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpUpdateConfiguredTableAnalysisRuleInput(v *UpdateConfiguredTableAnalysisRuleInput) error {
 	if v == nil {
 		return nil
@@ -2106,6 +4153,30 @@ func validateOpUpdateConfiguredTableAnalysisRuleInput(v *UpdateConfiguredTableAn
 		if err := validateConfiguredTableAnalysisRulePolicy(v.AnalysisRulePolicy); err != nil {
 			invalidParams.AddNested("AnalysisRulePolicy", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateConfiguredTableAssociationAnalysisRuleInput(v *UpdateConfiguredTableAssociationAnalysisRuleInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateConfiguredTableAssociationAnalysisRuleInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.ConfiguredTableAssociationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConfiguredTableAssociationIdentifier"))
+	}
+	if len(v.AnalysisRuleType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalysisRuleType"))
+	}
+	if v.AnalysisRulePolicy == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalysisRulePolicy"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2147,6 +4218,47 @@ func validateOpUpdateConfiguredTableInput(v *UpdateConfiguredTableInput) error {
 	}
 }
 
+func validateOpUpdateIdMappingTableInput(v *UpdateIdMappingTableInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateIdMappingTableInput"}
+	if v.IdMappingTableIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IdMappingTableIdentifier"))
+	}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateIdNamespaceAssociationInput(v *UpdateIdNamespaceAssociationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateIdNamespaceAssociationInput"}
+	if v.IdNamespaceAssociationIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IdNamespaceAssociationIdentifier"))
+	}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.IdMappingConfig != nil {
+		if err := validateIdMappingConfig(v.IdMappingConfig); err != nil {
+			invalidParams.AddNested("IdMappingConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpUpdateMembershipInput(v *UpdateMembershipInput) error {
 	if v == nil {
 		return nil
@@ -2154,6 +4266,32 @@ func validateOpUpdateMembershipInput(v *UpdateMembershipInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "UpdateMembershipInput"}
 	if v.MembershipIdentifier == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.DefaultResultConfiguration != nil {
+		if err := validateMembershipProtectedQueryResultConfiguration(v.DefaultResultConfiguration); err != nil {
+			invalidParams.AddNested("DefaultResultConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdatePrivacyBudgetTemplateInput(v *UpdatePrivacyBudgetTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdatePrivacyBudgetTemplateInput"}
+	if v.MembershipIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MembershipIdentifier"))
+	}
+	if v.PrivacyBudgetTemplateIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PrivacyBudgetTemplateIdentifier"))
+	}
+	if len(v.PrivacyBudgetType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("PrivacyBudgetType"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

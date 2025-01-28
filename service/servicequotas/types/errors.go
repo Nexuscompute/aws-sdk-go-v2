@@ -166,7 +166,8 @@ func (e *InvalidResourceStateException) ErrorCode() string {
 }
 func (e *InvalidResourceStateException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The account making this call is not a member of an organization.
+// The Amazon Web Services account making this call is not a member of an
+// organization.
 type NoAvailableOrganizationException struct {
 	Message *string
 
@@ -218,7 +219,8 @@ func (e *NoSuchResourceException) ErrorCode() string {
 }
 func (e *NoSuchResourceException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The organization that your account belongs to is not in All Features mode.
+// The organization that your Amazon Web Services account belongs to is not in All
+// Features mode.
 type OrganizationNotInAllFeaturesModeException struct {
 	Message *string
 
@@ -380,7 +382,7 @@ func (e *TagPolicyViolationException) ErrorCode() string {
 }
 func (e *TagPolicyViolationException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The Service Quotas template is not available in this AWS Region.
+// The Service Quotas template is not available in this Amazon Web Services Region.
 type TemplatesNotAvailableInRegionException struct {
 	Message *string
 
@@ -436,8 +438,9 @@ func (e *TooManyRequestsException) ErrorCode() string {
 func (e *TooManyRequestsException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // You've exceeded the number of tags allowed for a resource. For more
-// information, see Tag restrictions (https://docs.aws.amazon.com/servicequotas/latest/userguide/sq-tagging.html#sq-tagging-restrictions)
-// in the Service Quotas User Guide.
+// information, see [Tag restrictions]in the Service Quotas User Guide.
+//
+// [Tag restrictions]: https://docs.aws.amazon.com/servicequotas/latest/userguide/sq-tagging.html#sq-tagging-restrictions
 type TooManyTagsException struct {
 	Message *string
 

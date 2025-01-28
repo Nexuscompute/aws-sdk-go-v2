@@ -4,14 +4,9 @@ package ecs
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/ecs/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -36,29 +31,109 @@ func (c *Client) PutAccountSettingDefault(ctx context.Context, params *PutAccoun
 
 type PutAccountSettingDefaultInput struct {
 
-	// The resource name for which to modify the account setting. If
-	// serviceLongArnFormat is specified, the ARN for your Amazon ECS services is
-	// affected. If taskLongArnFormat is specified, the ARN and resource ID for your
-	// Amazon ECS tasks is affected. If containerInstanceLongArnFormat is specified,
-	// the ARN and resource ID for your Amazon ECS container instances is affected. If
-	// awsvpcTrunking is specified, the ENI limit for your Amazon ECS container
-	// instances is affected. If containerInsights is specified, the default setting
-	// for Amazon Web Services CloudWatch Container Insights for your clusters is
-	// affected. If tagResourceAuthorization is specified, the opt-in option for
-	// tagging resources on creation is affected. For information about the opt-in
-	// timeline, see Tagging authorization timeline (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-account-settings.html#tag-resources)
-	// in the Amazon ECS Developer Guide. When you specify fargateFIPSMode for the name
-	// and enabled for the value , Fargate uses FIPS-140 compliant cryptographic
-	// algorithms on your tasks. For more information about FIPS-140 compliance with
-	// Fargate, see Amazon Web Services Fargate Federal Information Processing
-	// Standard (FIPS) 140-2 compliance (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-fips-compliance.html)
-	// in the Amazon Elastic Container Service Developer Guide.
+	// The resource name for which to modify the account setting.
+	//
+	// The following are the valid values for the account setting name.
+	//
+	//   - serviceLongArnFormat - When modified, the Amazon Resource Name (ARN) and
+	//   resource ID format of the resource type for a specified user, role, or the root
+	//   user for an account is affected. The opt-in and opt-out account setting must be
+	//   set for each Amazon ECS resource separately. The ARN and resource ID format of a
+	//   resource is defined by the opt-in status of the user or role that created the
+	//   resource. You must turn on this setting to use Amazon ECS features such as
+	//   resource tagging.
+	//
+	//   - taskLongArnFormat - When modified, the Amazon Resource Name (ARN) and
+	//   resource ID format of the resource type for a specified user, role, or the root
+	//   user for an account is affected. The opt-in and opt-out account setting must be
+	//   set for each Amazon ECS resource separately. The ARN and resource ID format of a
+	//   resource is defined by the opt-in status of the user or role that created the
+	//   resource. You must turn on this setting to use Amazon ECS features such as
+	//   resource tagging.
+	//
+	//   - containerInstanceLongArnFormat - When modified, the Amazon Resource Name
+	//   (ARN) and resource ID format of the resource type for a specified user, role, or
+	//   the root user for an account is affected. The opt-in and opt-out account setting
+	//   must be set for each Amazon ECS resource separately. The ARN and resource ID
+	//   format of a resource is defined by the opt-in status of the user or role that
+	//   created the resource. You must turn on this setting to use Amazon ECS features
+	//   such as resource tagging.
+	//
+	//   - awsvpcTrunking - When modified, the elastic network interface (ENI) limit
+	//   for any new container instances that support the feature is changed. If
+	//   awsvpcTrunking is turned on, any new container instances that support the
+	//   feature are launched have the increased ENI limits available to them. For more
+	//   information, see [Elastic Network Interface Trunking]in the Amazon Elastic Container Service Developer Guide.
+	//
+	//   - containerInsights - Container Insights with enhanced observability provides
+	//   all the Container Insights metrics, plus additional task and container metrics.
+	//   This version supports enhanced observability for Amazon ECS clusters using the
+	//   Amazon EC2 and Fargate launch types. After you configure Container Insights with
+	//   enhanced observability on Amazon ECS, Container Insights auto-collects detailed
+	//   infrastructure telemetry from the cluster level down to the container level in
+	//   your environment and displays these critical performance data in curated
+	//   dashboards removing the heavy lifting in observability set-up.
+	//
+	// To use Container Insights with enhanced observability, set the containerInsights
+	//   account setting to enhanced .
+	//
+	// To use Container Insights, set the containerInsights account setting to enabled .
+	//
+	// For more information, see [Monitor Amazon ECS containers using Container Insights with enhanced observability]in the Amazon Elastic Container Service Developer
+	//   Guide.
+	//
+	//   - dualStackIPv6 - When turned on, when using a VPC in dual stack mode, your
+	//   tasks using the awsvpc network mode can have an IPv6 address assigned. For
+	//   more information on using IPv6 with tasks launched on Amazon EC2 instances, see [Using a VPC in dual-stack mode]
+	//   . For more information on using IPv6 with tasks launched on Fargate, see [Using a VPC in dual-stack mode].
+	//
+	//   - fargateFIPSMode - If you specify fargateFIPSMode , Fargate FIPS 140
+	//   compliance is affected.
+	//
+	//   - fargateTaskRetirementWaitPeriod - When Amazon Web Services determines that a
+	//   security or infrastructure update is needed for an Amazon ECS task hosted on
+	//   Fargate, the tasks need to be stopped and new tasks launched to replace them.
+	//   Use fargateTaskRetirementWaitPeriod to configure the wait time to retire a
+	//   Fargate task. For information about the Fargate tasks maintenance, see [Amazon Web Services Fargate task maintenance]in the
+	//   Amazon ECS Developer Guide.
+	//
+	//   - tagResourceAuthorization - Amazon ECS is introducing tagging authorization
+	//   for resource creation. Users must have permissions for actions that create the
+	//   resource, such as ecsCreateCluster . If tags are specified when you create a
+	//   resource, Amazon Web Services performs additional authorization to verify if
+	//   users or roles have permissions to create tags. Therefore, you must grant
+	//   explicit permissions to use the ecs:TagResource action. For more information,
+	//   see [Grant permission to tag resources on creation]in the Amazon ECS Developer Guide.
+	//
+	//   - guardDutyActivate - The guardDutyActivate parameter is read-only in Amazon
+	//   ECS and indicates whether Amazon ECS Runtime Monitoring is enabled or disabled
+	//   by your security administrator in your Amazon ECS account. Amazon GuardDuty
+	//   controls this account setting on your behalf. For more information, see [Protecting Amazon ECS workloads with Amazon ECS Runtime Monitoring].
+	//
+	// [Grant permission to tag resources on creation]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/supported-iam-actions-tagging.html
+	// [Using a VPC in dual-stack mode]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/fargate-task-networking.html#fargate-task-networking-vpc-dual-stack
+	// [Amazon Web Services Fargate task maintenance]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/task-maintenance.html
+	// [Elastic Network Interface Trunking]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/container-instance-eni.html
+	// [Protecting Amazon ECS workloads with Amazon ECS Runtime Monitoring]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-guard-duty-integration.html
+	// [Monitor Amazon ECS containers using Container Insights with enhanced observability]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/cloudwatch-container-insights.html
 	//
 	// This member is required.
 	Name types.SettingName
 
 	// The account setting value for the specified principal ARN. Accepted values are
-	// enabled , disabled , on , and off .
+	// enabled , disabled , on , enhanced , and off .
+	//
+	// When you specify fargateTaskRetirementWaitPeriod for the name , the following
+	// are the valid values:
+	//
+	//   - 0 - Amazon Web Services sends the notification, and immediately retires the
+	//   affected tasks.
+	//
+	//   - 7 - Amazon Web Services sends the notification, and waits 7 calendar days to
+	//   retire the tasks.
+	//
+	//   - 14 - Amazon Web Services sends the notification, and waits 14 calendar days
+	//   to retire the tasks.
 	//
 	// This member is required.
 	Value *string
@@ -78,6 +153,9 @@ type PutAccountSettingDefaultOutput struct {
 }
 
 func (c *Client) addOperationPutAccountSettingDefaultMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpPutAccountSettingDefault{}, middleware.After)
 	if err != nil {
 		return err
@@ -86,34 +164,38 @@ func (c *Client) addOperationPutAccountSettingDefaultMiddlewares(stack *middlewa
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "PutAccountSettingDefault"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -125,7 +207,13 @@ func (c *Client) addOperationPutAccountSettingDefaultMiddlewares(stack *middlewa
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addPutAccountSettingDefaultResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutAccountSettingDefaultValidationMiddleware(stack); err != nil {
@@ -134,7 +222,7 @@ func (c *Client) addOperationPutAccountSettingDefaultMiddlewares(stack *middlewa
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opPutAccountSettingDefault(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -146,7 +234,19 @@ func (c *Client) addOperationPutAccountSettingDefaultMiddlewares(stack *middlewa
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -156,130 +256,6 @@ func newServiceMetadataMiddleware_opPutAccountSettingDefault(region string) *aws
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "ecs",
 		OperationName: "PutAccountSettingDefault",
 	}
-}
-
-type opPutAccountSettingDefaultResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opPutAccountSettingDefaultResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opPutAccountSettingDefaultResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "ecs"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "ecs"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("ecs")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addPutAccountSettingDefaultResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opPutAccountSettingDefaultResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

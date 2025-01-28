@@ -359,6 +359,11 @@ func validateAmazonopensearchserviceDestinationConfiguration(v *types.Amazonopen
 			invalidParams.AddNested("VpcConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.DocumentIdOptions != nil {
+		if err := validateDocumentIdOptions(v.DocumentIdOptions); err != nil {
+			invalidParams.AddNested("DocumentIdOptions", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -380,6 +385,29 @@ func validateAmazonopensearchserviceDestinationUpdate(v *types.Amazonopensearchs
 		if err := validateProcessingConfiguration(v.ProcessingConfiguration); err != nil {
 			invalidParams.AddNested("ProcessingConfiguration", err.(smithy.InvalidParamsError))
 		}
+	}
+	if v.DocumentIdOptions != nil {
+		if err := validateDocumentIdOptions(v.DocumentIdOptions); err != nil {
+			invalidParams.AddNested("DocumentIdOptions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateAuthenticationConfiguration(v *types.AuthenticationConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AuthenticationConfiguration"}
+	if v.RoleARN == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RoleARN"))
+	}
+	if len(v.Connectivity) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Connectivity"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -403,6 +431,84 @@ func validateCopyCommand(v *types.CopyCommand) error {
 	}
 }
 
+func validateDatabaseSourceAuthenticationConfiguration(v *types.DatabaseSourceAuthenticationConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DatabaseSourceAuthenticationConfiguration"}
+	if v.SecretsManagerConfiguration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SecretsManagerConfiguration"))
+	} else if v.SecretsManagerConfiguration != nil {
+		if err := validateSecretsManagerConfiguration(v.SecretsManagerConfiguration); err != nil {
+			invalidParams.AddNested("SecretsManagerConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDatabaseSourceConfiguration(v *types.DatabaseSourceConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DatabaseSourceConfiguration"}
+	if len(v.Type) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Type"))
+	}
+	if v.Endpoint == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Endpoint"))
+	}
+	if v.Port == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Port"))
+	}
+	if v.Databases == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Databases"))
+	}
+	if v.Tables == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Tables"))
+	}
+	if v.SnapshotWatermarkTable == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SnapshotWatermarkTable"))
+	}
+	if v.DatabaseSourceAuthenticationConfiguration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DatabaseSourceAuthenticationConfiguration"))
+	} else if v.DatabaseSourceAuthenticationConfiguration != nil {
+		if err := validateDatabaseSourceAuthenticationConfiguration(v.DatabaseSourceAuthenticationConfiguration); err != nil {
+			invalidParams.AddNested("DatabaseSourceAuthenticationConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.DatabaseSourceVPCConfiguration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DatabaseSourceVPCConfiguration"))
+	} else if v.DatabaseSourceVPCConfiguration != nil {
+		if err := validateDatabaseSourceVPCConfiguration(v.DatabaseSourceVPCConfiguration); err != nil {
+			invalidParams.AddNested("DatabaseSourceVPCConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDatabaseSourceVPCConfiguration(v *types.DatabaseSourceVPCConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DatabaseSourceVPCConfiguration"}
+	if v.VpcEndpointServiceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("VpcEndpointServiceName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateDeliveryStreamEncryptionConfigurationInput(v *types.DeliveryStreamEncryptionConfigurationInput) error {
 	if v == nil {
 		return nil
@@ -410,6 +516,76 @@ func validateDeliveryStreamEncryptionConfigurationInput(v *types.DeliveryStreamE
 	invalidParams := smithy.InvalidParamsError{Context: "DeliveryStreamEncryptionConfigurationInput"}
 	if len(v.KeyType) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("KeyType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDestinationTableConfiguration(v *types.DestinationTableConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DestinationTableConfiguration"}
+	if v.DestinationTableName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DestinationTableName"))
+	}
+	if v.DestinationDatabaseName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DestinationDatabaseName"))
+	}
+	if v.PartitionSpec != nil {
+		if err := validatePartitionSpec(v.PartitionSpec); err != nil {
+			invalidParams.AddNested("PartitionSpec", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDestinationTableConfigurationList(v []types.DestinationTableConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DestinationTableConfigurationList"}
+	for i := range v {
+		if err := validateDestinationTableConfiguration(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDirectPutSourceConfiguration(v *types.DirectPutSourceConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DirectPutSourceConfiguration"}
+	if v.ThroughputHintInMBs == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ThroughputHintInMBs"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDocumentIdOptions(v *types.DocumentIdOptions) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DocumentIdOptions"}
+	if len(v.DefaultDocumentIdFormat) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("DefaultDocumentIdFormat"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -446,6 +622,11 @@ func validateElasticsearchDestinationConfiguration(v *types.ElasticsearchDestina
 			invalidParams.AddNested("VpcConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.DocumentIdOptions != nil {
+		if err := validateDocumentIdOptions(v.DocumentIdOptions); err != nil {
+			invalidParams.AddNested("DocumentIdOptions", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -466,6 +647,11 @@ func validateElasticsearchDestinationUpdate(v *types.ElasticsearchDestinationUpd
 	if v.ProcessingConfiguration != nil {
 		if err := validateProcessingConfiguration(v.ProcessingConfiguration); err != nil {
 			invalidParams.AddNested("ProcessingConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.DocumentIdOptions != nil {
+		if err := validateDocumentIdOptions(v.DocumentIdOptions); err != nil {
+			invalidParams.AddNested("DocumentIdOptions", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -631,6 +817,11 @@ func validateHttpEndpointDestinationConfiguration(v *types.HttpEndpointDestinati
 			invalidParams.AddNested("S3Configuration", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.SecretsManagerConfiguration != nil {
+		if err := validateSecretsManagerConfiguration(v.SecretsManagerConfiguration); err != nil {
+			invalidParams.AddNested("SecretsManagerConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -663,6 +854,11 @@ func validateHttpEndpointDestinationUpdate(v *types.HttpEndpointDestinationUpdat
 			invalidParams.AddNested("S3Update", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.SecretsManagerConfiguration != nil {
+		if err := validateSecretsManagerConfiguration(v.SecretsManagerConfiguration); err != nil {
+			invalidParams.AddNested("SecretsManagerConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -678,6 +874,88 @@ func validateHttpEndpointRequestConfiguration(v *types.HttpEndpointRequestConfig
 	if v.CommonAttributes != nil {
 		if err := validateHttpEndpointCommonAttributesList(v.CommonAttributes); err != nil {
 			invalidParams.AddNested("CommonAttributes", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateIcebergDestinationConfiguration(v *types.IcebergDestinationConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "IcebergDestinationConfiguration"}
+	if v.DestinationTableConfigurationList != nil {
+		if err := validateDestinationTableConfigurationList(v.DestinationTableConfigurationList); err != nil {
+			invalidParams.AddNested("DestinationTableConfigurationList", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SchemaEvolutionConfiguration != nil {
+		if err := validateSchemaEvolutionConfiguration(v.SchemaEvolutionConfiguration); err != nil {
+			invalidParams.AddNested("SchemaEvolutionConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.TableCreationConfiguration != nil {
+		if err := validateTableCreationConfiguration(v.TableCreationConfiguration); err != nil {
+			invalidParams.AddNested("TableCreationConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ProcessingConfiguration != nil {
+		if err := validateProcessingConfiguration(v.ProcessingConfiguration); err != nil {
+			invalidParams.AddNested("ProcessingConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.RoleARN == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RoleARN"))
+	}
+	if v.CatalogConfiguration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CatalogConfiguration"))
+	}
+	if v.S3Configuration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("S3Configuration"))
+	} else if v.S3Configuration != nil {
+		if err := validateS3DestinationConfiguration(v.S3Configuration); err != nil {
+			invalidParams.AddNested("S3Configuration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateIcebergDestinationUpdate(v *types.IcebergDestinationUpdate) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "IcebergDestinationUpdate"}
+	if v.DestinationTableConfigurationList != nil {
+		if err := validateDestinationTableConfigurationList(v.DestinationTableConfigurationList); err != nil {
+			invalidParams.AddNested("DestinationTableConfigurationList", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SchemaEvolutionConfiguration != nil {
+		if err := validateSchemaEvolutionConfiguration(v.SchemaEvolutionConfiguration); err != nil {
+			invalidParams.AddNested("SchemaEvolutionConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.TableCreationConfiguration != nil {
+		if err := validateTableCreationConfiguration(v.TableCreationConfiguration); err != nil {
+			invalidParams.AddNested("TableCreationConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ProcessingConfiguration != nil {
+		if err := validateProcessingConfiguration(v.ProcessingConfiguration); err != nil {
+			invalidParams.AddNested("ProcessingConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.S3Configuration != nil {
+		if err := validateS3DestinationConfiguration(v.S3Configuration); err != nil {
+			invalidParams.AddNested("S3Configuration", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -712,6 +990,80 @@ func validateKMSEncryptionConfig(v *types.KMSEncryptionConfig) error {
 	invalidParams := smithy.InvalidParamsError{Context: "KMSEncryptionConfig"}
 	if v.AWSKMSKeyARN == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("AWSKMSKeyARN"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMSKSourceConfiguration(v *types.MSKSourceConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MSKSourceConfiguration"}
+	if v.MSKClusterARN == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MSKClusterARN"))
+	}
+	if v.TopicName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TopicName"))
+	}
+	if v.AuthenticationConfiguration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AuthenticationConfiguration"))
+	} else if v.AuthenticationConfiguration != nil {
+		if err := validateAuthenticationConfiguration(v.AuthenticationConfiguration); err != nil {
+			invalidParams.AddNested("AuthenticationConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePartitionField(v *types.PartitionField) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PartitionField"}
+	if v.SourceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SourceName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePartitionFields(v []types.PartitionField) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PartitionFields"}
+	for i := range v {
+		if err := validatePartitionField(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePartitionSpec(v *types.PartitionSpec) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PartitionSpec"}
+	if v.Identity != nil {
+		if err := validatePartitionFields(v.Identity); err != nil {
+			invalidParams.AddNested("Identity", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -859,12 +1211,6 @@ func validateRedshiftDestinationConfiguration(v *types.RedshiftDestinationConfig
 			invalidParams.AddNested("CopyCommand", err.(smithy.InvalidParamsError))
 		}
 	}
-	if v.Username == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Username"))
-	}
-	if v.Password == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Password"))
-	}
 	if v.S3Configuration == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("S3Configuration"))
 	} else if v.S3Configuration != nil {
@@ -880,6 +1226,11 @@ func validateRedshiftDestinationConfiguration(v *types.RedshiftDestinationConfig
 	if v.S3BackupConfiguration != nil {
 		if err := validateS3DestinationConfiguration(v.S3BackupConfiguration); err != nil {
 			invalidParams.AddNested("S3BackupConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SecretsManagerConfiguration != nil {
+		if err := validateSecretsManagerConfiguration(v.SecretsManagerConfiguration); err != nil {
+			invalidParams.AddNested("SecretsManagerConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -912,6 +1263,11 @@ func validateRedshiftDestinationUpdate(v *types.RedshiftDestinationUpdate) error
 	if v.S3BackupUpdate != nil {
 		if err := validateS3DestinationUpdate(v.S3BackupUpdate); err != nil {
 			invalidParams.AddNested("S3BackupUpdate", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SecretsManagerConfiguration != nil {
+		if err := validateSecretsManagerConfiguration(v.SecretsManagerConfiguration); err != nil {
+			invalidParams.AddNested("SecretsManagerConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -961,6 +1317,127 @@ func validateS3DestinationUpdate(v *types.S3DestinationUpdate) error {
 	}
 }
 
+func validateSchemaEvolutionConfiguration(v *types.SchemaEvolutionConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SchemaEvolutionConfiguration"}
+	if v.Enabled == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Enabled"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSecretsManagerConfiguration(v *types.SecretsManagerConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SecretsManagerConfiguration"}
+	if v.Enabled == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Enabled"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSnowflakeDestinationConfiguration(v *types.SnowflakeDestinationConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SnowflakeDestinationConfiguration"}
+	if v.AccountUrl == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AccountUrl"))
+	}
+	if v.Database == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Database"))
+	}
+	if v.Schema == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Schema"))
+	}
+	if v.Table == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Table"))
+	}
+	if v.SnowflakeVpcConfiguration != nil {
+		if err := validateSnowflakeVpcConfiguration(v.SnowflakeVpcConfiguration); err != nil {
+			invalidParams.AddNested("SnowflakeVpcConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ProcessingConfiguration != nil {
+		if err := validateProcessingConfiguration(v.ProcessingConfiguration); err != nil {
+			invalidParams.AddNested("ProcessingConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.RoleARN == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RoleARN"))
+	}
+	if v.S3Configuration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("S3Configuration"))
+	} else if v.S3Configuration != nil {
+		if err := validateS3DestinationConfiguration(v.S3Configuration); err != nil {
+			invalidParams.AddNested("S3Configuration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SecretsManagerConfiguration != nil {
+		if err := validateSecretsManagerConfiguration(v.SecretsManagerConfiguration); err != nil {
+			invalidParams.AddNested("SecretsManagerConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSnowflakeDestinationUpdate(v *types.SnowflakeDestinationUpdate) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SnowflakeDestinationUpdate"}
+	if v.ProcessingConfiguration != nil {
+		if err := validateProcessingConfiguration(v.ProcessingConfiguration); err != nil {
+			invalidParams.AddNested("ProcessingConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.S3Update != nil {
+		if err := validateS3DestinationUpdate(v.S3Update); err != nil {
+			invalidParams.AddNested("S3Update", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SecretsManagerConfiguration != nil {
+		if err := validateSecretsManagerConfiguration(v.SecretsManagerConfiguration); err != nil {
+			invalidParams.AddNested("SecretsManagerConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSnowflakeVpcConfiguration(v *types.SnowflakeVpcConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SnowflakeVpcConfiguration"}
+	if v.PrivateLinkVpceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PrivateLinkVpceId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateSplunkDestinationConfiguration(v *types.SplunkDestinationConfiguration) error {
 	if v == nil {
 		return nil
@@ -972,9 +1449,6 @@ func validateSplunkDestinationConfiguration(v *types.SplunkDestinationConfigurat
 	if len(v.HECEndpointType) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("HECEndpointType"))
 	}
-	if v.HECToken == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("HECToken"))
-	}
 	if v.S3Configuration == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("S3Configuration"))
 	} else if v.S3Configuration != nil {
@@ -985,6 +1459,11 @@ func validateSplunkDestinationConfiguration(v *types.SplunkDestinationConfigurat
 	if v.ProcessingConfiguration != nil {
 		if err := validateProcessingConfiguration(v.ProcessingConfiguration); err != nil {
 			invalidParams.AddNested("ProcessingConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SecretsManagerConfiguration != nil {
+		if err := validateSecretsManagerConfiguration(v.SecretsManagerConfiguration); err != nil {
+			invalidParams.AddNested("SecretsManagerConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1008,6 +1487,26 @@ func validateSplunkDestinationUpdate(v *types.SplunkDestinationUpdate) error {
 		if err := validateProcessingConfiguration(v.ProcessingConfiguration); err != nil {
 			invalidParams.AddNested("ProcessingConfiguration", err.(smithy.InvalidParamsError))
 		}
+	}
+	if v.SecretsManagerConfiguration != nil {
+		if err := validateSecretsManagerConfiguration(v.SecretsManagerConfiguration); err != nil {
+			invalidParams.AddNested("SecretsManagerConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateTableCreationConfiguration(v *types.TableCreationConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "TableCreationConfiguration"}
+	if v.Enabled == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Enabled"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1077,6 +1576,11 @@ func validateOpCreateDeliveryStreamInput(v *CreateDeliveryStreamInput) error {
 	if v.DeliveryStreamName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DeliveryStreamName"))
 	}
+	if v.DirectPutSourceConfiguration != nil {
+		if err := validateDirectPutSourceConfiguration(v.DirectPutSourceConfiguration); err != nil {
+			invalidParams.AddNested("DirectPutSourceConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
 	if v.KinesisStreamSourceConfiguration != nil {
 		if err := validateKinesisStreamSourceConfiguration(v.KinesisStreamSourceConfiguration); err != nil {
 			invalidParams.AddNested("KinesisStreamSourceConfiguration", err.(smithy.InvalidParamsError))
@@ -1130,6 +1634,26 @@ func validateOpCreateDeliveryStreamInput(v *CreateDeliveryStreamInput) error {
 	if v.AmazonOpenSearchServerlessDestinationConfiguration != nil {
 		if err := validateAmazonOpenSearchServerlessDestinationConfiguration(v.AmazonOpenSearchServerlessDestinationConfiguration); err != nil {
 			invalidParams.AddNested("AmazonOpenSearchServerlessDestinationConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.MSKSourceConfiguration != nil {
+		if err := validateMSKSourceConfiguration(v.MSKSourceConfiguration); err != nil {
+			invalidParams.AddNested("MSKSourceConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SnowflakeDestinationConfiguration != nil {
+		if err := validateSnowflakeDestinationConfiguration(v.SnowflakeDestinationConfiguration); err != nil {
+			invalidParams.AddNested("SnowflakeDestinationConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.IcebergDestinationConfiguration != nil {
+		if err := validateIcebergDestinationConfiguration(v.IcebergDestinationConfiguration); err != nil {
+			invalidParams.AddNested("IcebergDestinationConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.DatabaseSourceConfiguration != nil {
+		if err := validateDatabaseSourceConfiguration(v.DatabaseSourceConfiguration); err != nil {
+			invalidParams.AddNested("DatabaseSourceConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1355,6 +1879,16 @@ func validateOpUpdateDestinationInput(v *UpdateDestinationInput) error {
 	if v.AmazonOpenSearchServerlessDestinationUpdate != nil {
 		if err := validateAmazonOpenSearchServerlessDestinationUpdate(v.AmazonOpenSearchServerlessDestinationUpdate); err != nil {
 			invalidParams.AddNested("AmazonOpenSearchServerlessDestinationUpdate", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SnowflakeDestinationUpdate != nil {
+		if err := validateSnowflakeDestinationUpdate(v.SnowflakeDestinationUpdate); err != nil {
+			invalidParams.AddNested("SnowflakeDestinationUpdate", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.IcebergDestinationUpdate != nil {
+		if err := validateIcebergDestinationUpdate(v.IcebergDestinationUpdate); err != nil {
+			invalidParams.AddNested("IcebergDestinationUpdate", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {

@@ -4,25 +4,23 @@ package datasync
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/datasync/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Configures a task, which defines where and how DataSync transfers your data. A
-// task includes a source location, a destination location, and the preferences for
-// how and when you want to transfer your data (such as bandwidth limits,
-// scheduling, among other options). If you're planning to transfer data to or from
-// an Amazon S3 location, review how DataSync can affect your S3 request charges (https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests)
-// and the DataSync pricing page (http://aws.amazon.com/datasync/pricing/) before
-// you begin.
+// Configures a task, which defines where and how DataSync transfers your data.
+//
+// A task includes a source location, destination location, and transfer options
+// (such as bandwidth limits, scheduling, and more).
+//
+// If you're planning to transfer data to or from an Amazon S3 location, review [how DataSync can affect your S3 request charges]
+// and the [DataSync pricing page]before you begin.
+//
+// [how DataSync can affect your S3 request charges]: https://docs.aws.amazon.com/datasync/latest/userguide/create-s3-location.html#create-s3-location-s3-requests
+// [DataSync pricing page]: http://aws.amazon.com/datasync/pricing/
 func (c *Client) CreateTask(ctx context.Context, params *CreateTaskInput, optFns ...func(*Options)) (*CreateTaskOutput, error) {
 	if params == nil {
 		params = &CreateTaskInput{}
@@ -41,52 +39,99 @@ func (c *Client) CreateTask(ctx context.Context, params *CreateTaskInput, optFns
 // CreateTaskRequest
 type CreateTaskInput struct {
 
-	// The Amazon Resource Name (ARN) of an Amazon Web Services storage resource's
-	// location.
+	// Specifies the ARN of your transfer's destination location.
 	//
 	// This member is required.
 	DestinationLocationArn *string
 
-	// The Amazon Resource Name (ARN) of the source location for the task.
+	// Specifies the ARN of your transfer's source location.
 	//
 	// This member is required.
 	SourceLocationArn *string
 
-	// The Amazon Resource Name (ARN) of the Amazon CloudWatch log group that is used
-	// to monitor and log events in the task.
+	// Specifies the Amazon Resource Name (ARN) of an Amazon CloudWatch log group for
+	// monitoring your task.
+	//
+	// For Enhanced mode tasks, you don't need to specify anything. DataSync
+	// automatically sends logs to a CloudWatch log group named /aws/datasync .
 	CloudWatchLogGroupArn *string
 
-	// Specifies a list of filter rules that exclude specific data during your
-	// transfer. For more information and examples, see Filtering data transferred by
-	// DataSync (https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html) .
+	// Specifies exclude filters that define the files, objects, and folders in your
+	// source location that you don't want DataSync to transfer. For more information
+	// and examples, see [Specifying what DataSync transfers by using filters].
+	//
+	// [Specifying what DataSync transfers by using filters]: https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html
 	Excludes []types.FilterRule
 
-	// Specifies a list of filter rules that include specific data during your
-	// transfer. For more information and examples, see Filtering data transferred by
-	// DataSync (https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html) .
+	// Specifies include filters that define the files, objects, and folders in your
+	// source location that you want DataSync to transfer. For more information and
+	// examples, see [Specifying what DataSync transfers by using filters].
+	//
+	// [Specifying what DataSync transfers by using filters]: https://docs.aws.amazon.com/datasync/latest/userguide/filtering.html
 	Includes []types.FilterRule
 
-	// The name of a task. This value is a text reference that is used to identify the
-	// task in the console.
+	// Configures a manifest, which is a list of files or objects that you want
+	// DataSync to transfer. For more information and configuration examples, see [Specifying what DataSync transfers by using a manifest].
+	//
+	// When using this parameter, your caller identity (the role that you're using
+	// DataSync with) must have the iam:PassRole permission. The [AWSDataSyncFullAccess] policy includes this
+	// permission.
+	//
+	// [AWSDataSyncFullAccess]: https://docs.aws.amazon.com/datasync/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-awsdatasyncfullaccess
+	// [Specifying what DataSync transfers by using a manifest]: https://docs.aws.amazon.com/datasync/latest/userguide/transferring-with-manifest.html
+	ManifestConfig *types.ManifestConfig
+
+	// Specifies the name of your task.
 	Name *string
 
-	// Specifies the configuration options for a task. Some options include preserving
-	// file or object metadata and verifying data integrity. You can also override
-	// these options before starting an individual run of a task (also known as a task
-	// execution). For more information, see StartTaskExecution (https://docs.aws.amazon.com/datasync/latest/userguide/API_StartTaskExecution.html)
-	// .
+	// Specifies your task's settings, such as preserving file metadata, verifying
+	// data integrity, among other options.
 	Options *types.Options
 
-	// Specifies a schedule used to periodically transfer files from a source to a
-	// destination location. The schedule should be specified in UTC time. For more
-	// information, see Scheduling your task (https://docs.aws.amazon.com/datasync/latest/userguide/task-scheduling.html)
-	// .
+	// Specifies a schedule for when you want your task to run. For more information,
+	// see [Scheduling your task].
+	//
+	// [Scheduling your task]: https://docs.aws.amazon.com/datasync/latest/userguide/task-scheduling.html
 	Schedule *types.TaskSchedule
 
-	// Specifies the tags that you want to apply to the Amazon Resource Name (ARN)
-	// representing the task. Tags are key-value pairs that help you manage, filter,
-	// and search for your DataSync resources.
+	// Specifies the tags that you want to apply to your task.
+	//
+	// Tags are key-value pairs that help you manage, filter, and search for your
+	// DataSync resources.
 	Tags []types.TagListEntry
+
+	// Specifies one of the following task modes for your data transfer:
+	//
+	//   - ENHANCED - Transfer virtually unlimited numbers of objects with higher
+	//   performance than Basic mode. Enhanced mode tasks optimize the data transfer
+	//   process by listing, preparing, transferring, and verifying data in parallel.
+	//   Enhanced mode is currently available for transfers between Amazon S3 locations.
+	//
+	// To create an Enhanced mode task, the IAM role that you use to call the
+	//   CreateTask operation must have the iam:CreateServiceLinkedRole permission.
+	//
+	//   - BASIC (default) - Transfer files or objects between Amazon Web Services
+	//   storage and all other supported DataSync locations. Basic mode tasks are subject
+	//   to [quotas]on the number of files, objects, and directories in a dataset. Basic mode
+	//   sequentially prepares, transfers, and verifies data, making it slower than
+	//   Enhanced mode for most workloads.
+	//
+	// For more information, see [Understanding task mode differences].
+	//
+	// [Understanding task mode differences]: https://docs.aws.amazon.com/datasync/latest/userguide/choosing-task-mode.html#task-mode-differences
+	// [quotas]: https://docs.aws.amazon.com/datasync/latest/userguide/datasync-limits.html
+	TaskMode types.TaskMode
+
+	// Specifies how you want to configure a task report, which provides detailed
+	// information about your DataSync transfer. For more information, see [Monitoring your DataSync transfers with task reports].
+	//
+	// When using this parameter, your caller identity (the role that you're using
+	// DataSync with) must have the iam:PassRole permission. The [AWSDataSyncFullAccess] policy includes this
+	// permission.
+	//
+	// [AWSDataSyncFullAccess]: https://docs.aws.amazon.com/datasync/latest/userguide/security-iam-awsmanpol.html#security-iam-awsmanpol-awsdatasyncfullaccess
+	// [Monitoring your DataSync transfers with task reports]: https://docs.aws.amazon.com/datasync/latest/userguide/task-reports.html
+	TaskReportConfig *types.TaskReportConfig
 
 	noSmithyDocumentSerde
 }
@@ -104,6 +149,9 @@ type CreateTaskOutput struct {
 }
 
 func (c *Client) addOperationCreateTaskMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateTask{}, middleware.After)
 	if err != nil {
 		return err
@@ -112,34 +160,38 @@ func (c *Client) addOperationCreateTaskMiddlewares(stack *middleware.Stack, opti
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateTask"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -151,7 +203,13 @@ func (c *Client) addOperationCreateTaskMiddlewares(stack *middleware.Stack, opti
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateTaskResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateTaskValidationMiddleware(stack); err != nil {
@@ -160,7 +218,7 @@ func (c *Client) addOperationCreateTaskMiddlewares(stack *middleware.Stack, opti
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateTask(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -172,7 +230,19 @@ func (c *Client) addOperationCreateTaskMiddlewares(stack *middleware.Stack, opti
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -182,130 +252,6 @@ func newServiceMetadataMiddleware_opCreateTask(region string) *awsmiddleware.Reg
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "datasync",
 		OperationName: "CreateTask",
 	}
-}
-
-type opCreateTaskResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateTaskResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateTaskResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "datasync"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "datasync"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("datasync")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateTaskResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateTaskResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

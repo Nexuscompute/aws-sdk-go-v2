@@ -62,7 +62,30 @@ type StructureListMember struct {
 	noSmithyDocumentSerde
 }
 
-type XmlAttributesInputOutput struct {
+// The following types satisfy this interface:
+//
+//	UnionPayloadMemberGreeting
+type UnionPayload interface {
+	isUnionPayload()
+}
+
+type UnionPayloadMemberGreeting struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*UnionPayloadMemberGreeting) isUnionPayload() {}
+
+type XmlAttributesPayloadRequest struct {
+	Attr *string
+
+	Foo *string
+
+	noSmithyDocumentSerde
+}
+
+type XmlAttributesPayloadResponse struct {
 	Attr *string
 
 	Foo *string
@@ -211,4 +234,5 @@ type UnknownUnionMember struct {
 	noSmithyDocumentSerde
 }
 
+func (*UnknownUnionMember) isUnionPayload()  {}
 func (*UnknownUnionMember) isXmlUnionShape() {}

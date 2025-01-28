@@ -4,35 +4,50 @@ package timestreamquery
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	internalEndpointDiscovery "github.com/aws/aws-sdk-go-v2/service/internal/endpoint-discovery"
 	"github.com/aws/aws-sdk-go-v2/service/timestreamquery/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Query is a synchronous operation that enables you to run a query against your
-// Amazon Timestream data. Query will time out after 60 seconds. You must update
-// the default timeout in the SDK to support a timeout of 60 seconds. See the code
-// sample (https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.run-query.html)
-// for details. Your query request will fail in the following cases:
+// Amazon Timestream data.
+//
+// If you enabled QueryInsights , this API also returns insights and metrics
+// related to the query that you executed. QueryInsights helps with performance
+// tuning of your query. For more information about QueryInsights , see [Using query insights to optimize queries in Amazon Timestream].
+//
+// The maximum number of Query API requests you're allowed to make with
+// QueryInsights enabled is 1 query per second (QPS). If you exceed this query
+// rate, it might result in throttling.
+//
+// Query will time out after 60 seconds. You must update the default timeout in
+// the SDK to support a timeout of 60 seconds. See the [code sample]for details.
+//
+// Your query request will fail in the following cases:
+//
 //   - If you submit a Query request with the same client token outside of the
 //     5-minute idempotency window.
+//
 //   - If you submit a Query request with the same client token, but change other
 //     parameters, within the 5-minute idempotency window.
+//
 //   - If the size of the row (including the query metadata) exceeds 1 MB, then
-//     the query will fail with the following error message: Query aborted as max
-//     page response size has been exceeded by the output result row
-//   - If the IAM principal of the query initiator and the result reader are not
-//     the same and/or the query initiator and the result reader do not have the same
-//     query string in the query requests, the query will fail with an Invalid
-//     pagination token error.
+//     the query will fail with the following error message:
+//
+// Query aborted as max page response size has been exceeded by the output result
+//
+//	row
+//
+//	- If the IAM principal of the query initiator and the result reader are not
+//	the same and/or the query initiator and the result reader do not have the same
+//	query string in the query requests, the query will fail with an Invalid
+//	pagination token error.
+//
+// [code sample]: https://docs.aws.amazon.com/timestream/latest/developerguide/code-samples.run-query.html
+// [Using query insights to optimize queries in Amazon Timestream]: https://docs.aws.amazon.com/timestream/latest/developerguide/using-query-insights.html
 func (c *Client) Query(ctx context.Context, params *QueryInput, optFns ...func(*Options)) (*QueryOutput, error) {
 	if params == nil {
 		params = &QueryInput{}
@@ -50,87 +65,114 @@ func (c *Client) Query(ctx context.Context, params *QueryInput, optFns ...func(*
 
 type QueryInput struct {
 
-	// The query to be run by Timestream.
+	//  The query to be run by Timestream.
 	//
 	// This member is required.
 	QueryString *string
 
-	// Unique, case-sensitive string of up to 64 ASCII characters specified when a
+	//  Unique, case-sensitive string of up to 64 ASCII characters specified when a
 	// Query request is made. Providing a ClientToken makes the call to Query
 	// idempotent. This means that running the same query repeatedly will produce the
 	// same result. In other words, making multiple identical Query requests has the
 	// same effect as making a single request. When using ClientToken in a query, note
 	// the following:
+	//
 	//   - If the Query API is instantiated without a ClientToken , the Query SDK
 	//   generates a ClientToken on your behalf.
+	//
 	//   - If the Query invocation only contains the ClientToken but does not include a
 	//   NextToken , that invocation of Query is assumed to be a new query run.
+	//
 	//   - If the invocation contains NextToken , that particular invocation is assumed
 	//   to be a subsequent invocation of a prior call to the Query API, and a result set
 	//   is returned.
+	//
 	//   - After 4 hours, any request with the same ClientToken is treated as a new
 	//   request.
 	ClientToken *string
 
-	// The total number of rows to be returned in the Query output. The initial run of
-	// Query with a MaxRows value specified will return the result set of the query in
-	// two cases:
+	//  The total number of rows to be returned in the Query output. The initial run
+	// of Query with a MaxRows value specified will return the result set of the query
+	// in two cases:
+	//
 	//   - The size of the result is less than 1MB .
+	//
 	//   - The number of rows in the result set is less than the value of maxRows .
+	//
 	// Otherwise, the initial invocation of Query only returns a NextToken , which can
 	// then be used in subsequent calls to fetch the result set. To resume pagination,
-	// provide the NextToken value in the subsequent command. If the row size is large
-	// (e.g. a row has many columns), Timestream may return fewer rows to keep the
-	// response size from exceeding the 1 MB limit. If MaxRows is not provided,
-	// Timestream will send the necessary number of rows to meet the 1 MB limit.
+	// provide the NextToken value in the subsequent command.
+	//
+	// If the row size is large (e.g. a row has many columns), Timestream may return
+	// fewer rows to keep the response size from exceeding the 1 MB limit. If MaxRows
+	// is not provided, Timestream will send the necessary number of rows to meet the 1
+	// MB limit.
 	MaxRows *int32
 
-	// A pagination token used to return a set of results. When the Query API is
+	//  A pagination token used to return a set of results. When the Query API is
 	// invoked using NextToken , that particular invocation is assumed to be a
 	// subsequent invocation of a prior call to Query , and a result set is returned.
 	// However, if the Query invocation only contains the ClientToken , that invocation
-	// of Query is assumed to be a new query run. Note the following when using
-	// NextToken in a query:
+	// of Query is assumed to be a new query run.
+	//
+	// Note the following when using NextToken in a query:
+	//
 	//   - A pagination token can be used for up to five Query invocations, OR for a
 	//   duration of up to 1 hour – whichever comes first.
+	//
 	//   - Using the same NextToken will return the same set of records. To keep
 	//   paginating through the result set, you must to use the most recent nextToken .
+	//
 	//   - Suppose a Query invocation returns two NextToken values, TokenA and TokenB .
 	//   If TokenB is used in a subsequent Query invocation, then TokenA is invalidated
 	//   and cannot be reused.
+	//
 	//   - To request a previous result set from a query after pagination has begun,
 	//   you must re-invoke the Query API.
+	//
 	//   - The latest NextToken should be used to paginate until null is returned, at
 	//   which point a new NextToken should be used.
+	//
 	//   - If the IAM principal of the query initiator and the result reader are not
 	//   the same and/or the query initiator and the result reader do not have the same
 	//   query string in the query requests, the query will fail with an Invalid
 	//   pagination token error.
 	NextToken *string
 
+	// Encapsulates settings for enabling QueryInsights .
+	//
+	// Enabling QueryInsights returns insights and metrics in addition to query
+	// results for the query that you executed. You can use QueryInsights to tune your
+	// query performance.
+	QueryInsights *types.QueryInsights
+
 	noSmithyDocumentSerde
 }
 
 type QueryOutput struct {
 
-	// The column data types of the returned result set.
+	//  The column data types of the returned result set.
 	//
 	// This member is required.
 	ColumnInfo []types.ColumnInfo
 
-	// A unique ID for the given query.
+	//  A unique ID for the given query.
 	//
 	// This member is required.
 	QueryId *string
 
-	// The result set rows returned by the query.
+	//  The result set rows returned by the query.
 	//
 	// This member is required.
 	Rows []types.Row
 
-	// A pagination token that can be used again on a Query call to get the next set
+	//  A pagination token that can be used again on a Query call to get the next set
 	// of results.
 	NextToken *string
+
+	// Encapsulates QueryInsights containing insights and metrics related to the query
+	// that you executed.
+	QueryInsightsResponse *types.QueryInsightsResponse
 
 	// Information about the status of the query, including progress and bytes scanned.
 	QueryStatus *types.QueryStatus
@@ -142,6 +184,9 @@ type QueryOutput struct {
 }
 
 func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson10_serializeOpQuery{}, middleware.After)
 	if err != nil {
 		return err
@@ -150,34 +195,38 @@ func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options O
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "Query"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -192,7 +241,13 @@ func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options O
 	if err = addOpQueryDiscoverEndpointMiddleware(stack, options, c); err != nil {
 		return err
 	}
-	if err = addQueryResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opQueryMiddleware(stack, options); err != nil {
@@ -204,7 +259,7 @@ func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options O
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opQuery(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -216,81 +271,42 @@ func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options O
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
 
-func addOpQueryDiscoverEndpointMiddleware(stack *middleware.Stack, o Options, c *Client) error {
-	return stack.Serialize.Insert(&internalEndpointDiscovery.DiscoverEndpoint{
-		Options: []func(*internalEndpointDiscovery.DiscoverEndpointOptions){
-			func(opt *internalEndpointDiscovery.DiscoverEndpointOptions) {
-				opt.DisableHTTPS = o.EndpointOptions.DisableHTTPS
-				opt.Logger = o.Logger
-				opt.EndpointResolverUsedForDiscovery = o.EndpointDiscovery.EndpointResolverUsedForDiscovery
-			},
-		},
-		DiscoverOperation:            c.fetchOpQueryDiscoverEndpoint,
-		EndpointDiscoveryEnableState: o.EndpointDiscovery.EnableEndpointDiscovery,
-		EndpointDiscoveryRequired:    true,
-	}, "ResolveEndpoint", middleware.After)
-}
-
-func (c *Client) fetchOpQueryDiscoverEndpoint(ctx context.Context, input interface{}, optFns ...func(*internalEndpointDiscovery.DiscoverEndpointOptions)) (internalEndpointDiscovery.WeightedAddress, error) {
-	in, ok := input.(*QueryInput)
-	if !ok {
-		return internalEndpointDiscovery.WeightedAddress{}, fmt.Errorf("unknown input type %T", input)
-	}
-	_ = in
-
-	identifierMap := make(map[string]string, 0)
-
-	key := fmt.Sprintf("Timestream Query.%v", identifierMap)
-
-	if v, ok := c.endpointCache.Get(key); ok {
-		return v, nil
-	}
-
-	discoveryOperationInput := &DescribeEndpointsInput{}
-
-	opt := internalEndpointDiscovery.DiscoverEndpointOptions{}
-	for _, fn := range optFns {
-		fn(&opt)
-	}
-
-	endpoint, err := c.handleEndpointDiscoveryFromService(ctx, discoveryOperationInput, key, opt)
-	if err != nil {
-		return internalEndpointDiscovery.WeightedAddress{}, err
-	}
-
-	weighted, ok := endpoint.GetValidAddress()
-	if !ok {
-		return internalEndpointDiscovery.WeightedAddress{}, fmt.Errorf("no valid endpoint address returned by the endpoint discovery api")
-	}
-	return weighted, nil
-}
-
-// QueryAPIClient is a client that implements the Query operation.
-type QueryAPIClient interface {
-	Query(context.Context, *QueryInput, ...func(*Options)) (*QueryOutput, error)
-}
-
-var _ QueryAPIClient = (*Client)(nil)
-
 // QueryPaginatorOptions is the paginator options for Query
 type QueryPaginatorOptions struct {
-	// The total number of rows to be returned in the Query output. The initial run of
-	// Query with a MaxRows value specified will return the result set of the query in
-	// two cases:
+	//  The total number of rows to be returned in the Query output. The initial run
+	// of Query with a MaxRows value specified will return the result set of the query
+	// in two cases:
+	//
 	//   - The size of the result is less than 1MB .
+	//
 	//   - The number of rows in the result set is less than the value of maxRows .
+	//
 	// Otherwise, the initial invocation of Query only returns a NextToken , which can
 	// then be used in subsequent calls to fetch the result set. To resume pagination,
-	// provide the NextToken value in the subsequent command. If the row size is large
-	// (e.g. a row has many columns), Timestream may return fewer rows to keep the
-	// response size from exceeding the 1 MB limit. If MaxRows is not provided,
-	// Timestream will send the necessary number of rows to meet the 1 MB limit.
+	// provide the NextToken value in the subsequent command.
+	//
+	// If the row size is large (e.g. a row has many columns), Timestream may return
+	// fewer rows to keep the response size from exceeding the 1 MB limit. If MaxRows
+	// is not provided, Timestream will send the necessary number of rows to meet the 1
+	// MB limit.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token
@@ -351,6 +367,9 @@ func (p *QueryPaginator) NextPage(ctx context.Context, optFns ...func(*Options))
 	}
 	params.MaxRows = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.Query(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -369,6 +388,65 @@ func (p *QueryPaginator) NextPage(ctx context.Context, optFns ...func(*Options))
 
 	return result, nil
 }
+
+func addOpQueryDiscoverEndpointMiddleware(stack *middleware.Stack, o Options, c *Client) error {
+	return stack.Finalize.Insert(&internalEndpointDiscovery.DiscoverEndpoint{
+		Options: []func(*internalEndpointDiscovery.DiscoverEndpointOptions){
+			func(opt *internalEndpointDiscovery.DiscoverEndpointOptions) {
+				opt.DisableHTTPS = o.EndpointOptions.DisableHTTPS
+				opt.Logger = o.Logger
+				opt.EndpointResolverUsedForDiscovery = o.EndpointDiscovery.EndpointResolverUsedForDiscovery
+			},
+		},
+		DiscoverOperation:            c.fetchOpQueryDiscoverEndpoint,
+		EndpointDiscoveryEnableState: o.EndpointDiscovery.EnableEndpointDiscovery,
+		EndpointDiscoveryRequired:    true,
+		Region:                       o.Region,
+	}, "ResolveEndpointV2", middleware.After)
+}
+
+func (c *Client) fetchOpQueryDiscoverEndpoint(ctx context.Context, region string, optFns ...func(*internalEndpointDiscovery.DiscoverEndpointOptions)) (internalEndpointDiscovery.WeightedAddress, error) {
+	input := getOperationInput(ctx)
+	in, ok := input.(*QueryInput)
+	if !ok {
+		return internalEndpointDiscovery.WeightedAddress{}, fmt.Errorf("unknown input type %T", input)
+	}
+	_ = in
+
+	identifierMap := make(map[string]string, 0)
+	identifierMap["sdk#Region"] = region
+
+	key := fmt.Sprintf("Timestream Query.%v", identifierMap)
+
+	if v, ok := c.endpointCache.Get(key); ok {
+		return v, nil
+	}
+
+	discoveryOperationInput := &DescribeEndpointsInput{}
+
+	opt := internalEndpointDiscovery.DiscoverEndpointOptions{}
+	for _, fn := range optFns {
+		fn(&opt)
+	}
+
+	endpoint, err := c.handleEndpointDiscoveryFromService(ctx, discoveryOperationInput, region, key, opt)
+	if err != nil {
+		return internalEndpointDiscovery.WeightedAddress{}, err
+	}
+
+	weighted, ok := endpoint.GetValidAddress()
+	if !ok {
+		return internalEndpointDiscovery.WeightedAddress{}, fmt.Errorf("no valid endpoint address returned by the endpoint discovery api")
+	}
+	return weighted, nil
+}
+
+// QueryAPIClient is a client that implements the Query operation.
+type QueryAPIClient interface {
+	Query(context.Context, *QueryInput, ...func(*Options)) (*QueryOutput, error)
+}
+
+var _ QueryAPIClient = (*Client)(nil)
 
 type idempotencyToken_initializeOpQuery struct {
 	tokenProvider IdempotencyTokenProvider
@@ -407,130 +485,6 @@ func newServiceMetadataMiddleware_opQuery(region string) *awsmiddleware.Register
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "timestream",
 		OperationName: "Query",
 	}
-}
-
-type opQueryResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opQueryResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opQueryResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "timestream"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "timestream"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("timestream")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addQueryResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opQueryResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

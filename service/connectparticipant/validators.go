@@ -9,6 +9,26 @@ import (
 	"github.com/aws/smithy-go/middleware"
 )
 
+type validateOpCancelParticipantAuthentication struct {
+}
+
+func (*validateOpCancelParticipantAuthentication) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCancelParticipantAuthentication) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CancelParticipantAuthenticationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCancelParticipantAuthenticationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCompleteAttachmentUpload struct {
 }
 
@@ -49,6 +69,26 @@ func (m *validateOpCreateParticipantConnection) HandleInitialize(ctx context.Con
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDescribeView struct {
+}
+
+func (*validateOpDescribeView) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeView) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeViewInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeViewInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDisconnectParticipant struct {
 }
 
@@ -84,6 +124,26 @@ func (m *validateOpGetAttachment) HandleInitialize(ctx context.Context, in middl
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetAttachmentInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetAuthenticationUrl struct {
+}
+
+func (*validateOpGetAuthenticationUrl) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetAuthenticationUrl) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetAuthenticationUrlInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetAuthenticationUrlInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -169,6 +229,10 @@ func (m *validateOpStartAttachmentUpload) HandleInitialize(ctx context.Context, 
 	return next.HandleInitialize(ctx, in)
 }
 
+func addOpCancelParticipantAuthenticationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCancelParticipantAuthentication{}, middleware.After)
+}
+
 func addOpCompleteAttachmentUploadValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCompleteAttachmentUpload{}, middleware.After)
 }
@@ -177,12 +241,20 @@ func addOpCreateParticipantConnectionValidationMiddleware(stack *middleware.Stac
 	return stack.Initialize.Add(&validateOpCreateParticipantConnection{}, middleware.After)
 }
 
+func addOpDescribeViewValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeView{}, middleware.After)
+}
+
 func addOpDisconnectParticipantValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDisconnectParticipant{}, middleware.After)
 }
 
 func addOpGetAttachmentValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetAttachment{}, middleware.After)
+}
+
+func addOpGetAuthenticationUrlValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetAuthenticationUrl{}, middleware.After)
 }
 
 func addOpGetTranscriptValidationMiddleware(stack *middleware.Stack) error {
@@ -199,6 +271,24 @@ func addOpSendMessageValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpStartAttachmentUploadValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpStartAttachmentUpload{}, middleware.After)
+}
+
+func validateOpCancelParticipantAuthenticationInput(v *CancelParticipantAuthenticationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CancelParticipantAuthenticationInput"}
+	if v.SessionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SessionId"))
+	}
+	if v.ConnectionToken == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConnectionToken"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
 }
 
 func validateOpCompleteAttachmentUploadInput(v *CompleteAttachmentUploadInput) error {
@@ -237,6 +327,24 @@ func validateOpCreateParticipantConnectionInput(v *CreateParticipantConnectionIn
 	}
 }
 
+func validateOpDescribeViewInput(v *DescribeViewInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeViewInput"}
+	if v.ViewToken == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ViewToken"))
+	}
+	if v.ConnectionToken == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConnectionToken"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDisconnectParticipantInput(v *DisconnectParticipantInput) error {
 	if v == nil {
 		return nil
@@ -259,6 +367,27 @@ func validateOpGetAttachmentInput(v *GetAttachmentInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "GetAttachmentInput"}
 	if v.AttachmentId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("AttachmentId"))
+	}
+	if v.ConnectionToken == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConnectionToken"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetAuthenticationUrlInput(v *GetAuthenticationUrlInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetAuthenticationUrlInput"}
+	if v.SessionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SessionId"))
+	}
+	if v.RedirectUri == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RedirectUri"))
 	}
 	if v.ConnectionToken == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ConnectionToken"))

@@ -4,25 +4,26 @@ package elasticache
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/elasticache/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Modifies the settings for a replication group.
-//   - Scaling for Amazon ElastiCache for Redis (cluster mode enabled) (https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/scaling-redis-cluster-mode-enabled.html)
-//     in the ElastiCache User Guide
-//   - ModifyReplicationGroupShardConfiguration (https://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_ModifyReplicationGroupShardConfiguration.html)
-//     in the ElastiCache API Reference
+// Modifies the settings for a replication group. This is limited to Valkey and
+// Redis OSS 7 and above.
 //
-// This operation is valid for Redis only.
+// [Scaling for Valkey or Redis OSS (cluster mode enabled)]
+//   - in the ElastiCache User Guide
+//
+// [ModifyReplicationGroupShardConfiguration]
+//   - in the ElastiCache API Reference
+//
+// This operation is valid for Valkey or Redis OSS only.
+//
+// [ModifyReplicationGroupShardConfiguration]: https://docs.aws.amazon.com/AmazonElastiCache/latest/APIReference/API_ModifyReplicationGroupShardConfiguration.html
+// [Scaling for Valkey or Redis OSS (cluster mode enabled)]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/scaling-redis-cluster-mode-enabled.html
 func (c *Client) ModifyReplicationGroup(ctx context.Context, params *ModifyReplicationGroupInput, optFns ...func(*Options)) (*ModifyReplicationGroupOutput, error) {
 	if params == nil {
 		params = &ModifyReplicationGroupInput{}
@@ -49,34 +50,53 @@ type ModifyReplicationGroupInput struct {
 	// If true , this parameter causes the modifications in this request and any
 	// pending modifications to be applied, asynchronously and as soon as possible,
 	// regardless of the PreferredMaintenanceWindow setting for the replication group.
+	//
 	// If false , changes to the nodes in the replication group are applied on the next
-	// maintenance reboot, or the next failure reboot, whichever occurs first. Valid
-	// values: true | false Default: false
-	ApplyImmediately bool
+	// maintenance reboot, or the next failure reboot, whichever occurs first.
+	//
+	// Valid values: true | false
+	//
+	// Default: false
+	ApplyImmediately *bool
 
 	// Reserved parameter. The password used to access a password protected server.
 	// This parameter must be specified with the auth-token-update-strategy
 	// parameter. Password constraints:
+	//
 	//   - Must be only printable ASCII characters
+	//
 	//   - Must be at least 16 characters and no more than 128 characters in length
+	//
 	//   - Cannot contain any of the following characters: '/', '"', or '@', '%'
-	// For more information, see AUTH password at AUTH (http://redis.io/commands/AUTH) .
+	//
+	// For more information, see AUTH password at [AUTH].
+	//
+	// [AUTH]: http://redis.io/commands/AUTH
 	AuthToken *string
 
 	// Specifies the strategy to use to update the AUTH token. This parameter must be
 	// specified with the auth-token parameter. Possible values:
-	//   - Rotate
-	//   - Set
-	// For more information, see Authenticating Users with Redis AUTH (http://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/auth.html)
+	//
+	//   - ROTATE - default, if no update strategy is provided
+	//
+	//   - SET - allowed only after ROTATE
+	//
+	//   - DELETE - allowed only when transitioning to RBAC
+	//
+	// For more information, see [Authenticating Users with AUTH]
+	//
+	// [Authenticating Users with AUTH]: http://docs.aws.amazon.com/AmazonElastiCache/latest/dg/auth.html
 	AuthTokenUpdateStrategy types.AuthTokenUpdateStrategyType
 
-	//  If you are running Redis engine version 6.0 or later, set this parameter to
-	// yes if you want to opt-in to the next auto minor version upgrade campaign. This
-	// parameter is disabled for previous versions.
+	//  If you are running Valkey or Redis OSS engine version 6.0 or later, set this
+	// parameter to yes if you want to opt-in to the next auto minor version upgrade
+	// campaign. This parameter is disabled for previous versions.
 	AutoMinorVersionUpgrade *bool
 
 	// Determines whether a read replica is automatically promoted to read/write
-	// primary if the existing primary encounters a failure. Valid values: true | false
+	// primary if the existing primary encounters a failure.
+	//
+	// Valid values: true | false
 	AutomaticFailoverEnabled *bool
 
 	// A valid cache node type that you want to scale this replication group to.
@@ -90,30 +110,43 @@ type ModifyReplicationGroupInput struct {
 
 	// A list of cache security group names to authorize for the clusters in this
 	// replication group. This change is asynchronously applied as soon as possible.
+	//
 	// This parameter can be used only with replication group containing clusters
-	// running outside of an Amazon Virtual Private Cloud (Amazon VPC). Constraints:
-	// Must contain no more than 255 alphanumeric characters. Must not be Default .
+	// running outside of an Amazon Virtual Private Cloud (Amazon VPC).
+	//
+	// Constraints: Must contain no more than 255 alphanumeric characters. Must not be
+	// Default .
 	CacheSecurityGroupNames []string
 
 	// Enabled or Disabled. To modify cluster mode from Disabled to Enabled, you must
-	// first set the cluster mode to Compatible. Compatible mode allows your Redis
-	// clients to connect using both cluster mode enabled and cluster mode disabled.
-	// After you migrate all Redis clients to use cluster mode enabled, you can then
-	// complete cluster mode configuration and set the cluster mode to Enabled.
+	// first set the cluster mode to Compatible. Compatible mode allows your Valkey or
+	// Redis OSS clients to connect using both cluster mode enabled and cluster mode
+	// disabled. After you migrate all Valkey or Redis OSS clients to use cluster mode
+	// enabled, you can then complete cluster mode configuration and set the cluster
+	// mode to Enabled.
 	ClusterMode types.ClusterMode
 
+	// Modifies the engine listed in a replication group message. The options are
+	// redis, memcached or valkey.
+	Engine *string
+
 	// The upgraded version of the cache engine to be run on the clusters in the
-	// replication group. Important: You can upgrade to a newer engine version (see
-	// Selecting a Cache Engine and Version (https://docs.aws.amazon.com/AmazonElastiCache/latest/red-ug/SelectEngine.html#VersionManagement)
-	// ), but you cannot downgrade to an earlier engine version. If you want to use an
-	// earlier engine version, you must delete the existing replication group and
-	// create it anew with the earlier engine version.
+	// replication group.
+	//
+	// Important: You can upgrade to a newer engine version (see [Selecting a Cache Engine and Version]), but you cannot
+	// downgrade to an earlier engine version. If you want to use an earlier engine
+	// version, you must delete the existing replication group and create it anew with
+	// the earlier engine version.
+	//
+	// [Selecting a Cache Engine and Version]: https://docs.aws.amazon.com/AmazonElastiCache/latest/dg/SelectEngine.html#VersionManagement
 	EngineVersion *string
 
 	// The network type you choose when modifying a cluster, either ipv4 | ipv6 . IPv6
-	// is supported for workloads using Redis engine version 6.2 onward or Memcached
-	// engine version 1.6.6 on all instances built on the Nitro system (http://aws.amazon.com/ec2/nitro/)
-	// .
+	// is supported for workloads using Valkey 7.2 and above, Redis OSS engine version
+	// 6.2 and above or Memcached engine version 1.6.6 and above on all instances built
+	// on the [Nitro system].
+	//
+	// [Nitro system]: http://aws.amazon.com/ec2/nitro/
 	IpDiscovery types.IpDiscovery
 
 	// Specifies the destination, format and type of the logs.
@@ -128,26 +161,37 @@ type ModifyReplicationGroupInput struct {
 	NodeGroupId *string
 
 	// The Amazon Resource Name (ARN) of the Amazon SNS topic to which notifications
-	// are sent. The Amazon SNS topic owner must be same as the replication group
-	// owner.
+	// are sent.
+	//
+	// The Amazon SNS topic owner must be same as the replication group owner.
 	NotificationTopicArn *string
 
 	// The status of the Amazon SNS notification topic for the replication group.
-	// Notifications are sent only if the status is active . Valid values: active |
-	// inactive
+	// Notifications are sent only if the status is active .
+	//
+	// Valid values: active | inactive
 	NotificationTopicStatus *string
 
 	// Specifies the weekly time range during which maintenance on the cluster is
 	// performed. It is specified as a range in the format ddd:hh24:mi-ddd:hh24:mi (24H
-	// Clock UTC). The minimum maintenance window is a 60 minute period. Valid values
-	// for ddd are:
+	// Clock UTC). The minimum maintenance window is a 60 minute period.
+	//
+	// Valid values for ddd are:
+	//
 	//   - sun
+	//
 	//   - mon
+	//
 	//   - tue
+	//
 	//   - wed
+	//
 	//   - thu
+	//
 	//   - fri
+	//
 	//   - sat
+	//
 	// Example: sun:23:00-mon:01:30
 	PreferredMaintenanceWindow *string
 
@@ -164,26 +208,33 @@ type ModifyReplicationGroupInput struct {
 	ReplicationGroupDescription *string
 
 	// Specifies the VPC Security Groups associated with the clusters in the
-	// replication group. This parameter can be used only with replication group
-	// containing clusters running in an Amazon Virtual Private Cloud (Amazon VPC).
+	// replication group.
+	//
+	// This parameter can be used only with replication group containing clusters
+	// running in an Amazon Virtual Private Cloud (Amazon VPC).
 	SecurityGroupIds []string
 
 	// The number of days for which ElastiCache retains automatic node group (shard)
 	// snapshots before deleting them. For example, if you set SnapshotRetentionLimit
 	// to 5, a snapshot that was taken today is retained for 5 days before being
-	// deleted. Important If the value of SnapshotRetentionLimit is set to zero (0),
-	// backups are turned off.
+	// deleted.
+	//
+	// Important If the value of SnapshotRetentionLimit is set to zero (0), backups
+	// are turned off.
 	SnapshotRetentionLimit *int32
 
 	// The daily time range (in UTC) during which ElastiCache begins taking a daily
-	// snapshot of the node group (shard) specified by SnapshottingClusterId . Example:
-	// 05:00-09:00 If you do not specify this parameter, ElastiCache automatically
-	// chooses an appropriate time range.
+	// snapshot of the node group (shard) specified by SnapshottingClusterId .
+	//
+	// Example: 05:00-09:00
+	//
+	// If you do not specify this parameter, ElastiCache automatically chooses an
+	// appropriate time range.
 	SnapshotWindow *string
 
 	// The cluster ID that is used as the daily snapshot source for the replication
-	// group. This parameter cannot be set for Redis (cluster mode enabled) replication
-	// groups.
+	// group. This parameter cannot be set for Valkey or Redis OSS (cluster mode
+	// enabled) replication groups.
 	SnapshottingClusterId *string
 
 	// A flag that enables in-transit encryption when set to true. If you are enabling
@@ -192,13 +243,16 @@ type ModifyReplicationGroupInput struct {
 	TransitEncryptionEnabled *bool
 
 	// A setting that allows you to migrate your clients to use in-transit encryption,
-	// with no downtime. You must set TransitEncryptionEnabled to true , for your
-	// existing cluster, and set TransitEncryptionMode to preferred in the same
-	// request to allow both encrypted and unencrypted connections at the same time.
-	// Once you migrate all your Redis clients to use encrypted connections you can set
-	// the value to required to allow encrypted connections only. Setting
-	// TransitEncryptionMode to required is a two-step process that requires you to
-	// first set the TransitEncryptionMode to preferred , after that you can set
+	// with no downtime.
+	//
+	// You must set TransitEncryptionEnabled to true , for your existing cluster, and
+	// set TransitEncryptionMode to preferred in the same request to allow both
+	// encrypted and unencrypted connections at the same time. Once you migrate all
+	// your Valkey or Redis OSS clients to use encrypted connections you can set the
+	// value to required to allow encrypted connections only.
+	//
+	// Setting TransitEncryptionMode to required is a two-step process that requires
+	// you to first set the TransitEncryptionMode to preferred , after that you can set
 	// TransitEncryptionMode to required .
 	TransitEncryptionMode types.TransitEncryptionMode
 
@@ -214,7 +268,8 @@ type ModifyReplicationGroupInput struct {
 
 type ModifyReplicationGroupOutput struct {
 
-	// Contains all of the attributes of a specific Redis replication group.
+	// Contains all of the attributes of a specific Valkey or Redis OSS replication
+	// group.
 	ReplicationGroup *types.ReplicationGroup
 
 	// Metadata pertaining to the operation's result.
@@ -224,6 +279,9 @@ type ModifyReplicationGroupOutput struct {
 }
 
 func (c *Client) addOperationModifyReplicationGroupMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpModifyReplicationGroup{}, middleware.After)
 	if err != nil {
 		return err
@@ -232,34 +290,38 @@ func (c *Client) addOperationModifyReplicationGroupMiddlewares(stack *middleware
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ModifyReplicationGroup"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -271,7 +333,13 @@ func (c *Client) addOperationModifyReplicationGroupMiddlewares(stack *middleware
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addModifyReplicationGroupResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyReplicationGroupValidationMiddleware(stack); err != nil {
@@ -280,7 +348,7 @@ func (c *Client) addOperationModifyReplicationGroupMiddlewares(stack *middleware
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opModifyReplicationGroup(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -292,7 +360,19 @@ func (c *Client) addOperationModifyReplicationGroupMiddlewares(stack *middleware
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -302,130 +382,6 @@ func newServiceMetadataMiddleware_opModifyReplicationGroup(region string) *awsmi
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "elasticache",
 		OperationName: "ModifyReplicationGroup",
 	}
-}
-
-type opModifyReplicationGroupResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opModifyReplicationGroupResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opModifyReplicationGroupResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "elasticache"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "elasticache"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("elasticache")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addModifyReplicationGroupResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opModifyReplicationGroupResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

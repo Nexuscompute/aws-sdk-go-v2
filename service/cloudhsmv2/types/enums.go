@@ -10,8 +10,9 @@ const (
 )
 
 // Values returns all known values for BackupPolicy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BackupPolicy) Values() []BackupPolicy {
 	return []BackupPolicy{
 		"DEFAULT",
@@ -26,8 +27,9 @@ const (
 )
 
 // Values returns all known values for BackupRetentionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BackupRetentionType) Values() []BackupRetentionType {
 	return []BackupRetentionType{
 		"DAYS",
@@ -45,14 +47,34 @@ const (
 )
 
 // Values returns all known values for BackupState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BackupState) Values() []BackupState {
 	return []BackupState{
 		"CREATE_IN_PROGRESS",
 		"READY",
 		"DELETED",
 		"PENDING_DELETION",
+	}
+}
+
+type ClusterMode string
+
+// Enum values for ClusterMode
+const (
+	ClusterModeFips    ClusterMode = "FIPS"
+	ClusterModeNonFips ClusterMode = "NON_FIPS"
+)
+
+// Values returns all known values for ClusterMode. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ClusterMode) Values() []ClusterMode {
+	return []ClusterMode{
+		"FIPS",
+		"NON_FIPS",
 	}
 }
 
@@ -66,14 +88,17 @@ const (
 	ClusterStateInitialized          ClusterState = "INITIALIZED"
 	ClusterStateActive               ClusterState = "ACTIVE"
 	ClusterStateUpdateInProgress     ClusterState = "UPDATE_IN_PROGRESS"
+	ClusterStateModifyInProgress     ClusterState = "MODIFY_IN_PROGRESS"
+	ClusterStateRollbackInProgress   ClusterState = "ROLLBACK_IN_PROGRESS"
 	ClusterStateDeleteInProgress     ClusterState = "DELETE_IN_PROGRESS"
 	ClusterStateDeleted              ClusterState = "DELETED"
 	ClusterStateDegraded             ClusterState = "DEGRADED"
 )
 
 // Values returns all known values for ClusterState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ClusterState) Values() []ClusterState {
 	return []ClusterState{
 		"CREATE_IN_PROGRESS",
@@ -82,6 +107,8 @@ func (ClusterState) Values() []ClusterState {
 		"INITIALIZED",
 		"ACTIVE",
 		"UPDATE_IN_PROGRESS",
+		"MODIFY_IN_PROGRESS",
+		"ROLLBACK_IN_PROGRESS",
 		"DELETE_IN_PROGRESS",
 		"DELETED",
 		"DEGRADED",
@@ -100,8 +127,9 @@ const (
 )
 
 // Values returns all known values for HsmState. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HsmState) Values() []HsmState {
 	return []HsmState{
 		"CREATE_IN_PROGRESS",
@@ -109,5 +137,24 @@ func (HsmState) Values() []HsmState {
 		"DEGRADED",
 		"DELETE_IN_PROGRESS",
 		"DELETED",
+	}
+}
+
+type NetworkType string
+
+// Enum values for NetworkType
+const (
+	NetworkTypeIpv4      NetworkType = "IPV4"
+	NetworkTypeDualstack NetworkType = "DUALSTACK"
+)
+
+// Values returns all known values for NetworkType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (NetworkType) Values() []NetworkType {
+	return []NetworkType{
+		"IPV4",
+		"DUALSTACK",
 	}
 }

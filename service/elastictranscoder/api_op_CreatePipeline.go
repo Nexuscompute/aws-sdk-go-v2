@@ -4,14 +4,9 @@ package elastictranscoder
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/elastictranscoder/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -42,7 +37,9 @@ type CreatePipelineInput struct {
 	InputBucket *string
 
 	// The name of the pipeline. We recommend that the name be unique within the AWS
-	// account, but uniqueness is not enforced. Constraints: Maximum 40 characters.
+	// account, but uniqueness is not enforced.
+	//
+	// Constraints: Maximum 40 characters.
 	//
 	// This member is required.
 	Name *string
@@ -54,76 +51,102 @@ type CreatePipelineInput struct {
 	Role *string
 
 	// The AWS Key Management Service (AWS KMS) key that you want to use with this
-	// pipeline. If you use either s3 or s3-aws-kms as your Encryption:Mode , you don't
-	// need to provide a key with your job because a default key, known as an AWS-KMS
-	// key, is created for you automatically. You need to provide an AWS-KMS key only
-	// if you want to use a non-default AWS-KMS key, or if you are using an
-	// Encryption:Mode of aes-cbc-pkcs7 , aes-ctr , or aes-gcm .
+	// pipeline.
+	//
+	// If you use either s3 or s3-aws-kms as your Encryption:Mode , you don't need to
+	// provide a key with your job because a default key, known as an AWS-KMS key, is
+	// created for you automatically. You need to provide an AWS-KMS key only if you
+	// want to use a non-default AWS-KMS key, or if you are using an Encryption:Mode
+	// of aes-cbc-pkcs7 , aes-ctr , or aes-gcm .
 	AwsKmsKeyArn *string
 
 	// The optional ContentConfig object specifies information about the Amazon S3
 	// bucket in which you want Elastic Transcoder to save transcoded files and
 	// playlists: which bucket to use, which users you want to have access to the
 	// files, the type of access you want users to have, and the storage class that you
-	// want to assign to the files. If you specify values for ContentConfig , you must
-	// also specify values for ThumbnailConfig . If you specify values for
-	// ContentConfig and ThumbnailConfig , omit the OutputBucket object.
+	// want to assign to the files.
+	//
+	// If you specify values for ContentConfig , you must also specify values for
+	// ThumbnailConfig .
+	//
+	// If you specify values for ContentConfig and ThumbnailConfig , omit the
+	// OutputBucket object.
+	//
 	//   - Bucket: The Amazon S3 bucket in which you want Elastic Transcoder to save
 	//   transcoded files and playlists.
+	//
 	//   - Permissions (Optional): The Permissions object specifies which users you
 	//   want to have access to transcoded files and the type of access you want them to
 	//   have. You can grant permissions to a maximum of 30 users and/or predefined
 	//   Amazon S3 groups.
+	//
 	//   - Grantee Type: Specify the type of value that appears in the Grantee object:
+	//
 	//   - Canonical: The value in the Grantee object is either the canonical user ID
 	//   for an AWS account or an origin access identity for an Amazon CloudFront
 	//   distribution. For more information about canonical user IDs, see Access Control
 	//   List (ACL) Overview in the Amazon Simple Storage Service Developer Guide. For
 	//   more information about using CloudFront origin access identities to require that
 	//   users use CloudFront URLs instead of Amazon S3 URLs, see Using an Origin Access
-	//   Identity to Restrict Access to Your Amazon S3 Content. A canonical user ID is
-	//   not the same as an AWS account number.
+	//   Identity to Restrict Access to Your Amazon S3 Content.
+	//
+	// A canonical user ID is not the same as an AWS account number.
+	//
 	//   - Email: The value in the Grantee object is the registered email address of an
 	//   AWS account.
+	//
 	//   - Group: The value in the Grantee object is one of the following predefined
 	//   Amazon S3 groups: AllUsers , AuthenticatedUsers , or LogDelivery .
+	//
 	//   - Grantee: The AWS user or group that you want to have access to transcoded
 	//   files and playlists. To identify the user or group, you can specify the
 	//   canonical user ID for an AWS account, an origin access identity for a CloudFront
 	//   distribution, the registered email address of an AWS account, or a predefined
 	//   Amazon S3 group
+	//
 	//   - Access: The permission that you want to give to the AWS user that you
 	//   specified in Grantee . Permissions are granted on the files that Elastic
 	//   Transcoder adds to the bucket, including playlists and video files. Valid values
 	//   include:
+	//
 	//   - READ : The grantee can read the objects and metadata for objects that
 	//   Elastic Transcoder adds to the Amazon S3 bucket.
+	//
 	//   - READ_ACP : The grantee can read the object ACL for objects that Elastic
 	//   Transcoder adds to the Amazon S3 bucket.
+	//
 	//   - WRITE_ACP : The grantee can write the ACL for the objects that Elastic
 	//   Transcoder adds to the Amazon S3 bucket.
+	//
 	//   - FULL_CONTROL : The grantee has READ , READ_ACP , and WRITE_ACP permissions
 	//   for the objects that Elastic Transcoder adds to the Amazon S3 bucket.
+	//
 	//   - StorageClass: The Amazon S3 storage class, Standard or ReducedRedundancy ,
 	//   that you want Elastic Transcoder to assign to the video files and playlists that
 	//   it stores in your Amazon S3 bucket.
 	ContentConfig *types.PipelineOutputConfig
 
 	// The Amazon Simple Notification Service (Amazon SNS) topic that you want to
-	// notify to report job status. To receive notifications, you must also subscribe
-	// to the new topic in the Amazon SNS console.
+	// notify to report job status.
+	//
+	// To receive notifications, you must also subscribe to the new topic in the
+	// Amazon SNS console.
+	//
 	//   - Progressing: The topic ARN for the Amazon Simple Notification Service
 	//   (Amazon SNS) topic that you want to notify when Elastic Transcoder has started
 	//   to process a job in this pipeline. This is the ARN that Amazon SNS returned when
 	//   you created the topic. For more information, see Create a Topic in the Amazon
 	//   Simple Notification Service Developer Guide.
+	//
 	//   - Complete: The topic ARN for the Amazon SNS topic that you want to notify
 	//   when Elastic Transcoder has finished processing a job in this pipeline. This is
 	//   the ARN that Amazon SNS returned when you created the topic.
+	//
 	//   - Warning: The topic ARN for the Amazon SNS topic that you want to notify
 	//   when Elastic Transcoder encounters a warning condition while processing a job in
 	//   this pipeline. This is the ARN that Amazon SNS returned when you created the
 	//   topic.
+	//
 	//   - Error: The topic ARN for the Amazon SNS topic that you want to notify when
 	//   Elastic Transcoder encounters an error condition while processing a job in this
 	//   pipeline. This is the ARN that Amazon SNS returned when you created the topic.
@@ -131,17 +154,28 @@ type CreatePipelineInput struct {
 
 	// The Amazon S3 bucket in which you want Elastic Transcoder to save the
 	// transcoded files. (Use this, or use ContentConfig:Bucket plus
-	// ThumbnailConfig:Bucket.) Specify this value when all of the following are true:
+	// ThumbnailConfig:Bucket.)
+	//
+	// Specify this value when all of the following are true:
+	//
 	//   - You want to save transcoded files, thumbnails (if any), and playlists (if
 	//   any) together in one bucket.
+	//
 	//   - You do not want to specify the users or groups who have access to the
 	//   transcoded files, thumbnails, and playlists.
+	//
 	//   - You do not want to specify the permissions that Elastic Transcoder grants
-	//   to the files. When Elastic Transcoder saves files in OutputBucket , it grants
-	//   full control over the files only to the AWS account that owns the role that is
-	//   specified by Role .
+	//   to the
+	//
+	// files.
+	//
+	// When Elastic Transcoder saves files in OutputBucket , it grants full control
+	//   over the files only to the AWS account that owns the role that is specified by
+	//   Role .
+	//
 	//   - You want to associate the transcoded files and thumbnails with the Amazon
 	//   S3 Standard storage class.
+	//
 	// If you want to save transcoded files and playlists in one bucket and thumbnails
 	// in another bucket, specify which users can access the transcoded files or the
 	// permissions the users have, or change the Amazon S3 storage class, omit
@@ -151,39 +185,57 @@ type CreatePipelineInput struct {
 	// The ThumbnailConfig object specifies several values, including the Amazon S3
 	// bucket in which you want Elastic Transcoder to save thumbnail files, which users
 	// you want to have access to the files, the type of access you want users to have,
-	// and the storage class that you want to assign to the files. If you specify
-	// values for ContentConfig , you must also specify values for ThumbnailConfig
-	// even if you don't want to create thumbnails. If you specify values for
-	// ContentConfig and ThumbnailConfig , omit the OutputBucket object.
+	// and the storage class that you want to assign to the files.
+	//
+	// If you specify values for ContentConfig , you must also specify values for
+	// ThumbnailConfig even if you don't want to create thumbnails.
+	//
+	// If you specify values for ContentConfig and ThumbnailConfig , omit the
+	// OutputBucket object.
+	//
 	//   - Bucket: The Amazon S3 bucket in which you want Elastic Transcoder to save
 	//   thumbnail files.
+	//
 	//   - Permissions (Optional): The Permissions object specifies which users and/or
 	//   predefined Amazon S3 groups you want to have access to thumbnail files, and the
 	//   type of access you want them to have. You can grant permissions to a maximum of
 	//   30 users and/or predefined Amazon S3 groups.
+	//
 	//   - GranteeType: Specify the type of value that appears in the Grantee object:
+	//
 	//   - Canonical: The value in the Grantee object is either the canonical user ID
 	//   for an AWS account or an origin access identity for an Amazon CloudFront
-	//   distribution. A canonical user ID is not the same as an AWS account number.
+	//   distribution.
+	//
+	// A canonical user ID is not the same as an AWS account number.
+	//
 	//   - Email: The value in the Grantee object is the registered email address of an
 	//   AWS account.
+	//
 	//   - Group: The value in the Grantee object is one of the following predefined
 	//   Amazon S3 groups: AllUsers , AuthenticatedUsers , or LogDelivery .
+	//
 	//   - Grantee: The AWS user or group that you want to have access to thumbnail
 	//   files. To identify the user or group, you can specify the canonical user ID for
 	//   an AWS account, an origin access identity for a CloudFront distribution, the
 	//   registered email address of an AWS account, or a predefined Amazon S3 group.
+	//
 	//   - Access: The permission that you want to give to the AWS user that you
 	//   specified in Grantee . Permissions are granted on the thumbnail files that
 	//   Elastic Transcoder adds to the bucket. Valid values include:
+	//
 	//   - READ : The grantee can read the thumbnails and metadata for objects that
 	//   Elastic Transcoder adds to the Amazon S3 bucket.
+	//
 	//   - READ_ACP : The grantee can read the object ACL for thumbnails that Elastic
 	//   Transcoder adds to the Amazon S3 bucket.
+	//
 	//   - WRITE_ACP : The grantee can write the ACL for the thumbnails that Elastic
 	//   Transcoder adds to the Amazon S3 bucket.
+	//
 	//   - FULL_CONTROL : The grantee has READ , READ_ACP , and WRITE_ACP permissions
 	//   for the thumbnails that Elastic Transcoder adds to the Amazon S3 bucket.
+	//
 	//   - StorageClass: The Amazon S3 storage class, Standard or ReducedRedundancy ,
 	//   that you want Elastic Transcoder to assign to the thumbnails that it stores in
 	//   your Amazon S3 bucket.
@@ -201,9 +253,11 @@ type CreatePipelineOutput struct {
 	Pipeline *types.Pipeline
 
 	// Elastic Transcoder returns a warning if the resources used by your pipeline are
-	// not in the same region as the pipeline. Using resources in the same region, such
-	// as your Amazon S3 buckets, Amazon SNS notification topics, and AWS KMS key,
-	// reduces processing time and prevents cross-regional charges.
+	// not in the same region as the pipeline.
+	//
+	// Using resources in the same region, such as your Amazon S3 buckets, Amazon SNS
+	// notification topics, and AWS KMS key, reduces processing time and prevents
+	// cross-regional charges.
 	Warnings []types.Warning
 
 	// Metadata pertaining to the operation's result.
@@ -213,6 +267,9 @@ type CreatePipelineOutput struct {
 }
 
 func (c *Client) addOperationCreatePipelineMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreatePipeline{}, middleware.After)
 	if err != nil {
 		return err
@@ -221,34 +278,38 @@ func (c *Client) addOperationCreatePipelineMiddlewares(stack *middleware.Stack, 
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreatePipeline"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -260,7 +321,13 @@ func (c *Client) addOperationCreatePipelineMiddlewares(stack *middleware.Stack, 
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreatePipelineResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreatePipelineValidationMiddleware(stack); err != nil {
@@ -269,7 +336,7 @@ func (c *Client) addOperationCreatePipelineMiddlewares(stack *middleware.Stack, 
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreatePipeline(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -281,7 +348,19 @@ func (c *Client) addOperationCreatePipelineMiddlewares(stack *middleware.Stack, 
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -291,130 +370,6 @@ func newServiceMetadataMiddleware_opCreatePipeline(region string) *awsmiddleware
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "elastictranscoder",
 		OperationName: "CreatePipeline",
 	}
-}
-
-type opCreatePipelineResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreatePipelineResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreatePipelineResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "elastictranscoder"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "elastictranscoder"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("elastictranscoder")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreatePipelineResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreatePipelineResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

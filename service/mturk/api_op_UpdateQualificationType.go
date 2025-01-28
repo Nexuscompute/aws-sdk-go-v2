@@ -4,41 +4,45 @@ package mturk
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/mturk/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// The UpdateQualificationType operation modifies the attributes of an existing
+//	The UpdateQualificationType operation modifies the attributes of an existing
+//
 // Qualification type, which is represented by a QualificationType data structure.
-// Only the owner of a Qualification type can modify its attributes. Most
-// attributes of a Qualification type can be changed after the type has been
+// Only the owner of a Qualification type can modify its attributes.
+//
+// Most attributes of a Qualification type can be changed after the type has been
 // created. However, the Name and Keywords fields cannot be modified. The
 // RetryDelayInSeconds parameter can be modified or added to change the delay or to
-// enable retries, but RetryDelayInSeconds cannot be used to disable retries. You
-// can use this operation to update the test for a Qualification type. The test is
-// updated based on the values specified for the Test, TestDurationInSeconds and
-// AnswerKey parameters. All three parameters specify the updated test. If you are
-// updating the test for a type, you must specify the Test and
-// TestDurationInSeconds parameters. The AnswerKey parameter is optional; omitting
-// it specifies that the updated test does not have an answer key. If you omit the
-// Test parameter, the test for the Qualification type is unchanged. There is no
-// way to remove a test from a Qualification type that has one. If the type already
-// has a test, you cannot update it to be AutoGranted. If the Qualification type
-// does not have a test and one is provided by an update, the type will henceforth
-// have a test. If you want to update the test duration or answer key for an
-// existing test without changing the questions, you must specify a Test parameter
-// with the original questions, along with the updated values. If you provide an
-// updated Test but no AnswerKey, the new test will not have an answer key.
-// Requests for such Qualifications must be granted manually. You can also update
-// the AutoGranted and AutoGrantedValue attributes of the Qualification type.
+// enable retries, but RetryDelayInSeconds cannot be used to disable retries.
+//
+// You can use this operation to update the test for a Qualification type. The
+// test is updated based on the values specified for the Test,
+// TestDurationInSeconds and AnswerKey parameters. All three parameters specify the
+// updated test. If you are updating the test for a type, you must specify the Test
+// and TestDurationInSeconds parameters. The AnswerKey parameter is optional;
+// omitting it specifies that the updated test does not have an answer key.
+//
+// If you omit the Test parameter, the test for the Qualification type is
+// unchanged. There is no way to remove a test from a Qualification type that has
+// one. If the type already has a test, you cannot update it to be AutoGranted. If
+// the Qualification type does not have a test and one is provided by an update,
+// the type will henceforth have a test.
+//
+// If you want to update the test duration or answer key for an existing test
+// without changing the questions, you must specify a Test parameter with the
+// original questions, along with the updated values.
+//
+// If you provide an updated Test but no AnswerKey, the new test will not have an
+// answer key. Requests for such Qualifications must be granted manually.
+//
+// You can also update the AutoGranted and AutoGrantedValue attributes of the
+// Qualification type.
 func (c *Client) UpdateQualificationType(ctx context.Context, params *UpdateQualificationTypeInput, optFns ...func(*Options)) (*UpdateQualificationTypeOutput, error) {
 	if params == nil {
 		params = &UpdateQualificationTypeInput{}
@@ -66,8 +70,9 @@ type UpdateQualificationTypeInput struct {
 	AnswerKey *string
 
 	// Specifies whether requests for the Qualification type are granted immediately,
-	// without prompting the Worker with a Qualification test. Constraints: If the Test
-	// parameter is specified, this parameter cannot be true.
+	// without prompting the Worker with a Qualification test.
+	//
+	// Constraints: If the Test parameter is specified, this parameter cannot be true.
 	AutoGranted *bool
 
 	// The Qualification value to use for automatically granted Qualifications. This
@@ -91,10 +96,13 @@ type UpdateQualificationTypeInput struct {
 
 	// The questions for the Qualification test a Worker must answer correctly to
 	// obtain a Qualification of this type. If this parameter is specified,
-	// TestDurationInSeconds must also be specified. Constraints: Must not be longer
-	// than 65535 bytes. Must be a QuestionForm data structure. This parameter cannot
-	// be specified if AutoGranted is true. Constraints: None. If not specified, the
-	// Worker may request the Qualification without answering any questions.
+	// TestDurationInSeconds must also be specified.
+	//
+	// Constraints: Must not be longer than 65535 bytes. Must be a QuestionForm data
+	// structure. This parameter cannot be specified if AutoGranted is true.
+	//
+	// Constraints: None. If not specified, the Worker may request the Qualification
+	// without answering any questions.
 	Test *string
 
 	// The number of seconds the Worker has to complete the Qualification test,
@@ -106,7 +114,7 @@ type UpdateQualificationTypeInput struct {
 
 type UpdateQualificationTypeOutput struct {
 
-	// Contains a QualificationType data structure.
+	//  Contains a QualificationType data structure.
 	QualificationType *types.QualificationType
 
 	// Metadata pertaining to the operation's result.
@@ -116,6 +124,9 @@ type UpdateQualificationTypeOutput struct {
 }
 
 func (c *Client) addOperationUpdateQualificationTypeMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpUpdateQualificationType{}, middleware.After)
 	if err != nil {
 		return err
@@ -124,34 +135,38 @@ func (c *Client) addOperationUpdateQualificationTypeMiddlewares(stack *middlewar
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateQualificationType"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -163,7 +178,13 @@ func (c *Client) addOperationUpdateQualificationTypeMiddlewares(stack *middlewar
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateQualificationTypeResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateQualificationTypeValidationMiddleware(stack); err != nil {
@@ -172,7 +193,7 @@ func (c *Client) addOperationUpdateQualificationTypeMiddlewares(stack *middlewar
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateQualificationType(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -184,7 +205,19 @@ func (c *Client) addOperationUpdateQualificationTypeMiddlewares(stack *middlewar
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -194,130 +227,6 @@ func newServiceMetadataMiddleware_opUpdateQualificationType(region string) *awsm
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "mturk-requester",
 		OperationName: "UpdateQualificationType",
 	}
-}
-
-type opUpdateQualificationTypeResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateQualificationTypeResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateQualificationTypeResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "mturk-requester"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "mturk-requester"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("mturk-requester")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateQualificationTypeResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateQualificationTypeResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

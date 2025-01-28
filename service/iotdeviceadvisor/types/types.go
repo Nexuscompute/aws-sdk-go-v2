@@ -51,9 +51,10 @@ type SuiteDefinitionConfiguration struct {
 	// true, rootGroup can be an empty string. If intendedForQualification is false,
 	// rootGroup cannot be an empty string. If rootGroup is empty, and
 	// intendedForQualification is set to true, all the qualification tests are
-	// included, and the configuration is default. For a qualification suite, the
-	// minimum length is 0, and the maximum is 2048. For a non-qualification suite, the
-	// minimum length is 1, and the maximum is 2048.
+	// included, and the configuration is default.
+	//
+	// For a qualification suite, the minimum length is 0, and the maximum is 2048.
+	// For a non-qualification suite, the minimum length is 1, and the maximum is 2048.
 	//
 	// This member is required.
 	RootGroup *string
@@ -67,10 +68,10 @@ type SuiteDefinitionConfiguration struct {
 	Devices []DeviceUnderTest
 
 	// Gets the tests intended for qualification in a suite.
-	IntendedForQualification bool
+	IntendedForQualification *bool
 
 	// Verifies if the test suite is a long duration test.
-	IsLongDurationTest bool
+	IsLongDurationTest *bool
 
 	// Sets the MQTT protocol that is configured in the suite definition.
 	Protocol Protocol
@@ -88,10 +89,10 @@ type SuiteDefinitionInformation struct {
 	DefaultDevices []DeviceUnderTest
 
 	// Specifies if the test suite is intended for qualification.
-	IntendedForQualification bool
+	IntendedForQualification *bool
 
 	// Verifies if the test suite is a long duration test.
-	IsLongDurationTest bool
+	IsLongDurationTest *bool
 
 	// Gets the MQTT protocol that is configured in the suite definition.
 	Protocol Protocol
@@ -115,7 +116,7 @@ type SuiteRunConfiguration struct {
 	PrimaryDevice *DeviceUnderTest
 
 	// TRUE if multiple test suites run in parallel.
-	ParallelRun bool
+	ParallelRun *bool
 
 	// Sets test case list.
 	SelectedTestList []string
@@ -123,9 +124,11 @@ type SuiteRunConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// Information about the suite run. Requires permission to access the
-// SuiteRunInformation (https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions)
-// action.
+// Information about the suite run.
+//
+// Requires permission to access the [SuiteRunInformation] action.
+//
+// [SuiteRunInformation]: https://docs.aws.amazon.com/service-authorization/latest/reference/list_awsiot.html#awsiot-actions-as-permissions
 type SuiteRunInformation struct {
 
 	// Date (in Unix epoch time) when the suite run was created.
@@ -135,10 +138,10 @@ type SuiteRunInformation struct {
 	EndAt *time.Time
 
 	// Number of test cases that failed in the suite run.
-	Failed int32
+	Failed *int32
 
 	// Number of test cases that passed in the suite run.
-	Passed int32
+	Passed *int32
 
 	// Date (in Unix epoch time) when the suite run was started.
 	StartedAt *time.Time
@@ -177,15 +180,23 @@ type TestCaseRun struct {
 	StartTime *time.Time
 
 	// Provides the test case run status. Status is one of the following:
+	//
 	//   - PASS : Test passed.
+	//
 	//   - FAIL : Test failed.
+	//
 	//   - PENDING : Test has not started running but is scheduled.
+	//
 	//   - RUNNING : Test is running.
+	//
 	//   - STOPPING : Test is performing cleanup steps. You will see this status only
 	//   if you stop a suite run.
+	//
 	//   - STOPPED Test is stopped. You will see this status only if you stop a suite
 	//   run.
+	//
 	//   - PASS_WITH_WARNINGS : Test passed with warnings.
+	//
 	//   - ERORR : Test faced an error when running due to an internal issue.
 	Status Status
 
@@ -198,7 +209,7 @@ type TestCaseRun struct {
 	// Provides the test case run ID.
 	TestCaseRunId *string
 
-	// Provides the test scenarios for the test case run.
+	//  Provides the test scenarios for the test case run.
 	TestScenarios []TestCaseScenario
 
 	// Provides test case run warnings.
@@ -214,15 +225,23 @@ type TestCaseScenario struct {
 	Failure *string
 
 	// Provides the test case scenario status. Status is one of the following:
+	//
 	//   - PASS : Test passed.
+	//
 	//   - FAIL : Test failed.
+	//
 	//   - PENDING : Test has not started running but is scheduled.
+	//
 	//   - RUNNING : Test is running.
+	//
 	//   - STOPPING : Test is performing cleanup steps. You will see this status only
 	//   if you stop a suite run.
+	//
 	//   - STOPPED Test is stopped. You will see this status only if you stop a suite
 	//   run.
+	//
 	//   - PASS_WITH_WARNINGS : Test passed with warnings.
+	//
 	//   - ERORR : Test faced an error when running due to an internal issue.
 	Status TestCaseScenarioStatus
 
@@ -233,7 +252,9 @@ type TestCaseScenario struct {
 	TestCaseScenarioId *string
 
 	// Provides test case scenario type. Type is one of the following:
+	//
 	//   - Advanced
+	//
 	//   - Basic
 	TestCaseScenarioType TestCaseScenarioType
 
