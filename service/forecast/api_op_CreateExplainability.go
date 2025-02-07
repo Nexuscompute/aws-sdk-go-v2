@@ -4,61 +4,85 @@ package forecast
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/forecast/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Explainability is only available for Forecasts and Predictors generated from an
-// AutoPredictor ( CreateAutoPredictor ) Creates an Amazon Forecast Explainability.
+// AutoPredictor (CreateAutoPredictor )
+//
+// Creates an Amazon Forecast Explainability.
+//
 // Explainability helps you better understand how the attributes in your datasets
 // impact forecast. Amazon Forecast uses a metric called Impact scores to quantify
 // the relative impact of each attribute and determine whether they increase or
-// decrease forecast values. To enable Forecast Explainability, your predictor must
-// include at least one of the following: related time series, item metadata, or
-// additional datasets like Holidays and the Weather Index. CreateExplainability
-// accepts either a Predictor ARN or Forecast ARN. To receive aggregated Impact
-// scores for all time series and time points in your datasets, provide a Predictor
-// ARN. To receive Impact scores for specific time series and time points, provide
-// a Forecast ARN. CreateExplainability with a Predictor ARN You can only have one
-// Explainability resource per predictor. If you already enabled ExplainPredictor
-// in CreateAutoPredictor , that predictor already has an Explainability resource.
+// decrease forecast values.
+//
+// To enable Forecast Explainability, your predictor must include at least one of
+// the following: related time series, item metadata, or additional datasets like
+// Holidays and the Weather Index.
+//
+// CreateExplainability accepts either a Predictor ARN or Forecast ARN. To receive
+// aggregated Impact scores for all time series and time points in your datasets,
+// provide a Predictor ARN. To receive Impact scores for specific time series and
+// time points, provide a Forecast ARN.
+//
+// # CreateExplainability with a Predictor ARN
+//
+// You can only have one Explainability resource per predictor. If you already
+// enabled ExplainPredictor in CreateAutoPredictor, that predictor already has an Explainability
+// resource.
+//
 // The following parameters are required when providing a Predictor ARN:
+//
 //   - ExplainabilityName - A unique name for the Explainability.
+//
 //   - ResourceArn - The Arn of the predictor.
+//
 //   - TimePointGranularity - Must be set to “ALL”.
+//
 //   - TimeSeriesGranularity - Must be set to “ALL”.
 //
 // Do not specify a value for the following parameters:
+//
 //   - DataSource - Only valid when TimeSeriesGranularity is “SPECIFIC”.
+//
 //   - Schema - Only valid when TimeSeriesGranularity is “SPECIFIC”.
+//
 //   - StartDateTime - Only valid when TimePointGranularity is “SPECIFIC”.
+//
 //   - EndDateTime - Only valid when TimePointGranularity is “SPECIFIC”.
 //
-// CreateExplainability with a Forecast ARN You can specify a maximum of 50 time
-// series and 500 time points. The following parameters are required when providing
-// a Predictor ARN:
+// # CreateExplainability with a Forecast ARN
+//
+// You can specify a maximum of 50 time series and 500 time points.
+//
+// The following parameters are required when providing a Predictor ARN:
+//
 //   - ExplainabilityName - A unique name for the Explainability.
+//
 //   - ResourceArn - The Arn of the forecast.
+//
 //   - TimePointGranularity - Either “ALL” or “SPECIFIC”.
+//
 //   - TimeSeriesGranularity - Either “ALL” or “SPECIFIC”.
 //
 // If you set TimeSeriesGranularity to “SPECIFIC”, you must also provide the
 // following:
+//
 //   - DataSource - The S3 location of the CSV file specifying your time series.
+//
 //   - Schema - The Schema defines the attributes and attribute types listed in the
 //     Data Source.
 //
 // If you set TimePointGranularity to “SPECIFIC”, you must also provide the
 // following:
+//
 //   - StartDateTime - The first timestamp in the range of time points.
+//
 //   - EndDateTime - The last timestamp in the range of time points.
 func (c *Client) CreateExplainability(ctx context.Context, params *CreateExplainabilityInput, optFns ...func(*Options)) (*CreateExplainabilityOutput, error) {
 	if params == nil {
@@ -104,29 +128,41 @@ type CreateExplainabilityInput struct {
 	EnableVisualization *bool
 
 	// If TimePointGranularity is set to SPECIFIC , define the last time point for the
-	// Explainability. Use the following timestamp format: yyyy-MM-ddTHH:mm:ss
-	// (example: 2015-01-01T20:00:00)
+	// Explainability.
+	//
+	// Use the following timestamp format: yyyy-MM-ddTHH:mm:ss (example:
+	// 2015-01-01T20:00:00)
 	EndDateTime *string
 
 	// Defines the fields of a dataset.
 	Schema *types.Schema
 
 	// If TimePointGranularity is set to SPECIFIC , define the first point for the
-	// Explainability. Use the following timestamp format: yyyy-MM-ddTHH:mm:ss
-	// (example: 2015-01-01T20:00:00)
+	// Explainability.
+	//
+	// Use the following timestamp format: yyyy-MM-ddTHH:mm:ss (example:
+	// 2015-01-01T20:00:00)
 	StartDateTime *string
 
 	// Optional metadata to help you categorize and organize your resources. Each tag
 	// consists of a key and an optional value, both of which you define. Tag keys and
-	// values are case sensitive. The following restrictions apply to tags:
+	// values are case sensitive.
+	//
+	// The following restrictions apply to tags:
+	//
 	//   - For each resource, each tag key must be unique and each tag key must have
 	//   one value.
+	//
 	//   - Maximum number of tags per resource: 50.
+	//
 	//   - Maximum key length: 128 Unicode characters in UTF-8.
+	//
 	//   - Maximum value length: 256 Unicode characters in UTF-8.
+	//
 	//   - Accepted characters: all letters and numbers, spaces representable in
 	//   UTF-8, and + - = . _ : / @. If your tagging schema is used across other services
 	//   and resources, the character restrictions of those services also apply.
+	//
 	//   - Key prefixes cannot include any upper or lowercase combination of aws: or
 	//   AWS: . Values can have this prefix. If a tag value has aws as its prefix but
 	//   the key does not, Forecast considers it to be a user tag and will count against
@@ -150,6 +186,9 @@ type CreateExplainabilityOutput struct {
 }
 
 func (c *Client) addOperationCreateExplainabilityMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateExplainability{}, middleware.After)
 	if err != nil {
 		return err
@@ -158,34 +197,38 @@ func (c *Client) addOperationCreateExplainabilityMiddlewares(stack *middleware.S
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateExplainability"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -197,7 +240,13 @@ func (c *Client) addOperationCreateExplainabilityMiddlewares(stack *middleware.S
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateExplainabilityResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateExplainabilityValidationMiddleware(stack); err != nil {
@@ -206,7 +255,7 @@ func (c *Client) addOperationCreateExplainabilityMiddlewares(stack *middleware.S
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateExplainability(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -218,7 +267,19 @@ func (c *Client) addOperationCreateExplainabilityMiddlewares(stack *middleware.S
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -228,130 +289,6 @@ func newServiceMetadataMiddleware_opCreateExplainability(region string) *awsmidd
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "forecast",
 		OperationName: "CreateExplainability",
 	}
-}
-
-type opCreateExplainabilityResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateExplainabilityResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateExplainabilityResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "forecast"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "forecast"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("forecast")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateExplainabilityResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateExplainabilityResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

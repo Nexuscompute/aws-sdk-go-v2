@@ -7,6 +7,21 @@ import (
 	"time"
 )
 
+// Options that specify the configuration of a persistent buffer. To configure how
+// OpenSearch Ingestion encrypts this data, set the EncryptionAtRestOptions . For
+// more information, see [Persistent buffering].
+//
+// [Persistent buffering]: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/osis-features-overview.html#persistent-buffering
+type BufferOptions struct {
+
+	// Whether persistent buffering should be enabled.
+	//
+	// This member is required.
+	PersistentBufferEnabled *bool
+
+	noSmithyDocumentSerde
+}
+
 // Progress details for a specific stage of a pipeline configuration change.
 type ChangeProgressStage struct {
 
@@ -49,10 +64,22 @@ type CloudWatchLogDestination struct {
 
 	// The name of the CloudWatch Logs group to send pipeline logs to. You can specify
 	// an existing log group or create a new one. For example,
-	// /aws/OpenSearchService/IngestionService/my-pipeline .
+	// /aws/vendedlogs/OpenSearchService/pipelines .
 	//
 	// This member is required.
 	LogGroup *string
+
+	noSmithyDocumentSerde
+}
+
+// Options to control how OpenSearch encrypts buffer data.
+type EncryptionAtRestOptions struct {
+
+	// The ARN of the KMS key used to encrypt buffer data. By default, data is
+	// encrypted using an Amazon Web Services owned key.
+	//
+	// This member is required.
+	KmsKeyArn *string
 
 	noSmithyDocumentSerde
 }
@@ -75,8 +102,21 @@ type LogPublishingOptions struct {
 // Information about an existing OpenSearch Ingestion pipeline.
 type Pipeline struct {
 
+	// Options that specify the configuration of a persistent buffer. To configure how
+	// OpenSearch Ingestion encrypts this data, set the EncryptionAtRestOptions . For
+	// more information, see [Persistent buffering].
+	//
+	// [Persistent buffering]: https://docs.aws.amazon.com/opensearch-service/latest/developerguide/osis-features-overview.html#persistent-buffering
+	BufferOptions *BufferOptions
+
 	// The date and time when the pipeline was created.
 	CreatedAt *time.Time
+
+	// Destinations to which the pipeline writes data.
+	Destinations []PipelineDestination
+
+	// Options to control how OpenSearch encrypts buffer data.
+	EncryptionAtRestOptions *EncryptionAtRestOptions
 
 	// The ingestion endpoints for the pipeline, which you can send data to.
 	IngestEndpointUrls []string
@@ -102,11 +142,21 @@ type Pipeline struct {
 	// The name of the pipeline.
 	PipelineName *string
 
+	// A list of VPC endpoints that OpenSearch Ingestion has created to other Amazon
+	// Web Services services.
+	ServiceVpcEndpoints []ServiceVpcEndpoint
+
 	// The current status of the pipeline.
 	Status PipelineStatus
 
 	// The reason for the current status of the pipeline.
 	StatusReason *PipelineStatusReason
+
+	// A list of tags associated with the given pipeline.
+	Tags []Tag
+
+	// The VPC endpoint service name for the pipeline.
+	VpcEndpointService *string
 
 	// The VPC interface endpoints that have access to the pipeline.
 	VpcEndpoints []VpcEndpoint
@@ -120,8 +170,20 @@ type PipelineBlueprint struct {
 	// The name of the blueprint.
 	BlueprintName *string
 
+	// A description of the blueprint.
+	DisplayDescription *string
+
+	// The display name of the blueprint.
+	DisplayName *string
+
 	// The YAML configuration of the blueprint.
 	PipelineConfigurationBody *string
+
+	// The name of the service that the blueprint is associated with.
+	Service *string
+
+	// The use case that the blueprint relates to.
+	UseCase *string
 
 	noSmithyDocumentSerde
 }
@@ -131,6 +193,30 @@ type PipelineBlueprintSummary struct {
 
 	// The name of the blueprint.
 	BlueprintName *string
+
+	// A description of the blueprint.
+	DisplayDescription *string
+
+	// The display name of the blueprint.
+	DisplayName *string
+
+	// The name of the service that the blueprint is associated with.
+	Service *string
+
+	// The use case that the blueprint relates to.
+	UseCase *string
+
+	noSmithyDocumentSerde
+}
+
+// An object representing the destination of a pipeline.
+type PipelineDestination struct {
+
+	// The endpoint receiving data from the pipeline.
+	Endpoint *string
+
+	// The name of the service receiving data from the pipeline.
+	ServiceName *string
 
 	noSmithyDocumentSerde
 }
@@ -149,6 +235,9 @@ type PipelineSummary struct {
 
 	// The date and time when the pipeline was created.
 	CreatedAt *time.Time
+
+	// A list of destinations to which the pipeline writes data.
+	Destinations []PipelineDestination
 
 	// The date and time when the pipeline was last updated.
 	LastUpdatedAt *time.Time
@@ -170,6 +259,22 @@ type PipelineSummary struct {
 
 	// Information about a pipeline's current status.
 	StatusReason *PipelineStatusReason
+
+	// A list of tags associated with the given pipeline.
+	Tags []Tag
+
+	noSmithyDocumentSerde
+}
+
+// A container for information about VPC endpoints that were created to other
+// services
+type ServiceVpcEndpoint struct {
+
+	// The name of the service for which a VPC endpoint was created.
+	ServiceName VpcEndpointServiceName
+
+	// The unique identifier of the VPC endpoint that was created.
+	VpcEndpointId *string
 
 	noSmithyDocumentSerde
 }
@@ -203,6 +308,21 @@ type ValidationMessage struct {
 	noSmithyDocumentSerde
 }
 
+// Options for attaching a VPC to pipeline.
+type VpcAttachmentOptions struct {
+
+	// Whether a VPC is attached to the pipeline.
+	//
+	// This member is required.
+	AttachToVpc *bool
+
+	// The CIDR block to be reserved for OpenSearch Ingestion to create elastic
+	// network interfaces (ENIs).
+	CidrBlock *string
+
+	noSmithyDocumentSerde
+}
+
 // An OpenSearch Ingestion-managed VPC endpoint that will access one or more
 // pipelines.
 type VpcEndpoint struct {
@@ -231,6 +351,13 @@ type VpcOptions struct {
 
 	// A list of security groups associated with the VPC endpoint.
 	SecurityGroupIds []string
+
+	// Options for attaching a VPC to a pipeline.
+	VpcAttachmentOptions *VpcAttachmentOptions
+
+	// Defines whether you or Amazon OpenSearch Ingestion service create and manage
+	// the VPC endpoint configured for the pipeline.
+	VpcEndpointManagement VpcEndpointManagement
 
 	noSmithyDocumentSerde
 }

@@ -196,6 +196,27 @@ type BatchGetCommitsError struct {
 	noSmithyDocumentSerde
 }
 
+// Returns information about errors in a BatchGetRepositories operation.
+type BatchGetRepositoriesError struct {
+
+	// An error code that specifies the type of failure.
+	ErrorCode BatchGetRepositoriesErrorCodeEnum
+
+	// An error message that provides detail about why the repository either was not
+	// found or was not in a valid state.
+	ErrorMessage *string
+
+	// The ID of a repository that either could not be found or was not in a valid
+	// state.
+	RepositoryId *string
+
+	// The name of a repository that either could not be found or was not in a valid
+	// state.
+	RepositoryName *string
+
+	noSmithyDocumentSerde
+}
+
 // Returns information about a specific Git blob object.
 type BlobMetadata struct {
 
@@ -203,9 +224,13 @@ type BlobMetadata struct {
 	BlobId *string
 
 	// The file mode permissions of the blob. File mode permission codes include:
+	//
 	//   - 100644 indicates read/write
+	//
 	//   - 100755 indicates read/write/execute
+	//
 	//   - 160000 indicates a submodule
+	//
 	//   - 120000 indicates a symlink
 	Mode *string
 
@@ -353,9 +378,12 @@ type Commit struct {
 	// Information about the person who committed the specified commit, also known as
 	// the committer. Information includes the date in timestamp format with GMT
 	// offset, the name of the committer, and the email address for the committer, as
-	// configured in Git. For more information about the difference between an author
-	// and a committer in Git, see Viewing the Commit History (http://git-scm.com/book/ch2-3.html)
-	// in Pro Git by Scott Chacon and Ben Straub.
+	// configured in Git.
+	//
+	// For more information about the difference between an author and a committer in
+	// Git, see [Viewing the Commit History]in Pro Git by Scott Chacon and Ben Straub.
+	//
+	// [Viewing the Commit History]: http://git-scm.com/book/ch2-3.html
 	Committer *UserInfo
 
 	// The commit message associated with the specified commit.
@@ -551,6 +579,28 @@ type FileSizes struct {
 
 	// The size of a file in the source of a merge or pull request.
 	Source int64
+
+	noSmithyDocumentSerde
+}
+
+// Information about a version of a file.
+type FileVersion struct {
+
+	// The blob ID of the object that represents the content of the file in this
+	// version.
+	BlobId *string
+
+	// Returns information about a specific commit.
+	Commit *Commit
+
+	// The name and path of the file at which this blob is indexed which contains the
+	// data for this version of the file. This value will vary between file versions if
+	// a file is renamed or if its path changes.
+	Path *string
+
+	// An array of commit IDs that contain more recent versions of this file. If there
+	// are no additional versions of the file, this array will be empty.
+	RevisionChildren []string
 
 	noSmithyDocumentSerde
 }
@@ -942,8 +992,8 @@ type ReactionForComment struct {
 	noSmithyDocumentSerde
 }
 
-// Information about the values for reactions to a comment. AWS CodeCommit
-// supports a limited set of reactions.
+// Information about the values for reactions to a comment. CodeCommit supports a
+// limited set of reactions.
 type ReactionValueFormats struct {
 
 	// The Emoji Version 1.0 graphic of the reaction. These graphics are interpreted
@@ -986,7 +1036,7 @@ type ReplaceContentEntry struct {
 // Information about a repository.
 type RepositoryMetadata struct {
 
-	// The ID of the AWS account associated with the repository.
+	// The ID of the Amazon Web Services account associated with the repository.
 	AccountId *string
 
 	// The Amazon Resource Name (ARN) of the repository.
@@ -1003,6 +1053,10 @@ type RepositoryMetadata struct {
 
 	// The repository's default branch name.
 	DefaultBranch *string
+
+	// The ID of the Key Management Service encryption key used to encrypt and decrypt
+	// the repository.
+	KmsKeyId *string
 
 	// The date and time the repository was last modified, in timestamp format.
 	LastModifiedDate *time.Time
@@ -1032,6 +1086,11 @@ type RepositoryNameIdPair struct {
 }
 
 // Information about a trigger for a repository.
+//
+// If you want to receive notifications about repository events, consider using
+// notifications instead of triggers. For more information, see [Configuring notifications for repository events].
+//
+// [Configuring notifications for repository events]: https://docs.aws.amazon.com/codecommit/latest/userguide/how-to-repository-email.html
 type RepositoryTrigger struct {
 
 	// The ARN of the resource that is the target for a trigger (for example, the ARN
@@ -1041,8 +1100,9 @@ type RepositoryTrigger struct {
 	DestinationArn *string
 
 	// The repository events that cause the trigger to run actions in another service,
-	// such as sending a notification through Amazon SNS. The valid value "all" cannot
-	// be used with any other values.
+	// such as sending a notification through Amazon SNS.
+	//
+	// The valid value "all" cannot be used with any other values.
 	//
 	// This member is required.
 	Events []RepositoryTriggerEventEnum
@@ -1053,8 +1113,9 @@ type RepositoryTrigger struct {
 	Name *string
 
 	// The branches to be included in the trigger configuration. If you specify an
-	// empty array, the trigger applies to all branches. Although no content is
-	// required in the array, you must include the array itself.
+	// empty array, the trigger applies to all branches.
+	//
+	// Although no content is required in the array, you must include the array itself.
 	Branches []string
 
 	// Any custom data associated with the trigger to be included in the information

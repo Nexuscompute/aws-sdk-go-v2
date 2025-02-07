@@ -4,20 +4,16 @@ package billingconductor
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/billingconductor/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a pricing rule can be associated to a pricing plan, or a set of pricing
-// plans.
+//	Creates a pricing rule can be associated to a pricing plan, or a set of
+//
+// pricing plans.
 func (c *Client) CreatePricingRule(ctx context.Context, params *CreatePricingRuleInput, optFns ...func(*Options)) (*CreatePricingRuleOutput, error) {
 	if params == nil {
 		params = &CreatePricingRuleInput{}
@@ -35,58 +31,61 @@ func (c *Client) CreatePricingRule(ctx context.Context, params *CreatePricingRul
 
 type CreatePricingRuleInput struct {
 
-	// The pricing rule name. The names must be unique to each pricing rule.
+	//  The pricing rule name. The names must be unique to each pricing rule.
 	//
 	// This member is required.
 	Name *string
 
-	// The scope of pricing rule that indicates if it's globally applicable, or it's
+	//  The scope of pricing rule that indicates if it's globally applicable, or it's
 	// service-specific.
 	//
 	// This member is required.
 	Scope types.PricingRuleScope
 
-	// The type of pricing rule.
+	//  The type of pricing rule.
 	//
 	// This member is required.
 	Type types.PricingRuleType
 
-	// The seller of services provided by Amazon Web Services, their affiliates, or
+	//  The seller of services provided by Amazon Web Services, their affiliates, or
 	// third-party providers selling services via Amazon Web Services Marketplace.
 	BillingEntity *string
 
-	// The token that's needed to support idempotency. Idempotency isn't currently
+	//  The token that's needed to support idempotency. Idempotency isn't currently
 	// supported, but will be implemented in a future update.
 	ClientToken *string
 
-	// The pricing rule description.
+	//  The pricing rule description.
 	Description *string
 
-	// A percentage modifier that's applied on the public pricing rates.
+	//  A percentage modifier that's applied on the public pricing rates.
 	ModifierPercentage *float64
 
-	// Operation is the specific Amazon Web Services action covered by this line item.
-	// This describes the specific usage of the line item. If the Scope attribute is
-	// set to SKU , this attribute indicates which operation the PricingRule is
-	// modifying. For example, a value of RunInstances:0202 indicates the operation of
-	// running an Amazon EC2 instance.
+	//  Operation is the specific Amazon Web Services action covered by this line
+	// item. This describes the specific usage of the line item.
+	//
+	// If the Scope attribute is set to SKU , this attribute indicates which operation
+	// the PricingRule is modifying. For example, a value of RunInstances:0202
+	// indicates the operation of running an Amazon EC2 instance.
 	Operation *string
 
-	// If the Scope attribute is set to SERVICE or SKU , the attribute indicates which
+	//  If the Scope attribute is set to SERVICE or SKU , the attribute indicates which
 	// service the PricingRule is applicable for.
 	Service *string
 
-	// A map that contains tag keys and tag values that are attached to a pricing rule.
+	//  A map that contains tag keys and tag values that are attached to a pricing
+	// rule.
 	Tags map[string]string
 
-	// The set of tiering configurations for the pricing rule.
+	//  The set of tiering configurations for the pricing rule.
 	Tiering *types.CreateTieringInput
 
-	// Usage type is the unit that each service uses to measure the usage of a
-	// specific type of resource. If the Scope attribute is set to SKU , this attribute
-	// indicates which usage type the PricingRule is modifying. For example,
-	// USW2-BoxUsage:m2.2xlarge describes an M2 High Memory Double Extra Large
-	// instance in the US West (Oregon) Region.
+	//  Usage type is the unit that each service uses to measure the usage of a
+	// specific type of resource.
+	//
+	// If the Scope attribute is set to SKU , this attribute indicates which usage type
+	// the PricingRule is modifying. For example, USW2-BoxUsage:m2.2xlarge describes an
+	// M2 High Memory Double Extra Large instance in the US West (Oregon) Region.
 	UsageType *string
 
 	noSmithyDocumentSerde
@@ -94,7 +93,7 @@ type CreatePricingRuleInput struct {
 
 type CreatePricingRuleOutput struct {
 
-	// The Amazon Resource Name (ARN) of the created pricing rule.
+	//  The Amazon Resource Name (ARN) of the created pricing rule.
 	Arn *string
 
 	// Metadata pertaining to the operation's result.
@@ -104,6 +103,9 @@ type CreatePricingRuleOutput struct {
 }
 
 func (c *Client) addOperationCreatePricingRuleMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreatePricingRule{}, middleware.After)
 	if err != nil {
 		return err
@@ -112,34 +114,38 @@ func (c *Client) addOperationCreatePricingRuleMiddlewares(stack *middleware.Stac
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreatePricingRule"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -151,7 +157,13 @@ func (c *Client) addOperationCreatePricingRuleMiddlewares(stack *middleware.Stac
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreatePricingRuleResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreatePricingRuleMiddleware(stack, options); err != nil {
@@ -163,7 +175,7 @@ func (c *Client) addOperationCreatePricingRuleMiddlewares(stack *middleware.Stac
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreatePricingRule(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -175,7 +187,19 @@ func (c *Client) addOperationCreatePricingRuleMiddlewares(stack *middleware.Stac
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -218,130 +242,6 @@ func newServiceMetadataMiddleware_opCreatePricingRule(region string) *awsmiddlew
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "billingconductor",
 		OperationName: "CreatePricingRule",
 	}
-}
-
-type opCreatePricingRuleResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreatePricingRuleResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreatePricingRuleResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "billingconductor"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "billingconductor"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("billingconductor")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreatePricingRuleResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreatePricingRuleResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -50,6 +50,66 @@ func (m *validateOpCancelPolicyGeneration) HandleInitialize(ctx context.Context,
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCheckAccessNotGranted struct {
+}
+
+func (*validateOpCheckAccessNotGranted) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCheckAccessNotGranted) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CheckAccessNotGrantedInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCheckAccessNotGrantedInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCheckNoNewAccess struct {
+}
+
+func (*validateOpCheckNoNewAccess) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCheckNoNewAccess) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CheckNoNewAccessInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCheckNoNewAccessInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCheckNoPublicAccess struct {
+}
+
+func (*validateOpCheckNoPublicAccess) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCheckNoPublicAccess) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CheckNoPublicAccessInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCheckNoPublicAccessInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateAccessPreview struct {
 }
 
@@ -150,6 +210,26 @@ func (m *validateOpDeleteArchiveRule) HandleInitialize(ctx context.Context, in m
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGenerateFindingRecommendation struct {
+}
+
+func (*validateOpGenerateFindingRecommendation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGenerateFindingRecommendation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GenerateFindingRecommendationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGenerateFindingRecommendationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetAccessPreview struct {
 }
 
@@ -245,6 +325,46 @@ func (m *validateOpGetFinding) HandleInitialize(ctx context.Context, in middlewa
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetFindingInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetFindingRecommendation struct {
+}
+
+func (*validateOpGetFindingRecommendation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetFindingRecommendation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetFindingRecommendationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetFindingRecommendationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetFindingV2 struct {
+}
+
+func (*validateOpGetFindingV2) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetFindingV2) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetFindingV2Input)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetFindingV2Input(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -370,6 +490,26 @@ func (m *validateOpListFindings) HandleInitialize(ctx context.Context, in middle
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListFindingsV2 struct {
+}
+
+func (*validateOpListFindingsV2) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListFindingsV2) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListFindingsV2Input)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListFindingsV2Input(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListTagsForResource struct {
 }
 
@@ -470,6 +610,26 @@ func (m *validateOpUntagResource) HandleInitialize(ctx context.Context, in middl
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateAnalyzer struct {
+}
+
+func (*validateOpUpdateAnalyzer) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateAnalyzer) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateAnalyzerInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateAnalyzerInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateArchiveRule struct {
 }
 
@@ -538,6 +698,18 @@ func addOpCancelPolicyGenerationValidationMiddleware(stack *middleware.Stack) er
 	return stack.Initialize.Add(&validateOpCancelPolicyGeneration{}, middleware.After)
 }
 
+func addOpCheckAccessNotGrantedValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCheckAccessNotGranted{}, middleware.After)
+}
+
+func addOpCheckNoNewAccessValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCheckNoNewAccess{}, middleware.After)
+}
+
+func addOpCheckNoPublicAccessValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCheckNoPublicAccess{}, middleware.After)
+}
+
 func addOpCreateAccessPreviewValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateAccessPreview{}, middleware.After)
 }
@@ -558,6 +730,10 @@ func addOpDeleteArchiveRuleValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteArchiveRule{}, middleware.After)
 }
 
+func addOpGenerateFindingRecommendationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGenerateFindingRecommendation{}, middleware.After)
+}
+
 func addOpGetAccessPreviewValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetAccessPreview{}, middleware.After)
 }
@@ -576,6 +752,14 @@ func addOpGetArchiveRuleValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpGetFindingValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetFinding{}, middleware.After)
+}
+
+func addOpGetFindingRecommendationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetFindingRecommendation{}, middleware.After)
+}
+
+func addOpGetFindingV2ValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetFindingV2{}, middleware.After)
 }
 
 func addOpGetGeneratedPolicyValidationMiddleware(stack *middleware.Stack) error {
@@ -602,6 +786,10 @@ func addOpListFindingsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListFindings{}, middleware.After)
 }
 
+func addOpListFindingsV2ValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListFindingsV2{}, middleware.After)
+}
+
 func addOpListTagsForResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListTagsForResource{}, middleware.After)
 }
@@ -620,6 +808,10 @@ func addOpTagResourceValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpUntagResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUntagResource{}, middleware.After)
+}
+
+func addOpUpdateAnalyzerValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateAnalyzer{}, middleware.After)
 }
 
 func addOpUpdateArchiveRuleValidationMiddleware(stack *middleware.Stack) error {
@@ -1024,6 +1216,66 @@ func validateOpCancelPolicyGenerationInput(v *CancelPolicyGenerationInput) error
 	}
 }
 
+func validateOpCheckAccessNotGrantedInput(v *CheckAccessNotGrantedInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CheckAccessNotGrantedInput"}
+	if v.PolicyDocument == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PolicyDocument"))
+	}
+	if v.Access == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Access"))
+	}
+	if len(v.PolicyType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("PolicyType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCheckNoNewAccessInput(v *CheckNoNewAccessInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CheckNoNewAccessInput"}
+	if v.NewPolicyDocument == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("NewPolicyDocument"))
+	}
+	if v.ExistingPolicyDocument == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ExistingPolicyDocument"))
+	}
+	if len(v.PolicyType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("PolicyType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCheckNoPublicAccessInput(v *CheckNoPublicAccessInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CheckNoPublicAccessInput"}
+	if v.PolicyDocument == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PolicyDocument"))
+	}
+	if len(v.ResourceType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("ResourceType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpCreateAccessPreviewInput(v *CreateAccessPreviewInput) error {
 	if v == nil {
 		return nil
@@ -1123,6 +1375,24 @@ func validateOpDeleteArchiveRuleInput(v *DeleteArchiveRuleInput) error {
 	}
 }
 
+func validateOpGenerateFindingRecommendationInput(v *GenerateFindingRecommendationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GenerateFindingRecommendationInput"}
+	if v.AnalyzerArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalyzerArn"))
+	}
+	if v.Id == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Id"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetAccessPreviewInput(v *GetAccessPreviewInput) error {
 	if v == nil {
 		return nil
@@ -1197,6 +1467,42 @@ func validateOpGetFindingInput(v *GetFindingInput) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "GetFindingInput"}
+	if v.AnalyzerArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalyzerArn"))
+	}
+	if v.Id == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Id"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetFindingRecommendationInput(v *GetFindingRecommendationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetFindingRecommendationInput"}
+	if v.AnalyzerArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalyzerArn"))
+	}
+	if v.Id == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Id"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetFindingV2Input(v *GetFindingV2Input) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetFindingV2Input"}
 	if v.AnalyzerArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("AnalyzerArn"))
 	}
@@ -1303,6 +1609,21 @@ func validateOpListFindingsInput(v *ListFindingsInput) error {
 	}
 }
 
+func validateOpListFindingsV2Input(v *ListFindingsV2Input) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListFindingsV2Input"}
+	if v.AnalyzerArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalyzerArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListTagsForResourceInput(v *ListTagsForResourceInput) error {
 	if v == nil {
 		return nil
@@ -1388,6 +1709,21 @@ func validateOpUntagResourceInput(v *UntagResourceInput) error {
 	}
 	if v.TagKeys == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("TagKeys"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateAnalyzerInput(v *UpdateAnalyzerInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateAnalyzerInput"}
+	if v.AnalyzerName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AnalyzerName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

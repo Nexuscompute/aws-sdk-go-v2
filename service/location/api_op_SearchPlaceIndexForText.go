@@ -4,25 +4,24 @@ package location
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/location/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Geocodes free-form text, such as an address, name, city, or region to allow you
-// to search for Places or points of interest. Optional parameters let you narrow
-// your search results by bounding box or country, or bias your search toward a
-// specific position on the globe. You can search for places near a given position
-// using BiasPosition , or filter results within a bounding box using FilterBBox .
-// Providing both parameters simultaneously returns an error. Search results are
-// returned in order of highest to lowest relevance.
+// to search for Places or points of interest.
+//
+// Optional parameters let you narrow your search results by bounding box or
+// country, or bias your search toward a specific position on the globe.
+//
+// You can search for places near a given position using BiasPosition , or filter
+// results within a bounding box using FilterBBox . Providing both parameters
+// simultaneously returns an error.
+//
+// Search results are returned in order of highest to lowest relevance.
 func (c *Client) SearchPlaceIndexForText(ctx context.Context, params *SearchPlaceIndexForTextInput, optFns ...func(*Options)) (*SearchPlaceIndexForTextOutput, error) {
 	if params == nil {
 		params = &SearchPlaceIndexForTextInput{}
@@ -52,60 +51,84 @@ type SearchPlaceIndexForTextInput struct {
 	Text *string
 
 	// An optional parameter that indicates a preference for places that are closer to
-	// a specified position. If provided, this parameter must contain a pair of
-	// numbers. The first number represents the X coordinate, or longitude; the second
-	// number represents the Y coordinate, or latitude. For example, [-123.1174,
-	// 49.2847] represents the position with longitude -123.1174 and latitude 49.2847 .
+	// a specified position.
+	//
+	// If provided, this parameter must contain a pair of numbers. The first number
+	// represents the X coordinate, or longitude; the second number represents the Y
+	// coordinate, or latitude.
+	//
+	// For example, [-123.1174, 49.2847] represents the position with longitude
+	// -123.1174 and latitude 49.2847 .
+	//
 	// BiasPosition and FilterBBox are mutually exclusive. Specifying both options
 	// results in an error.
 	BiasPosition []float64
 
 	// An optional parameter that limits the search results by returning only places
-	// that are within the provided bounding box. If provided, this parameter must
-	// contain a total of four consecutive numbers in two pairs. The first pair of
-	// numbers represents the X and Y coordinates (longitude and latitude,
-	// respectively) of the southwest corner of the bounding box; the second pair of
-	// numbers represents the X and Y coordinates (longitude and latitude,
-	// respectively) of the northeast corner of the bounding box. For example,
-	// [-12.7935, -37.4835, -12.0684, -36.9542] represents a bounding box where the
-	// southwest corner has longitude -12.7935 and latitude -37.4835 , and the
-	// northeast corner has longitude -12.0684 and latitude -36.9542 . FilterBBox and
-	// BiasPosition are mutually exclusive. Specifying both options results in an error.
+	// that are within the provided bounding box.
+	//
+	// If provided, this parameter must contain a total of four consecutive numbers in
+	// two pairs. The first pair of numbers represents the X and Y coordinates
+	// (longitude and latitude, respectively) of the southwest corner of the bounding
+	// box; the second pair of numbers represents the X and Y coordinates (longitude
+	// and latitude, respectively) of the northeast corner of the bounding box.
+	//
+	// For example, [-12.7935, -37.4835, -12.0684, -36.9542] represents a bounding box
+	// where the southwest corner has longitude -12.7935 and latitude -37.4835 , and
+	// the northeast corner has longitude -12.0684 and latitude -36.9542 .
+	//
+	// FilterBBox and BiasPosition are mutually exclusive. Specifying both options
+	// results in an error.
 	FilterBBox []float64
 
 	// A list of one or more Amazon Location categories to filter the returned places.
 	// If you include more than one category, the results will include results that
-	// match any of the categories listed. For more information about using categories,
-	// including a list of Amazon Location categories, see Categories and filtering (https://docs.aws.amazon.com/location/latest/developerguide/category-filtering.html)
-	// , in the Amazon Location Service Developer Guide.
+	// match any of the categories listed.
+	//
+	// For more information about using categories, including a list of Amazon
+	// Location categories, see [Categories and filtering], in the Amazon Location Service Developer Guide.
+	//
+	// [Categories and filtering]: https://docs.aws.amazon.com/location/latest/developerguide/category-filtering.html
 	FilterCategories []string
 
 	// An optional parameter that limits the search results by returning only places
 	// that are in a specified list of countries.
-	//   - Valid values include ISO 3166 (https://www.iso.org/iso-3166-country-codes.html)
-	//   3-digit country codes. For example, Australia uses three upper-case characters:
-	//   AUS .
+	//
+	//   - Valid values include [ISO 3166]3-digit country codes. For example, Australia uses
+	//   three upper-case characters: AUS .
+	//
+	// [ISO 3166]: https://www.iso.org/iso-3166-country-codes.html
 	FilterCountries []string
 
-	// The optional API key (https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html)
-	// to authorize the request.
+	// The optional [API key] to authorize the request.
+	//
+	// [API key]: https://docs.aws.amazon.com/location/latest/developerguide/using-apikeys.html
 	Key *string
 
-	// The preferred language used to return results. The value must be a valid BCP 47 (https://tools.ietf.org/search/bcp47)
-	// language tag, for example, en for English. This setting affects the languages
-	// used in the results, but not the results themselves. If no language is
-	// specified, or not supported for a particular result, the partner automatically
-	// chooses a language for the result. For an example, we'll use the Greek language.
-	// You search for Athens, Greece , with the language parameter set to en . The
-	// result found will most likely be returned as Athens . If you set the language
-	// parameter to el , for Greek, then the result found will more likely be returned
-	// as Αθήνα . If the data provider does not have a value for Greek, the result will
-	// be in a language that the provider does support.
+	// The preferred language used to return results. The value must be a valid [BCP 47]
+	// language tag, for example, en for English.
+	//
+	// This setting affects the languages used in the results, but not the results
+	// themselves. If no language is specified, or not supported for a particular
+	// result, the partner automatically chooses a language for the result.
+	//
+	// For an example, we'll use the Greek language. You search for Athens, Greece ,
+	// with the language parameter set to en . The result found will most likely be
+	// returned as Athens .
+	//
+	// If you set the language parameter to el , for Greek, then the result found will
+	// more likely be returned as Αθήνα .
+	//
+	// If the data provider does not have a value for Greek, the result will be in a
+	// language that the provider does support.
+	//
+	// [BCP 47]: https://tools.ietf.org/search/bcp47
 	Language *string
 
-	// An optional parameter. The maximum number of results returned per request. The
-	// default: 50
-	MaxResults int32
+	// An optional parameter. The maximum number of results returned per request.
+	//
+	// The default: 50
+	MaxResults *int32
 
 	noSmithyDocumentSerde
 }
@@ -113,9 +136,10 @@ type SearchPlaceIndexForTextInput struct {
 type SearchPlaceIndexForTextOutput struct {
 
 	// A list of Places matching the input text. Each result contains additional
-	// information about the specific point of interest. Not all response properties
-	// are included with all responses. Some properties may only be returned by
-	// specific data partners.
+	// information about the specific point of interest.
+	//
+	// Not all response properties are included with all responses. Some properties
+	// may only be returned by specific data partners.
 	//
 	// This member is required.
 	Results []types.SearchForTextResult
@@ -135,6 +159,9 @@ type SearchPlaceIndexForTextOutput struct {
 }
 
 func (c *Client) addOperationSearchPlaceIndexForTextMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpSearchPlaceIndexForText{}, middleware.After)
 	if err != nil {
 		return err
@@ -143,34 +170,38 @@ func (c *Client) addOperationSearchPlaceIndexForTextMiddlewares(stack *middlewar
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "SearchPlaceIndexForText"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -182,10 +213,16 @@ func (c *Client) addOperationSearchPlaceIndexForTextMiddlewares(stack *middlewar
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addEndpointPrefix_opSearchPlaceIndexForTextMiddleware(stack); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addSearchPlaceIndexForTextResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addEndpointPrefix_opSearchPlaceIndexForTextMiddleware(stack); err != nil {
 		return err
 	}
 	if err = addOpSearchPlaceIndexForTextValidationMiddleware(stack); err != nil {
@@ -194,7 +231,7 @@ func (c *Client) addOperationSearchPlaceIndexForTextMiddlewares(stack *middlewar
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opSearchPlaceIndexForText(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -206,7 +243,19 @@ func (c *Client) addOperationSearchPlaceIndexForTextMiddlewares(stack *middlewar
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -219,11 +268,11 @@ func (*endpointPrefix_opSearchPlaceIndexForTextMiddleware) ID() string {
 	return "EndpointHostPrefix"
 }
 
-func (m *endpointPrefix_opSearchPlaceIndexForTextMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+func (m *endpointPrefix_opSearchPlaceIndexForTextMiddleware) HandleFinalize(ctx context.Context, in middleware.FinalizeInput, next middleware.FinalizeHandler) (
+	out middleware.FinalizeOutput, metadata middleware.Metadata, err error,
 ) {
 	if smithyhttp.GetHostnameImmutable(ctx) || smithyhttp.IsEndpointHostPrefixDisabled(ctx) {
-		return next.HandleSerialize(ctx, in)
+		return next.HandleFinalize(ctx, in)
 	}
 
 	req, ok := in.Request.(*smithyhttp.Request)
@@ -233,140 +282,16 @@ func (m *endpointPrefix_opSearchPlaceIndexForTextMiddleware) HandleSerialize(ctx
 
 	req.URL.Host = "places." + req.URL.Host
 
-	return next.HandleSerialize(ctx, in)
+	return next.HandleFinalize(ctx, in)
 }
 func addEndpointPrefix_opSearchPlaceIndexForTextMiddleware(stack *middleware.Stack) error {
-	return stack.Serialize.Insert(&endpointPrefix_opSearchPlaceIndexForTextMiddleware{}, `OperationSerializer`, middleware.After)
+	return stack.Finalize.Insert(&endpointPrefix_opSearchPlaceIndexForTextMiddleware{}, "ResolveEndpointV2", middleware.After)
 }
 
 func newServiceMetadataMiddleware_opSearchPlaceIndexForText(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "geo",
 		OperationName: "SearchPlaceIndexForText",
 	}
-}
-
-type opSearchPlaceIndexForTextResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opSearchPlaceIndexForTextResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opSearchPlaceIndexForTextResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "geo"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "geo"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("geo")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addSearchPlaceIndexForTextResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opSearchPlaceIndexForTextResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -4,22 +4,19 @@ package datasync
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/datasync/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Updates some of the parameters of a previously created location for Server
-// Message Block (SMB) file system access. For information about creating an SMB
-// location, see Creating a location for SMB (https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html)
-// .
+// Modifies the following configuration parameters of the Server Message Block
+// (SMB) transfer location that you're using with DataSync.
+//
+// For more information, see [Configuring DataSync transfers with an SMB file server].
+//
+// [Configuring DataSync transfers with an SMB file server]: https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html
 func (c *Client) UpdateLocationSmb(ctx context.Context, params *UpdateLocationSmbInput, optFns ...func(*Options)) (*UpdateLocationSmbOutput, error) {
 	if params == nil {
 		params = &UpdateLocationSmbInput{}
@@ -37,45 +34,91 @@ func (c *Client) UpdateLocationSmb(ctx context.Context, params *UpdateLocationSm
 
 type UpdateLocationSmbInput struct {
 
-	// The Amazon Resource Name (ARN) of the SMB location to update.
+	// Specifies the ARN of the SMB location that you want to update.
 	//
 	// This member is required.
 	LocationArn *string
 
-	// The Amazon Resource Names (ARNs) of agents to use for a Simple Message Block
-	// (SMB) location.
+	// Specifies the DataSync agent (or agents) that can connect to your SMB file
+	// server. You specify an agent by using its Amazon Resource Name (ARN).
 	AgentArns []string
 
-	// The name of the Windows domain that the SMB server belongs to.
+	// Specifies the authentication protocol that DataSync uses to connect to your SMB
+	// file server. DataSync supports NTLM (default) and KERBEROS authentication.
+	AuthenticationType types.SmbAuthenticationType
+
+	// Specifies the IPv4 addresses for the DNS servers that your SMB file server
+	// belongs to. This parameter applies only if AuthenticationType is set to KERBEROS
+	// .
+	//
+	// If you have multiple domains in your environment, configuring this parameter
+	// makes sure that DataSync connects to the right SMB file server.
+	DnsIpAddresses []string
+
+	// Specifies the Windows domain name that your SMB file server belongs to. This
+	// parameter applies only if AuthenticationType is set to NTLM .
+	//
+	// If you have multiple domains in your environment, configuring this parameter
+	// makes sure that DataSync connects to the right file server.
 	Domain *string
+
+	// Specifies your Kerberos key table (keytab) file, which includes mappings
+	// between your Kerberos principal and encryption keys.
+	//
+	// The file must be base64 encoded. If you're using the CLI, the encoding is done
+	// for you.
+	//
+	// To avoid task execution errors, make sure that the Kerberos principal that you
+	// use to create the keytab file matches exactly what you specify for
+	// KerberosPrincipal .
+	KerberosKeytab []byte
+
+	// Specifies a Kerberos configuration file ( krb5.conf ) that defines your Kerberos
+	// realm configuration.
+	//
+	// The file must be base64 encoded. If you're using the CLI, the encoding is done
+	// for you.
+	KerberosKrb5Conf []byte
+
+	// Specifies a Kerberos prinicpal, which is an identity in your Kerberos realm
+	// that has permission to access the files, folders, and file metadata in your SMB
+	// file server.
+	//
+	// A Kerberos principal might look like HOST/kerberosuser@EXAMPLE.COM .
+	//
+	// Principal names are case sensitive. Your DataSync task execution will fail if
+	// the principal that you specify for this parameter doesn’t exactly match the
+	// principal that you use to create the keytab file.
+	KerberosPrincipal *string
 
 	// Specifies the version of the Server Message Block (SMB) protocol that DataSync
 	// uses to access an SMB file server.
 	MountOptions *types.SmbMountOptions
 
-	// The password of the user who can mount the share has the permissions to access
-	// files and folders in the SMB share.
+	// Specifies the password of the user who can mount your SMB file server and has
+	// permission to access the files and folders involved in your transfer. This
+	// parameter applies only if AuthenticationType is set to NTLM .
 	Password *string
 
-	// The subdirectory in the SMB file system that is used to read data from the SMB
-	// source location or write data to the SMB destination. The SMB path should be a
-	// path that's exported by the SMB server, or a subdirectory of that path. The path
-	// should be such that it can be mounted by other SMB clients in your network.
-	// Subdirectory must be specified with forward slashes. For example,
-	// /path/to/folder . To transfer all the data in the folder that you specified,
-	// DataSync must have permissions to mount the SMB share and to access all the data
-	// in that share. To ensure this, do either of the following:
-	//   - Ensure that the user/password specified belongs to the user who can mount
-	//   the share and who has the appropriate permissions for all of the files and
-	//   directories that you want DataSync to access.
-	//   - Use credentials of a member of the Backup Operators group to mount the
-	//   share.
-	// Doing either of these options enables the agent to access the data. For the
-	// agent to access directories, you must also enable all execute access.
+	// Specifies the name of the share exported by your SMB file server where DataSync
+	// will read or write data. You can include a subdirectory in the share path (for
+	// example, /path/to/subdirectory ). Make sure that other SMB clients in your
+	// network can also mount this path.
+	//
+	// To copy all data in the specified subdirectory, DataSync must be able to mount
+	// the SMB share and access all of its data. For more information, see [Providing DataSync access to SMB file servers].
+	//
+	// [Providing DataSync access to SMB file servers]: https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions
 	Subdirectory *string
 
-	// The user who can mount the share has the permissions to access files and
-	// folders in the SMB share.
+	// Specifies the user name that can mount your SMB file server and has permission
+	// to access the files and folders involved in your transfer. This parameter
+	// applies only if AuthenticationType is set to NTLM .
+	//
+	// For information about choosing a user with the right level of access for your
+	// transfer, see [Providing DataSync access to SMB file servers].
+	//
+	// [Providing DataSync access to SMB file servers]: https://docs.aws.amazon.com/datasync/latest/userguide/create-smb-location.html#configuring-smb-permissions
 	User *string
 
 	noSmithyDocumentSerde
@@ -89,6 +132,9 @@ type UpdateLocationSmbOutput struct {
 }
 
 func (c *Client) addOperationUpdateLocationSmbMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpUpdateLocationSmb{}, middleware.After)
 	if err != nil {
 		return err
@@ -97,34 +143,38 @@ func (c *Client) addOperationUpdateLocationSmbMiddlewares(stack *middleware.Stac
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateLocationSmb"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -136,7 +186,13 @@ func (c *Client) addOperationUpdateLocationSmbMiddlewares(stack *middleware.Stac
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateLocationSmbResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateLocationSmbValidationMiddleware(stack); err != nil {
@@ -145,7 +201,7 @@ func (c *Client) addOperationUpdateLocationSmbMiddlewares(stack *middleware.Stac
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateLocationSmb(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -157,7 +213,19 @@ func (c *Client) addOperationUpdateLocationSmbMiddlewares(stack *middleware.Stac
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -167,130 +235,6 @@ func newServiceMetadataMiddleware_opUpdateLocationSmb(region string) *awsmiddlew
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "datasync",
 		OperationName: "UpdateLocationSmb",
 	}
-}
-
-type opUpdateLocationSmbResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateLocationSmbResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateLocationSmbResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "datasync"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "datasync"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("datasync")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateLocationSmbResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateLocationSmbResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

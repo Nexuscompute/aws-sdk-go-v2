@@ -4,22 +4,23 @@ package storagegateway
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/storagegateway/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns a description of the specified Amazon Resource Name (ARN) of virtual
-// tapes. If a TapeARN is not specified, returns a description of all virtual
-// tapes associated with the specified gateway. This operation is only supported in
-// the tape gateway type.
+// Returns a description of virtual tapes that correspond to the specified Amazon
+// Resource Names (ARNs). If TapeARN is not specified, returns a description of
+// the virtual tapes associated with the specified gateway. This operation is only
+// supported for the tape gateway type.
+//
+// The operation supports pagination. By default, the operation returns a maximum
+// of up to 100 tapes. You can optionally specify the Limit field in the body to
+// limit the number of tapes in the response. If the number of tapes returned in
+// the response is truncated, the response includes a Marker field. You can use
+// this Marker value in your subsequent request to retrieve the next set of tapes.
 func (c *Client) DescribeTapes(ctx context.Context, params *DescribeTapesInput, optFns ...func(*Options)) (*DescribeTapesOutput, error) {
 	if params == nil {
 		params = &DescribeTapesInput{}
@@ -38,20 +39,22 @@ func (c *Client) DescribeTapes(ctx context.Context, params *DescribeTapesInput, 
 // DescribeTapesInput
 type DescribeTapesInput struct {
 
-	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation
-	// to return a list of gateways for your account and Amazon Web Services Region.
+	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation to return a
+	// list of gateways for your account and Amazon Web Services Region.
 	//
 	// This member is required.
 	GatewayARN *string
 
 	// Specifies that the number of virtual tapes described be limited to the
-	// specified number. Amazon Web Services may impose its own limit, if this field is
-	// not set.
+	// specified number.
+	//
+	// Amazon Web Services may impose its own limit, if this field is not set.
 	Limit *int32
 
 	// A marker value, obtained in a previous call to DescribeTapes . This marker
-	// indicates which page of results to retrieve. If not specified, the first page of
-	// results is retrieved.
+	// indicates which page of results to retrieve.
+	//
+	// If not specified, the first page of results is retrieved.
 	Marker *string
 
 	// Specifies one or more unique Amazon Resource Names (ARNs) that represent the
@@ -67,8 +70,10 @@ type DescribeTapesInput struct {
 type DescribeTapesOutput struct {
 
 	// An opaque string that can be used as part of a subsequent DescribeTapes call to
-	// retrieve the next page of results. If a response does not contain a marker, then
-	// there are no more results to be retrieved.
+	// retrieve the next page of results.
+	//
+	// If a response does not contain a marker, then there are no more results to be
+	// retrieved.
 	Marker *string
 
 	// An array of virtual tape descriptions.
@@ -81,6 +86,9 @@ type DescribeTapesOutput struct {
 }
 
 func (c *Client) addOperationDescribeTapesMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpDescribeTapes{}, middleware.After)
 	if err != nil {
 		return err
@@ -89,34 +97,38 @@ func (c *Client) addOperationDescribeTapesMiddlewares(stack *middleware.Stack, o
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeTapes"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -128,7 +140,13 @@ func (c *Client) addOperationDescribeTapesMiddlewares(stack *middleware.Stack, o
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeTapesResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeTapesValidationMiddleware(stack); err != nil {
@@ -137,7 +155,7 @@ func (c *Client) addOperationDescribeTapesMiddlewares(stack *middleware.Stack, o
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeTapes(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -149,24 +167,30 @@ func (c *Client) addOperationDescribeTapesMiddlewares(stack *middleware.Stack, o
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
 
-// DescribeTapesAPIClient is a client that implements the DescribeTapes operation.
-type DescribeTapesAPIClient interface {
-	DescribeTapes(context.Context, *DescribeTapesInput, ...func(*Options)) (*DescribeTapesOutput, error)
-}
-
-var _ DescribeTapesAPIClient = (*Client)(nil)
-
 // DescribeTapesPaginatorOptions is the paginator options for DescribeTapes
 type DescribeTapesPaginatorOptions struct {
 	// Specifies that the number of virtual tapes described be limited to the
-	// specified number. Amazon Web Services may impose its own limit, if this field is
-	// not set.
+	// specified number.
+	//
+	// Amazon Web Services may impose its own limit, if this field is not set.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token
@@ -227,6 +251,9 @@ func (p *DescribeTapesPaginator) NextPage(ctx context.Context, optFns ...func(*O
 	}
 	params.Limit = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeTapes(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -246,134 +273,17 @@ func (p *DescribeTapesPaginator) NextPage(ctx context.Context, optFns ...func(*O
 	return result, nil
 }
 
+// DescribeTapesAPIClient is a client that implements the DescribeTapes operation.
+type DescribeTapesAPIClient interface {
+	DescribeTapes(context.Context, *DescribeTapesInput, ...func(*Options)) (*DescribeTapesOutput, error)
+}
+
+var _ DescribeTapesAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opDescribeTapes(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "storagegateway",
 		OperationName: "DescribeTapes",
 	}
-}
-
-type opDescribeTapesResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeTapesResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeTapesResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "storagegateway"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "storagegateway"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("storagegateway")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeTapesResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeTapesResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

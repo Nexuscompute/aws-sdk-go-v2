@@ -4,37 +4,50 @@ package eks
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/eks/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Updates an Amazon EKS cluster configuration. Your cluster continues to function
 // during the update. The response output includes an update ID that you can use to
-// track the status of your cluster update with the DescribeUpdate API operation.
+// track the status of your cluster update with DescribeUpdate "/>.
+//
 // You can use this API operation to enable or disable exporting the Kubernetes
 // control plane logs for your cluster to CloudWatch Logs. By default, cluster
 // control plane logs aren't exported to CloudWatch Logs. For more information, see
-// Amazon EKS Cluster Control Plane Logs (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
-// in the Amazon EKS User Guide . CloudWatch Logs ingestion, archive storage, and
-// data scanning rates apply to exported control plane logs. For more information,
-// see CloudWatch Pricing (http://aws.amazon.com/cloudwatch/pricing/) . You can
-// also use this API operation to enable or disable public and private access to
-// your cluster's Kubernetes API server endpoint. By default, public access is
-// enabled, and private access is disabled. For more information, see Amazon EKS
-// cluster endpoint access control (https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html)
-// in the Amazon EKS User Guide . You can't update the subnets or security group
-// IDs for an existing cluster. Cluster updates are asynchronous, and they should
-// finish within a few minutes. During an update, the cluster status moves to
-// UPDATING (this status transition is eventually consistent). When the update is
-// complete (either Failed or Successful ), the cluster status moves to Active .
+// [Amazon EKS Cluster control plane logs]in the Amazon EKS User Guide .
+//
+// CloudWatch Logs ingestion, archive storage, and data scanning rates apply to
+// exported control plane logs. For more information, see [CloudWatch Pricing].
+//
+// You can also use this API operation to enable or disable public and private
+// access to your cluster's Kubernetes API server endpoint. By default, public
+// access is enabled, and private access is disabled. For more information, see [Amazon EKS cluster endpoint access control]in
+// the Amazon EKS User Guide .
+//
+// You can also use this API operation to choose different subnets and security
+// groups for the cluster. You must specify at least two subnets that are in
+// different Availability Zones. You can't change which VPC the subnets are from,
+// the subnets must be in the same VPC as the subnets that the cluster was created
+// with. For more information about the VPC requirements, see [https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html]in the Amazon EKS
+// User Guide .
+//
+// You can also use this API operation to enable or disable ARC zonal shift. If
+// zonal shift is enabled, Amazon Web Services configures zonal autoshift for the
+// cluster.
+//
+// Cluster updates are asynchronous, and they should finish within a few minutes.
+// During an update, the cluster status moves to UPDATING (this status transition
+// is eventually consistent). When the update is complete (either Failed or
+// Successful ), the cluster status moves to Active .
+//
+// [Amazon EKS Cluster control plane logs]: https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
+// [CloudWatch Pricing]: http://aws.amazon.com/cloudwatch/pricing/
+// [https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html]: https://docs.aws.amazon.com/eks/latest/userguide/network_reqs.html
+// [Amazon EKS cluster endpoint access control]: https://docs.aws.amazon.com/eks/latest/userguide/cluster-endpoint.html
 func (c *Client) UpdateClusterConfig(ctx context.Context, params *UpdateClusterConfigInput, optFns ...func(*Options)) (*UpdateClusterConfigOutput, error) {
 	if params == nil {
 		params = &UpdateClusterConfigInput{}
@@ -57,20 +70,61 @@ type UpdateClusterConfigInput struct {
 	// This member is required.
 	Name *string
 
-	// Unique, case-sensitive identifier that you provide to ensure the idempotency of
-	// the request.
+	// The access configuration for the cluster.
+	AccessConfig *types.UpdateAccessConfigRequest
+
+	// A unique, case-sensitive identifier that you provide to ensure the idempotency
+	// of the request.
 	ClientRequestToken *string
 
+	// Update the configuration of the compute capability of your EKS Auto Mode
+	// cluster. For example, enable the capability.
+	ComputeConfig *types.ComputeConfigRequest
+
+	// The Kubernetes network configuration for the cluster.
+	KubernetesNetworkConfig *types.KubernetesNetworkConfigRequest
+
 	// Enable or disable exporting the Kubernetes control plane logs for your cluster
-	// to CloudWatch Logs. By default, cluster control plane logs aren't exported to
-	// CloudWatch Logs. For more information, see Amazon EKS cluster control plane logs (https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html)
-	// in the Amazon EKS User Guide . CloudWatch Logs ingestion, archive storage, and
-	// data scanning rates apply to exported control plane logs. For more information,
-	// see CloudWatch Pricing (http://aws.amazon.com/cloudwatch/pricing/) .
+	// to CloudWatch Logs . By default, cluster control plane logs aren't exported to
+	// CloudWatch Logs . For more information, see [Amazon EKS cluster control plane logs]in the Amazon EKS User Guide .
+	//
+	// CloudWatch Logs ingestion, archive storage, and data scanning rates apply to
+	// exported control plane logs. For more information, see [CloudWatch Pricing].
+	//
+	// [CloudWatch Pricing]: http://aws.amazon.com/cloudwatch/pricing/
+	// [Amazon EKS cluster control plane logs]: https://docs.aws.amazon.com/eks/latest/userguide/control-plane-logs.html
 	Logging *types.Logging
 
 	// An object representing the VPC configuration to use for an Amazon EKS cluster.
 	ResourcesVpcConfig *types.VpcConfigRequest
+
+	// Update the configuration of the block storage capability of your EKS Auto Mode
+	// cluster. For example, enable the capability.
+	StorageConfig *types.StorageConfigRequest
+
+	// You can enable or disable extended support for clusters currently on standard
+	// support. You cannot disable extended support once it starts. You must enable
+	// extended support before your cluster exits standard support.
+	UpgradePolicy *types.UpgradePolicyRequest
+
+	// Enable or disable ARC zonal shift for the cluster. If zonal shift is enabled,
+	// Amazon Web Services configures zonal autoshift for the cluster.
+	//
+	// Zonal shift is a feature of Amazon Application Recovery Controller (ARC). ARC
+	// zonal shift is designed to be a temporary measure that allows you to move
+	// traffic for a resource away from an impaired AZ until the zonal shift expires or
+	// you cancel it. You can extend the zonal shift if necessary.
+	//
+	// You can start a zonal shift for an EKS cluster, or you can allow Amazon Web
+	// Services to do it for you by enabling zonal autoshift. This shift updates the
+	// flow of east-to-west network traffic in your cluster to only consider network
+	// endpoints for Pods running on worker nodes in healthy AZs. Additionally, any ALB
+	// or NLB handling ingress traffic for applications in your EKS cluster will
+	// automatically route traffic to targets in the healthy AZs. For more information
+	// about zonal shift in EKS, see [Learn about Amazon Application Recovery Controller (ARC) Zonal Shift in Amazon EKS]in the Amazon EKS User Guide .
+	//
+	// [Learn about Amazon Application Recovery Controller (ARC) Zonal Shift in Amazon EKS]: https://docs.aws.amazon.com/eks/latest/userguide/zone-shift.html
+	ZonalShiftConfig *types.ZonalShiftConfigRequest
 
 	noSmithyDocumentSerde
 }
@@ -87,6 +141,9 @@ type UpdateClusterConfigOutput struct {
 }
 
 func (c *Client) addOperationUpdateClusterConfigMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpUpdateClusterConfig{}, middleware.After)
 	if err != nil {
 		return err
@@ -95,34 +152,38 @@ func (c *Client) addOperationUpdateClusterConfigMiddlewares(stack *middleware.St
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateClusterConfig"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -134,7 +195,13 @@ func (c *Client) addOperationUpdateClusterConfigMiddlewares(stack *middleware.St
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateClusterConfigResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opUpdateClusterConfigMiddleware(stack, options); err != nil {
@@ -146,7 +213,7 @@ func (c *Client) addOperationUpdateClusterConfigMiddlewares(stack *middleware.St
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateClusterConfig(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -158,7 +225,19 @@ func (c *Client) addOperationUpdateClusterConfigMiddlewares(stack *middleware.St
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -201,130 +280,6 @@ func newServiceMetadataMiddleware_opUpdateClusterConfig(region string) *awsmiddl
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "eks",
 		OperationName: "UpdateClusterConfig",
 	}
-}
-
-type opUpdateClusterConfigResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateClusterConfigResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateClusterConfigResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "eks"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "eks"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("eks")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateClusterConfigResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateClusterConfigResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

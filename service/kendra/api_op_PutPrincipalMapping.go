@@ -4,29 +4,31 @@ package kendra
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/kendra/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Maps users to their groups so that you only need to provide the user ID when
-// you issue the query. You can also map sub groups to groups. For example, the
-// group "Company Intellectual Property Teams" includes sub groups "Research" and
-// "Engineering". These sub groups include their own list of users or people who
-// work in these teams. Only users who work in research and engineering, and
-// therefore belong in the intellectual property group, can see top-secret company
-// documents in their search results. This is useful for user context filtering,
-// where search results are filtered based on the user or their group access to
-// documents. For more information, see Filtering on user context (https://docs.aws.amazon.com/kendra/latest/dg/user-context-filter.html)
-// . If more than five PUT actions for a group are currently processing, a
+// you issue the query.
+//
+// You can also map sub groups to groups. For example, the group "Company
+// Intellectual Property Teams" includes sub groups "Research" and "Engineering".
+// These sub groups include their own list of users or people who work in these
+// teams. Only users who work in research and engineering, and therefore belong in
+// the intellectual property group, can see top-secret company documents in their
+// search results.
+//
+// This is useful for user context filtering, where search results are filtered
+// based on the user or their group access to documents. For more information, see [Filtering on user context]
+// .
+//
+// If more than five PUT actions for a group are currently processing, a
 // validation exception is thrown.
+//
+// [Filtering on user context]: https://docs.aws.amazon.com/kendra/latest/dg/user-context-filter.html
 func (c *Client) PutPrincipalMapping(ctx context.Context, params *PutPrincipalMappingInput, optFns ...func(*Options)) (*PutPrincipalMappingOutput, error) {
 	if params == nil {
 		params = &PutPrincipalMappingInput{}
@@ -49,13 +51,16 @@ type PutPrincipalMappingInput struct {
 	// This member is required.
 	GroupId *string
 
-	// The list that contains your users or sub groups that belong the same group. For
-	// example, the group "Company" includes the user "CEO" and the sub groups
-	// "Research", "Engineering", and "Sales and Marketing". If you have more than 1000
-	// users and/or sub groups for a single group, you need to provide the path to the
-	// S3 file that lists your users and sub groups for a group. Your sub groups can
-	// contain more than 1000 users, but the list of sub groups that belong to a group
-	// (and/or users) must be no more than 1000.
+	// The list that contains your users that belong the same group. This can include
+	// sub groups that belong to a group.
+	//
+	// For example, the group "Company A" includes the user "CEO" and the sub groups
+	// "Research", "Engineering", and "Sales and Marketing".
+	//
+	// If you have more than 1000 users and/or sub groups for a single group, you need
+	// to provide the path to the S3 file that lists your users and sub groups for a
+	// group. Your sub groups can contain more than 1000 users, but the list of sub
+	// groups that belong to a group (and/or users) must be no more than 1000.
 	//
 	// This member is required.
 	GroupMembers *types.GroupMembers
@@ -65,32 +70,38 @@ type PutPrincipalMappingInput struct {
 	// This member is required.
 	IndexId *string
 
-	// The identifier of the data source you want to map users to their groups. This
-	// is useful if a group is tied to multiple data sources, but you only want the
-	// group to access documents of a certain data source. For example, the groups
+	// The identifier of the data source you want to map users to their groups.
+	//
+	// This is useful if a group is tied to multiple data sources, but you only want
+	// the group to access documents of a certain data source. For example, the groups
 	// "Research", "Engineering", and "Sales and Marketing" are all tied to the
 	// company's documents stored in the data sources Confluence and Salesforce.
 	// However, "Sales and Marketing" team only needs access to customer-related
 	// documents stored in Salesforce.
 	DataSourceId *string
 
-	// The timestamp identifier you specify to ensure Amazon Kendra does not override
+	// The timestamp identifier you specify to ensure Amazon Kendra doesn't override
 	// the latest PUT action with previous actions. The highest number ID, which is
 	// the ordering ID, is the latest action you want to process and apply on top of
 	// other actions with lower number IDs. This prevents previous actions with lower
-	// number IDs from possibly overriding the latest action. The ordering ID can be
-	// the Unix time of the last update you made to a group members list. You would
-	// then provide this list when calling PutPrincipalMapping . This ensures your PUT
-	// action for that updated group with the latest members list doesn't get
-	// overwritten by earlier PUT actions for the same group which are yet to be
-	// processed. The default ordering ID is the current Unix time in milliseconds that
-	// the action was received by Amazon Kendra.
+	// number IDs from possibly overriding the latest action.
+	//
+	// The ordering ID can be the Unix time of the last update you made to a group
+	// members list. You would then provide this list when calling PutPrincipalMapping
+	// . This ensures your PUT action for that updated group with the latest members
+	// list doesn't get overwritten by earlier PUT actions for the same group which
+	// are yet to be processed.
+	//
+	// The default ordering ID is the current Unix time in milliseconds that the
+	// action was received by Amazon Kendra.
 	OrderingId *int64
 
-	// The Amazon Resource Name (ARN) of a role that has access to the S3 file that
-	// contains your list of users or sub groups that belong to a group. For more
-	// information, see IAM roles for Amazon Kendra (https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html#iam-roles-ds)
-	// .
+	// The Amazon Resource Name (ARN) of an IAM role that has access to the S3 file
+	// that contains your list of users that belong to a group.
+	//
+	// For more information, see [IAM roles for Amazon Kendra].
+	//
+	// [IAM roles for Amazon Kendra]: https://docs.aws.amazon.com/kendra/latest/dg/iam-roles.html#iam-roles-ds
 	RoleArn *string
 
 	noSmithyDocumentSerde
@@ -104,6 +115,9 @@ type PutPrincipalMappingOutput struct {
 }
 
 func (c *Client) addOperationPutPrincipalMappingMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpPutPrincipalMapping{}, middleware.After)
 	if err != nil {
 		return err
@@ -112,34 +126,38 @@ func (c *Client) addOperationPutPrincipalMappingMiddlewares(stack *middleware.St
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "PutPrincipalMapping"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -151,7 +169,13 @@ func (c *Client) addOperationPutPrincipalMappingMiddlewares(stack *middleware.St
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addPutPrincipalMappingResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutPrincipalMappingValidationMiddleware(stack); err != nil {
@@ -160,7 +184,7 @@ func (c *Client) addOperationPutPrincipalMappingMiddlewares(stack *middleware.St
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opPutPrincipalMapping(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -172,7 +196,19 @@ func (c *Client) addOperationPutPrincipalMappingMiddlewares(stack *middleware.St
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -182,130 +218,6 @@ func newServiceMetadataMiddleware_opPutPrincipalMapping(region string) *awsmiddl
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "kendra",
 		OperationName: "PutPrincipalMapping",
 	}
-}
-
-type opPutPrincipalMappingResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opPutPrincipalMappingResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opPutPrincipalMappingResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "kendra"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "kendra"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("kendra")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addPutPrincipalMappingResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opPutPrincipalMappingResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

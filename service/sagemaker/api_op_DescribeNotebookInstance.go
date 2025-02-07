@@ -6,18 +6,13 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/sagemaker/types"
 	smithy "github.com/aws/smithy-go"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	"github.com/jmespath/go-jmespath"
 	"time"
 )
 
@@ -49,19 +44,21 @@ type DescribeNotebookInstanceInput struct {
 
 type DescribeNotebookInstanceOutput struct {
 
-	// A list of the Elastic Inference (EI) instance types associated with this
-	// notebook instance. Currently only one EI instance type can be associated with a
-	// notebook instance. For more information, see Using Elastic Inference in Amazon
-	// SageMaker (https://docs.aws.amazon.com/sagemaker/latest/dg/ei.html) .
+	// This parameter is no longer supported. Elastic Inference (EI) is no longer
+	// available.
+	//
+	// This parameter was used to specify a list of the EI instance types associated
+	// with this notebook instance.
 	AcceleratorTypes []types.NotebookInstanceAcceleratorType
 
 	// An array of up to three Git repositories associated with the notebook instance.
 	// These can be either the names of Git repositories stored as resources in your
-	// account, or the URL of Git repositories in Amazon Web Services CodeCommit (https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html)
-	// or in any other Git repository. These repositories are cloned at the same level
-	// as the default repository of your notebook instance. For more information, see
-	// Associating Git Repositories with SageMaker Notebook Instances (https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html)
-	// .
+	// account, or the URL of Git repositories in [Amazon Web Services CodeCommit]or in any other Git repository.
+	// These repositories are cloned at the same level as the default repository of
+	// your notebook instance. For more information, see [Associating Git Repositories with SageMaker AI Notebook Instances].
+	//
+	// [Amazon Web Services CodeCommit]: https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html
+	// [Associating Git Repositories with SageMaker AI Notebook Instances]: https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html
 	AdditionalCodeRepositories []string
 
 	// A timestamp. Use this parameter to return the time when the notebook instance
@@ -70,19 +67,22 @@ type DescribeNotebookInstanceOutput struct {
 
 	// The Git repository associated with the notebook instance as its default code
 	// repository. This can be either the name of a Git repository stored as a resource
-	// in your account, or the URL of a Git repository in Amazon Web Services
-	// CodeCommit (https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html)
-	// or in any other Git repository. When you open a notebook instance, it opens in
-	// the directory that contains this repository. For more information, see
-	// Associating Git Repositories with SageMaker Notebook Instances (https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html)
-	// .
+	// in your account, or the URL of a Git repository in [Amazon Web Services CodeCommit]or in any other Git
+	// repository. When you open a notebook instance, it opens in the directory that
+	// contains this repository. For more information, see [Associating Git Repositories with SageMaker AI Notebook Instances].
+	//
+	// [Amazon Web Services CodeCommit]: https://docs.aws.amazon.com/codecommit/latest/userguide/welcome.html
+	// [Associating Git Repositories with SageMaker AI Notebook Instances]: https://docs.aws.amazon.com/sagemaker/latest/dg/nbi-git-repo.html
 	DefaultCodeRepository *string
 
-	// Describes whether SageMaker provides internet access to the notebook instance.
-	// If this value is set to Disabled, the notebook instance does not have internet
-	// access, and cannot connect to SageMaker training and endpoint services. For more
-	// information, see Notebook Instances Are Internet-Enabled by Default (https://docs.aws.amazon.com/sagemaker/latest/dg/appendix-additional-considerations.html#appendix-notebook-and-internet-access)
-	// .
+	// Describes whether SageMaker AI provides internet access to the notebook
+	// instance. If this value is set to Disabled, the notebook instance does not have
+	// internet access, and cannot connect to SageMaker AI training and endpoint
+	// services.
+	//
+	// For more information, see [Notebook Instances Are Internet-Enabled by Default].
+	//
+	// [Notebook Instances Are Internet-Enabled by Default]: https://docs.aws.amazon.com/sagemaker/latest/dg/appendix-additional-considerations.html#appendix-notebook-and-internet-access
 	DirectInternetAccess types.DirectInternetAccess
 
 	// If status is Failed , the reason it failed.
@@ -94,27 +94,29 @@ type DescribeNotebookInstanceOutput struct {
 	// The type of ML compute instance running on the notebook instance.
 	InstanceType types.InstanceType
 
-	// The Amazon Web Services KMS key ID SageMaker uses to encrypt data when storing
-	// it on the ML storage volume attached to the instance.
+	// The Amazon Web Services KMS key ID SageMaker AI uses to encrypt data when
+	// storing it on the ML storage volume attached to the instance.
 	KmsKeyId *string
 
 	// A timestamp. Use this parameter to retrieve the time when the notebook instance
 	// was last modified.
 	LastModifiedTime *time.Time
 
-	// The network interface IDs that SageMaker created at the time of creating the
+	// The network interface IDs that SageMaker AI created at the time of creating the
 	// instance.
 	NetworkInterfaceId *string
 
 	// The Amazon Resource Name (ARN) of the notebook instance.
 	NotebookInstanceArn *string
 
-	// Returns the name of a notebook instance lifecycle configuration. For
-	// information about notebook instance lifestyle configurations, see Step 2.1:
-	// (Optional) Customize a Notebook Instance (https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html)
+	// Returns the name of a notebook instance lifecycle configuration.
+	//
+	// For information about notebook instance lifestyle configurations, see [Step 2.1: (Optional) Customize a Notebook Instance]
+	//
+	// [Step 2.1: (Optional) Customize a Notebook Instance]: https://docs.aws.amazon.com/sagemaker/latest/dg/notebook-lifecycle-config.html
 	NotebookInstanceLifecycleConfigName *string
 
-	// The name of the SageMaker notebook instance.
+	// The name of the SageMaker AI notebook instance.
 	NotebookInstanceName *string
 
 	// The status of the notebook instance.
@@ -127,6 +129,7 @@ type DescribeNotebookInstanceOutput struct {
 	RoleArn *string
 
 	// Whether root access is enabled or disabled for users of the notebook instance.
+	//
 	// Lifecycle configurations need root access to be able to set up a notebook
 	// instance. Because of this, lifecycle configurations associated with a notebook
 	// instance always run with root access even if you disable root access for users.
@@ -152,6 +155,9 @@ type DescribeNotebookInstanceOutput struct {
 }
 
 func (c *Client) addOperationDescribeNotebookInstanceMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpDescribeNotebookInstance{}, middleware.After)
 	if err != nil {
 		return err
@@ -160,34 +166,38 @@ func (c *Client) addOperationDescribeNotebookInstanceMiddlewares(stack *middlewa
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeNotebookInstance"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -199,7 +209,13 @@ func (c *Client) addOperationDescribeNotebookInstanceMiddlewares(stack *middlewa
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeNotebookInstanceResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeNotebookInstanceValidationMiddleware(stack); err != nil {
@@ -208,7 +224,7 @@ func (c *Client) addOperationDescribeNotebookInstanceMiddlewares(stack *middlewa
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeNotebookInstance(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -220,19 +236,23 @@ func (c *Client) addOperationDescribeNotebookInstanceMiddlewares(stack *middlewa
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// DescribeNotebookInstanceAPIClient is a client that implements the
-// DescribeNotebookInstance operation.
-type DescribeNotebookInstanceAPIClient interface {
-	DescribeNotebookInstance(context.Context, *DescribeNotebookInstanceInput, ...func(*Options)) (*DescribeNotebookInstanceOutput, error)
-}
-
-var _ DescribeNotebookInstanceAPIClient = (*Client)(nil)
 
 // NotebookInstanceDeletedWaiterOptions are waiter options for
 // NotebookInstanceDeletedWaiter
@@ -241,7 +261,16 @@ type NotebookInstanceDeletedWaiterOptions struct {
 	// Set of options to modify how an operation is invoked. These apply to all
 	// operations invoked for this client. Use functional options on operation call to
 	// modify this list for per operation behavior.
+	//
+	// Passing options here is functionally equivalent to passing values to this
+	// config's ClientOptions field that extend the inner client's APIOptions directly.
 	APIOptions []func(*middleware.Stack) error
+
+	// Functional options to be passed to all operations invoked by this client.
+	//
+	// Function values that modify the inner APIOptions are applied after the waiter
+	// config's own APIOptions modifiers.
+	ClientOptions []func(*Options)
 
 	// MinDelay is the minimum amount of time to delay between retries. If unset,
 	// NotebookInstanceDeletedWaiter will use default minimum delay of 30 seconds. Note
@@ -259,12 +288,13 @@ type NotebookInstanceDeletedWaiterOptions struct {
 
 	// Retryable is function that can be used to override the service defined
 	// waiter-behavior based on operation output, or returned error. This function is
-	// used by the waiter to decide if a state is retryable or a terminal state. By
-	// default service-modeled logic will populate this option. This option can thus be
-	// used to define a custom waiter state with fall-back to service-modeled waiter
-	// state mutators.The function returns an error in case of a failure state. In case
-	// of retry state, this function returns a bool value of true and nil error, while
-	// in case of success it returns a bool value of false and nil error.
+	// used by the waiter to decide if a state is retryable or a terminal state.
+	//
+	// By default service-modeled logic will populate this option. This option can
+	// thus be used to define a custom waiter state with fall-back to service-modeled
+	// waiter state mutators.The function returns an error in case of a failure state.
+	// In case of retry state, this function returns a bool value of true and nil
+	// error, while in case of success it returns a bool value of false and nil error.
 	Retryable func(context.Context, *DescribeNotebookInstanceInput, *DescribeNotebookInstanceOutput, error) (bool, error)
 }
 
@@ -341,7 +371,16 @@ func (w *NotebookInstanceDeletedWaiter) WaitForOutput(ctx context.Context, param
 		}
 
 		out, err := w.client.DescribeNotebookInstance(ctx, params, func(o *Options) {
+			baseOpts := []func(*Options){
+				addIsWaiterUserAgent,
+			}
 			o.APIOptions = append(o.APIOptions, apiOptions...)
+			for _, opt := range baseOpts {
+				opt(o)
+			}
+			for _, opt := range options.ClientOptions {
+				opt(o)
+			}
 		})
 
 		retryable, err := options.Retryable(ctx, params, out, err)
@@ -389,22 +428,18 @@ func notebookInstanceDeletedStateRetryable(ctx context.Context, input *DescribeN
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("NotebookInstanceStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.NotebookInstanceStatus
 		expectedValue := "Failed"
-		value, ok := pathValue.(types.NotebookInstanceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.NotebookInstanceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -415,7 +450,16 @@ type NotebookInstanceInServiceWaiterOptions struct {
 	// Set of options to modify how an operation is invoked. These apply to all
 	// operations invoked for this client. Use functional options on operation call to
 	// modify this list for per operation behavior.
+	//
+	// Passing options here is functionally equivalent to passing values to this
+	// config's ClientOptions field that extend the inner client's APIOptions directly.
 	APIOptions []func(*middleware.Stack) error
+
+	// Functional options to be passed to all operations invoked by this client.
+	//
+	// Function values that modify the inner APIOptions are applied after the waiter
+	// config's own APIOptions modifiers.
+	ClientOptions []func(*Options)
 
 	// MinDelay is the minimum amount of time to delay between retries. If unset,
 	// NotebookInstanceInServiceWaiter will use default minimum delay of 30 seconds.
@@ -433,12 +477,13 @@ type NotebookInstanceInServiceWaiterOptions struct {
 
 	// Retryable is function that can be used to override the service defined
 	// waiter-behavior based on operation output, or returned error. This function is
-	// used by the waiter to decide if a state is retryable or a terminal state. By
-	// default service-modeled logic will populate this option. This option can thus be
-	// used to define a custom waiter state with fall-back to service-modeled waiter
-	// state mutators.The function returns an error in case of a failure state. In case
-	// of retry state, this function returns a bool value of true and nil error, while
-	// in case of success it returns a bool value of false and nil error.
+	// used by the waiter to decide if a state is retryable or a terminal state.
+	//
+	// By default service-modeled logic will populate this option. This option can
+	// thus be used to define a custom waiter state with fall-back to service-modeled
+	// waiter state mutators.The function returns an error in case of a failure state.
+	// In case of retry state, this function returns a bool value of true and nil
+	// error, while in case of success it returns a bool value of false and nil error.
 	Retryable func(context.Context, *DescribeNotebookInstanceInput, *DescribeNotebookInstanceOutput, error) (bool, error)
 }
 
@@ -516,7 +561,16 @@ func (w *NotebookInstanceInServiceWaiter) WaitForOutput(ctx context.Context, par
 		}
 
 		out, err := w.client.DescribeNotebookInstance(ctx, params, func(o *Options) {
+			baseOpts := []func(*Options){
+				addIsWaiterUserAgent,
+			}
 			o.APIOptions = append(o.APIOptions, apiOptions...)
+			for _, opt := range baseOpts {
+				opt(o)
+			}
+			for _, opt := range options.ClientOptions {
+				opt(o)
+			}
 		})
 
 		retryable, err := options.Retryable(ctx, params, out, err)
@@ -552,39 +606,28 @@ func (w *NotebookInstanceInServiceWaiter) WaitForOutput(ctx context.Context, par
 func notebookInstanceInServiceStateRetryable(ctx context.Context, input *DescribeNotebookInstanceInput, output *DescribeNotebookInstanceOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("NotebookInstanceStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.NotebookInstanceStatus
 		expectedValue := "InService"
-		value, ok := pathValue.(types.NotebookInstanceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.NotebookInstanceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("NotebookInstanceStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.NotebookInstanceStatus
 		expectedValue := "Failed"
-		value, ok := pathValue.(types.NotebookInstanceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.NotebookInstanceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -595,7 +638,16 @@ type NotebookInstanceStoppedWaiterOptions struct {
 	// Set of options to modify how an operation is invoked. These apply to all
 	// operations invoked for this client. Use functional options on operation call to
 	// modify this list for per operation behavior.
+	//
+	// Passing options here is functionally equivalent to passing values to this
+	// config's ClientOptions field that extend the inner client's APIOptions directly.
 	APIOptions []func(*middleware.Stack) error
+
+	// Functional options to be passed to all operations invoked by this client.
+	//
+	// Function values that modify the inner APIOptions are applied after the waiter
+	// config's own APIOptions modifiers.
+	ClientOptions []func(*Options)
 
 	// MinDelay is the minimum amount of time to delay between retries. If unset,
 	// NotebookInstanceStoppedWaiter will use default minimum delay of 30 seconds. Note
@@ -613,12 +665,13 @@ type NotebookInstanceStoppedWaiterOptions struct {
 
 	// Retryable is function that can be used to override the service defined
 	// waiter-behavior based on operation output, or returned error. This function is
-	// used by the waiter to decide if a state is retryable or a terminal state. By
-	// default service-modeled logic will populate this option. This option can thus be
-	// used to define a custom waiter state with fall-back to service-modeled waiter
-	// state mutators.The function returns an error in case of a failure state. In case
-	// of retry state, this function returns a bool value of true and nil error, while
-	// in case of success it returns a bool value of false and nil error.
+	// used by the waiter to decide if a state is retryable or a terminal state.
+	//
+	// By default service-modeled logic will populate this option. This option can
+	// thus be used to define a custom waiter state with fall-back to service-modeled
+	// waiter state mutators.The function returns an error in case of a failure state.
+	// In case of retry state, this function returns a bool value of true and nil
+	// error, while in case of success it returns a bool value of false and nil error.
 	Retryable func(context.Context, *DescribeNotebookInstanceInput, *DescribeNotebookInstanceOutput, error) (bool, error)
 }
 
@@ -695,7 +748,16 @@ func (w *NotebookInstanceStoppedWaiter) WaitForOutput(ctx context.Context, param
 		}
 
 		out, err := w.client.DescribeNotebookInstance(ctx, params, func(o *Options) {
+			baseOpts := []func(*Options){
+				addIsWaiterUserAgent,
+			}
 			o.APIOptions = append(o.APIOptions, apiOptions...)
+			for _, opt := range baseOpts {
+				opt(o)
+			}
+			for _, opt := range options.ClientOptions {
+				opt(o)
+			}
 		})
 
 		retryable, err := options.Retryable(ctx, params, out, err)
@@ -731,170 +793,43 @@ func (w *NotebookInstanceStoppedWaiter) WaitForOutput(ctx context.Context, param
 func notebookInstanceStoppedStateRetryable(ctx context.Context, input *DescribeNotebookInstanceInput, output *DescribeNotebookInstanceOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("NotebookInstanceStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.NotebookInstanceStatus
 		expectedValue := "Stopped"
-		value, ok := pathValue.(types.NotebookInstanceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.NotebookInstanceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("NotebookInstanceStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.NotebookInstanceStatus
 		expectedValue := "Failed"
-		value, ok := pathValue.(types.NotebookInstanceStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.NotebookInstanceStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
+
+// DescribeNotebookInstanceAPIClient is a client that implements the
+// DescribeNotebookInstance operation.
+type DescribeNotebookInstanceAPIClient interface {
+	DescribeNotebookInstance(context.Context, *DescribeNotebookInstanceInput, ...func(*Options)) (*DescribeNotebookInstanceOutput, error)
+}
+
+var _ DescribeNotebookInstanceAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opDescribeNotebookInstance(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "sagemaker",
 		OperationName: "DescribeNotebookInstance",
 	}
-}
-
-type opDescribeNotebookInstanceResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeNotebookInstanceResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeNotebookInstanceResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "sagemaker"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "sagemaker"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("sagemaker")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeNotebookInstanceResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeNotebookInstanceResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

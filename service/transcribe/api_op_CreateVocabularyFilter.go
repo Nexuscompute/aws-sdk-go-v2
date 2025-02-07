@@ -4,28 +4,28 @@ package transcribe
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/transcribe/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
 )
 
-// Creates a new custom vocabulary filter. You can use custom vocabulary filters
-// to mask, delete, or flag specific words from your transcript. Custom vocabulary
-// filters are commonly used to mask profanity in transcripts. Each language has a
-// character set that contains all allowed characters for that specific language.
-// If you use unsupported characters, your custom vocabulary filter request fails.
-// Refer to Character Sets for Custom Vocabularies (https://docs.aws.amazon.com/transcribe/latest/dg/charsets.html)
-// to get the character set for your language. For more information, see
-// Vocabulary filtering (https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html)
-// .
+// Creates a new custom vocabulary filter.
+//
+// You can use custom vocabulary filters to mask, delete, or flag specific words
+// from your transcript. Custom vocabulary filters are commonly used to mask
+// profanity in transcripts.
+//
+// Each language has a character set that contains all allowed characters for that
+// specific language. If you use unsupported characters, your custom vocabulary
+// filter request fails. Refer to [Character Sets for Custom Vocabularies]to get the character set for your language.
+//
+// For more information, see [Vocabulary filtering].
+//
+// [Character Sets for Custom Vocabularies]: https://docs.aws.amazon.com/transcribe/latest/dg/charsets.html
+// [Vocabulary filtering]: https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html
 func (c *Client) CreateVocabularyFilter(ctx context.Context, params *CreateVocabularyFilterInput, optFns ...func(*Options)) (*CreateVocabularyFilterOutput, error) {
 	if params == nil {
 		params = &CreateVocabularyFilterInput{}
@@ -45,20 +45,26 @@ type CreateVocabularyFilterInput struct {
 
 	// The language code that represents the language of the entries in your
 	// vocabulary filter. Each custom vocabulary filter must contain terms in only one
-	// language. A custom vocabulary filter can only be used to transcribe files in the
-	// same language as the filter. For example, if you create a custom vocabulary
-	// filter using US English ( en-US ), you can only apply this filter to files that
-	// contain English audio. For a list of supported languages and their associated
-	// language codes, refer to the Supported languages (https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html)
-	// table.
+	// language.
+	//
+	// A custom vocabulary filter can only be used to transcribe files in the same
+	// language as the filter. For example, if you create a custom vocabulary filter
+	// using US English ( en-US ), you can only apply this filter to files that contain
+	// English audio.
+	//
+	// For a list of supported languages and their associated language codes, refer to
+	// the [Supported languages]table.
+	//
+	// [Supported languages]: https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html
 	//
 	// This member is required.
 	LanguageCode types.LanguageCode
 
-	// A unique name, chosen by you, for your new custom vocabulary filter. This name
-	// is case sensitive, cannot contain spaces, and must be unique within an Amazon
-	// Web Services account. If you try to create a new custom vocabulary filter with
-	// the same name as an existing custom vocabulary filter, you get a
+	// A unique name, chosen by you, for your new custom vocabulary filter.
+	//
+	// This name is case sensitive, cannot contain spaces, and must be unique within
+	// an Amazon Web Services account. If you try to create a new custom vocabulary
+	// filter with the same name as an existing custom vocabulary filter, you get a
 	// ConflictException error.
 	//
 	// This member is required.
@@ -67,38 +73,49 @@ type CreateVocabularyFilterInput struct {
 	// The Amazon Resource Name (ARN) of an IAM role that has permissions to access
 	// the Amazon S3 bucket that contains your input files (in this case, your custom
 	// vocabulary filter). If the role that you specify doesn’t have the appropriate
-	// permissions to access the specified Amazon S3 location, your request fails. IAM
-	// role ARNs have the format arn:partition:iam::account:role/role-name-with-path .
-	// For example: arn:aws:iam::111122223333:role/Admin . For more information, see
-	// IAM ARNs (https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns)
-	// .
+	// permissions to access the specified Amazon S3 location, your request fails.
+	//
+	// IAM role ARNs have the format
+	// arn:partition:iam::account:role/role-name-with-path . For example:
+	// arn:aws:iam::111122223333:role/Admin .
+	//
+	// For more information, see [IAM ARNs].
+	//
+	// [IAM ARNs]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_identifiers.html#identifiers-arns
 	DataAccessRoleArn *string
 
 	// Adds one or more custom tags, each in the form of a key:value pair, to a new
-	// custom vocabulary filter at the time you create this new vocabulary filter. To
-	// learn more about using tags with Amazon Transcribe, refer to Tagging resources (https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html)
-	// .
+	// custom vocabulary filter at the time you create this new vocabulary filter.
+	//
+	// To learn more about using tags with Amazon Transcribe, refer to [Tagging resources].
+	//
+	// [Tagging resources]: https://docs.aws.amazon.com/transcribe/latest/dg/tagging.html
 	Tags []types.Tag
 
 	// The Amazon S3 location of the text file that contains your custom vocabulary
 	// filter terms. The URI must be located in the same Amazon Web Services Region as
-	// the resource you're calling. Here's an example URI path:
-	// s3://DOC-EXAMPLE-BUCKET/my-vocab-filter-file.txt Note that if you include
-	// VocabularyFilterFileUri in your request, you cannot use Words ; you must choose
-	// one or the other.
+	// the resource you're calling.
+	//
+	// Here's an example URI path: s3://DOC-EXAMPLE-BUCKET/my-vocab-filter-file.txt
+	//
+	// Note that if you include VocabularyFilterFileUri in your request, you cannot
+	// use Words ; you must choose one or the other.
 	VocabularyFilterFileUri *string
 
 	// Use this parameter if you want to create your custom vocabulary filter by
 	// including all desired terms, as comma-separated values, within your request. The
 	// other option for creating your vocabulary filter is to save your entries in a
 	// text file and upload them to an Amazon S3 bucket, then specify the location of
-	// your file using the VocabularyFilterFileUri parameter. Note that if you include
-	// Words in your request, you cannot use VocabularyFilterFileUri ; you must choose
-	// one or the other. Each language has a character set that contains all allowed
-	// characters for that specific language. If you use unsupported characters, your
-	// custom vocabulary filter request fails. Refer to Character Sets for Custom
-	// Vocabularies (https://docs.aws.amazon.com/transcribe/latest/dg/charsets.html) to
-	// get the character set for your language.
+	// your file using the VocabularyFilterFileUri parameter.
+	//
+	// Note that if you include Words in your request, you cannot use
+	// VocabularyFilterFileUri ; you must choose one or the other.
+	//
+	// Each language has a character set that contains all allowed characters for that
+	// specific language. If you use unsupported characters, your custom vocabulary
+	// filter request fails. Refer to [Character Sets for Custom Vocabularies]to get the character set for your language.
+	//
+	// [Character Sets for Custom Vocabularies]: https://docs.aws.amazon.com/transcribe/latest/dg/charsets.html
 	Words []string
 
 	noSmithyDocumentSerde
@@ -109,8 +126,9 @@ type CreateVocabularyFilterOutput struct {
 	// The language code you selected for your custom vocabulary filter.
 	LanguageCode types.LanguageCode
 
-	// The date and time you created your custom vocabulary filter. Timestamps are in
-	// the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC . For example,
+	// The date and time you created your custom vocabulary filter.
+	//
+	// Timestamps are in the format YYYY-MM-DD'T'HH:MM:SS.SSSSSS-UTC . For example,
 	// 2022-05-04T12:32:58.761000-07:00 represents 12:32 PM UTC-7 on May 4, 2022.
 	LastModifiedTime *time.Time
 
@@ -124,6 +142,9 @@ type CreateVocabularyFilterOutput struct {
 }
 
 func (c *Client) addOperationCreateVocabularyFilterMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateVocabularyFilter{}, middleware.After)
 	if err != nil {
 		return err
@@ -132,34 +153,38 @@ func (c *Client) addOperationCreateVocabularyFilterMiddlewares(stack *middleware
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateVocabularyFilter"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -171,7 +196,13 @@ func (c *Client) addOperationCreateVocabularyFilterMiddlewares(stack *middleware
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateVocabularyFilterResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateVocabularyFilterValidationMiddleware(stack); err != nil {
@@ -180,7 +211,7 @@ func (c *Client) addOperationCreateVocabularyFilterMiddlewares(stack *middleware
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateVocabularyFilter(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -192,7 +223,19 @@ func (c *Client) addOperationCreateVocabularyFilterMiddlewares(stack *middleware
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -202,130 +245,6 @@ func newServiceMetadataMiddleware_opCreateVocabularyFilter(region string) *awsmi
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "transcribe",
 		OperationName: "CreateVocabularyFilter",
 	}
-}
-
-type opCreateVocabularyFilterResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateVocabularyFilterResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateVocabularyFilterResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "transcribe"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "transcribe"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("transcribe")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateVocabularyFilterResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateVocabularyFilterResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

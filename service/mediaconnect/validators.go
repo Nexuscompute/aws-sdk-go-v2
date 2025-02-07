@@ -310,6 +310,46 @@ func (m *validateOpDescribeFlow) HandleInitialize(ctx context.Context, in middle
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDescribeFlowSourceMetadata struct {
+}
+
+func (*validateOpDescribeFlowSourceMetadata) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeFlowSourceMetadata) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeFlowSourceMetadataInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeFlowSourceMetadataInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeFlowSourceThumbnail struct {
+}
+
+func (*validateOpDescribeFlowSourceThumbnail) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeFlowSourceThumbnail) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeFlowSourceThumbnailInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeFlowSourceThumbnailInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDescribeGateway struct {
 }
 
@@ -930,6 +970,14 @@ func addOpDescribeFlowValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeFlow{}, middleware.After)
 }
 
+func addOpDescribeFlowSourceMetadataValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeFlowSourceMetadata{}, middleware.After)
+}
+
+func addOpDescribeFlowSourceThumbnailValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeFlowSourceThumbnail{}, middleware.After)
+}
+
 func addOpDescribeGatewayValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeGateway{}, middleware.After)
 }
@@ -1278,8 +1326,14 @@ func validateAddBridgeNetworkOutputRequest(v *types.AddBridgeNetworkOutputReques
 	if v.NetworkName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("NetworkName"))
 	}
+	if v.Port == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Port"))
+	}
 	if len(v.Protocol) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Protocol"))
+	}
+	if v.Ttl == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Ttl"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1301,6 +1355,9 @@ func validateAddBridgeNetworkSourceRequest(v *types.AddBridgeNetworkSourceReques
 	}
 	if v.NetworkName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("NetworkName"))
+	}
+	if v.Port == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Port"))
 	}
 	if len(v.Protocol) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Protocol"))
@@ -1356,6 +1413,9 @@ func validateAddEgressGatewayBridgeRequest(v *types.AddEgressGatewayBridgeReques
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "AddEgressGatewayBridgeRequest"}
+	if v.MaxBitrate == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaxBitrate"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1368,6 +1428,12 @@ func validateAddIngressGatewayBridgeRequest(v *types.AddIngressGatewayBridgeRequ
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "AddIngressGatewayBridgeRequest"}
+	if v.MaxBitrate == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaxBitrate"))
+	}
+	if v.MaxOutputs == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaxOutputs"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1398,6 +1464,9 @@ func validateAddMediaStreamRequest(v *types.AddMediaStreamRequest) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "AddMediaStreamRequest"}
+	if v.MediaStreamId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MediaStreamId"))
+	}
 	if v.MediaStreamName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("MediaStreamName"))
 	}
@@ -1444,6 +1513,9 @@ func validateDestinationConfigurationRequest(v *types.DestinationConfigurationRe
 	if v.DestinationIp == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DestinationIp"))
 	}
+	if v.DestinationPort == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DestinationPort"))
+	}
 	if v.Interface == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Interface"))
 	} else if v.Interface != nil {
@@ -1463,6 +1535,9 @@ func validateEncodingParametersRequest(v *types.EncodingParametersRequest) error
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "EncodingParametersRequest"}
+	if v.CompressionFactor == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CompressionFactor"))
+	}
 	if len(v.EncoderProfile) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("EncoderProfile"))
 	}
@@ -1531,6 +1606,9 @@ func validateInputConfigurationRequest(v *types.InputConfigurationRequest) error
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "InputConfigurationRequest"}
+	if v.InputPort == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InputPort"))
+	}
 	if v.Interface == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Interface"))
 	} else if v.Interface != nil {
@@ -2004,6 +2082,36 @@ func validateOpDescribeFlowInput(v *DescribeFlowInput) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "DescribeFlowInput"}
+	if v.FlowArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FlowArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeFlowSourceMetadataInput(v *DescribeFlowSourceMetadataInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeFlowSourceMetadataInput"}
+	if v.FlowArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FlowArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeFlowSourceThumbnailInput(v *DescribeFlowSourceThumbnailInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeFlowSourceThumbnailInput"}
 	if v.FlowArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("FlowArn"))
 	}

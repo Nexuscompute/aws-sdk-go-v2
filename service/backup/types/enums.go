@@ -2,6 +2,27 @@
 
 package types
 
+type AggregationPeriod string
+
+// Enum values for AggregationPeriod
+const (
+	AggregationPeriodOneDay       AggregationPeriod = "ONE_DAY"
+	AggregationPeriodSevenDays    AggregationPeriod = "SEVEN_DAYS"
+	AggregationPeriodFourteenDays AggregationPeriod = "FOURTEEN_DAYS"
+)
+
+// Values returns all known values for AggregationPeriod. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AggregationPeriod) Values() []AggregationPeriod {
+	return []AggregationPeriod{
+		"ONE_DAY",
+		"SEVEN_DAYS",
+		"FOURTEEN_DAYS",
+	}
+}
+
 type BackupJobState string
 
 // Enum values for BackupJobState
@@ -18,8 +39,9 @@ const (
 )
 
 // Values returns all known values for BackupJobState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BackupJobState) Values() []BackupJobState {
 	return []BackupJobState{
 		"CREATED",
@@ -31,6 +53,43 @@ func (BackupJobState) Values() []BackupJobState {
 		"FAILED",
 		"EXPIRED",
 		"PARTIAL",
+	}
+}
+
+type BackupJobStatus string
+
+// Enum values for BackupJobStatus
+const (
+	BackupJobStatusCreated      BackupJobStatus = "CREATED"
+	BackupJobStatusPending      BackupJobStatus = "PENDING"
+	BackupJobStatusRunning      BackupJobStatus = "RUNNING"
+	BackupJobStatusAborting     BackupJobStatus = "ABORTING"
+	BackupJobStatusAborted      BackupJobStatus = "ABORTED"
+	BackupJobStatusCompleted    BackupJobStatus = "COMPLETED"
+	BackupJobStatusFailed       BackupJobStatus = "FAILED"
+	BackupJobStatusExpired      BackupJobStatus = "EXPIRED"
+	BackupJobStatusPartial      BackupJobStatus = "PARTIAL"
+	BackupJobStatusAggregateAll BackupJobStatus = "AGGREGATE_ALL"
+	BackupJobStatusAny          BackupJobStatus = "ANY"
+)
+
+// Values returns all known values for BackupJobStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (BackupJobStatus) Values() []BackupJobStatus {
+	return []BackupJobStatus{
+		"CREATED",
+		"PENDING",
+		"RUNNING",
+		"ABORTING",
+		"ABORTED",
+		"COMPLETED",
+		"FAILED",
+		"EXPIRED",
+		"PARTIAL",
+		"AGGREGATE_ALL",
+		"ANY",
 	}
 }
 
@@ -58,8 +117,9 @@ const (
 )
 
 // Values returns all known values for BackupVaultEvent. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BackupVaultEvent) Values() []BackupVaultEvent {
 	return []BackupVaultEvent{
 		"BACKUP_JOB_STARTED",
@@ -90,8 +150,9 @@ const (
 )
 
 // Values returns all known values for ConditionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConditionType) Values() []ConditionType {
 	return []ConditionType{
 		"STRINGEQUALS",
@@ -110,8 +171,9 @@ const (
 )
 
 // Values returns all known values for CopyJobState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CopyJobState) Values() []CopyJobState {
 	return []CopyJobState{
 		"CREATED",
@@ -119,6 +181,85 @@ func (CopyJobState) Values() []CopyJobState {
 		"COMPLETED",
 		"FAILED",
 		"PARTIAL",
+	}
+}
+
+type CopyJobStatus string
+
+// Enum values for CopyJobStatus
+const (
+	CopyJobStatusCreated      CopyJobStatus = "CREATED"
+	CopyJobStatusRunning      CopyJobStatus = "RUNNING"
+	CopyJobStatusAborting     CopyJobStatus = "ABORTING"
+	CopyJobStatusAborted      CopyJobStatus = "ABORTED"
+	CopyJobStatusCompleting   CopyJobStatus = "COMPLETING"
+	CopyJobStatusCompleted    CopyJobStatus = "COMPLETED"
+	CopyJobStatusFailing      CopyJobStatus = "FAILING"
+	CopyJobStatusFailed       CopyJobStatus = "FAILED"
+	CopyJobStatusPartial      CopyJobStatus = "PARTIAL"
+	CopyJobStatusAggregateAll CopyJobStatus = "AGGREGATE_ALL"
+	CopyJobStatusAny          CopyJobStatus = "ANY"
+)
+
+// Values returns all known values for CopyJobStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CopyJobStatus) Values() []CopyJobStatus {
+	return []CopyJobStatus{
+		"CREATED",
+		"RUNNING",
+		"ABORTING",
+		"ABORTED",
+		"COMPLETING",
+		"COMPLETED",
+		"FAILING",
+		"FAILED",
+		"PARTIAL",
+		"AGGREGATE_ALL",
+		"ANY",
+	}
+}
+
+type Index string
+
+// Enum values for Index
+const (
+	IndexEnabled  Index = "ENABLED"
+	IndexDisabled Index = "DISABLED"
+)
+
+// Values returns all known values for Index. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Index) Values() []Index {
+	return []Index{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
+type IndexStatus string
+
+// Enum values for IndexStatus
+const (
+	IndexStatusPending  IndexStatus = "PENDING"
+	IndexStatusActive   IndexStatus = "ACTIVE"
+	IndexStatusFailed   IndexStatus = "FAILED"
+	IndexStatusDeleting IndexStatus = "DELETING"
+)
+
+// Values returns all known values for IndexStatus. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IndexStatus) Values() []IndexStatus {
+	return []IndexStatus{
+		"PENDING",
+		"ACTIVE",
+		"FAILED",
+		"DELETING",
 	}
 }
 
@@ -133,8 +274,9 @@ const (
 )
 
 // Values returns all known values for LegalHoldStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LegalHoldStatus) Values() []LegalHoldStatus {
 	return []LegalHoldStatus{
 		"CREATING",
@@ -155,14 +297,67 @@ const (
 )
 
 // Values returns all known values for RecoveryPointStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RecoveryPointStatus) Values() []RecoveryPointStatus {
 	return []RecoveryPointStatus{
 		"COMPLETED",
 		"PARTIAL",
 		"DELETING",
 		"EXPIRED",
+	}
+}
+
+type RestoreDeletionStatus string
+
+// Enum values for RestoreDeletionStatus
+const (
+	RestoreDeletionStatusDeleting   RestoreDeletionStatus = "DELETING"
+	RestoreDeletionStatusFailed     RestoreDeletionStatus = "FAILED"
+	RestoreDeletionStatusSuccessful RestoreDeletionStatus = "SUCCESSFUL"
+)
+
+// Values returns all known values for RestoreDeletionStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RestoreDeletionStatus) Values() []RestoreDeletionStatus {
+	return []RestoreDeletionStatus{
+		"DELETING",
+		"FAILED",
+		"SUCCESSFUL",
+	}
+}
+
+type RestoreJobState string
+
+// Enum values for RestoreJobState
+const (
+	RestoreJobStateCreated      RestoreJobState = "CREATED"
+	RestoreJobStatePending      RestoreJobState = "PENDING"
+	RestoreJobStateRunning      RestoreJobState = "RUNNING"
+	RestoreJobStateAborted      RestoreJobState = "ABORTED"
+	RestoreJobStateCompleted    RestoreJobState = "COMPLETED"
+	RestoreJobStateFailed       RestoreJobState = "FAILED"
+	RestoreJobStateAggregateAll RestoreJobState = "AGGREGATE_ALL"
+	RestoreJobStateAny          RestoreJobState = "ANY"
+)
+
+// Values returns all known values for RestoreJobState. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RestoreJobState) Values() []RestoreJobState {
+	return []RestoreJobState{
+		"CREATED",
+		"PENDING",
+		"RUNNING",
+		"ABORTED",
+		"COMPLETED",
+		"FAILED",
+		"AGGREGATE_ALL",
+		"ANY",
 	}
 }
 
@@ -178,8 +373,9 @@ const (
 )
 
 // Values returns all known values for RestoreJobStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RestoreJobStatus) Values() []RestoreJobStatus {
 	return []RestoreJobStatus{
 		"PENDING",
@@ -187,6 +383,69 @@ func (RestoreJobStatus) Values() []RestoreJobStatus {
 		"COMPLETED",
 		"ABORTED",
 		"FAILED",
+	}
+}
+
+type RestoreTestingRecoveryPointSelectionAlgorithm string
+
+// Enum values for RestoreTestingRecoveryPointSelectionAlgorithm
+const (
+	RestoreTestingRecoveryPointSelectionAlgorithmLatestWithinWindow RestoreTestingRecoveryPointSelectionAlgorithm = "LATEST_WITHIN_WINDOW"
+	RestoreTestingRecoveryPointSelectionAlgorithmRandomWithinWindow RestoreTestingRecoveryPointSelectionAlgorithm = "RANDOM_WITHIN_WINDOW"
+)
+
+// Values returns all known values for
+// RestoreTestingRecoveryPointSelectionAlgorithm. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RestoreTestingRecoveryPointSelectionAlgorithm) Values() []RestoreTestingRecoveryPointSelectionAlgorithm {
+	return []RestoreTestingRecoveryPointSelectionAlgorithm{
+		"LATEST_WITHIN_WINDOW",
+		"RANDOM_WITHIN_WINDOW",
+	}
+}
+
+type RestoreTestingRecoveryPointType string
+
+// Enum values for RestoreTestingRecoveryPointType
+const (
+	RestoreTestingRecoveryPointTypeContinuous RestoreTestingRecoveryPointType = "CONTINUOUS"
+	RestoreTestingRecoveryPointTypeSnapshot   RestoreTestingRecoveryPointType = "SNAPSHOT"
+)
+
+// Values returns all known values for RestoreTestingRecoveryPointType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RestoreTestingRecoveryPointType) Values() []RestoreTestingRecoveryPointType {
+	return []RestoreTestingRecoveryPointType{
+		"CONTINUOUS",
+		"SNAPSHOT",
+	}
+}
+
+type RestoreValidationStatus string
+
+// Enum values for RestoreValidationStatus
+const (
+	RestoreValidationStatusFailed     RestoreValidationStatus = "FAILED"
+	RestoreValidationStatusSuccessful RestoreValidationStatus = "SUCCESSFUL"
+	RestoreValidationStatusTimedOut   RestoreValidationStatus = "TIMED_OUT"
+	RestoreValidationStatusValidating RestoreValidationStatus = "VALIDATING"
+)
+
+// Values returns all known values for RestoreValidationStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RestoreValidationStatus) Values() []RestoreValidationStatus {
+	return []RestoreValidationStatus{
+		"FAILED",
+		"SUCCESSFUL",
+		"TIMED_OUT",
+		"VALIDATING",
 	}
 }
 
@@ -200,12 +459,53 @@ const (
 )
 
 // Values returns all known values for StorageClass. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StorageClass) Values() []StorageClass {
 	return []StorageClass{
 		"WARM",
 		"COLD",
 		"DELETED",
+	}
+}
+
+type VaultState string
+
+// Enum values for VaultState
+const (
+	VaultStateCreating  VaultState = "CREATING"
+	VaultStateAvailable VaultState = "AVAILABLE"
+	VaultStateFailed    VaultState = "FAILED"
+)
+
+// Values returns all known values for VaultState. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VaultState) Values() []VaultState {
+	return []VaultState{
+		"CREATING",
+		"AVAILABLE",
+		"FAILED",
+	}
+}
+
+type VaultType string
+
+// Enum values for VaultType
+const (
+	VaultTypeBackupVault                   VaultType = "BACKUP_VAULT"
+	VaultTypeLogicallyAirGappedBackupVault VaultType = "LOGICALLY_AIR_GAPPED_BACKUP_VAULT"
+)
+
+// Values returns all known values for VaultType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VaultType) Values() []VaultType {
+	return []VaultType{
+		"BACKUP_VAULT",
+		"LOGICALLY_AIR_GAPPED_BACKUP_VAULT",
 	}
 }

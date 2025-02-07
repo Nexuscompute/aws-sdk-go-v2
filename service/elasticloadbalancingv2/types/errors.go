@@ -87,6 +87,118 @@ func (e *AvailabilityZoneNotSupportedException) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
 
+// The specified ca certificate bundle does not exist.
+type CaCertificatesBundleNotFoundException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *CaCertificatesBundleNotFoundException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *CaCertificatesBundleNotFoundException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *CaCertificatesBundleNotFoundException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "CaCertificatesBundleNotFound"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *CaCertificatesBundleNotFoundException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
+// You've exceeded the daily capacity decrease limit for this reservation.
+type CapacityDecreaseRequestsLimitExceededException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *CapacityDecreaseRequestsLimitExceededException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *CapacityDecreaseRequestsLimitExceededException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *CapacityDecreaseRequestsLimitExceededException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "CapacityDecreaseRequestLimitExceeded"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *CapacityDecreaseRequestsLimitExceededException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
+// There is a pending capacity reservation.
+type CapacityReservationPendingException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *CapacityReservationPendingException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *CapacityReservationPendingException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *CapacityReservationPendingException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "CapacityReservationPending"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *CapacityReservationPendingException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
+// You've exceeded the capacity units limit.
+type CapacityUnitsLimitExceededException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *CapacityUnitsLimitExceededException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *CapacityUnitsLimitExceededException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *CapacityUnitsLimitExceededException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "CapacityUnitsLimitExceeded"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *CapacityUnitsLimitExceededException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
 // The specified certificate does not exist.
 type CertificateNotFoundException struct {
 	Message *string
@@ -112,6 +224,34 @@ func (e *CertificateNotFoundException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *CertificateNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified association can't be within the same account.
+type DeleteAssociationSameAccountException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *DeleteAssociationSameAccountException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *DeleteAssociationSameAccountException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *DeleteAssociationSameAccountException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "DeleteAssociationSameAccount"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *DeleteAssociationSameAccountException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
 
 // A listener with the specified port already exists.
 type DuplicateListenerException struct {
@@ -219,6 +359,32 @@ func (e *DuplicateTargetGroupNameException) ErrorCode() string {
 }
 func (e *DuplicateTargetGroupNameException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// A trust store with the specified name already exists.
+type DuplicateTrustStoreNameException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *DuplicateTrustStoreNameException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *DuplicateTrustStoreNameException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *DuplicateTrustStoreNameException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "DuplicateTrustStoreName"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *DuplicateTrustStoreNameException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // The health of the specified targets could not be retrieved due to an internal
 // error.
 type HealthUnavailableException struct {
@@ -271,6 +437,60 @@ func (e *IncompatibleProtocolsException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *IncompatibleProtocolsException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// There is insufficient capacity to reserve.
+type InsufficientCapacityException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InsufficientCapacityException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InsufficientCapacityException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InsufficientCapacityException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InsufficientCapacity"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InsufficientCapacityException) ErrorFault() smithy.ErrorFault { return smithy.FaultServer }
+
+// The specified ca certificate bundle is in an invalid format, or corrupt.
+type InvalidCaCertificatesBundleException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InvalidCaCertificatesBundleException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InvalidCaCertificatesBundleException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InvalidCaCertificatesBundleException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InvalidCaCertificatesBundle"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InvalidCaCertificatesBundleException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
 
 // The requested configuration is not valid.
 type InvalidConfigurationRequestException struct {
@@ -327,6 +547,33 @@ func (e *InvalidLoadBalancerActionException) ErrorCode() string {
 func (e *InvalidLoadBalancerActionException) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
+
+// The provided revocation file is an invalid format, or uses an incorrect
+// algorithm.
+type InvalidRevocationContentException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InvalidRevocationContentException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InvalidRevocationContentException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InvalidRevocationContentException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InvalidRevocationContent"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InvalidRevocationContentException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The requested scheme is not valid.
 type InvalidSchemeException struct {
@@ -537,6 +784,32 @@ func (e *PriorityInUseException) ErrorCode() string {
 }
 func (e *PriorityInUseException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// This operation is not allowed while a prior request has not been completed.
+type PriorRequestNotCompleteException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *PriorRequestNotCompleteException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *PriorRequestNotCompleteException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *PriorRequestNotCompleteException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "PriorRequestNotComplete"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *PriorRequestNotCompleteException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // A specified resource is in use.
 type ResourceInUseException struct {
 	Message *string
@@ -562,6 +835,86 @@ func (e *ResourceInUseException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *ResourceInUseException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified resource does not exist.
+type ResourceNotFoundException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ResourceNotFoundException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ResourceNotFoundException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ResourceNotFoundException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ResourceNotFound"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ResourceNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified revocation file does not exist.
+type RevocationContentNotFoundException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *RevocationContentNotFoundException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *RevocationContentNotFoundException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *RevocationContentNotFoundException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "RevocationContentNotFound"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *RevocationContentNotFoundException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
+// The specified revocation ID does not exist.
+type RevocationIdNotFoundException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *RevocationIdNotFoundException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *RevocationIdNotFoundException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *RevocationIdNotFoundException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "RevocationIdNotFound"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *RevocationIdNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The specified rule does not exist.
 type RuleNotFoundException struct {
@@ -855,7 +1208,7 @@ func (e *TooManyRulesException) ErrorCode() string {
 }
 func (e *TooManyRulesException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// You've reached the limit on the number of tags per load balancer.
+// You've reached the limit on the number of tags for this resource.
 type TooManyTagsException struct {
 	Message *string
 
@@ -934,6 +1287,61 @@ func (e *TooManyTargetsException) ErrorCode() string {
 }
 func (e *TooManyTargetsException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The specified trust store has too many revocation entries.
+type TooManyTrustStoreRevocationEntriesException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *TooManyTrustStoreRevocationEntriesException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *TooManyTrustStoreRevocationEntriesException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *TooManyTrustStoreRevocationEntriesException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "TooManyTrustStoreRevocationEntries"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *TooManyTrustStoreRevocationEntriesException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
+// You've reached the limit on the number of trust stores for your Amazon Web
+// Services account.
+type TooManyTrustStoresException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *TooManyTrustStoresException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *TooManyTrustStoresException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *TooManyTrustStoresException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "TooManyTrustStores"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *TooManyTrustStoresException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // You've reached the limit on the number of unique target groups per load
 // balancer across all listeners. If a target group is used by multiple actions for
 // a load balancer, it is counted as only one use.
@@ -963,6 +1371,112 @@ func (e *TooManyUniqueTargetGroupsPerLoadBalancerException) ErrorCode() string {
 func (e *TooManyUniqueTargetGroupsPerLoadBalancerException) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
+
+// The specified association does not exist.
+type TrustStoreAssociationNotFoundException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *TrustStoreAssociationNotFoundException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *TrustStoreAssociationNotFoundException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *TrustStoreAssociationNotFoundException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "AssociationNotFound"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *TrustStoreAssociationNotFoundException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
+// The specified trust store is currently in use.
+type TrustStoreInUseException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *TrustStoreInUseException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *TrustStoreInUseException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *TrustStoreInUseException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "TrustStoreInUse"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *TrustStoreInUseException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified trust store does not exist.
+type TrustStoreNotFoundException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *TrustStoreNotFoundException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *TrustStoreNotFoundException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *TrustStoreNotFoundException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "TrustStoreNotFound"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *TrustStoreNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified trust store is not active.
+type TrustStoreNotReadyException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *TrustStoreNotReadyException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *TrustStoreNotReadyException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *TrustStoreNotReadyException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "TrustStoreNotReady"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *TrustStoreNotReadyException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The specified protocol is not supported.
 type UnsupportedProtocolException struct {

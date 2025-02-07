@@ -12,6 +12,7 @@ import (
 	smithyjson "github.com/aws/smithy-go/encoding/json"
 	"github.com/aws/smithy-go/middleware"
 	smithytime "github.com/aws/smithy-go/time"
+	"github.com/aws/smithy-go/tracing"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
@@ -25,6 +26,10 @@ func (*awsRestjson1_serializeOpAbortDocumentVersionUpload) ID() string {
 func (m *awsRestjson1_serializeOpAbortDocumentVersionUpload) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -61,6 +66,8 @@ func (m *awsRestjson1_serializeOpAbortDocumentVersionUpload) HandleSerialize(ctx
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsAbortDocumentVersionUploadInput(v *AbortDocumentVersionUploadInput, encoder *httpbinding.Encoder) error {
@@ -68,7 +75,7 @@ func awsRestjson1_serializeOpHttpBindingsAbortDocumentVersionUploadInput(v *Abor
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -104,6 +111,10 @@ func (*awsRestjson1_serializeOpActivateUser) ID() string {
 func (m *awsRestjson1_serializeOpActivateUser) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -140,6 +151,8 @@ func (m *awsRestjson1_serializeOpActivateUser) HandleSerialize(ctx context.Conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsActivateUserInput(v *ActivateUserInput, encoder *httpbinding.Encoder) error {
@@ -147,7 +160,7 @@ func awsRestjson1_serializeOpHttpBindingsActivateUserInput(v *ActivateUserInput,
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -174,6 +187,10 @@ func (*awsRestjson1_serializeOpAddResourcePermissions) ID() string {
 func (m *awsRestjson1_serializeOpAddResourcePermissions) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -221,6 +238,8 @@ func (m *awsRestjson1_serializeOpAddResourcePermissions) HandleSerialize(ctx con
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsAddResourcePermissionsInput(v *AddResourcePermissionsInput, encoder *httpbinding.Encoder) error {
@@ -228,7 +247,7 @@ func awsRestjson1_serializeOpHttpBindingsAddResourcePermissionsInput(v *AddResou
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -276,6 +295,10 @@ func (*awsRestjson1_serializeOpCreateComment) ID() string {
 func (m *awsRestjson1_serializeOpCreateComment) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -323,6 +346,8 @@ func (m *awsRestjson1_serializeOpCreateComment) HandleSerialize(ctx context.Cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsCreateCommentInput(v *CreateCommentInput, encoder *httpbinding.Encoder) error {
@@ -330,7 +355,7 @@ func awsRestjson1_serializeOpHttpBindingsCreateCommentInput(v *CreateCommentInpu
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -398,6 +423,10 @@ func (*awsRestjson1_serializeOpCreateCustomMetadata) ID() string {
 func (m *awsRestjson1_serializeOpCreateCustomMetadata) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -445,6 +474,8 @@ func (m *awsRestjson1_serializeOpCreateCustomMetadata) HandleSerialize(ctx conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsCreateCustomMetadataInput(v *CreateCustomMetadataInput, encoder *httpbinding.Encoder) error {
@@ -452,7 +483,7 @@ func awsRestjson1_serializeOpHttpBindingsCreateCustomMetadataInput(v *CreateCust
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -497,6 +528,10 @@ func (*awsRestjson1_serializeOpCreateFolder) ID() string {
 func (m *awsRestjson1_serializeOpCreateFolder) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -544,6 +579,8 @@ func (m *awsRestjson1_serializeOpCreateFolder) HandleSerialize(ctx context.Conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsCreateFolderInput(v *CreateFolderInput, encoder *httpbinding.Encoder) error {
@@ -551,7 +588,7 @@ func awsRestjson1_serializeOpHttpBindingsCreateFolderInput(v *CreateFolderInput,
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -586,6 +623,10 @@ func (*awsRestjson1_serializeOpCreateLabels) ID() string {
 func (m *awsRestjson1_serializeOpCreateLabels) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -633,6 +674,8 @@ func (m *awsRestjson1_serializeOpCreateLabels) HandleSerialize(ctx context.Conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsCreateLabelsInput(v *CreateLabelsInput, encoder *httpbinding.Encoder) error {
@@ -640,7 +683,7 @@ func awsRestjson1_serializeOpHttpBindingsCreateLabelsInput(v *CreateLabelsInput,
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -681,6 +724,10 @@ func (*awsRestjson1_serializeOpCreateNotificationSubscription) ID() string {
 func (m *awsRestjson1_serializeOpCreateNotificationSubscription) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -728,6 +775,8 @@ func (m *awsRestjson1_serializeOpCreateNotificationSubscription) HandleSerialize
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsCreateNotificationSubscriptionInput(v *CreateNotificationSubscriptionInput, encoder *httpbinding.Encoder) error {
@@ -779,6 +828,10 @@ func (*awsRestjson1_serializeOpCreateUser) ID() string {
 func (m *awsRestjson1_serializeOpCreateUser) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -826,6 +879,8 @@ func (m *awsRestjson1_serializeOpCreateUser) HandleSerialize(ctx context.Context
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsCreateUserInput(v *CreateUserInput, encoder *httpbinding.Encoder) error {
@@ -833,7 +888,7 @@ func awsRestjson1_serializeOpHttpBindingsCreateUserInput(v *CreateUserInput, enc
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -900,6 +955,10 @@ func (*awsRestjson1_serializeOpDeactivateUser) ID() string {
 func (m *awsRestjson1_serializeOpDeactivateUser) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -936,6 +995,8 @@ func (m *awsRestjson1_serializeOpDeactivateUser) HandleSerialize(ctx context.Con
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeactivateUserInput(v *DeactivateUserInput, encoder *httpbinding.Encoder) error {
@@ -943,7 +1004,7 @@ func awsRestjson1_serializeOpHttpBindingsDeactivateUserInput(v *DeactivateUserIn
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -970,6 +1031,10 @@ func (*awsRestjson1_serializeOpDeleteComment) ID() string {
 func (m *awsRestjson1_serializeOpDeleteComment) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1006,6 +1071,8 @@ func (m *awsRestjson1_serializeOpDeleteComment) HandleSerialize(ctx context.Cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteCommentInput(v *DeleteCommentInput, encoder *httpbinding.Encoder) error {
@@ -1013,7 +1080,7 @@ func awsRestjson1_serializeOpHttpBindingsDeleteCommentInput(v *DeleteCommentInpu
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -1058,6 +1125,10 @@ func (*awsRestjson1_serializeOpDeleteCustomMetadata) ID() string {
 func (m *awsRestjson1_serializeOpDeleteCustomMetadata) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1094,6 +1165,8 @@ func (m *awsRestjson1_serializeOpDeleteCustomMetadata) HandleSerialize(ctx conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteCustomMetadataInput(v *DeleteCustomMetadataInput, encoder *httpbinding.Encoder) error {
@@ -1101,7 +1174,7 @@ func awsRestjson1_serializeOpHttpBindingsDeleteCustomMetadataInput(v *DeleteCust
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -1142,6 +1215,10 @@ func (*awsRestjson1_serializeOpDeleteDocument) ID() string {
 func (m *awsRestjson1_serializeOpDeleteDocument) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1178,6 +1255,8 @@ func (m *awsRestjson1_serializeOpDeleteDocument) HandleSerialize(ctx context.Con
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteDocumentInput(v *DeleteDocumentInput, encoder *httpbinding.Encoder) error {
@@ -1185,7 +1264,7 @@ func awsRestjson1_serializeOpHttpBindingsDeleteDocumentInput(v *DeleteDocumentIn
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -1212,6 +1291,10 @@ func (*awsRestjson1_serializeOpDeleteDocumentVersion) ID() string {
 func (m *awsRestjson1_serializeOpDeleteDocumentVersion) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1248,6 +1331,8 @@ func (m *awsRestjson1_serializeOpDeleteDocumentVersion) HandleSerialize(ctx cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteDocumentVersionInput(v *DeleteDocumentVersionInput, encoder *httpbinding.Encoder) error {
@@ -1255,7 +1340,7 @@ func awsRestjson1_serializeOpHttpBindingsDeleteDocumentVersionInput(v *DeleteDoc
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -1295,6 +1380,10 @@ func (*awsRestjson1_serializeOpDeleteFolder) ID() string {
 func (m *awsRestjson1_serializeOpDeleteFolder) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1331,6 +1420,8 @@ func (m *awsRestjson1_serializeOpDeleteFolder) HandleSerialize(ctx context.Conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteFolderInput(v *DeleteFolderInput, encoder *httpbinding.Encoder) error {
@@ -1338,7 +1429,7 @@ func awsRestjson1_serializeOpHttpBindingsDeleteFolderInput(v *DeleteFolderInput,
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -1365,6 +1456,10 @@ func (*awsRestjson1_serializeOpDeleteFolderContents) ID() string {
 func (m *awsRestjson1_serializeOpDeleteFolderContents) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1401,6 +1496,8 @@ func (m *awsRestjson1_serializeOpDeleteFolderContents) HandleSerialize(ctx conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteFolderContentsInput(v *DeleteFolderContentsInput, encoder *httpbinding.Encoder) error {
@@ -1408,7 +1505,7 @@ func awsRestjson1_serializeOpHttpBindingsDeleteFolderContentsInput(v *DeleteFold
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -1435,6 +1532,10 @@ func (*awsRestjson1_serializeOpDeleteLabels) ID() string {
 func (m *awsRestjson1_serializeOpDeleteLabels) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1471,6 +1572,8 @@ func (m *awsRestjson1_serializeOpDeleteLabels) HandleSerialize(ctx context.Conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteLabelsInput(v *DeleteLabelsInput, encoder *httpbinding.Encoder) error {
@@ -1478,7 +1581,7 @@ func awsRestjson1_serializeOpHttpBindingsDeleteLabelsInput(v *DeleteLabelsInput,
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -1515,6 +1618,10 @@ func (*awsRestjson1_serializeOpDeleteNotificationSubscription) ID() string {
 func (m *awsRestjson1_serializeOpDeleteNotificationSubscription) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1551,6 +1658,8 @@ func (m *awsRestjson1_serializeOpDeleteNotificationSubscription) HandleSerialize
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteNotificationSubscriptionInput(v *DeleteNotificationSubscriptionInput, encoder *httpbinding.Encoder) error {
@@ -1589,6 +1698,10 @@ func (*awsRestjson1_serializeOpDeleteUser) ID() string {
 func (m *awsRestjson1_serializeOpDeleteUser) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1625,6 +1738,8 @@ func (m *awsRestjson1_serializeOpDeleteUser) HandleSerialize(ctx context.Context
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteUserInput(v *DeleteUserInput, encoder *httpbinding.Encoder) error {
@@ -1632,7 +1747,7 @@ func awsRestjson1_serializeOpHttpBindingsDeleteUserInput(v *DeleteUserInput, enc
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -1659,6 +1774,10 @@ func (*awsRestjson1_serializeOpDescribeActivities) ID() string {
 func (m *awsRestjson1_serializeOpDescribeActivities) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1695,6 +1814,8 @@ func (m *awsRestjson1_serializeOpDescribeActivities) HandleSerialize(ctx context
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeActivitiesInput(v *DescribeActivitiesInput, encoder *httpbinding.Encoder) error {
@@ -1706,7 +1827,7 @@ func awsRestjson1_serializeOpHttpBindingsDescribeActivitiesInput(v *DescribeActi
 		encoder.SetQuery("activityTypes").String(*v.ActivityTypes)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -1756,6 +1877,10 @@ func (*awsRestjson1_serializeOpDescribeComments) ID() string {
 func (m *awsRestjson1_serializeOpDescribeComments) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1792,6 +1917,8 @@ func (m *awsRestjson1_serializeOpDescribeComments) HandleSerialize(ctx context.C
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeCommentsInput(v *DescribeCommentsInput, encoder *httpbinding.Encoder) error {
@@ -1799,7 +1926,7 @@ func awsRestjson1_serializeOpHttpBindingsDescribeCommentsInput(v *DescribeCommen
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -1843,6 +1970,10 @@ func (*awsRestjson1_serializeOpDescribeDocumentVersions) ID() string {
 func (m *awsRestjson1_serializeOpDescribeDocumentVersions) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1879,6 +2010,8 @@ func (m *awsRestjson1_serializeOpDescribeDocumentVersions) HandleSerialize(ctx c
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeDocumentVersionsInput(v *DescribeDocumentVersionsInput, encoder *httpbinding.Encoder) error {
@@ -1886,7 +2019,7 @@ func awsRestjson1_serializeOpHttpBindingsDescribeDocumentVersionsInput(v *Descri
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -1929,6 +2062,10 @@ func (*awsRestjson1_serializeOpDescribeFolderContents) ID() string {
 func (m *awsRestjson1_serializeOpDescribeFolderContents) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1965,6 +2102,8 @@ func (m *awsRestjson1_serializeOpDescribeFolderContents) HandleSerialize(ctx con
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeFolderContentsInput(v *DescribeFolderContentsInput, encoder *httpbinding.Encoder) error {
@@ -1972,7 +2111,7 @@ func awsRestjson1_serializeOpHttpBindingsDescribeFolderContentsInput(v *Describe
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -2023,6 +2162,10 @@ func (*awsRestjson1_serializeOpDescribeGroups) ID() string {
 func (m *awsRestjson1_serializeOpDescribeGroups) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2059,6 +2202,8 @@ func (m *awsRestjson1_serializeOpDescribeGroups) HandleSerialize(ctx context.Con
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeGroupsInput(v *DescribeGroupsInput, encoder *httpbinding.Encoder) error {
@@ -2066,7 +2211,7 @@ func awsRestjson1_serializeOpHttpBindingsDescribeGroupsInput(v *DescribeGroupsIn
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -2100,6 +2245,10 @@ func (*awsRestjson1_serializeOpDescribeNotificationSubscriptions) ID() string {
 func (m *awsRestjson1_serializeOpDescribeNotificationSubscriptions) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2136,6 +2285,8 @@ func (m *awsRestjson1_serializeOpDescribeNotificationSubscriptions) HandleSerial
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeNotificationSubscriptionsInput(v *DescribeNotificationSubscriptionsInput, encoder *httpbinding.Encoder) error {
@@ -2173,6 +2324,10 @@ func (*awsRestjson1_serializeOpDescribeResourcePermissions) ID() string {
 func (m *awsRestjson1_serializeOpDescribeResourcePermissions) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2209,6 +2364,8 @@ func (m *awsRestjson1_serializeOpDescribeResourcePermissions) HandleSerialize(ct
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeResourcePermissionsInput(v *DescribeResourcePermissionsInput, encoder *httpbinding.Encoder) error {
@@ -2216,7 +2373,7 @@ func awsRestjson1_serializeOpHttpBindingsDescribeResourcePermissionsInput(v *Des
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -2255,6 +2412,10 @@ func (*awsRestjson1_serializeOpDescribeRootFolders) ID() string {
 func (m *awsRestjson1_serializeOpDescribeRootFolders) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2291,6 +2452,8 @@ func (m *awsRestjson1_serializeOpDescribeRootFolders) HandleSerialize(ctx contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeRootFoldersInput(v *DescribeRootFoldersInput, encoder *httpbinding.Encoder) error {
@@ -2298,7 +2461,7 @@ func awsRestjson1_serializeOpHttpBindingsDescribeRootFoldersInput(v *DescribeRoo
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -2324,6 +2487,10 @@ func (*awsRestjson1_serializeOpDescribeUsers) ID() string {
 func (m *awsRestjson1_serializeOpDescribeUsers) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2360,6 +2527,8 @@ func (m *awsRestjson1_serializeOpDescribeUsers) HandleSerialize(ctx context.Cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeUsersInput(v *DescribeUsersInput, encoder *httpbinding.Encoder) error {
@@ -2367,7 +2536,7 @@ func awsRestjson1_serializeOpHttpBindingsDescribeUsersInput(v *DescribeUsersInpu
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -2421,6 +2590,10 @@ func (*awsRestjson1_serializeOpGetCurrentUser) ID() string {
 func (m *awsRestjson1_serializeOpGetCurrentUser) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2457,6 +2630,8 @@ func (m *awsRestjson1_serializeOpGetCurrentUser) HandleSerialize(ctx context.Con
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetCurrentUserInput(v *GetCurrentUserInput, encoder *httpbinding.Encoder) error {
@@ -2464,7 +2639,7 @@ func awsRestjson1_serializeOpHttpBindingsGetCurrentUserInput(v *GetCurrentUserIn
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -2482,6 +2657,10 @@ func (*awsRestjson1_serializeOpGetDocument) ID() string {
 func (m *awsRestjson1_serializeOpGetDocument) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2518,6 +2697,8 @@ func (m *awsRestjson1_serializeOpGetDocument) HandleSerialize(ctx context.Contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetDocumentInput(v *GetDocumentInput, encoder *httpbinding.Encoder) error {
@@ -2525,7 +2706,7 @@ func awsRestjson1_serializeOpHttpBindingsGetDocumentInput(v *GetDocumentInput, e
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -2556,6 +2737,10 @@ func (*awsRestjson1_serializeOpGetDocumentPath) ID() string {
 func (m *awsRestjson1_serializeOpGetDocumentPath) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2592,6 +2777,8 @@ func (m *awsRestjson1_serializeOpGetDocumentPath) HandleSerialize(ctx context.Co
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetDocumentPathInput(v *GetDocumentPathInput, encoder *httpbinding.Encoder) error {
@@ -2599,7 +2786,7 @@ func awsRestjson1_serializeOpHttpBindingsGetDocumentPathInput(v *GetDocumentPath
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -2638,6 +2825,10 @@ func (*awsRestjson1_serializeOpGetDocumentVersion) ID() string {
 func (m *awsRestjson1_serializeOpGetDocumentVersion) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2674,6 +2865,8 @@ func (m *awsRestjson1_serializeOpGetDocumentVersion) HandleSerialize(ctx context
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetDocumentVersionInput(v *GetDocumentVersionInput, encoder *httpbinding.Encoder) error {
@@ -2681,7 +2874,7 @@ func awsRestjson1_serializeOpHttpBindingsGetDocumentVersionInput(v *GetDocumentV
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -2725,6 +2918,10 @@ func (*awsRestjson1_serializeOpGetFolder) ID() string {
 func (m *awsRestjson1_serializeOpGetFolder) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2761,6 +2958,8 @@ func (m *awsRestjson1_serializeOpGetFolder) HandleSerialize(ctx context.Context,
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetFolderInput(v *GetFolderInput, encoder *httpbinding.Encoder) error {
@@ -2768,7 +2967,7 @@ func awsRestjson1_serializeOpHttpBindingsGetFolderInput(v *GetFolderInput, encod
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -2799,6 +2998,10 @@ func (*awsRestjson1_serializeOpGetFolderPath) ID() string {
 func (m *awsRestjson1_serializeOpGetFolderPath) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2835,6 +3038,8 @@ func (m *awsRestjson1_serializeOpGetFolderPath) HandleSerialize(ctx context.Cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetFolderPathInput(v *GetFolderPathInput, encoder *httpbinding.Encoder) error {
@@ -2842,7 +3047,7 @@ func awsRestjson1_serializeOpHttpBindingsGetFolderPathInput(v *GetFolderPathInpu
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -2881,6 +3086,10 @@ func (*awsRestjson1_serializeOpGetResources) ID() string {
 func (m *awsRestjson1_serializeOpGetResources) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2917,6 +3126,8 @@ func (m *awsRestjson1_serializeOpGetResources) HandleSerialize(ctx context.Conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetResourcesInput(v *GetResourcesInput, encoder *httpbinding.Encoder) error {
@@ -2924,7 +3135,7 @@ func awsRestjson1_serializeOpHttpBindingsGetResourcesInput(v *GetResourcesInput,
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -2958,6 +3169,10 @@ func (*awsRestjson1_serializeOpInitiateDocumentVersionUpload) ID() string {
 func (m *awsRestjson1_serializeOpInitiateDocumentVersionUpload) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3005,6 +3220,8 @@ func (m *awsRestjson1_serializeOpInitiateDocumentVersionUpload) HandleSerialize(
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsInitiateDocumentVersionUploadInput(v *InitiateDocumentVersionUploadInput, encoder *httpbinding.Encoder) error {
@@ -3012,7 +3229,7 @@ func awsRestjson1_serializeOpHttpBindingsInitiateDocumentVersionUploadInput(v *I
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -3072,6 +3289,10 @@ func (*awsRestjson1_serializeOpRemoveAllResourcePermissions) ID() string {
 func (m *awsRestjson1_serializeOpRemoveAllResourcePermissions) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3108,6 +3329,8 @@ func (m *awsRestjson1_serializeOpRemoveAllResourcePermissions) HandleSerialize(c
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsRemoveAllResourcePermissionsInput(v *RemoveAllResourcePermissionsInput, encoder *httpbinding.Encoder) error {
@@ -3115,7 +3338,7 @@ func awsRestjson1_serializeOpHttpBindingsRemoveAllResourcePermissionsInput(v *Re
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -3142,6 +3365,10 @@ func (*awsRestjson1_serializeOpRemoveResourcePermission) ID() string {
 func (m *awsRestjson1_serializeOpRemoveResourcePermission) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3178,6 +3405,8 @@ func (m *awsRestjson1_serializeOpRemoveResourcePermission) HandleSerialize(ctx c
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsRemoveResourcePermissionInput(v *RemoveResourcePermissionInput, encoder *httpbinding.Encoder) error {
@@ -3185,7 +3414,7 @@ func awsRestjson1_serializeOpHttpBindingsRemoveResourcePermissionInput(v *Remove
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -3225,6 +3454,10 @@ func (*awsRestjson1_serializeOpRestoreDocumentVersions) ID() string {
 func (m *awsRestjson1_serializeOpRestoreDocumentVersions) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3261,6 +3494,8 @@ func (m *awsRestjson1_serializeOpRestoreDocumentVersions) HandleSerialize(ctx co
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsRestoreDocumentVersionsInput(v *RestoreDocumentVersionsInput, encoder *httpbinding.Encoder) error {
@@ -3268,7 +3503,7 @@ func awsRestjson1_serializeOpHttpBindingsRestoreDocumentVersionsInput(v *Restore
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -3295,6 +3530,10 @@ func (*awsRestjson1_serializeOpSearchResources) ID() string {
 func (m *awsRestjson1_serializeOpSearchResources) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3342,6 +3581,8 @@ func (m *awsRestjson1_serializeOpSearchResources) HandleSerialize(ctx context.Co
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsSearchResourcesInput(v *SearchResourcesInput, encoder *httpbinding.Encoder) error {
@@ -3349,7 +3590,7 @@ func awsRestjson1_serializeOpHttpBindingsSearchResourcesInput(v *SearchResources
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -3422,6 +3663,10 @@ func (*awsRestjson1_serializeOpUpdateDocument) ID() string {
 func (m *awsRestjson1_serializeOpUpdateDocument) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3469,6 +3714,8 @@ func (m *awsRestjson1_serializeOpUpdateDocument) HandleSerialize(ctx context.Con
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsUpdateDocumentInput(v *UpdateDocumentInput, encoder *httpbinding.Encoder) error {
@@ -3476,7 +3723,7 @@ func awsRestjson1_serializeOpHttpBindingsUpdateDocumentInput(v *UpdateDocumentIn
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -3525,6 +3772,10 @@ func (*awsRestjson1_serializeOpUpdateDocumentVersion) ID() string {
 func (m *awsRestjson1_serializeOpUpdateDocumentVersion) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3572,6 +3823,8 @@ func (m *awsRestjson1_serializeOpUpdateDocumentVersion) HandleSerialize(ctx cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsUpdateDocumentVersionInput(v *UpdateDocumentVersionInput, encoder *httpbinding.Encoder) error {
@@ -3579,7 +3832,7 @@ func awsRestjson1_serializeOpHttpBindingsUpdateDocumentVersionInput(v *UpdateDoc
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -3627,6 +3880,10 @@ func (*awsRestjson1_serializeOpUpdateFolder) ID() string {
 func (m *awsRestjson1_serializeOpUpdateFolder) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3674,6 +3931,8 @@ func (m *awsRestjson1_serializeOpUpdateFolder) HandleSerialize(ctx context.Conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsUpdateFolderInput(v *UpdateFolderInput, encoder *httpbinding.Encoder) error {
@@ -3681,7 +3940,7 @@ func awsRestjson1_serializeOpHttpBindingsUpdateFolderInput(v *UpdateFolderInput,
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}
@@ -3730,6 +3989,10 @@ func (*awsRestjson1_serializeOpUpdateUser) ID() string {
 func (m *awsRestjson1_serializeOpUpdateUser) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3777,6 +4040,8 @@ func (m *awsRestjson1_serializeOpUpdateUser) HandleSerialize(ctx context.Context
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsUpdateUserInput(v *UpdateUserInput, encoder *httpbinding.Encoder) error {
@@ -3784,7 +4049,7 @@ func awsRestjson1_serializeOpHttpBindingsUpdateUserInput(v *UpdateUserInput, enc
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.AuthenticationToken != nil && len(*v.AuthenticationToken) > 0 {
+	if v.AuthenticationToken != nil {
 		locationName := "Authentication"
 		encoder.SetHeader(locationName).String(*v.AuthenticationToken)
 	}

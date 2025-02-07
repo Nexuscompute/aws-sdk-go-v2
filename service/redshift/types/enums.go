@@ -12,8 +12,9 @@ const (
 )
 
 // Values returns all known values for ActionType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ActionType) Values() []ActionType {
 	return []ActionType{
 		"restore-cluster",
@@ -32,8 +33,9 @@ const (
 )
 
 // Values returns all known values for AquaConfigurationStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AquaConfigurationStatus) Values() []AquaConfigurationStatus {
 	return []AquaConfigurationStatus{
 		"enabled",
@@ -52,8 +54,9 @@ const (
 )
 
 // Values returns all known values for AquaStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AquaStatus) Values() []AquaStatus {
 	return []AquaStatus{
 		"enabled",
@@ -71,8 +74,9 @@ const (
 )
 
 // Values returns all known values for AuthorizationStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AuthorizationStatus) Values() []AuthorizationStatus {
 	return []AuthorizationStatus{
 		"Authorized",
@@ -93,8 +97,9 @@ const (
 )
 
 // Values returns all known values for DataShareStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DataShareStatus) Values() []DataShareStatus {
 	return []DataShareStatus{
 		"ACTIVE",
@@ -116,6 +121,7 @@ const (
 
 // Values returns all known values for DataShareStatusForConsumer. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DataShareStatusForConsumer) Values() []DataShareStatusForConsumer {
 	return []DataShareStatusForConsumer{
@@ -137,6 +143,7 @@ const (
 
 // Values returns all known values for DataShareStatusForProducer. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DataShareStatusForProducer) Values() []DataShareStatusForProducer {
 	return []DataShareStatusForProducer{
@@ -145,6 +152,68 @@ func (DataShareStatusForProducer) Values() []DataShareStatusForProducer {
 		"PENDING_AUTHORIZATION",
 		"DEAUTHORIZED",
 		"REJECTED",
+	}
+}
+
+type DataShareType string
+
+// Enum values for DataShareType
+const (
+	DataShareTypeInternal DataShareType = "INTERNAL"
+)
+
+// Values returns all known values for DataShareType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DataShareType) Values() []DataShareType {
+	return []DataShareType{
+		"INTERNAL",
+	}
+}
+
+type DescribeIntegrationsFilterName string
+
+// Enum values for DescribeIntegrationsFilterName
+const (
+	DescribeIntegrationsFilterNameIntegrationArn DescribeIntegrationsFilterName = "integration-arn"
+	DescribeIntegrationsFilterNameSourceArn      DescribeIntegrationsFilterName = "source-arn"
+	DescribeIntegrationsFilterNameSourceTypes    DescribeIntegrationsFilterName = "source-types"
+	DescribeIntegrationsFilterNameStatus         DescribeIntegrationsFilterName = "status"
+)
+
+// Values returns all known values for DescribeIntegrationsFilterName. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DescribeIntegrationsFilterName) Values() []DescribeIntegrationsFilterName {
+	return []DescribeIntegrationsFilterName{
+		"integration-arn",
+		"source-arn",
+		"source-types",
+		"status",
+	}
+}
+
+type ImpactRankingType string
+
+// Enum values for ImpactRankingType
+const (
+	ImpactRankingTypeHigh   ImpactRankingType = "HIGH"
+	ImpactRankingTypeMedium ImpactRankingType = "MEDIUM"
+	ImpactRankingTypeLow    ImpactRankingType = "LOW"
+)
+
+// Values returns all known values for ImpactRankingType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ImpactRankingType) Values() []ImpactRankingType {
+	return []ImpactRankingType{
+		"HIGH",
+		"MEDIUM",
+		"LOW",
 	}
 }
 
@@ -157,8 +226,9 @@ const (
 )
 
 // Values returns all known values for LogDestinationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogDestinationType) Values() []LogDestinationType {
 	return []LogDestinationType{
 		"s3",
@@ -175,12 +245,32 @@ const (
 )
 
 // Values returns all known values for Mode. Note that this can be expanded in the
-// future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mode) Values() []Mode {
 	return []Mode{
 		"standard",
 		"high-performance",
+	}
+}
+
+type NamespaceRegistrationStatus string
+
+// Enum values for NamespaceRegistrationStatus
+const (
+	NamespaceRegistrationStatusRegistering   NamespaceRegistrationStatus = "Registering"
+	NamespaceRegistrationStatusDeregistering NamespaceRegistrationStatus = "Deregistering"
+)
+
+// Values returns all known values for NamespaceRegistrationStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (NamespaceRegistrationStatus) Values() []NamespaceRegistrationStatus {
+	return []NamespaceRegistrationStatus{
+		"Registering",
+		"Deregistering",
 	}
 }
 
@@ -196,8 +286,9 @@ const (
 
 // Values returns all known values for NodeConfigurationOptionsFilterName. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NodeConfigurationOptionsFilterName) Values() []NodeConfigurationOptionsFilterName {
 	return []NodeConfigurationOptionsFilterName{
 		"NodeType",
@@ -221,8 +312,9 @@ const (
 )
 
 // Values returns all known values for OperatorType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OperatorType) Values() []OperatorType {
 	return []OperatorType{
 		"eq",
@@ -244,8 +336,9 @@ const (
 )
 
 // Values returns all known values for ParameterApplyType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ParameterApplyType) Values() []ParameterApplyType {
 	return []ParameterApplyType{
 		"static",
@@ -265,6 +358,7 @@ const (
 
 // Values returns all known values for PartnerIntegrationStatus. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (PartnerIntegrationStatus) Values() []PartnerIntegrationStatus {
 	return []PartnerIntegrationStatus{
@@ -272,6 +366,25 @@ func (PartnerIntegrationStatus) Values() []PartnerIntegrationStatus {
 		"Inactive",
 		"RuntimeFailure",
 		"ConnectionFailure",
+	}
+}
+
+type RecommendedActionType string
+
+// Enum values for RecommendedActionType
+const (
+	RecommendedActionTypeSql RecommendedActionType = "SQL"
+	RecommendedActionTypeCli RecommendedActionType = "CLI"
+)
+
+// Values returns all known values for RecommendedActionType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RecommendedActionType) Values() []RecommendedActionType {
+	return []RecommendedActionType{
+		"SQL",
+		"CLI",
 	}
 }
 
@@ -285,8 +398,9 @@ const (
 
 // Values returns all known values for ReservedNodeExchangeActionType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReservedNodeExchangeActionType) Values() []ReservedNodeExchangeActionType {
 	return []ReservedNodeExchangeActionType{
 		"restore-cluster",
@@ -308,8 +422,9 @@ const (
 
 // Values returns all known values for ReservedNodeExchangeStatusType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReservedNodeExchangeStatusType) Values() []ReservedNodeExchangeStatusType {
 	return []ReservedNodeExchangeStatusType{
 		"REQUESTED",
@@ -331,6 +446,7 @@ const (
 
 // Values returns all known values for ReservedNodeOfferingType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ReservedNodeOfferingType) Values() []ReservedNodeOfferingType {
 	return []ReservedNodeOfferingType{
@@ -349,6 +465,7 @@ const (
 
 // Values returns all known values for ScheduledActionFilterName. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ScheduledActionFilterName) Values() []ScheduledActionFilterName {
 	return []ScheduledActionFilterName{
@@ -366,8 +483,9 @@ const (
 )
 
 // Values returns all known values for ScheduledActionState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScheduledActionState) Values() []ScheduledActionState {
 	return []ScheduledActionState{
 		"ACTIVE",
@@ -386,6 +504,7 @@ const (
 
 // Values returns all known values for ScheduledActionTypeValues. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ScheduledActionTypeValues) Values() []ScheduledActionTypeValues {
 	return []ScheduledActionTypeValues{
@@ -405,13 +524,33 @@ const (
 )
 
 // Values returns all known values for ScheduleState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScheduleState) Values() []ScheduleState {
 	return []ScheduleState{
 		"MODIFYING",
 		"ACTIVE",
 		"FAILED",
+	}
+}
+
+type ServiceAuthorization string
+
+// Enum values for ServiceAuthorization
+const (
+	ServiceAuthorizationEnabled  ServiceAuthorization = "Enabled"
+	ServiceAuthorizationDisabled ServiceAuthorization = "Disabled"
+)
+
+// Values returns all known values for ServiceAuthorization. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ServiceAuthorization) Values() []ServiceAuthorization {
+	return []ServiceAuthorization{
+		"Enabled",
+		"Disabled",
 	}
 }
 
@@ -426,6 +565,7 @@ const (
 
 // Values returns all known values for SnapshotAttributeToSortBy. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (SnapshotAttributeToSortBy) Values() []SnapshotAttributeToSortBy {
 	return []SnapshotAttributeToSortBy{
@@ -444,8 +584,9 @@ const (
 )
 
 // Values returns all known values for SortByOrder. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SortByOrder) Values() []SortByOrder {
 	return []SortByOrder{
 		"ASC",
@@ -465,8 +606,9 @@ const (
 )
 
 // Values returns all known values for SourceType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SourceType) Values() []SourceType {
 	return []SourceType{
 		"cluster",
@@ -489,8 +631,9 @@ const (
 )
 
 // Values returns all known values for TableRestoreStatusType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TableRestoreStatusType) Values() []TableRestoreStatusType {
 	return []TableRestoreStatusType{
 		"PENDING",
@@ -511,8 +654,9 @@ const (
 )
 
 // Values returns all known values for UsageLimitBreachAction. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UsageLimitBreachAction) Values() []UsageLimitBreachAction {
 	return []UsageLimitBreachAction{
 		"log",
@@ -531,8 +675,9 @@ const (
 )
 
 // Values returns all known values for UsageLimitFeatureType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UsageLimitFeatureType) Values() []UsageLimitFeatureType {
 	return []UsageLimitFeatureType{
 		"spectrum",
@@ -550,8 +695,9 @@ const (
 )
 
 // Values returns all known values for UsageLimitLimitType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UsageLimitLimitType) Values() []UsageLimitLimitType {
 	return []UsageLimitLimitType{
 		"time",
@@ -569,12 +715,42 @@ const (
 )
 
 // Values returns all known values for UsageLimitPeriod. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UsageLimitPeriod) Values() []UsageLimitPeriod {
 	return []UsageLimitPeriod{
 		"daily",
 		"weekly",
 		"monthly",
+	}
+}
+
+type ZeroETLIntegrationStatus string
+
+// Enum values for ZeroETLIntegrationStatus
+const (
+	ZeroETLIntegrationStatusCreating       ZeroETLIntegrationStatus = "creating"
+	ZeroETLIntegrationStatusActive         ZeroETLIntegrationStatus = "active"
+	ZeroETLIntegrationStatusModifying      ZeroETLIntegrationStatus = "modifying"
+	ZeroETLIntegrationStatusFailed         ZeroETLIntegrationStatus = "failed"
+	ZeroETLIntegrationStatusDeleting       ZeroETLIntegrationStatus = "deleting"
+	ZeroETLIntegrationStatusSyncing        ZeroETLIntegrationStatus = "syncing"
+	ZeroETLIntegrationStatusNeedsAttention ZeroETLIntegrationStatus = "needs_attention"
+)
+
+// Values returns all known values for ZeroETLIntegrationStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ZeroETLIntegrationStatus) Values() []ZeroETLIntegrationStatus {
+	return []ZeroETLIntegrationStatus{
+		"creating",
+		"active",
+		"modifying",
+		"failed",
+		"deleting",
+		"syncing",
+		"needs_attention",
 	}
 }

@@ -15,8 +15,9 @@ const (
 )
 
 // Values returns all known values for AgentStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AgentStatus) Values() []AgentStatus {
 	return []AgentStatus{
 		"HEALTHY",
@@ -25,6 +26,32 @@ func (AgentStatus) Values() []AgentStatus {
 		"UNKNOWN",
 		"BLACKLISTED",
 		"SHUTDOWN",
+	}
+}
+
+type BatchDeleteConfigurationTaskStatus string
+
+// Enum values for BatchDeleteConfigurationTaskStatus
+const (
+	BatchDeleteConfigurationTaskStatusInitializing BatchDeleteConfigurationTaskStatus = "INITIALIZING"
+	BatchDeleteConfigurationTaskStatusValidating   BatchDeleteConfigurationTaskStatus = "VALIDATING"
+	BatchDeleteConfigurationTaskStatusDeleting     BatchDeleteConfigurationTaskStatus = "DELETING"
+	BatchDeleteConfigurationTaskStatusCompleted    BatchDeleteConfigurationTaskStatus = "COMPLETED"
+	BatchDeleteConfigurationTaskStatusFailed       BatchDeleteConfigurationTaskStatus = "FAILED"
+)
+
+// Values returns all known values for BatchDeleteConfigurationTaskStatus. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (BatchDeleteConfigurationTaskStatus) Values() []BatchDeleteConfigurationTaskStatus {
+	return []BatchDeleteConfigurationTaskStatus{
+		"INITIALIZING",
+		"VALIDATING",
+		"DELETING",
+		"COMPLETED",
+		"FAILED",
 	}
 }
 
@@ -39,8 +66,9 @@ const (
 
 // Values returns all known values for BatchDeleteImportDataErrorCode. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BatchDeleteImportDataErrorCode) Values() []BatchDeleteImportDataErrorCode {
 	return []BatchDeleteImportDataErrorCode{
 		"NOT_FOUND",
@@ -60,8 +88,9 @@ const (
 )
 
 // Values returns all known values for ConfigurationItemType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConfigurationItemType) Values() []ConfigurationItemType {
 	return []ConfigurationItemType{
 		"SERVER",
@@ -85,8 +114,9 @@ const (
 )
 
 // Values returns all known values for ContinuousExportStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ContinuousExportStatus) Values() []ContinuousExportStatus {
 	return []ContinuousExportStatus{
 		"START_IN_PROGRESS",
@@ -107,11 +137,51 @@ const (
 )
 
 // Values returns all known values for DataSource. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DataSource) Values() []DataSource {
 	return []DataSource{
 		"AGENT",
+	}
+}
+
+type DeleteAgentErrorCode string
+
+// Enum values for DeleteAgentErrorCode
+const (
+	DeleteAgentErrorCodeNotFound            DeleteAgentErrorCode = "NOT_FOUND"
+	DeleteAgentErrorCodeInternalServerError DeleteAgentErrorCode = "INTERNAL_SERVER_ERROR"
+	DeleteAgentErrorCodeAgentInUse          DeleteAgentErrorCode = "AGENT_IN_USE"
+)
+
+// Values returns all known values for DeleteAgentErrorCode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DeleteAgentErrorCode) Values() []DeleteAgentErrorCode {
+	return []DeleteAgentErrorCode{
+		"NOT_FOUND",
+		"INTERNAL_SERVER_ERROR",
+		"AGENT_IN_USE",
+	}
+}
+
+type DeletionConfigurationItemType string
+
+// Enum values for DeletionConfigurationItemType
+const (
+	DeletionConfigurationItemTypeServer DeletionConfigurationItemType = "SERVER"
+)
+
+// Values returns all known values for DeletionConfigurationItemType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DeletionConfigurationItemType) Values() []DeletionConfigurationItemType {
+	return []DeletionConfigurationItemType{
+		"SERVER",
 	}
 }
 
@@ -123,8 +193,9 @@ const (
 )
 
 // Values returns all known values for ExportDataFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExportDataFormat) Values() []ExportDataFormat {
 	return []ExportDataFormat{
 		"CSV",
@@ -141,13 +212,37 @@ const (
 )
 
 // Values returns all known values for ExportStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExportStatus) Values() []ExportStatus {
 	return []ExportStatus{
 		"FAILED",
 		"SUCCEEDED",
 		"IN_PROGRESS",
+	}
+}
+
+type FileClassification string
+
+// Enum values for FileClassification
+const (
+	FileClassificationModelizeitExport FileClassification = "MODELIZEIT_EXPORT"
+	FileClassificationRvtoolsExport    FileClassification = "RVTOOLS_EXPORT"
+	FileClassificationVmwareNsxExport  FileClassification = "VMWARE_NSX_EXPORT"
+	FileClassificationImportTemplate   FileClassification = "IMPORT_TEMPLATE"
+)
+
+// Values returns all known values for FileClassification. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FileClassification) Values() []FileClassification {
+	return []FileClassification{
+		"MODELIZEIT_EXPORT",
+		"RVTOOLS_EXPORT",
+		"VMWARE_NSX_EXPORT",
+		"IMPORT_TEMPLATE",
 	}
 }
 
@@ -161,6 +256,7 @@ const (
 	ImportStatusImportFailed                    ImportStatus = "IMPORT_FAILED"
 	ImportStatusImportFailedServerLimitExceeded ImportStatus = "IMPORT_FAILED_SERVER_LIMIT_EXCEEDED"
 	ImportStatusImportFailedRecordLimitExceeded ImportStatus = "IMPORT_FAILED_RECORD_LIMIT_EXCEEDED"
+	ImportStatusImportFailedUnsupportedFileType ImportStatus = "IMPORT_FAILED_UNSUPPORTED_FILE_TYPE"
 	ImportStatusDeleteInProgress                ImportStatus = "DELETE_IN_PROGRESS"
 	ImportStatusDeleteComplete                  ImportStatus = "DELETE_COMPLETE"
 	ImportStatusDeleteFailed                    ImportStatus = "DELETE_FAILED"
@@ -169,8 +265,9 @@ const (
 )
 
 // Values returns all known values for ImportStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImportStatus) Values() []ImportStatus {
 	return []ImportStatus{
 		"IMPORT_IN_PROGRESS",
@@ -179,6 +276,7 @@ func (ImportStatus) Values() []ImportStatus {
 		"IMPORT_FAILED",
 		"IMPORT_FAILED_SERVER_LIMIT_EXCEEDED",
 		"IMPORT_FAILED_RECORD_LIMIT_EXCEEDED",
+		"IMPORT_FAILED_UNSUPPORTED_FILE_TYPE",
 		"DELETE_IN_PROGRESS",
 		"DELETE_COMPLETE",
 		"DELETE_FAILED",
@@ -191,19 +289,22 @@ type ImportTaskFilterName string
 
 // Enum values for ImportTaskFilterName
 const (
-	ImportTaskFilterNameImportTaskId ImportTaskFilterName = "IMPORT_TASK_ID"
-	ImportTaskFilterNameStatus       ImportTaskFilterName = "STATUS"
-	ImportTaskFilterNameName         ImportTaskFilterName = "NAME"
+	ImportTaskFilterNameImportTaskId       ImportTaskFilterName = "IMPORT_TASK_ID"
+	ImportTaskFilterNameStatus             ImportTaskFilterName = "STATUS"
+	ImportTaskFilterNameName               ImportTaskFilterName = "NAME"
+	ImportTaskFilterNameFileClassification ImportTaskFilterName = "FILE_CLASSIFICATION"
 )
 
 // Values returns all known values for ImportTaskFilterName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImportTaskFilterName) Values() []ImportTaskFilterName {
 	return []ImportTaskFilterName{
 		"IMPORT_TASK_ID",
 		"STATUS",
 		"NAME",
+		"FILE_CLASSIFICATION",
 	}
 }
 
@@ -216,8 +317,9 @@ const (
 )
 
 // Values returns all known values for OfferingClass. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OfferingClass) Values() []OfferingClass {
 	return []OfferingClass{
 		"STANDARD",
@@ -234,8 +336,9 @@ const (
 )
 
 // Values returns all known values for OrderString. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OrderString) Values() []OrderString {
 	return []OrderString{
 		"ASC",
@@ -253,8 +356,9 @@ const (
 )
 
 // Values returns all known values for PurchasingOption. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PurchasingOption) Values() []PurchasingOption {
 	return []PurchasingOption{
 		"ALL_UPFRONT",
@@ -272,8 +376,9 @@ const (
 )
 
 // Values returns all known values for Tenancy. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Tenancy) Values() []Tenancy {
 	return []Tenancy{
 		"DEDICATED",
@@ -290,8 +395,9 @@ const (
 )
 
 // Values returns all known values for TermLength. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TermLength) Values() []TermLength {
 	return []TermLength{
 		"ONE_YEAR",

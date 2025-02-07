@@ -4,14 +4,9 @@ package lexmodelsv2
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/lexmodelsv2/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -19,24 +14,29 @@ import (
 
 // Retrieves summary metrics for the stages within intents in your bot. The
 // following fields are required:
-//   - metrics – A list of AnalyticsIntentStageMetric (https://docs.aws.amazon.com/lexv2/latest/APIReference/API_AnalyticsIntentStageMetric.html)
-//     objects. In each object, use the name field to specify the metric to
-//     calculate, the statistic field to specify whether to calculate the Sum ,
-//     Average , or Max number, and the order field to specify whether to sort the
-//     results in Ascending or Descending order.
+//
+//   - metrics – A list of [AnalyticsIntentStageMetric]objects. In each object, use the name field to specify
+//     the metric to calculate, the statistic field to specify whether to calculate
+//     the Sum , Average , or Max number, and the order field to specify whether to
+//     sort the results in Ascending or Descending order.
+//
 //   - startDateTime and endDateTime – Define a time range for which you want to
 //     retrieve results.
 //
 // Of the optional fields, you can organize the results in the following ways:
+//
 //   - Use the filters field to filter the results, the groupBy field to specify
 //     categories by which to group the results, and the binBy field to specify time
 //     intervals by which to group the results.
+//
 //   - Use the maxResults field to limit the number of results to return in a
 //     single response and the nextToken field to return the next batch of results if
 //     the response does not return the full set of results.
 //
 // Note that an order field exists in both binBy and metrics . You can only specify
 // one order in a given request.
+//
+// [AnalyticsIntentStageMetric]: https://docs.aws.amazon.com/lexv2/latest/APIReference/API_AnalyticsIntentStageMetric.html
 func (c *Client) ListIntentStageMetrics(ctx context.Context, params *ListIntentStageMetricsInput, optFns ...func(*Options)) (*ListIntentStageMetricsOutput, error) {
 	if params == nil {
 		params = &ListIntentStageMetricsInput{}
@@ -88,7 +88,9 @@ type ListIntentStageMetricsInput struct {
 
 	// A list of objects, each of which specifies how to group the results. You can
 	// group by the following criteria:
+	//
 	//   - IntentStageName – The name of the intent stage.
+	//
 	//   - SwitchedToIntent – The intent to which the conversation was switched (if
 	//   any).
 	GroupBy []types.AnalyticsIntentStageGroupBySpecification
@@ -100,6 +102,7 @@ type ListIntentStageMetricsInput struct {
 
 	// If the response from the ListIntentStageMetrics operation contains more results
 	// than specified in the maxResults parameter, a token is returned in the response.
+	//
 	// Use the returned token in the nextToken parameter of a ListIntentStageMetrics
 	// request to return the next page of results. For a complete set of results, call
 	// the ListIntentStageMetrics operation until the nextToken returned in the
@@ -116,6 +119,7 @@ type ListIntentStageMetricsOutput struct {
 
 	// If the response from the ListIntentStageMetrics operation contains more results
 	// than specified in the maxResults parameter, a token is returned in the response.
+	//
 	// Use the returned token in the nextToken parameter of a ListIntentStageMetrics
 	// request to return the next page of results. For a complete set of results, call
 	// the ListIntentStageMetrics operation until the nextToken returned in the
@@ -132,6 +136,9 @@ type ListIntentStageMetricsOutput struct {
 }
 
 func (c *Client) addOperationListIntentStageMetricsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpListIntentStageMetrics{}, middleware.After)
 	if err != nil {
 		return err
@@ -140,34 +147,38 @@ func (c *Client) addOperationListIntentStageMetricsMiddlewares(stack *middleware
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListIntentStageMetrics"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -179,7 +190,13 @@ func (c *Client) addOperationListIntentStageMetricsMiddlewares(stack *middleware
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListIntentStageMetricsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListIntentStageMetricsValidationMiddleware(stack); err != nil {
@@ -188,7 +205,7 @@ func (c *Client) addOperationListIntentStageMetricsMiddlewares(stack *middleware
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListIntentStageMetrics(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -200,19 +217,23 @@ func (c *Client) addOperationListIntentStageMetricsMiddlewares(stack *middleware
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// ListIntentStageMetricsAPIClient is a client that implements the
-// ListIntentStageMetrics operation.
-type ListIntentStageMetricsAPIClient interface {
-	ListIntentStageMetrics(context.Context, *ListIntentStageMetricsInput, ...func(*Options)) (*ListIntentStageMetricsOutput, error)
-}
-
-var _ ListIntentStageMetricsAPIClient = (*Client)(nil)
 
 // ListIntentStageMetricsPaginatorOptions is the paginator options for
 // ListIntentStageMetrics
@@ -280,6 +301,9 @@ func (p *ListIntentStageMetricsPaginator) NextPage(ctx context.Context, optFns .
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListIntentStageMetrics(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -299,134 +323,18 @@ func (p *ListIntentStageMetricsPaginator) NextPage(ctx context.Context, optFns .
 	return result, nil
 }
 
+// ListIntentStageMetricsAPIClient is a client that implements the
+// ListIntentStageMetrics operation.
+type ListIntentStageMetricsAPIClient interface {
+	ListIntentStageMetrics(context.Context, *ListIntentStageMetricsInput, ...func(*Options)) (*ListIntentStageMetricsOutput, error)
+}
+
+var _ ListIntentStageMetricsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListIntentStageMetrics(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "lex",
 		OperationName: "ListIntentStageMetrics",
 	}
-}
-
-type opListIntentStageMetricsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListIntentStageMetricsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListIntentStageMetricsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "lex"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "lex"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("lex")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListIntentStageMetricsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListIntentStageMetricsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

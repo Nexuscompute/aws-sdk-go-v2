@@ -33,7 +33,7 @@ func (e *AlarmsLimitExceededException) ErrorCode() string {
 }
 func (e *AlarmsLimitExceededException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// An application with the specified name with the IAM user or Amazon Web Services
+// An application with the specified name with the user or Amazon Web Services
 // account already exists.
 type ApplicationAlreadyExistsException struct {
 	Message *string
@@ -60,7 +60,7 @@ func (e *ApplicationAlreadyExistsException) ErrorCode() string {
 }
 func (e *ApplicationAlreadyExistsException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The application does not exist with the IAM user or Amazon Web Services account.
+// The application does not exist with the user or Amazon Web Services account.
 type ApplicationDoesNotExistException struct {
 	Message *string
 
@@ -138,7 +138,8 @@ func (e *ApplicationNameRequiredException) ErrorCode() string {
 }
 func (e *ApplicationNameRequiredException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The specified ARN is not supported. For example, it might be an ARN for a
+//	The specified ARN is not supported. For example, it might be an ARN for a
+//
 // resource that is not expected.
 type ArnNotSupportedException struct {
 	Message *string
@@ -245,8 +246,8 @@ func (e *DeploymentAlreadyCompletedException) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
 
-// A deployment configuration with the specified name with the IAM user or Amazon
-// Web Services account already exists.
+// A deployment configuration with the specified name with the user or Amazon Web
+// Services account already exists.
 type DeploymentConfigAlreadyExistsException struct {
 	Message *string
 
@@ -274,7 +275,7 @@ func (e *DeploymentConfigAlreadyExistsException) ErrorFault() smithy.ErrorFault 
 	return smithy.FaultClient
 }
 
-// The deployment configuration does not exist with the IAM user or Amazon Web
+// The deployment configuration does not exist with the user or Amazon Web
 // Services account.
 type DeploymentConfigDoesNotExistException struct {
 	Message *string
@@ -385,7 +386,7 @@ func (e *DeploymentConfigNameRequiredException) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
 
-// The deployment with the IAM user or Amazon Web Services account does not exist.
+// The deployment with the user or Amazon Web Services account does not exist.
 type DeploymentDoesNotExistException struct {
 	Message *string
 
@@ -411,8 +412,8 @@ func (e *DeploymentDoesNotExistException) ErrorCode() string {
 }
 func (e *DeploymentDoesNotExistException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// A deployment group with the specified name with the IAM user or Amazon Web
-// Services account already exists.
+// A deployment group with the specified name with the user or Amazon Web Services
+// account already exists.
 type DeploymentGroupAlreadyExistsException struct {
 	Message *string
 
@@ -440,8 +441,8 @@ func (e *DeploymentGroupAlreadyExistsException) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
 
-// The named deployment group with the IAM user or Amazon Web Services account
-// does not exist.
+// The named deployment group with the user or Amazon Web Services account does
+// not exist.
 type DeploymentGroupDoesNotExistException struct {
 	Message *string
 
@@ -687,7 +688,8 @@ func (e *DeploymentTargetIdRequiredException) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
 
-// The maximum number of targets that can be associated with an Amazon ECS or
+//	The maximum number of targets that can be associated with an Amazon ECS or
+//
 // Lambda deployment was exceeded. The target list of both types of deployments
 // must have exactly one item. This exception does not apply to EC2/On-premises
 // deployments.
@@ -744,7 +746,8 @@ func (e *DescriptionTooLongException) ErrorCode() string {
 }
 func (e *DescriptionTooLongException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The Amazon ECS service is associated with more than one deployment groups. An
+//	The Amazon ECS service is associated with more than one deployment groups. An
+//
 // Amazon ECS service can be associated with only one deployment group.
 type ECSServiceMappingLimitExceededException struct {
 	Message *string
@@ -829,8 +832,8 @@ func (e *GitHubAccountTokenNameRequiredException) ErrorFault() smithy.ErrorFault
 	return smithy.FaultClient
 }
 
-// No IAM ARN was included in the request. You must use an IAM session ARN or IAM
-// user ARN in the request.
+// No IAM ARN was included in the request. You must use an IAM session ARN or user
+// ARN in the request.
 type IamArnRequiredException struct {
 	Message *string
 
@@ -885,7 +888,7 @@ func (e *IamSessionArnAlreadyRegisteredException) ErrorFault() smithy.ErrorFault
 	return smithy.FaultClient
 }
 
-// The specified IAM user ARN is already registered with an on-premises instance.
+// The specified user ARN is already registered with an on-premises instance.
 type IamUserArnAlreadyRegisteredException struct {
 	Message *string
 
@@ -913,7 +916,7 @@ func (e *IamUserArnAlreadyRegisteredException) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
 
-// An IAM user ARN was not specified.
+// An user ARN was not specified.
 type IamUserArnRequiredException struct {
 	Message *string
 
@@ -1099,10 +1102,15 @@ func (e *InstanceNotRegisteredException) ErrorCode() string {
 func (e *InstanceNotRegisteredException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The format of the alarm configuration is invalid. Possible causes include:
+//
 //   - The alarm list is null.
+//
 //   - The alarm object is null.
+//
 //   - The alarm name is empty or null or exceeds the limit of 255 characters.
+//
 //   - Two alarms with the same name have been specified.
+//
 //   - The alarm configuration is enabled, but the alarm list is empty.
 type InvalidAlarmConfigException struct {
 	Message *string
@@ -1238,8 +1246,7 @@ func (e *InvalidAutoScalingGroupException) ErrorCode() string {
 func (e *InvalidAutoScalingGroupException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The configuration for the blue/green deployment group was provided in an
-// invalid format. For information about deployment configuration format, see
-// CreateDeploymentConfig .
+// invalid format. For information about deployment configuration format, see CreateDeploymentConfig.
 type InvalidBlueGreenDeploymentConfigurationException struct {
 	Message *string
 
@@ -1787,7 +1794,7 @@ func (e *InvalidIamSessionArnException) ErrorCode() string {
 }
 func (e *InvalidIamSessionArnException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The IAM user ARN was specified in an invalid format.
+// The user ARN was specified in an invalid format.
 type InvalidIamUserArnException struct {
 	Message *string
 
@@ -2433,10 +2440,14 @@ func (e *InvalidTargetGroupPairException) ErrorCode() string {
 func (e *InvalidTargetGroupPairException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The target instance configuration is invalid. Possible causes include:
+//
 //   - Configuration data for target instances was entered for an in-place
 //     deployment.
+//
 //   - The limit of 10 tags for a tag type was exceeded.
+//
 //   - The combined length of the tag names exceeded the limit.
+//
 //   - A specified tag is not currently applied to any instances.
 type InvalidTargetInstancesException struct {
 	Message *string
@@ -2489,7 +2500,8 @@ func (e *InvalidTimeRangeException) ErrorCode() string {
 }
 func (e *InvalidTimeRangeException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The configuration that specifies how traffic is routed during a deployment is
+//	The configuration that specifies how traffic is routed during a deployment is
+//
 // invalid.
 type InvalidTrafficRoutingConfigurationException struct {
 	Message *string
@@ -2573,6 +2585,34 @@ func (e *InvalidUpdateOutdatedInstancesOnlyValueException) ErrorFault() smithy.E
 	return smithy.FaultClient
 }
 
+// The ZonalConfig object is not valid.
+type InvalidZonalDeploymentConfigurationException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InvalidZonalDeploymentConfigurationException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InvalidZonalDeploymentConfigurationException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InvalidZonalDeploymentConfigurationException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InvalidZonalDeploymentConfigurationException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InvalidZonalDeploymentConfigurationException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
 // An attempt to return the status of an already completed lifecycle event
 // occurred.
 type LifecycleEventAlreadyCompletedException struct {
@@ -2630,8 +2670,8 @@ func (e *LifecycleHookLimitExceededException) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
 
-// Both an IAM user ARN and an IAM session ARN were included in the request. Use
-// only one ARN type.
+// Both an user ARN and an IAM session ARN were included in the request. Use only
+// one ARN type.
 type MultipleIamArnsProvidedException struct {
 	Message *string
 
@@ -2735,8 +2775,7 @@ func (e *ResourceValidationException) ErrorCode() string {
 }
 func (e *ResourceValidationException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The named revision does not exist with the IAM user or Amazon Web Services
-// account.
+// The named revision does not exist with the user or Amazon Web Services account.
 type RevisionDoesNotExistException struct {
 	Message *string
 

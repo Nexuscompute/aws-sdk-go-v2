@@ -4,14 +4,9 @@ package elasticbeanstalk
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/elasticbeanstalk/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -36,14 +31,18 @@ func (c *Client) TerminateEnvironment(ctx context.Context, params *TerminateEnvi
 // Request to terminate an environment.
 type TerminateEnvironmentInput struct {
 
-	// The ID of the environment to terminate. Condition: You must specify either this
-	// or an EnvironmentName, or both. If you do not specify either, AWS Elastic
-	// Beanstalk returns MissingRequiredParameter error.
+	// The ID of the environment to terminate.
+	//
+	// Condition: You must specify either this or an EnvironmentName, or both. If you
+	// do not specify either, AWS Elastic Beanstalk returns MissingRequiredParameter
+	// error.
 	EnvironmentId *string
 
-	// The name of the environment to terminate. Condition: You must specify either
-	// this or an EnvironmentId, or both. If you do not specify either, AWS Elastic
-	// Beanstalk returns MissingRequiredParameter error.
+	// The name of the environment to terminate.
+	//
+	// Condition: You must specify either this or an EnvironmentId, or both. If you do
+	// not specify either, AWS Elastic Beanstalk returns MissingRequiredParameter
+	// error.
 	EnvironmentName *string
 
 	// Terminates the target environment even if another environment in the same group
@@ -52,12 +51,20 @@ type TerminateEnvironmentInput struct {
 
 	// Indicates whether the associated AWS resources should shut down when the
 	// environment is terminated:
+	//
 	//   - true : The specified environment as well as the associated AWS resources,
 	//   such as Auto Scaling group and LoadBalancer, are terminated.
+	//
 	//   - false : AWS Elastic Beanstalk resource management is removed from the
 	//   environment, but the AWS resources continue to operate.
-	// For more information, see the  AWS Elastic Beanstalk User Guide.  (https://docs.aws.amazon.com/elasticbeanstalk/latest/ug/)
-	// Default: true Valid Values: true | false
+	//
+	// For more information, see the [AWS Elastic Beanstalk User Guide.]
+	//
+	// Default: true
+	//
+	// Valid Values: true | false
+	//
+	// [AWS Elastic Beanstalk User Guide.]: https://docs.aws.amazon.com/elasticbeanstalk/latest/ug/
 	TerminateResources *bool
 
 	noSmithyDocumentSerde
@@ -67,8 +74,11 @@ type TerminateEnvironmentInput struct {
 type TerminateEnvironmentOutput struct {
 
 	// Indicates if there is an in-progress environment configuration update or
-	// application version deployment that you can cancel. true: There is an update in
-	// progress. false: There are no updates currently in progress.
+	// application version deployment that you can cancel.
+	//
+	// true: There is an update in progress.
+	//
+	// false: There are no updates currently in progress.
 	AbortableOperationInProgress *bool
 
 	// The name of the application associated with this environment.
@@ -105,25 +115,32 @@ type TerminateEnvironmentOutput struct {
 
 	// Describes the health status of the environment. AWS Elastic Beanstalk indicates
 	// the failure levels for a running environment:
+	//
 	//   - Red : Indicates the environment is not responsive. Occurs when three or more
 	//   consecutive failures occur for an environment.
+	//
 	//   - Yellow : Indicates that something is wrong. Occurs when two consecutive
 	//   failures occur for an environment.
+	//
 	//   - Green : Indicates the environment is healthy and fully functional.
+	//
 	//   - Grey : Default health for a new environment. The environment is not fully
 	//   launched and health checks have not started or health checks are suspended
 	//   during an UpdateEnvironment or RestartEnvironment request.
+	//
 	// Default: Grey
 	Health types.EnvironmentHealth
 
 	// Returns the health status of the application running in your environment. For
-	// more information, see Health Colors and Statuses (https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-status.html)
-	// .
+	// more information, see [Health Colors and Statuses].
+	//
+	// [Health Colors and Statuses]: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/health-enhanced-status.html
 	HealthStatus types.EnvironmentHealthStatus
 
 	// The Amazon Resource Name (ARN) of the environment's operations role. For more
-	// information, see Operations roles (https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-operationsrole.html)
-	// in the AWS Elastic Beanstalk Developer Guide.
+	// information, see [Operations roles]in the AWS Elastic Beanstalk Developer Guide.
+	//
+	// [Operations roles]: https://docs.aws.amazon.com/elasticbeanstalk/latest/dg/iam-operationsrole.html
 	OperationsRole *string
 
 	// The ARN of the platform version.
@@ -132,16 +149,21 @@ type TerminateEnvironmentOutput struct {
 	// The description of the AWS resources used by this environment.
 	Resources *types.EnvironmentResourcesDescription
 
-	// The name of the SolutionStack deployed with this environment.
+	//  The name of the SolutionStack deployed with this environment.
 	SolutionStackName *string
 
 	// The current operational status of the environment:
+	//
 	//   - Launching : Environment is in the process of initial deployment.
+	//
 	//   - Updating : Environment is in the process of updating its configuration
 	//   settings or application version.
+	//
 	//   - Ready : Environment is available to have an action performed on it, such as
 	//   update or terminate.
+	//
 	//   - Terminating : Environment is in the shut-down process.
+	//
 	//   - Terminated : Environment is not running.
 	Status types.EnvironmentStatus
 
@@ -162,6 +184,9 @@ type TerminateEnvironmentOutput struct {
 }
 
 func (c *Client) addOperationTerminateEnvironmentMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpTerminateEnvironment{}, middleware.After)
 	if err != nil {
 		return err
@@ -170,34 +195,38 @@ func (c *Client) addOperationTerminateEnvironmentMiddlewares(stack *middleware.S
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "TerminateEnvironment"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -209,13 +238,19 @@ func (c *Client) addOperationTerminateEnvironmentMiddlewares(stack *middleware.S
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addTerminateEnvironmentResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opTerminateEnvironment(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -227,7 +262,19 @@ func (c *Client) addOperationTerminateEnvironmentMiddlewares(stack *middleware.S
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -237,130 +284,6 @@ func newServiceMetadataMiddleware_opTerminateEnvironment(region string) *awsmidd
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "elasticbeanstalk",
 		OperationName: "TerminateEnvironment",
 	}
-}
-
-type opTerminateEnvironmentResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opTerminateEnvironmentResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opTerminateEnvironmentResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "elasticbeanstalk"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "elasticbeanstalk"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("elasticbeanstalk")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addTerminateEnvironmentResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opTerminateEnvironmentResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

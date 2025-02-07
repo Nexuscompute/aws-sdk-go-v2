@@ -4,21 +4,17 @@ package mediatailor
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/mediatailor/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Retrieves a playback configuration. For information about MediaTailor
-// configurations, see Working with configurations in AWS Elemental MediaTailor (https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html)
-// .
+// configurations, see [Working with configurations in AWS Elemental MediaTailor].
+//
+// [Working with configurations in AWS Elemental MediaTailor]: https://docs.aws.amazon.com/mediatailor/latest/ug/configurations.html
 func (c *Client) GetPlaybackConfiguration(ctx context.Context, params *GetPlaybackConfigurationInput, optFns ...func(*Options)) (*GetPlaybackConfigurationOutput, error) {
 	if params == nil {
 		params = &GetPlaybackConfigurationInput{}
@@ -46,6 +42,11 @@ type GetPlaybackConfigurationInput struct {
 
 type GetPlaybackConfigurationOutput struct {
 
+	// The setting that indicates what conditioning MediaTailor will perform on ads
+	// that the ad decision server (ADS) returns, and what priority MediaTailor uses
+	// when inserting ads.
+	AdConditioningConfiguration *types.AdConditioningConfiguration
+
 	// The URL for the ad decision server (ADS). This includes the specification of
 	// static parameters and placeholders for dynamic parameters. AWS Elemental
 	// MediaTailor substitutes player-specific and session-specific parameters as
@@ -54,13 +55,16 @@ type GetPlaybackConfigurationOutput struct {
 	AdDecisionServerUrl *string
 
 	// The configuration for avail suppression, also known as ad suppression. For more
-	// information about ad suppression, see Ad Suppression (https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html)
-	// .
+	// information about ad suppression, see [Ad Suppression].
+	//
+	// [Ad Suppression]: https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html
 	AvailSuppression *types.AvailSuppression
 
 	// The configuration for bumpers. Bumpers are short audio or video clips that play
-	// at the start or before the end of an ad break. To learn more about bumpers, see
-	// Bumpers (https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html) .
+	// at the start or before the end of an ad break. To learn more about bumpers, see [Bumpers]
+	// .
+	//
+	// [Bumpers]: https://docs.aws.amazon.com/mediatailor/latest/ug/bumpers.html
 	Bumper *types.Bumper
 
 	// The configuration for using a content delivery network (CDN), like Amazon
@@ -68,8 +72,9 @@ type GetPlaybackConfigurationOutput struct {
 	CdnConfiguration *types.CdnConfiguration
 
 	// The player parameters and aliases used as dynamic variables during session
-	// initialization. For more information, see Domain Variables (https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domain.html)
-	// .
+	// initialization. For more information, see [Domain Variables].
+	//
+	// [Domain Variables]: https://docs.aws.amazon.com/mediatailor/latest/ug/variables-domains.html
 	ConfigurationAliases map[string]map[string]string
 
 	// The configuration for DASH content.
@@ -78,10 +83,18 @@ type GetPlaybackConfigurationOutput struct {
 	// The configuration for HLS content.
 	HlsConfiguration *types.HlsConfiguration
 
+	// The setting that controls whether players can use stitched or guided ad
+	// insertion. The default, STITCHED_ONLY , forces all player sessions to use
+	// stitched (server-side) ad insertion. Choosing PLAYER_SELECT allows players to
+	// select either stitched or guided ad insertion at session-initialization time.
+	// The default for players that do not specify an insertion mode is stitched.
+	InsertionMode types.InsertionMode
+
 	// The configuration for pre-roll ad insertion.
 	LivePreRollConfiguration *types.LivePreRollConfiguration
 
-	// The Amazon CloudWatch log settings for a playback configuration.
+	// The configuration that defines where AWS Elemental MediaTailor sends logs for
+	// the playback configuration.
 	LogConfiguration *types.LogConfiguration
 
 	// The configuration for manifest processing rules. Manifest processing rules
@@ -97,9 +110,10 @@ type GetPlaybackConfigurationOutput struct {
 	// underlying content is shown. This feature applies to ad replacement in live and
 	// VOD streams, rather than ad insertion, because it relies on an underlying
 	// content stream. For more information about ad break behavior, including ad
-	// replacement and insertion, see Ad Behavior in AWS Elemental MediaTailor (https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html)
-	// .
-	PersonalizationThresholdSeconds int32
+	// replacement and insertion, see [Ad Behavior in AWS Elemental MediaTailor].
+	//
+	// [Ad Behavior in AWS Elemental MediaTailor]: https://docs.aws.amazon.com/mediatailor/latest/ug/ad-behavior.html
+	PersonalizationThresholdSeconds *int32
 
 	// The Amazon Resource Name (ARN) for the playback configuration.
 	PlaybackConfigurationArn *string
@@ -122,9 +136,9 @@ type GetPlaybackConfigurationOutput struct {
 
 	// The tags assigned to the playback configuration. Tags are key-value pairs that
 	// you can associate with Amazon resources to help with organization, access
-	// control, and cost tracking. For more information, see Tagging AWS Elemental
-	// MediaTailor Resources (https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html)
-	// .
+	// control, and cost tracking. For more information, see [Tagging AWS Elemental MediaTailor Resources].
+	//
+	// [Tagging AWS Elemental MediaTailor Resources]: https://docs.aws.amazon.com/mediatailor/latest/ug/tagging.html
 	Tags map[string]string
 
 	// The name that is used to associate this playback configuration with a custom
@@ -144,6 +158,9 @@ type GetPlaybackConfigurationOutput struct {
 }
 
 func (c *Client) addOperationGetPlaybackConfigurationMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpGetPlaybackConfiguration{}, middleware.After)
 	if err != nil {
 		return err
@@ -152,34 +169,38 @@ func (c *Client) addOperationGetPlaybackConfigurationMiddlewares(stack *middlewa
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GetPlaybackConfiguration"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -191,7 +212,13 @@ func (c *Client) addOperationGetPlaybackConfigurationMiddlewares(stack *middlewa
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGetPlaybackConfigurationResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetPlaybackConfigurationValidationMiddleware(stack); err != nil {
@@ -200,7 +227,7 @@ func (c *Client) addOperationGetPlaybackConfigurationMiddlewares(stack *middlewa
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetPlaybackConfiguration(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -212,7 +239,19 @@ func (c *Client) addOperationGetPlaybackConfigurationMiddlewares(stack *middlewa
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -222,130 +261,6 @@ func newServiceMetadataMiddleware_opGetPlaybackConfiguration(region string) *aws
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "mediatailor",
 		OperationName: "GetPlaybackConfiguration",
 	}
-}
-
-type opGetPlaybackConfigurationResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opGetPlaybackConfigurationResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGetPlaybackConfigurationResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "mediatailor"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "mediatailor"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("mediatailor")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addGetPlaybackConfigurationResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGetPlaybackConfigurationResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

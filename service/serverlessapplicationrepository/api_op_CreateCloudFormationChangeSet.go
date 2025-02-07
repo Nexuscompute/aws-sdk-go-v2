@@ -4,14 +4,9 @@ package serverlessapplicationrepository
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/serverlessapplicationrepository/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -40,8 +35,9 @@ type CreateCloudFormationChangeSetInput struct {
 	ApplicationId *string
 
 	// This property corresponds to the parameter of the same name for the AWS
-	// CloudFormation CreateChangeSet (https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet)
-	// API.
+	// CloudFormation [CreateChangeSet]API.
+	//
+	// [CreateChangeSet]: https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet
 	//
 	// This member is required.
 	StackName *string
@@ -50,72 +46,95 @@ type CreateCloudFormationChangeSetInput struct {
 	// applications. Some applications might include resources that can affect
 	// permissions in your AWS account, for example, by creating new AWS Identity and
 	// Access Management (IAM) users. For those applications, you must explicitly
-	// acknowledge their capabilities by specifying this parameter.The only valid
-	// values are CAPABILITY_IAM, CAPABILITY_NAMED_IAM, CAPABILITY_RESOURCE_POLICY, and
-	// CAPABILITY_AUTO_EXPAND.The following resources require you to specify
-	// CAPABILITY_IAM or CAPABILITY_NAMED_IAM: AWS::IAM::Group (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html)
-	// , AWS::IAM::InstanceProfile (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html)
-	// , AWS::IAM::Policy (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html)
-	// , and AWS::IAM::Role (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html)
-	// . If the application contains IAM resources, you can specify either
-	// CAPABILITY_IAM or CAPABILITY_NAMED_IAM. If the application contains IAM
-	// resources with custom names, you must specify CAPABILITY_NAMED_IAM.The following
-	// resources require you to specify CAPABILITY_RESOURCE_POLICY:
-	// AWS::Lambda::Permission (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html)
-	// , AWS::IAM:Policy (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html)
-	// , AWS::ApplicationAutoScaling::ScalingPolicy (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-applicationautoscaling-scalingpolicy.html)
-	// , AWS::S3::BucketPolicy (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-policy.html)
-	// , AWS::SQS::QueuePolicy (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sqs-policy.html)
-	// , and AWS::SNS:TopicPolicy (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sns-policy.html)
-	// .Applications that contain one or more nested applications require you to
-	// specify CAPABILITY_AUTO_EXPAND.If your application template contains any of the
-	// above resources, we recommend that you review all permissions associated with
-	// the application before deploying. If you don't specify this parameter for an
-	// application that requires capabilities, the call will fail.
+	// acknowledge their capabilities by specifying this parameter.
+	//
+	// The only valid values are CAPABILITY_IAM, CAPABILITY_NAMED_IAM,
+	// CAPABILITY_RESOURCE_POLICY, and CAPABILITY_AUTO_EXPAND.
+	//
+	// The following resources require you to specify CAPABILITY_IAM or
+	// CAPABILITY_NAMED_IAM: [AWS::IAM::Group], [AWS::IAM::InstanceProfile], [AWS::IAM::Policy], and [AWS::IAM::Role]. If the application contains IAM resources,
+	// you can specify either CAPABILITY_IAM or CAPABILITY_NAMED_IAM. If the
+	// application contains IAM resources with custom names, you must specify
+	// CAPABILITY_NAMED_IAM.
+	//
+	// The following resources require you to specify CAPABILITY_RESOURCE_POLICY: [AWS::Lambda::Permission], [AWS::IAM:Policy], [AWS::ApplicationAutoScaling::ScalingPolicy]
+	// , [AWS::S3::BucketPolicy], [AWS::SQS::QueuePolicy], and [AWS::SNS:TopicPolicy].
+	//
+	// Applications that contain one or more nested applications require you to
+	// specify CAPABILITY_AUTO_EXPAND.
+	//
+	// If your application template contains any of the above resources, we recommend
+	// that you review all permissions associated with the application before
+	// deploying. If you don't specify this parameter for an application that requires
+	// capabilities, the call will fail.
+	//
+	// [AWS::SQS::QueuePolicy]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sqs-policy.html
+	// [AWS::ApplicationAutoScaling::ScalingPolicy]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-applicationautoscaling-scalingpolicy.html
+	// [AWS::S3::BucketPolicy]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-s3-policy.html
+	// [AWS::IAM::InstanceProfile]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-instanceprofile.html
+	// [AWS::IAM::Policy]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html
+	// [AWS::IAM::Group]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-iam-group.html
+	// [AWS::IAM::Role]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-role.html
+	// [AWS::IAM:Policy]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-iam-policy.html
+	// [AWS::SNS:TopicPolicy]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-properties-sns-policy.html
+	// [AWS::Lambda::Permission]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-resource-lambda-permission.html
 	Capabilities []string
 
 	// This property corresponds to the parameter of the same name for the AWS
-	// CloudFormation CreateChangeSet (https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet)
-	// API.
+	// CloudFormation [CreateChangeSet]API.
+	//
+	// [CreateChangeSet]: https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet
 	ChangeSetName *string
 
 	// This property corresponds to the parameter of the same name for the AWS
-	// CloudFormation CreateChangeSet (https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet)
-	// API.
+	// CloudFormation [CreateChangeSet]API.
+	//
+	// [CreateChangeSet]: https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet
 	ClientToken *string
 
 	// This property corresponds to the parameter of the same name for the AWS
-	// CloudFormation CreateChangeSet (https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet)
-	// API.
+	// CloudFormation [CreateChangeSet]API.
+	//
+	// [CreateChangeSet]: https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet
 	Description *string
 
 	// This property corresponds to the parameter of the same name for the AWS
-	// CloudFormation CreateChangeSet (https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet)
-	// API.
+	// CloudFormation [CreateChangeSet]API.
+	//
+	// [CreateChangeSet]: https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet
 	NotificationArns []string
 
 	// A list of parameter values for the parameters of the application.
 	ParameterOverrides []types.ParameterValue
 
 	// This property corresponds to the parameter of the same name for the AWS
-	// CloudFormation CreateChangeSet (https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet)
-	// API.
+	// CloudFormation [CreateChangeSet]API.
+	//
+	// [CreateChangeSet]: https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet
 	ResourceTypes []string
 
 	// This property corresponds to the parameter of the same name for the AWS
-	// CloudFormation CreateChangeSet (https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet)
-	// API.
+	// CloudFormation [CreateChangeSet]API.
+	//
+	// [CreateChangeSet]: https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet
 	RollbackConfiguration *types.RollbackConfiguration
 
-	// The semantic version of the application: https://semver.org/ (https://semver.org/)
+	// The semantic version of the application:
+	//
+	// [https://semver.org/]
+	//
+	// [https://semver.org/]: https://semver.org/
 	SemanticVersion *string
 
 	// This property corresponds to the parameter of the same name for the AWS
-	// CloudFormation CreateChangeSet (https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet)
-	// API.
+	// CloudFormation [CreateChangeSet]API.
+	//
+	// [CreateChangeSet]: https://docs.aws.amazon.com/goto/WebAPI/cloudformation-2010-05-15/CreateChangeSet
 	Tags []types.Tag
 
-	// The UUID returned by CreateCloudFormationTemplate.Pattern:
+	// The UUID returned by CreateCloudFormationTemplate.
+	//
+	// Pattern:
 	// [0-9a-fA-F]{8}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{4}\-[0-9a-fA-F]{12}
 	TemplateId *string
 
@@ -127,11 +146,18 @@ type CreateCloudFormationChangeSetOutput struct {
 	// The application Amazon Resource Name (ARN).
 	ApplicationId *string
 
-	// The Amazon Resource Name (ARN) of the change set.Length constraints: Minimum
-	// length of 1.Pattern: ARN:[-a-zA-Z0-9:/]*
+	// The Amazon Resource Name (ARN) of the change set.
+	//
+	// Length constraints: Minimum length of 1.
+	//
+	// Pattern: ARN:[-a-zA-Z0-9:/]*
 	ChangeSetId *string
 
-	// The semantic version of the application: https://semver.org/ (https://semver.org/)
+	// The semantic version of the application:
+	//
+	// [https://semver.org/]
+	//
+	// [https://semver.org/]: https://semver.org/
 	SemanticVersion *string
 
 	// The unique ID of the stack.
@@ -144,6 +170,9 @@ type CreateCloudFormationChangeSetOutput struct {
 }
 
 func (c *Client) addOperationCreateCloudFormationChangeSetMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateCloudFormationChangeSet{}, middleware.After)
 	if err != nil {
 		return err
@@ -152,34 +181,38 @@ func (c *Client) addOperationCreateCloudFormationChangeSetMiddlewares(stack *mid
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateCloudFormationChangeSet"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -191,7 +224,13 @@ func (c *Client) addOperationCreateCloudFormationChangeSetMiddlewares(stack *mid
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateCloudFormationChangeSetResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateCloudFormationChangeSetValidationMiddleware(stack); err != nil {
@@ -200,7 +239,7 @@ func (c *Client) addOperationCreateCloudFormationChangeSetMiddlewares(stack *mid
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateCloudFormationChangeSet(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -212,7 +251,19 @@ func (c *Client) addOperationCreateCloudFormationChangeSetMiddlewares(stack *mid
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -222,130 +273,6 @@ func newServiceMetadataMiddleware_opCreateCloudFormationChangeSet(region string)
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "serverlessrepo",
 		OperationName: "CreateCloudFormationChangeSet",
 	}
-}
-
-type opCreateCloudFormationChangeSetResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateCloudFormationChangeSetResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateCloudFormationChangeSetResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "serverlessrepo"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "serverlessrepo"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("serverlessrepo")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateCloudFormationChangeSetResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateCloudFormationChangeSetResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

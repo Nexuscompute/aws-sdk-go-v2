@@ -4,20 +4,17 @@ package route53resolver
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/route53resolver/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Retrieves the minimal high-level information for the rule groups that you have
-// defined. A single call might return only a partial list of the rule groups. For
+// defined.
+//
+// A single call might return only a partial list of the rule groups. For
 // information, see MaxResults .
 func (c *Client) ListFirewallRuleGroups(ctx context.Context, params *ListFirewallRuleGroupsInput, optFns ...func(*Options)) (*ListFirewallRuleGroupsOutput, error) {
 	if params == nil {
@@ -39,15 +36,19 @@ type ListFirewallRuleGroupsInput struct {
 	// The maximum number of objects that you want Resolver to return for this
 	// request. If more objects are available, in the response, Resolver provides a
 	// NextToken value that you can use in a subsequent call to get the next batch of
-	// objects. If you don't specify a value for MaxResults , Resolver returns up to
-	// 100 objects.
+	// objects.
+	//
+	// If you don't specify a value for MaxResults , Resolver returns up to 100
+	// objects.
 	MaxResults *int32
 
-	// For the first call to this list request, omit this value. When you request a
-	// list of objects, Resolver returns at most the number of objects specified in
-	// MaxResults . If more objects are available for retrieval, Resolver returns a
-	// NextToken value in the response. To retrieve the next batch of objects, use the
-	// token that was returned for the prior request in your next request.
+	// For the first call to this list request, omit this value.
+	//
+	// When you request a list of objects, Resolver returns at most the number of
+	// objects specified in MaxResults . If more objects are available for retrieval,
+	// Resolver returns a NextToken value in the response. To retrieve the next batch
+	// of objects, use the token that was returned for the prior request in your next
+	// request.
 	NextToken *string
 
 	noSmithyDocumentSerde
@@ -55,8 +56,10 @@ type ListFirewallRuleGroupsInput struct {
 
 type ListFirewallRuleGroupsOutput struct {
 
-	// A list of your firewall rule groups. This might be a partial list of the rule
-	// groups that you have defined. For information, see MaxResults .
+	// A list of your firewall rule groups.
+	//
+	// This might be a partial list of the rule groups that you have defined. For
+	// information, see MaxResults .
 	FirewallRuleGroups []types.FirewallRuleGroupMetadata
 
 	// If objects are still available for retrieval, Resolver returns this token in
@@ -71,6 +74,9 @@ type ListFirewallRuleGroupsOutput struct {
 }
 
 func (c *Client) addOperationListFirewallRuleGroupsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpListFirewallRuleGroups{}, middleware.After)
 	if err != nil {
 		return err
@@ -79,34 +85,38 @@ func (c *Client) addOperationListFirewallRuleGroupsMiddlewares(stack *middleware
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListFirewallRuleGroups"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -118,13 +128,19 @@ func (c *Client) addOperationListFirewallRuleGroupsMiddlewares(stack *middleware
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListFirewallRuleGroupsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListFirewallRuleGroups(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -136,19 +152,23 @@ func (c *Client) addOperationListFirewallRuleGroupsMiddlewares(stack *middleware
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// ListFirewallRuleGroupsAPIClient is a client that implements the
-// ListFirewallRuleGroups operation.
-type ListFirewallRuleGroupsAPIClient interface {
-	ListFirewallRuleGroups(context.Context, *ListFirewallRuleGroupsInput, ...func(*Options)) (*ListFirewallRuleGroupsOutput, error)
-}
-
-var _ ListFirewallRuleGroupsAPIClient = (*Client)(nil)
 
 // ListFirewallRuleGroupsPaginatorOptions is the paginator options for
 // ListFirewallRuleGroups
@@ -156,8 +176,10 @@ type ListFirewallRuleGroupsPaginatorOptions struct {
 	// The maximum number of objects that you want Resolver to return for this
 	// request. If more objects are available, in the response, Resolver provides a
 	// NextToken value that you can use in a subsequent call to get the next batch of
-	// objects. If you don't specify a value for MaxResults , Resolver returns up to
-	// 100 objects.
+	// objects.
+	//
+	// If you don't specify a value for MaxResults , Resolver returns up to 100
+	// objects.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token
@@ -218,6 +240,9 @@ func (p *ListFirewallRuleGroupsPaginator) NextPage(ctx context.Context, optFns .
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListFirewallRuleGroups(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -237,134 +262,18 @@ func (p *ListFirewallRuleGroupsPaginator) NextPage(ctx context.Context, optFns .
 	return result, nil
 }
 
+// ListFirewallRuleGroupsAPIClient is a client that implements the
+// ListFirewallRuleGroups operation.
+type ListFirewallRuleGroupsAPIClient interface {
+	ListFirewallRuleGroups(context.Context, *ListFirewallRuleGroupsInput, ...func(*Options)) (*ListFirewallRuleGroupsOutput, error)
+}
+
+var _ ListFirewallRuleGroupsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListFirewallRuleGroups(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "route53resolver",
 		OperationName: "ListFirewallRuleGroups",
 	}
-}
-
-type opListFirewallRuleGroupsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListFirewallRuleGroupsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListFirewallRuleGroupsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "route53resolver"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "route53resolver"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("route53resolver")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListFirewallRuleGroupsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListFirewallRuleGroupsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

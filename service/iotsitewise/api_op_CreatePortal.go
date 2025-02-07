@@ -4,24 +4,21 @@ package iotsitewise
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/iotsitewise/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Creates a portal, which can contain projects and dashboards. IoT SiteWise
 // Monitor uses IAM Identity Center or IAM to authenticate portal users and manage
-// user permissions. Before you can sign in to a new portal, you must add at least
-// one identity to that portal. For more information, see Adding or removing
-// portal administrators (https://docs.aws.amazon.com/iot-sitewise/latest/userguide/administer-portals.html#portal-change-admins)
-// in the IoT SiteWise User Guide.
+// user permissions.
+//
+// Before you can sign in to a new portal, you must add at least one identity to
+// that portal. For more information, see [Adding or removing portal administrators]in the IoT SiteWise User Guide.
+//
+// [Adding or removing portal administrators]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/administer-portals.html#portal-change-admins
 func (c *Client) CreatePortal(ctx context.Context, params *CreatePortalInput, optFns ...func(*Options)) (*CreatePortalOutput, error) {
 	if params == nil {
 		params = &CreatePortalInput{}
@@ -49,11 +46,12 @@ type CreatePortalInput struct {
 	// This member is required.
 	PortalName *string
 
-	// The ARN (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
-	// of a service role that allows the portal's users to access your IoT SiteWise
-	// resources on your behalf. For more information, see Using service roles for IoT
-	// SiteWise Monitor (https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html)
-	// in the IoT SiteWise User Guide.
+	// The [ARN] of a service role that allows the portal's users to access your IoT
+	// SiteWise resources on your behalf. For more information, see [Using service roles for IoT SiteWise Monitor]in the IoT
+	// SiteWise User Guide.
+	//
+	// [Using service roles for IoT SiteWise Monitor]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-service-role.html
+	// [ARN]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 	//
 	// This member is required.
 	RoleArn *string
@@ -61,8 +59,9 @@ type CreatePortalInput struct {
 	// Contains the configuration information of an alarm created in an IoT SiteWise
 	// Monitor portal. You can use the alarm to monitor an asset property and get
 	// notified when the asset property value is outside a specified range. For more
-	// information, see Monitoring with alarms (https://docs.aws.amazon.com/iot-sitewise/latest/appguide/monitor-alarms.html)
-	// in the IoT SiteWise Application Guide.
+	// information, see [Monitoring with alarms]in the IoT SiteWise Application Guide.
+	//
+	// [Monitoring with alarms]: https://docs.aws.amazon.com/iot-sitewise/latest/appguide/monitor-alarms.html
 	Alarms *types.Alarms
 
 	// A unique case-sensitive identifier that you can provide to ensure the
@@ -70,23 +69,31 @@ type CreatePortalInput struct {
 	// request is required.
 	ClientToken *string
 
-	// The email address that sends alarm notifications. If you use the IoT Events
-	// managed Lambda function (https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html)
-	// to manage your emails, you must verify the sender email address in Amazon SES (https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html)
-	// .
+	// The email address that sends alarm notifications.
+	//
+	// If you use the [IoT Events managed Lambda function] to manage your emails, you must [verify the sender email address in Amazon SES].
+	//
+	// [IoT Events managed Lambda function]: https://docs.aws.amazon.com/iotevents/latest/developerguide/lambda-support.html
+	// [verify the sender email address in Amazon SES]: https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-email-addresses.html
 	NotificationSenderEmail *string
 
 	// The service to use to authenticate users to the portal. Choose from the
 	// following options:
-	//   - SSO – The portal uses IAM Identity Center (successor to Single Sign-On) to
-	//   authenticate users and manage user permissions. Before you can create a portal
-	//   that uses IAM Identity Center, you must enable IAM Identity Center. For more
-	//   information, see Enabling IAM Identity Center (https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-get-started.html#mon-gs-sso)
-	//   in the IoT SiteWise User Guide. This option is only available in Amazon Web
-	//   Services Regions other than the China Regions.
+	//
+	//   - SSO – The portal uses IAM Identity Center to authenticate users and manage
+	//   user permissions. Before you can create a portal that uses IAM Identity Center,
+	//   you must enable IAM Identity Center. For more information, see [Enabling IAM Identity Center]in the IoT
+	//   SiteWise User Guide. This option is only available in Amazon Web Services
+	//   Regions other than the China Regions.
+	//
 	//   - IAM – The portal uses Identity and Access Management to authenticate users
 	//   and manage user permissions.
-	// You can't change this value after you create a portal. Default: SSO
+	//
+	// You can't change this value after you create a portal.
+	//
+	// Default: SSO
+	//
+	// [Enabling IAM Identity Center]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/monitor-get-started.html#mon-gs-sso
 	PortalAuthMode types.AuthMode
 
 	// A description for the portal.
@@ -96,9 +103,20 @@ type CreatePortalInput struct {
 	// The image is displayed on a dark background.
 	PortalLogoImageFile *types.ImageFile
 
+	// Define the type of portal. The value for IoT SiteWise Monitor (Classic) is
+	// SITEWISE_PORTAL_V1 . The value for IoT SiteWise Monitor (AI-aware) is
+	// SITEWISE_PORTAL_V2 .
+	PortalType types.PortalType
+
+	// The configuration entry associated with the specific portal type. The value for
+	// IoT SiteWise Monitor (Classic) is SITEWISE_PORTAL_V1 . The value for IoT
+	// SiteWise Monitor (AI-aware) is SITEWISE_PORTAL_V2 .
+	PortalTypeConfiguration map[string]types.PortalTypeEntry
+
 	// A list of key-value pairs that contain metadata for the portal. For more
-	// information, see Tagging your IoT SiteWise resources (https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html)
-	// in the IoT SiteWise User Guide.
+	// information, see [Tagging your IoT SiteWise resources]in the IoT SiteWise User Guide.
+	//
+	// [Tagging your IoT SiteWise resources]: https://docs.aws.amazon.com/iot-sitewise/latest/userguide/tag-resources.html
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -106,9 +124,11 @@ type CreatePortalInput struct {
 
 type CreatePortalOutput struct {
 
-	// The ARN (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
-	// of the portal, which has the following format.
-	// arn:${Partition}:iotsitewise:${Region}:${Account}:portal/${PortalId}
+	// The [ARN] of the portal, which has the following format.
+	//
+	//     arn:${Partition}:iotsitewise:${Region}:${Account}:portal/${PortalId}
+	//
+	// [ARN]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 	//
 	// This member is required.
 	PortalArn *string
@@ -145,6 +165,9 @@ type CreatePortalOutput struct {
 }
 
 func (c *Client) addOperationCreatePortalMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreatePortal{}, middleware.After)
 	if err != nil {
 		return err
@@ -153,34 +176,38 @@ func (c *Client) addOperationCreatePortalMiddlewares(stack *middleware.Stack, op
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreatePortal"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -192,10 +219,16 @@ func (c *Client) addOperationCreatePortalMiddlewares(stack *middleware.Stack, op
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addEndpointPrefix_opCreatePortalMiddleware(stack); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreatePortalResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addEndpointPrefix_opCreatePortalMiddleware(stack); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreatePortalMiddleware(stack, options); err != nil {
@@ -207,7 +240,7 @@ func (c *Client) addOperationCreatePortalMiddlewares(stack *middleware.Stack, op
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreatePortal(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -219,7 +252,19 @@ func (c *Client) addOperationCreatePortalMiddlewares(stack *middleware.Stack, op
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -232,11 +277,11 @@ func (*endpointPrefix_opCreatePortalMiddleware) ID() string {
 	return "EndpointHostPrefix"
 }
 
-func (m *endpointPrefix_opCreatePortalMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+func (m *endpointPrefix_opCreatePortalMiddleware) HandleFinalize(ctx context.Context, in middleware.FinalizeInput, next middleware.FinalizeHandler) (
+	out middleware.FinalizeOutput, metadata middleware.Metadata, err error,
 ) {
 	if smithyhttp.GetHostnameImmutable(ctx) || smithyhttp.IsEndpointHostPrefixDisabled(ctx) {
-		return next.HandleSerialize(ctx, in)
+		return next.HandleFinalize(ctx, in)
 	}
 
 	req, ok := in.Request.(*smithyhttp.Request)
@@ -246,10 +291,10 @@ func (m *endpointPrefix_opCreatePortalMiddleware) HandleSerialize(ctx context.Co
 
 	req.URL.Host = "monitor." + req.URL.Host
 
-	return next.HandleSerialize(ctx, in)
+	return next.HandleFinalize(ctx, in)
 }
 func addEndpointPrefix_opCreatePortalMiddleware(stack *middleware.Stack) error {
-	return stack.Serialize.Insert(&endpointPrefix_opCreatePortalMiddleware{}, `OperationSerializer`, middleware.After)
+	return stack.Finalize.Insert(&endpointPrefix_opCreatePortalMiddleware{}, "ResolveEndpointV2", middleware.After)
 }
 
 type idempotencyToken_initializeOpCreatePortal struct {
@@ -289,130 +334,6 @@ func newServiceMetadataMiddleware_opCreatePortal(region string) *awsmiddleware.R
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "iotsitewise",
 		OperationName: "CreatePortal",
 	}
-}
-
-type opCreatePortalResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreatePortalResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreatePortalResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "iotsitewise"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "iotsitewise"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("iotsitewise")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreatePortalResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreatePortalResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

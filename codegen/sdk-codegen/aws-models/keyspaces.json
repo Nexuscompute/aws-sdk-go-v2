@@ -15,7 +15,10 @@
             "type": "structure",
             "members": {
                 "message": {
-                    "target": "smithy.api#String"
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Description of the error.</p>"
+                    }
                 }
             },
             "traits": {
@@ -23,9 +26,82 @@
                     "code": "AccessDeniedException",
                     "httpResponseCode": 403
                 },
-                "smithy.api#documentation": "<p>You do not have sufficient access to perform this action. </p>",
+                "smithy.api#documentation": "<p>You don't have sufficient access permissions to perform this action. </p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 403
+            }
+        },
+        "com.amazonaws.keyspaces#AutoScalingPolicy": {
+            "type": "structure",
+            "members": {
+                "targetTrackingScalingPolicyConfiguration": {
+                    "target": "com.amazonaws.keyspaces#TargetTrackingScalingPolicyConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Auto scaling scales up capacity automatically when traffic exceeds this target utilization rate, and then back down \n         when it falls below the target. A <code>double</code> between 20 and 90.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Amazon Keyspaces supports the <code>target tracking</code> auto scaling policy. With this policy, Amazon Keyspaces auto scaling\n         ensures that the table's ratio of consumed to provisioned capacity stays at or near the target value that you specify. You \n         define the target value as a percentage between 20 and 90.</p>"
+            }
+        },
+        "com.amazonaws.keyspaces#AutoScalingSettings": {
+            "type": "structure",
+            "members": {
+                "autoScalingDisabled": {
+                    "target": "com.amazonaws.keyspaces#BooleanObject",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>This optional parameter enables auto scaling for the table if set to <code>false</code>.</p>"
+                    }
+                },
+                "minimumUnits": {
+                    "target": "com.amazonaws.keyspaces#CapacityUnits",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The minimum level of throughput the table should always be ready to support. The value must be between 1 \n         and the max throughput per second quota for your account (40,000 by default).</p>"
+                    }
+                },
+                "maximumUnits": {
+                    "target": "com.amazonaws.keyspaces#CapacityUnits",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Manage costs by specifying the maximum amount of throughput to provision. The value must be between 1 \n         and the max throughput per second quota for your account (40,000 by default).</p>"
+                    }
+                },
+                "scalingPolicy": {
+                    "target": "com.amazonaws.keyspaces#AutoScalingPolicy",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Amazon Keyspaces supports the <code>target tracking</code> auto scaling policy. With this policy, Amazon Keyspaces auto scaling\n      ensures that the table's ratio of consumed to provisioned capacity stays at or near the target value that you specify. You \n      define the target value as a percentage between 20 and 90.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The optional auto scaling settings for a table with provisioned throughput capacity.</p>\n         <p>To turn on auto scaling for a table in <code>throughputMode:PROVISIONED</code>, \n         you must specify the following parameters. </p>\n         <p>Configure the minimum and maximum capacity units. The auto scaling policy ensures that\n         capacity never goes below the minimum or above the maximum range.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>minimumUnits</code>: The minimum level of throughput the table should always be ready to support. The value must be between 1 \n            and the max throughput per second quota for your account (40,000 by default).</p>\n            </li>\n            <li>\n               <p>\n                  <code>maximumUnits</code>: The maximum level of throughput the table should always be ready to\n               support. The value must be between 1 and the max throughput per second quota for your\n               account (40,000 by default).</p>\n            </li>\n            <li>\n               <p>\n                  <code>scalingPolicy</code>: Amazon Keyspaces supports the <code>target tracking</code> scaling policy. \n           The auto scaling target is the provisioned capacity of the table. \n               </p>\n               <ul>\n                  <li>\n                     <p>\n                        <code>targetTrackingScalingPolicyConfiguration</code>: To define the target tracking policy, you must define the target value.\n               </p>\n                     <ul>\n                        <li>\n                           <p>\n                              <code>targetValue</code>: The target utilization rate of the table. Amazon Keyspaces auto scaling ensures that the ratio of\n                        consumed capacity to provisioned capacity stays at or near this value. You\n                        define <code>targetValue</code> as a percentage. A <code>double</code> between 20 and 90. (Required)</p>\n                        </li>\n                        <li>\n                           <p>\n                              <code>disableScaleIn</code>: A <code>boolean</code> that specifies if <code>scale-in</code> is\n                           disabled or enabled for the table. This parameter is disabled by default.\n                           To turn on <code>scale-in</code>, set the <code>boolean</code> value to\n                              <code>FALSE</code>. This means that capacity for a table can be\n                           automatically scaled down on your behalf. (Optional) </p>\n                        </li>\n                        <li>\n                           <p>\n                              <code>scaleInCooldown</code>: A cooldown period in seconds between scaling activities that lets the table stabilize \n                        before another scale in activity starts. If no value is provided, the default is 0. (Optional) </p>\n                        </li>\n                        <li>\n                           <p>\n                              <code>scaleOutCooldown</code>: A cooldown period in seconds between scaling activities that lets the table stabilize \n                        before another scale out activity starts. If no value is provided, the default is 0. (Optional) </p>\n                        </li>\n                     </ul>\n                  </li>\n               </ul>\n            </li>\n         </ul>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/autoscaling.html\">Managing throughput capacity automatically with Amazon Keyspaces auto scaling</a> in the <i>Amazon Keyspaces Developer\n            Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.keyspaces#AutoScalingSpecification": {
+            "type": "structure",
+            "members": {
+                "writeCapacityAutoScaling": {
+                    "target": "com.amazonaws.keyspaces#AutoScalingSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The auto scaling settings for the table's write capacity.</p>"
+                    }
+                },
+                "readCapacityAutoScaling": {
+                    "target": "com.amazonaws.keyspaces#AutoScalingSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The auto scaling settings for the table's read capacity.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The optional auto scaling capacity settings for a table in provisioned capacity mode.</p>"
+            }
+        },
+        "com.amazonaws.keyspaces#BooleanObject": {
+            "type": "boolean",
+            "traits": {
+                "smithy.api#default": false
             }
         },
         "com.amazonaws.keyspaces#CapacitySpecification": {
@@ -202,7 +278,10 @@
             "type": "structure",
             "members": {
                 "message": {
-                    "target": "smithy.api#String"
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Description of the error.</p>"
+                    }
                 }
             },
             "traits": {
@@ -210,7 +289,7 @@
                     "code": "ConflictException",
                     "httpResponseCode": 409
                 },
-                "smithy.api#documentation": "<p>Amazon Keyspaces could not complete the requested action. This error may occur if you try to \n         perform an action and the same or a different action is already\n         in progress, or if you try to create a resource that already exists. </p>",
+                "smithy.api#documentation": "<p>Amazon Keyspaces couldn't complete the requested action. This error may occur if you try to \n         perform an action and the same or a different action is already\n         in progress, or if you try to create a resource that already exists. </p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 409
             }
@@ -241,7 +320,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>The <code>CreateKeyspace</code> operation adds a new keyspace to your account. In an Amazon Web Services account, keyspace names\n      must be unique within each Region.</p>\n         <p>\n            <code>CreateKeyspace</code> is an asynchronous operation. You can monitor the creation status of the new keyspace \n          by using the <code>GetKeyspace</code> operation.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/working-with-keyspaces.html#keyspaces-create\">Creating keyspaces</a> in the <i>Amazon Keyspaces Developer\n             Guide</i>.</p>"
+                "smithy.api#documentation": "<p>The <code>CreateKeyspace</code> operation adds a new keyspace to your account. In an Amazon Web Services account, keyspace names\n      must be unique within each Region.</p>\n         <p>\n            <code>CreateKeyspace</code> is an asynchronous operation. You can monitor the creation status of the new keyspace \n          by using the <code>GetKeyspace</code> operation.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/getting-started.keyspaces.html\">Create a keyspace</a> in the <i>Amazon Keyspaces Developer\n             Guide</i>.</p>"
             }
         },
         "com.amazonaws.keyspaces#CreateKeyspaceRequest": {
@@ -309,7 +388,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>The <code>CreateTable</code> operation adds a new table to the specified keyspace. Within a keyspace, table names\n         must be unique.</p>\n         <p>\n            <code>CreateTable</code> is an asynchronous operation. When the request is received, the status of the table is set to <code>CREATING</code>.\n         You can monitor the creation status of the new table by using the <code>GetTable</code> \n         operation, which returns the current <code>status</code> of the table. You can start using a table when the status is <code>ACTIVE</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/working-with-tables.html#tables-create\">Creating tables</a> in the <i>Amazon Keyspaces Developer\n            Guide</i>.</p>"
+                "smithy.api#documentation": "<p>The <code>CreateTable</code> operation adds a new table to the specified keyspace. Within a keyspace, table names\n         must be unique.</p>\n         <p>\n            <code>CreateTable</code> is an asynchronous operation. When the request is received, the status of the table is set to <code>CREATING</code>.\n         You can monitor the creation status of the new table by using the <code>GetTable</code> \n         operation, which returns the current <code>status</code> of the table. You can start using a table when the status is <code>ACTIVE</code>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/getting-started.tables.html\">Create a table</a> in the <i>Amazon Keyspaces Developer\n            Guide</i>.</p>"
             }
         },
         "com.amazonaws.keyspaces#CreateTableRequest": {
@@ -383,6 +462,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>\n         Enables client-side timestamps for the table. By default, the setting is disabled. You can enable \n            client-side timestamps with the following option:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>status: \"enabled\"</code>\n               </p>\n            </li>\n         </ul>\n         <p>Once client-side timestamps are enabled for a table, this setting cannot be disabled.</p>"
                     }
+                },
+                "autoScalingSpecification": {
+                    "target": "com.amazonaws.keyspaces#AutoScalingSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The optional auto scaling settings for a table in provisioned capacity mode. Specifies if the service can manage throughput capacity \n         automatically on your behalf.</p>\n         <p>Auto scaling helps you provision throughput capacity for variable workloads efficiently by increasing and decreasing \n         your table's read and write capacity automatically in response to application traffic. For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/autoscaling.html\">Managing throughput capacity automatically with Amazon Keyspaces auto scaling</a> in the <i>Amazon Keyspaces Developer\n               Guide</i>.</p>\n         <p>By default, auto scaling is disabled for a table. </p>"
+                    }
+                },
+                "replicaSpecifications": {
+                    "target": "com.amazonaws.keyspaces#ReplicaSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The optional Amazon Web Services Region specific settings of a multi-Region table.\n         These settings overwrite the general settings of the table for the specified Region. </p>\n         <p>For a multi-Region table in provisioned capacity mode, you can configure the table's read capacity differently for each Region's replica. The write capacity, however, \n         remains synchronized between all replicas to ensure that there's enough capacity to replicate writes across all Regions. To define the read capacity for a table \n         replica in a specific Region, you can do so by configuring the following parameters.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>region</code>: The Region where these settings are applied. (Required)</p>\n            </li>\n            <li>\n               <p>\n                  <code>readCapacityUnits</code>: The provisioned read capacity units. (Optional)</p>\n            </li>\n            <li>\n               <p>\n                  <code>readCapacityAutoScaling</code>: The read capacity auto scaling settings for the table. (Optional) </p>\n            </li>\n         </ul>"
+                    }
                 }
             }
         },
@@ -398,11 +489,94 @@
                 }
             }
         },
+        "com.amazonaws.keyspaces#CreateType": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.keyspaces#CreateTypeRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.keyspaces#CreateTypeResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.keyspaces#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>\n         The <code>CreateType</code> operation creates a new user-defined type in the specified keyspace.\n      </p>\n         <p>To configure the required permissions, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/configure-udt-permissions.html#udt-permissions-create\">Permissions to create a UDT</a>\n         in the <i>Amazon Keyspaces Developer Guide</i>.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/udts.html\">User-defined types (UDTs)</a> in the <i>Amazon Keyspaces Developer\n            Guide</i>. </p>"
+            }
+        },
+        "com.amazonaws.keyspaces#CreateTypeRequest": {
+            "type": "structure",
+            "members": {
+                "keyspaceName": {
+                    "target": "com.amazonaws.keyspaces#KeyspaceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The name of the keyspace.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "typeName": {
+                    "target": "com.amazonaws.keyspaces#TypeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The name of the user-defined type.\n      </p>\n         <p>UDT names must contain 48 characters or less, must begin with an alphabetic character, and \n         can only contain alpha-numeric characters and underscores. Amazon Keyspaces converts upper case characters automatically\n         into lower case characters. </p>\n         <p>Alternatively, you can declare a UDT name in double quotes. When declaring a UDT name inside double quotes,\n         Amazon Keyspaces preserves upper casing and allows special characters.</p>\n         <p>You can also use double quotes as part of the \n         name when you create the UDT, but you must escape each double quote character with an additional \n         double quote character.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "fieldDefinitions": {
+                    "target": "com.amazonaws.keyspaces#FieldList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The field definitions, consisting of names and types, that define this type. \n      </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.keyspaces#CreateTypeResponse": {
+            "type": "structure",
+            "members": {
+                "keyspaceArn": {
+                    "target": "com.amazonaws.keyspaces#ARN",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The unique identifier of the keyspace that contains the new type in the format of an Amazon Resource Name (ARN). \n      </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "typeName": {
+                    "target": "com.amazonaws.keyspaces#TypeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The formatted name of the user-defined type that was created. Note that Amazon Keyspaces requires the formatted name of the type for\n         other operations, for example <code>GetType</code>.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.keyspaces#DefaultTimeToLive": {
             "type": "integer",
             "traits": {
                 "smithy.api#range": {
-                    "min": 1,
+                    "min": 0,
                     "max": 630720000
                 }
             }
@@ -510,6 +684,94 @@
             "type": "structure",
             "members": {}
         },
+        "com.amazonaws.keyspaces#DeleteType": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.keyspaces#DeleteTypeRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.keyspaces#DeleteTypeResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.keyspaces#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>\n         The <code>DeleteType</code> operation deletes a user-defined type (UDT). You can only delete a type that is not used in a table\n         or another UDT.\n      </p>\n         <p>To configure the required permissions, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/configure-udt-permissions.html#udt-permissions-drop\">Permissions to delete a UDT</a>\n         in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.keyspaces#DeleteTypeRequest": {
+            "type": "structure",
+            "members": {
+                "keyspaceName": {
+                    "target": "com.amazonaws.keyspaces#KeyspaceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The name of the keyspace of the to be deleted type.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "typeName": {
+                    "target": "com.amazonaws.keyspaces#TypeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The name of the type to be deleted.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.keyspaces#DeleteTypeResponse": {
+            "type": "structure",
+            "members": {
+                "keyspaceArn": {
+                    "target": "com.amazonaws.keyspaces#ARN",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The unique identifier of the keyspace from which the type was deleted in the format of an Amazon Resource Name (ARN).\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "typeName": {
+                    "target": "com.amazonaws.keyspaces#TypeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The name of the type that was deleted.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.keyspaces#Depth": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#default": 0
+            }
+        },
+        "com.amazonaws.keyspaces#DoubleObject": {
+            "type": "double",
+            "traits": {
+                "smithy.api#default": 0
+            }
+        },
         "com.amazonaws.keyspaces#EncryptionSpecification": {
             "type": "structure",
             "members": {
@@ -546,6 +808,43 @@
                 ]
             }
         },
+        "com.amazonaws.keyspaces#FieldDefinition": {
+            "type": "structure",
+            "members": {
+                "name": {
+                    "target": "com.amazonaws.keyspaces#GenericString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The identifier.\n      </p>",
+                        "smithy.api#length": {
+                            "min": 1,
+                            "max": 128
+                        },
+                        "smithy.api#required": {}
+                    }
+                },
+                "type": {
+                    "target": "com.amazonaws.keyspaces#GenericString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         Any supported Cassandra data type, including collections and other user-defined types that are \n         contained in the same keyspace.\n      </p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/cassandra-apis.html#cassandra-data-type\">Cassandra data type support</a> in the <i>Amazon Keyspaces Developer\n            Guide</i>.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\n         A field definition consists out of a name and a type.\n      </p>"
+            }
+        },
+        "com.amazonaws.keyspaces#FieldList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.keyspaces#FieldDefinition"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1
+                }
+            }
+        },
         "com.amazonaws.keyspaces#GenericString": {
             "type": "string"
         },
@@ -575,7 +874,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Returns the name and the Amazon Resource Name (ARN) of the specified table.</p>"
+                "smithy.api#documentation": "<p>Returns the name of the specified keyspace, the Amazon Resource Name (ARN), the replication strategy, the Amazon Web Services Regions of \n         a multi-Region keyspace, and the status of newly added Regions after an <code>UpdateKeyspace</code> operation.</p>"
             }
         },
         "com.amazonaws.keyspaces#GetKeyspaceRequest": {
@@ -619,6 +918,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>\n         If the <code>replicationStrategy</code> of the keyspace is <code>MULTI_REGION</code>, a list of replication Regions is returned. \n      </p>"
                     }
+                },
+                "replicationGroupStatuses": {
+                    "target": "com.amazonaws.keyspaces#ReplicationGroupStatusList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         A list of all Regions the keyspace is replicated in after the update keyspace operation and their status.\n      </p>"
+                    }
                 }
             }
         },
@@ -648,7 +953,99 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Returns information about the table, including the table's name and current status, the keyspace name, \n         configuration settings, and metadata.</p>\n         <p>To read table metadata using <code>GetTable</code>, <code>Select</code> action \n         permissions for the table and system tables are required to complete the operation.</p>"
+                "smithy.api#documentation": "<p>Returns information about the table, including the table's name and current status, the keyspace name, \n         configuration settings, and metadata.</p>\n         <p>To read table metadata using <code>GetTable</code>, the \n            IAM principal needs <code>Select</code> action \n         permissions for the table and the system keyspace.</p>"
+            }
+        },
+        "com.amazonaws.keyspaces#GetTableAutoScalingSettings": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.keyspaces#GetTableAutoScalingSettingsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.keyspaces#GetTableAutoScalingSettingsResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.keyspaces#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Returns auto scaling related settings of the specified table in JSON format. If the table is a multi-Region table, the \n         Amazon Web Services Region specific auto scaling settings of the table are included.</p>\n         <p>Amazon Keyspaces auto scaling helps you provision throughput capacity for variable workloads efficiently by increasing and decreasing \n         your table's read and write capacity automatically in response to application traffic. For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/autoscaling.html\">Managing throughput capacity automatically with Amazon Keyspaces auto scaling</a> in the <i>Amazon Keyspaces Developer\n            Guide</i>.</p>\n         <important>\n            <p>\n               <code>GetTableAutoScalingSettings</code> can't be used as an action in an IAM policy.</p>\n         </important>\n         <p>To define permissions for <code>GetTableAutoScalingSettings</code>, you must allow the following two actions in the IAM policy statement's \n         <code>Action</code> element:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>application-autoscaling:DescribeScalableTargets</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>application-autoscaling:DescribeScalingPolicies</code>\n               </p>\n            </li>\n         </ul>"
+            }
+        },
+        "com.amazonaws.keyspaces#GetTableAutoScalingSettingsRequest": {
+            "type": "structure",
+            "members": {
+                "keyspaceName": {
+                    "target": "com.amazonaws.keyspaces#KeyspaceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the keyspace.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "tableName": {
+                    "target": "com.amazonaws.keyspaces#TableName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the table.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.keyspaces#GetTableAutoScalingSettingsResponse": {
+            "type": "structure",
+            "members": {
+                "keyspaceName": {
+                    "target": "com.amazonaws.keyspaces#KeyspaceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the keyspace.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "tableName": {
+                    "target": "com.amazonaws.keyspaces#TableName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the table.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "resourceArn": {
+                    "target": "com.amazonaws.keyspaces#ARN",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name (ARN) of the table.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "autoScalingSpecification": {
+                    "target": "com.amazonaws.keyspaces#AutoScalingSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The auto scaling settings of the table.</p>"
+                    }
+                },
+                "replicaSpecifications": {
+                    "target": "com.amazonaws.keyspaces#ReplicaAutoScalingSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Region specific settings of a multi-Region table. Returns the settings for all Regions the table is replicated in.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.keyspaces#GetTableRequest": {
@@ -753,14 +1150,146 @@
                     "traits": {
                         "smithy.api#documentation": "<p>\n         The client-side timestamps setting of the table.</p>"
                     }
+                },
+                "replicaSpecifications": {
+                    "target": "com.amazonaws.keyspaces#ReplicaSpecificationSummaryList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Returns the Amazon Web Services Region specific settings of all Regions a multi-Region table is replicated in.</p>"
+                    }
                 }
+            }
+        },
+        "com.amazonaws.keyspaces#GetType": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.keyspaces#GetTypeRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.keyspaces#GetTypeResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.keyspaces#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>\n         The <code>GetType</code> operation returns information about the type, for example the field definitions, the timestamp when the type\n         was last modified, the level of nesting, the status, and details about if the type is used in other types and tables.\n      </p>\n         <p>To read keyspace metadata using <code>GetType</code>, the \n         IAM principal needs <code>Select</code> action \n         permissions for the system keyspace. To configure the required permissions, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/configure-udt-permissions.html#udt-permissions-view\">Permissions to view a UDT</a>\n            in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.keyspaces#GetTypeRequest": {
+            "type": "structure",
+            "members": {
+                "keyspaceName": {
+                    "target": "com.amazonaws.keyspaces#KeyspaceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The name of the keyspace that contains this type.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "typeName": {
+                    "target": "com.amazonaws.keyspaces#TypeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The formatted name of the type. For example, if the name of the type was created\n         without double quotes, Amazon Keyspaces saved the name in lower-case characters. If the name was\n         created in double quotes, you must use double quotes to specify the type name. </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.keyspaces#GetTypeResponse": {
+            "type": "structure",
+            "members": {
+                "keyspaceName": {
+                    "target": "com.amazonaws.keyspaces#KeyspaceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The name of the keyspace that contains this type.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "typeName": {
+                    "target": "com.amazonaws.keyspaces#TypeName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The name of the type.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "fieldDefinitions": {
+                    "target": "com.amazonaws.keyspaces#FieldList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The names and types that define this type.\n      </p>"
+                    }
+                },
+                "lastModifiedTimestamp": {
+                    "target": "com.amazonaws.keyspaces#Timestamp",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The timestamp that shows when this type was last modified.\n      </p>"
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.keyspaces#TypeStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The status of this type.\n      </p>"
+                    }
+                },
+                "directReferringTables": {
+                    "target": "com.amazonaws.keyspaces#TableNameList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The tables that use this type.\n      </p>"
+                    }
+                },
+                "directParentTypes": {
+                    "target": "com.amazonaws.keyspaces#TypeNameList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The types that use this type.\n      </p>"
+                    }
+                },
+                "maxNestingDepth": {
+                    "target": "com.amazonaws.keyspaces#Depth",
+                    "traits": {
+                        "smithy.api#default": 0,
+                        "smithy.api#documentation": "<p>\n         The level of nesting implemented for this type.\n      </p>"
+                    }
+                },
+                "keyspaceArn": {
+                    "target": "com.amazonaws.keyspaces#ARN",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The unique identifier of the keyspace that contains this type in the format of an Amazon Resource Name (ARN).\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.keyspaces#IntegerObject": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#default": 0
             }
         },
         "com.amazonaws.keyspaces#InternalServerException": {
             "type": "structure",
             "members": {
                 "message": {
-                    "target": "smithy.api#String"
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Description of the error.</p>"
+                    }
                 }
             },
             "traits": {
@@ -781,6 +1310,29 @@
                     "max": 48
                 },
                 "smithy.api#pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{0,47}$"
+            }
+        },
+        "com.amazonaws.keyspaces#KeyspaceStatus": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "ACTIVE",
+                        "name": "ACTIVE"
+                    },
+                    {
+                        "value": "CREATING",
+                        "name": "CREATING"
+                    },
+                    {
+                        "value": "UPDATING",
+                        "name": "UPDATING"
+                    },
+                    {
+                        "value": "DELETING",
+                        "name": "DELETING"
+                    }
+                ]
             }
         },
         "com.amazonaws.keyspaces#KeyspaceSummary": {
@@ -835,16 +1387,28 @@
                     "target": "com.amazonaws.keyspaces#CreateTable"
                 },
                 {
+                    "target": "com.amazonaws.keyspaces#CreateType"
+                },
+                {
                     "target": "com.amazonaws.keyspaces#DeleteKeyspace"
                 },
                 {
                     "target": "com.amazonaws.keyspaces#DeleteTable"
                 },
                 {
+                    "target": "com.amazonaws.keyspaces#DeleteType"
+                },
+                {
                     "target": "com.amazonaws.keyspaces#GetKeyspace"
                 },
                 {
                     "target": "com.amazonaws.keyspaces#GetTable"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#GetTableAutoScalingSettings"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#GetType"
                 },
                 {
                     "target": "com.amazonaws.keyspaces#ListKeyspaces"
@@ -856,6 +1420,9 @@
                     "target": "com.amazonaws.keyspaces#ListTagsForResource"
                 },
                 {
+                    "target": "com.amazonaws.keyspaces#ListTypes"
+                },
+                {
                     "target": "com.amazonaws.keyspaces#RestoreTable"
                 },
                 {
@@ -863,6 +1430,9 @@
                 },
                 {
                     "target": "com.amazonaws.keyspaces#UntagResource"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#UpdateKeyspace"
                 },
                 {
                     "target": "com.amazonaws.keyspaces#UpdateTable"
@@ -924,7 +1494,6 @@
                                     ]
                                 }
                             ],
-                            "type": "tree",
                             "rules": [
                                 {
                                     "conditions": [
@@ -942,9 +1511,212 @@
                                     "type": "error"
                                 },
                                 {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                                    "type": "error"
+                                },
+                                {
                                     "conditions": [],
-                                    "type": "tree",
+                                    "endpoint": {
+                                        "url": {
+                                            "ref": "Endpoint"
+                                        },
+                                        "properties": {},
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "aws.partition",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                }
+                                            ],
+                                            "assign": "PartitionResult"
+                                        }
+                                    ],
                                     "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseDualStack"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                true,
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsFIPS"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                true,
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsDualStack"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://cassandra-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsFIPS"
+                                                                    ]
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "fn": "getAttr",
+                                                                            "argv": [
+                                                                                {
+                                                                                    "ref": "PartitionResult"
+                                                                                },
+                                                                                "name"
+                                                                            ]
+                                                                        },
+                                                                        "aws-us-gov"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://cassandra.{Region}.amazonaws.com",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://cassandra-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "FIPS is enabled but this partition does not support FIPS",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
                                         {
                                             "conditions": [
                                                 {
@@ -957,303 +1729,65 @@
                                                     ]
                                                 }
                                             ],
-                                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
-                                            "type": "error"
-                                        },
-                                        {
-                                            "conditions": [],
-                                            "endpoint": {
-                                                "url": {
-                                                    "ref": "Endpoint"
-                                                },
-                                                "properties": {},
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "isSet",
-                                            "argv": [
-                                                {
-                                                    "ref": "Region"
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "type": "tree",
-                                    "rules": [
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "aws.partition",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "Region"
-                                                        }
-                                                    ],
-                                                    "assign": "PartitionResult"
-                                                }
-                                            ],
-                                            "type": "tree",
                                             "rules": [
                                                 {
                                                     "conditions": [
                                                         {
                                                             "fn": "booleanEquals",
                                                             "argv": [
+                                                                true,
                                                                 {
-                                                                    "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        },
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
+                                                                    "fn": "getAttr",
                                                                     "argv": [
-                                                                        true,
                                                                         {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsFIPS"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsDualStack"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://cassandra-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsFIPS"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [
-                                                                                {
-                                                                                    "fn": "stringEquals",
-                                                                                    "argv": [
-                                                                                        "aws-us-gov",
-                                                                                        {
-                                                                                            "fn": "getAttr",
-                                                                                            "argv": [
-                                                                                                {
-                                                                                                    "ref": "PartitionResult"
-                                                                                                },
-                                                                                                "name"
-                                                                                            ]
-                                                                                        }
-                                                                                    ]
-                                                                                }
-                                                                            ],
-                                                                            "endpoint": {
-                                                                                "url": "https://cassandra.{Region}.amazonaws.com",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
+                                                                            "ref": "PartitionResult"
                                                                         },
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://cassandra-fips.{Region}.{PartitionResult#dnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
+                                                                        "supportsDualStack"
                                                                     ]
                                                                 }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "FIPS is enabled but this partition does not support FIPS",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
                                                             ]
                                                         }
                                                     ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsDualStack"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://cassandra.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "DualStack is enabled but this partition does not support DualStack",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [],
-                                                    "type": "tree",
                                                     "rules": [
                                                         {
                                                             "conditions": [],
                                                             "endpoint": {
-                                                                "url": "https://cassandra.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "url": "https://cassandra.{Region}.{PartitionResult#dualStackDnsSuffix}",
                                                                 "properties": {},
                                                                 "headers": {}
                                                             },
                                                             "type": "endpoint"
                                                         }
-                                                    ]
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "DualStack is enabled but this partition does not support DualStack",
+                                                    "type": "error"
                                                 }
-                                            ]
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://cassandra.{Region}.{PartitionResult#dnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
                                         }
-                                    ]
-                                },
-                                {
-                                    "conditions": [],
-                                    "error": "Invalid Configuration: Missing Region",
-                                    "type": "error"
+                                    ],
+                                    "type": "tree"
                                 }
-                            ]
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Missing Region",
+                            "type": "error"
                         }
                     ]
                 },
@@ -1859,7 +2393,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Returns a list of keyspaces.</p>",
+                "smithy.api#documentation": "<p>The <code>ListKeyspaces</code> operation returns a list of keyspaces.</p>",
                 "smithy.api#paginated": {
                     "inputToken": "nextToken",
                     "outputToken": "nextToken",
@@ -1929,7 +2463,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Returns a list of tables for a specified keyspace.</p>",
+                "smithy.api#documentation": "<p>The <code>ListTables</code> operation returns a list of tables for a specified keyspace.</p>\n         <p>To read keyspace metadata using <code>ListTables</code>, the \n         IAM principal needs <code>Select</code> action \n         permissions for the system keyspace.</p>",
                 "smithy.api#paginated": {
                     "inputToken": "nextToken",
                     "outputToken": "nextToken",
@@ -2005,7 +2539,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Returns a list of all tags associated with the specified Amazon Keyspaces resource.</p>",
+                "smithy.api#documentation": "<p>Returns a list of all tags associated with the specified Amazon Keyspaces resource.</p>\n         <p>To read keyspace metadata using <code>ListTagsForResource</code>, the \n         IAM principal needs <code>Select</code> action \n         permissions for the specified resource and the system keyspace.</p>",
                 "smithy.api#paginated": {
                     "inputToken": "nextToken",
                     "outputToken": "nextToken",
@@ -2053,6 +2587,89 @@
                         "smithy.api#documentation": "<p>A list of tags.</p>"
                     }
                 }
+            }
+        },
+        "com.amazonaws.keyspaces#ListTypes": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.keyspaces#ListTypesRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.keyspaces#ListTypesResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.keyspaces#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>\n         The <code>ListTypes</code> operation returns a list of types for a specified keyspace.\n      </p>\n         <p>To read keyspace metadata using <code>ListTypes</code>, the \n         IAM principal needs <code>Select</code> action \n         permissions for the system keyspace. To configure the required permissions, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/configure-udt-permissions.html#udt-permissions-view\">Permissions to view a UDT</a>\n         in the <i>Amazon Keyspaces Developer Guide</i>.</p>",
+                "smithy.api#paginated": {
+                    "inputToken": "nextToken",
+                    "outputToken": "nextToken",
+                    "pageSize": "maxResults",
+                    "items": "types"
+                }
+            }
+        },
+        "com.amazonaws.keyspaces#ListTypesRequest": {
+            "type": "structure",
+            "members": {
+                "nextToken": {
+                    "target": "com.amazonaws.keyspaces#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The pagination token. To resume pagination, provide the <code>NextToken</code> value as an argument of a subsequent API invocation.\n      </p>"
+                    }
+                },
+                "maxResults": {
+                    "target": "com.amazonaws.keyspaces#MaxResults",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The total number of types to return in the output. If the total number of types available is more than the value specified,\n         a <code>NextToken</code> is provided in the output. To resume pagination, provide the <code>NextToken</code> value as an \n         argument of a subsequent API invocation.\n      </p>"
+                    }
+                },
+                "keyspaceName": {
+                    "target": "com.amazonaws.keyspaces#KeyspaceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The name of the keyspace that contains the listed types.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.keyspaces#ListTypesResponse": {
+            "type": "structure",
+            "members": {
+                "nextToken": {
+                    "target": "com.amazonaws.keyspaces#NextToken",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The pagination token. To resume pagination, provide the <code>NextToken</code> value as an argument of a subsequent API invocation.\n      </p>"
+                    }
+                },
+                "types": {
+                    "target": "com.amazonaws.keyspaces#TypeNameList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The list of types contained in the specified keyspace.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.keyspaces#MaxResults": {
@@ -2162,6 +2779,149 @@
                 }
             }
         },
+        "com.amazonaws.keyspaces#ReplicaAutoScalingSpecification": {
+            "type": "structure",
+            "members": {
+                "region": {
+                    "target": "com.amazonaws.keyspaces#region",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Region.</p>"
+                    }
+                },
+                "autoScalingSpecification": {
+                    "target": "com.amazonaws.keyspaces#AutoScalingSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The auto scaling settings for a multi-Region table in the specified Amazon Web Services Region.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The auto scaling settings of a multi-Region table in the specified Amazon Web Services Region.</p>"
+            }
+        },
+        "com.amazonaws.keyspaces#ReplicaAutoScalingSpecificationList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.keyspaces#ReplicaAutoScalingSpecification"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0
+                }
+            }
+        },
+        "com.amazonaws.keyspaces#ReplicaSpecification": {
+            "type": "structure",
+            "members": {
+                "region": {
+                    "target": "com.amazonaws.keyspaces#region",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Region.</p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "readCapacityUnits": {
+                    "target": "com.amazonaws.keyspaces#CapacityUnits",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The provisioned read capacity units for the multi-Region table in the specified Amazon Web Services Region.</p>"
+                    }
+                },
+                "readCapacityAutoScaling": {
+                    "target": "com.amazonaws.keyspaces#AutoScalingSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The read capacity auto scaling settings for the multi-Region\n         table in the specified Amazon Web Services Region.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The Amazon Web Services Region specific settings of a multi-Region table.</p>\n         <p>For a multi-Region table, you can configure the table's read capacity differently per Amazon Web Services Region. You can do this by configuring the following parameters.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>region</code>: The Region where these settings are applied. (Required)</p>\n            </li>\n            <li>\n               <p>\n                  <code>readCapacityUnits</code>: The provisioned read capacity units. (Optional)</p>\n            </li>\n            <li>\n               <p>\n                  <code>readCapacityAutoScaling</code>: The read capacity auto scaling settings for the table. (Optional)</p>\n            </li>\n         </ul>"
+            }
+        },
+        "com.amazonaws.keyspaces#ReplicaSpecificationList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.keyspaces#ReplicaSpecification"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1
+                }
+            }
+        },
+        "com.amazonaws.keyspaces#ReplicaSpecificationSummary": {
+            "type": "structure",
+            "members": {
+                "region": {
+                    "target": "com.amazonaws.keyspaces#region",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Web Services Region.</p>"
+                    }
+                },
+                "status": {
+                    "target": "com.amazonaws.keyspaces#TableStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The status of the multi-Region table in the specified Amazon Web Services Region.</p>"
+                    }
+                },
+                "capacitySpecification": {
+                    "target": "com.amazonaws.keyspaces#CapacitySpecificationSummary"
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The Region-specific settings of a multi-Region table in the specified Amazon Web Services Region.</p>\n         <p>If the multi-Region table is using provisioned capacity and has optional auto scaling policies configured, note that\n      the Region specific summary returns both read and write capacity settings. But only Region specific read capacity settings can be configured for a \n      multi-Region table. In a multi-Region table, your write capacity units will be synced across all Amazon Web Services Regions to ensure that there is enough \n      capacity to replicate write events across Regions.</p>"
+            }
+        },
+        "com.amazonaws.keyspaces#ReplicaSpecificationSummaryList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.keyspaces#ReplicaSpecificationSummary"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0
+                }
+            }
+        },
+        "com.amazonaws.keyspaces#ReplicationGroupStatus": {
+            "type": "structure",
+            "members": {
+                "region": {
+                    "target": "com.amazonaws.keyspaces#region",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The name of the Region that was added to the keyspace.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "keyspaceStatus": {
+                    "target": "com.amazonaws.keyspaces#KeyspaceStatus",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The status of the keyspace.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "tablesReplicationProgress": {
+                    "target": "com.amazonaws.keyspaces#TablesReplicationProgress",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         This shows the replication progress of tables in the keyspace. The value is expressed as a percentage of the newly replicated tables \n         with status <code>Active</code> compared to the total number of tables in the keyspace. \n      </p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>\n         This shows the summary status of the keyspace after a new Amazon Web Services Region was added.\n      </p>"
+            }
+        },
+        "com.amazonaws.keyspaces#ReplicationGroupStatusList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.keyspaces#ReplicationGroupStatus"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 2,
+                    "max": 6
+                }
+            }
+        },
         "com.amazonaws.keyspaces#ReplicationSpecification": {
             "type": "structure",
             "members": {
@@ -2187,12 +2947,15 @@
             "type": "structure",
             "members": {
                 "message": {
-                    "target": "smithy.api#String"
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Description of the error.</p>"
+                    }
                 },
                 "resourceArn": {
                     "target": "com.amazonaws.keyspaces#ARN",
                     "traits": {
-                        "smithy.api#documentation": "<p>The unique identifier in the format of Amazon Resource Name (ARN), for the resource not found.</p>"
+                        "smithy.api#documentation": "<p>The unique identifier in the format of Amazon Resource Name (ARN) for the resource couldn’t be found.</p>"
                     }
                 }
             },
@@ -2201,7 +2964,7 @@
                     "code": "ResourceNotFoundException",
                     "httpResponseCode": 404
                 },
-                "smithy.api#documentation": "<p>The operation tried to access a keyspace or table that doesn't exist. The resource might not be specified correctly, or its status might not be <code>ACTIVE</code>.</p>",
+                "smithy.api#documentation": "<p>The operation tried to access a keyspace, table, or type that doesn't exist. The resource might not be specified correctly, \n         or its status might not be <code>ACTIVE</code>.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 404
             }
@@ -2235,7 +2998,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Restores the specified table to the specified point in time within the\n         <code>earliest_restorable_timestamp</code> and the current time. For more information about restore points, see \n         <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery_HowItWorks.html#howitworks_backup_window\">\n            Time window for PITR continuous backups</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>\n         <p>Any number of users can execute up to 4 concurrent restores (any type of restore) in a given account.</p>\n         <p>When you restore using point in time recovery,\n         Amazon Keyspaces restores your source table's schema and data to the state \n         based on the selected timestamp <code>(day:hour:minute:second)</code> to a new table. The Time to Live (TTL) settings\n      are also restored to the state based on the selected timestamp.</p>\n         <p>In addition to the table's schema, data, and TTL settings,\n         <code>RestoreTable</code> restores the capacity mode, encryption, and\n         point-in-time recovery settings from the source table. \n         Unlike the table's schema data and TTL settings, which are restored based on the selected timestamp, \n         these settings are always restored based on the table's settings as of the current time or when the table was deleted.</p>\n         <p>You can also overwrite\n            these settings during restore:</p>\n         <ul>\n            <li>\n               <p>Read/write capacity mode</p>\n            </li>\n            <li>\n               <p>Provisioned throughput capacity settings</p>\n            </li>\n            <li>\n               <p>Point-in-time (PITR) settings</p>\n            </li>\n            <li>\n               <p>Tags</p>\n            </li>\n         </ul>\n         <p>For more \n               information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery_HowItWorks.html#howitworks_backup_settings\">PITR restore settings</a> in the <i>Amazon Keyspaces Developer\n            Guide</i>.</p>\n         <p>Note that the following settings are not restored, and you must configure them manually for\n         the new table:</p>\n         <ul>\n            <li>\n               <p>Automatic scaling policies (for tables that use provisioned capacity\n            mode)</p>\n            </li>\n            <li>\n               <p>Identity and Access Management (IAM) policies</p>\n            </li>\n            <li>\n               <p>Amazon CloudWatch metrics and alarms</p>\n            </li>\n         </ul>"
+                "smithy.api#documentation": "<p>Restores the table to the specified point in time within the\n         <code>earliest_restorable_timestamp</code> and the current time. For more information about restore points, see \n         <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery_HowItWorks.html#howitworks_backup_window\">\n            Time window for PITR continuous backups</a> in the <i>Amazon Keyspaces Developer Guide</i>.</p>\n         <p>Any number of users can execute up to 4 concurrent restores (any type of restore) in a given account.</p>\n         <p>When you restore using point in time recovery,\n         Amazon Keyspaces restores your source table's schema and data to the state \n         based on the selected timestamp <code>(day:hour:minute:second)</code> to a new table. The Time to Live (TTL) settings\n      are also restored to the state based on the selected timestamp.</p>\n         <p>In addition to the table's schema, data, and TTL settings,\n         <code>RestoreTable</code> restores the capacity mode, auto scaling settings, encryption settings, and\n         point-in-time recovery settings from the source table. \n         Unlike the table's schema data and TTL settings, which are restored based on the selected timestamp, \n         these settings are always restored based on the table's settings as of the current time or when the table was deleted.</p>\n         <p>You can also overwrite\n            these settings during restore:</p>\n         <ul>\n            <li>\n               <p>Read/write capacity mode</p>\n            </li>\n            <li>\n               <p>Provisioned throughput capacity units</p>\n            </li>\n            <li>\n               <p>Auto scaling settings</p>\n            </li>\n            <li>\n               <p>Point-in-time (PITR) settings</p>\n            </li>\n            <li>\n               <p>Tags</p>\n            </li>\n         </ul>\n         <p>For more \n               information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/PointInTimeRecovery_HowItWorks.html#howitworks_backup_settings\">PITR restore settings</a> in the <i>Amazon Keyspaces Developer\n            Guide</i>.</p>\n         <p>Note that the following settings are not restored, and you must configure them manually for\n         the new table:</p>\n         <ul>\n            <li>\n               <p>Identity and Access Management (IAM) policies</p>\n            </li>\n            <li>\n               <p>Amazon CloudWatch metrics and alarms</p>\n            </li>\n         </ul>"
             }
         },
         "com.amazonaws.keyspaces#RestoreTableRequest": {
@@ -2298,6 +3061,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>A list of key-value pair tags to be\n         attached to the restored table. </p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/tagging-keyspaces.html\">Adding tags and labels to Amazon Keyspaces resources</a> in the <i>Amazon Keyspaces Developer\n            Guide</i>.</p>"
                     }
+                },
+                "autoScalingSpecification": {
+                    "target": "com.amazonaws.keyspaces#AutoScalingSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The optional auto scaling settings for the restored table in provisioned capacity mode. \n         Specifies if the service can manage throughput capacity of a provisioned table \n         automatically on your behalf.\n         Amazon Keyspaces auto scaling helps you provision throughput capacity for variable workloads efficiently by increasing and decreasing \n         your table's read and write capacity automatically in response to application traffic.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/autoscaling.html\">Managing throughput capacity automatically with Amazon Keyspaces auto scaling</a> in the <i>Amazon Keyspaces Developer\n            Guide</i>.</p>"
+                    }
+                },
+                "replicaSpecifications": {
+                    "target": "com.amazonaws.keyspaces#ReplicaSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The optional Region specific settings of a multi-Regional table.</p>"
+                    }
                 }
             }
         },
@@ -2351,7 +3126,10 @@
             "type": "structure",
             "members": {
                 "message": {
-                    "target": "smithy.api#String"
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Description of the error.</p>"
+                    }
                 }
             },
             "traits": {
@@ -2408,6 +3186,12 @@
                     "max": 48
                 },
                 "smithy.api#pattern": "^[a-zA-Z0-9][a-zA-Z0-9_]{0,47}$"
+            }
+        },
+        "com.amazonaws.keyspaces#TableNameList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.keyspaces#TableName"
             }
         },
         "com.amazonaws.keyspaces#TableStatus": {
@@ -2480,6 +3264,16 @@
                 "target": "com.amazonaws.keyspaces#TableSummary"
             }
         },
+        "com.amazonaws.keyspaces#TablesReplicationProgress": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 2,
+                    "max": 7
+                },
+                "smithy.api#pattern": "^[0-9]{1,3}(?:[.][0-9]{1,2})?%$"
+            }
+        },
         "com.amazonaws.keyspaces#Tag": {
             "type": "structure",
             "members": {
@@ -2536,6 +3330,9 @@
                     "target": "com.amazonaws.keyspaces#AccessDeniedException"
                 },
                 {
+                    "target": "com.amazonaws.keyspaces#ConflictException"
+                },
+                {
                     "target": "com.amazonaws.keyspaces#InternalServerException"
                 },
                 {
@@ -2584,6 +3381,43 @@
                 }
             }
         },
+        "com.amazonaws.keyspaces#TargetTrackingScalingPolicyConfiguration": {
+            "type": "structure",
+            "members": {
+                "disableScaleIn": {
+                    "target": "com.amazonaws.keyspaces#BooleanObject",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Specifies if <code>scale-in</code> is enabled.</p>\n         <p>When auto scaling automatically decreases capacity for a table, \n         the table <i>scales in</i>. When scaling policies are set, they can't\n         scale in the table lower than its minimum capacity.</p>"
+                    }
+                },
+                "scaleInCooldown": {
+                    "target": "com.amazonaws.keyspaces#IntegerObject",
+                    "traits": {
+                        "smithy.api#default": 0,
+                        "smithy.api#documentation": "<p>Specifies a <code>scale-in</code> cool down period.</p>\n         <p>A cooldown period in seconds between scaling activities that lets the table stabilize before another scaling activity starts. </p>"
+                    }
+                },
+                "scaleOutCooldown": {
+                    "target": "com.amazonaws.keyspaces#IntegerObject",
+                    "traits": {
+                        "smithy.api#default": 0,
+                        "smithy.api#documentation": "<p>Specifies a scale out cool down period.</p>\n         <p>A cooldown period in seconds between scaling activities that lets the table stabilize before another scaling activity starts. </p>"
+                    }
+                },
+                "targetValue": {
+                    "target": "com.amazonaws.keyspaces#DoubleObject",
+                    "traits": {
+                        "smithy.api#default": 0,
+                        "smithy.api#documentation": "<p>Specifies the target value for the target tracking auto scaling policy.</p>\n         <p>Amazon Keyspaces auto scaling scales up capacity automatically when traffic exceeds this target utilization \n         rate, and then back down when it falls below the target. This ensures that the ratio of\n         consumed capacity to provisioned capacity stays at or near this value. You\n         define <code>targetValue</code> as a percentage. A <code>double</code> between 20 and 90.</p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>The auto scaling policy that scales a table based on the ratio of consumed to provisioned capacity.</p>"
+            }
+        },
         "com.amazonaws.keyspaces#ThroughputMode": {
             "type": "string",
             "traits": {
@@ -2627,6 +3461,44 @@
         },
         "com.amazonaws.keyspaces#Timestamp": {
             "type": "timestamp"
+        },
+        "com.amazonaws.keyspaces#TypeName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 48
+                }
+            }
+        },
+        "com.amazonaws.keyspaces#TypeNameList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.keyspaces#TypeName"
+            }
+        },
+        "com.amazonaws.keyspaces#TypeStatus": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "ACTIVE",
+                        "name": "ACTIVE"
+                    },
+                    {
+                        "value": "CREATING",
+                        "name": "CREATING"
+                    },
+                    {
+                        "value": "DELETING",
+                        "name": "DELETING"
+                    },
+                    {
+                        "value": "RESTORING",
+                        "name": "RESTORING"
+                    }
+                ]
+            }
         },
         "com.amazonaws.keyspaces#UntagResource": {
             "type": "operation",
@@ -2683,6 +3555,77 @@
             "type": "structure",
             "members": {}
         },
+        "com.amazonaws.keyspaces#UpdateKeyspace": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.keyspaces#UpdateKeyspaceRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.keyspaces#UpdateKeyspaceResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.keyspaces#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ServiceQuotaExceededException"
+                },
+                {
+                    "target": "com.amazonaws.keyspaces#ValidationException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>\n         Adds a new Amazon Web Services Region to the keyspace.  You can add a new Region to a keyspace that is either a single or a multi-Region keyspace.\n         Amazon Keyspaces is going to replicate all tables in the keyspace to the new Region. To successfully replicate all tables to the new Region, they\n         must use client-side timestamps for conflict resolution. To enable client-side timestamps, specify <code>clientSideTimestamps.status = enabled</code>\n         when invoking the API. For more information about client-side timestamps, see\n         <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/client-side-timestamps.html\">Client-side timestamps in Amazon Keyspaces</a> in the <i>Amazon Keyspaces Developer\n               Guide</i>.</p>\n         <p>To add a Region to a keyspace using the <code>UpdateKeyspace</code> API, the IAM principal needs permissions for the following IAM actions:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>cassandra:Alter</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>cassandra:AlterMultiRegionResource</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>cassandra:Create</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>cassandra:CreateMultiRegionResource</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>cassandra:Select</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>cassandra:SelectMultiRegionResource</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>cassandra:Modify</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>cassandra:ModifyMultiRegionResource</code>\n               </p>\n            </li>\n         </ul>\n         <p>If the keyspace contains a table that is configured in provisioned mode with auto scaling enabled, \n         the following additional IAM actions need to be allowed.</p>\n         <ul>\n            <li>\n               <p>\n                  <code>application-autoscaling:RegisterScalableTarget</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>application-autoscaling:DeregisterScalableTarget</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>application-autoscaling:DescribeScalableTargets</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>application-autoscaling:PutScalingPolicy</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>application-autoscaling:DescribeScalingPolicies</code>\n               </p>\n            </li>\n         </ul>\n         <p>To use the <code>UpdateKeyspace</code> API, the IAM principal also needs permissions to\n        create a service-linked role with the following elements:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>iam:CreateServiceLinkedRole</code> - The <b>action</b> the principal can perform.</p>\n            </li>\n            <li>\n               <p>\n                  <code>arn:aws:iam::*:role/aws-service-role/replication.cassandra.amazonaws.com/AWSServiceRoleForKeyspacesReplication</code>\n               - The <b>resource</b> that the action can be\n               performed on. </p>\n            </li>\n            <li>\n               <p>\n                  <code>iam:AWSServiceName: replication.cassandra.amazonaws.com</code>\n               - The only Amazon Web Services service that this role can be attached to is Amazon Keyspaces.</p>\n            </li>\n         </ul>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/howitworks_replication_permissions_addReplica.html\">Configure the IAM permissions\n            required to add an Amazon Web Services Region to a keyspace</a>\n         in the <i>Amazon Keyspaces Developer Guide</i>.</p>"
+            }
+        },
+        "com.amazonaws.keyspaces#UpdateKeyspaceRequest": {
+            "type": "structure",
+            "members": {
+                "keyspaceName": {
+                    "target": "com.amazonaws.keyspaces#KeyspaceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The name of the keyspace.\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "replicationSpecification": {
+                    "target": "com.amazonaws.keyspaces#ReplicationSpecification",
+                    "traits": {
+                        "smithy.api#required": {}
+                    }
+                },
+                "clientSideTimestamps": {
+                    "target": "com.amazonaws.keyspaces#ClientSideTimestamps"
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.keyspaces#UpdateKeyspaceResponse": {
+            "type": "structure",
+            "members": {
+                "resourceArn": {
+                    "target": "com.amazonaws.keyspaces#ARN",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n         The unique identifier of the keyspace in the format of an Amazon Resource Name (ARN).\n      </p>",
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
         "com.amazonaws.keyspaces#UpdateTable": {
             "type": "operation",
             "input": {
@@ -2712,7 +3655,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Adds new columns to the table or updates one of the table's settings, for example\n         capacity mode, encryption, point-in-time recovery, or ttl settings.\n      Note that you can only update one specific table setting per update operation.</p>"
+                "smithy.api#documentation": "<p>Adds new columns to the table or updates one of the table's settings, for example\n         capacity mode, auto scaling, encryption, point-in-time recovery, or ttl settings.\n      Note that you can only update one specific table setting per update operation.</p>"
             }
         },
         "com.amazonaws.keyspaces#UpdateTableRequest": {
@@ -2773,6 +3716,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>Enables client-side timestamps for the table. By default, the setting is disabled. You can enable \n            client-side timestamps with the following option:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>status: \"enabled\"</code>\n               </p>\n            </li>\n         </ul>\n         <p>Once client-side timestamps are enabled for a table, this setting cannot be disabled.</p>"
                     }
+                },
+                "autoScalingSpecification": {
+                    "target": "com.amazonaws.keyspaces#AutoScalingSpecification",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The optional auto scaling settings to update for a table in provisioned capacity mode. \n         Specifies if the service can manage throughput capacity of a provisioned table \n         automatically on your behalf.\n         Amazon Keyspaces auto scaling helps you provision throughput capacity for variable workloads efficiently by increasing and decreasing \n         your table's read and write capacity automatically in response to application traffic.</p>\n         <p>If auto scaling is already enabled for the table, you can use <code>UpdateTable</code> to update the minimum and maximum values or the \n      auto scaling policy settings independently.</p>\n         <p>For more information, see <a href=\"https://docs.aws.amazon.com/keyspaces/latest/devguide/autoscaling.html\">Managing throughput capacity automatically with Amazon Keyspaces auto scaling</a> in the <i>Amazon Keyspaces Developer\n            Guide</i>.</p>"
+                    }
+                },
+                "replicaSpecifications": {
+                    "target": "com.amazonaws.keyspaces#ReplicaSpecificationList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Region specific settings of a multi-Regional table.</p>"
+                    }
                 }
             }
         },
@@ -2792,7 +3747,10 @@
             "type": "structure",
             "members": {
                 "message": {
-                    "target": "smithy.api#String"
+                    "target": "smithy.api#String",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Description of the error.</p>"
+                    }
                 }
             },
             "traits": {

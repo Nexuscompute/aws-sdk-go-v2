@@ -9,6 +9,7 @@ import (
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
+	"github.com/aws/aws-sdk-go-v2/internal/awstesting"
 	"github.com/aws/aws-sdk-go-v2/internal/awstesting/unit"
 	"github.com/aws/aws-sdk-go-v2/internal/v4a"
 	"github.com/aws/aws-sdk-go-v2/service/s3"
@@ -52,6 +53,24 @@ func Test_UpdateEndpointBuild(t *testing.T) {
 					{"a.b.c", "key", "https://s3.mock-region.amazonaws.com/a.b.c/key?x-id=GetObject", ""},
 					{"a..bc", "key", "https://s3.mock-region.amazonaws.com/a..bc/key?x-id=GetObject", ""},
 					{"abc", "k:e,y", "https://abc.s3.mock-region.amazonaws.com/k%3Ae%2Cy?x-id=GetObject", ""},
+				},
+			},
+			"VirtualHostStyleBucketV1EndpointHTTPS": {
+				customEndpoint: &aws.Endpoint{
+					URL: "https://foo.bar",
+				},
+				tests: []s3BucketTest{
+					{"abc", "key", "https://abc.foo.bar/key?x-id=GetObject", ""},
+					{"a.b.c", "key", "https://foo.bar/a.b.c/key?x-id=GetObject", ""},
+				},
+			},
+			"VirtualHostStyleBucketV1EndpointHTTP": {
+				customEndpoint: &aws.Endpoint{
+					URL: "http://foo.bar",
+				},
+				tests: []s3BucketTest{
+					{"abc", "key", "http://abc.foo.bar/key?x-id=GetObject", ""},
+					{"a.b.c", "key", "http://a.b.c.foo.bar/key?x-id=GetObject", ""},
 				},
 			},
 			"Accelerate": {
@@ -134,9 +153,9 @@ func Test_UpdateEndpointBuild(t *testing.T) {
 				},
 				tests: []s3BucketTest{
 					{"abc", "key", "https://example.region.amazonaws.com/abc/key?x-id=GetObject", ""},
-					{"a$b$c", "key", "https://example.region.amazonaws.com/a%24b%24c/key?x-id=GetObject", ""},
-					{"a.b.c", "key", "https://example.region.amazonaws.com/a.b.c/key?x-id=GetObject", ""},
-					{"a..bc", "key", "https://example.region.amazonaws.com/a..bc/key?x-id=GetObject", ""},
+					{"a$b$c", "key", "", "cannot be used with"},
+					{"a.b.c", "key", "", "cannot be used with"},
+					{"a..bc", "key", "", "cannot be used with"},
 				},
 			},
 			"AccelerateNoSSLTests": {
@@ -148,8 +167,8 @@ func Test_UpdateEndpointBuild(t *testing.T) {
 				},
 				tests: []s3BucketTest{
 					{"abc", "key", "https://example.region.amazonaws.com/abc/key?x-id=GetObject", ""},
-					{"a.b.c", "key", "https://example.region.amazonaws.com/a.b.c/key?x-id=GetObject", ""},
-					{"a$b$c", "key", "https://example.region.amazonaws.com/a%24b%24c/key?x-id=GetObject", ""},
+					{"a.b.c", "key", "", "cannot be used with"},
+					{"a$b$c", "key", "", "cannot be used with"},
 				},
 			},
 		},
@@ -191,8 +210,7 @@ func Test_UpdateEndpointBuild(t *testing.T) {
 								func(options *s3.Options) {
 									options.APIOptions = append(options.APIOptions,
 										func(stack *middleware.Stack) error {
-											stack.Serialize.Insert(&fm,
-												"OperationSerializer", middleware.After)
+											stack.Finalize.Add(&fm, middleware.After)
 											return nil
 										})
 								},
@@ -378,25 +396,6 @@ func TestEndpointWithARN(t *testing.T) {
 			expectedSigningName:   "custom-sign-name",
 			expectedSigningRegion: "us-west-2",
 		},
-		"Outpost AccessPoint with no S3UseARNRegion flag set": {
-			bucket: "arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint",
-			options: s3.Options{
-				Region: "us-west-2",
-			},
-			expectedReqURL:        "https://myaccesspoint-123456789012.op-01234567890123456.s3-outposts.us-west-2.amazonaws.com/testkey?x-id=GetObject",
-			expectedSigningName:   "s3-outposts",
-			expectedSigningRegion: "us-west-2",
-		},
-		"Outpost AccessPoint Cross-Region Enabled": {
-			bucket: "arn:aws:s3-outposts:us-east-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint",
-			options: s3.Options{
-				Region:       "us-west-2",
-				UseARNRegion: true,
-			},
-			expectedReqURL:        "https://myaccesspoint-123456789012.op-01234567890123456.s3-outposts.us-east-1.amazonaws.com/testkey?x-id=GetObject",
-			expectedSigningName:   "s3-outposts",
-			expectedSigningRegion: "us-east-1",
-		},
 		"Outpost AccessPoint Cross-Region Disabled": {
 			bucket: "arn:aws:s3-outposts:us-east-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint",
 			options: s3.Options{
@@ -411,60 +410,6 @@ func TestEndpointWithARN(t *testing.T) {
 				UseARNRegion: true,
 			},
 			expectedErr: "Client was configured for partition `aws` but ARN (`arn:aws-cn:s3-outposts:cn-north-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint`) has `aws-cn`",
-		},
-		"Outpost AccessPoint cn partition": {
-			bucket: "arn:aws-cn:s3-outposts:cn-north-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint",
-			options: s3.Options{
-				Region: "cn-north-1",
-			},
-			expectedReqURL:        "https://myaccesspoint-123456789012.op-01234567890123456.s3-outposts.cn-north-1.amazonaws.com.cn/testkey?x-id=GetObject",
-			expectedSigningName:   "s3-outposts",
-			expectedSigningRegion: "cn-north-1",
-		},
-		"Outpost AccessPoint Custom Endpoint Source": {
-			bucket: "arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint",
-			options: s3.Options{
-				Region: "us-west-2",
-				EndpointResolver: EndpointResolverFunc(func(region string, options s3.EndpointResolverOptions) (aws.Endpoint, error) {
-					return aws.Endpoint{
-						URL:           "https://my-domain.com",
-						Source:        aws.EndpointSourceCustom,
-						SigningName:   "custom-sign-name",
-						SigningRegion: region,
-					}, nil
-				}),
-			},
-			expectedReqURL:        "https://myaccesspoint-123456789012.op-01234567890123456.my-domain.com/testkey?x-id=GetObject",
-			expectedSigningName:   "custom-sign-name",
-			expectedSigningRegion: "us-west-2",
-		},
-		"Outpost AccessPoint Custom Endpoint Source Immutable": {
-			bucket: "arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint",
-			options: s3.Options{
-				Region: "us-west-2",
-				EndpointResolver: EndpointResolverFunc(func(region string, options s3.EndpointResolverOptions) (aws.Endpoint, error) {
-					return aws.Endpoint{
-						URL:               "https://myaccesspoint-123456789012.op-01234567890123456.my-domain.com",
-						Source:            aws.EndpointSourceCustom,
-						SigningName:       "custom-sign-name",
-						SigningRegion:     region,
-						HostnameImmutable: true,
-					}, nil
-				}),
-			},
-			expectedReqURL:        "https://myaccesspoint-123456789012.op-01234567890123456.my-domain.com/testkey?x-id=GetObject",
-			expectedSigningName:   "custom-sign-name",
-			expectedSigningRegion: "us-west-2",
-		},
-		"Outpost AccessPoint us-gov region": {
-			bucket: "arn:aws-us-gov:s3-outposts:us-gov-east-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint",
-			options: s3.Options{
-				Region:       "us-gov-east-1",
-				UseARNRegion: true,
-			},
-			expectedReqURL:        "https://myaccesspoint-123456789012.op-01234567890123456.s3-outposts.us-gov-east-1.amazonaws.com/testkey?x-id=GetObject",
-			expectedSigningName:   "s3-outposts",
-			expectedSigningRegion: "us-gov-east-1",
 		},
 		"Outpost AccessPoint FIPS cross-region": {
 			bucket: "arn:aws-us-gov:s3-outposts:us-gov-east-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint",
@@ -887,26 +832,6 @@ func TestEndpointWithARN(t *testing.T) {
 			expectedSigningName:   "s3",
 			expectedSigningRegion: "us-east-1-fips",
 		},
-		"Invalid Outpost AccessPoint ARN with FIPS pseudo-region (prefix)": {
-			bucket: "arn:aws:s3-outposts:fips-us-east-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint",
-			options: s3.Options{
-				Region:       "us-west-2",
-				UseARNRegion: true,
-			},
-			expectedReqURL:        "https://myaccesspoint-123456789012.op-01234567890123456.s3-outposts.fips-us-east-1.amazonaws.com/testkey?x-id=GetObject",
-			expectedSigningName:   "s3-outposts",
-			expectedSigningRegion: "fips-us-east-1",
-		},
-		"Invalid Outpost AccessPoint ARN with FIPS pseudo-region (suffix)": {
-			bucket: "arn:aws:s3-outposts:us-east-1-fips:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint",
-			options: s3.Options{
-				Region:       "us-west-2",
-				UseARNRegion: true,
-			},
-			expectedReqURL:        "https://myaccesspoint-123456789012.op-01234567890123456.s3-outposts.us-east-1-fips.amazonaws.com/testkey?x-id=GetObject",
-			expectedSigningName:   "s3-outposts",
-			expectedSigningRegion: "us-east-1-fips",
-		},
 		"Invalid Object Lambda ARN with FIPS pseudo-region (prefix)": {
 			bucket: "arn:aws:s3-object-lambda:fips-us-east-1:123456789012:accesspoint/myap",
 			options: s3.Options{
@@ -1003,7 +928,7 @@ func TestVPC_CustomEndpoint(t *testing.T) {
 			operation: func(ctx context.Context, svc *s3.Client, fm *requestRetriever) (interface{}, error) {
 				return svc.ListBuckets(ctx, &s3.ListBucketsInput{}, addRequestRetriever(fm))
 			},
-			expectedReqURL:        "https://bucket.vpce-123-abc.s3.us-west-2.vpce.amazonaws.com/",
+			expectedReqURL:        "https://bucket.vpce-123-abc.s3.us-west-2.vpce.amazonaws.com/?x-id=ListBuckets",
 			expectedSigningName:   "s3",
 			expectedSigningRegion: "us-west-2",
 		},
@@ -1105,7 +1030,7 @@ func TestWriteGetObjectResponse_UpdateEndpoint(t *testing.T) {
 			options: s3.Options{
 				Region: "us-west-2",
 			},
-			expectedReqURL:        "https://test-route.s3-object-lambda.us-west-2.amazonaws.com/WriteGetObjectResponse?x-id=WriteGetObjectResponse",
+			expectedReqURL:        "https://test-route.s3-object-lambda.us-west-2.amazonaws.com/WriteGetObjectResponse",
 			expectedSigningRegion: "us-west-2",
 			expectedSigningName:   "s3-object-lambda",
 		},
@@ -1116,7 +1041,7 @@ func TestWriteGetObjectResponse_UpdateEndpoint(t *testing.T) {
 					UseFIPSEndpoint: aws.FIPSEndpointStateEnabled,
 				},
 			},
-			expectedReqURL:        "https://test-route.s3-object-lambda-fips.us-gov-west-1.amazonaws.com/WriteGetObjectResponse?x-id=WriteGetObjectResponse",
+			expectedReqURL:        "https://test-route.s3-object-lambda-fips.us-gov-west-1.amazonaws.com/WriteGetObjectResponse",
 			expectedSigningRegion: "us-gov-west-1",
 			expectedSigningName:   "s3-object-lambda",
 		},
@@ -1124,7 +1049,7 @@ func TestWriteGetObjectResponse_UpdateEndpoint(t *testing.T) {
 			options: s3.Options{
 				Region: "fips-us-gov-west-1",
 			},
-			expectedReqURL:        "https://test-route.s3-object-lambda-fips.us-gov-west-1.amazonaws.com/WriteGetObjectResponse?x-id=WriteGetObjectResponse",
+			expectedReqURL:        "https://test-route.s3-object-lambda-fips.us-gov-west-1.amazonaws.com/WriteGetObjectResponse",
 			expectedSigningRegion: "us-gov-west-1",
 			expectedSigningName:   "s3-object-lambda",
 		},
@@ -1153,7 +1078,7 @@ func TestWriteGetObjectResponse_UpdateEndpoint(t *testing.T) {
 					}, nil
 				}),
 			},
-			expectedReqURL:        "https://test-route.my-domain.com/WriteGetObjectResponse?x-id=WriteGetObjectResponse",
+			expectedReqURL:        "https://test-route.my-domain.com/WriteGetObjectResponse",
 			expectedSigningRegion: "us-west-2",
 			expectedSigningName:   "s3-object-lambda",
 		},
@@ -1169,7 +1094,7 @@ func TestWriteGetObjectResponse_UpdateEndpoint(t *testing.T) {
 					}, nil
 				}),
 			},
-			expectedReqURL:        "https://test-route.my-domain.com/WriteGetObjectResponse?x-id=WriteGetObjectResponse",
+			expectedReqURL:        "https://test-route.my-domain.com/WriteGetObjectResponse",
 			expectedSigningRegion: "us-west-2",
 			expectedSigningName:   "s3-object-lambda",
 		},
@@ -1537,25 +1462,24 @@ func runValidations(t *testing.T, c testCaseForEndpointCustomization, operation 
 	}
 
 	// build the captured request
-	req := serializedRequest.request.Build(ctx)
+	req := signedRequest.request.Build(ctx)
 	// verify the built request is as expected
 	if e, a := c.expectedReqURL, req.URL.String(); e != a {
 		t.Fatalf("expect url %s, got %s", e, a)
 	}
 
-	if e, a := c.expectedSigningRegion, serializedRequest.signingRegion; !strings.EqualFold(e, a) {
+	if e, a := c.expectedSigningRegion, signedRequest.signingRegion; !strings.EqualFold(e, a) {
 		t.Fatalf("expect signing region as %s, got %s", e, a)
 	}
 
-	if e, a := c.expectedSigningName, serializedRequest.signingName; !strings.EqualFold(e, a) {
+	if e, a := c.expectedSigningName, signedRequest.signingName; !strings.EqualFold(e, a) {
 		t.Fatalf("expect signing name as %s, got %s", e, a)
 	}
 
 	// fetch signed request
-	signedReq := signedRequest.request
 	// validate if expected headers are present in request
 	for key, ev := range c.expectedHeader {
-		av := signedReq.Header.Get(key)
+		av := req.Header.Get(key)
 		if len(av) == 0 {
 			t.Fatalf("expected header %v to be present in %v was not", key, req.Header)
 		}
@@ -1602,8 +1526,9 @@ func (rm *requestRetrieverMiddleware) HandleFinalize(
 	}
 	rm.request = req
 
-	rm.signingName = awsmiddleware.GetSigningName(ctx)
-	rm.signingRegion = awsmiddleware.GetSigningRegion(ctx)
+	signature := awstesting.ParseSigV4Signature(req.Header)
+	rm.signingName = signature.SigningName
+	rm.signingRegion = signature.SigningRegion
 
 	return next.HandleFinalize(ctx, in)
 }

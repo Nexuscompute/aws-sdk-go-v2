@@ -4,26 +4,22 @@ package rekognition
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/rekognition/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	"github.com/jmespath/go-jmespath"
 	"time"
 )
 
-// Lists and describes the versions of a model in an Amazon Rekognition Custom
-// Labels project. You can specify up to 10 model versions in ProjectVersionArns .
-// If you don't specify a value, descriptions for all model versions in the project
-// are returned. This operation requires permissions to perform the
+// Lists and describes the versions of an Amazon Rekognition project. You can
+// specify up to 10 model or adapter versions in ProjectVersionArns . If you don't
+// specify a value, descriptions for all model/adapter versions in the project are
+// returned.
+//
+// This operation requires permissions to perform the
 // rekognition:DescribeProjectVersions action.
 func (c *Client) DescribeProjectVersions(ctx context.Context, params *DescribeProjectVersionsInput, optFns ...func(*Options)) (*DescribeProjectVersionsOutput, error) {
 	if params == nil {
@@ -42,8 +38,8 @@ func (c *Client) DescribeProjectVersions(ctx context.Context, params *DescribePr
 
 type DescribeProjectVersionsInput struct {
 
-	// The Amazon Resource Name (ARN) of the project that contains the models you want
-	// to describe.
+	// The Amazon Resource Name (ARN) of the project that contains the model/adapter
+	// you want to describe.
 	//
 	// This member is required.
 	ProjectArn *string
@@ -54,15 +50,15 @@ type DescribeProjectVersionsInput struct {
 	MaxResults *int32
 
 	// If the previous response was incomplete (because there is more results to
-	// retrieve), Amazon Rekognition Custom Labels returns a pagination token in the
-	// response. You can use this pagination token to retrieve the next set of results.
+	// retrieve), Amazon Rekognition returns a pagination token in the response. You
+	// can use this pagination token to retrieve the next set of results.
 	NextToken *string
 
-	// A list of model version names that you want to describe. You can add up to 10
-	// model version names to the list. If you don't specify a value, all model
-	// descriptions are returned. A version name is part of a model (ProjectVersion)
-	// ARN. For example, my-model.2020-01-21T09.10.15 is the version name in the
-	// following ARN.
+	// A list of model or project version names that you want to describe. You can add
+	// up to 10 model or project version names to the list. If you don't specify a
+	// value, all project version descriptions are returned. A version name is part of
+	// a project version ARN. For example, my-model.2020-01-21T09.10.15 is the version
+	// name in the following ARN.
 	// arn:aws:rekognition:us-east-1:123456789012:project/getting-started/version/my-model.2020-01-21T09.10.15/1234567890123
 	// .
 	VersionNames []string
@@ -73,12 +69,12 @@ type DescribeProjectVersionsInput struct {
 type DescribeProjectVersionsOutput struct {
 
 	// If the previous response was incomplete (because there is more results to
-	// retrieve), Amazon Rekognition Custom Labels returns a pagination token in the
-	// response. You can use this pagination token to retrieve the next set of results.
+	// retrieve), Amazon Rekognition returns a pagination token in the response. You
+	// can use this pagination token to retrieve the next set of results.
 	NextToken *string
 
-	// A list of model descriptions. The list is sorted by the creation date and time
-	// of the model versions, latest to earliest.
+	// A list of project version descriptions. The list is sorted by the creation date
+	// and time of the project versions, latest to earliest.
 	ProjectVersionDescriptions []types.ProjectVersionDescription
 
 	// Metadata pertaining to the operation's result.
@@ -88,6 +84,9 @@ type DescribeProjectVersionsOutput struct {
 }
 
 func (c *Client) addOperationDescribeProjectVersionsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpDescribeProjectVersions{}, middleware.After)
 	if err != nil {
 		return err
@@ -96,34 +95,38 @@ func (c *Client) addOperationDescribeProjectVersionsMiddlewares(stack *middlewar
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeProjectVersions"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -135,7 +138,13 @@ func (c *Client) addOperationDescribeProjectVersionsMiddlewares(stack *middlewar
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeProjectVersionsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeProjectVersionsValidationMiddleware(stack); err != nil {
@@ -144,7 +153,7 @@ func (c *Client) addOperationDescribeProjectVersionsMiddlewares(stack *middlewar
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeProjectVersions(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -156,104 +165,22 @@ func (c *Client) addOperationDescribeProjectVersionsMiddlewares(stack *middlewar
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
-}
-
-// DescribeProjectVersionsAPIClient is a client that implements the
-// DescribeProjectVersions operation.
-type DescribeProjectVersionsAPIClient interface {
-	DescribeProjectVersions(context.Context, *DescribeProjectVersionsInput, ...func(*Options)) (*DescribeProjectVersionsOutput, error)
-}
-
-var _ DescribeProjectVersionsAPIClient = (*Client)(nil)
-
-// DescribeProjectVersionsPaginatorOptions is the paginator options for
-// DescribeProjectVersions
-type DescribeProjectVersionsPaginatorOptions struct {
-	// The maximum number of results to return per paginated call. The largest value
-	// you can specify is 100. If you specify a value greater than 100, a
-	// ValidationException error occurs. The default value is 100.
-	Limit int32
-
-	// Set to true if pagination should stop if the service returns a pagination token
-	// that matches the most recent token provided to the service.
-	StopOnDuplicateToken bool
-}
-
-// DescribeProjectVersionsPaginator is a paginator for DescribeProjectVersions
-type DescribeProjectVersionsPaginator struct {
-	options   DescribeProjectVersionsPaginatorOptions
-	client    DescribeProjectVersionsAPIClient
-	params    *DescribeProjectVersionsInput
-	nextToken *string
-	firstPage bool
-}
-
-// NewDescribeProjectVersionsPaginator returns a new
-// DescribeProjectVersionsPaginator
-func NewDescribeProjectVersionsPaginator(client DescribeProjectVersionsAPIClient, params *DescribeProjectVersionsInput, optFns ...func(*DescribeProjectVersionsPaginatorOptions)) *DescribeProjectVersionsPaginator {
-	if params == nil {
-		params = &DescribeProjectVersionsInput{}
-	}
-
-	options := DescribeProjectVersionsPaginatorOptions{}
-	if params.MaxResults != nil {
-		options.Limit = *params.MaxResults
-	}
-
-	for _, fn := range optFns {
-		fn(&options)
-	}
-
-	return &DescribeProjectVersionsPaginator{
-		options:   options,
-		client:    client,
-		params:    params,
-		firstPage: true,
-		nextToken: params.NextToken,
-	}
-}
-
-// HasMorePages returns a boolean indicating whether more pages are available
-func (p *DescribeProjectVersionsPaginator) HasMorePages() bool {
-	return p.firstPage || (p.nextToken != nil && len(*p.nextToken) != 0)
-}
-
-// NextPage retrieves the next DescribeProjectVersions page.
-func (p *DescribeProjectVersionsPaginator) NextPage(ctx context.Context, optFns ...func(*Options)) (*DescribeProjectVersionsOutput, error) {
-	if !p.HasMorePages() {
-		return nil, fmt.Errorf("no more pages available")
-	}
-
-	params := *p.params
-	params.NextToken = p.nextToken
-
-	var limit *int32
-	if p.options.Limit > 0 {
-		limit = &p.options.Limit
-	}
-	params.MaxResults = limit
-
-	result, err := p.client.DescribeProjectVersions(ctx, &params, optFns...)
-	if err != nil {
-		return nil, err
-	}
-	p.firstPage = false
-
-	prevToken := p.nextToken
-	p.nextToken = result.NextToken
-
-	if p.options.StopOnDuplicateToken &&
-		prevToken != nil &&
-		p.nextToken != nil &&
-		*prevToken == *p.nextToken {
-		p.nextToken = nil
-	}
-
-	return result, nil
 }
 
 // ProjectVersionRunningWaiterOptions are waiter options for
@@ -263,7 +190,16 @@ type ProjectVersionRunningWaiterOptions struct {
 	// Set of options to modify how an operation is invoked. These apply to all
 	// operations invoked for this client. Use functional options on operation call to
 	// modify this list for per operation behavior.
+	//
+	// Passing options here is functionally equivalent to passing values to this
+	// config's ClientOptions field that extend the inner client's APIOptions directly.
 	APIOptions []func(*middleware.Stack) error
+
+	// Functional options to be passed to all operations invoked by this client.
+	//
+	// Function values that modify the inner APIOptions are applied after the waiter
+	// config's own APIOptions modifiers.
+	ClientOptions []func(*Options)
 
 	// MinDelay is the minimum amount of time to delay between retries. If unset,
 	// ProjectVersionRunningWaiter will use default minimum delay of 30 seconds. Note
@@ -281,12 +217,13 @@ type ProjectVersionRunningWaiterOptions struct {
 
 	// Retryable is function that can be used to override the service defined
 	// waiter-behavior based on operation output, or returned error. This function is
-	// used by the waiter to decide if a state is retryable or a terminal state. By
-	// default service-modeled logic will populate this option. This option can thus be
-	// used to define a custom waiter state with fall-back to service-modeled waiter
-	// state mutators.The function returns an error in case of a failure state. In case
-	// of retry state, this function returns a bool value of true and nil error, while
-	// in case of success it returns a bool value of false and nil error.
+	// used by the waiter to decide if a state is retryable or a terminal state.
+	//
+	// By default service-modeled logic will populate this option. This option can
+	// thus be used to define a custom waiter state with fall-back to service-modeled
+	// waiter state mutators.The function returns an error in case of a failure state.
+	// In case of retry state, this function returns a bool value of true and nil
+	// error, while in case of success it returns a bool value of false and nil error.
 	Retryable func(context.Context, *DescribeProjectVersionsInput, *DescribeProjectVersionsOutput, error) (bool, error)
 }
 
@@ -363,7 +300,16 @@ func (w *ProjectVersionRunningWaiter) WaitForOutput(ctx context.Context, params 
 		}
 
 		out, err := w.client.DescribeProjectVersions(ctx, params, func(o *Options) {
+			baseOpts := []func(*Options){
+				addIsWaiterUserAgent,
+			}
 			o.APIOptions = append(o.APIOptions, apiOptions...)
+			for _, opt := range baseOpts {
+				opt(o)
+			}
+			for _, opt := range options.ClientOptions {
+				opt(o)
+			}
 		})
 
 		retryable, err := options.Retryable(ctx, params, out, err)
@@ -399,29 +345,18 @@ func (w *ProjectVersionRunningWaiter) WaitForOutput(ctx context.Context, params 
 func projectVersionRunningStateRetryable(ctx context.Context, input *DescribeProjectVersionsInput, output *DescribeProjectVersionsOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("ProjectVersionDescriptions[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.ProjectVersionDescriptions
+		var v2 []types.ProjectVersionStatus
+		for _, v := range v1 {
+			v3 := v.Status
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "RUNNING"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.ProjectVersionStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.ProjectVersionStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -431,29 +366,29 @@ func projectVersionRunningStateRetryable(ctx context.Context, input *DescribePro
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("ProjectVersionDescriptions[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.ProjectVersionDescriptions
+		var v2 []types.ProjectVersionStatus
+		for _, v := range v1 {
+			v3 := v.Status
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.ProjectVersionStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.ProjectVersionStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
 
@@ -464,7 +399,16 @@ type ProjectVersionTrainingCompletedWaiterOptions struct {
 	// Set of options to modify how an operation is invoked. These apply to all
 	// operations invoked for this client. Use functional options on operation call to
 	// modify this list for per operation behavior.
+	//
+	// Passing options here is functionally equivalent to passing values to this
+	// config's ClientOptions field that extend the inner client's APIOptions directly.
 	APIOptions []func(*middleware.Stack) error
+
+	// Functional options to be passed to all operations invoked by this client.
+	//
+	// Function values that modify the inner APIOptions are applied after the waiter
+	// config's own APIOptions modifiers.
+	ClientOptions []func(*Options)
 
 	// MinDelay is the minimum amount of time to delay between retries. If unset,
 	// ProjectVersionTrainingCompletedWaiter will use default minimum delay of 120
@@ -483,12 +427,13 @@ type ProjectVersionTrainingCompletedWaiterOptions struct {
 
 	// Retryable is function that can be used to override the service defined
 	// waiter-behavior based on operation output, or returned error. This function is
-	// used by the waiter to decide if a state is retryable or a terminal state. By
-	// default service-modeled logic will populate this option. This option can thus be
-	// used to define a custom waiter state with fall-back to service-modeled waiter
-	// state mutators.The function returns an error in case of a failure state. In case
-	// of retry state, this function returns a bool value of true and nil error, while
-	// in case of success it returns a bool value of false and nil error.
+	// used by the waiter to decide if a state is retryable or a terminal state.
+	//
+	// By default service-modeled logic will populate this option. This option can
+	// thus be used to define a custom waiter state with fall-back to service-modeled
+	// waiter state mutators.The function returns an error in case of a failure state.
+	// In case of retry state, this function returns a bool value of true and nil
+	// error, while in case of success it returns a bool value of false and nil error.
 	Retryable func(context.Context, *DescribeProjectVersionsInput, *DescribeProjectVersionsOutput, error) (bool, error)
 }
 
@@ -567,7 +512,16 @@ func (w *ProjectVersionTrainingCompletedWaiter) WaitForOutput(ctx context.Contex
 		}
 
 		out, err := w.client.DescribeProjectVersions(ctx, params, func(o *Options) {
+			baseOpts := []func(*Options){
+				addIsWaiterUserAgent,
+			}
 			o.APIOptions = append(o.APIOptions, apiOptions...)
+			for _, opt := range baseOpts {
+				opt(o)
+			}
+			for _, opt := range options.ClientOptions {
+				opt(o)
+			}
 		})
 
 		retryable, err := options.Retryable(ctx, params, out, err)
@@ -603,29 +557,18 @@ func (w *ProjectVersionTrainingCompletedWaiter) WaitForOutput(ctx context.Contex
 func projectVersionTrainingCompletedStateRetryable(ctx context.Context, input *DescribeProjectVersionsInput, output *DescribeProjectVersionsOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("ProjectVersionDescriptions[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.ProjectVersionDescriptions
+		var v2 []types.ProjectVersionStatus
+		for _, v := range v1 {
+			v3 := v.Status
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "TRAINING_COMPLETED"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(types.ProjectVersionStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.ProjectVersionStatus value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -635,160 +578,133 @@ func projectVersionTrainingCompletedStateRetryable(ctx context.Context, input *D
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("ProjectVersionDescriptions[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.ProjectVersionDescriptions
+		var v2 []types.ProjectVersionStatus
+		for _, v := range v1 {
+			v3 := v.Status
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "TRAINING_FAILED"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(types.ProjectVersionStatus)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected types.ProjectVersionStatus value, got %T", pathValue)
-			}
-
-			if string(value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
+
+// DescribeProjectVersionsPaginatorOptions is the paginator options for
+// DescribeProjectVersions
+type DescribeProjectVersionsPaginatorOptions struct {
+	// The maximum number of results to return per paginated call. The largest value
+	// you can specify is 100. If you specify a value greater than 100, a
+	// ValidationException error occurs. The default value is 100.
+	Limit int32
+
+	// Set to true if pagination should stop if the service returns a pagination token
+	// that matches the most recent token provided to the service.
+	StopOnDuplicateToken bool
+}
+
+// DescribeProjectVersionsPaginator is a paginator for DescribeProjectVersions
+type DescribeProjectVersionsPaginator struct {
+	options   DescribeProjectVersionsPaginatorOptions
+	client    DescribeProjectVersionsAPIClient
+	params    *DescribeProjectVersionsInput
+	nextToken *string
+	firstPage bool
+}
+
+// NewDescribeProjectVersionsPaginator returns a new
+// DescribeProjectVersionsPaginator
+func NewDescribeProjectVersionsPaginator(client DescribeProjectVersionsAPIClient, params *DescribeProjectVersionsInput, optFns ...func(*DescribeProjectVersionsPaginatorOptions)) *DescribeProjectVersionsPaginator {
+	if params == nil {
+		params = &DescribeProjectVersionsInput{}
+	}
+
+	options := DescribeProjectVersionsPaginatorOptions{}
+	if params.MaxResults != nil {
+		options.Limit = *params.MaxResults
+	}
+
+	for _, fn := range optFns {
+		fn(&options)
+	}
+
+	return &DescribeProjectVersionsPaginator{
+		options:   options,
+		client:    client,
+		params:    params,
+		firstPage: true,
+		nextToken: params.NextToken,
+	}
+}
+
+// HasMorePages returns a boolean indicating whether more pages are available
+func (p *DescribeProjectVersionsPaginator) HasMorePages() bool {
+	return p.firstPage || (p.nextToken != nil && len(*p.nextToken) != 0)
+}
+
+// NextPage retrieves the next DescribeProjectVersions page.
+func (p *DescribeProjectVersionsPaginator) NextPage(ctx context.Context, optFns ...func(*Options)) (*DescribeProjectVersionsOutput, error) {
+	if !p.HasMorePages() {
+		return nil, fmt.Errorf("no more pages available")
+	}
+
+	params := *p.params
+	params.NextToken = p.nextToken
+
+	var limit *int32
+	if p.options.Limit > 0 {
+		limit = &p.options.Limit
+	}
+	params.MaxResults = limit
+
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
+	result, err := p.client.DescribeProjectVersions(ctx, &params, optFns...)
+	if err != nil {
+		return nil, err
+	}
+	p.firstPage = false
+
+	prevToken := p.nextToken
+	p.nextToken = result.NextToken
+
+	if p.options.StopOnDuplicateToken &&
+		prevToken != nil &&
+		p.nextToken != nil &&
+		*prevToken == *p.nextToken {
+		p.nextToken = nil
+	}
+
+	return result, nil
+}
+
+// DescribeProjectVersionsAPIClient is a client that implements the
+// DescribeProjectVersions operation.
+type DescribeProjectVersionsAPIClient interface {
+	DescribeProjectVersions(context.Context, *DescribeProjectVersionsInput, ...func(*Options)) (*DescribeProjectVersionsOutput, error)
+}
+
+var _ DescribeProjectVersionsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opDescribeProjectVersions(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "rekognition",
 		OperationName: "DescribeProjectVersions",
 	}
-}
-
-type opDescribeProjectVersionsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeProjectVersionsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeProjectVersionsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "rekognition"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "rekognition"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("rekognition")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeProjectVersionsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeProjectVersionsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

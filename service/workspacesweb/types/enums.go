@@ -11,8 +11,9 @@ const (
 )
 
 // Values returns all known values for AuthenticationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AuthenticationType) Values() []AuthenticationType {
 	return []AuthenticationType{
 		"Standard",
@@ -28,8 +29,9 @@ const (
 )
 
 // Values returns all known values for BrowserType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BrowserType) Values() []BrowserType {
 	return []BrowserType{
 		"Chrome",
@@ -45,8 +47,9 @@ const (
 )
 
 // Values returns all known values for EnabledType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EnabledType) Values() []EnabledType {
 	return []EnabledType{
 		"Disabled",
@@ -67,8 +70,9 @@ const (
 )
 
 // Values returns all known values for IdentityProviderType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (IdentityProviderType) Values() []IdentityProviderType {
 	return []IdentityProviderType{
 		"SAML",
@@ -77,6 +81,27 @@ func (IdentityProviderType) Values() []IdentityProviderType {
 		"LoginWithAmazon",
 		"SignInWithApple",
 		"OIDC",
+	}
+}
+
+type InstanceType string
+
+// Enum values for InstanceType
+const (
+	InstanceTypeStandardRegular InstanceType = "standard.regular"
+	InstanceTypeStandardLarge   InstanceType = "standard.large"
+	InstanceTypeStandardXlarge  InstanceType = "standard.xlarge"
+)
+
+// Values returns all known values for InstanceType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InstanceType) Values() []InstanceType {
+	return []InstanceType{
+		"standard.regular",
+		"standard.large",
+		"standard.xlarge",
 	}
 }
 
@@ -90,13 +115,31 @@ const (
 )
 
 // Values returns all known values for PortalStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PortalStatus) Values() []PortalStatus {
 	return []PortalStatus{
 		"Incomplete",
 		"Pending",
 		"Active",
+	}
+}
+
+type RedactionPlaceHolderType string
+
+// Enum values for RedactionPlaceHolderType
+const (
+	RedactionPlaceHolderTypeCustomText RedactionPlaceHolderType = "CustomText"
+)
+
+// Values returns all known values for RedactionPlaceHolderType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RedactionPlaceHolderType) Values() []RedactionPlaceHolderType {
+	return []RedactionPlaceHolderType{
+		"CustomText",
 	}
 }
 
@@ -108,11 +151,50 @@ const (
 )
 
 // Values returns all known values for RendererType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RendererType) Values() []RendererType {
 	return []RendererType{
 		"AppStream",
+	}
+}
+
+type SessionSortBy string
+
+// Enum values for SessionSortBy
+const (
+	SessionSortByStartTimeAscending  SessionSortBy = "StartTimeAscending"
+	SessionSortByStartTimeDescending SessionSortBy = "StartTimeDescending"
+)
+
+// Values returns all known values for SessionSortBy. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SessionSortBy) Values() []SessionSortBy {
+	return []SessionSortBy{
+		"StartTimeAscending",
+		"StartTimeDescending",
+	}
+}
+
+type SessionStatus string
+
+// Enum values for SessionStatus
+const (
+	SessionStatusActive     SessionStatus = "Active"
+	SessionStatusTerminated SessionStatus = "Terminated"
+)
+
+// Values returns all known values for SessionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SessionStatus) Values() []SessionStatus {
+	return []SessionStatus{
+		"Active",
+		"Terminated",
 	}
 }
 
@@ -128,6 +210,7 @@ const (
 
 // Values returns all known values for ValidationExceptionReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 	return []ValidationExceptionReason{

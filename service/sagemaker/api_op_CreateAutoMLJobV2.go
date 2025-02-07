@@ -4,33 +4,58 @@ package sagemaker
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/sagemaker/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Creates an Autopilot job also referred to as Autopilot experiment or AutoML job
-// V2. CreateAutoMLJobV2 (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html)
-// and DescribeAutoMLJobV2 (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJobV2.html)
-// are new versions of CreateAutoMLJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html)
-// and DescribeAutoMLJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJob.html)
-// which offer backward compatibility. CreateAutoMLJobV2 can manage tabular
-// problem types identical to those of its previous version CreateAutoMLJob , as
-// well as non-tabular problem types such as image or text classification. Find
-// guidelines about how to migrate a CreateAutoMLJob to CreateAutoMLJobV2 in
-// Migrate a CreateAutoMLJob to CreateAutoMLJobV2 (https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development-create-experiment-api.html#autopilot-create-experiment-api-migrate-v1-v2)
-// . For the list of available problem types supported by CreateAutoMLJobV2 , see
-// AutoMLProblemTypeConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLProblemTypeConfig.html)
-// . You can find the best-performing model after you run an AutoML job V2 by
-// calling DescribeAutoMLJobV2 (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJobV2.html)
-// .
+// V2.
+//
+// An AutoML job in SageMaker AI is a fully automated process that allows you to
+// build machine learning models with minimal effort and machine learning
+// expertise. When initiating an AutoML job, you provide your data and optionally
+// specify parameters tailored to your use case. SageMaker AI then automates the
+// entire model development lifecycle, including data preprocessing, model
+// training, tuning, and evaluation. AutoML jobs are designed to simplify and
+// accelerate the model building process by automating various tasks and exploring
+// different combinations of machine learning algorithms, data preprocessing
+// techniques, and hyperparameter values. The output of an AutoML job comprises one
+// or more trained models ready for deployment and inference. Additionally,
+// SageMaker AI AutoML jobs generate a candidate model leaderboard, allowing you to
+// select the best-performing model for deployment.
+//
+// For more information about AutoML jobs, see [https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development.html] in the SageMaker AI developer
+// guide.
+//
+// AutoML jobs V2 support various problem types such as regression, binary, and
+// multiclass classification with tabular data, text and image classification,
+// time-series forecasting, and fine-tuning of large language models (LLMs) for
+// text generation.
+//
+// [CreateAutoMLJobV2]and [DescribeAutoMLJobV2] are new versions of [CreateAutoMLJob] and [DescribeAutoMLJob] which offer backward compatibility.
+//
+// CreateAutoMLJobV2 can manage tabular problem types identical to those of its
+// previous version CreateAutoMLJob , as well as time-series forecasting,
+// non-tabular problem types such as image or text classification, and text
+// generation (LLMs fine-tuning).
+//
+// Find guidelines about how to migrate a CreateAutoMLJob to CreateAutoMLJobV2 in [Migrate a CreateAutoMLJob to CreateAutoMLJobV2].
+//
+// For the list of available problem types supported by CreateAutoMLJobV2 , see [AutoMLProblemTypeConfig].
+//
+// You can find the best-performing model after you run an AutoML job V2 by
+// calling [DescribeAutoMLJobV2].
+//
+// [CreateAutoMLJob]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html
+// [DescribeAutoMLJob]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJob.html
+// [DescribeAutoMLJobV2]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeAutoMLJobV2.html
+// [https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development.html]: https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development.html
+// [CreateAutoMLJobV2]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJobV2.html
+// [Migrate a CreateAutoMLJob to CreateAutoMLJobV2]: https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-automate-model-development-create-experiment.html#autopilot-create-experiment-api-migrate-v1-v2
+// [AutoMLProblemTypeConfig]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLProblemTypeConfig.html
 func (c *Client) CreateAutoMLJobV2(ctx context.Context, params *CreateAutoMLJobV2Input, optFns ...func(*Options)) (*CreateAutoMLJobV2Output, error) {
 	if params == nil {
 		params = &CreateAutoMLJobV2Input{}
@@ -49,13 +74,20 @@ func (c *Client) CreateAutoMLJobV2(ctx context.Context, params *CreateAutoMLJobV
 type CreateAutoMLJobV2Input struct {
 
 	// An array of channel objects describing the input data and their location. Each
-	// channel is a named input source. Similar to the InputDataConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html#sagemaker-CreateAutoMLJob-request-InputDataConfig)
-	// attribute in the CreateAutoMLJob input parameters. The supported formats depend
-	// on the problem type:
+	// channel is a named input source. Similar to the [InputDataConfig]attribute in the CreateAutoMLJob
+	// input parameters. The supported formats depend on the problem type:
+	//
 	//   - For tabular problem types: S3Prefix , ManifestFile .
+	//
 	//   - For image classification: S3Prefix , ManifestFile , AugmentedManifestFile .
+	//
 	//   - For text classification: S3Prefix .
+	//
 	//   - For time-series forecasting: S3Prefix .
+	//
+	//   - For text generation (LLMs fine-tuning): S3Prefix .
+	//
+	// [InputDataConfig]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateAutoMLJob.html#sagemaker-CreateAutoMLJob-request-InputDataConfig
 	//
 	// This member is required.
 	AutoMLJobInputDataConfig []types.AutoMLJobChannel
@@ -82,20 +114,40 @@ type CreateAutoMLJobV2Input struct {
 	// This member is required.
 	RoleArn *string
 
+	// Specifies the compute configuration for the AutoML job V2.
+	AutoMLComputeConfig *types.AutoMLComputeConfig
+
 	// Specifies a metric to minimize or maximize as the objective of a job. If not
 	// specified, the default objective metric depends on the problem type. For the
-	// list of default values per problem type, see AutoMLJobObjective (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLJobObjective.html)
-	// . For tabular problem types, you must either provide both the AutoMLJobObjective
-	// and indicate the type of supervised learning problem in AutoMLProblemTypeConfig
-	// ( TabularJobConfig.ProblemType ), or none at all.
+	// list of default values per problem type, see [AutoMLJobObjective].
+	//
+	//   - For tabular problem types: You must either provide both the
+	//   AutoMLJobObjective and indicate the type of supervised learning problem in
+	//   AutoMLProblemTypeConfig ( TabularJobConfig.ProblemType ), or none at all.
+	//
+	//   - For text generation problem types (LLMs fine-tuning): Fine-tuning language
+	//   models in Autopilot does not require setting the AutoMLJobObjective field.
+	//   Autopilot fine-tunes LLMs without requiring multiple candidates to be trained
+	//   and evaluated. Instead, using your dataset, Autopilot directly fine-tunes your
+	//   target model to enhance a default objective metric, the cross-entropy loss.
+	//   After fine-tuning a language model, you can evaluate the quality of its
+	//   generated text using different metrics. For a list of the available metrics, see
+	//   [Metrics for fine-tuning LLMs in Autopilot].
+	//
+	// [Metrics for fine-tuning LLMs in Autopilot]: https://docs.aws.amazon.com/sagemaker/latest/dg/autopilot-llms-finetuning-metrics.html
+	// [AutoMLJobObjective]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_AutoMLJobObjective.html
 	AutoMLJobObjective *types.AutoMLJobObjective
 
 	// This structure specifies how to split the data into train and validation
-	// datasets. The validation and training datasets must contain the same headers.
-	// For jobs created by calling CreateAutoMLJob , the validation dataset must be
-	// less than 2 GB in size. This attribute must not be set for the time-series
-	// forecasting problem type, as Autopilot automatically splits the input dataset
-	// into training and validation sets.
+	// datasets.
+	//
+	// The validation and training datasets must contain the same headers. For jobs
+	// created by calling CreateAutoMLJob , the validation dataset must be less than 2
+	// GB in size.
+	//
+	// This attribute must not be set for the time-series forecasting problem type, as
+	// Autopilot automatically splits the input dataset into training and validation
+	// sets.
 	DataSplitConfig *types.AutoMLDataSplitConfig
 
 	// Specifies how to generate the endpoint name for an automatic one-click
@@ -107,8 +159,9 @@ type CreateAutoMLJobV2Input struct {
 
 	// An array of key-value pairs. You can use tags to categorize your Amazon Web
 	// Services resources in different ways, such as by purpose, owner, or environment.
-	// For more information, see Tagging Amazon Web ServicesResources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)
-	// . Tag keys must be unique per resource.
+	// For more information, see [Tagging Amazon Web ServicesResources]. Tag keys must be unique per resource.
+	//
+	// [Tagging Amazon Web ServicesResources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
 	Tags []types.Tag
 
 	noSmithyDocumentSerde
@@ -128,6 +181,9 @@ type CreateAutoMLJobV2Output struct {
 }
 
 func (c *Client) addOperationCreateAutoMLJobV2Middlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateAutoMLJobV2{}, middleware.After)
 	if err != nil {
 		return err
@@ -136,34 +192,38 @@ func (c *Client) addOperationCreateAutoMLJobV2Middlewares(stack *middleware.Stac
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateAutoMLJobV2"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -175,7 +235,13 @@ func (c *Client) addOperationCreateAutoMLJobV2Middlewares(stack *middleware.Stac
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateAutoMLJobV2ResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateAutoMLJobV2ValidationMiddleware(stack); err != nil {
@@ -184,7 +250,7 @@ func (c *Client) addOperationCreateAutoMLJobV2Middlewares(stack *middleware.Stac
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateAutoMLJobV2(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -196,7 +262,19 @@ func (c *Client) addOperationCreateAutoMLJobV2Middlewares(stack *middleware.Stac
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -206,130 +284,6 @@ func newServiceMetadataMiddleware_opCreateAutoMLJobV2(region string) *awsmiddlew
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "sagemaker",
 		OperationName: "CreateAutoMLJobV2",
 	}
-}
-
-type opCreateAutoMLJobV2ResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateAutoMLJobV2ResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateAutoMLJobV2ResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "sagemaker"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "sagemaker"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("sagemaker")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateAutoMLJobV2ResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateAutoMLJobV2ResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

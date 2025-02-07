@@ -4,39 +4,37 @@ package ses
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/ses/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	"github.com/jmespath/go-jmespath"
 	"time"
 )
 
 // Given a list of identities (email addresses and/or domains), returns the
 // verification status and (for domain identities) the verification token for each
-// identity. The verification status of an email address is "Pending" until the
-// email address owner clicks the link within the verification email that Amazon
-// SES sent to that address. If the email address owner clicks the link within 24
-// hours, the verification status of the email address changes to "Success". If the
-// link is not clicked within 24 hours, the verification status changes to
-// "Failed." In that case, if you still want to verify the email address, you must
-// restart the verification process from the beginning. For domain identities, the
-// domain's verification status is "Pending" as Amazon SES searches for the
-// required TXT record in the DNS settings of the domain. When Amazon SES detects
-// the record, the domain's verification status changes to "Success". If Amazon SES
-// is unable to detect the record within 72 hours, the domain's verification status
-// changes to "Failed." In that case, if you still want to verify the domain, you
-// must restart the verification process from the beginning. This operation is
-// throttled at one request per second and can only get verification attributes for
-// up to 100 identities at a time.
+// identity.
+//
+// The verification status of an email address is "Pending" until the email
+// address owner clicks the link within the verification email that Amazon SES sent
+// to that address. If the email address owner clicks the link within 24 hours, the
+// verification status of the email address changes to "Success". If the link is
+// not clicked within 24 hours, the verification status changes to "Failed." In
+// that case, to verify the email address, you must restart the verification
+// process from the beginning.
+//
+// For domain identities, the domain's verification status is "Pending" as Amazon
+// SES searches for the required TXT record in the DNS settings of the domain. When
+// Amazon SES detects the record, the domain's verification status changes to
+// "Success". If Amazon SES is unable to detect the record within 72 hours, the
+// domain's verification status changes to "Failed." In that case, to verify the
+// domain, you must restart the verification process from the beginning.
+//
+// This operation is throttled at one request per second and can only get
+// verification attributes for up to 100 identities at a time.
 func (c *Client) GetIdentityVerificationAttributes(ctx context.Context, params *GetIdentityVerificationAttributesInput, optFns ...func(*Options)) (*GetIdentityVerificationAttributesOutput, error) {
 	if params == nil {
 		params = &GetIdentityVerificationAttributesInput{}
@@ -54,9 +52,9 @@ func (c *Client) GetIdentityVerificationAttributes(ctx context.Context, params *
 
 // Represents a request to return the Amazon SES verification status of a list of
 // identities. For domain identities, this request also returns the verification
-// token. For information about verifying identities with Amazon SES, see the
-// Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/DeveloperGuide/verify-addresses-and-domains.html)
-// .
+// token. For information about verifying identities with Amazon SES, see the [Amazon SES Developer Guide].
+//
+// [Amazon SES Developer Guide]: https://docs.aws.amazon.com/ses/latest/dg/creating-identities.html
 type GetIdentityVerificationAttributesInput struct {
 
 	// A list of identities.
@@ -83,6 +81,9 @@ type GetIdentityVerificationAttributesOutput struct {
 }
 
 func (c *Client) addOperationGetIdentityVerificationAttributesMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpGetIdentityVerificationAttributes{}, middleware.After)
 	if err != nil {
 		return err
@@ -91,34 +92,38 @@ func (c *Client) addOperationGetIdentityVerificationAttributesMiddlewares(stack 
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GetIdentityVerificationAttributes"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -130,7 +135,13 @@ func (c *Client) addOperationGetIdentityVerificationAttributesMiddlewares(stack 
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGetIdentityVerificationAttributesResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetIdentityVerificationAttributesValidationMiddleware(stack); err != nil {
@@ -139,7 +150,7 @@ func (c *Client) addOperationGetIdentityVerificationAttributesMiddlewares(stack 
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetIdentityVerificationAttributes(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -151,19 +162,23 @@ func (c *Client) addOperationGetIdentityVerificationAttributesMiddlewares(stack 
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// GetIdentityVerificationAttributesAPIClient is a client that implements the
-// GetIdentityVerificationAttributes operation.
-type GetIdentityVerificationAttributesAPIClient interface {
-	GetIdentityVerificationAttributes(context.Context, *GetIdentityVerificationAttributesInput, ...func(*Options)) (*GetIdentityVerificationAttributesOutput, error)
-}
-
-var _ GetIdentityVerificationAttributesAPIClient = (*Client)(nil)
 
 // IdentityExistsWaiterOptions are waiter options for IdentityExistsWaiter
 type IdentityExistsWaiterOptions struct {
@@ -171,7 +186,16 @@ type IdentityExistsWaiterOptions struct {
 	// Set of options to modify how an operation is invoked. These apply to all
 	// operations invoked for this client. Use functional options on operation call to
 	// modify this list for per operation behavior.
+	//
+	// Passing options here is functionally equivalent to passing values to this
+	// config's ClientOptions field that extend the inner client's APIOptions directly.
 	APIOptions []func(*middleware.Stack) error
+
+	// Functional options to be passed to all operations invoked by this client.
+	//
+	// Function values that modify the inner APIOptions are applied after the waiter
+	// config's own APIOptions modifiers.
+	ClientOptions []func(*Options)
 
 	// MinDelay is the minimum amount of time to delay between retries. If unset,
 	// IdentityExistsWaiter will use default minimum delay of 3 seconds. Note that
@@ -188,12 +212,13 @@ type IdentityExistsWaiterOptions struct {
 
 	// Retryable is function that can be used to override the service defined
 	// waiter-behavior based on operation output, or returned error. This function is
-	// used by the waiter to decide if a state is retryable or a terminal state. By
-	// default service-modeled logic will populate this option. This option can thus be
-	// used to define a custom waiter state with fall-back to service-modeled waiter
-	// state mutators.The function returns an error in case of a failure state. In case
-	// of retry state, this function returns a bool value of true and nil error, while
-	// in case of success it returns a bool value of false and nil error.
+	// used by the waiter to decide if a state is retryable or a terminal state.
+	//
+	// By default service-modeled logic will populate this option. This option can
+	// thus be used to define a custom waiter state with fall-back to service-modeled
+	// waiter state mutators.The function returns an error in case of a failure state.
+	// In case of retry state, this function returns a bool value of true and nil
+	// error, while in case of success it returns a bool value of false and nil error.
 	Retryable func(context.Context, *GetIdentityVerificationAttributesInput, *GetIdentityVerificationAttributesOutput, error) (bool, error)
 }
 
@@ -270,7 +295,16 @@ func (w *IdentityExistsWaiter) WaitForOutput(ctx context.Context, params *GetIde
 		}
 
 		out, err := w.client.GetIdentityVerificationAttributes(ctx, params, func(o *Options) {
+			baseOpts := []func(*Options){
+				addIsWaiterUserAgent,
+			}
 			o.APIOptions = append(o.APIOptions, apiOptions...)
+			for _, opt := range baseOpts {
+				opt(o)
+			}
+			for _, opt := range options.ClientOptions {
+				opt(o)
+			}
 		})
 
 		retryable, err := options.Retryable(ctx, params, out, err)
@@ -306,29 +340,18 @@ func (w *IdentityExistsWaiter) WaitForOutput(ctx context.Context, params *GetIde
 func identityExistsStateRetryable(ctx context.Context, input *GetIdentityVerificationAttributesInput, output *GetIdentityVerificationAttributesOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("VerificationAttributes.*.VerificationStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.VerificationAttributes
+		var v2 []types.VerificationStatus
+		for _, v := range v1 {
+			v3 := v.VerificationStatus
+			v2 = append(v2, v3)
 		}
-
 		expectedValue := "Success"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(string)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected string value, got %T", pathValue)
-			}
-
-			if string(value) != expectedValue {
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -337,137 +360,24 @@ func identityExistsStateRetryable(ctx context.Context, input *GetIdentityVerific
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
+
+// GetIdentityVerificationAttributesAPIClient is a client that implements the
+// GetIdentityVerificationAttributes operation.
+type GetIdentityVerificationAttributesAPIClient interface {
+	GetIdentityVerificationAttributes(context.Context, *GetIdentityVerificationAttributesInput, ...func(*Options)) (*GetIdentityVerificationAttributesOutput, error)
+}
+
+var _ GetIdentityVerificationAttributesAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opGetIdentityVerificationAttributes(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "ses",
 		OperationName: "GetIdentityVerificationAttributes",
 	}
-}
-
-type opGetIdentityVerificationAttributesResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opGetIdentityVerificationAttributesResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGetIdentityVerificationAttributesResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "ses"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "ses"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("ses")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addGetIdentityVerificationAttributesResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGetIdentityVerificationAttributesResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

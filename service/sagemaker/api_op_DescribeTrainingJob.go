@@ -6,26 +6,23 @@ import (
 	"context"
 	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/sagemaker/types"
 	smithy "github.com/aws/smithy-go"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	"github.com/jmespath/go-jmespath"
 	"time"
 )
 
-// Returns information about a training job. Some of the attributes below only
-// appear if the training job successfully starts. If the training job fails,
-// TrainingJobStatus is Failed and, depending on the FailureReason , attributes
-// like TrainingStartTime , TrainingTimeInSeconds , TrainingEndTime , and
-// BillableTimeInSeconds may not be present in the response.
+// Returns information about a training job.
+//
+// Some of the attributes below only appear if the training job successfully
+// starts. If the training job fails, TrainingJobStatus is Failed and, depending
+// on the FailureReason , attributes like TrainingStartTime , TrainingTimeInSeconds
+// , TrainingEndTime , and BillableTimeInSeconds may not be present in the
+// response.
 func (c *Client) DescribeTrainingJob(ctx context.Context, params *DescribeTrainingJobInput, optFns ...func(*Options)) (*DescribeTrainingJobOutput, error) {
 	if params == nil {
 		params = &DescribeTrainingJobInput{}
@@ -75,38 +72,58 @@ type DescribeTrainingJobOutput struct {
 	// This member is required.
 	ResourceConfig *types.ResourceConfig
 
-	// Provides detailed information about the state of the training job. For detailed
-	// information on the secondary status of the training job, see StatusMessage
-	// under SecondaryStatusTransition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_SecondaryStatusTransition.html)
-	// . SageMaker provides primary statuses and secondary statuses that apply to each
-	// of them: InProgress
+	//  Provides detailed information about the state of the training job. For
+	// detailed information on the secondary status of the training job, see
+	// StatusMessage under [SecondaryStatusTransition].
+	//
+	// SageMaker provides primary statuses and secondary statuses that apply to each
+	// of them:
+	//
+	// InProgress
 	//   - Starting - Starting the training job.
+	//
 	//   - Downloading - An optional stage for algorithms that support File training
 	//   input mode. It indicates that data is being downloaded to the ML storage
 	//   volumes.
+	//
 	//   - Training - Training is in progress.
+	//
 	//   - Interrupted - The job stopped because the managed spot training instances
 	//   were interrupted.
+	//
 	//   - Uploading - Training is complete and the model artifacts are being uploaded
 	//   to the S3 location.
+	//
 	// Completed
 	//   - Completed - The training job has completed.
+	//
 	// Failed
 	//   - Failed - The training job has failed. The reason for the failure is returned
 	//   in the FailureReason field of DescribeTrainingJobResponse .
+	//
 	// Stopped
 	//   - MaxRuntimeExceeded - The job stopped because it exceeded the maximum allowed
 	//   runtime.
+	//
 	//   - MaxWaitTimeExceeded - The job stopped because it exceeded the maximum
 	//   allowed wait time.
+	//
 	//   - Stopped - The training job has stopped.
+	//
 	// Stopping
 	//   - Stopping - Stopping the training job.
-	// Valid values for SecondaryStatus are subject to change. We no longer support
-	// the following secondary statuses:
+	//
+	// Valid values for SecondaryStatus are subject to change.
+	//
+	// We no longer support the following secondary statuses:
+	//
 	//   - LaunchingMLInstances
+	//
 	//   - PreparingTraining
+	//
 	//   - DownloadingTrainingImage
+	//
+	// [SecondaryStatusTransition]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_SecondaryStatusTransition.html
 	//
 	// This member is required.
 	SecondaryStatus types.SecondaryStatus
@@ -114,9 +131,11 @@ type DescribeTrainingJobOutput struct {
 	// Specifies a limit to how long a model training job can run. It also specifies
 	// how long a managed Spot training job has to complete. When the job reaches the
 	// time limit, SageMaker ends the training job. Use this API to cap model training
-	// costs. To stop a job, SageMaker sends the algorithm the SIGTERM signal, which
-	// delays job termination for 120 seconds. Algorithms can use this 120-second
-	// window to save the model artifacts, so the results of training are not lost.
+	// costs.
+	//
+	// To stop a job, SageMaker sends the algorithm the SIGTERM signal, which delays
+	// job termination for 120 seconds. Algorithms can use this 120-second window to
+	// save the model artifacts, so the results of training are not lost.
 	//
 	// This member is required.
 	StoppingCondition *types.StoppingCondition
@@ -126,19 +145,26 @@ type DescribeTrainingJobOutput struct {
 	// This member is required.
 	TrainingJobArn *string
 
-	// Name of the model training job.
+	//  Name of the model training job.
 	//
 	// This member is required.
 	TrainingJobName *string
 
-	// The status of the training job. SageMaker provides the following training job
-	// statuses:
+	// The status of the training job.
+	//
+	// SageMaker provides the following training job statuses:
+	//
 	//   - InProgress - The training is in progress.
+	//
 	//   - Completed - The training job has completed.
+	//
 	//   - Failed - The training job has failed. To see the reason for the failure, see
 	//   the FailureReason field in the response to a DescribeTrainingJobResponse call.
+	//
 	//   - Stopping - The training job is stopping.
+	//
 	//   - Stopped - The training job has stopped.
+	//
 	// For more detailed information, see SecondaryStatus .
 	//
 	// This member is required.
@@ -148,13 +174,17 @@ type DescribeTrainingJobOutput struct {
 	AutoMLJobArn *string
 
 	// The billable time in seconds. Billable time refers to the absolute wall-clock
-	// time. Multiply BillableTimeInSeconds by the number of instances ( InstanceCount
-	// ) in your training cluster to get the total compute time SageMaker bills you if
-	// you run distributed training. The formula is as follows: BillableTimeInSeconds
-	// * InstanceCount . You can calculate the savings from using managed spot training
-	// using the formula (1 - BillableTimeInSeconds / TrainingTimeInSeconds) * 100 .
-	// For example, if BillableTimeInSeconds is 100 and TrainingTimeInSeconds is 500,
-	// the savings is 80%.
+	// time.
+	//
+	// Multiply BillableTimeInSeconds by the number of instances ( InstanceCount ) in
+	// your training cluster to get the total compute time SageMaker bills you if you
+	// run distributed training. The formula is as follows: BillableTimeInSeconds *
+	// InstanceCount .
+	//
+	// You can calculate the savings from using managed spot training using the
+	// formula (1 - BillableTimeInSeconds / TrainingTimeInSeconds) * 100 . For example,
+	// if BillableTimeInSeconds is 100 and TrainingTimeInSeconds is 500, the savings
+	// is 80%.
 	BillableTimeInSeconds *int32
 
 	// Contains information about the output location for managed spot training
@@ -163,9 +193,9 @@ type DescribeTrainingJobOutput struct {
 
 	// Configuration information for the Amazon SageMaker Debugger hook parameters,
 	// metric and tensor collections, and storage paths. To learn more about how to
-	// configure the DebugHookConfig parameter, see Use the SageMaker and Debugger
-	// Configuration API Operations to Create, Update, and Debug Your Training Job (https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-createtrainingjob-api.html)
-	// .
+	// configure the DebugHookConfig parameter, see [Use the SageMaker and Debugger Configuration API Operations to Create, Update, and Debug Your Training Job].
+	//
+	// [Use the SageMaker and Debugger Configuration API Operations to Create, Update, and Debug Your Training Job]: https://docs.aws.amazon.com/sagemaker/latest/dg/debugger-createtrainingjob-api.html
 	DebugHookConfig *types.DebugHookConfig
 
 	// Configuration information for Amazon SageMaker Debugger rules for debugging
@@ -181,27 +211,34 @@ type DescribeTrainingJobOutput struct {
 	// training, but training might take longer. How long it takes depends on the
 	// amount of communication between compute instances, especially if you use a deep
 	// learning algorithms in distributed training.
-	EnableInterContainerTrafficEncryption bool
+	EnableInterContainerTrafficEncryption *bool
 
 	// A Boolean indicating whether managed spot training is enabled ( True ) or not (
 	// False ).
-	EnableManagedSpotTraining bool
+	EnableManagedSpotTraining *bool
 
 	// If you want to allow inbound or outbound network calls, except for calls
 	// between peers within a training cluster for distributed training, choose True .
 	// If you enable network isolation for training jobs that are configured to use a
 	// VPC, SageMaker downloads and uploads customer data and model artifacts through
 	// the specified VPC, but the training container does not have network access.
-	EnableNetworkIsolation bool
+	EnableNetworkIsolation *bool
 
 	// The environment variables to set in the Docker container.
 	Environment map[string]string
 
 	// Associates a SageMaker job as a trial component with an experiment and trial.
 	// Specified when you call the following APIs:
-	//   - CreateProcessingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html)
-	//   - CreateTrainingJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html)
-	//   - CreateTransformJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html)
+	//
+	// [CreateProcessingJob]
+	//
+	// [CreateTrainingJob]
+	//
+	// [CreateTransformJob]
+	//
+	// [CreateTransformJob]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTransformJob.html
+	// [CreateTrainingJob]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateTrainingJob.html
+	// [CreateProcessingJob]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_CreateProcessingJob.html
 	ExperimentConfig *types.ExperimentConfig
 
 	// If the training job failed, the reason it failed.
@@ -213,6 +250,10 @@ type DescribeTrainingJobOutput struct {
 
 	// Algorithm-specific parameters.
 	HyperParameters map[string]string
+
+	// Contains information about the infrastructure health check configuration for
+	// the training job.
+	InfraCheckConfig *types.InfraCheckConfig
 
 	// An array of Channel objects that describes each data input channel.
 	InputDataConfig []types.Channel
@@ -243,6 +284,12 @@ type DescribeTrainingJobOutput struct {
 
 	// Profiling status of a training job.
 	ProfilingStatus types.ProfilingStatus
+
+	// Configuration for remote debugging. To learn more about the remote debugging
+	// functionality of SageMaker, see [Access a training container through Amazon Web Services Systems Manager (SSM) for remote debugging].
+	//
+	// [Access a training container through Amazon Web Services Systems Manager (SSM) for remote debugging]: https://docs.aws.amazon.com/sagemaker/latest/dg/train-remote-debugging.html
+	RemoteDebugConfig *types.RemoteDebugConfig
 
 	// The number of times to retry the job when the job fails due to an
 	// InternalServerError .
@@ -281,10 +328,11 @@ type DescribeTrainingJobOutput struct {
 	// the training job was launched by a hyperparameter tuning job.
 	TuningJobArn *string
 
-	// A VpcConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html)
-	// object that specifies the VPC that this training job has access to. For more
-	// information, see Protect Training Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html)
-	// .
+	// A [VpcConfig] object that specifies the VPC that this training job has access to. For more
+	// information, see [Protect Training Jobs by Using an Amazon Virtual Private Cloud].
+	//
+	// [VpcConfig]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html
+	// [Protect Training Jobs by Using an Amazon Virtual Private Cloud]: https://docs.aws.amazon.com/sagemaker/latest/dg/train-vpc.html
 	VpcConfig *types.VpcConfig
 
 	// The status of the warm pool associated with the training job.
@@ -297,6 +345,9 @@ type DescribeTrainingJobOutput struct {
 }
 
 func (c *Client) addOperationDescribeTrainingJobMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpDescribeTrainingJob{}, middleware.After)
 	if err != nil {
 		return err
@@ -305,34 +356,38 @@ func (c *Client) addOperationDescribeTrainingJobMiddlewares(stack *middleware.St
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeTrainingJob"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -344,7 +399,13 @@ func (c *Client) addOperationDescribeTrainingJobMiddlewares(stack *middleware.St
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeTrainingJobResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeTrainingJobValidationMiddleware(stack); err != nil {
@@ -353,7 +414,7 @@ func (c *Client) addOperationDescribeTrainingJobMiddlewares(stack *middleware.St
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeTrainingJob(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -365,19 +426,23 @@ func (c *Client) addOperationDescribeTrainingJobMiddlewares(stack *middleware.St
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// DescribeTrainingJobAPIClient is a client that implements the
-// DescribeTrainingJob operation.
-type DescribeTrainingJobAPIClient interface {
-	DescribeTrainingJob(context.Context, *DescribeTrainingJobInput, ...func(*Options)) (*DescribeTrainingJobOutput, error)
-}
-
-var _ DescribeTrainingJobAPIClient = (*Client)(nil)
 
 // TrainingJobCompletedOrStoppedWaiterOptions are waiter options for
 // TrainingJobCompletedOrStoppedWaiter
@@ -386,7 +451,16 @@ type TrainingJobCompletedOrStoppedWaiterOptions struct {
 	// Set of options to modify how an operation is invoked. These apply to all
 	// operations invoked for this client. Use functional options on operation call to
 	// modify this list for per operation behavior.
+	//
+	// Passing options here is functionally equivalent to passing values to this
+	// config's ClientOptions field that extend the inner client's APIOptions directly.
 	APIOptions []func(*middleware.Stack) error
+
+	// Functional options to be passed to all operations invoked by this client.
+	//
+	// Function values that modify the inner APIOptions are applied after the waiter
+	// config's own APIOptions modifiers.
+	ClientOptions []func(*Options)
 
 	// MinDelay is the minimum amount of time to delay between retries. If unset,
 	// TrainingJobCompletedOrStoppedWaiter will use default minimum delay of 120
@@ -405,12 +479,13 @@ type TrainingJobCompletedOrStoppedWaiterOptions struct {
 
 	// Retryable is function that can be used to override the service defined
 	// waiter-behavior based on operation output, or returned error. This function is
-	// used by the waiter to decide if a state is retryable or a terminal state. By
-	// default service-modeled logic will populate this option. This option can thus be
-	// used to define a custom waiter state with fall-back to service-modeled waiter
-	// state mutators.The function returns an error in case of a failure state. In case
-	// of retry state, this function returns a bool value of true and nil error, while
-	// in case of success it returns a bool value of false and nil error.
+	// used by the waiter to decide if a state is retryable or a terminal state.
+	//
+	// By default service-modeled logic will populate this option. This option can
+	// thus be used to define a custom waiter state with fall-back to service-modeled
+	// waiter state mutators.The function returns an error in case of a failure state.
+	// In case of retry state, this function returns a bool value of true and nil
+	// error, while in case of success it returns a bool value of false and nil error.
 	Retryable func(context.Context, *DescribeTrainingJobInput, *DescribeTrainingJobOutput, error) (bool, error)
 }
 
@@ -489,7 +564,16 @@ func (w *TrainingJobCompletedOrStoppedWaiter) WaitForOutput(ctx context.Context,
 		}
 
 		out, err := w.client.DescribeTrainingJob(ctx, params, func(o *Options) {
+			baseOpts := []func(*Options){
+				addIsWaiterUserAgent,
+			}
 			o.APIOptions = append(o.APIOptions, apiOptions...)
+			for _, opt := range baseOpts {
+				opt(o)
+			}
+			for _, opt := range options.ClientOptions {
+				opt(o)
+			}
 		})
 
 		retryable, err := options.Retryable(ctx, params, out, err)
@@ -525,52 +609,31 @@ func (w *TrainingJobCompletedOrStoppedWaiter) WaitForOutput(ctx context.Context,
 func trainingJobCompletedOrStoppedStateRetryable(ctx context.Context, input *DescribeTrainingJobInput, output *DescribeTrainingJobOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("TrainingJobStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.TrainingJobStatus
 		expectedValue := "Completed"
-		value, ok := pathValue.(types.TrainingJobStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.TrainingJobStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("TrainingJobStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.TrainingJobStatus
 		expectedValue := "Stopped"
-		value, ok := pathValue.(types.TrainingJobStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.TrainingJobStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, nil
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("TrainingJobStatus", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
+		v1 := output.TrainingJobStatus
 		expectedValue := "Failed"
-		value, ok := pathValue.(types.TrainingJobStatus)
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected types.TrainingJobStatus value, got %T", pathValue)
-		}
-
-		if string(value) == expectedValue {
+		var pathValue string
+		pathValue = string(v1)
+		if pathValue == expectedValue {
 			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
@@ -587,137 +650,24 @@ func trainingJobCompletedOrStoppedStateRetryable(ctx context.Context, input *Des
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
+
+// DescribeTrainingJobAPIClient is a client that implements the
+// DescribeTrainingJob operation.
+type DescribeTrainingJobAPIClient interface {
+	DescribeTrainingJob(context.Context, *DescribeTrainingJobInput, ...func(*Options)) (*DescribeTrainingJobOutput, error)
+}
+
+var _ DescribeTrainingJobAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opDescribeTrainingJob(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "sagemaker",
 		OperationName: "DescribeTrainingJob",
 	}
-}
-
-type opDescribeTrainingJobResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeTrainingJobResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeTrainingJobResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "sagemaker"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "sagemaker"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("sagemaker")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeTrainingJobResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeTrainingJobResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

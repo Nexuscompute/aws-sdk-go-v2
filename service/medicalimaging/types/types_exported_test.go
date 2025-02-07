@@ -15,6 +15,9 @@ func ExampleMetadataUpdates_outputUsage() {
 	case *types.MetadataUpdatesMemberDICOMUpdates:
 		_ = v.Value // Value is types.DICOMUpdates
 
+	case *types.MetadataUpdatesMemberRevertToVersionId:
+		_ = v.Value // Value is string
+
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
 
@@ -25,6 +28,7 @@ func ExampleMetadataUpdates_outputUsage() {
 }
 
 var _ *types.DICOMUpdates
+var _ *string
 
 func ExampleSearchByAttributeValue_outputUsage() {
 	var union types.SearchByAttributeValue
@@ -39,6 +43,9 @@ func ExampleSearchByAttributeValue_outputUsage() {
 	case *types.SearchByAttributeValueMemberDICOMPatientId:
 		_ = v.Value // Value is string
 
+	case *types.SearchByAttributeValueMemberDICOMSeriesInstanceUID:
+		_ = v.Value // Value is string
+
 	case *types.SearchByAttributeValueMemberDICOMStudyDateAndTime:
 		_ = v.Value // Value is types.DICOMStudyDateAndTime
 
@@ -47,6 +54,9 @@ func ExampleSearchByAttributeValue_outputUsage() {
 
 	case *types.SearchByAttributeValueMemberDICOMStudyInstanceUID:
 		_ = v.Value // Value is string
+
+	case *types.SearchByAttributeValueMemberUpdatedAt:
+		_ = v.Value // Value is time.Time
 
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
@@ -58,6 +68,7 @@ func ExampleSearchByAttributeValue_outputUsage() {
 }
 
 var _ *types.DICOMStudyDateAndTime
+var _ *string
 var _ *string
 var _ *string
 var _ *string

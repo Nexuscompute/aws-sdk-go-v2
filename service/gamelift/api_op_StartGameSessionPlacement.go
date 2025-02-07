@@ -4,49 +4,78 @@ package gamelift
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/gamelift/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Places a request for a new game session in a queue. When processing a placement
-// request, Amazon GameLift searches for available resources on the queue's
-// destinations, scanning each until it finds resources or the placement request
-// times out. A game session placement request can also request player sessions.
-// When a new game session is successfully created, Amazon GameLift creates a
-// player session for each player included in the request. When placing a game
-// session, by default Amazon GameLift tries each fleet in the order they are
-// listed in the queue configuration. Ideally, a queue's destinations are listed in
-// preference order. Alternatively, when requesting a game session with players,
-// you can also provide latency data for each player in relevant Regions. Latency
-// data indicates the performance lag a player experiences when connected to a
-// fleet in the Region. Amazon GameLift uses latency data to reorder the list of
-// destinations to place the game session in a Region with minimal lag. If latency
-// data is provided for multiple players, Amazon GameLift calculates each Region's
-// average lag for all players and reorders to get the best game play across all
-// players. To place a new game session request, specify the following:
-//   - The queue name and a set of game session properties and settings
-//   - A unique ID (such as a UUID) for the placement. You use this ID to track
-//     the status of the placement request
-//   - (Optional) A set of player data and a unique player ID for each player that
-//     you are joining to the new game session (player data is optional, but if you
-//     include it, you must also provide a unique ID for each player)
-//   - Latency data for all players (if you want to optimize game play for the
-//     players)
+// Makes a request to start a new game session using a game session queue. When
+// processing a placement request in a queue, Amazon GameLift finds the best
+// possible available resource to host the game session and prompts the resource to
+// start the game session.
 //
-// If successful, a new game session placement is created. To track the status of
-// a placement request, call DescribeGameSessionPlacement (https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessionPlacement.html)
-// and check the request's status. If the status is FULFILLED , a new game session
-// has been created and a game session ARN and Region are referenced. If the
-// placement request times out, you can resubmit the request or retry it with a
-// different queue.
+// # Request options
+//
+// Call this API with the following minimum parameters: GameSessionQueueName,
+// MaximumPlayerSessionCount, and PlacementID. You can also include game session
+// data (data formatted as strings) or game properties (data formatted as key-value
+// pairs) to pass to the new game session.
+//
+//   - You can change how Amazon GameLift chooses a hosting resource for the new
+//     game session. Prioritizing resources for game session placements is defined when
+//     you configure a game session queue. You can use the default prioritization
+//     process or specify a custom process by providing a [PriorityConfiguration]when you create or update
+//     a queue.
+//
+//   - Prioritize based on resource cost and location, using the queue's
+//     configured priority settings. Call this API with the minimum parameters.
+//
+//   - Prioritize based on latency. Include a set of values for PlayerLatencies.
+//     You can provide latency data with or without player session data. This option
+//     instructs Amazon GameLift to reorder the queue's prioritized locations list
+//     based on the latency data. If latency data is provided for multiple players,
+//     Amazon GameLift calculates each location's average latency for all players and
+//     reorders to find the lowest latency across all players. Don't include latency
+//     data if you're providing a custom list of locations.
+//
+//   - Prioritize based on a custom list of locations. If you're using a queue
+//     that's configured to prioritize location first (see [PriorityConfiguration]for game session queues),
+//     use the PriorityConfigurationOverride parameter to substitute a different
+//     location list for this placement request. When prioritizing placements by
+//     location, Amazon GameLift searches each location in prioritized order to find an
+//     available hosting resource for the new game session. You can choose whether to
+//     use the override list for the first placement attempt only or for all attempts.
+//
+//   - You can request new player sessions for a group of players. Include the
+//     DesiredPlayerSessions parameter and include at minimum a unique player ID for
+//     each. You can also include player-specific data to pass to the new game session.
+//
+// # Result
+//
+// If successful, this request generates a new game session placement request and
+// adds it to the game session queue for Amazon GameLift to process in turn. You
+// can track the status of individual placement requests by calling [DescribeGameSessionPlacement]. A new game
+// session is running if the status is FULFILLED and the request returns the game
+// session connection information (IP address and port). If you include player
+// session data, Amazon GameLift creates a player session for each player ID in the
+// request.
+//
+// The request results in a BadRequestException in the following situations:
+//
+//   - If the request includes both PlayerLatencies and
+//     PriorityConfigurationOverride parameters.
+//
+//   - If the request includes the PriorityConfigurationOverride parameter and
+//     designates a queue doesn't prioritize locations.
+//
+// Amazon GameLift continues to retry each placement request until it reaches the
+// queue's timeout setting. If a request times out, you can resubmit the request to
+// the same queue or try a different queue.
+//
+// [DescribeGameSessionPlacement]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_DescribeGameSessionPlacement.html
+// [PriorityConfiguration]: https://docs.aws.amazon.com/gamelift/latest/apireference/API_PriorityConfiguration.html
 func (c *Client) StartGameSessionPlacement(ctx context.Context, params *StartGameSessionPlacementInput, optFns ...func(*Options)) (*StartGameSessionPlacementOutput, error) {
 	if params == nil {
 		params = &StartGameSessionPlacementInput{}
@@ -86,16 +115,15 @@ type StartGameSessionPlacementInput struct {
 	// Set of information on each player to create a player session for.
 	DesiredPlayerSessions []types.DesiredPlayerSession
 
-	// A set of custom properties for a game session, formatted as key:value pairs.
-	// These properties are passed to a game server process with a request to start a
-	// new game session (see Start a Game Session (https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession)
-	// ).
+	// A set of key-value pairs that can store custom data in a game session. For
+	// example: {"Key": "difficulty", "Value": "novice"} .
 	GameProperties []types.GameProperty
 
 	// A set of custom game session properties, formatted as a single string value.
-	// This data is passed to a game server process in the GameSession object with a
-	// request to start a new game session (see Start a Game Session (https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession)
-	// ).
+	// This data is passed to a game server process with a request to start a new game
+	// session. For more information, see [Start a game session].
+	//
+	// [Start a game session]: https://docs.aws.amazon.com/gamelift/latest/developerguide/gamelift-sdk-server-api.html#gamelift-sdk-server-startsession
 	GameSessionData *string
 
 	// A descriptive label that is associated with a game session. Session names do
@@ -107,6 +135,15 @@ type StartGameSessionPlacementInput struct {
 	// This information is used to try to place the new game session where it can offer
 	// the best possible gameplay experience for the players.
 	PlayerLatencies []types.PlayerLatency
+
+	// A prioritized list of locations to use for the game session placement and
+	// instructions on how to use it. This list overrides a queue's prioritized
+	// location list for this game session placement request only. You can include
+	// Amazon Web Services Regions, local zones, and custom locations (for Anywhere
+	// fleets). Choose a fallback strategy to instruct Amazon GameLift to use the
+	// override list for the first placement attempt only or for all placement
+	// attempts.
+	PriorityConfigurationOverride *types.PriorityConfigurationOverride
 
 	noSmithyDocumentSerde
 }
@@ -125,6 +162,9 @@ type StartGameSessionPlacementOutput struct {
 }
 
 func (c *Client) addOperationStartGameSessionPlacementMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpStartGameSessionPlacement{}, middleware.After)
 	if err != nil {
 		return err
@@ -133,34 +173,38 @@ func (c *Client) addOperationStartGameSessionPlacementMiddlewares(stack *middlew
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "StartGameSessionPlacement"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -172,7 +216,13 @@ func (c *Client) addOperationStartGameSessionPlacementMiddlewares(stack *middlew
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addStartGameSessionPlacementResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartGameSessionPlacementValidationMiddleware(stack); err != nil {
@@ -181,7 +231,7 @@ func (c *Client) addOperationStartGameSessionPlacementMiddlewares(stack *middlew
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opStartGameSessionPlacement(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -193,7 +243,19 @@ func (c *Client) addOperationStartGameSessionPlacementMiddlewares(stack *middlew
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -203,130 +265,6 @@ func newServiceMetadataMiddleware_opStartGameSessionPlacement(region string) *aw
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "gamelift",
 		OperationName: "StartGameSessionPlacement",
 	}
-}
-
-type opStartGameSessionPlacementResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opStartGameSessionPlacementResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opStartGameSessionPlacementResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "gamelift"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "gamelift"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("gamelift")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addStartGameSessionPlacementResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opStartGameSessionPlacementResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

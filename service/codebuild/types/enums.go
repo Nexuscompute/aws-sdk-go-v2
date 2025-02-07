@@ -11,8 +11,9 @@ const (
 )
 
 // Values returns all known values for ArtifactNamespace. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ArtifactNamespace) Values() []ArtifactNamespace {
 	return []ArtifactNamespace{
 		"NONE",
@@ -29,8 +30,9 @@ const (
 )
 
 // Values returns all known values for ArtifactPackaging. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ArtifactPackaging) Values() []ArtifactPackaging {
 	return []ArtifactPackaging{
 		"NONE",
@@ -48,8 +50,9 @@ const (
 )
 
 // Values returns all known values for ArtifactsType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ArtifactsType) Values() []ArtifactsType {
 	return []ArtifactsType{
 		"CODEPIPELINE",
@@ -65,16 +68,21 @@ const (
 	AuthTypeOauth               AuthType = "OAUTH"
 	AuthTypeBasicAuth           AuthType = "BASIC_AUTH"
 	AuthTypePersonalAccessToken AuthType = "PERSONAL_ACCESS_TOKEN"
+	AuthTypeCodeconnections     AuthType = "CODECONNECTIONS"
+	AuthTypeSecretsManager      AuthType = "SECRETS_MANAGER"
 )
 
 // Values returns all known values for AuthType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AuthType) Values() []AuthType {
 	return []AuthType{
 		"OAUTH",
 		"BASIC_AUTH",
 		"PERSONAL_ACCESS_TOKEN",
+		"CODECONNECTIONS",
+		"SECRETS_MANAGER",
 	}
 }
 
@@ -87,8 +95,9 @@ const (
 )
 
 // Values returns all known values for BatchReportModeType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BatchReportModeType) Values() []BatchReportModeType {
 	return []BatchReportModeType{
 		"REPORT_INDIVIDUAL_BUILDS",
@@ -106,8 +115,9 @@ const (
 )
 
 // Values returns all known values for BucketOwnerAccess. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BucketOwnerAccess) Values() []BucketOwnerAccess {
 	return []BucketOwnerAccess{
 		"NONE",
@@ -130,8 +140,9 @@ const (
 )
 
 // Values returns all known values for BuildBatchPhaseType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BuildBatchPhaseType) Values() []BuildBatchPhaseType {
 	return []BuildBatchPhaseType{
 		"SUBMITTED",
@@ -162,8 +173,9 @@ const (
 )
 
 // Values returns all known values for BuildPhaseType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BuildPhaseType) Values() []BuildPhaseType {
 	return []BuildPhaseType{
 		"SUBMITTED",
@@ -190,8 +202,9 @@ const (
 )
 
 // Values returns all known values for CacheMode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CacheMode) Values() []CacheMode {
 	return []CacheMode{
 		"LOCAL_DOCKER_LAYER_CACHE",
@@ -210,8 +223,9 @@ const (
 )
 
 // Values returns all known values for CacheType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CacheType) Values() []CacheType {
 	return []CacheType{
 		"NO_CACHE",
@@ -224,21 +238,36 @@ type ComputeType string
 
 // Enum values for ComputeType
 const (
-	ComputeTypeBuildGeneral1Small   ComputeType = "BUILD_GENERAL1_SMALL"
-	ComputeTypeBuildGeneral1Medium  ComputeType = "BUILD_GENERAL1_MEDIUM"
-	ComputeTypeBuildGeneral1Large   ComputeType = "BUILD_GENERAL1_LARGE"
-	ComputeTypeBuildGeneral12xlarge ComputeType = "BUILD_GENERAL1_2XLARGE"
+	ComputeTypeBuildGeneral1Small    ComputeType = "BUILD_GENERAL1_SMALL"
+	ComputeTypeBuildGeneral1Medium   ComputeType = "BUILD_GENERAL1_MEDIUM"
+	ComputeTypeBuildGeneral1Large    ComputeType = "BUILD_GENERAL1_LARGE"
+	ComputeTypeBuildGeneral1Xlarge   ComputeType = "BUILD_GENERAL1_XLARGE"
+	ComputeTypeBuildGeneral12xlarge  ComputeType = "BUILD_GENERAL1_2XLARGE"
+	ComputeTypeBuildLambda1gb        ComputeType = "BUILD_LAMBDA_1GB"
+	ComputeTypeBuildLambda2gb        ComputeType = "BUILD_LAMBDA_2GB"
+	ComputeTypeBuildLambda4gb        ComputeType = "BUILD_LAMBDA_4GB"
+	ComputeTypeBuildLambda8gb        ComputeType = "BUILD_LAMBDA_8GB"
+	ComputeTypeBuildLambda10gb       ComputeType = "BUILD_LAMBDA_10GB"
+	ComputeTypeAttributeBasedCompute ComputeType = "ATTRIBUTE_BASED_COMPUTE"
 )
 
 // Values returns all known values for ComputeType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ComputeType) Values() []ComputeType {
 	return []ComputeType{
 		"BUILD_GENERAL1_SMALL",
 		"BUILD_GENERAL1_MEDIUM",
 		"BUILD_GENERAL1_LARGE",
+		"BUILD_GENERAL1_XLARGE",
 		"BUILD_GENERAL1_2XLARGE",
+		"BUILD_LAMBDA_1GB",
+		"BUILD_LAMBDA_2GB",
+		"BUILD_LAMBDA_4GB",
+		"BUILD_LAMBDA_8GB",
+		"BUILD_LAMBDA_10GB",
+		"ATTRIBUTE_BASED_COMPUTE",
 	}
 }
 
@@ -250,8 +279,9 @@ const (
 )
 
 // Values returns all known values for CredentialProviderType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CredentialProviderType) Values() []CredentialProviderType {
 	return []CredentialProviderType{
 		"SECRETS_MANAGER",
@@ -267,11 +297,18 @@ const (
 	EnvironmentTypeLinuxGpuContainer          EnvironmentType = "LINUX_GPU_CONTAINER"
 	EnvironmentTypeArmContainer               EnvironmentType = "ARM_CONTAINER"
 	EnvironmentTypeWindowsServer2019Container EnvironmentType = "WINDOWS_SERVER_2019_CONTAINER"
+	EnvironmentTypeLinuxLambdaContainer       EnvironmentType = "LINUX_LAMBDA_CONTAINER"
+	EnvironmentTypeArmLambdaContainer         EnvironmentType = "ARM_LAMBDA_CONTAINER"
+	EnvironmentTypeLinuxEc2                   EnvironmentType = "LINUX_EC2"
+	EnvironmentTypeArmEc2                     EnvironmentType = "ARM_EC2"
+	EnvironmentTypeWindowsEc2                 EnvironmentType = "WINDOWS_EC2"
+	EnvironmentTypeMacArm                     EnvironmentType = "MAC_ARM"
 )
 
 // Values returns all known values for EnvironmentType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EnvironmentType) Values() []EnvironmentType {
 	return []EnvironmentType{
 		"WINDOWS_CONTAINER",
@@ -279,6 +316,12 @@ func (EnvironmentType) Values() []EnvironmentType {
 		"LINUX_GPU_CONTAINER",
 		"ARM_CONTAINER",
 		"WINDOWS_SERVER_2019_CONTAINER",
+		"LINUX_LAMBDA_CONTAINER",
+		"ARM_LAMBDA_CONTAINER",
+		"LINUX_EC2",
+		"ARM_EC2",
+		"WINDOWS_EC2",
+		"MAC_ARM",
 	}
 }
 
@@ -292,8 +335,9 @@ const (
 )
 
 // Values returns all known values for EnvironmentVariableType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EnvironmentVariableType) Values() []EnvironmentVariableType {
 	return []EnvironmentVariableType{
 		"PLAINTEXT",
@@ -310,11 +354,199 @@ const (
 )
 
 // Values returns all known values for FileSystemType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FileSystemType) Values() []FileSystemType {
 	return []FileSystemType{
 		"EFS",
+	}
+}
+
+type FleetContextCode string
+
+// Enum values for FleetContextCode
+const (
+	FleetContextCodeCreateFailed         FleetContextCode = "CREATE_FAILED"
+	FleetContextCodeUpdateFailed         FleetContextCode = "UPDATE_FAILED"
+	FleetContextCodeActionRequired       FleetContextCode = "ACTION_REQUIRED"
+	FleetContextCodePendingDeletion      FleetContextCode = "PENDING_DELETION"
+	FleetContextCodeInsufficientCapacity FleetContextCode = "INSUFFICIENT_CAPACITY"
+)
+
+// Values returns all known values for FleetContextCode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FleetContextCode) Values() []FleetContextCode {
+	return []FleetContextCode{
+		"CREATE_FAILED",
+		"UPDATE_FAILED",
+		"ACTION_REQUIRED",
+		"PENDING_DELETION",
+		"INSUFFICIENT_CAPACITY",
+	}
+}
+
+type FleetOverflowBehavior string
+
+// Enum values for FleetOverflowBehavior
+const (
+	FleetOverflowBehaviorQueue    FleetOverflowBehavior = "QUEUE"
+	FleetOverflowBehaviorOnDemand FleetOverflowBehavior = "ON_DEMAND"
+)
+
+// Values returns all known values for FleetOverflowBehavior. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FleetOverflowBehavior) Values() []FleetOverflowBehavior {
+	return []FleetOverflowBehavior{
+		"QUEUE",
+		"ON_DEMAND",
+	}
+}
+
+type FleetProxyRuleBehavior string
+
+// Enum values for FleetProxyRuleBehavior
+const (
+	FleetProxyRuleBehaviorAllowAll FleetProxyRuleBehavior = "ALLOW_ALL"
+	FleetProxyRuleBehaviorDenyAll  FleetProxyRuleBehavior = "DENY_ALL"
+)
+
+// Values returns all known values for FleetProxyRuleBehavior. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FleetProxyRuleBehavior) Values() []FleetProxyRuleBehavior {
+	return []FleetProxyRuleBehavior{
+		"ALLOW_ALL",
+		"DENY_ALL",
+	}
+}
+
+type FleetProxyRuleEffectType string
+
+// Enum values for FleetProxyRuleEffectType
+const (
+	FleetProxyRuleEffectTypeAllow FleetProxyRuleEffectType = "ALLOW"
+	FleetProxyRuleEffectTypeDeny  FleetProxyRuleEffectType = "DENY"
+)
+
+// Values returns all known values for FleetProxyRuleEffectType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FleetProxyRuleEffectType) Values() []FleetProxyRuleEffectType {
+	return []FleetProxyRuleEffectType{
+		"ALLOW",
+		"DENY",
+	}
+}
+
+type FleetProxyRuleType string
+
+// Enum values for FleetProxyRuleType
+const (
+	FleetProxyRuleTypeDomain FleetProxyRuleType = "DOMAIN"
+	FleetProxyRuleTypeIp     FleetProxyRuleType = "IP"
+)
+
+// Values returns all known values for FleetProxyRuleType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FleetProxyRuleType) Values() []FleetProxyRuleType {
+	return []FleetProxyRuleType{
+		"DOMAIN",
+		"IP",
+	}
+}
+
+type FleetScalingMetricType string
+
+// Enum values for FleetScalingMetricType
+const (
+	FleetScalingMetricTypeFleetUtilizationRate FleetScalingMetricType = "FLEET_UTILIZATION_RATE"
+)
+
+// Values returns all known values for FleetScalingMetricType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FleetScalingMetricType) Values() []FleetScalingMetricType {
+	return []FleetScalingMetricType{
+		"FLEET_UTILIZATION_RATE",
+	}
+}
+
+type FleetScalingType string
+
+// Enum values for FleetScalingType
+const (
+	FleetScalingTypeTargetTrackingScaling FleetScalingType = "TARGET_TRACKING_SCALING"
+)
+
+// Values returns all known values for FleetScalingType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FleetScalingType) Values() []FleetScalingType {
+	return []FleetScalingType{
+		"TARGET_TRACKING_SCALING",
+	}
+}
+
+type FleetSortByType string
+
+// Enum values for FleetSortByType
+const (
+	FleetSortByTypeName             FleetSortByType = "NAME"
+	FleetSortByTypeCreatedTime      FleetSortByType = "CREATED_TIME"
+	FleetSortByTypeLastModifiedTime FleetSortByType = "LAST_MODIFIED_TIME"
+)
+
+// Values returns all known values for FleetSortByType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FleetSortByType) Values() []FleetSortByType {
+	return []FleetSortByType{
+		"NAME",
+		"CREATED_TIME",
+		"LAST_MODIFIED_TIME",
+	}
+}
+
+type FleetStatusCode string
+
+// Enum values for FleetStatusCode
+const (
+	FleetStatusCodeCreating             FleetStatusCode = "CREATING"
+	FleetStatusCodeUpdating             FleetStatusCode = "UPDATING"
+	FleetStatusCodeRotating             FleetStatusCode = "ROTATING"
+	FleetStatusCodePendingDeletion      FleetStatusCode = "PENDING_DELETION"
+	FleetStatusCodeDeleting             FleetStatusCode = "DELETING"
+	FleetStatusCodeCreateFailed         FleetStatusCode = "CREATE_FAILED"
+	FleetStatusCodeUpdateRollbackFailed FleetStatusCode = "UPDATE_ROLLBACK_FAILED"
+	FleetStatusCodeActive               FleetStatusCode = "ACTIVE"
+)
+
+// Values returns all known values for FleetStatusCode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FleetStatusCode) Values() []FleetStatusCode {
+	return []FleetStatusCode{
+		"CREATING",
+		"UPDATING",
+		"ROTATING",
+		"PENDING_DELETION",
+		"DELETING",
+		"CREATE_FAILED",
+		"UPDATE_ROLLBACK_FAILED",
+		"ACTIVE",
 	}
 }
 
@@ -328,6 +560,7 @@ const (
 
 // Values returns all known values for ImagePullCredentialsType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ImagePullCredentialsType) Values() []ImagePullCredentialsType {
 	return []ImagePullCredentialsType{
@@ -353,8 +586,9 @@ const (
 )
 
 // Values returns all known values for LanguageType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LanguageType) Values() []LanguageType {
 	return []LanguageType{
 		"JAVA",
@@ -379,12 +613,32 @@ const (
 )
 
 // Values returns all known values for LogsConfigStatusType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogsConfigStatusType) Values() []LogsConfigStatusType {
 	return []LogsConfigStatusType{
 		"ENABLED",
 		"DISABLED",
+	}
+}
+
+type MachineType string
+
+// Enum values for MachineType
+const (
+	MachineTypeGeneral MachineType = "GENERAL"
+	MachineTypeNvme    MachineType = "NVME"
+)
+
+// Values returns all known values for MachineType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MachineType) Values() []MachineType {
+	return []MachineType{
+		"GENERAL",
+		"NVME",
 	}
 }
 
@@ -399,8 +653,9 @@ const (
 )
 
 // Values returns all known values for PlatformType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PlatformType) Values() []PlatformType {
 	return []PlatformType{
 		"DEBIAN",
@@ -420,8 +675,9 @@ const (
 )
 
 // Values returns all known values for ProjectSortByType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProjectSortByType) Values() []ProjectSortByType {
 	return []ProjectSortByType{
 		"NAME",
@@ -439,8 +695,9 @@ const (
 )
 
 // Values returns all known values for ProjectVisibilityType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProjectVisibilityType) Values() []ProjectVisibilityType {
 	return []ProjectVisibilityType{
 		"PUBLIC_READ",
@@ -458,8 +715,9 @@ const (
 
 // Values returns all known values for ReportCodeCoverageSortByType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportCodeCoverageSortByType) Values() []ReportCodeCoverageSortByType {
 	return []ReportCodeCoverageSortByType{
 		"LINE_COVERAGE_PERCENTAGE",
@@ -476,8 +734,9 @@ const (
 )
 
 // Values returns all known values for ReportExportConfigType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportExportConfigType) Values() []ReportExportConfigType {
 	return []ReportExportConfigType{
 		"S3",
@@ -495,8 +754,9 @@ const (
 )
 
 // Values returns all known values for ReportGroupSortByType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportGroupSortByType) Values() []ReportGroupSortByType {
 	return []ReportGroupSortByType{
 		"NAME",
@@ -514,8 +774,9 @@ const (
 )
 
 // Values returns all known values for ReportGroupStatusType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportGroupStatusType) Values() []ReportGroupStatusType {
 	return []ReportGroupStatusType{
 		"ACTIVE",
@@ -540,6 +801,7 @@ const (
 
 // Values returns all known values for ReportGroupTrendFieldType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportGroupTrendFieldType) Values() []ReportGroupTrendFieldType {
 	return []ReportGroupTrendFieldType{
@@ -564,8 +826,9 @@ const (
 )
 
 // Values returns all known values for ReportPackagingType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportPackagingType) Values() []ReportPackagingType {
 	return []ReportPackagingType{
 		"ZIP",
@@ -585,8 +848,9 @@ const (
 )
 
 // Values returns all known values for ReportStatusType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportStatusType) Values() []ReportStatusType {
 	return []ReportStatusType{
 		"GENERATING",
@@ -606,8 +870,9 @@ const (
 )
 
 // Values returns all known values for ReportType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportType) Values() []ReportType {
 	return []ReportType{
 		"TEST",
@@ -624,8 +889,9 @@ const (
 )
 
 // Values returns all known values for RetryBuildBatchType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RetryBuildBatchType) Values() []RetryBuildBatchType {
 	return []RetryBuildBatchType{
 		"RETRY_ALL_BUILDS",
@@ -637,19 +903,24 @@ type ServerType string
 
 // Enum values for ServerType
 const (
-	ServerTypeGithub           ServerType = "GITHUB"
-	ServerTypeBitbucket        ServerType = "BITBUCKET"
-	ServerTypeGithubEnterprise ServerType = "GITHUB_ENTERPRISE"
+	ServerTypeGithub            ServerType = "GITHUB"
+	ServerTypeBitbucket         ServerType = "BITBUCKET"
+	ServerTypeGithubEnterprise  ServerType = "GITHUB_ENTERPRISE"
+	ServerTypeGitlab            ServerType = "GITLAB"
+	ServerTypeGitlabSelfManaged ServerType = "GITLAB_SELF_MANAGED"
 )
 
 // Values returns all known values for ServerType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ServerType) Values() []ServerType {
 	return []ServerType{
 		"GITHUB",
 		"BITBUCKET",
 		"GITHUB_ENTERPRISE",
+		"GITLAB",
+		"GITLAB_SELF_MANAGED",
 	}
 }
 
@@ -663,6 +934,7 @@ const (
 
 // Values returns all known values for SharedResourceSortByType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (SharedResourceSortByType) Values() []SharedResourceSortByType {
 	return []SharedResourceSortByType{
@@ -680,8 +952,9 @@ const (
 )
 
 // Values returns all known values for SortOrderType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SortOrderType) Values() []SortOrderType {
 	return []SortOrderType{
 		"ASCENDING",
@@ -693,15 +966,20 @@ type SourceAuthType string
 
 // Enum values for SourceAuthType
 const (
-	SourceAuthTypeOauth SourceAuthType = "OAUTH"
+	SourceAuthTypeOauth           SourceAuthType = "OAUTH"
+	SourceAuthTypeCodeconnections SourceAuthType = "CODECONNECTIONS"
+	SourceAuthTypeSecretsManager  SourceAuthType = "SECRETS_MANAGER"
 )
 
 // Values returns all known values for SourceAuthType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SourceAuthType) Values() []SourceAuthType {
 	return []SourceAuthType{
 		"OAUTH",
+		"CODECONNECTIONS",
+		"SECRETS_MANAGER",
 	}
 }
 
@@ -709,23 +987,28 @@ type SourceType string
 
 // Enum values for SourceType
 const (
-	SourceTypeCodecommit       SourceType = "CODECOMMIT"
-	SourceTypeCodepipeline     SourceType = "CODEPIPELINE"
-	SourceTypeGithub           SourceType = "GITHUB"
-	SourceTypeS3               SourceType = "S3"
-	SourceTypeBitbucket        SourceType = "BITBUCKET"
-	SourceTypeGithubEnterprise SourceType = "GITHUB_ENTERPRISE"
-	SourceTypeNoSource         SourceType = "NO_SOURCE"
+	SourceTypeCodecommit        SourceType = "CODECOMMIT"
+	SourceTypeCodepipeline      SourceType = "CODEPIPELINE"
+	SourceTypeGithub            SourceType = "GITHUB"
+	SourceTypeGitlab            SourceType = "GITLAB"
+	SourceTypeGitlabSelfManaged SourceType = "GITLAB_SELF_MANAGED"
+	SourceTypeS3                SourceType = "S3"
+	SourceTypeBitbucket         SourceType = "BITBUCKET"
+	SourceTypeGithubEnterprise  SourceType = "GITHUB_ENTERPRISE"
+	SourceTypeNoSource          SourceType = "NO_SOURCE"
 )
 
 // Values returns all known values for SourceType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SourceType) Values() []SourceType {
 	return []SourceType{
 		"CODECOMMIT",
 		"CODEPIPELINE",
 		"GITHUB",
+		"GITLAB",
+		"GITLAB_SELF_MANAGED",
 		"S3",
 		"BITBUCKET",
 		"GITHUB_ENTERPRISE",
@@ -746,8 +1029,9 @@ const (
 )
 
 // Values returns all known values for StatusType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StatusType) Values() []StatusType {
 	return []StatusType{
 		"SUCCEEDED",
@@ -763,17 +1047,20 @@ type WebhookBuildType string
 
 // Enum values for WebhookBuildType
 const (
-	WebhookBuildTypeBuild      WebhookBuildType = "BUILD"
-	WebhookBuildTypeBuildBatch WebhookBuildType = "BUILD_BATCH"
+	WebhookBuildTypeBuild                WebhookBuildType = "BUILD"
+	WebhookBuildTypeBuildBatch           WebhookBuildType = "BUILD_BATCH"
+	WebhookBuildTypeRunnerBuildkiteBuild WebhookBuildType = "RUNNER_BUILDKITE_BUILD"
 )
 
 // Values returns all known values for WebhookBuildType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WebhookBuildType) Values() []WebhookBuildType {
 	return []WebhookBuildType{
 		"BUILD",
 		"BUILD_BATCH",
+		"RUNNER_BUILDKITE_BUILD",
 	}
 }
 
@@ -787,11 +1074,16 @@ const (
 	WebhookFilterTypeActorAccountId WebhookFilterType = "ACTOR_ACCOUNT_ID"
 	WebhookFilterTypeFilePath       WebhookFilterType = "FILE_PATH"
 	WebhookFilterTypeCommitMessage  WebhookFilterType = "COMMIT_MESSAGE"
+	WebhookFilterTypeWorkflowName   WebhookFilterType = "WORKFLOW_NAME"
+	WebhookFilterTypeTagName        WebhookFilterType = "TAG_NAME"
+	WebhookFilterTypeReleaseName    WebhookFilterType = "RELEASE_NAME"
+	WebhookFilterTypeRepositoryName WebhookFilterType = "REPOSITORY_NAME"
 )
 
 // Values returns all known values for WebhookFilterType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WebhookFilterType) Values() []WebhookFilterType {
 	return []WebhookFilterType{
 		"EVENT",
@@ -800,5 +1092,30 @@ func (WebhookFilterType) Values() []WebhookFilterType {
 		"ACTOR_ACCOUNT_ID",
 		"FILE_PATH",
 		"COMMIT_MESSAGE",
+		"WORKFLOW_NAME",
+		"TAG_NAME",
+		"RELEASE_NAME",
+		"REPOSITORY_NAME",
+	}
+}
+
+type WebhookScopeType string
+
+// Enum values for WebhookScopeType
+const (
+	WebhookScopeTypeGithubOrganization WebhookScopeType = "GITHUB_ORGANIZATION"
+	WebhookScopeTypeGithubGlobal       WebhookScopeType = "GITHUB_GLOBAL"
+	WebhookScopeTypeGitlabGroup        WebhookScopeType = "GITLAB_GROUP"
+)
+
+// Values returns all known values for WebhookScopeType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WebhookScopeType) Values() []WebhookScopeType {
+	return []WebhookScopeType{
+		"GITHUB_ORGANIZATION",
+		"GITHUB_GLOBAL",
+		"GITLAB_GROUP",
 	}
 }

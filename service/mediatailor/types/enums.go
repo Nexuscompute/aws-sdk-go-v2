@@ -8,15 +8,18 @@ type AccessType string
 const (
 	AccessTypeS3Sigv4                   AccessType = "S3_SIGV4"
 	AccessTypeSecretsManagerAccessToken AccessType = "SECRETS_MANAGER_ACCESS_TOKEN"
+	AccessTypeAutodetectSigv4           AccessType = "AUTODETECT_SIGV4"
 )
 
 // Values returns all known values for AccessType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AccessType) Values() []AccessType {
 	return []AccessType{
 		"S3_SIGV4",
 		"SECRETS_MANAGER_ACCESS_TOKEN",
+		"AUTODETECT_SIGV4",
 	}
 }
 
@@ -29,8 +32,9 @@ const (
 )
 
 // Values returns all known values for AdMarkupType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AdMarkupType) Values() []AdMarkupType {
 	return []AdMarkupType{
 		"DATERANGE",
@@ -48,8 +52,9 @@ const (
 )
 
 // Values returns all known values for AlertCategory. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AlertCategory) Values() []AlertCategory {
 	return []AlertCategory{
 		"SCHEDULING_ERROR",
@@ -67,8 +72,9 @@ const (
 )
 
 // Values returns all known values for ChannelState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ChannelState) Values() []ChannelState {
 	return []ChannelState{
 		"RUNNING",
@@ -85,12 +91,51 @@ const (
 )
 
 // Values returns all known values for FillPolicy. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FillPolicy) Values() []FillPolicy {
 	return []FillPolicy{
 		"FULL_AVAIL_ONLY",
 		"PARTIAL_AVAIL",
+	}
+}
+
+type InsertionMode string
+
+// Enum values for InsertionMode
+const (
+	InsertionModeStitchedOnly InsertionMode = "STITCHED_ONLY"
+	InsertionModePlayerSelect InsertionMode = "PLAYER_SELECT"
+)
+
+// Values returns all known values for InsertionMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InsertionMode) Values() []InsertionMode {
+	return []InsertionMode{
+		"STITCHED_ONLY",
+		"PLAYER_SELECT",
+	}
+}
+
+type LoggingStrategy string
+
+// Enum values for LoggingStrategy
+const (
+	LoggingStrategyVendedLogs       LoggingStrategy = "VENDED_LOGS"
+	LoggingStrategyLegacyCloudwatch LoggingStrategy = "LEGACY_CLOUDWATCH"
+)
+
+// Values returns all known values for LoggingStrategy. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LoggingStrategy) Values() []LoggingStrategy {
+	return []LoggingStrategy{
+		"VENDED_LOGS",
+		"LEGACY_CLOUDWATCH",
 	}
 }
 
@@ -102,8 +147,9 @@ const (
 )
 
 // Values returns all known values for LogType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogType) Values() []LogType {
 	return []LogType{
 		"AS_RUN",
@@ -119,8 +165,9 @@ const (
 )
 
 // Values returns all known values for MessageType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MessageType) Values() []MessageType {
 	return []MessageType{
 		"SPLICE_INSERT",
@@ -138,8 +185,9 @@ const (
 )
 
 // Values returns all known values for Mode. Note that this can be expanded in the
-// future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mode) Values() []Mode {
 	return []Mode{
 		"OFF",
@@ -156,8 +204,9 @@ const (
 )
 
 // Values returns all known values for Operator. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Operator) Values() []Operator {
 	return []Operator{
 		"EQUALS",
@@ -173,8 +222,9 @@ const (
 )
 
 // Values returns all known values for OriginManifestType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OriginManifestType) Values() []OriginManifestType {
 	return []OriginManifestType{
 		"SINGLE_PERIOD",
@@ -191,8 +241,9 @@ const (
 )
 
 // Values returns all known values for PlaybackMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PlaybackMode) Values() []PlaybackMode {
 	return []PlaybackMode{
 		"LOOP",
@@ -209,8 +260,9 @@ const (
 )
 
 // Values returns all known values for RelativePosition. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RelativePosition) Values() []RelativePosition {
 	return []RelativePosition{
 		"BEFORE_PROGRAM",
@@ -222,17 +274,40 @@ type ScheduleEntryType string
 
 // Enum values for ScheduleEntryType
 const (
-	ScheduleEntryTypeProgram     ScheduleEntryType = "PROGRAM"
-	ScheduleEntryTypeFillerSlate ScheduleEntryType = "FILLER_SLATE"
+	ScheduleEntryTypeProgram        ScheduleEntryType = "PROGRAM"
+	ScheduleEntryTypeFillerSlate    ScheduleEntryType = "FILLER_SLATE"
+	ScheduleEntryTypeAlternateMedia ScheduleEntryType = "ALTERNATE_MEDIA"
 )
 
 // Values returns all known values for ScheduleEntryType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScheduleEntryType) Values() []ScheduleEntryType {
 	return []ScheduleEntryType{
 		"PROGRAM",
 		"FILLER_SLATE",
+		"ALTERNATE_MEDIA",
+	}
+}
+
+type StreamingMediaFileConditioning string
+
+// Enum values for StreamingMediaFileConditioning
+const (
+	StreamingMediaFileConditioningTranscode StreamingMediaFileConditioning = "TRANSCODE"
+	StreamingMediaFileConditioningNone      StreamingMediaFileConditioning = "NONE"
+)
+
+// Values returns all known values for StreamingMediaFileConditioning. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StreamingMediaFileConditioning) Values() []StreamingMediaFileConditioning {
+	return []StreamingMediaFileConditioning{
+		"TRANSCODE",
+		"NONE",
 	}
 }
 
@@ -245,8 +320,9 @@ const (
 )
 
 // Values returns all known values for Tier. Note that this can be expanded in the
-// future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Tier) Values() []Tier {
 	return []Tier{
 		"BASIC",
@@ -263,8 +339,9 @@ const (
 )
 
 // Values returns all known values for Type. Note that this can be expanded in the
-// future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Type) Values() []Type {
 	return []Type{
 		"DASH",

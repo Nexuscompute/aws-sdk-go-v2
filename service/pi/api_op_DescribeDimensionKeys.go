@@ -4,20 +4,16 @@ package pi
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/pi/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
 )
 
 // For a specific time period, retrieve the top N dimension keys for a metric.
+//
 // Each response element returns a maximum of 500 bytes. For larger elements, such
 // as SQL statements, only the first 500 bytes are returned.
 func (c *Client) DescribeDimensionKeys(ctx context.Context, params *DescribeDimensionKeysInput, optFns ...func(*Options)) (*DescribeDimensionKeysOutput, error) {
@@ -39,8 +35,9 @@ type DescribeDimensionKeysInput struct {
 
 	// The date and time specifying the end of the requested time series data. The
 	// value specified is exclusive, which means that data points less than (but not
-	// equal to) EndTime are returned. The value for EndTime must be later than the
-	// value for StartTime .
+	// equal to) EndTime are returned.
+	//
+	// The value for EndTime must be later than the value for StartTime .
 	//
 	// This member is required.
 	EndTime *time.Time
@@ -55,19 +52,24 @@ type DescribeDimensionKeysInput struct {
 	GroupBy *types.DimensionGroup
 
 	// An immutable, Amazon Web Services Region-unique identifier for a data source.
-	// Performance Insights gathers metrics from this data source. To use an Amazon RDS
-	// instance as a data source, you specify its DbiResourceId value. For example,
-	// specify db-FAIHNTYBKTGAUSUZQYPDS2GW4A .
+	// Performance Insights gathers metrics from this data source.
+	//
+	// To use an Amazon RDS instance as a data source, you specify its DbiResourceId
+	// value. For example, specify db-FAIHNTYBKTGAUSUZQYPDS2GW4A .
 	//
 	// This member is required.
 	Identifier *string
 
-	// The name of a Performance Insights metric to be measured. Valid values for
-	// Metric are:
+	// The name of a Performance Insights metric to be measured.
+	//
+	// Valid values for Metric are:
+	//
 	//   - db.load.avg - A scaled representation of the number of active sessions for
 	//   the database engine.
+	//
 	//   - db.sampledload.avg - The raw number of active sessions for the database
 	//   engine.
+	//
 	// If the number of active sessions is less than an internal Performance Insights
 	// threshold, db.load.avg and db.sampledload.avg are the same value. If the number
 	// of active sessions is greater than the internal threshold, Performance Insights
@@ -80,7 +82,9 @@ type DescribeDimensionKeysInput struct {
 
 	// The Amazon Web Services service for which Performance Insights will return
 	// metrics. Valid values are as follows:
+	//
 	//   - RDS
+	//
 	//   - DOCDB
 	//
 	// This member is required.
@@ -89,7 +93,9 @@ type DescribeDimensionKeysInput struct {
 	// The date and time specifying the beginning of the requested time series data.
 	// You must specify a StartTime within the past 7 days. The value specified is
 	// inclusive, which means that data points equal to or greater than StartTime are
-	// returned. The value for StartTime must be earlier than the value for EndTime .
+	// returned.
+	//
+	// The value for StartTime must be earlier than the value for EndTime .
 	//
 	// This member is required.
 	StartTime *time.Time
@@ -98,12 +104,18 @@ type DescribeDimensionKeysInput struct {
 	// group in the GroupBy parameter is db.sql_tokenized , you can specify per-SQL
 	// metrics to get the values for the top N SQL digests. The response syntax is as
 	// follows: "AdditionalMetrics" : { "string" : "string" } .
+	//
+	// The only supported statistic function is .avg .
 	AdditionalMetrics []string
 
 	// One or more filters to apply in the request. Restrictions:
+	//
 	//   - Any number of filters by the same dimension, as specified in the GroupBy or
 	//   Partition parameters.
+	//
 	//   - A single filter for any other dimension in this dimension group.
+	//
+	// The db.sql.db_id filter isn't available for RDS for SQL Server DB instances.
 	Filter map[string]string
 
 	// The maximum number of items to return in the response. If more items exist than
@@ -123,11 +135,17 @@ type DescribeDimensionKeysInput struct {
 	// The granularity, in seconds, of the data points returned from Performance
 	// Insights. A period can be as short as one second, or as long as one day (86400
 	// seconds). Valid values are:
+	//
 	//   - 1 (one second)
+	//
 	//   - 60 (one minute)
+	//
 	//   - 300 (five minutes)
+	//
 	//   - 3600 (one hour)
+	//
 	//   - 86400 (twenty-four hours)
+	//
 	// If you don't specify PeriodInSeconds , then Performance Insights chooses a value
 	// for you, with a goal of returning roughly 100-200 data points in the response.
 	PeriodInSeconds *int32
@@ -166,6 +184,9 @@ type DescribeDimensionKeysOutput struct {
 }
 
 func (c *Client) addOperationDescribeDimensionKeysMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpDescribeDimensionKeys{}, middleware.After)
 	if err != nil {
 		return err
@@ -174,34 +195,38 @@ func (c *Client) addOperationDescribeDimensionKeysMiddlewares(stack *middleware.
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeDimensionKeys"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -213,7 +238,13 @@ func (c *Client) addOperationDescribeDimensionKeysMiddlewares(stack *middleware.
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeDimensionKeysResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeDimensionKeysValidationMiddleware(stack); err != nil {
@@ -222,7 +253,7 @@ func (c *Client) addOperationDescribeDimensionKeysMiddlewares(stack *middleware.
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeDimensionKeys(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -234,19 +265,23 @@ func (c *Client) addOperationDescribeDimensionKeysMiddlewares(stack *middleware.
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// DescribeDimensionKeysAPIClient is a client that implements the
-// DescribeDimensionKeys operation.
-type DescribeDimensionKeysAPIClient interface {
-	DescribeDimensionKeys(context.Context, *DescribeDimensionKeysInput, ...func(*Options)) (*DescribeDimensionKeysOutput, error)
-}
-
-var _ DescribeDimensionKeysAPIClient = (*Client)(nil)
 
 // DescribeDimensionKeysPaginatorOptions is the paginator options for
 // DescribeDimensionKeys
@@ -314,6 +349,9 @@ func (p *DescribeDimensionKeysPaginator) NextPage(ctx context.Context, optFns ..
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeDimensionKeys(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -333,134 +371,18 @@ func (p *DescribeDimensionKeysPaginator) NextPage(ctx context.Context, optFns ..
 	return result, nil
 }
 
+// DescribeDimensionKeysAPIClient is a client that implements the
+// DescribeDimensionKeys operation.
+type DescribeDimensionKeysAPIClient interface {
+	DescribeDimensionKeys(context.Context, *DescribeDimensionKeysInput, ...func(*Options)) (*DescribeDimensionKeysOutput, error)
+}
+
+var _ DescribeDimensionKeysAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opDescribeDimensionKeys(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "pi",
 		OperationName: "DescribeDimensionKeys",
 	}
-}
-
-type opDescribeDimensionKeysResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeDimensionKeysResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeDimensionKeysResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "pi"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "pi"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("pi")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeDimensionKeysResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeDimensionKeysResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

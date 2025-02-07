@@ -26,12 +26,15 @@ type AccessEndpoint struct {
 	noSmithyDocumentSerde
 }
 
-// Describes an app block. App blocks are an Amazon AppStream 2.0 resource that
-// stores the details about the virtual hard disk in an S3 bucket. It also stores
-// the setup script with details about how to mount the virtual hard disk. The
-// virtual hard disk includes the application binaries and other files necessary to
-// launch your applications. Multiple applications can be assigned to a single app
-// block. This is only supported for Elastic fleets.
+// Describes an app block.
+//
+// App blocks are an Amazon AppStream 2.0 resource that stores the details about
+// the virtual hard disk in an S3 bucket. It also stores the setup script with
+// details about how to mount the virtual hard disk. The virtual hard disk includes
+// the application binaries and other files necessary to launch your applications.
+// Multiple applications can be assigned to a single app block.
+//
+// This is only supported for Elastic fleets.
 type AppBlock struct {
 
 	// The ARN of the app block.
@@ -59,22 +62,27 @@ type AppBlock struct {
 	// The packaging type of the app block.
 	PackagingType PackagingType
 
-	// The post setup script details of the app block. This only applies to app blocks
-	// with PackagingType APPSTREAM2 .
+	// The post setup script details of the app block.
+	//
+	// This only applies to app blocks with PackagingType APPSTREAM2 .
 	PostSetupScriptDetails *ScriptDetails
 
-	// The setup script details of the app block. This only applies to app blocks with
-	// PackagingType CUSTOM .
+	// The setup script details of the app block.
+	//
+	// This only applies to app blocks with PackagingType CUSTOM .
 	SetupScriptDetails *ScriptDetails
 
 	// The source S3 location of the app block.
 	SourceS3Location *S3Location
 
-	// The state of the app block. An app block with AppStream 2.0 packaging will be
-	// in the INACTIVE state if no application package (VHD) is assigned to it. After
-	// an application package (VHD) is created by an app block builder for an app
-	// block, it becomes ACTIVE . Custom app blocks are always in the ACTIVE state and
-	// no action is required to use them.
+	// The state of the app block.
+	//
+	// An app block with AppStream 2.0 packaging will be in the INACTIVE state if no
+	// application package (VHD) is assigned to it. After an application package (VHD)
+	// is created by an app block builder for an app block, it becomes ACTIVE .
+	//
+	// Custom app blocks are always in the ACTIVE state and no action is required to
+	// use them.
 	State AppBlockState
 
 	noSmithyDocumentSerde
@@ -98,8 +106,9 @@ type AppBlockBuilder struct {
 	// This member is required.
 	Name *string
 
-	// The platform of the app block builder. WINDOWS_SERVER_2019 is the only valid
-	// value.
+	// The platform of the app block builder.
+	//
+	// WINDOWS_SERVER_2019 is the only valid value.
 	//
 	// This member is required.
 	Platform AppBlockBuilderPlatformType
@@ -189,7 +198,7 @@ type Application struct {
 	DisplayName *string
 
 	// If there is a problem, the application can be disabled after image creation.
-	Enabled bool
+	Enabled *bool
 
 	// The S3 location of the application icon.
 	IconS3Location *S3Location
@@ -244,7 +253,7 @@ type ApplicationSettings struct {
 	// streaming sessions.
 	//
 	// This member is required.
-	Enabled bool
+	Enabled *bool
 
 	// The path prefix for the S3 bucket where users’ persistent application settings
 	// are stored. You can allow the same persistent application settings to be used
@@ -259,7 +268,7 @@ type ApplicationSettingsResponse struct {
 
 	// Specifies whether persistent application settings are enabled for users during
 	// their streaming sessions.
-	Enabled bool
+	Enabled *bool
 
 	// The S3 bucket where users’ persistent application settings are stored. When
 	// persistent application settings are enabled for the first time for an account in
@@ -298,9 +307,15 @@ type CertificateBasedAuthProperties struct {
 type ComputeCapacity struct {
 
 	// The desired number of streaming instances.
-	//
-	// This member is required.
 	DesiredInstances *int32
+
+	// The desired number of user sessions for a multi-session fleet. This is not
+	// allowed for single-session fleets.
+	//
+	// When you create a fleet, you must set either the DesiredSessions or
+	// DesiredInstances attribute, based on the type of fleet you create. You can’t
+	// define both attributes or leave both attributes blank.
+	DesiredSessions *int32
 
 	noSmithyDocumentSerde
 }
@@ -313,8 +328,37 @@ type ComputeCapacityStatus struct {
 	// This member is required.
 	Desired *int32
 
+	// The number of user sessions currently being used for streaming sessions. This
+	// only applies to multi-session fleets.
+	ActiveUserSessions *int32
+
+	// The total number of session slots that are available for streaming or are
+	// currently streaming.
+	//
+	// ActualUserSessionCapacity = AvailableUserSessionCapacity + ActiveUserSessions
+	//
+	// This only applies to multi-session fleets.
+	ActualUserSessions *int32
+
 	// The number of currently available instances that can be used to stream sessions.
 	Available *int32
+
+	// The number of idle session slots currently available for user sessions.
+	//
+	// AvailableUserSessionCapacity = ActualUserSessionCapacity - ActiveUserSessions
+	//
+	// This only applies to multi-session fleets.
+	AvailableUserSessions *int32
+
+	// The total number of sessions slots that are either running or pending. This
+	// represents the total number of concurrent streaming sessions your fleet can
+	// support in a steady state.
+	//
+	// DesiredUserSessionCapacity = ActualUserSessionCapacity +
+	// PendingUserSessionCapacity
+	//
+	// This only applies to multi-session fleets.
+	DesiredUserSessions *int32
 
 	// The number of instances in use for streaming.
 	InUse *int32
@@ -430,13 +474,22 @@ type EntitlementAttribute struct {
 
 	// A supported AWS IAM SAML PrincipalTag attribute that is matched to the
 	// associated value when a user identity federates into an Amazon AppStream 2.0
-	// SAML application. The following are valid values:
+	// SAML application.
+	//
+	// The following are valid values:
+	//
 	//   - roles
+	//
 	//   - department
+	//
 	//   - organization
+	//
 	//   - groups
+	//
 	//   - title
+	//
 	//   - costCenter
+	//
 	//   - userType
 	//
 	// This member is required.
@@ -478,38 +531,71 @@ type Fleet struct {
 
 	// The instance type to use when launching fleet instances. The following instance
 	// types are available:
+	//
 	//   - stream.standard.small
+	//
 	//   - stream.standard.medium
+	//
 	//   - stream.standard.large
+	//
 	//   - stream.compute.large
+	//
 	//   - stream.compute.xlarge
+	//
 	//   - stream.compute.2xlarge
+	//
 	//   - stream.compute.4xlarge
+	//
 	//   - stream.compute.8xlarge
+	//
 	//   - stream.memory.large
+	//
 	//   - stream.memory.xlarge
+	//
 	//   - stream.memory.2xlarge
+	//
 	//   - stream.memory.4xlarge
+	//
 	//   - stream.memory.8xlarge
+	//
 	//   - stream.memory.z1d.large
+	//
 	//   - stream.memory.z1d.xlarge
+	//
 	//   - stream.memory.z1d.2xlarge
+	//
 	//   - stream.memory.z1d.3xlarge
+	//
 	//   - stream.memory.z1d.6xlarge
+	//
 	//   - stream.memory.z1d.12xlarge
+	//
 	//   - stream.graphics-design.large
+	//
 	//   - stream.graphics-design.xlarge
+	//
 	//   - stream.graphics-design.2xlarge
+	//
 	//   - stream.graphics-design.4xlarge
+	//
 	//   - stream.graphics-desktop.2xlarge
+	//
 	//   - stream.graphics.g4dn.xlarge
+	//
 	//   - stream.graphics.g4dn.2xlarge
+	//
 	//   - stream.graphics.g4dn.4xlarge
+	//
 	//   - stream.graphics.g4dn.8xlarge
+	//
 	//   - stream.graphics.g4dn.12xlarge
+	//
 	//   - stream.graphics.g4dn.16xlarge
+	//
 	//   - stream.graphics-pro.4xlarge
+	//
 	//   - stream.graphics-pro.8xlarge
+	//
 	//   - stream.graphics-pro.16xlarge
 	//
 	// This member is required.
@@ -535,7 +621,9 @@ type Fleet struct {
 	// disconnect. If they try to reconnect to the streaming session after a
 	// disconnection or network interruption within this time interval, they are
 	// connected to their previous session. Otherwise, they are connected to a new
-	// session with a new streaming instance. Specify a value between 60 and 360000.
+	// session with a new streaming instance.
+	//
+	// Specify a value between 60 and 36000.
 	DisconnectTimeoutInSeconds *int32
 
 	// The fleet name to display.
@@ -551,12 +639,14 @@ type Fleet struct {
 	// The fleet errors.
 	FleetErrors []FleetError
 
-	// The fleet type. ALWAYS_ON Provides users with instant-on access to their apps.
-	// You are charged for all running instances in your fleet, even if no users are
-	// streaming apps. ON_DEMAND Provide users with access to applications after they
-	// connect, which takes one to two minutes. You are charged for instance streaming
-	// when users are connected and a small hourly fee for instances that are not
-	// streaming apps.
+	// The fleet type.
+	//
+	// ALWAYS_ON Provides users with instant-on access to their apps. You are charged
+	// for all running instances in your fleet, even if no users are streaming apps.
+	//
+	// ON_DEMAND Provide users with access to applications after they connect, which
+	// takes one to two minutes. You are charged for instance streaming when users are
+	// connected and a small hourly fee for instances that are not streaming apps.
 	FleetType FleetType
 
 	// The ARN of the IAM role that is applied to the fleet. To assume a role, the
@@ -564,9 +654,11 @@ type Fleet struct {
 	// operation and passes the ARN of the role to use. The operation creates a new
 	// session with temporary credentials. AppStream 2.0 retrieves the temporary
 	// credentials and creates the appstream_machine_role credential profile on the
-	// instance. For more information, see Using an IAM Role to Grant Permissions to
-	// Applications and Scripts Running on AppStream 2.0 Streaming Instances (https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html)
-	// in the Amazon AppStream 2.0 Administration Guide.
+	// instance.
+	//
+	// For more information, see [Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances] in the Amazon AppStream 2.0 Administration Guide.
+	//
+	// [Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances]: https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html
 	IamRoleArn *string
 
 	// The amount of time that users can be idle (inactive) before they are
@@ -578,16 +670,18 @@ type Fleet struct {
 	// keyboard or mouse input during their streaming session. File uploads and
 	// downloads, audio in, audio out, and pixels changing do not qualify as user
 	// activity. If users continue to be idle after the time interval in
-	// IdleDisconnectTimeoutInSeconds elapses, they are disconnected. To prevent users
-	// from being disconnected due to inactivity, specify a value of 0. Otherwise,
-	// specify a value between 60 and 3600. The default value is 0. If you enable this
-	// feature, we recommend that you specify a value that corresponds exactly to a
-	// whole number of minutes (for example, 60, 120, and 180). If you don't do this,
-	// the value is rounded to the nearest minute. For example, if you specify a value
-	// of 70, users are disconnected after 1 minute of inactivity. If you specify a
-	// value that is at the midpoint between two different minutes, the value is
-	// rounded up. For example, if you specify a value of 90, users are disconnected
-	// after 2 minutes of inactivity.
+	// IdleDisconnectTimeoutInSeconds elapses, they are disconnected.
+	//
+	// To prevent users from being disconnected due to inactivity, specify a value of
+	// 0. Otherwise, specify a value between 60 and 36000. The default value is 0.
+	//
+	// If you enable this feature, we recommend that you specify a value that
+	// corresponds exactly to a whole number of minutes (for example, 60, 120, and
+	// 180). If you don't do this, the value is rounded to the nearest minute. For
+	// example, if you specify a value of 70, users are disconnected after 1 minute of
+	// inactivity. If you specify a value that is at the midpoint between two different
+	// minutes, the value is rounded up. For example, if you specify a value of 90,
+	// users are disconnected after 2 minutes of inactivity.
 	IdleDisconnectTimeoutInSeconds *int32
 
 	// The ARN for the public, private, or shared image.
@@ -599,11 +693,17 @@ type Fleet struct {
 	// The maximum number of concurrent sessions for the fleet.
 	MaxConcurrentSessions *int32
 
+	// The maximum number of user sessions on an instance. This only applies to
+	// multi-session fleets.
+	MaxSessionsPerInstance *int32
+
 	// The maximum amount of time that a streaming session can remain active, in
 	// seconds. If users are still connected to a streaming instance five minutes
 	// before this limit is reached, they are prompted to save any open documents
 	// before being disconnected. After this time elapses, the instance is terminated
-	// and replaced by a new instance. Specify a value between 600 and 360000.
+	// and replaced by a new instance.
+	//
+	// Specify a value between 600 and 360000.
 	MaxUserDurationInSeconds *int32
 
 	// The platform of the fleet.
@@ -616,7 +716,9 @@ type Fleet struct {
 	// The AppStream 2.0 view that is displayed to your users when they stream from
 	// the fleet. When APP is specified, only the windows of applications opened by
 	// users display. When DESKTOP is specified, the standard desktop that is provided
-	// by the operating system displays. The default value is APP .
+	// by the operating system displays.
+	//
+	// The default value is APP .
 	StreamView StreamView
 
 	// The USB device filter strings associated with the fleet.
@@ -670,12 +772,16 @@ type Image struct {
 	// The image name to display.
 	DisplayName *string
 
+	// Indicates whether dynamic app providers are enabled within an AppStream 2.0
+	// image or not.
+	DynamicAppProvidersEnabled DynamicAppProvidersEnabled
+
 	// The name of the image builder that was used to create the private image. If the
 	// image is shared, this value is null.
 	ImageBuilderName *string
 
 	// Indicates whether an image builder can be launched from this image.
-	ImageBuilderSupported bool
+	ImageBuilderSupported *bool
 
 	// Describes the errors that are returned when a new image can't be created.
 	ImageErrors []ResourceError
@@ -683,6 +789,13 @@ type Image struct {
 	// The permissions to provide to the destination AWS account for the specified
 	// image.
 	ImagePermissions *ImagePermissions
+
+	// Indicates whether the image is shared with another account ID.
+	ImageSharedWithOthers ImageSharedWithOthers
+
+	// Indicates whether the image is using the latest AppStream 2.0 agent version or
+	// not.
+	LatestAppstreamAgentVersion LatestAppstreamAgentVersion
 
 	// The operating system platform of the image.
 	Platform PlatformType
@@ -697,6 +810,27 @@ type Image struct {
 
 	// The reason why the last state change occurred.
 	StateChangeReason *ImageStateChangeReason
+
+	// The supported instances families that determine which image a customer can use
+	// when the customer launches a fleet or image builder. The following instances
+	// families are supported:
+	//
+	//   - General Purpose
+	//
+	//   - Compute Optimized
+	//
+	//   - Memory Optimized
+	//
+	//   - Graphics
+	//
+	//   - Graphics Design
+	//
+	//   - Graphics Pro
+	//
+	//   - Graphics G4
+	//
+	//   - Graphics G5
+	SupportedInstanceFamilies []string
 
 	// Indicates whether the image is public or private.
 	Visibility VisibilityType
@@ -745,9 +879,11 @@ type ImageBuilder struct {
 	// operation and passes the ARN of the role to use. The operation creates a new
 	// session with temporary credentials. AppStream 2.0 retrieves the temporary
 	// credentials and creates the appstream_machine_role credential profile on the
-	// instance. For more information, see Using an IAM Role to Grant Permissions to
-	// Applications and Scripts Running on AppStream 2.0 Streaming Instances (https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html)
-	// in the Amazon AppStream 2.0 Administration Guide.
+	// instance.
+	//
+	// For more information, see [Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances] in the Amazon AppStream 2.0 Administration Guide.
+	//
+	// [Using an IAM Role to Grant Permissions to Applications and Scripts Running on AppStream 2.0 Streaming Instances]: https://docs.aws.amazon.com/appstream2/latest/developerguide/using-iam-roles-to-grant-permissions-to-applications-scripts-streaming-instances.html
 	IamRoleArn *string
 
 	// The ARN of the image from which this builder was created.
@@ -758,40 +894,77 @@ type ImageBuilder struct {
 
 	// The instance type for the image builder. The following instance types are
 	// available:
+	//
 	//   - stream.standard.small
+	//
 	//   - stream.standard.medium
+	//
 	//   - stream.standard.large
+	//
 	//   - stream.compute.large
+	//
 	//   - stream.compute.xlarge
+	//
 	//   - stream.compute.2xlarge
+	//
 	//   - stream.compute.4xlarge
+	//
 	//   - stream.compute.8xlarge
+	//
 	//   - stream.memory.large
+	//
 	//   - stream.memory.xlarge
+	//
 	//   - stream.memory.2xlarge
+	//
 	//   - stream.memory.4xlarge
+	//
 	//   - stream.memory.8xlarge
+	//
 	//   - stream.memory.z1d.large
+	//
 	//   - stream.memory.z1d.xlarge
+	//
 	//   - stream.memory.z1d.2xlarge
+	//
 	//   - stream.memory.z1d.3xlarge
+	//
 	//   - stream.memory.z1d.6xlarge
+	//
 	//   - stream.memory.z1d.12xlarge
+	//
 	//   - stream.graphics-design.large
+	//
 	//   - stream.graphics-design.xlarge
+	//
 	//   - stream.graphics-design.2xlarge
+	//
 	//   - stream.graphics-design.4xlarge
+	//
 	//   - stream.graphics-desktop.2xlarge
+	//
 	//   - stream.graphics.g4dn.xlarge
+	//
 	//   - stream.graphics.g4dn.2xlarge
+	//
 	//   - stream.graphics.g4dn.4xlarge
+	//
 	//   - stream.graphics.g4dn.8xlarge
+	//
 	//   - stream.graphics.g4dn.12xlarge
+	//
 	//   - stream.graphics.g4dn.16xlarge
+	//
 	//   - stream.graphics-pro.4xlarge
+	//
 	//   - stream.graphics-pro.8xlarge
+	//
 	//   - stream.graphics-pro.16xlarge
 	InstanceType *string
+
+	// Indicates whether the image builder is using the latest AppStream 2.0 agent
+	// version or not.
+	LatestAppstreamAgentVersion LatestAppstreamAgentVersion
 
 	// Describes the network details of the fleet or image builder instance.
 	NetworkAccessConfiguration *NetworkAccessConfiguration
@@ -899,12 +1072,19 @@ type S3Location struct {
 	// This member is required.
 	S3Bucket *string
 
-	// The S3 key of the S3 object. This is required when used for the following:
+	// The S3 key of the S3 object.
+	//
+	// This is required when used for the following:
+	//
 	//   - IconS3Location (Actions: CreateApplication and UpdateApplication)
+	//
 	//   - SessionScriptS3Location (Actions: CreateFleet and UpdateFleet)
+	//
 	//   - ScriptDetails (Actions: CreateAppBlock)
+	//
 	//   - SourceS3Location when creating an app block with CUSTOM PackagingType
 	//   (Actions: CreateAppBlock)
+	//
 	//   - SourceS3Location when creating an app block with APPSTREAM2 PackagingType,
 	//   and using an existing application package (VHD file). In this case, S3Key
 	//   refers to the VHD file. If a new application package is required, then S3Key
@@ -991,6 +1171,9 @@ type Session struct {
 
 	// Specifies whether a user is connected to the streaming session.
 	ConnectionState SessionConnectionState
+
+	// The identifier for the instance hosting the session.
+	InstanceId *string
 
 	// The time when the streaming session is set to expire. This time is based on the
 	// MaxUserDurationinSeconds value, which determines the maximum length of time that
@@ -1106,6 +1289,11 @@ type StorageConnector struct {
 	// The names of the domains for the account.
 	Domains []string
 
+	// The OneDrive for Business domains where you require admin consent when users
+	// try to link their OneDrive account to AppStream 2.0. The attribute can only be
+	// specified when ConnectorType=ONE_DRIVE.
+	DomainsRequireAdminConsent []string
+
 	// The ARN of the storage connector.
 	ResourceIdentifier *string
 
@@ -1122,19 +1310,65 @@ type StreamingExperienceSettings struct {
 	noSmithyDocumentSerde
 }
 
+// The custom branding theme, which might include a custom logo, website links,
+// and other branding to display to users.
+type Theme struct {
+
+	// The time the theme was created.
+	CreatedTime *time.Time
+
+	// The stack that has the custom branding theme.
+	StackName *string
+
+	// The state of the theme.
+	State ThemeState
+
+	// The URL of the icon that displays at the top of a user's browser tab during
+	// streaming sessions.
+	ThemeFaviconURL *string
+
+	// The website links that display in the catalog page footer.
+	ThemeFooterLinks []ThemeFooterLink
+
+	// The URL of the logo that displays in the catalog page header.
+	ThemeOrganizationLogoURL *string
+
+	// The color that is used for the website links, text, buttons, and catalog page
+	// background.
+	ThemeStyling ThemeStyling
+
+	// The browser tab page title.
+	ThemeTitleText *string
+
+	noSmithyDocumentSerde
+}
+
+// The website links that display in the catalog page footer.
+type ThemeFooterLink struct {
+
+	// The name of the websites that display in the catalog page footer.
+	DisplayName *string
+
+	// The URL of the websites that display in the catalog page footer.
+	FooterLinkURL *string
+
+	noSmithyDocumentSerde
+}
+
 // Describes information about the usage report subscription.
 type UsageReportSubscription struct {
 
 	// The time when the last usage report was generated.
 	LastGeneratedReportDate *time.Time
 
-	// The Amazon S3 bucket where generated reports are stored. If you enabled
-	// on-instance session scripts and Amazon S3 logging for your session script
-	// configuration, AppStream 2.0 created an S3 bucket to store the script output.
-	// The bucket is unique to your account and Region. When you enable usage reporting
-	// in this case, AppStream 2.0 uses the same bucket to store your usage reports. If
-	// you haven't already enabled on-instance session scripts, when you enable usage
-	// reports, AppStream 2.0 creates a new S3 bucket.
+	// The Amazon S3 bucket where generated reports are stored.
+	//
+	// If you enabled on-instance session scripts and Amazon S3 logging for your
+	// session script configuration, AppStream 2.0 created an S3 bucket to store the
+	// script output. The bucket is unique to your account and Region. When you enable
+	// usage reporting in this case, AppStream 2.0 uses the same bucket to store your
+	// usage reports. If you haven't already enabled on-instance session scripts, when
+	// you enable usage reports, AppStream 2.0 creates a new S3 bucket.
 	S3BucketName *string
 
 	// The schedule for generating usage reports.
@@ -1161,7 +1395,7 @@ type User struct {
 	CreatedTime *time.Time
 
 	// Specifies whether the user in the user pool is enabled.
-	Enabled bool
+	Enabled *bool
 
 	// The first name, or given name, of the user.
 	FirstName *string
@@ -1169,16 +1403,22 @@ type User struct {
 	// The last name, or surname, of the user.
 	LastName *string
 
-	// The status of the user in the user pool. The status can be one of the
-	// following:
+	// The status of the user in the user pool. The status can be one of the following:
+	//
 	//   - UNCONFIRMED – The user is created but not confirmed.
+	//
 	//   - CONFIRMED – The user is confirmed.
+	//
 	//   - ARCHIVED – The user is no longer active.
+	//
 	//   - COMPROMISED – The user is disabled because of a potential security threat.
+	//
 	//   - UNKNOWN – The user status is not known.
 	Status *string
 
-	// The email address of the user. Users' email addresses are case-sensitive.
+	// The email address of the user.
+	//
+	// Users' email addresses are case-sensitive.
 	UserName *string
 
 	noSmithyDocumentSerde
@@ -1198,6 +1438,19 @@ type UserSetting struct {
 	// This member is required.
 	Permission Permission
 
+	// Specifies the number of characters that can be copied by end users from the
+	// local device to the remote session, and to the local device from the remote
+	// session.
+	//
+	// This can be specified only for the CLIPBOARD_COPY_FROM_LOCAL_DEVICE and
+	// CLIPBOARD_COPY_TO_LOCAL_DEVICE actions.
+	//
+	// This defaults to 20,971,520 (20 MB) when unspecified and the permission is
+	// ENABLED . This can't be specified when the permission is DISABLED .
+	//
+	// The value can be between 1 and 20,971,520 (20 MB).
+	MaximumLength *int32
+
 	noSmithyDocumentSerde
 }
 
@@ -1214,15 +1467,16 @@ type UserStackAssociation struct {
 	// This member is required.
 	StackName *string
 
-	// The email address of the user who is associated with the stack. Users' email
-	// addresses are case-sensitive.
+	// The email address of the user who is associated with the stack.
+	//
+	// Users' email addresses are case-sensitive.
 	//
 	// This member is required.
 	UserName *string
 
 	// Specifies whether a welcome email is sent to a user after the user is created
 	// in the user pool.
-	SendEmailNotification bool
+	SendEmailNotification *bool
 
 	noSmithyDocumentSerde
 }

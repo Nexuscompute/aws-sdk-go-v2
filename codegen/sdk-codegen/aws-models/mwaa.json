@@ -26,6 +26,15 @@
                 "smithy.api#sensitive": {}
             }
         },
+        "com.amazonaws.mwaa#AirflowIdentity": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                }
+            }
+        },
         "com.amazonaws.mwaa#AirflowVersion": {
             "type": "string",
             "traits": {
@@ -56,6 +65,9 @@
                     "target": "com.amazonaws.mwaa#GetEnvironment"
                 },
                 {
+                    "target": "com.amazonaws.mwaa#InvokeRestApi"
+                },
+                {
                     "target": "com.amazonaws.mwaa#ListEnvironments"
                 },
                 {
@@ -83,7 +95,7 @@
                     "name": "airflow"
                 },
                 "aws.protocols#restJson1": {},
-                "smithy.api#documentation": "<fullname>Amazon Managed Workflows for Apache Airflow</fullname>\n         <p>This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html\">What is Amazon MWAA?</a>.</p>\n         <p>\n            <b>Endpoints</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <code>api.airflow.{region}.amazonaws.com</code> - This endpoint is used for environment management.</p>\n               <ul>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateEnvironment.html\">CreateEnvironment</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_DeleteEnvironment.html\">DeleteEnvironment</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_GetEnvironment.html\">GetEnvironment</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_ListEnvironments.html\">ListEnvironments</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_ListTagsForResource.html\">ListTagsForResource</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_TagResource.html\">TagResource</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_UntagResource.html\">UntagResource</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_UpdateEnvironment.html\">UpdateEnvironment</a>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>\n                  <code>env.airflow.{region}.amazonaws.com</code> - This endpoint is used to operate the Airflow environment.</p>\n               <ul>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateCliToken.html \">CreateCliToken</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateWebLoginToken.html\">CreateWebLoginToken</a>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>\n                  <code>ops.airflow.{region}.amazonaws.com</code> - This endpoint is used to push environment metrics that track environment health.</p>\n               <ul>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_PublishMetrics.html \">PublishMetrics</a>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n         </ul>\n         <p>\n            <b>Regions</b>\n         </p>\n         <p>For a list of regions that Amazon MWAA supports, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html#regions-mwaa\">Region availability</a> in the <i>Amazon MWAA User Guide</i>.</p>",
+                "smithy.api#documentation": "<fullname>Amazon Managed Workflows for Apache Airflow</fullname>\n         <p>This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/what-is-mwaa.html\">What is Amazon MWAA?</a>.</p>\n         <p>\n            <b>Endpoints</b>\n         </p>\n         <ul>\n            <li>\n               <p>\n                  <code>api.airflow.{region}.amazonaws.com</code> - This endpoint is used for environment management.</p>\n               <ul>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateEnvironment.html\">CreateEnvironment</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_DeleteEnvironment.html\">DeleteEnvironment</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_GetEnvironment.html\">GetEnvironment</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_ListEnvironments.html\">ListEnvironments</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_ListTagsForResource.html\">ListTagsForResource</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_TagResource.html\">TagResource</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_UntagResource.html\">UntagResource</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_UpdateEnvironment.html\">UpdateEnvironment</a>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n            <li>\n               <p>\n                  <code>env.airflow.{region}.amazonaws.com</code> - This endpoint is used to operate the Airflow environment.</p>\n               <ul>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateCliToken.html \">CreateCliToken</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_CreateWebLoginToken.html\">CreateWebLoginToken</a>\n                     </p>\n                  </li>\n                  <li>\n                     <p>\n                        <a href=\"https://docs.aws.amazon.com/mwaa/latest/API/API_InvokeRestApi.html\">InvokeRestApi</a>\n                     </p>\n                  </li>\n               </ul>\n            </li>\n         </ul>\n         <p>\n            <b>Regions</b>\n         </p>\n         <p>For a list of supported regions, see <a href=\"https://docs.aws.amazon.com/general/latest/gr/mwaa.html\">Amazon MWAA endpoints and quotas</a> in the <i>Amazon Web Services General Reference</i>.</p>",
                 "smithy.api#title": "AmazonMWAA",
                 "smithy.rules#endpointRuleSet": {
                     "version": "1.0",
@@ -127,7 +139,6 @@
                                     ]
                                 }
                             ],
-                            "type": "tree",
                             "rules": [
                                 {
                                     "conditions": [
@@ -145,9 +156,187 @@
                                     "type": "error"
                                 },
                                 {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                                    "type": "error"
+                                },
+                                {
                                     "conditions": [],
-                                    "type": "tree",
+                                    "endpoint": {
+                                        "url": {
+                                            "ref": "Endpoint"
+                                        },
+                                        "properties": {},
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "aws.partition",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                }
+                                            ],
+                                            "assign": "PartitionResult"
+                                        }
+                                    ],
                                     "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseDualStack"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                true,
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsFIPS"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                true,
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsDualStack"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://airflow-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsFIPS"
+                                                                    ]
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://airflow-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "FIPS is enabled but this partition does not support FIPS",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
                                         {
                                             "conditions": [
                                                 {
@@ -160,278 +349,65 @@
                                                     ]
                                                 }
                                             ],
-                                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
-                                            "type": "error"
-                                        },
-                                        {
-                                            "conditions": [],
-                                            "endpoint": {
-                                                "url": {
-                                                    "ref": "Endpoint"
-                                                },
-                                                "properties": {},
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "isSet",
-                                            "argv": [
-                                                {
-                                                    "ref": "Region"
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "type": "tree",
-                                    "rules": [
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "aws.partition",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "Region"
-                                                        }
-                                                    ],
-                                                    "assign": "PartitionResult"
-                                                }
-                                            ],
-                                            "type": "tree",
                                             "rules": [
                                                 {
                                                     "conditions": [
                                                         {
                                                             "fn": "booleanEquals",
                                                             "argv": [
+                                                                true,
                                                                 {
-                                                                    "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        },
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsDualStack"
+                                                                    ]
+                                                                }
                                                             ]
                                                         }
                                                     ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsFIPS"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsDualStack"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://airflow-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsFIPS"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://airflow-fips.{Region}.{PartitionResult#dnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "FIPS is enabled but this partition does not support FIPS",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsDualStack"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://airflow.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "DualStack is enabled but this partition does not support DualStack",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [],
-                                                    "type": "tree",
                                                     "rules": [
                                                         {
                                                             "conditions": [],
                                                             "endpoint": {
-                                                                "url": "https://airflow.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "url": "https://airflow.{Region}.{PartitionResult#dualStackDnsSuffix}",
                                                                 "properties": {},
                                                                 "headers": {}
                                                             },
                                                             "type": "endpoint"
                                                         }
-                                                    ]
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "DualStack is enabled but this partition does not support DualStack",
+                                                    "type": "error"
                                                 }
-                                            ]
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://airflow.{Region}.{PartitionResult#dnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
                                         }
-                                    ]
-                                },
-                                {
-                                    "conditions": [],
-                                    "error": "Invalid Configuration: Missing Region",
-                                    "type": "error"
+                                    ],
+                                    "type": "tree"
                                 }
-                            ]
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Missing Region",
+                            "type": "error"
                         }
                     ]
                 },
@@ -933,6 +909,16 @@
                 }
             }
         },
+        "com.amazonaws.mwaa#CeleryExecutorQueue": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1224
+                },
+                "smithy.api#pattern": "^arn:aws(-[a-z]+)?:sqs:[a-z0-9\\-]+:\\d{12}:[a-zA-Z_0-9+=,.@\\-_/]+$"
+            }
+        },
         "com.amazonaws.mwaa#CloudWatchLogGroupArn": {
             "type": "string",
             "traits": {
@@ -1036,7 +1022,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Creates an Amazon Managed Workflows for Apache Airflow (MWAA) environment.</p>",
+                "smithy.api#documentation": "<p>Creates an Amazon Managed Workflows for Apache Airflow (Amazon MWAA) environment.</p>",
                 "smithy.api#endpoint": {
                     "hostPrefix": "api."
                 },
@@ -1132,7 +1118,7 @@
                 "EnvironmentClass": {
                     "target": "com.amazonaws.mwaa#EnvironmentClass",
                     "traits": {
-                        "smithy.api#documentation": "<p>The environment class type. Valid values: <code>mw1.small</code>, <code>mw1.medium</code>, <code>mw1.large</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/environment-class.html\">Amazon MWAA environment class</a>.</p>"
+                        "smithy.api#documentation": "<p>The environment class type. Valid values: <code>mw1.micro</code>, <code>mw1.small</code>, <code>mw1.medium</code>, <code>mw1.large</code>, <code>mw1.xlarge</code>, and <code>mw1.2xlarge</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/environment-class.html\">Amazon MWAA environment class</a>.</p>"
                     }
                 },
                 "MaxWorkers": {
@@ -1150,7 +1136,7 @@
                 "AirflowVersion": {
                     "target": "com.amazonaws.mwaa#AirflowVersion",
                     "traits": {
-                        "smithy.api#documentation": "<p>The Apache Airflow version for your environment. If no value is specified, it defaults to the latest version. Valid values:\n            <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>, <code>2.4.3</code>, and <code>2.5.1</code>.\n            For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/airflow-versions.html\">Apache Airflow versions on Amazon Managed Workflows for Apache Airflow (MWAA)</a>.</p>"
+                        "smithy.api#documentation": "<p>The Apache Airflow version for your environment. If no value is specified, it defaults to the latest version.\n            For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/airflow-versions.html\">Apache Airflow versions on Amazon Managed Workflows for Apache Airflow (Amazon MWAA)</a>.</p>\n         <p>Valid values: <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>,\n                <code>2.4.3</code>, <code>2.5.1</code>, <code>2.6.3</code>, <code>2.7.2</code>,\n            <code>2.8.1</code>, <code>2.9.2</code>, <code>2.10.1</code>, and <code>2.10.3</code>.</p>"
                     }
                 },
                 "LoggingConfiguration": {
@@ -1174,7 +1160,7 @@
                 "WebserverAccessMode": {
                     "target": "com.amazonaws.mwaa#WebserverAccessMode",
                     "traits": {
-                        "smithy.api#documentation": "<p>The Apache Airflow <i>Web server</i> access mode. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-networking.html\">Apache Airflow access modes</a>.</p>"
+                        "smithy.api#documentation": "<p>Defines the access mode for the Apache Airflow <i>web server</i>. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-networking.html\">Apache Airflow access modes</a>.</p>"
                     }
                 },
                 "MinWorkers": {
@@ -1186,12 +1172,30 @@
                 "Schedulers": {
                     "target": "com.amazonaws.mwaa#Schedulers",
                     "traits": {
-                        "smithy.api#documentation": "<p>The number of Apache Airflow schedulers to run in your environment. Valid values:</p>\n         <ul>\n            <li>\n               <p>v2 - Accepts between 2 to 5. Defaults to 2.</p>\n            </li>\n            <li>\n               <p>v1 - Accepts 1.</p>\n            </li>\n         </ul>"
+                        "smithy.api#documentation": "<p>The number of Apache Airflow schedulers to run in your environment. Valid values:</p>\n         <ul>\n            <li>\n               <p>v2 - For environments larger than mw1.micro, accepts values from\n                        <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all\n                    environment sizes except mw1.micro, which defaults to <code>1</code>.</p>\n            </li>\n            <li>\n               <p>v1 - Accepts <code>1</code>.</p>\n            </li>\n         </ul>"
+                    }
+                },
+                "EndpointManagement": {
+                    "target": "com.amazonaws.mwaa#EndpointManagement",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Defines whether the VPC endpoints configured for the environment are created, and managed, by the customer or by Amazon MWAA. If set to <code>SERVICE</code>, Amazon MWAA will create and manage the required VPC endpoints in\n        your VPC. If set to <code>CUSTOMER</code>, you must create, and manage, the VPC endpoints for your VPC. If you choose to create an environment in a shared VPC, you must set this value to <code>CUSTOMER</code>.\n        In a shared VPC deployment, the environment will remain in <code>PENDING</code> status until you create the VPC endpoints. If you do not take action to\n            create the endpoints within 72 hours, the status will change to <code>CREATE_FAILED</code>. You can delete the failed environment and create a new one.</p>"
+                    }
+                },
+                "MinWebservers": {
+                    "target": "com.amazonaws.mwaa#MinWebservers",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n            The minimum number of web servers that you want to run in your environment.\n            Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code>\n            when you interact with your Apache Airflow environment using Apache Airflow REST API, or\n            the Apache Airflow CLI. As the transaction-per-second rate, and the network load, decrease,\n            Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>.\n        </p>\n         <p>Valid values: For environments larger than mw1.micro, accepts values from\n                <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all environment\n            sizes except mw1.micro, which defaults to <code>1</code>.</p>"
+                    }
+                },
+                "MaxWebservers": {
+                    "target": "com.amazonaws.mwaa#MaxWebservers",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n            The maximum number of web servers that you want to run in your environment.\n            Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code>\n            when you interact with your Apache Airflow environment using Apache Airflow REST API, or\n            the Apache Airflow CLI. For example, in scenarios where your workload requires network calls to the Apache Airflow REST API with a high transaction-per-second (TPS)\n            rate, Amazon MWAA will increase the number of web servers up to the number set in <code>MaxWebserers</code>. As TPS rates decrease\n            Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>.\n        </p>\n         <p>Valid values: For environments larger than mw1.micro, accepts values from\n                <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all environment\n            sizes except mw1.micro, which defaults to <code>1</code>.</p>"
                     }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>This section contains the Amazon Managed Workflows for Apache Airflow (MWAA) API reference documentation to create an environment. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/get-started.html\">Get started with Amazon Managed Workflows for Apache Airflow</a>.</p>"
+                "smithy.api#documentation": "<p>This section contains the Amazon Managed Workflows for Apache Airflow (Amazon MWAA) API reference documentation to create an environment. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/get-started.html\">Get started with Amazon Managed Workflows for Apache Airflow</a>.</p>"
             }
         },
         "com.amazonaws.mwaa#CreateEnvironmentOutput": {
@@ -1267,6 +1271,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The Airflow web server hostname for the environment.</p>"
                     }
+                },
+                "IamIdentity": {
+                    "target": "com.amazonaws.mwaa#IamIdentity",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the IAM identity creating the web login token. This might be an IAM user, or an assumed or federated identity. For example, <code>assumed-role/Admin/your-name</code>.</p>"
+                    }
+                },
+                "AirflowIdentity": {
+                    "target": "com.amazonaws.mwaa#AirflowIdentity",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The user name of the Apache Airflow identity creating the web login token.</p>"
+                    }
                 }
             }
         },
@@ -1293,7 +1309,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Deletes an Amazon Managed Workflows for Apache Airflow (MWAA) environment.</p>",
+                "smithy.api#documentation": "<p>Deletes an Amazon Managed Workflows for Apache Airflow (Amazon MWAA) environment.</p>",
                 "smithy.api#endpoint": {
                     "hostPrefix": "api."
                 },
@@ -1341,6 +1357,9 @@
                 }
             },
             "traits": {
+                "smithy.api#deprecated": {
+                    "message": "This type is for internal use and not meant for public use. Data set for this type will be ignored."
+                },
                 "smithy.api#documentation": "<p>\n            <b>Internal only</b>. Represents the dimensions of a metric. To learn more about the metrics published to Amazon CloudWatch, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/cw-metrics.html\">Amazon MWAA performance metrics in Amazon CloudWatch</a>.</p>"
             }
         },
@@ -1348,6 +1367,26 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.mwaa#Dimension"
+            },
+            "traits": {
+                "smithy.api#deprecated": {
+                    "message": "This type is for internal use and not meant for public use. Data set for this type will be ignored."
+                }
+            }
+        },
+        "com.amazonaws.mwaa#EndpointManagement": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "CUSTOMER",
+                        "name": "CUSTOMER"
+                    },
+                    {
+                        "value": "SERVICE",
+                        "name": "SERVICE"
+                    }
+                ]
             }
         },
         "com.amazonaws.mwaa#Environment": {
@@ -1362,7 +1401,7 @@
                 "Status": {
                     "target": "com.amazonaws.mwaa#EnvironmentStatus",
                     "traits": {
-                        "smithy.api#documentation": "<p>The status of the Amazon MWAA environment. Valid values:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>CREATING</code> - Indicates the request to create the environment is in progress.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CREATING_SNAPSHOT</code> - Indicates the request to update environment details, or upgrade the environment version, is in progress and Amazon MWAA is creating a storage volume snapshot of the Amazon RDS\n                    database cluster associated with the environment. A database snapshot is a backup created at a specific point in time. Amazon MWAA uses snapshots to recover environment metadata if the process to update or upgrade\n                    an environment fails.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CREATE_FAILED</code> - Indicates the request to create the environment failed, and the environment could not be created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>AVAILABLE</code> - Indicates the request was successful and the environment is ready to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>UPDATING</code> - Indicates the request to update the environment is in progress.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ROLLING_BACK</code> - Indicates the request to update environment details, or upgrade the environment version, failed and Amazon MWAA is restoring the environment using the latest storage volume snapshot.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DELETING</code> - Indicates the request to delete the environment is in progress.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DELETED</code> - Indicates the request to delete the environment is complete, and the environment has been deleted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>UNAVAILABLE</code> - Indicates the request failed, but the environment was unable to rollback and is not in a stable state.</p>\n            </li>\n            <li>\n               <p>\n                  <code>UPDATE_FAILED</code> - Indicates the request to update the environment failed, and the environment has rolled back successfully and is ready to use.</p>\n            </li>\n         </ul>\n         <p>We recommend reviewing our troubleshooting guide for a list of common errors and their solutions. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/troubleshooting.html\">Amazon MWAA troubleshooting</a>.</p>"
+                        "smithy.api#documentation": "<p>The status of the Amazon MWAA environment.</p>\n         <p>Valid values:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>CREATING</code> - Indicates the request to create the environment is in progress.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CREATING_SNAPSHOT</code> - Indicates the request to update environment details, or upgrade the environment version, is in progress and Amazon MWAA is creating a storage volume snapshot of the Amazon RDS\n                    database cluster associated with the environment. A database snapshot is a backup created at a specific point in time. Amazon MWAA uses snapshots to recover environment metadata if the process to update or upgrade\n                    an environment fails.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CREATE_FAILED</code> - Indicates the request to create the environment failed, and the environment could not be created.</p>\n            </li>\n            <li>\n               <p>\n                  <code>AVAILABLE</code> - Indicates the request was successful and the environment is ready to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>PENDING</code> - Indicates the request was successful, but the process to create the environment is paused until you create the required\n                    VPC endpoints in your VPC. After you create the VPC endpoints, the process resumes.</p>\n            </li>\n            <li>\n               <p>\n                  <code>UPDATING</code> - Indicates the request to update the environment is in progress.</p>\n            </li>\n            <li>\n               <p>\n                  <code>ROLLING_BACK</code> - Indicates the request to update environment details, or upgrade the environment version, failed and Amazon MWAA is restoring the environment using the latest storage volume snapshot.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DELETING</code> - Indicates the request to delete the environment is in progress.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DELETED</code> - Indicates the request to delete the environment is complete, and the environment has been deleted.</p>\n            </li>\n            <li>\n               <p>\n                  <code>UNAVAILABLE</code> - Indicates the request failed, but the environment did not return to its previous state and is not stable.</p>\n            </li>\n            <li>\n               <p>\n                  <code>UPDATE_FAILED</code> - Indicates the request to update the environment failed, and the environment was restored to its previous state successfully and is ready to use.</p>\n            </li>\n            <li>\n               <p>\n                  <code>MAINTENANCE</code> - Indicates that the environment is undergoing maintenance. Depending on the type of work Amazon MWAA is performing,\n              your environment might become unavailable during this process. After all operations are done, your environment will return to its status prior to mainteneace operations.\n            </p>\n            </li>\n         </ul>\n         <p>We recommend reviewing our troubleshooting guide for a list of common errors and their solutions. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/troubleshooting.html\">Amazon MWAA troubleshooting</a>.</p>"
                     }
                 },
                 "Arn": {
@@ -1380,7 +1419,7 @@
                 "WebserverUrl": {
                     "target": "com.amazonaws.mwaa#WebserverUrl",
                     "traits": {
-                        "smithy.api#documentation": "<p>The Apache Airflow <i>Web server</i> host name for the Amazon MWAA environment. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/access-airflow-ui.html\">Accessing the Apache Airflow UI</a>.</p>"
+                        "smithy.api#documentation": "<p>The Apache Airflow <i>web server</i> host name for the Amazon MWAA environment. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/access-airflow-ui.html\">Accessing the Apache Airflow UI</a>.</p>"
                     }
                 },
                 "ExecutionRoleArn": {
@@ -1398,13 +1437,13 @@
                 "KmsKey": {
                     "target": "com.amazonaws.mwaa#KmsKey",
                     "traits": {
-                        "smithy.api#documentation": "<p>The Amazon Web Services Key Management Service (KMS) encryption key used to encrypt the data in your environment.</p>"
+                        "smithy.api#documentation": "<p>The KMS encryption key used to encrypt the data in your environment.</p>"
                     }
                 },
                 "AirflowVersion": {
                     "target": "com.amazonaws.mwaa#AirflowVersion",
                     "traits": {
-                        "smithy.api#documentation": "<p>The Apache Airflow version on your environment. Valid values: <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>, <code>2.4.3</code>, and <code>2.5.1</code>.</p>"
+                        "smithy.api#documentation": "<p>The Apache Airflow version on your environment.</p>\n         <p>Valid values: <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>,\n                <code>2.4.3</code>, <code>2.5.1</code>, <code>2.6.3</code>, <code>2.7.2</code>,\n            <code>2.8.1</code>, <code>2.9.2</code>, <code>2.10.1</code>, and <code>2.10.3</code>.</p>"
                     }
                 },
                 "SourceBucketArn": {
@@ -1464,7 +1503,7 @@
                 "EnvironmentClass": {
                     "target": "com.amazonaws.mwaa#EnvironmentClass",
                     "traits": {
-                        "smithy.api#documentation": "<p>The environment class type. Valid values: <code>mw1.small</code>, <code>mw1.medium</code>, <code>mw1.large</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/environment-class.html\">Amazon MWAA environment class</a>.</p>"
+                        "smithy.api#documentation": "<p>The environment class type. Valid values: <code>mw1.micro</code>, <code>mw1.small</code>, <code>mw1.medium</code>, <code>mw1.large</code>, <code>mw1.xlarge</code>, and <code>mw1.2xlarge</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/environment-class.html\">Amazon MWAA environment class</a>.</p>"
                     }
                 },
                 "MaxWorkers": {
@@ -1506,7 +1545,7 @@
                 "WebserverAccessMode": {
                     "target": "com.amazonaws.mwaa#WebserverAccessMode",
                     "traits": {
-                        "smithy.api#documentation": "<p>The Apache Airflow <i>Web server</i> access mode. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-networking.html\">Apache Airflow access modes</a>.</p>"
+                        "smithy.api#documentation": "<p>The Apache Airflow <i>web server</i> access mode. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-networking.html\">Apache Airflow access modes</a>.</p>"
                     }
                 },
                 "MinWorkers": {
@@ -1519,6 +1558,42 @@
                     "target": "com.amazonaws.mwaa#Schedulers",
                     "traits": {
                         "smithy.api#documentation": "<p>The number of Apache Airflow schedulers that run in your Amazon MWAA environment.</p>"
+                    }
+                },
+                "WebserverVpcEndpointService": {
+                    "target": "com.amazonaws.mwaa#VpcEndpointServiceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The VPC endpoint for the environment's web server.</p>"
+                    }
+                },
+                "DatabaseVpcEndpointService": {
+                    "target": "com.amazonaws.mwaa#VpcEndpointServiceName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The VPC endpoint for the environment's Amazon RDS database.</p>"
+                    }
+                },
+                "CeleryExecutorQueue": {
+                    "target": "com.amazonaws.mwaa#CeleryExecutorQueue",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The queue ARN for the environment's <a href=\"https://airflow.apache.org/docs/apache-airflow/stable/core-concepts/executor/celery.html\">Celery Executor</a>. Amazon MWAA uses a Celery Executor\n            to distribute tasks across multiple workers. When you create an environment in a shared VPC, you must provide access to the Celery Executor queue from your VPC.</p>"
+                    }
+                },
+                "EndpointManagement": {
+                    "target": "com.amazonaws.mwaa#EndpointManagement",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Defines whether the VPC endpoints configured for the environment are created, and managed, by the customer or by Amazon MWAA. If set to <code>SERVICE</code>, Amazon MWAA will create and manage the required VPC endpoints in\n            your VPC. If set to <code>CUSTOMER</code>, you must create, and manage, the VPC endpoints in your VPC.</p>"
+                    }
+                },
+                "MinWebservers": {
+                    "target": "com.amazonaws.mwaa#MinWebservers",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n            The minimum number of web servers that you want to run in your environment.\n            Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code>\n            when you interact with your Apache Airflow environment using Apache Airflow REST API, or\n            the Apache Airflow CLI. As the transaction-per-second rate, and the network load, decrease,\n            Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>.\n        </p>\n         <p>Valid values: For environments larger than mw1.micro, accepts values from\n                <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all environment\n            sizes except mw1.micro, which defaults to <code>1</code>.</p>"
+                    }
+                },
+                "MaxWebservers": {
+                    "target": "com.amazonaws.mwaa#MaxWebservers",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n            The maximum number of web servers that you want to run in your environment.\n            Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code>\n            when you interact with your Apache Airflow environment using Apache Airflow REST API, or\n            the Apache Airflow CLI. For example, in scenarios where your workload requires network calls to the Apache Airflow REST API with a high transaction-per-second (TPS)\n            rate, Amazon MWAA will increase the number of web servers up to the number set in <code>MaxWebserers</code>. As TPS rates decrease\n            Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>.\n        </p>\n         <p>Valid values: For environments larger than mw1.micro, accepts values from\n                <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all environment\n            sizes except mw1.micro, which defaults to <code>1</code>.</p>"
                     }
                 }
             },
@@ -1604,6 +1679,14 @@
                     {
                         "value": "CREATING_SNAPSHOT",
                         "name": "CREATING_SNAPSHOT"
+                    },
+                    {
+                        "value": "PENDING",
+                        "name": "PENDING"
+                    },
+                    {
+                        "value": "MAINTENANCE",
+                        "name": "MAINTENANCE"
                     }
                 ]
             }
@@ -1687,6 +1770,9 @@
                 "smithy.api#pattern": "^(([a-zA-Z0-9]|[a-zA-Z0-9][a-zA-Z0-9\\-]*[a-zA-Z0-9])\\.)*([A-Za-z0-9]|[A-Za-z0-9][A-Za-z0-9\\-]*[A-Za-z0-9])$"
             }
         },
+        "com.amazonaws.mwaa#IamIdentity": {
+            "type": "string"
+        },
         "com.amazonaws.mwaa#IamRoleArn": {
             "type": "string",
             "traits": {
@@ -1708,6 +1794,132 @@
                 "smithy.api#documentation": "<p>InternalServerException: An internal error has occurred.</p>",
                 "smithy.api#error": "server",
                 "smithy.api#httpError": 500
+            }
+        },
+        "com.amazonaws.mwaa#InvokeRestApi": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.mwaa#InvokeRestApiRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.mwaa#InvokeRestApiResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.mwaa#AccessDeniedException"
+                },
+                {
+                    "target": "com.amazonaws.mwaa#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.mwaa#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.mwaa#RestApiClientException"
+                },
+                {
+                    "target": "com.amazonaws.mwaa#RestApiServerException"
+                },
+                {
+                    "target": "com.amazonaws.mwaa#ValidationException"
+                }
+            ],
+            "traits": {
+                "aws.api#dataPlane": {},
+                "smithy.api#documentation": "<p>Invokes the Apache Airflow REST API on the webserver with the specified inputs. To\n            learn more, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/access-mwaa-apache-airflow-rest-api.html\">Using the Apache Airflow REST API</a>\n         </p>",
+                "smithy.api#endpoint": {
+                    "hostPrefix": "env."
+                },
+                "smithy.api#examples": [
+                    {
+                        "title": "Listing Airflow variables.",
+                        "input": {
+                            "Name": "MyEnvironment",
+                            "Path": "/variables",
+                            "Method": "GET"
+                        },
+                        "output": {
+                            "RestApiStatusCode": 200,
+                            "RestApiResponse": {
+                                "total_entries": 1,
+                                "variables": [
+                                    {
+                                        "description": "Example variable",
+                                        "key": "test-variable",
+                                        "value": "123"
+                                    }
+                                ]
+                            }
+                        }
+                    }
+                ],
+                "smithy.api#http": {
+                    "uri": "/restapi/{Name}",
+                    "method": "POST",
+                    "code": 200
+                }
+            }
+        },
+        "com.amazonaws.mwaa#InvokeRestApiRequest": {
+            "type": "structure",
+            "members": {
+                "Name": {
+                    "target": "com.amazonaws.mwaa#EnvironmentName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the Amazon MWAA environment. For example, <code>MyMWAAEnvironment</code>.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "Path": {
+                    "target": "com.amazonaws.mwaa#RestApiPath",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Apache Airflow REST API endpoint path to be called. For example,\n            <code>/dags/123456/clearTaskInstances</code>. For more information, see <a href=\"https://airflow.apache.org/docs/apache-airflow/stable/stable-rest-api-ref.html\">Apache Airflow API</a>\n         </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "Method": {
+                    "target": "com.amazonaws.mwaa#RestApiMethod",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The HTTP method used for making Airflow REST API calls. For example,\n            <code>POST</code>. </p>",
+                        "smithy.api#required": {}
+                    }
+                },
+                "QueryParameters": {
+                    "target": "smithy.api#Document",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Query parameters to be included in the Apache Airflow REST API call, provided as a\n            JSON object. </p>"
+                    }
+                },
+                "Body": {
+                    "target": "com.amazonaws.mwaa#RestApiRequestBody",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The request body for the Apache Airflow REST API call, provided as a JSON\n            object.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.mwaa#InvokeRestApiResponse": {
+            "type": "structure",
+            "members": {
+                "RestApiStatusCode": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The HTTP status code returned by the Apache Airflow REST API call.</p>"
+                    }
+                },
+                "RestApiResponse": {
+                    "target": "com.amazonaws.mwaa#RestApiResponse",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The response data from the Apache Airflow REST API call, provided as a JSON\n            object.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
             }
         },
         "com.amazonaws.mwaa#KmsKey": {
@@ -1990,6 +2202,14 @@
                 ]
             }
         },
+        "com.amazonaws.mwaa#MaxWebservers": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 1
+                }
+            }
+        },
         "com.amazonaws.mwaa#MaxWorkers": {
             "type": "integer",
             "traits": {
@@ -2002,6 +2222,11 @@
             "type": "list",
             "member": {
                 "target": "com.amazonaws.mwaa#MetricDatum"
+            },
+            "traits": {
+                "smithy.api#deprecated": {
+                    "message": "This type is for internal use and not meant for public use. Data set for this type will be ignored."
+                }
             }
         },
         "com.amazonaws.mwaa#MetricDatum": {
@@ -2047,7 +2272,18 @@
                 }
             },
             "traits": {
+                "smithy.api#deprecated": {
+                    "message": "This type is for internal use and not meant for public use. Data set for this type will be ignored."
+                },
                 "smithy.api#documentation": "<p>\n            <b>Internal only</b>. Collects Apache Airflow metrics. To learn more about the metrics published to Amazon CloudWatch, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/cw-metrics.html\">Amazon MWAA performance metrics in Amazon CloudWatch</a>.</p>"
+            }
+        },
+        "com.amazonaws.mwaa#MinWebservers": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 1
+                }
             }
         },
         "com.amazonaws.mwaa#MinWorkers": {
@@ -2151,6 +2387,9 @@
                 }
             ],
             "traits": {
+                "smithy.api#deprecated": {
+                    "message": "This API is for internal use and not meant for public use, and is no longer available."
+                },
                 "smithy.api#documentation": "<p>\n            <b>Internal only</b>. Publishes environment health metrics to Amazon CloudWatch.</p>",
                 "smithy.api#endpoint": {
                     "hostPrefix": "ops."
@@ -2180,11 +2419,21 @@
                         "smithy.api#required": {}
                     }
                 }
+            },
+            "traits": {
+                "smithy.api#deprecated": {
+                    "message": "This type is for internal use and not meant for public use. Data set for this type will be ignored."
+                }
             }
         },
         "com.amazonaws.mwaa#PublishMetricsOutput": {
             "type": "structure",
-            "members": {}
+            "members": {},
+            "traits": {
+                "smithy.api#deprecated": {
+                    "message": "This type is for internal use and not meant for public use. Data set for this type will be ignored."
+                }
+            }
         },
         "com.amazonaws.mwaa#RelativePath": {
             "type": "string",
@@ -2207,6 +2456,98 @@
                 "smithy.api#documentation": "<p>ResourceNotFoundException: The resource is not available.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 404
+            }
+        },
+        "com.amazonaws.mwaa#RestApiClientException": {
+            "type": "structure",
+            "members": {
+                "RestApiStatusCode": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The HTTP status code returned by the Apache Airflow REST API call.</p>"
+                    }
+                },
+                "RestApiResponse": {
+                    "target": "com.amazonaws.mwaa#RestApiResponse",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error response data from the Apache Airflow REST API call, provided as a JSON\n            object.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An exception indicating that a client-side error occurred during the Apache Airflow\n            REST API call.</p>",
+                "smithy.api#error": "client",
+                "smithy.api#httpError": 400
+            }
+        },
+        "com.amazonaws.mwaa#RestApiMethod": {
+            "type": "string",
+            "traits": {
+                "smithy.api#enum": [
+                    {
+                        "value": "GET",
+                        "name": "GET"
+                    },
+                    {
+                        "value": "PUT",
+                        "name": "PUT"
+                    },
+                    {
+                        "value": "POST",
+                        "name": "POST"
+                    },
+                    {
+                        "value": "PATCH",
+                        "name": "PATCH"
+                    },
+                    {
+                        "value": "DELETE",
+                        "name": "DELETE"
+                    }
+                ]
+            }
+        },
+        "com.amazonaws.mwaa#RestApiPath": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 64
+                }
+            }
+        },
+        "com.amazonaws.mwaa#RestApiRequestBody": {
+            "type": "document",
+            "traits": {
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.mwaa#RestApiResponse": {
+            "type": "document",
+            "traits": {
+                "smithy.api#sensitive": {}
+            }
+        },
+        "com.amazonaws.mwaa#RestApiServerException": {
+            "type": "structure",
+            "members": {
+                "RestApiStatusCode": {
+                    "target": "smithy.api#Integer",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The HTTP status code returned by the Apache Airflow REST API call.</p>"
+                    }
+                },
+                "RestApiResponse": {
+                    "target": "com.amazonaws.mwaa#RestApiResponse",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The error response data from the Apache Airflow REST API call, provided as a JSON\n            object.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>An exception indicating that a server-side error occurred during the Apache Airflow\n            REST API call.</p>",
+                "smithy.api#error": "client",
+                "smithy.api#httpError": 400
             }
         },
         "com.amazonaws.mwaa#S3BucketArn": {
@@ -2287,6 +2628,9 @@
                 }
             },
             "traits": {
+                "smithy.api#deprecated": {
+                    "message": "This type is for internal use and not meant for public use. Data set for this type will be ignored."
+                },
                 "smithy.api#documentation": "<p>\n            <b>Internal only</b>. Represents a set of statistics that describe a specific metric. To learn more about the metrics published to Amazon CloudWatch, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/cw-metrics.html\">Amazon MWAA performance metrics in Amazon CloudWatch</a>.</p>"
             }
         },
@@ -2645,7 +2989,7 @@
                 "AirflowVersion": {
                     "target": "com.amazonaws.mwaa#AirflowVersion",
                     "traits": {
-                        "smithy.api#documentation": "<p>The Apache Airflow version for your environment. To upgrade your environment, specify a newer version of Apache Airflow supported by Amazon MWAA.</p>\n         <p>Before you upgrade an environment, make sure your requirements, DAGs, plugins, and other resources used in your workflows are compatible with the new Apache Airflow version. For more information about updating\n            your resources, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/upgrading-environment.html\">Upgrading an Amazon MWAA environment</a>.</p>\n         <p>Valid values: <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>, <code>2.4.3</code>, and <code>2.5.1</code>.</p>"
+                        "smithy.api#documentation": "<p>The Apache Airflow version for your environment. To upgrade your environment, specify a newer version of Apache Airflow supported by Amazon MWAA.</p>\n         <p>Before you upgrade an environment, make sure your requirements, DAGs, plugins, and other resources used in your workflows are compatible with the new Apache Airflow version. For more information about updating\n            your resources, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/upgrading-environment.html\">Upgrading an Amazon MWAA environment</a>.</p>\n         <p>Valid values: <code>1.10.12</code>, <code>2.0.2</code>, <code>2.2.2</code>,\n                <code>2.4.3</code>, <code>2.5.1</code>, <code>2.6.3</code>, <code>2.7.2</code>,\n            <code>2.8.1</code>, <code>2.9.2</code>, <code>2.10.1</code>, and <code>2.10.3</code>.</p>"
                     }
                 },
                 "SourceBucketArn": {
@@ -2705,7 +3049,7 @@
                 "EnvironmentClass": {
                     "target": "com.amazonaws.mwaa#EnvironmentClass",
                     "traits": {
-                        "smithy.api#documentation": "<p>The environment class type. Valid values: <code>mw1.small</code>, <code>mw1.medium</code>, <code>mw1.large</code>. For more information, see <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/environment-class.html\">Amazon MWAA environment class</a>.</p>"
+                        "smithy.api#documentation": "<p>The environment class type. Valid values: <code>mw1.micro</code>,\n                <code>mw1.small</code>, <code>mw1.medium</code>, <code>mw1.large</code>,\n                <code>mw1.xlarge</code>, and <code>mw1.2xlarge</code>. For more information, see\n                <a href=\"https://docs.aws.amazon.com/mwaa/latest/userguide/environment-class.html\">Amazon MWAA environment class</a>. </p>"
                     }
                 },
                 "MaxWorkers": {
@@ -2748,6 +3092,18 @@
                     "target": "com.amazonaws.mwaa#Schedulers",
                     "traits": {
                         "smithy.api#documentation": "<p>The number of Apache Airflow schedulers to run in your Amazon MWAA environment.</p>"
+                    }
+                },
+                "MinWebservers": {
+                    "target": "com.amazonaws.mwaa#MinWebservers",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n            The minimum number of web servers that you want to run in your environment.\n            Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code>\n            when you interact with your Apache Airflow environment using Apache Airflow REST API, or\n            the Apache Airflow CLI. As the transaction-per-second rate, and the network load, decrease,\n            Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>.\n        </p>\n         <p>Valid values: For environments larger than mw1.micro, accepts values from\n                <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all environment\n            sizes except mw1.micro, which defaults to <code>1</code>.</p>"
+                    }
+                },
+                "MaxWebservers": {
+                    "target": "com.amazonaws.mwaa#MaxWebservers",
+                    "traits": {
+                        "smithy.api#documentation": "<p>\n            The maximum number of web servers that you want to run in your environment.\n            Amazon MWAA scales the number of Apache Airflow web servers up to the number you specify for <code>MaxWebservers</code>\n            when you interact with your Apache Airflow environment using Apache Airflow REST API, or\n            the Apache Airflow CLI. For example, in scenarios where your workload requires network calls to the Apache Airflow REST API with a high transaction-per-second (TPS)\n            rate, Amazon MWAA will increase the number of web servers up to the number set in <code>MaxWebserers</code>. As TPS rates decrease\n            Amazon MWAA disposes of the additional web servers, and scales down to the number set in <code>MinxWebserers</code>.\n        </p>\n         <p>Valid values: For environments larger than mw1.micro, accepts values from\n                <code>2</code> to <code>5</code>. Defaults to <code>2</code> for all environment\n            sizes except mw1.micro, which defaults to <code>1</code>.</p>"
                     }
                 }
             }
@@ -2838,6 +3194,16 @@
                 "smithy.api#documentation": "<p>ValidationException: The provided input is not valid.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 400
+            }
+        },
+        "com.amazonaws.mwaa#VpcEndpointServiceName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 1224
+                },
+                "smithy.api#pattern": "^([a-z.-]+)?com\\.amazonaws\\.vpce\\.[a-z0-9\\-]+\\.[a-zA-Z_0-9+=,.@\\-_/]+$"
             }
         },
         "com.amazonaws.mwaa#WebserverAccessMode": {

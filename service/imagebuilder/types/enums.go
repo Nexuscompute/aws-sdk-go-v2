@@ -9,16 +9,19 @@ const (
 	BuildTypeUserInitiated BuildType = "USER_INITIATED"
 	BuildTypeScheduled     BuildType = "SCHEDULED"
 	BuildTypeImport        BuildType = "IMPORT"
+	BuildTypeImportIso     BuildType = "IMPORT_ISO"
 )
 
 // Values returns all known values for BuildType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BuildType) Values() []BuildType {
 	return []BuildType{
 		"USER_INITIATED",
 		"SCHEDULED",
 		"IMPORT",
+		"IMPORT_ISO",
 	}
 }
 
@@ -30,8 +33,9 @@ const (
 )
 
 // Values returns all known values for ComponentFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ComponentFormat) Values() []ComponentFormat {
 	return []ComponentFormat{
 		"SHELL",
@@ -43,14 +47,19 @@ type ComponentStatus string
 // Enum values for ComponentStatus
 const (
 	ComponentStatusDeprecated ComponentStatus = "DEPRECATED"
+	ComponentStatusDisabled   ComponentStatus = "DISABLED"
+	ComponentStatusActive     ComponentStatus = "ACTIVE"
 )
 
 // Values returns all known values for ComponentStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ComponentStatus) Values() []ComponentStatus {
 	return []ComponentStatus{
 		"DEPRECATED",
+		"DISABLED",
+		"ACTIVE",
 	}
 }
 
@@ -63,8 +72,9 @@ const (
 )
 
 // Values returns all known values for ComponentType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ComponentType) Values() []ComponentType {
 	return []ComponentType{
 		"BUILD",
@@ -81,6 +91,7 @@ const (
 
 // Values returns all known values for ContainerRepositoryService. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ContainerRepositoryService) Values() []ContainerRepositoryService {
 	return []ContainerRepositoryService{
@@ -96,8 +107,9 @@ const (
 )
 
 // Values returns all known values for ContainerType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ContainerType) Values() []ContainerType {
 	return []ContainerType{
 		"DOCKER",
@@ -114,8 +126,9 @@ const (
 )
 
 // Values returns all known values for DiskImageFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DiskImageFormat) Values() []DiskImageFormat {
 	return []DiskImageFormat{
 		"VMDK",
@@ -138,8 +151,9 @@ const (
 )
 
 // Values returns all known values for EbsVolumeType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EbsVolumeType) Values() []EbsVolumeType {
 	return []EbsVolumeType{
 		"standard",
@@ -166,8 +180,9 @@ const (
 )
 
 // Values returns all known values for ImageScanStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImageScanStatus) Values() []ImageScanStatus {
 	return []ImageScanStatus{
 		"PENDING",
@@ -191,8 +206,9 @@ const (
 )
 
 // Values returns all known values for ImageSource. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImageSource) Values() []ImageSource {
 	return []ImageSource{
 		"AMAZON_MANAGED",
@@ -217,11 +233,13 @@ const (
 	ImageStatusFailed       ImageStatus = "FAILED"
 	ImageStatusDeprecated   ImageStatus = "DEPRECATED"
 	ImageStatusDeleted      ImageStatus = "DELETED"
+	ImageStatusDisabled     ImageStatus = "DISABLED"
 )
 
 // Values returns all known values for ImageStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImageStatus) Values() []ImageStatus {
 	return []ImageStatus{
 		"PENDING",
@@ -235,6 +253,7 @@ func (ImageStatus) Values() []ImageStatus {
 		"FAILED",
 		"DEPRECATED",
 		"DELETED",
+		"DISABLED",
 	}
 }
 
@@ -247,8 +266,9 @@ const (
 )
 
 // Values returns all known values for ImageType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImageType) Values() []ImageType {
 	return []ImageType{
 		"AMI",
@@ -256,25 +276,244 @@ func (ImageType) Values() []ImageType {
 	}
 }
 
+type LifecycleExecutionResourceActionName string
+
+// Enum values for LifecycleExecutionResourceActionName
+const (
+	LifecycleExecutionResourceActionNameAvailable LifecycleExecutionResourceActionName = "AVAILABLE"
+	LifecycleExecutionResourceActionNameDelete    LifecycleExecutionResourceActionName = "DELETE"
+	LifecycleExecutionResourceActionNameDeprecate LifecycleExecutionResourceActionName = "DEPRECATE"
+	LifecycleExecutionResourceActionNameDisable   LifecycleExecutionResourceActionName = "DISABLE"
+)
+
+// Values returns all known values for LifecycleExecutionResourceActionName. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LifecycleExecutionResourceActionName) Values() []LifecycleExecutionResourceActionName {
+	return []LifecycleExecutionResourceActionName{
+		"AVAILABLE",
+		"DELETE",
+		"DEPRECATE",
+		"DISABLE",
+	}
+}
+
+type LifecycleExecutionResourceStatus string
+
+// Enum values for LifecycleExecutionResourceStatus
+const (
+	LifecycleExecutionResourceStatusFailed     LifecycleExecutionResourceStatus = "FAILED"
+	LifecycleExecutionResourceStatusInProgress LifecycleExecutionResourceStatus = "IN_PROGRESS"
+	LifecycleExecutionResourceStatusSkipped    LifecycleExecutionResourceStatus = "SKIPPED"
+	LifecycleExecutionResourceStatusSuccess    LifecycleExecutionResourceStatus = "SUCCESS"
+)
+
+// Values returns all known values for LifecycleExecutionResourceStatus. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LifecycleExecutionResourceStatus) Values() []LifecycleExecutionResourceStatus {
+	return []LifecycleExecutionResourceStatus{
+		"FAILED",
+		"IN_PROGRESS",
+		"SKIPPED",
+		"SUCCESS",
+	}
+}
+
+type LifecycleExecutionStatus string
+
+// Enum values for LifecycleExecutionStatus
+const (
+	LifecycleExecutionStatusInProgress LifecycleExecutionStatus = "IN_PROGRESS"
+	LifecycleExecutionStatusCancelled  LifecycleExecutionStatus = "CANCELLED"
+	LifecycleExecutionStatusCancelling LifecycleExecutionStatus = "CANCELLING"
+	LifecycleExecutionStatusFailed     LifecycleExecutionStatus = "FAILED"
+	LifecycleExecutionStatusSuccess    LifecycleExecutionStatus = "SUCCESS"
+	LifecycleExecutionStatusPending    LifecycleExecutionStatus = "PENDING"
+)
+
+// Values returns all known values for LifecycleExecutionStatus. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LifecycleExecutionStatus) Values() []LifecycleExecutionStatus {
+	return []LifecycleExecutionStatus{
+		"IN_PROGRESS",
+		"CANCELLED",
+		"CANCELLING",
+		"FAILED",
+		"SUCCESS",
+		"PENDING",
+	}
+}
+
+type LifecyclePolicyDetailActionType string
+
+// Enum values for LifecyclePolicyDetailActionType
+const (
+	LifecyclePolicyDetailActionTypeDelete    LifecyclePolicyDetailActionType = "DELETE"
+	LifecyclePolicyDetailActionTypeDeprecate LifecyclePolicyDetailActionType = "DEPRECATE"
+	LifecyclePolicyDetailActionTypeDisable   LifecyclePolicyDetailActionType = "DISABLE"
+)
+
+// Values returns all known values for LifecyclePolicyDetailActionType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LifecyclePolicyDetailActionType) Values() []LifecyclePolicyDetailActionType {
+	return []LifecyclePolicyDetailActionType{
+		"DELETE",
+		"DEPRECATE",
+		"DISABLE",
+	}
+}
+
+type LifecyclePolicyDetailFilterType string
+
+// Enum values for LifecyclePolicyDetailFilterType
+const (
+	LifecyclePolicyDetailFilterTypeAge   LifecyclePolicyDetailFilterType = "AGE"
+	LifecyclePolicyDetailFilterTypeCount LifecyclePolicyDetailFilterType = "COUNT"
+)
+
+// Values returns all known values for LifecyclePolicyDetailFilterType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LifecyclePolicyDetailFilterType) Values() []LifecyclePolicyDetailFilterType {
+	return []LifecyclePolicyDetailFilterType{
+		"AGE",
+		"COUNT",
+	}
+}
+
+type LifecyclePolicyResourceType string
+
+// Enum values for LifecyclePolicyResourceType
+const (
+	LifecyclePolicyResourceTypeAmiImage       LifecyclePolicyResourceType = "AMI_IMAGE"
+	LifecyclePolicyResourceTypeContainerImage LifecyclePolicyResourceType = "CONTAINER_IMAGE"
+)
+
+// Values returns all known values for LifecyclePolicyResourceType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LifecyclePolicyResourceType) Values() []LifecyclePolicyResourceType {
+	return []LifecyclePolicyResourceType{
+		"AMI_IMAGE",
+		"CONTAINER_IMAGE",
+	}
+}
+
+type LifecyclePolicyStatus string
+
+// Enum values for LifecyclePolicyStatus
+const (
+	LifecyclePolicyStatusDisabled LifecyclePolicyStatus = "DISABLED"
+	LifecyclePolicyStatusEnabled  LifecyclePolicyStatus = "ENABLED"
+)
+
+// Values returns all known values for LifecyclePolicyStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LifecyclePolicyStatus) Values() []LifecyclePolicyStatus {
+	return []LifecyclePolicyStatus{
+		"DISABLED",
+		"ENABLED",
+	}
+}
+
+type LifecyclePolicyTimeUnit string
+
+// Enum values for LifecyclePolicyTimeUnit
+const (
+	LifecyclePolicyTimeUnitDays   LifecyclePolicyTimeUnit = "DAYS"
+	LifecyclePolicyTimeUnitWeeks  LifecyclePolicyTimeUnit = "WEEKS"
+	LifecyclePolicyTimeUnitMonths LifecyclePolicyTimeUnit = "MONTHS"
+	LifecyclePolicyTimeUnitYears  LifecyclePolicyTimeUnit = "YEARS"
+)
+
+// Values returns all known values for LifecyclePolicyTimeUnit. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LifecyclePolicyTimeUnit) Values() []LifecyclePolicyTimeUnit {
+	return []LifecyclePolicyTimeUnit{
+		"DAYS",
+		"WEEKS",
+		"MONTHS",
+		"YEARS",
+	}
+}
+
+type MarketplaceResourceType string
+
+// Enum values for MarketplaceResourceType
+const (
+	MarketplaceResourceTypeComponentData     MarketplaceResourceType = "COMPONENT_DATA"
+	MarketplaceResourceTypeComponentArtifact MarketplaceResourceType = "COMPONENT_ARTIFACT"
+)
+
+// Values returns all known values for MarketplaceResourceType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MarketplaceResourceType) Values() []MarketplaceResourceType {
+	return []MarketplaceResourceType{
+		"COMPONENT_DATA",
+		"COMPONENT_ARTIFACT",
+	}
+}
+
+type OnWorkflowFailure string
+
+// Enum values for OnWorkflowFailure
+const (
+	OnWorkflowFailureContinue OnWorkflowFailure = "CONTINUE"
+	OnWorkflowFailureAbort    OnWorkflowFailure = "ABORT"
+)
+
+// Values returns all known values for OnWorkflowFailure. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OnWorkflowFailure) Values() []OnWorkflowFailure {
+	return []OnWorkflowFailure{
+		"CONTINUE",
+		"ABORT",
+	}
+}
+
 type Ownership string
 
 // Enum values for Ownership
 const (
-	OwnershipSelf       Ownership = "Self"
-	OwnershipShared     Ownership = "Shared"
-	OwnershipAmazon     Ownership = "Amazon"
-	OwnershipThirdparty Ownership = "ThirdParty"
+	OwnershipSelf           Ownership = "Self"
+	OwnershipShared         Ownership = "Shared"
+	OwnershipAmazon         Ownership = "Amazon"
+	OwnershipThirdparty     Ownership = "ThirdParty"
+	OwnershipAwsMarketplace Ownership = "AWSMarketplace"
 )
 
 // Values returns all known values for Ownership. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Ownership) Values() []Ownership {
 	return []Ownership{
 		"Self",
 		"Shared",
 		"Amazon",
 		"ThirdParty",
+		"AWSMarketplace",
 	}
 }
 
@@ -288,8 +527,9 @@ const (
 
 // Values returns all known values for PipelineExecutionStartCondition. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PipelineExecutionStartCondition) Values() []PipelineExecutionStartCondition {
 	return []PipelineExecutionStartCondition{
 		"EXPRESSION_MATCH_ONLY",
@@ -306,8 +546,9 @@ const (
 )
 
 // Values returns all known values for PipelineStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PipelineStatus) Values() []PipelineStatus {
 	return []PipelineStatus{
 		"DISABLED",
@@ -321,15 +562,79 @@ type Platform string
 const (
 	PlatformWindows Platform = "Windows"
 	PlatformLinux   Platform = "Linux"
+	PlatformMacos   Platform = "macOS"
 )
 
 // Values returns all known values for Platform. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Platform) Values() []Platform {
 	return []Platform{
 		"Windows",
 		"Linux",
+		"macOS",
+	}
+}
+
+type ProductCodeType string
+
+// Enum values for ProductCodeType
+const (
+	ProductCodeTypeMarketplace ProductCodeType = "marketplace"
+)
+
+// Values returns all known values for ProductCodeType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ProductCodeType) Values() []ProductCodeType {
+	return []ProductCodeType{
+		"marketplace",
+	}
+}
+
+type ResourceStatus string
+
+// Enum values for ResourceStatus
+const (
+	ResourceStatusAvailable  ResourceStatus = "AVAILABLE"
+	ResourceStatusDeleted    ResourceStatus = "DELETED"
+	ResourceStatusDeprecated ResourceStatus = "DEPRECATED"
+	ResourceStatusDisabled   ResourceStatus = "DISABLED"
+)
+
+// Values returns all known values for ResourceStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResourceStatus) Values() []ResourceStatus {
+	return []ResourceStatus{
+		"AVAILABLE",
+		"DELETED",
+		"DEPRECATED",
+		"DISABLED",
+	}
+}
+
+type TenancyType string
+
+// Enum values for TenancyType
+const (
+	TenancyTypeDefault   TenancyType = "default"
+	TenancyTypeDedicated TenancyType = "dedicated"
+	TenancyTypeHost      TenancyType = "host"
+)
+
+// Values returns all known values for TenancyType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TenancyType) Values() []TenancyType {
+	return []TenancyType{
+		"default",
+		"dedicated",
+		"host",
 	}
 }
 
@@ -344,11 +649,13 @@ const (
 	WorkflowExecutionStatusFailed             WorkflowExecutionStatus = "FAILED"
 	WorkflowExecutionStatusRollbackInProgress WorkflowExecutionStatus = "ROLLBACK_IN_PROGRESS"
 	WorkflowExecutionStatusRollbackCompleted  WorkflowExecutionStatus = "ROLLBACK_COMPLETED"
+	WorkflowExecutionStatusCancelled          WorkflowExecutionStatus = "CANCELLED"
 )
 
 // Values returns all known values for WorkflowExecutionStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkflowExecutionStatus) Values() []WorkflowExecutionStatus {
 	return []WorkflowExecutionStatus{
 		"PENDING",
@@ -358,6 +665,43 @@ func (WorkflowExecutionStatus) Values() []WorkflowExecutionStatus {
 		"FAILED",
 		"ROLLBACK_IN_PROGRESS",
 		"ROLLBACK_COMPLETED",
+		"CANCELLED",
+	}
+}
+
+type WorkflowStatus string
+
+// Enum values for WorkflowStatus
+const (
+	WorkflowStatusDeprecated WorkflowStatus = "DEPRECATED"
+)
+
+// Values returns all known values for WorkflowStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WorkflowStatus) Values() []WorkflowStatus {
+	return []WorkflowStatus{
+		"DEPRECATED",
+	}
+}
+
+type WorkflowStepActionType string
+
+// Enum values for WorkflowStepActionType
+const (
+	WorkflowStepActionTypeResume WorkflowStepActionType = "RESUME"
+	WorkflowStepActionTypeStop   WorkflowStepActionType = "STOP"
+)
+
+// Values returns all known values for WorkflowStepActionType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WorkflowStepActionType) Values() []WorkflowStepActionType {
+	return []WorkflowStepActionType{
+		"RESUME",
+		"STOP",
 	}
 }
 
@@ -373,8 +717,9 @@ const (
 
 // Values returns all known values for WorkflowStepExecutionRollbackStatus. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkflowStepExecutionRollbackStatus) Values() []WorkflowStepExecutionRollbackStatus {
 	return []WorkflowStepExecutionRollbackStatus{
 		"RUNNING",
@@ -393,10 +738,12 @@ const (
 	WorkflowStepExecutionStatusRunning   WorkflowStepExecutionStatus = "RUNNING"
 	WorkflowStepExecutionStatusCompleted WorkflowStepExecutionStatus = "COMPLETED"
 	WorkflowStepExecutionStatusFailed    WorkflowStepExecutionStatus = "FAILED"
+	WorkflowStepExecutionStatusCancelled WorkflowStepExecutionStatus = "CANCELLED"
 )
 
 // Values returns all known values for WorkflowStepExecutionStatus. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkflowStepExecutionStatus) Values() []WorkflowStepExecutionStatus {
 	return []WorkflowStepExecutionStatus{
@@ -405,6 +752,7 @@ func (WorkflowStepExecutionStatus) Values() []WorkflowStepExecutionStatus {
 		"RUNNING",
 		"COMPLETED",
 		"FAILED",
+		"CANCELLED",
 	}
 }
 
@@ -418,8 +766,9 @@ const (
 )
 
 // Values returns all known values for WorkflowType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkflowType) Values() []WorkflowType {
 	return []WorkflowType{
 		"BUILD",

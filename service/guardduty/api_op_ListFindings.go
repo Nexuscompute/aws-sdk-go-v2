@@ -4,19 +4,20 @@ package guardduty
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/guardduty/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Lists Amazon GuardDuty findings for the specified detector ID.
+// Lists GuardDuty findings for the specified detector ID.
+//
+// There might be regional differences because some flags might not be available
+// in all the Regions where GuardDuty is currently supported. For more information,
+// see [Regions and endpoints].
+//
+// [Regions and endpoints]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html
 func (c *Client) ListFindings(ctx context.Context, params *ListFindingsInput, optFns ...func(*Options)) (*ListFindingsOutput, error) {
 	if params == nil {
 		params = &ListFindingsInput{}
@@ -37,66 +38,127 @@ type ListFindingsInput struct {
 	// The ID of the detector that specifies the GuardDuty service whose findings you
 	// want to list.
 	//
+	// To find the detectorId in the current Region, see the Settings page in the
+	// GuardDuty console, or run the [ListDetectors]API.
+	//
+	// [ListDetectors]: https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html
+	//
 	// This member is required.
 	DetectorId *string
 
 	// Represents the criteria used for querying findings. Valid values include:
+	//
 	//   - JSON field name
+	//
 	//   - accountId
+	//
 	//   - region
+	//
 	//   - confidence
+	//
 	//   - id
+	//
 	//   - resource.accessKeyDetails.accessKeyId
+	//
 	//   - resource.accessKeyDetails.principalId
+	//
 	//   - resource.accessKeyDetails.userName
+	//
 	//   - resource.accessKeyDetails.userType
+	//
 	//   - resource.instanceDetails.iamInstanceProfile.id
+	//
 	//   - resource.instanceDetails.imageId
+	//
 	//   - resource.instanceDetails.instanceId
+	//
 	//   - resource.instanceDetails.networkInterfaces.ipv6Addresses
+	//
 	//   -
 	//   resource.instanceDetails.networkInterfaces.privateIpAddresses.privateIpAddress
+	//
 	//   - resource.instanceDetails.networkInterfaces.publicDnsName
+	//
 	//   - resource.instanceDetails.networkInterfaces.publicIp
+	//
 	//   - resource.instanceDetails.networkInterfaces.securityGroups.groupId
+	//
 	//   - resource.instanceDetails.networkInterfaces.securityGroups.groupName
+	//
 	//   - resource.instanceDetails.networkInterfaces.subnetId
+	//
 	//   - resource.instanceDetails.networkInterfaces.vpcId
+	//
 	//   - resource.instanceDetails.tags.key
+	//
 	//   - resource.instanceDetails.tags.value
+	//
 	//   - resource.resourceType
+	//
 	//   - service.action.actionType
+	//
 	//   - service.action.awsApiCallAction.api
+	//
 	//   - service.action.awsApiCallAction.callerType
+	//
 	//   - service.action.awsApiCallAction.remoteIpDetails.city.cityName
+	//
 	//   - service.action.awsApiCallAction.remoteIpDetails.country.countryName
+	//
 	//   - service.action.awsApiCallAction.remoteIpDetails.ipAddressV4
+	//
 	//   - service.action.awsApiCallAction.remoteIpDetails.organization.asn
+	//
 	//   - service.action.awsApiCallAction.remoteIpDetails.organization.asnOrg
+	//
 	//   - service.action.awsApiCallAction.serviceName
+	//
 	//   - service.action.dnsRequestAction.domain
+	//
+	//   - service.action.dnsRequestAction.domainWithSuffix
+	//
 	//   - service.action.networkConnectionAction.blocked
+	//
 	//   - service.action.networkConnectionAction.connectionDirection
+	//
 	//   - service.action.networkConnectionAction.localPortDetails.port
+	//
 	//   - service.action.networkConnectionAction.protocol
+	//
 	//   - service.action.networkConnectionAction.remoteIpDetails.country.countryName
+	//
 	//   - service.action.networkConnectionAction.remoteIpDetails.ipAddressV4
+	//
 	//   - service.action.networkConnectionAction.remoteIpDetails.organization.asn
+	//
 	//   - service.action.networkConnectionAction.remoteIpDetails.organization.asnOrg
+	//
 	//   - service.action.networkConnectionAction.remotePortDetails.port
+	//
 	//   - service.additionalInfo.threatListName
-	//   - service.archived When this attribute is set to 'true', only archived
-	//   findings are listed. When it's set to 'false', only unarchived findings are
-	//   listed. When this attribute is not set, all existing findings are listed.
+	//
+	//   - service.archived
+	//
+	// When this attribute is set to 'true', only archived findings are listed. When
+	//   it's set to 'false', only unarchived findings are listed. When this attribute is
+	//   not set, all existing findings are listed.
+	//
+	//   - service.ebsVolumeScanDetails.scanId
+	//
 	//   - service.resourceRole
+	//
 	//   - severity
+	//
 	//   - type
-	//   - updatedAt Type: Timestamp in Unix Epoch millisecond format: 1486685375000
+	//
+	//   - updatedAt
+	//
+	// Type: Timestamp in Unix Epoch millisecond format: 1486685375000
 	FindingCriteria *types.FindingCriteria
 
 	// You can use this parameter to indicate the maximum number of items you want in
 	// the response. The default value is 50. The maximum value is 50.
-	MaxResults int32
+	MaxResults *int32
 
 	// You can use this parameter when paginating results. Set the value of this
 	// parameter to null on your first call to the list action. For subsequent calls to
@@ -128,6 +190,9 @@ type ListFindingsOutput struct {
 }
 
 func (c *Client) addOperationListFindingsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpListFindings{}, middleware.After)
 	if err != nil {
 		return err
@@ -136,34 +201,38 @@ func (c *Client) addOperationListFindingsMiddlewares(stack *middleware.Stack, op
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListFindings"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -175,7 +244,13 @@ func (c *Client) addOperationListFindingsMiddlewares(stack *middleware.Stack, op
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListFindingsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListFindingsValidationMiddleware(stack); err != nil {
@@ -184,7 +259,7 @@ func (c *Client) addOperationListFindingsMiddlewares(stack *middleware.Stack, op
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListFindings(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -196,18 +271,23 @@ func (c *Client) addOperationListFindingsMiddlewares(stack *middleware.Stack, op
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// ListFindingsAPIClient is a client that implements the ListFindings operation.
-type ListFindingsAPIClient interface {
-	ListFindings(context.Context, *ListFindingsInput, ...func(*Options)) (*ListFindingsOutput, error)
-}
-
-var _ ListFindingsAPIClient = (*Client)(nil)
 
 // ListFindingsPaginatorOptions is the paginator options for ListFindings
 type ListFindingsPaginatorOptions struct {
@@ -236,8 +316,8 @@ func NewListFindingsPaginator(client ListFindingsAPIClient, params *ListFindings
 	}
 
 	options := ListFindingsPaginatorOptions{}
-	if params.MaxResults != 0 {
-		options.Limit = params.MaxResults
+	if params.MaxResults != nil {
+		options.Limit = *params.MaxResults
 	}
 
 	for _, fn := range optFns {
@@ -267,8 +347,15 @@ func (p *ListFindingsPaginator) NextPage(ctx context.Context, optFns ...func(*Op
 	params := *p.params
 	params.NextToken = p.nextToken
 
-	params.MaxResults = p.options.Limit
+	var limit *int32
+	if p.options.Limit > 0 {
+		limit = &p.options.Limit
+	}
+	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListFindings(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -288,134 +375,17 @@ func (p *ListFindingsPaginator) NextPage(ctx context.Context, optFns ...func(*Op
 	return result, nil
 }
 
+// ListFindingsAPIClient is a client that implements the ListFindings operation.
+type ListFindingsAPIClient interface {
+	ListFindings(context.Context, *ListFindingsInput, ...func(*Options)) (*ListFindingsOutput, error)
+}
+
+var _ ListFindingsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListFindings(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "guardduty",
 		OperationName: "ListFindings",
 	}
-}
-
-type opListFindingsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListFindingsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListFindingsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "guardduty"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "guardduty"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("guardduty")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListFindingsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListFindingsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

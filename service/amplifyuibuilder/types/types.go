@@ -87,6 +87,25 @@ type ApiConfigurationMemberNoApiConfig struct {
 
 func (*ApiConfigurationMemberNoApiConfig) isApiConfiguration() {}
 
+// Dependency package that may be required for the project code to run.
+type CodegenDependency struct {
+
+	// Determines if the dependency package is using Semantic versioning. If set to
+	// true, it indicates that the dependency package uses Semantic versioning.
+	IsSemVer *bool
+
+	// Name of the dependency package.
+	Name *string
+
+	// Indicates the reason to include the dependency package in your project code.
+	Reason *string
+
+	// Indicates the version of the supported dependency package.
+	SupportedVersion *string
+
+	noSmithyDocumentSerde
+}
+
 // Describes the feature flags that you can specify for a code generation job.
 type CodegenFeatureFlags struct {
 
@@ -239,6 +258,9 @@ type CodegenJob struct {
 
 	// The time that the code generation job was created.
 	CreatedAt *time.Time
+
+	// Lists the dependency packages that may be required for the project code to run.
+	Dependencies []CodegenDependency
 
 	// Describes the feature flags that you can specify for a code generation job.
 	Features *CodegenFeatureFlags
@@ -1015,16 +1037,19 @@ type FileUploaderFieldConfig struct {
 	// The access level to assign to the uploaded files in the Amazon S3 bucket where
 	// they are stored. The valid values for this property are private , protected , or
 	// public . For detailed information about the permissions associated with each
-	// access level, see File access levels (https://docs.amplify.aws/lib/storage/configureaccess/q/platform/js/)
-	// in the Amplify documentation.
+	// access level, see [File access levels]in the Amplify documentation.
+	//
+	// [File access levels]: https://docs.amplify.aws/lib/storage/configureaccess/q/platform/js/
 	//
 	// This member is required.
 	AccessLevel StorageAccessLevel
 
 	// Allows the file upload operation to be paused and resumed. The default value is
-	// false . When isResumable is set to true , the file uploader uses a multipart
-	// upload to break the files into chunks before upload. The progress of the upload
-	// isn't continuous, because the file uploader uploads a chunk at a time.
+	// false .
+	//
+	// When isResumable is set to true , the file uploader uses a multipart upload to
+	// break the files into chunks before upload. The progress of the upload isn't
+	// continuous, because the file uploader uploads a chunk at a time.
 	IsResumable *bool
 
 	// Specifies the maximum number of files that can be selected to upload. The
@@ -1418,6 +1443,9 @@ type ReactStartCodegenJobData struct {
 
 	// The API configuration for the code generation job.
 	ApiConfiguration ApiConfiguration
+
+	// Lists the dependency packages that may be required for the project code to run.
+	Dependencies map[string]string
 
 	// Specifies whether the code generation job should render inline source maps.
 	InlineSourceMap bool

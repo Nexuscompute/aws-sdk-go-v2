@@ -4,14 +4,9 @@ package transfer
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/transfer/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -21,9 +16,12 @@ import (
 // set up successfully. We highly recommend that you call this operation to test
 // your authentication method as soon as you create your server. By doing so, you
 // can troubleshoot issues with the identity provider integration to ensure that
-// your users can successfully use the service. The ServerId and UserName
-// parameters are required. The ServerProtocol , SourceIp , and UserPassword are
-// all optional. Note the following:
+// your users can successfully use the service.
+//
+// The ServerId and UserName parameters are required. The ServerProtocol , SourceIp
+// , and UserPassword are all optional.
+//
+// Note the following:
 //
 //   - You cannot use TestIdentityProvider if the IdentityProviderType of your
 //     server is SERVICE_MANAGED .
@@ -37,15 +35,23 @@ import (
 //     is empty.
 //
 //   - If you provide a server ID for a server that uses service-managed users,
-//     you get an error: An error occurred (InvalidRequestException) when calling
-//     the TestIdentityProvider operation: s-server-ID not configured for external auth
+//     you get an error:
 //
-//   - If you enter a Server ID for the --server-id parameter that does not
-//     identify an actual Transfer server, you receive the following error: An error
-//     occurred (ResourceNotFoundException) when calling the TestIdentityProvider
-//     operation: Unknown server . It is possible your sever is in a different
-//     region. You can specify a region by adding the following: --region region-code
-//     , such as --region us-east-2 to specify a server in US East (Ohio).
+// An error occurred (InvalidRequestException) when calling the
+//
+//	TestIdentityProvider operation: s-server-ID not configured for external auth
+//
+//	- If you enter a Server ID for the --server-id parameter that does not
+//	identify an actual Transfer server, you receive the following error:
+//
+// An error occurred (ResourceNotFoundException) when calling the
+//
+//	TestIdentityProvider operation: Unknown server .
+//
+// It is possible your sever is in a different region. You can specify a region by
+//
+//	adding the following: --region region-code , such as --region us-east-2 to
+//	specify a server in US East (Ohio).
 func (c *Client) TestIdentityProvider(ctx context.Context, params *TestIdentityProviderInput, optFns ...func(*Options)) (*TestIdentityProviderOutput, error) {
 	if params == nil {
 		params = &TestIdentityProviderInput{}
@@ -74,10 +80,16 @@ type TestIdentityProviderInput struct {
 	// This member is required.
 	UserName *string
 
-	// The type of file transfer protocol to be tested. The available protocols are:
+	// The type of file transfer protocol to be tested.
+	//
+	// The available protocols are:
+	//
 	//   - Secure Shell (SSH) File Transfer Protocol (SFTP)
+	//
 	//   - File Transfer Protocol Secure (FTPS)
+	//
 	//   - File Transfer Protocol (FTP)
+	//
 	//   - Applicability Statement 2 (AS2)
 	ServerProtocol types.Protocol
 
@@ -103,9 +115,10 @@ type TestIdentityProviderOutput struct {
 	// This member is required.
 	Url *string
 
-	// A message that indicates whether the test was successful or not. If an empty
-	// string is returned, the most likely cause is that the authentication failed due
-	// to an incorrect username or password.
+	// A message that indicates whether the test was successful or not.
+	//
+	// If an empty string is returned, the most likely cause is that the
+	// authentication failed due to an incorrect username or password.
 	Message *string
 
 	// The response that is returned from your API Gateway or your Lambda function.
@@ -118,6 +131,9 @@ type TestIdentityProviderOutput struct {
 }
 
 func (c *Client) addOperationTestIdentityProviderMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpTestIdentityProvider{}, middleware.After)
 	if err != nil {
 		return err
@@ -126,34 +142,38 @@ func (c *Client) addOperationTestIdentityProviderMiddlewares(stack *middleware.S
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "TestIdentityProvider"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -165,7 +185,13 @@ func (c *Client) addOperationTestIdentityProviderMiddlewares(stack *middleware.S
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addTestIdentityProviderResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpTestIdentityProviderValidationMiddleware(stack); err != nil {
@@ -174,7 +200,7 @@ func (c *Client) addOperationTestIdentityProviderMiddlewares(stack *middleware.S
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opTestIdentityProvider(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -186,7 +212,19 @@ func (c *Client) addOperationTestIdentityProviderMiddlewares(stack *middleware.S
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -196,130 +234,6 @@ func newServiceMetadataMiddleware_opTestIdentityProvider(region string) *awsmidd
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "transfer",
 		OperationName: "TestIdentityProvider",
 	}
-}
-
-type opTestIdentityProviderResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opTestIdentityProviderResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opTestIdentityProviderResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "transfer"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "transfer"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("transfer")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addTestIdentityProviderResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opTestIdentityProviderResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

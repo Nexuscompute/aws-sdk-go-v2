@@ -4,28 +4,27 @@ package cloudformation
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Returns drift information for the resources that have been checked for drift in
 // the specified stack. This includes actual and expected configuration values for
-// resources where CloudFormation detects configuration drift. For a given stack,
-// there will be one StackResourceDrift for each stack resource that has been
-// checked for drift. Resources that haven't yet been checked for drift aren't
-// included. Resources that don't currently support drift detection aren't checked,
-// and so not included. For a list of resources that support drift detection, see
-// Resources that Support Drift Detection (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift-resource-list.html)
-// . Use DetectStackResourceDrift to detect drift on individual resources, or
-// DetectStackDrift to detect drift on all supported resources for a given stack.
+// resources where CloudFormation detects configuration drift.
+//
+// For a given stack, there will be one StackResourceDrift for each stack resource
+// that has been checked for drift. Resources that haven't yet been checked for
+// drift aren't included. Resources that don't currently support drift detection
+// aren't checked, and so not included. For a list of resources that support drift
+// detection, see [Resource type support for imports and drift detection].
+//
+// Use DetectStackResourceDrift to detect drift on individual resources, or DetectStackDrift to detect drift on all
+// supported resources for a given stack.
+//
+// [Resource type support for imports and drift detection]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-supported-resources.html
 func (c *Client) DescribeStackResourceDrifts(ctx context.Context, params *DescribeStackResourceDriftsInput, optFns ...func(*Options)) (*DescribeStackResourceDriftsOutput, error) {
 	if params == nil {
 		params = &DescribeStackResourceDriftsInput{}
@@ -59,12 +58,16 @@ type DescribeStackResourceDriftsInput struct {
 
 	// The resource drift status values to use as filters for the resource drift
 	// results returned.
+	//
 	//   - DELETED : The resource differs from its expected template configuration in
 	//   that the resource has been deleted.
+	//
 	//   - MODIFIED : One or more resource properties differ from their expected
 	//   template values.
+	//
 	//   - IN_SYNC : The resource's actual configuration matches its expected template
 	//   configuration.
+	//
 	//   - NOT_CHECKED : CloudFormation doesn't currently return this value.
 	StackResourceDriftStatusFilters []types.StackResourceDriftStatus
 
@@ -75,13 +78,15 @@ type DescribeStackResourceDriftsOutput struct {
 
 	// Drift information for the resources that have been checked for drift in the
 	// specified stack. This includes actual and expected configuration values for
-	// resources where CloudFormation detects drift. For a given stack, there will be
-	// one StackResourceDrift for each stack resource that has been checked for drift.
-	// Resources that haven't yet been checked for drift aren't included. Resources
-	// that do not currently support drift detection aren't checked, and so not
-	// included. For a list of resources that support drift detection, see Resources
-	// that Support Drift Detection (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/using-cfn-stack-drift-resource-list.html)
-	// .
+	// resources where CloudFormation detects drift.
+	//
+	// For a given stack, there will be one StackResourceDrift for each stack resource
+	// that has been checked for drift. Resources that haven't yet been checked for
+	// drift aren't included. Resources that do not currently support drift detection
+	// aren't checked, and so not included. For a list of resources that support drift
+	// detection, see [Resource type support for imports and drift detection].
+	//
+	// [Resource type support for imports and drift detection]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/resource-import-supported-resources.html
 	//
 	// This member is required.
 	StackResourceDrifts []types.StackResourceDrift
@@ -99,6 +104,9 @@ type DescribeStackResourceDriftsOutput struct {
 }
 
 func (c *Client) addOperationDescribeStackResourceDriftsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpDescribeStackResourceDrifts{}, middleware.After)
 	if err != nil {
 		return err
@@ -107,34 +115,38 @@ func (c *Client) addOperationDescribeStackResourceDriftsMiddlewares(stack *middl
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeStackResourceDrifts"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -146,7 +158,13 @@ func (c *Client) addOperationDescribeStackResourceDriftsMiddlewares(stack *middl
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeStackResourceDriftsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeStackResourceDriftsValidationMiddleware(stack); err != nil {
@@ -155,7 +173,7 @@ func (c *Client) addOperationDescribeStackResourceDriftsMiddlewares(stack *middl
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeStackResourceDrifts(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -167,19 +185,23 @@ func (c *Client) addOperationDescribeStackResourceDriftsMiddlewares(stack *middl
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// DescribeStackResourceDriftsAPIClient is a client that implements the
-// DescribeStackResourceDrifts operation.
-type DescribeStackResourceDriftsAPIClient interface {
-	DescribeStackResourceDrifts(context.Context, *DescribeStackResourceDriftsInput, ...func(*Options)) (*DescribeStackResourceDriftsOutput, error)
-}
-
-var _ DescribeStackResourceDriftsAPIClient = (*Client)(nil)
 
 // DescribeStackResourceDriftsPaginatorOptions is the paginator options for
 // DescribeStackResourceDrifts
@@ -250,6 +272,9 @@ func (p *DescribeStackResourceDriftsPaginator) NextPage(ctx context.Context, opt
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeStackResourceDrifts(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -269,134 +294,18 @@ func (p *DescribeStackResourceDriftsPaginator) NextPage(ctx context.Context, opt
 	return result, nil
 }
 
+// DescribeStackResourceDriftsAPIClient is a client that implements the
+// DescribeStackResourceDrifts operation.
+type DescribeStackResourceDriftsAPIClient interface {
+	DescribeStackResourceDrifts(context.Context, *DescribeStackResourceDriftsInput, ...func(*Options)) (*DescribeStackResourceDriftsOutput, error)
+}
+
+var _ DescribeStackResourceDriftsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opDescribeStackResourceDrifts(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "cloudformation",
 		OperationName: "DescribeStackResourceDrifts",
 	}
-}
-
-type opDescribeStackResourceDriftsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeStackResourceDriftsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeStackResourceDriftsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "cloudformation"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "cloudformation"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("cloudformation")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeStackResourceDriftsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeStackResourceDriftsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

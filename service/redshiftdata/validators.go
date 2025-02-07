@@ -130,6 +130,26 @@ func (m *validateOpGetStatementResult) HandleInitialize(ctx context.Context, in 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetStatementResultV2 struct {
+}
+
+func (*validateOpGetStatementResultV2) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetStatementResultV2) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetStatementResultV2Input)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetStatementResultV2Input(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListDatabases struct {
 }
 
@@ -214,6 +234,10 @@ func addOpGetStatementResultValidationMiddleware(stack *middleware.Stack) error 
 	return stack.Initialize.Add(&validateOpGetStatementResult{}, middleware.After)
 }
 
+func addOpGetStatementResultV2ValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetStatementResultV2{}, middleware.After)
+}
+
 func addOpListDatabasesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListDatabases{}, middleware.After)
 }
@@ -268,9 +292,6 @@ func validateOpBatchExecuteStatementInput(v *BatchExecuteStatementInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "BatchExecuteStatementInput"}
 	if v.Sqls == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Sqls"))
-	}
-	if v.Database == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Database"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -332,9 +353,6 @@ func validateOpExecuteStatementInput(v *ExecuteStatementInput) error {
 	if v.Sql == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Sql"))
 	}
-	if v.Database == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Database"))
-	}
 	if v.Parameters != nil {
 		if err := validateSqlParametersList(v.Parameters); err != nil {
 			invalidParams.AddNested("Parameters", err.(smithy.InvalidParamsError))
@@ -352,6 +370,21 @@ func validateOpGetStatementResultInput(v *GetStatementResultInput) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "GetStatementResultInput"}
+	if v.Id == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Id"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetStatementResultV2Input(v *GetStatementResultV2Input) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetStatementResultV2Input"}
 	if v.Id == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Id"))
 	}

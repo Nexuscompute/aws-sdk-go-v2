@@ -4,35 +4,34 @@ package databasemigrationservice
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/databasemigrationservice/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Provides a list of individual assessments that you can specify for a new
-// premigration assessment run, given one or more parameters. If you specify an
-// existing migration task, this operation provides the default individual
-// assessments you can specify for that task. Otherwise, the specified parameters
-// model elements of a possible migration task on which to base a premigration
-// assessment run. To use these migration task modeling parameters, you must
-// specify an existing replication instance, a source database engine, a target
-// database engine, and a migration type. This combination of parameters
-// potentially limits the default individual assessments available for an
-// assessment run created for a corresponding migration task. If you specify no
-// parameters, this operation provides a list of all possible individual
-// assessments that you can specify for an assessment run. If you specify any one
-// of the task modeling parameters, you must specify all of them or the operation
-// cannot provide a list of individual assessments. The only parameter that you can
-// specify alone is for an existing migration task. The specified task definition
-// then determines the default list of individual assessments that you can specify
-// in an assessment run for the task.
+// premigration assessment run, given one or more parameters.
+//
+// If you specify an existing migration task, this operation provides the default
+// individual assessments you can specify for that task. Otherwise, the specified
+// parameters model elements of a possible migration task on which to base a
+// premigration assessment run.
+//
+// To use these migration task modeling parameters, you must specify an existing
+// replication instance, a source database engine, a target database engine, and a
+// migration type. This combination of parameters potentially limits the default
+// individual assessments available for an assessment run created for a
+// corresponding migration task.
+//
+// If you specify no parameters, this operation provides a list of all possible
+// individual assessments that you can specify for an assessment run. If you
+// specify any one of the task modeling parameters, you must specify all of them or
+// the operation cannot provide a list of individual assessments. The only
+// parameter that you can specify alone is for an existing migration task. The
+// specified task definition then determines the default list of individual
+// assessments that you can specify in an assessment run for the task.
 func (c *Client) DescribeApplicableIndividualAssessments(ctx context.Context, params *DescribeApplicableIndividualAssessmentsInput, optFns ...func(*Options)) (*DescribeApplicableIndividualAssessmentsOutput, error) {
 	if params == nil {
 		params = &DescribeApplicableIndividualAssessmentsInput{}
@@ -88,9 +87,10 @@ type DescribeApplicableIndividualAssessmentsOutput struct {
 	// List of names for the individual assessments supported by the premigration
 	// assessment run that you start based on the specified request parameters. For
 	// more information on the available individual assessments, including
-	// compatibility with different migration task configurations, see Working with
-	// premigration assessment runs (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.AssessmentReport.html)
-	// in the Database Migration Service User Guide.
+	// compatibility with different migration task configurations, see [Working with premigration assessment runs]in the Database
+	// Migration Service User Guide.
+	//
+	// [Working with premigration assessment runs]: https://docs.aws.amazon.com/dms/latest/userguide/CHAP_Tasks.AssessmentReport.html
 	IndividualAssessmentNames []string
 
 	// Pagination token returned for you to pass to a subsequent request. If you pass
@@ -106,6 +106,9 @@ type DescribeApplicableIndividualAssessmentsOutput struct {
 }
 
 func (c *Client) addOperationDescribeApplicableIndividualAssessmentsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpDescribeApplicableIndividualAssessments{}, middleware.After)
 	if err != nil {
 		return err
@@ -114,34 +117,38 @@ func (c *Client) addOperationDescribeApplicableIndividualAssessmentsMiddlewares(
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeApplicableIndividualAssessments"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -153,13 +160,19 @@ func (c *Client) addOperationDescribeApplicableIndividualAssessmentsMiddlewares(
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeApplicableIndividualAssessmentsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeApplicableIndividualAssessments(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -171,19 +184,23 @@ func (c *Client) addOperationDescribeApplicableIndividualAssessmentsMiddlewares(
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// DescribeApplicableIndividualAssessmentsAPIClient is a client that implements
-// the DescribeApplicableIndividualAssessments operation.
-type DescribeApplicableIndividualAssessmentsAPIClient interface {
-	DescribeApplicableIndividualAssessments(context.Context, *DescribeApplicableIndividualAssessmentsInput, ...func(*Options)) (*DescribeApplicableIndividualAssessmentsOutput, error)
-}
-
-var _ DescribeApplicableIndividualAssessmentsAPIClient = (*Client)(nil)
 
 // DescribeApplicableIndividualAssessmentsPaginatorOptions is the paginator
 // options for DescribeApplicableIndividualAssessments
@@ -253,6 +270,9 @@ func (p *DescribeApplicableIndividualAssessmentsPaginator) NextPage(ctx context.
 	}
 	params.MaxRecords = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeApplicableIndividualAssessments(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -272,134 +292,18 @@ func (p *DescribeApplicableIndividualAssessmentsPaginator) NextPage(ctx context.
 	return result, nil
 }
 
+// DescribeApplicableIndividualAssessmentsAPIClient is a client that implements
+// the DescribeApplicableIndividualAssessments operation.
+type DescribeApplicableIndividualAssessmentsAPIClient interface {
+	DescribeApplicableIndividualAssessments(context.Context, *DescribeApplicableIndividualAssessmentsInput, ...func(*Options)) (*DescribeApplicableIndividualAssessmentsOutput, error)
+}
+
+var _ DescribeApplicableIndividualAssessmentsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opDescribeApplicableIndividualAssessments(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "dms",
 		OperationName: "DescribeApplicableIndividualAssessments",
 	}
-}
-
-type opDescribeApplicableIndividualAssessmentsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeApplicableIndividualAssessmentsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeApplicableIndividualAssessmentsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "dms"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "dms"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("dms")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeApplicableIndividualAssessmentsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeApplicableIndividualAssessmentsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

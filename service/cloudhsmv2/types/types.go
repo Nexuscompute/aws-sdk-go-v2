@@ -7,8 +7,8 @@ import (
 	"time"
 )
 
-// Contains information about a backup of an AWS CloudHSM cluster. All backup
-// objects contain the BackupId , BackupState , ClusterId , and CreateTimestamp
+// Contains information about a backup of an CloudHSM cluster. All backup objects
+// contain the BackupId , BackupState , ClusterId , and CreateTimestamp
 // parameters. Backups that were copied into a destination region additionally
 // contain the CopyTimestamp , SourceBackup , SourceCluster , and SourceRegion
 // parameters. A backup that is pending deletion will include the DeleteTimestamp
@@ -19,6 +19,9 @@ type Backup struct {
 	//
 	// This member is required.
 	BackupId *string
+
+	// The Amazon Resource Name (ARN) of the backup.
+	BackupArn *string
 
 	// The state of the backup.
 	BackupState BackupState
@@ -34,6 +37,12 @@ type Backup struct {
 
 	// The date and time when the backup will be permanently deleted.
 	DeleteTimestamp *time.Time
+
+	// The HSM type used to create the backup.
+	HsmType *string
+
+	// The mode of the cluster that was backed up.
+	Mode ClusterMode
 
 	// Specifies whether the service should exempt a backup from the retention policy
 	// for the cluster. True exempts a backup from the retention policy. False means
@@ -73,7 +82,7 @@ type BackupRetentionPolicy struct {
 // Contains one or more certificates or a certificate signing request (CSR).
 type Certificates struct {
 
-	// The HSM hardware certificate issued (signed) by AWS CloudHSM.
+	// The HSM hardware certificate issued (signed) by CloudHSM.
 	AwsHardwareCertificate *string
 
 	// The cluster certificate issued (signed) by the issuing certificate authority
@@ -93,7 +102,7 @@ type Certificates struct {
 	noSmithyDocumentSerde
 }
 
-// Contains information about an AWS CloudHSM cluster.
+// Contains information about an CloudHSM cluster.
 type Cluster struct {
 
 	// The cluster's backup policy.
@@ -114,8 +123,26 @@ type Cluster struct {
 	// The type of HSM that the cluster contains.
 	HsmType *string
 
+	// The timestamp until when the cluster can be rolled back to its original HSM
+	// type.
+	HsmTypeRollbackExpiration *time.Time
+
 	// Contains information about the HSMs in the cluster.
 	Hsms []Hsm
+
+	// The mode of the cluster.
+	Mode ClusterMode
+
+	// The cluster's NetworkType can be IPv4 (the default) or DUALSTACK. The IPv4
+	// NetworkType restricts communication between your application and the hardware
+	// security modules (HSMs) to the IPv4 protocol only. The DUALSTACK NetworkType
+	// enables communication over both IPv4 and IPv6 protocols. To use DUALSTACK,
+	// configure your virtual private cloud (VPC) and subnets to support both IPv4 and
+	// IPv6. This configuration involves adding IPv6 Classless Inter-Domain Routing
+	// (CIDR) blocks to the existing IPv4 CIDR blocks in your subnets. The NetworkType
+	// you choose affects the network addressing options for your cluster. DUALSTACK
+	// provides more flexibility by supporting both IPv4 and IPv6 communication.
+	NetworkType NetworkType
 
 	// The default password for the cluster's Pre-Crypto Officer (PRECO) user.
 	PreCoPassword *string
@@ -146,8 +173,8 @@ type Cluster struct {
 	noSmithyDocumentSerde
 }
 
-// Contains information about the backup that will be copied and created by the
-// CopyBackupToRegion operation.
+// Contains information about the backup that will be copied and created by the CopyBackupToRegion
+// operation.
 type DestinationBackup struct {
 
 	// The date and time when both the source backup was created.
@@ -167,7 +194,7 @@ type DestinationBackup struct {
 	noSmithyDocumentSerde
 }
 
-// Contains information about a hardware security module (HSM) in an AWS CloudHSM
+// Contains information about a hardware security module (HSM) in an CloudHSM
 // cluster.
 type Hsm struct {
 
@@ -187,6 +214,12 @@ type Hsm struct {
 
 	// The IP address of the HSM's elastic network interface (ENI).
 	EniIp *string
+
+	// The IPv6 address (if any) of the HSM's elastic network interface (ENI).
+	EniIpV6 *string
+
+	// The type of HSM.
+	HsmType *string
 
 	// The HSM's state.
 	State HsmState

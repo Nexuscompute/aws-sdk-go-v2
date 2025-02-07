@@ -12,6 +12,7 @@ import (
 	smithyjson "github.com/aws/smithy-go/encoding/json"
 	"github.com/aws/smithy-go/middleware"
 	smithytime "github.com/aws/smithy-go/time"
+	"github.com/aws/smithy-go/tracing"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"math"
 )
@@ -26,6 +27,10 @@ func (*awsRestjson1_serializeOpAcceptAdministratorInvitation) ID() string {
 func (m *awsRestjson1_serializeOpAcceptAdministratorInvitation) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -69,6 +74,8 @@ func (m *awsRestjson1_serializeOpAcceptAdministratorInvitation) HandleSerialize(
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsAcceptAdministratorInvitationInput(v *AcceptAdministratorInvitationInput, encoder *httpbinding.Encoder) error {
@@ -106,6 +113,10 @@ func (*awsRestjson1_serializeOpAcceptInvitation) ID() string {
 func (m *awsRestjson1_serializeOpAcceptInvitation) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -149,6 +160,8 @@ func (m *awsRestjson1_serializeOpAcceptInvitation) HandleSerialize(ctx context.C
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsAcceptInvitationInput(v *AcceptInvitationInput, encoder *httpbinding.Encoder) error {
@@ -186,6 +199,10 @@ func (*awsRestjson1_serializeOpBatchDeleteAutomationRules) ID() string {
 func (m *awsRestjson1_serializeOpBatchDeleteAutomationRules) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -229,6 +246,8 @@ func (m *awsRestjson1_serializeOpBatchDeleteAutomationRules) HandleSerialize(ctx
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsBatchDeleteAutomationRulesInput(v *BatchDeleteAutomationRulesInput, encoder *httpbinding.Encoder) error {
@@ -263,6 +282,10 @@ func (*awsRestjson1_serializeOpBatchDisableStandards) ID() string {
 func (m *awsRestjson1_serializeOpBatchDisableStandards) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -306,6 +329,8 @@ func (m *awsRestjson1_serializeOpBatchDisableStandards) HandleSerialize(ctx cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsBatchDisableStandardsInput(v *BatchDisableStandardsInput, encoder *httpbinding.Encoder) error {
@@ -340,6 +365,10 @@ func (*awsRestjson1_serializeOpBatchEnableStandards) ID() string {
 func (m *awsRestjson1_serializeOpBatchEnableStandards) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -383,6 +412,8 @@ func (m *awsRestjson1_serializeOpBatchEnableStandards) HandleSerialize(ctx conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsBatchEnableStandardsInput(v *BatchEnableStandardsInput, encoder *httpbinding.Encoder) error {
@@ -417,6 +448,10 @@ func (*awsRestjson1_serializeOpBatchGetAutomationRules) ID() string {
 func (m *awsRestjson1_serializeOpBatchGetAutomationRules) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -460,6 +495,8 @@ func (m *awsRestjson1_serializeOpBatchGetAutomationRules) HandleSerialize(ctx co
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsBatchGetAutomationRulesInput(v *BatchGetAutomationRulesInput, encoder *httpbinding.Encoder) error {
@@ -484,6 +521,89 @@ func awsRestjson1_serializeOpDocumentBatchGetAutomationRulesInput(v *BatchGetAut
 	return nil
 }
 
+type awsRestjson1_serializeOpBatchGetConfigurationPolicyAssociations struct {
+}
+
+func (*awsRestjson1_serializeOpBatchGetConfigurationPolicyAssociations) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpBatchGetConfigurationPolicyAssociations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*BatchGetConfigurationPolicyAssociationsInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/configurationPolicyAssociation/batchget")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "POST"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	restEncoder.SetHeader("Content-Type").String("application/json")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsRestjson1_serializeOpDocumentBatchGetConfigurationPolicyAssociationsInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsBatchGetConfigurationPolicyAssociationsInput(v *BatchGetConfigurationPolicyAssociationsInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeOpDocumentBatchGetConfigurationPolicyAssociationsInput(v *BatchGetConfigurationPolicyAssociationsInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ConfigurationPolicyAssociationIdentifiers != nil {
+		ok := object.Key("ConfigurationPolicyAssociationIdentifiers")
+		if err := awsRestjson1_serializeDocumentConfigurationPolicyAssociationsList(v.ConfigurationPolicyAssociationIdentifiers, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 type awsRestjson1_serializeOpBatchGetSecurityControls struct {
 }
 
@@ -494,6 +614,10 @@ func (*awsRestjson1_serializeOpBatchGetSecurityControls) ID() string {
 func (m *awsRestjson1_serializeOpBatchGetSecurityControls) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -537,6 +661,8 @@ func (m *awsRestjson1_serializeOpBatchGetSecurityControls) HandleSerialize(ctx c
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsBatchGetSecurityControlsInput(v *BatchGetSecurityControlsInput, encoder *httpbinding.Encoder) error {
@@ -571,6 +697,10 @@ func (*awsRestjson1_serializeOpBatchGetStandardsControlAssociations) ID() string
 func (m *awsRestjson1_serializeOpBatchGetStandardsControlAssociations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -614,6 +744,8 @@ func (m *awsRestjson1_serializeOpBatchGetStandardsControlAssociations) HandleSer
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsBatchGetStandardsControlAssociationsInput(v *BatchGetStandardsControlAssociationsInput, encoder *httpbinding.Encoder) error {
@@ -648,6 +780,10 @@ func (*awsRestjson1_serializeOpBatchImportFindings) ID() string {
 func (m *awsRestjson1_serializeOpBatchImportFindings) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -691,6 +827,8 @@ func (m *awsRestjson1_serializeOpBatchImportFindings) HandleSerialize(ctx contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsBatchImportFindingsInput(v *BatchImportFindingsInput, encoder *httpbinding.Encoder) error {
@@ -725,6 +863,10 @@ func (*awsRestjson1_serializeOpBatchUpdateAutomationRules) ID() string {
 func (m *awsRestjson1_serializeOpBatchUpdateAutomationRules) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -768,6 +910,8 @@ func (m *awsRestjson1_serializeOpBatchUpdateAutomationRules) HandleSerialize(ctx
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsBatchUpdateAutomationRulesInput(v *BatchUpdateAutomationRulesInput, encoder *httpbinding.Encoder) error {
@@ -802,6 +946,10 @@ func (*awsRestjson1_serializeOpBatchUpdateFindings) ID() string {
 func (m *awsRestjson1_serializeOpBatchUpdateFindings) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -845,6 +993,8 @@ func (m *awsRestjson1_serializeOpBatchUpdateFindings) HandleSerialize(ctx contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsBatchUpdateFindingsInput(v *BatchUpdateFindingsInput, encoder *httpbinding.Encoder) error {
@@ -859,14 +1009,14 @@ func awsRestjson1_serializeOpDocumentBatchUpdateFindingsInput(v *BatchUpdateFind
 	object := value.Object()
 	defer object.Close()
 
-	if v.Confidence != 0 {
+	if v.Confidence != nil {
 		ok := object.Key("Confidence")
-		ok.Integer(v.Confidence)
+		ok.Integer(*v.Confidence)
 	}
 
-	if v.Criticality != 0 {
+	if v.Criticality != nil {
 		ok := object.Key("Criticality")
-		ok.Integer(v.Criticality)
+		ok.Integer(*v.Criticality)
 	}
 
 	if v.FindingIdentifiers != nil {
@@ -936,6 +1086,10 @@ func (*awsRestjson1_serializeOpBatchUpdateStandardsControlAssociations) ID() str
 func (m *awsRestjson1_serializeOpBatchUpdateStandardsControlAssociations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -979,6 +1133,8 @@ func (m *awsRestjson1_serializeOpBatchUpdateStandardsControlAssociations) Handle
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsBatchUpdateStandardsControlAssociationsInput(v *BatchUpdateStandardsControlAssociationsInput, encoder *httpbinding.Encoder) error {
@@ -1013,6 +1169,10 @@ func (*awsRestjson1_serializeOpCreateActionTarget) ID() string {
 func (m *awsRestjson1_serializeOpCreateActionTarget) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1056,6 +1216,8 @@ func (m *awsRestjson1_serializeOpCreateActionTarget) HandleSerialize(ctx context
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsCreateActionTargetInput(v *CreateActionTargetInput, encoder *httpbinding.Encoder) error {
@@ -1098,6 +1260,10 @@ func (*awsRestjson1_serializeOpCreateAutomationRule) ID() string {
 func (m *awsRestjson1_serializeOpCreateAutomationRule) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1141,6 +1307,8 @@ func (m *awsRestjson1_serializeOpCreateAutomationRule) HandleSerialize(ctx conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsCreateAutomationRuleInput(v *CreateAutomationRuleInput, encoder *httpbinding.Encoder) error {
@@ -1174,9 +1342,9 @@ func awsRestjson1_serializeOpDocumentCreateAutomationRuleInput(v *CreateAutomati
 		ok.String(*v.Description)
 	}
 
-	if v.IsTerminal {
+	if v.IsTerminal != nil {
 		ok := object.Key("IsTerminal")
-		ok.Boolean(v.IsTerminal)
+		ok.Boolean(*v.IsTerminal)
 	}
 
 	if v.RuleName != nil {
@@ -1184,14 +1352,114 @@ func awsRestjson1_serializeOpDocumentCreateAutomationRuleInput(v *CreateAutomati
 		ok.String(*v.RuleName)
 	}
 
-	{
+	if v.RuleOrder != nil {
 		ok := object.Key("RuleOrder")
-		ok.Integer(v.RuleOrder)
+		ok.Integer(*v.RuleOrder)
 	}
 
 	if len(v.RuleStatus) > 0 {
 		ok := object.Key("RuleStatus")
 		ok.String(string(v.RuleStatus))
+	}
+
+	if v.Tags != nil {
+		ok := object.Key("Tags")
+		if err := awsRestjson1_serializeDocumentTagMap(v.Tags, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+type awsRestjson1_serializeOpCreateConfigurationPolicy struct {
+}
+
+func (*awsRestjson1_serializeOpCreateConfigurationPolicy) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpCreateConfigurationPolicy) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*CreateConfigurationPolicyInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/configurationPolicy/create")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "POST"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	restEncoder.SetHeader("Content-Type").String("application/json")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsRestjson1_serializeOpDocumentCreateConfigurationPolicyInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsCreateConfigurationPolicyInput(v *CreateConfigurationPolicyInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeOpDocumentCreateConfigurationPolicyInput(v *CreateConfigurationPolicyInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ConfigurationPolicy != nil {
+		ok := object.Key("ConfigurationPolicy")
+		if err := awsRestjson1_serializeDocumentPolicy(v.ConfigurationPolicy, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Description != nil {
+		ok := object.Key("Description")
+		ok.String(*v.Description)
+	}
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
 	}
 
 	if v.Tags != nil {
@@ -1214,6 +1482,10 @@ func (*awsRestjson1_serializeOpCreateFindingAggregator) ID() string {
 func (m *awsRestjson1_serializeOpCreateFindingAggregator) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1257,6 +1529,8 @@ func (m *awsRestjson1_serializeOpCreateFindingAggregator) HandleSerialize(ctx co
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsCreateFindingAggregatorInput(v *CreateFindingAggregatorInput, encoder *httpbinding.Encoder) error {
@@ -1296,6 +1570,10 @@ func (*awsRestjson1_serializeOpCreateInsight) ID() string {
 func (m *awsRestjson1_serializeOpCreateInsight) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1339,6 +1617,8 @@ func (m *awsRestjson1_serializeOpCreateInsight) HandleSerialize(ctx context.Cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsCreateInsightInput(v *CreateInsightInput, encoder *httpbinding.Encoder) error {
@@ -1383,6 +1663,10 @@ func (*awsRestjson1_serializeOpCreateMembers) ID() string {
 func (m *awsRestjson1_serializeOpCreateMembers) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1426,6 +1710,8 @@ func (m *awsRestjson1_serializeOpCreateMembers) HandleSerialize(ctx context.Cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsCreateMembersInput(v *CreateMembersInput, encoder *httpbinding.Encoder) error {
@@ -1460,6 +1746,10 @@ func (*awsRestjson1_serializeOpDeclineInvitations) ID() string {
 func (m *awsRestjson1_serializeOpDeclineInvitations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1503,6 +1793,8 @@ func (m *awsRestjson1_serializeOpDeclineInvitations) HandleSerialize(ctx context
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeclineInvitationsInput(v *DeclineInvitationsInput, encoder *httpbinding.Encoder) error {
@@ -1537,6 +1829,10 @@ func (*awsRestjson1_serializeOpDeleteActionTarget) ID() string {
 func (m *awsRestjson1_serializeOpDeleteActionTarget) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1573,6 +1869,8 @@ func (m *awsRestjson1_serializeOpDeleteActionTarget) HandleSerialize(ctx context
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteActionTargetInput(v *DeleteActionTargetInput, encoder *httpbinding.Encoder) error {
@@ -1592,6 +1890,77 @@ func awsRestjson1_serializeOpHttpBindingsDeleteActionTargetInput(v *DeleteAction
 	return nil
 }
 
+type awsRestjson1_serializeOpDeleteConfigurationPolicy struct {
+}
+
+func (*awsRestjson1_serializeOpDeleteConfigurationPolicy) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpDeleteConfigurationPolicy) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*DeleteConfigurationPolicyInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/configurationPolicy/{Identifier}")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "DELETE"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if err := awsRestjson1_serializeOpHttpBindingsDeleteConfigurationPolicyInput(input, restEncoder); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsDeleteConfigurationPolicyInput(v *DeleteConfigurationPolicyInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	if v.Identifier == nil || len(*v.Identifier) == 0 {
+		return &smithy.SerializationError{Err: fmt.Errorf("input member Identifier must not be empty")}
+	}
+	if v.Identifier != nil {
+		if err := encoder.SetURI("Identifier").String(*v.Identifier); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 type awsRestjson1_serializeOpDeleteFindingAggregator struct {
 }
 
@@ -1602,6 +1971,10 @@ func (*awsRestjson1_serializeOpDeleteFindingAggregator) ID() string {
 func (m *awsRestjson1_serializeOpDeleteFindingAggregator) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1638,6 +2011,8 @@ func (m *awsRestjson1_serializeOpDeleteFindingAggregator) HandleSerialize(ctx co
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteFindingAggregatorInput(v *DeleteFindingAggregatorInput, encoder *httpbinding.Encoder) error {
@@ -1667,6 +2042,10 @@ func (*awsRestjson1_serializeOpDeleteInsight) ID() string {
 func (m *awsRestjson1_serializeOpDeleteInsight) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1703,6 +2082,8 @@ func (m *awsRestjson1_serializeOpDeleteInsight) HandleSerialize(ctx context.Cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteInsightInput(v *DeleteInsightInput, encoder *httpbinding.Encoder) error {
@@ -1732,6 +2113,10 @@ func (*awsRestjson1_serializeOpDeleteInvitations) ID() string {
 func (m *awsRestjson1_serializeOpDeleteInvitations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1775,6 +2160,8 @@ func (m *awsRestjson1_serializeOpDeleteInvitations) HandleSerialize(ctx context.
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteInvitationsInput(v *DeleteInvitationsInput, encoder *httpbinding.Encoder) error {
@@ -1809,6 +2196,10 @@ func (*awsRestjson1_serializeOpDeleteMembers) ID() string {
 func (m *awsRestjson1_serializeOpDeleteMembers) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1852,6 +2243,8 @@ func (m *awsRestjson1_serializeOpDeleteMembers) HandleSerialize(ctx context.Cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDeleteMembersInput(v *DeleteMembersInput, encoder *httpbinding.Encoder) error {
@@ -1886,6 +2279,10 @@ func (*awsRestjson1_serializeOpDescribeActionTargets) ID() string {
 func (m *awsRestjson1_serializeOpDescribeActionTargets) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1929,6 +2326,8 @@ func (m *awsRestjson1_serializeOpDescribeActionTargets) HandleSerialize(ctx cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeActionTargetsInput(v *DescribeActionTargetsInput, encoder *httpbinding.Encoder) error {
@@ -1950,9 +2349,9 @@ func awsRestjson1_serializeOpDocumentDescribeActionTargetsInput(v *DescribeActio
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -1973,6 +2372,10 @@ func (*awsRestjson1_serializeOpDescribeHub) ID() string {
 func (m *awsRestjson1_serializeOpDescribeHub) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2009,6 +2412,8 @@ func (m *awsRestjson1_serializeOpDescribeHub) HandleSerialize(ctx context.Contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeHubInput(v *DescribeHubInput, encoder *httpbinding.Encoder) error {
@@ -2033,6 +2438,10 @@ func (*awsRestjson1_serializeOpDescribeOrganizationConfiguration) ID() string {
 func (m *awsRestjson1_serializeOpDescribeOrganizationConfiguration) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2065,6 +2474,8 @@ func (m *awsRestjson1_serializeOpDescribeOrganizationConfiguration) HandleSerial
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeOrganizationConfigurationInput(v *DescribeOrganizationConfigurationInput, encoder *httpbinding.Encoder) error {
@@ -2085,6 +2496,10 @@ func (*awsRestjson1_serializeOpDescribeProducts) ID() string {
 func (m *awsRestjson1_serializeOpDescribeProducts) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2121,6 +2536,8 @@ func (m *awsRestjson1_serializeOpDescribeProducts) HandleSerialize(ctx context.C
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeProductsInput(v *DescribeProductsInput, encoder *httpbinding.Encoder) error {
@@ -2128,8 +2545,8 @@ func awsRestjson1_serializeOpHttpBindingsDescribeProductsInput(v *DescribeProduc
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.MaxResults != 0 {
-		encoder.SetQuery("MaxResults").Integer(v.MaxResults)
+	if v.MaxResults != nil {
+		encoder.SetQuery("MaxResults").Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -2153,6 +2570,10 @@ func (*awsRestjson1_serializeOpDescribeStandards) ID() string {
 func (m *awsRestjson1_serializeOpDescribeStandards) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2189,6 +2610,8 @@ func (m *awsRestjson1_serializeOpDescribeStandards) HandleSerialize(ctx context.
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeStandardsInput(v *DescribeStandardsInput, encoder *httpbinding.Encoder) error {
@@ -2196,8 +2619,8 @@ func awsRestjson1_serializeOpHttpBindingsDescribeStandardsInput(v *DescribeStand
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.MaxResults != 0 {
-		encoder.SetQuery("MaxResults").Integer(v.MaxResults)
+	if v.MaxResults != nil {
+		encoder.SetQuery("MaxResults").Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -2217,6 +2640,10 @@ func (*awsRestjson1_serializeOpDescribeStandardsControls) ID() string {
 func (m *awsRestjson1_serializeOpDescribeStandardsControls) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2253,6 +2680,8 @@ func (m *awsRestjson1_serializeOpDescribeStandardsControls) HandleSerialize(ctx 
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDescribeStandardsControlsInput(v *DescribeStandardsControlsInput, encoder *httpbinding.Encoder) error {
@@ -2260,8 +2689,8 @@ func awsRestjson1_serializeOpHttpBindingsDescribeStandardsControlsInput(v *Descr
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.MaxResults != 0 {
-		encoder.SetQuery("MaxResults").Integer(v.MaxResults)
+	if v.MaxResults != nil {
+		encoder.SetQuery("MaxResults").Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -2290,6 +2719,10 @@ func (*awsRestjson1_serializeOpDisableImportFindingsForProduct) ID() string {
 func (m *awsRestjson1_serializeOpDisableImportFindingsForProduct) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2326,6 +2759,8 @@ func (m *awsRestjson1_serializeOpDisableImportFindingsForProduct) HandleSerializ
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDisableImportFindingsForProductInput(v *DisableImportFindingsForProductInput, encoder *httpbinding.Encoder) error {
@@ -2355,6 +2790,10 @@ func (*awsRestjson1_serializeOpDisableOrganizationAdminAccount) ID() string {
 func (m *awsRestjson1_serializeOpDisableOrganizationAdminAccount) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2398,6 +2837,8 @@ func (m *awsRestjson1_serializeOpDisableOrganizationAdminAccount) HandleSerializ
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDisableOrganizationAdminAccountInput(v *DisableOrganizationAdminAccountInput, encoder *httpbinding.Encoder) error {
@@ -2430,6 +2871,10 @@ func (*awsRestjson1_serializeOpDisableSecurityHub) ID() string {
 func (m *awsRestjson1_serializeOpDisableSecurityHub) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2462,6 +2907,8 @@ func (m *awsRestjson1_serializeOpDisableSecurityHub) HandleSerialize(ctx context
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDisableSecurityHubInput(v *DisableSecurityHubInput, encoder *httpbinding.Encoder) error {
@@ -2482,6 +2929,10 @@ func (*awsRestjson1_serializeOpDisassociateFromAdministratorAccount) ID() string
 func (m *awsRestjson1_serializeOpDisassociateFromAdministratorAccount) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2514,6 +2965,8 @@ func (m *awsRestjson1_serializeOpDisassociateFromAdministratorAccount) HandleSer
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDisassociateFromAdministratorAccountInput(v *DisassociateFromAdministratorAccountInput, encoder *httpbinding.Encoder) error {
@@ -2534,6 +2987,10 @@ func (*awsRestjson1_serializeOpDisassociateFromMasterAccount) ID() string {
 func (m *awsRestjson1_serializeOpDisassociateFromMasterAccount) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2566,6 +3023,8 @@ func (m *awsRestjson1_serializeOpDisassociateFromMasterAccount) HandleSerialize(
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDisassociateFromMasterAccountInput(v *DisassociateFromMasterAccountInput, encoder *httpbinding.Encoder) error {
@@ -2586,6 +3045,10 @@ func (*awsRestjson1_serializeOpDisassociateMembers) ID() string {
 func (m *awsRestjson1_serializeOpDisassociateMembers) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2629,6 +3092,8 @@ func (m *awsRestjson1_serializeOpDisassociateMembers) HandleSerialize(ctx contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsDisassociateMembersInput(v *DisassociateMembersInput, encoder *httpbinding.Encoder) error {
@@ -2663,6 +3128,10 @@ func (*awsRestjson1_serializeOpEnableImportFindingsForProduct) ID() string {
 func (m *awsRestjson1_serializeOpEnableImportFindingsForProduct) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2706,6 +3175,8 @@ func (m *awsRestjson1_serializeOpEnableImportFindingsForProduct) HandleSerialize
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsEnableImportFindingsForProductInput(v *EnableImportFindingsForProductInput, encoder *httpbinding.Encoder) error {
@@ -2738,6 +3209,10 @@ func (*awsRestjson1_serializeOpEnableOrganizationAdminAccount) ID() string {
 func (m *awsRestjson1_serializeOpEnableOrganizationAdminAccount) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2781,6 +3256,8 @@ func (m *awsRestjson1_serializeOpEnableOrganizationAdminAccount) HandleSerialize
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsEnableOrganizationAdminAccountInput(v *EnableOrganizationAdminAccountInput, encoder *httpbinding.Encoder) error {
@@ -2813,6 +3290,10 @@ func (*awsRestjson1_serializeOpEnableSecurityHub) ID() string {
 func (m *awsRestjson1_serializeOpEnableSecurityHub) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2856,6 +3337,8 @@ func (m *awsRestjson1_serializeOpEnableSecurityHub) HandleSerialize(ctx context.
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsEnableSecurityHubInput(v *EnableSecurityHubInput, encoder *httpbinding.Encoder) error {
@@ -2875,9 +3358,9 @@ func awsRestjson1_serializeOpDocumentEnableSecurityHubInput(v *EnableSecurityHub
 		ok.String(string(v.ControlFindingGenerator))
 	}
 
-	if v.EnableDefaultStandards {
+	if v.EnableDefaultStandards != nil {
 		ok := object.Key("EnableDefaultStandards")
-		ok.Boolean(v.EnableDefaultStandards)
+		ok.Boolean(*v.EnableDefaultStandards)
 	}
 
 	if v.Tags != nil {
@@ -2900,6 +3383,10 @@ func (*awsRestjson1_serializeOpGetAdministratorAccount) ID() string {
 func (m *awsRestjson1_serializeOpGetAdministratorAccount) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2932,11 +3419,167 @@ func (m *awsRestjson1_serializeOpGetAdministratorAccount) HandleSerialize(ctx co
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetAdministratorAccountInput(v *GetAdministratorAccountInput, encoder *httpbinding.Encoder) error {
 	if v == nil {
 		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	return nil
+}
+
+type awsRestjson1_serializeOpGetConfigurationPolicy struct {
+}
+
+func (*awsRestjson1_serializeOpGetConfigurationPolicy) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpGetConfigurationPolicy) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*GetConfigurationPolicyInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/configurationPolicy/get/{Identifier}")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "GET"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if err := awsRestjson1_serializeOpHttpBindingsGetConfigurationPolicyInput(input, restEncoder); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsGetConfigurationPolicyInput(v *GetConfigurationPolicyInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	if v.Identifier == nil || len(*v.Identifier) == 0 {
+		return &smithy.SerializationError{Err: fmt.Errorf("input member Identifier must not be empty")}
+	}
+	if v.Identifier != nil {
+		if err := encoder.SetURI("Identifier").String(*v.Identifier); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+type awsRestjson1_serializeOpGetConfigurationPolicyAssociation struct {
+}
+
+func (*awsRestjson1_serializeOpGetConfigurationPolicyAssociation) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpGetConfigurationPolicyAssociation) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*GetConfigurationPolicyAssociationInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/configurationPolicyAssociation/get")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "POST"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	restEncoder.SetHeader("Content-Type").String("application/json")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsRestjson1_serializeOpDocumentGetConfigurationPolicyAssociationInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsGetConfigurationPolicyAssociationInput(v *GetConfigurationPolicyAssociationInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeOpDocumentGetConfigurationPolicyAssociationInput(v *GetConfigurationPolicyAssociationInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Target != nil {
+		ok := object.Key("Target")
+		if err := awsRestjson1_serializeDocumentTarget(v.Target, ok); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -2952,6 +3595,10 @@ func (*awsRestjson1_serializeOpGetEnabledStandards) ID() string {
 func (m *awsRestjson1_serializeOpGetEnabledStandards) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -2995,6 +3642,8 @@ func (m *awsRestjson1_serializeOpGetEnabledStandards) HandleSerialize(ctx contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetEnabledStandardsInput(v *GetEnabledStandardsInput, encoder *httpbinding.Encoder) error {
@@ -3009,9 +3658,9 @@ func awsRestjson1_serializeOpDocumentGetEnabledStandardsInput(v *GetEnabledStand
 	object := value.Object()
 	defer object.Close()
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -3039,6 +3688,10 @@ func (*awsRestjson1_serializeOpGetFindingAggregator) ID() string {
 func (m *awsRestjson1_serializeOpGetFindingAggregator) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3075,6 +3728,8 @@ func (m *awsRestjson1_serializeOpGetFindingAggregator) HandleSerialize(ctx conte
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetFindingAggregatorInput(v *GetFindingAggregatorInput, encoder *httpbinding.Encoder) error {
@@ -3104,6 +3759,10 @@ func (*awsRestjson1_serializeOpGetFindingHistory) ID() string {
 func (m *awsRestjson1_serializeOpGetFindingHistory) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3147,6 +3806,8 @@ func (m *awsRestjson1_serializeOpGetFindingHistory) HandleSerialize(ctx context.
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetFindingHistoryInput(v *GetFindingHistoryInput, encoder *httpbinding.Encoder) error {
@@ -3173,9 +3834,9 @@ func awsRestjson1_serializeOpDocumentGetFindingHistoryInput(v *GetFindingHistory
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -3201,6 +3862,10 @@ func (*awsRestjson1_serializeOpGetFindings) ID() string {
 func (m *awsRestjson1_serializeOpGetFindings) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3244,6 +3909,8 @@ func (m *awsRestjson1_serializeOpGetFindings) HandleSerialize(ctx context.Contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetFindingsInput(v *GetFindingsInput, encoder *httpbinding.Encoder) error {
@@ -3265,9 +3932,9 @@ func awsRestjson1_serializeOpDocumentGetFindingsInput(v *GetFindingsInput, value
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -3295,6 +3962,10 @@ func (*awsRestjson1_serializeOpGetInsightResults) ID() string {
 func (m *awsRestjson1_serializeOpGetInsightResults) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3331,6 +4002,8 @@ func (m *awsRestjson1_serializeOpGetInsightResults) HandleSerialize(ctx context.
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetInsightResultsInput(v *GetInsightResultsInput, encoder *httpbinding.Encoder) error {
@@ -3360,6 +4033,10 @@ func (*awsRestjson1_serializeOpGetInsights) ID() string {
 func (m *awsRestjson1_serializeOpGetInsights) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3403,6 +4080,8 @@ func (m *awsRestjson1_serializeOpGetInsights) HandleSerialize(ctx context.Contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetInsightsInput(v *GetInsightsInput, encoder *httpbinding.Encoder) error {
@@ -3424,9 +4103,9 @@ func awsRestjson1_serializeOpDocumentGetInsightsInput(v *GetInsightsInput, value
 		}
 	}
 
-	if v.MaxResults != 0 {
+	if v.MaxResults != nil {
 		ok := object.Key("MaxResults")
-		ok.Integer(v.MaxResults)
+		ok.Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -3447,6 +4126,10 @@ func (*awsRestjson1_serializeOpGetInvitationsCount) ID() string {
 func (m *awsRestjson1_serializeOpGetInvitationsCount) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3479,6 +4162,8 @@ func (m *awsRestjson1_serializeOpGetInvitationsCount) HandleSerialize(ctx contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetInvitationsCountInput(v *GetInvitationsCountInput, encoder *httpbinding.Encoder) error {
@@ -3499,6 +4184,10 @@ func (*awsRestjson1_serializeOpGetMasterAccount) ID() string {
 func (m *awsRestjson1_serializeOpGetMasterAccount) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3531,6 +4220,8 @@ func (m *awsRestjson1_serializeOpGetMasterAccount) HandleSerialize(ctx context.C
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetMasterAccountInput(v *GetMasterAccountInput, encoder *httpbinding.Encoder) error {
@@ -3551,6 +4242,10 @@ func (*awsRestjson1_serializeOpGetMembers) ID() string {
 func (m *awsRestjson1_serializeOpGetMembers) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3594,6 +4289,8 @@ func (m *awsRestjson1_serializeOpGetMembers) HandleSerialize(ctx context.Context
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsGetMembersInput(v *GetMembersInput, encoder *httpbinding.Encoder) error {
@@ -3618,6 +4315,72 @@ func awsRestjson1_serializeOpDocumentGetMembersInput(v *GetMembersInput, value s
 	return nil
 }
 
+type awsRestjson1_serializeOpGetSecurityControlDefinition struct {
+}
+
+func (*awsRestjson1_serializeOpGetSecurityControlDefinition) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpGetSecurityControlDefinition) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*GetSecurityControlDefinitionInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/securityControl/definition")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "GET"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if err := awsRestjson1_serializeOpHttpBindingsGetSecurityControlDefinitionInput(input, restEncoder); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsGetSecurityControlDefinitionInput(v *GetSecurityControlDefinitionInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	if v.SecurityControlId != nil {
+		encoder.SetQuery("SecurityControlId").String(*v.SecurityControlId)
+	}
+
+	return nil
+}
+
 type awsRestjson1_serializeOpInviteMembers struct {
 }
 
@@ -3628,6 +4391,10 @@ func (*awsRestjson1_serializeOpInviteMembers) ID() string {
 func (m *awsRestjson1_serializeOpInviteMembers) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3671,6 +4438,8 @@ func (m *awsRestjson1_serializeOpInviteMembers) HandleSerialize(ctx context.Cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsInviteMembersInput(v *InviteMembersInput, encoder *httpbinding.Encoder) error {
@@ -3705,6 +4474,10 @@ func (*awsRestjson1_serializeOpListAutomationRules) ID() string {
 func (m *awsRestjson1_serializeOpListAutomationRules) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3741,6 +4514,8 @@ func (m *awsRestjson1_serializeOpListAutomationRules) HandleSerialize(ctx contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsListAutomationRulesInput(v *ListAutomationRulesInput, encoder *httpbinding.Encoder) error {
@@ -3748,12 +4523,175 @@ func awsRestjson1_serializeOpHttpBindingsListAutomationRulesInput(v *ListAutomat
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.MaxResults != 0 {
-		encoder.SetQuery("MaxResults").Integer(v.MaxResults)
+	if v.MaxResults != nil {
+		encoder.SetQuery("MaxResults").Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
 		encoder.SetQuery("NextToken").String(*v.NextToken)
+	}
+
+	return nil
+}
+
+type awsRestjson1_serializeOpListConfigurationPolicies struct {
+}
+
+func (*awsRestjson1_serializeOpListConfigurationPolicies) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpListConfigurationPolicies) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*ListConfigurationPoliciesInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/configurationPolicy/list")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "GET"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if err := awsRestjson1_serializeOpHttpBindingsListConfigurationPoliciesInput(input, restEncoder); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsListConfigurationPoliciesInput(v *ListConfigurationPoliciesInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	if v.MaxResults != nil {
+		encoder.SetQuery("MaxResults").Integer(*v.MaxResults)
+	}
+
+	if v.NextToken != nil {
+		encoder.SetQuery("NextToken").String(*v.NextToken)
+	}
+
+	return nil
+}
+
+type awsRestjson1_serializeOpListConfigurationPolicyAssociations struct {
+}
+
+func (*awsRestjson1_serializeOpListConfigurationPolicyAssociations) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpListConfigurationPolicyAssociations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*ListConfigurationPolicyAssociationsInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/configurationPolicyAssociation/list")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "POST"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	restEncoder.SetHeader("Content-Type").String("application/json")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsRestjson1_serializeOpDocumentListConfigurationPolicyAssociationsInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsListConfigurationPolicyAssociationsInput(v *ListConfigurationPolicyAssociationsInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeOpDocumentListConfigurationPolicyAssociationsInput(v *ListConfigurationPolicyAssociationsInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Filters != nil {
+		ok := object.Key("Filters")
+		if err := awsRestjson1_serializeDocumentAssociationFilters(v.Filters, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.MaxResults != nil {
+		ok := object.Key("MaxResults")
+		ok.Integer(*v.MaxResults)
+	}
+
+	if v.NextToken != nil {
+		ok := object.Key("NextToken")
+		ok.String(*v.NextToken)
 	}
 
 	return nil
@@ -3769,6 +4707,10 @@ func (*awsRestjson1_serializeOpListEnabledProductsForImport) ID() string {
 func (m *awsRestjson1_serializeOpListEnabledProductsForImport) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3805,6 +4747,8 @@ func (m *awsRestjson1_serializeOpListEnabledProductsForImport) HandleSerialize(c
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsListEnabledProductsForImportInput(v *ListEnabledProductsForImportInput, encoder *httpbinding.Encoder) error {
@@ -3812,8 +4756,8 @@ func awsRestjson1_serializeOpHttpBindingsListEnabledProductsForImportInput(v *Li
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.MaxResults != 0 {
-		encoder.SetQuery("MaxResults").Integer(v.MaxResults)
+	if v.MaxResults != nil {
+		encoder.SetQuery("MaxResults").Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -3833,6 +4777,10 @@ func (*awsRestjson1_serializeOpListFindingAggregators) ID() string {
 func (m *awsRestjson1_serializeOpListFindingAggregators) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3869,6 +4817,8 @@ func (m *awsRestjson1_serializeOpListFindingAggregators) HandleSerialize(ctx con
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsListFindingAggregatorsInput(v *ListFindingAggregatorsInput, encoder *httpbinding.Encoder) error {
@@ -3876,8 +4826,8 @@ func awsRestjson1_serializeOpHttpBindingsListFindingAggregatorsInput(v *ListFind
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.MaxResults != 0 {
-		encoder.SetQuery("MaxResults").Integer(v.MaxResults)
+	if v.MaxResults != nil {
+		encoder.SetQuery("MaxResults").Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -3897,6 +4847,10 @@ func (*awsRestjson1_serializeOpListInvitations) ID() string {
 func (m *awsRestjson1_serializeOpListInvitations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3933,6 +4887,8 @@ func (m *awsRestjson1_serializeOpListInvitations) HandleSerialize(ctx context.Co
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsListInvitationsInput(v *ListInvitationsInput, encoder *httpbinding.Encoder) error {
@@ -3940,8 +4896,8 @@ func awsRestjson1_serializeOpHttpBindingsListInvitationsInput(v *ListInvitations
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.MaxResults != 0 {
-		encoder.SetQuery("MaxResults").Integer(v.MaxResults)
+	if v.MaxResults != nil {
+		encoder.SetQuery("MaxResults").Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -3961,6 +4917,10 @@ func (*awsRestjson1_serializeOpListMembers) ID() string {
 func (m *awsRestjson1_serializeOpListMembers) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -3997,6 +4957,8 @@ func (m *awsRestjson1_serializeOpListMembers) HandleSerialize(ctx context.Contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsListMembersInput(v *ListMembersInput, encoder *httpbinding.Encoder) error {
@@ -4004,16 +4966,16 @@ func awsRestjson1_serializeOpHttpBindingsListMembersInput(v *ListMembersInput, e
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.MaxResults != 0 {
-		encoder.SetQuery("MaxResults").Integer(v.MaxResults)
+	if v.MaxResults != nil {
+		encoder.SetQuery("MaxResults").Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
 		encoder.SetQuery("NextToken").String(*v.NextToken)
 	}
 
-	if v.OnlyAssociated {
-		encoder.SetQuery("OnlyAssociated").Boolean(v.OnlyAssociated)
+	if v.OnlyAssociated != nil {
+		encoder.SetQuery("OnlyAssociated").Boolean(*v.OnlyAssociated)
 	}
 
 	return nil
@@ -4029,6 +4991,10 @@ func (*awsRestjson1_serializeOpListOrganizationAdminAccounts) ID() string {
 func (m *awsRestjson1_serializeOpListOrganizationAdminAccounts) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -4065,6 +5031,8 @@ func (m *awsRestjson1_serializeOpListOrganizationAdminAccounts) HandleSerialize(
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsListOrganizationAdminAccountsInput(v *ListOrganizationAdminAccountsInput, encoder *httpbinding.Encoder) error {
@@ -4072,8 +5040,8 @@ func awsRestjson1_serializeOpHttpBindingsListOrganizationAdminAccountsInput(v *L
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.MaxResults != 0 {
-		encoder.SetQuery("MaxResults").Integer(v.MaxResults)
+	if v.MaxResults != nil {
+		encoder.SetQuery("MaxResults").Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -4093,6 +5061,10 @@ func (*awsRestjson1_serializeOpListSecurityControlDefinitions) ID() string {
 func (m *awsRestjson1_serializeOpListSecurityControlDefinitions) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -4129,6 +5101,8 @@ func (m *awsRestjson1_serializeOpListSecurityControlDefinitions) HandleSerialize
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsListSecurityControlDefinitionsInput(v *ListSecurityControlDefinitionsInput, encoder *httpbinding.Encoder) error {
@@ -4136,8 +5110,8 @@ func awsRestjson1_serializeOpHttpBindingsListSecurityControlDefinitionsInput(v *
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.MaxResults != 0 {
-		encoder.SetQuery("MaxResults").Integer(v.MaxResults)
+	if v.MaxResults != nil {
+		encoder.SetQuery("MaxResults").Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -4161,6 +5135,10 @@ func (*awsRestjson1_serializeOpListStandardsControlAssociations) ID() string {
 func (m *awsRestjson1_serializeOpListStandardsControlAssociations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -4197,6 +5175,8 @@ func (m *awsRestjson1_serializeOpListStandardsControlAssociations) HandleSeriali
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsListStandardsControlAssociationsInput(v *ListStandardsControlAssociationsInput, encoder *httpbinding.Encoder) error {
@@ -4204,8 +5184,8 @@ func awsRestjson1_serializeOpHttpBindingsListStandardsControlAssociationsInput(v
 		return fmt.Errorf("unsupported serialization of nil %T", v)
 	}
 
-	if v.MaxResults != 0 {
-		encoder.SetQuery("MaxResults").Integer(v.MaxResults)
+	if v.MaxResults != nil {
+		encoder.SetQuery("MaxResults").Integer(*v.MaxResults)
 	}
 
 	if v.NextToken != nil {
@@ -4229,6 +5209,10 @@ func (*awsRestjson1_serializeOpListTagsForResource) ID() string {
 func (m *awsRestjson1_serializeOpListTagsForResource) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -4265,6 +5249,8 @@ func (m *awsRestjson1_serializeOpListTagsForResource) HandleSerialize(ctx contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsListTagsForResourceInput(v *ListTagsForResourceInput, encoder *httpbinding.Encoder) error {
@@ -4284,6 +5270,182 @@ func awsRestjson1_serializeOpHttpBindingsListTagsForResourceInput(v *ListTagsFor
 	return nil
 }
 
+type awsRestjson1_serializeOpStartConfigurationPolicyAssociation struct {
+}
+
+func (*awsRestjson1_serializeOpStartConfigurationPolicyAssociation) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpStartConfigurationPolicyAssociation) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*StartConfigurationPolicyAssociationInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/configurationPolicyAssociation/associate")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "POST"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	restEncoder.SetHeader("Content-Type").String("application/json")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsRestjson1_serializeOpDocumentStartConfigurationPolicyAssociationInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsStartConfigurationPolicyAssociationInput(v *StartConfigurationPolicyAssociationInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeOpDocumentStartConfigurationPolicyAssociationInput(v *StartConfigurationPolicyAssociationInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ConfigurationPolicyIdentifier != nil {
+		ok := object.Key("ConfigurationPolicyIdentifier")
+		ok.String(*v.ConfigurationPolicyIdentifier)
+	}
+
+	if v.Target != nil {
+		ok := object.Key("Target")
+		if err := awsRestjson1_serializeDocumentTarget(v.Target, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+type awsRestjson1_serializeOpStartConfigurationPolicyDisassociation struct {
+}
+
+func (*awsRestjson1_serializeOpStartConfigurationPolicyDisassociation) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpStartConfigurationPolicyDisassociation) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*StartConfigurationPolicyDisassociationInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/configurationPolicyAssociation/disassociate")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "POST"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	restEncoder.SetHeader("Content-Type").String("application/json")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsRestjson1_serializeOpDocumentStartConfigurationPolicyDisassociationInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsStartConfigurationPolicyDisassociationInput(v *StartConfigurationPolicyDisassociationInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeOpDocumentStartConfigurationPolicyDisassociationInput(v *StartConfigurationPolicyDisassociationInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ConfigurationPolicyIdentifier != nil {
+		ok := object.Key("ConfigurationPolicyIdentifier")
+		ok.String(*v.ConfigurationPolicyIdentifier)
+	}
+
+	if v.Target != nil {
+		ok := object.Key("Target")
+		if err := awsRestjson1_serializeDocumentTarget(v.Target, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 type awsRestjson1_serializeOpTagResource struct {
 }
 
@@ -4294,6 +5456,10 @@ func (*awsRestjson1_serializeOpTagResource) ID() string {
 func (m *awsRestjson1_serializeOpTagResource) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -4341,6 +5507,8 @@ func (m *awsRestjson1_serializeOpTagResource) HandleSerialize(ctx context.Contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsTagResourceInput(v *TagResourceInput, encoder *httpbinding.Encoder) error {
@@ -4384,6 +5552,10 @@ func (*awsRestjson1_serializeOpUntagResource) ID() string {
 func (m *awsRestjson1_serializeOpUntagResource) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -4420,6 +5592,8 @@ func (m *awsRestjson1_serializeOpUntagResource) HandleSerialize(ctx context.Cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsUntagResourceInput(v *UntagResourceInput, encoder *httpbinding.Encoder) error {
@@ -4455,6 +5629,10 @@ func (*awsRestjson1_serializeOpUpdateActionTarget) ID() string {
 func (m *awsRestjson1_serializeOpUpdateActionTarget) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -4502,6 +5680,8 @@ func (m *awsRestjson1_serializeOpUpdateActionTarget) HandleSerialize(ctx context
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsUpdateActionTargetInput(v *UpdateActionTargetInput, encoder *httpbinding.Encoder) error {
@@ -4538,6 +5718,117 @@ func awsRestjson1_serializeOpDocumentUpdateActionTargetInput(v *UpdateActionTarg
 	return nil
 }
 
+type awsRestjson1_serializeOpUpdateConfigurationPolicy struct {
+}
+
+func (*awsRestjson1_serializeOpUpdateConfigurationPolicy) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpUpdateConfigurationPolicy) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*UpdateConfigurationPolicyInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/configurationPolicy/{Identifier}")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "PATCH"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if err := awsRestjson1_serializeOpHttpBindingsUpdateConfigurationPolicyInput(input, restEncoder); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	restEncoder.SetHeader("Content-Type").String("application/json")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsRestjson1_serializeOpDocumentUpdateConfigurationPolicyInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsUpdateConfigurationPolicyInput(v *UpdateConfigurationPolicyInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	if v.Identifier == nil || len(*v.Identifier) == 0 {
+		return &smithy.SerializationError{Err: fmt.Errorf("input member Identifier must not be empty")}
+	}
+	if v.Identifier != nil {
+		if err := encoder.SetURI("Identifier").String(*v.Identifier); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeOpDocumentUpdateConfigurationPolicyInput(v *UpdateConfigurationPolicyInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ConfigurationPolicy != nil {
+		ok := object.Key("ConfigurationPolicy")
+		if err := awsRestjson1_serializeDocumentPolicy(v.ConfigurationPolicy, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Description != nil {
+		ok := object.Key("Description")
+		ok.String(*v.Description)
+	}
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
+	}
+
+	if v.UpdatedReason != nil {
+		ok := object.Key("UpdatedReason")
+		ok.String(*v.UpdatedReason)
+	}
+
+	return nil
+}
+
 type awsRestjson1_serializeOpUpdateFindingAggregator struct {
 }
 
@@ -4548,6 +5839,10 @@ func (*awsRestjson1_serializeOpUpdateFindingAggregator) ID() string {
 func (m *awsRestjson1_serializeOpUpdateFindingAggregator) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -4591,6 +5886,8 @@ func (m *awsRestjson1_serializeOpUpdateFindingAggregator) HandleSerialize(ctx co
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsUpdateFindingAggregatorInput(v *UpdateFindingAggregatorInput, encoder *httpbinding.Encoder) error {
@@ -4635,6 +5932,10 @@ func (*awsRestjson1_serializeOpUpdateFindings) ID() string {
 func (m *awsRestjson1_serializeOpUpdateFindings) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -4678,6 +5979,8 @@ func (m *awsRestjson1_serializeOpUpdateFindings) HandleSerialize(ctx context.Con
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsUpdateFindingsInput(v *UpdateFindingsInput, encoder *httpbinding.Encoder) error {
@@ -4724,6 +6027,10 @@ func (*awsRestjson1_serializeOpUpdateInsight) ID() string {
 func (m *awsRestjson1_serializeOpUpdateInsight) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -4771,6 +6078,8 @@ func (m *awsRestjson1_serializeOpUpdateInsight) HandleSerialize(ctx context.Cont
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsUpdateInsightInput(v *UpdateInsightInput, encoder *httpbinding.Encoder) error {
@@ -4824,6 +6133,10 @@ func (*awsRestjson1_serializeOpUpdateOrganizationConfiguration) ID() string {
 func (m *awsRestjson1_serializeOpUpdateOrganizationConfiguration) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -4867,6 +6180,8 @@ func (m *awsRestjson1_serializeOpUpdateOrganizationConfiguration) HandleSerializ
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsUpdateOrganizationConfigurationInput(v *UpdateOrganizationConfigurationInput, encoder *httpbinding.Encoder) error {
@@ -4881,14 +6196,114 @@ func awsRestjson1_serializeOpDocumentUpdateOrganizationConfigurationInput(v *Upd
 	object := value.Object()
 	defer object.Close()
 
-	{
+	if v.AutoEnable != nil {
 		ok := object.Key("AutoEnable")
-		ok.Boolean(v.AutoEnable)
+		ok.Boolean(*v.AutoEnable)
 	}
 
 	if len(v.AutoEnableStandards) > 0 {
 		ok := object.Key("AutoEnableStandards")
 		ok.String(string(v.AutoEnableStandards))
+	}
+
+	if v.OrganizationConfiguration != nil {
+		ok := object.Key("OrganizationConfiguration")
+		if err := awsRestjson1_serializeDocumentOrganizationConfiguration(v.OrganizationConfiguration, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+type awsRestjson1_serializeOpUpdateSecurityControl struct {
+}
+
+func (*awsRestjson1_serializeOpUpdateSecurityControl) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpUpdateSecurityControl) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*UpdateSecurityControlInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/securityControl/update")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "PATCH"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	restEncoder.SetHeader("Content-Type").String("application/json")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsRestjson1_serializeOpDocumentUpdateSecurityControlInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsUpdateSecurityControlInput(v *UpdateSecurityControlInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeOpDocumentUpdateSecurityControlInput(v *UpdateSecurityControlInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.LastUpdateReason != nil {
+		ok := object.Key("LastUpdateReason")
+		ok.String(*v.LastUpdateReason)
+	}
+
+	if v.Parameters != nil {
+		ok := object.Key("Parameters")
+		if err := awsRestjson1_serializeDocumentParameters(v.Parameters, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.SecurityControlId != nil {
+		ok := object.Key("SecurityControlId")
+		ok.String(*v.SecurityControlId)
 	}
 
 	return nil
@@ -4904,6 +6319,10 @@ func (*awsRestjson1_serializeOpUpdateSecurityHubConfiguration) ID() string {
 func (m *awsRestjson1_serializeOpUpdateSecurityHubConfiguration) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -4947,6 +6366,8 @@ func (m *awsRestjson1_serializeOpUpdateSecurityHubConfiguration) HandleSerialize
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsUpdateSecurityHubConfigurationInput(v *UpdateSecurityHubConfigurationInput, encoder *httpbinding.Encoder) error {
@@ -4961,9 +6382,9 @@ func awsRestjson1_serializeOpDocumentUpdateSecurityHubConfigurationInput(v *Upda
 	object := value.Object()
 	defer object.Close()
 
-	if v.AutoEnableControls {
+	if v.AutoEnableControls != nil {
 		ok := object.Key("AutoEnableControls")
-		ok.Boolean(v.AutoEnableControls)
+		ok.Boolean(*v.AutoEnableControls)
 	}
 
 	if len(v.ControlFindingGenerator) > 0 {
@@ -4984,6 +6405,10 @@ func (*awsRestjson1_serializeOpUpdateStandardsControl) ID() string {
 func (m *awsRestjson1_serializeOpUpdateStandardsControl) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -5031,6 +6456,8 @@ func (m *awsRestjson1_serializeOpUpdateStandardsControl) HandleSerialize(ctx con
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsUpdateStandardsControlInput(v *UpdateStandardsControlInput, encoder *httpbinding.Encoder) error {
@@ -5177,9 +6604,9 @@ func awsRestjson1_serializeDocumentActionLocalPortDetails(v *types.ActionLocalPo
 	object := value.Object()
 	defer object.Close()
 
-	if v.Port != 0 {
+	if v.Port != nil {
 		ok := object.Key("Port")
-		ok.Integer(v.Port)
+		ok.Integer(*v.Port)
 	}
 
 	if v.PortName != nil {
@@ -5234,14 +6661,114 @@ func awsRestjson1_serializeDocumentActionRemotePortDetails(v *types.ActionRemote
 	object := value.Object()
 	defer object.Close()
 
-	if v.Port != 0 {
+	if v.Port != nil {
 		ok := object.Key("Port")
-		ok.Integer(v.Port)
+		ok.Integer(*v.Port)
 	}
 
 	if v.PortName != nil {
 		ok := object.Key("PortName")
 		ok.String(*v.PortName)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentActor(v *types.Actor, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Id != nil {
+		ok := object.Key("Id")
+		ok.String(*v.Id)
+	}
+
+	if v.Session != nil {
+		ok := object.Key("Session")
+		if err := awsRestjson1_serializeDocumentActorSession(v.Session, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.User != nil {
+		ok := object.Key("User")
+		if err := awsRestjson1_serializeDocumentActorUser(v.User, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentActorSession(v *types.ActorSession, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.CreatedTime != nil {
+		ok := object.Key("CreatedTime")
+		ok.Long(*v.CreatedTime)
+	}
+
+	if v.Issuer != nil {
+		ok := object.Key("Issuer")
+		ok.String(*v.Issuer)
+	}
+
+	if len(v.MfaStatus) > 0 {
+		ok := object.Key("MfaStatus")
+		ok.String(string(v.MfaStatus))
+	}
+
+	if v.Uid != nil {
+		ok := object.Key("Uid")
+		ok.String(*v.Uid)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentActorsList(v []types.Actor, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentActor(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentActorUser(v *types.ActorUser, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Account != nil {
+		ok := object.Key("Account")
+		if err := awsRestjson1_serializeDocumentUserAccount(v.Account, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.CredentialUid != nil {
+		ok := object.Key("CredentialUid")
+		ok.String(*v.CredentialUid)
+	}
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
+	}
+
+	if v.Type != nil {
+		ok := object.Key("Type")
+		ok.String(*v.Type)
+	}
+
+	if v.Uid != nil {
+		ok := object.Key("Uid")
+		ok.String(*v.Uid)
 	}
 
 	return nil
@@ -5313,6 +6840,28 @@ func awsRestjson1_serializeDocumentAssociatedStandardsList(v []types.AssociatedS
 	return nil
 }
 
+func awsRestjson1_serializeDocumentAssociationFilters(v *types.AssociationFilters, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if len(v.AssociationStatus) > 0 {
+		ok := object.Key("AssociationStatus")
+		ok.String(string(v.AssociationStatus))
+	}
+
+	if len(v.AssociationType) > 0 {
+		ok := object.Key("AssociationType")
+		ok.String(string(v.AssociationType))
+	}
+
+	if v.ConfigurationPolicyId != nil {
+		ok := object.Key("ConfigurationPolicyId")
+		ok.String(*v.ConfigurationPolicyId)
+	}
+
+	return nil
+}
+
 func awsRestjson1_serializeDocumentAssociationSetDetails(v *types.AssociationSetDetails, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
@@ -5329,9 +6878,9 @@ func awsRestjson1_serializeDocumentAssociationSetDetails(v *types.AssociationSet
 		ok.String(*v.GatewayId)
 	}
 
-	if v.Main {
+	if v.Main != nil {
 		ok := object.Key("Main")
-		ok.Boolean(v.Main)
+		ok.Boolean(*v.Main)
 	}
 
 	if v.RouteTableAssociationId != nil {
@@ -5416,14 +6965,14 @@ func awsRestjson1_serializeDocumentAutomationRulesFindingFieldsUpdate(v *types.A
 	object := value.Object()
 	defer object.Close()
 
-	if v.Confidence != 0 {
+	if v.Confidence != nil {
 		ok := object.Key("Confidence")
-		ok.Integer(v.Confidence)
+		ok.Integer(*v.Confidence)
 	}
 
-	if v.Criticality != 0 {
+	if v.Criticality != nil {
 		ok := object.Key("Criticality")
-		ok.Integer(v.Criticality)
+		ok.Integer(*v.Criticality)
 	}
 
 	if v.Note != nil {
@@ -5483,6 +7032,13 @@ func awsRestjson1_serializeDocumentAutomationRulesFindingFilters(v *types.Automa
 	if v.AwsAccountId != nil {
 		ok := object.Key("AwsAccountId")
 		if err := awsRestjson1_serializeDocumentStringFilterList(v.AwsAccountId, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.AwsAccountName != nil {
+		ok := object.Key("AwsAccountName")
+		if err := awsRestjson1_serializeDocumentStringFilterList(v.AwsAccountName, ok); err != nil {
 			return err
 		}
 	}
@@ -5627,6 +7183,20 @@ func awsRestjson1_serializeDocumentAutomationRulesFindingFilters(v *types.Automa
 		}
 	}
 
+	if v.ResourceApplicationArn != nil {
+		ok := object.Key("ResourceApplicationArn")
+		if err := awsRestjson1_serializeDocumentStringFilterList(v.ResourceApplicationArn, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ResourceApplicationName != nil {
+		ok := object.Key("ResourceApplicationName")
+		if err := awsRestjson1_serializeDocumentStringFilterList(v.ResourceApplicationName, ok); err != nil {
+			return err
+		}
+	}
+
 	if v.ResourceDetailsOther != nil {
 		ok := object.Key("ResourceDetailsOther")
 		if err := awsRestjson1_serializeDocumentMapFilterList(v.ResourceDetailsOther, ok); err != nil {
@@ -5767,9 +7337,9 @@ func awsRestjson1_serializeDocumentAwsAmazonMqBrokerDetails(v *types.AwsAmazonMq
 		ok.String(*v.AuthenticationStrategy)
 	}
 
-	if v.AutoMinorVersionUpgrade {
+	if v.AutoMinorVersionUpgrade != nil {
 		ok := object.Key("AutoMinorVersionUpgrade")
-		ok.Boolean(v.AutoMinorVersionUpgrade)
+		ok.Boolean(*v.AutoMinorVersionUpgrade)
 	}
 
 	if v.BrokerArn != nil {
@@ -5835,9 +7405,9 @@ func awsRestjson1_serializeDocumentAwsAmazonMqBrokerDetails(v *types.AwsAmazonMq
 		}
 	}
 
-	if v.PubliclyAccessible {
+	if v.PubliclyAccessible != nil {
 		ok := object.Key("PubliclyAccessible")
-		ok.Boolean(v.PubliclyAccessible)
+		ok.Boolean(*v.PubliclyAccessible)
 	}
 
 	if v.SecurityGroups != nil {
@@ -5878,9 +7448,9 @@ func awsRestjson1_serializeDocumentAwsAmazonMqBrokerEncryptionOptionsDetails(v *
 		ok.String(*v.KmsKeyId)
 	}
 
-	if v.UseAwsOwnedKey {
+	if v.UseAwsOwnedKey != nil {
 		ok := object.Key("UseAwsOwnedKey")
-		ok.Boolean(v.UseAwsOwnedKey)
+		ok.Boolean(*v.UseAwsOwnedKey)
 	}
 
 	return nil
@@ -5912,9 +7482,9 @@ func awsRestjson1_serializeDocumentAwsAmazonMqBrokerLdapServerMetadataDetails(v 
 		ok.String(*v.RoleSearchMatching)
 	}
 
-	if v.RoleSearchSubtree {
+	if v.RoleSearchSubtree != nil {
 		ok := object.Key("RoleSearchSubtree")
-		ok.Boolean(v.RoleSearchSubtree)
+		ok.Boolean(*v.RoleSearchSubtree)
 	}
 
 	if v.ServiceAccountUsername != nil {
@@ -5937,9 +7507,9 @@ func awsRestjson1_serializeDocumentAwsAmazonMqBrokerLdapServerMetadataDetails(v 
 		ok.String(*v.UserSearchMatching)
 	}
 
-	if v.UserSearchSubtree {
+	if v.UserSearchSubtree != nil {
 		ok := object.Key("UserSearchSubtree")
-		ok.Boolean(v.UserSearchSubtree)
+		ok.Boolean(*v.UserSearchSubtree)
 	}
 
 	return nil
@@ -5949,9 +7519,9 @@ func awsRestjson1_serializeDocumentAwsAmazonMqBrokerLogsDetails(v *types.AwsAmaz
 	object := value.Object()
 	defer object.Close()
 
-	if v.Audit {
+	if v.Audit != nil {
 		ok := object.Key("Audit")
-		ok.Boolean(v.Audit)
+		ok.Boolean(*v.Audit)
 	}
 
 	if v.AuditLogGroup != nil {
@@ -5959,9 +7529,9 @@ func awsRestjson1_serializeDocumentAwsAmazonMqBrokerLogsDetails(v *types.AwsAmaz
 		ok.String(*v.AuditLogGroup)
 	}
 
-	if v.General {
+	if v.General != nil {
 		ok := object.Key("General")
-		ok.Boolean(v.General)
+		ok.Boolean(*v.General)
 	}
 
 	if v.GeneralLogGroup != nil {
@@ -5983,14 +7553,14 @@ func awsRestjson1_serializeDocumentAwsAmazonMqBrokerLogsPendingDetails(v *types.
 	object := value.Object()
 	defer object.Close()
 
-	if v.Audit {
+	if v.Audit != nil {
 		ok := object.Key("Audit")
-		ok.Boolean(v.Audit)
+		ok.Boolean(*v.Audit)
 	}
 
-	if v.General {
+	if v.General != nil {
 		ok := object.Key("General")
-		ok.Boolean(v.General)
+		ok.Boolean(*v.General)
 	}
 
 	return nil
@@ -6139,20 +7709,20 @@ func awsRestjson1_serializeDocumentAwsApiGatewayCanarySettings(v *types.AwsApiGa
 		ok.String(*v.DeploymentId)
 	}
 
-	if v.PercentTraffic != 0 {
+	if v.PercentTraffic != nil {
 		ok := object.Key("PercentTraffic")
 		switch {
-		case math.IsNaN(v.PercentTraffic):
+		case math.IsNaN(*v.PercentTraffic):
 			ok.String("NaN")
 
-		case math.IsInf(v.PercentTraffic, 1):
+		case math.IsInf(*v.PercentTraffic, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.PercentTraffic, -1):
+		case math.IsInf(*v.PercentTraffic, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.PercentTraffic)
+			ok.Double(*v.PercentTraffic)
 
 		}
 	}
@@ -6164,9 +7734,9 @@ func awsRestjson1_serializeDocumentAwsApiGatewayCanarySettings(v *types.AwsApiGa
 		}
 	}
 
-	if v.UseStageCache {
+	if v.UseStageCache != nil {
 		ok := object.Key("UseStageCache")
-		ok.Boolean(v.UseStageCache)
+		ok.Boolean(*v.UseStageCache)
 	}
 
 	return nil
@@ -6190,24 +7760,24 @@ func awsRestjson1_serializeDocumentAwsApiGatewayMethodSettings(v *types.AwsApiGa
 	object := value.Object()
 	defer object.Close()
 
-	if v.CacheDataEncrypted {
+	if v.CacheDataEncrypted != nil {
 		ok := object.Key("CacheDataEncrypted")
-		ok.Boolean(v.CacheDataEncrypted)
+		ok.Boolean(*v.CacheDataEncrypted)
 	}
 
-	if v.CacheTtlInSeconds != 0 {
+	if v.CacheTtlInSeconds != nil {
 		ok := object.Key("CacheTtlInSeconds")
-		ok.Integer(v.CacheTtlInSeconds)
+		ok.Integer(*v.CacheTtlInSeconds)
 	}
 
-	if v.CachingEnabled {
+	if v.CachingEnabled != nil {
 		ok := object.Key("CachingEnabled")
-		ok.Boolean(v.CachingEnabled)
+		ok.Boolean(*v.CachingEnabled)
 	}
 
-	if v.DataTraceEnabled {
+	if v.DataTraceEnabled != nil {
 		ok := object.Key("DataTraceEnabled")
-		ok.Boolean(v.DataTraceEnabled)
+		ok.Boolean(*v.DataTraceEnabled)
 	}
 
 	if v.HttpMethod != nil {
@@ -6220,14 +7790,14 @@ func awsRestjson1_serializeDocumentAwsApiGatewayMethodSettings(v *types.AwsApiGa
 		ok.String(*v.LoggingLevel)
 	}
 
-	if v.MetricsEnabled {
+	if v.MetricsEnabled != nil {
 		ok := object.Key("MetricsEnabled")
-		ok.Boolean(v.MetricsEnabled)
+		ok.Boolean(*v.MetricsEnabled)
 	}
 
-	if v.RequireAuthorizationForCacheControl {
+	if v.RequireAuthorizationForCacheControl != nil {
 		ok := object.Key("RequireAuthorizationForCacheControl")
-		ok.Boolean(v.RequireAuthorizationForCacheControl)
+		ok.Boolean(*v.RequireAuthorizationForCacheControl)
 	}
 
 	if v.ResourcePath != nil {
@@ -6235,25 +7805,25 @@ func awsRestjson1_serializeDocumentAwsApiGatewayMethodSettings(v *types.AwsApiGa
 		ok.String(*v.ResourcePath)
 	}
 
-	if v.ThrottlingBurstLimit != 0 {
+	if v.ThrottlingBurstLimit != nil {
 		ok := object.Key("ThrottlingBurstLimit")
-		ok.Integer(v.ThrottlingBurstLimit)
+		ok.Integer(*v.ThrottlingBurstLimit)
 	}
 
-	if v.ThrottlingRateLimit != 0 {
+	if v.ThrottlingRateLimit != nil {
 		ok := object.Key("ThrottlingRateLimit")
 		switch {
-		case math.IsNaN(v.ThrottlingRateLimit):
+		case math.IsNaN(*v.ThrottlingRateLimit):
 			ok.String("NaN")
 
-		case math.IsInf(v.ThrottlingRateLimit, 1):
+		case math.IsInf(*v.ThrottlingRateLimit, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.ThrottlingRateLimit, -1):
+		case math.IsInf(*v.ThrottlingRateLimit, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.ThrottlingRateLimit)
+			ok.Double(*v.ThrottlingRateLimit)
 
 		}
 	}
@@ -6317,9 +7887,9 @@ func awsRestjson1_serializeDocumentAwsApiGatewayRestApiDetails(v *types.AwsApiGa
 		ok.String(*v.Id)
 	}
 
-	if v.MinimumCompressionSize != 0 {
+	if v.MinimumCompressionSize != nil {
 		ok := object.Key("MinimumCompressionSize")
-		ok.Integer(v.MinimumCompressionSize)
+		ok.Integer(*v.MinimumCompressionSize)
 	}
 
 	if v.Name != nil {
@@ -6346,9 +7916,9 @@ func awsRestjson1_serializeDocumentAwsApiGatewayStageDetails(v *types.AwsApiGate
 		}
 	}
 
-	if v.CacheClusterEnabled {
+	if v.CacheClusterEnabled != nil {
 		ok := object.Key("CacheClusterEnabled")
-		ok.Boolean(v.CacheClusterEnabled)
+		ok.Boolean(*v.CacheClusterEnabled)
 	}
 
 	if v.CacheClusterSize != nil {
@@ -6410,9 +7980,9 @@ func awsRestjson1_serializeDocumentAwsApiGatewayStageDetails(v *types.AwsApiGate
 		ok.String(*v.StageName)
 	}
 
-	if v.TracingEnabled {
+	if v.TracingEnabled != nil {
 		ok := object.Key("TracingEnabled")
-		ok.Boolean(v.TracingEnabled)
+		ok.Boolean(*v.TracingEnabled)
 	}
 
 	if v.Variables != nil {
@@ -6493,14 +8063,14 @@ func awsRestjson1_serializeDocumentAwsApiGatewayV2RouteSettings(v *types.AwsApiG
 	object := value.Object()
 	defer object.Close()
 
-	if v.DataTraceEnabled {
+	if v.DataTraceEnabled != nil {
 		ok := object.Key("DataTraceEnabled")
-		ok.Boolean(v.DataTraceEnabled)
+		ok.Boolean(*v.DataTraceEnabled)
 	}
 
-	if v.DetailedMetricsEnabled {
+	if v.DetailedMetricsEnabled != nil {
 		ok := object.Key("DetailedMetricsEnabled")
-		ok.Boolean(v.DetailedMetricsEnabled)
+		ok.Boolean(*v.DetailedMetricsEnabled)
 	}
 
 	if v.LoggingLevel != nil {
@@ -6508,25 +8078,25 @@ func awsRestjson1_serializeDocumentAwsApiGatewayV2RouteSettings(v *types.AwsApiG
 		ok.String(*v.LoggingLevel)
 	}
 
-	if v.ThrottlingBurstLimit != 0 {
+	if v.ThrottlingBurstLimit != nil {
 		ok := object.Key("ThrottlingBurstLimit")
-		ok.Integer(v.ThrottlingBurstLimit)
+		ok.Integer(*v.ThrottlingBurstLimit)
 	}
 
-	if v.ThrottlingRateLimit != 0 {
+	if v.ThrottlingRateLimit != nil {
 		ok := object.Key("ThrottlingRateLimit")
 		switch {
-		case math.IsNaN(v.ThrottlingRateLimit):
+		case math.IsNaN(*v.ThrottlingRateLimit):
 			ok.String("NaN")
 
-		case math.IsInf(v.ThrottlingRateLimit, 1):
+		case math.IsInf(*v.ThrottlingRateLimit, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.ThrottlingRateLimit, -1):
+		case math.IsInf(*v.ThrottlingRateLimit, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.ThrottlingRateLimit)
+			ok.Double(*v.ThrottlingRateLimit)
 
 		}
 	}
@@ -6545,14 +8115,14 @@ func awsRestjson1_serializeDocumentAwsApiGatewayV2StageDetails(v *types.AwsApiGa
 		}
 	}
 
-	if v.ApiGatewayManaged {
+	if v.ApiGatewayManaged != nil {
 		ok := object.Key("ApiGatewayManaged")
-		ok.Boolean(v.ApiGatewayManaged)
+		ok.Boolean(*v.ApiGatewayManaged)
 	}
 
-	if v.AutoDeploy {
+	if v.AutoDeploy != nil {
 		ok := object.Key("AutoDeploy")
-		ok.Boolean(v.AutoDeploy)
+		ok.Boolean(*v.AutoDeploy)
 	}
 
 	if v.ClientCertificateId != nil {
@@ -6729,9 +8299,9 @@ func awsRestjson1_serializeDocumentAwsAppSyncGraphQlApiDetails(v *types.AwsAppSy
 		ok.String(*v.WafWebAclArn)
 	}
 
-	if v.XrayEnabled {
+	if v.XrayEnabled != nil {
 		ok := object.Key("XrayEnabled")
-		ok.Boolean(v.XrayEnabled)
+		ok.Boolean(*v.XrayEnabled)
 	}
 
 	return nil
@@ -6741,9 +8311,9 @@ func awsRestjson1_serializeDocumentAwsAppSyncGraphQlApiLambdaAuthorizerConfigDet
 	object := value.Object()
 	defer object.Close()
 
-	if v.AuthorizerResultTtlInSeconds != 0 {
+	if v.AuthorizerResultTtlInSeconds != nil {
 		ok := object.Key("AuthorizerResultTtlInSeconds")
-		ok.Integer(v.AuthorizerResultTtlInSeconds)
+		ok.Integer(*v.AuthorizerResultTtlInSeconds)
 	}
 
 	if v.AuthorizerUri != nil {
@@ -6768,9 +8338,9 @@ func awsRestjson1_serializeDocumentAwsAppSyncGraphQlApiLogConfigDetails(v *types
 		ok.String(*v.CloudWatchLogsRoleArn)
 	}
 
-	if v.ExcludeVerboseContent {
+	if v.ExcludeVerboseContent != nil {
 		ok := object.Key("ExcludeVerboseContent")
-		ok.Boolean(v.ExcludeVerboseContent)
+		ok.Boolean(*v.ExcludeVerboseContent)
 	}
 
 	if v.FieldLogLevel != nil {
@@ -6785,9 +8355,9 @@ func awsRestjson1_serializeDocumentAwsAppSyncGraphQlApiOpenIdConnectConfigDetail
 	object := value.Object()
 	defer object.Close()
 
-	if v.AuthTtL != 0 {
+	if v.AuthTtL != nil {
 		ok := object.Key("AuthTtL")
-		ok.Long(v.AuthTtL)
+		ok.Long(*v.AuthTtL)
 	}
 
 	if v.ClientId != nil {
@@ -6795,9 +8365,9 @@ func awsRestjson1_serializeDocumentAwsAppSyncGraphQlApiOpenIdConnectConfigDetail
 		ok.String(*v.ClientId)
 	}
 
-	if v.IatTtL != 0 {
+	if v.IatTtL != nil {
 		ok := object.Key("IatTtL")
-		ok.Long(v.IatTtL)
+		ok.Long(*v.IatTtL)
 	}
 
 	if v.Issuer != nil {
@@ -6945,9 +8515,9 @@ func awsRestjson1_serializeDocumentAwsAutoScalingAutoScalingGroupDetails(v *type
 		}
 	}
 
-	if v.CapacityRebalance {
+	if v.CapacityRebalance != nil {
 		ok := object.Key("CapacityRebalance")
-		ok.Boolean(v.CapacityRebalance)
+		ok.Boolean(*v.CapacityRebalance)
 	}
 
 	if v.CreatedTime != nil {
@@ -6955,9 +8525,9 @@ func awsRestjson1_serializeDocumentAwsAutoScalingAutoScalingGroupDetails(v *type
 		ok.String(*v.CreatedTime)
 	}
 
-	if v.HealthCheckGracePeriod != 0 {
+	if v.HealthCheckGracePeriod != nil {
 		ok := object.Key("HealthCheckGracePeriod")
-		ok.Integer(v.HealthCheckGracePeriod)
+		ok.Integer(*v.HealthCheckGracePeriod)
 	}
 
 	if v.HealthCheckType != nil {
@@ -7046,14 +8616,14 @@ func awsRestjson1_serializeDocumentAwsAutoScalingAutoScalingGroupMixedInstancesP
 		ok.String(*v.OnDemandAllocationStrategy)
 	}
 
-	if v.OnDemandBaseCapacity != 0 {
+	if v.OnDemandBaseCapacity != nil {
 		ok := object.Key("OnDemandBaseCapacity")
-		ok.Integer(v.OnDemandBaseCapacity)
+		ok.Integer(*v.OnDemandBaseCapacity)
 	}
 
-	if v.OnDemandPercentageAboveBaseCapacity != 0 {
+	if v.OnDemandPercentageAboveBaseCapacity != nil {
 		ok := object.Key("OnDemandPercentageAboveBaseCapacity")
-		ok.Integer(v.OnDemandPercentageAboveBaseCapacity)
+		ok.Integer(*v.OnDemandPercentageAboveBaseCapacity)
 	}
 
 	if v.SpotAllocationStrategy != nil {
@@ -7061,9 +8631,9 @@ func awsRestjson1_serializeDocumentAwsAutoScalingAutoScalingGroupMixedInstancesP
 		ok.String(*v.SpotAllocationStrategy)
 	}
 
-	if v.SpotInstancePools != 0 {
+	if v.SpotInstancePools != nil {
 		ok := object.Key("SpotInstancePools")
-		ok.Integer(v.SpotInstancePools)
+		ok.Integer(*v.SpotInstancePools)
 	}
 
 	if v.SpotMaxPrice != nil {
@@ -7163,9 +8733,9 @@ func awsRestjson1_serializeDocumentAwsAutoScalingLaunchConfigurationBlockDeviceM
 		}
 	}
 
-	if v.NoDevice {
+	if v.NoDevice != nil {
 		ok := object.Key("NoDevice")
-		ok.Boolean(v.NoDevice)
+		ok.Boolean(*v.NoDevice)
 	}
 
 	if v.VirtualName != nil {
@@ -7180,19 +8750,19 @@ func awsRestjson1_serializeDocumentAwsAutoScalingLaunchConfigurationBlockDeviceM
 	object := value.Object()
 	defer object.Close()
 
-	if v.DeleteOnTermination {
+	if v.DeleteOnTermination != nil {
 		ok := object.Key("DeleteOnTermination")
-		ok.Boolean(v.DeleteOnTermination)
+		ok.Boolean(*v.DeleteOnTermination)
 	}
 
-	if v.Encrypted {
+	if v.Encrypted != nil {
 		ok := object.Key("Encrypted")
-		ok.Boolean(v.Encrypted)
+		ok.Boolean(*v.Encrypted)
 	}
 
-	if v.Iops != 0 {
+	if v.Iops != nil {
 		ok := object.Key("Iops")
-		ok.Integer(v.Iops)
+		ok.Integer(*v.Iops)
 	}
 
 	if v.SnapshotId != nil {
@@ -7200,9 +8770,9 @@ func awsRestjson1_serializeDocumentAwsAutoScalingLaunchConfigurationBlockDeviceM
 		ok.String(*v.SnapshotId)
 	}
 
-	if v.VolumeSize != 0 {
+	if v.VolumeSize != nil {
 		ok := object.Key("VolumeSize")
-		ok.Integer(v.VolumeSize)
+		ok.Integer(*v.VolumeSize)
 	}
 
 	if v.VolumeType != nil {
@@ -7230,9 +8800,9 @@ func awsRestjson1_serializeDocumentAwsAutoScalingLaunchConfigurationDetails(v *t
 	object := value.Object()
 	defer object.Close()
 
-	if v.AssociatePublicIpAddress {
+	if v.AssociatePublicIpAddress != nil {
 		ok := object.Key("AssociatePublicIpAddress")
-		ok.Boolean(v.AssociatePublicIpAddress)
+		ok.Boolean(*v.AssociatePublicIpAddress)
 	}
 
 	if v.BlockDeviceMappings != nil {
@@ -7259,9 +8829,9 @@ func awsRestjson1_serializeDocumentAwsAutoScalingLaunchConfigurationDetails(v *t
 		ok.String(*v.CreatedTime)
 	}
 
-	if v.EbsOptimized {
+	if v.EbsOptimized != nil {
 		ok := object.Key("EbsOptimized")
-		ok.Boolean(v.EbsOptimized)
+		ok.Boolean(*v.EbsOptimized)
 	}
 
 	if v.IamInstanceProfile != nil {
@@ -7342,9 +8912,9 @@ func awsRestjson1_serializeDocumentAwsAutoScalingLaunchConfigurationInstanceMoni
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	return nil
@@ -7359,9 +8929,9 @@ func awsRestjson1_serializeDocumentAwsAutoScalingLaunchConfigurationMetadataOpti
 		ok.String(*v.HttpEndpoint)
 	}
 
-	if v.HttpPutResponseHopLimit != 0 {
+	if v.HttpPutResponseHopLimit != nil {
 		ok := object.Key("HttpPutResponseHopLimit")
-		ok.Integer(v.HttpPutResponseHopLimit)
+		ok.Integer(*v.HttpPutResponseHopLimit)
 	}
 
 	if v.HttpTokens != nil {
@@ -7463,14 +9033,14 @@ func awsRestjson1_serializeDocumentAwsBackupBackupPlanLifecycleDetails(v *types.
 	object := value.Object()
 	defer object.Close()
 
-	if v.DeleteAfterDays != 0 {
+	if v.DeleteAfterDays != nil {
 		ok := object.Key("DeleteAfterDays")
-		ok.Long(v.DeleteAfterDays)
+		ok.Long(*v.DeleteAfterDays)
 	}
 
-	if v.MoveToColdStorageAfterDays != 0 {
+	if v.MoveToColdStorageAfterDays != nil {
 		ok := object.Key("MoveToColdStorageAfterDays")
-		ok.Long(v.MoveToColdStorageAfterDays)
+		ok.Long(*v.MoveToColdStorageAfterDays)
 	}
 
 	return nil
@@ -7512,9 +9082,9 @@ func awsRestjson1_serializeDocumentAwsBackupBackupPlanRuleDetails(v *types.AwsBa
 	object := value.Object()
 	defer object.Close()
 
-	if v.CompletionWindowMinutes != 0 {
+	if v.CompletionWindowMinutes != nil {
 		ok := object.Key("CompletionWindowMinutes")
-		ok.Long(v.CompletionWindowMinutes)
+		ok.Long(*v.CompletionWindowMinutes)
 	}
 
 	if v.CopyActions != nil {
@@ -7524,9 +9094,9 @@ func awsRestjson1_serializeDocumentAwsBackupBackupPlanRuleDetails(v *types.AwsBa
 		}
 	}
 
-	if v.EnableContinuousBackup {
+	if v.EnableContinuousBackup != nil {
 		ok := object.Key("EnableContinuousBackup")
-		ok.Boolean(v.EnableContinuousBackup)
+		ok.Boolean(*v.EnableContinuousBackup)
 	}
 
 	if v.Lifecycle != nil {
@@ -7551,9 +9121,9 @@ func awsRestjson1_serializeDocumentAwsBackupBackupPlanRuleDetails(v *types.AwsBa
 		ok.String(*v.ScheduleExpression)
 	}
 
-	if v.StartWindowMinutes != 0 {
+	if v.StartWindowMinutes != nil {
 		ok := object.Key("StartWindowMinutes")
-		ok.Long(v.StartWindowMinutes)
+		ok.Long(*v.StartWindowMinutes)
 	}
 
 	if v.TargetBackupVault != nil {
@@ -7678,9 +9248,9 @@ func awsRestjson1_serializeDocumentAwsBackupRecoveryPointDetails(v *types.AwsBac
 	object := value.Object()
 	defer object.Close()
 
-	if v.BackupSizeInBytes != 0 {
+	if v.BackupSizeInBytes != nil {
 		ok := object.Key("BackupSizeInBytes")
-		ok.Long(v.BackupSizeInBytes)
+		ok.Long(*v.BackupSizeInBytes)
 	}
 
 	if v.BackupVaultArn != nil {
@@ -7727,9 +9297,9 @@ func awsRestjson1_serializeDocumentAwsBackupRecoveryPointDetails(v *types.AwsBac
 		ok.String(*v.IamRoleArn)
 	}
 
-	if v.IsEncrypted {
+	if v.IsEncrypted != nil {
 		ok := object.Key("IsEncrypted")
-		ok.Boolean(v.IsEncrypted)
+		ok.Boolean(*v.IsEncrypted)
 	}
 
 	if v.LastRestoreTime != nil {
@@ -7786,14 +9356,14 @@ func awsRestjson1_serializeDocumentAwsBackupRecoveryPointLifecycleDetails(v *typ
 	object := value.Object()
 	defer object.Close()
 
-	if v.DeleteAfterDays != 0 {
+	if v.DeleteAfterDays != nil {
 		ok := object.Key("DeleteAfterDays")
-		ok.Long(v.DeleteAfterDays)
+		ok.Long(*v.DeleteAfterDays)
 	}
 
-	if v.MoveToColdStorageAfterDays != 0 {
+	if v.MoveToColdStorageAfterDays != nil {
 		ok := object.Key("MoveToColdStorageAfterDays")
-		ok.Long(v.MoveToColdStorageAfterDays)
+		ok.Long(*v.MoveToColdStorageAfterDays)
 	}
 
 	return nil
@@ -8128,9 +9698,9 @@ func awsRestjson1_serializeDocumentAwsCloudFormationStackDetails(v *types.AwsClo
 		ok.String(*v.Description)
 	}
 
-	if v.DisableRollback {
+	if v.DisableRollback != nil {
 		ok := object.Key("DisableRollback")
-		ok.Boolean(v.DisableRollback)
+		ok.Boolean(*v.DisableRollback)
 	}
 
 	if v.DriftInformation != nil {
@@ -8140,9 +9710,9 @@ func awsRestjson1_serializeDocumentAwsCloudFormationStackDetails(v *types.AwsClo
 		}
 	}
 
-	if v.EnableTerminationProtection {
+	if v.EnableTerminationProtection != nil {
 		ok := object.Key("EnableTerminationProtection")
-		ok.Boolean(v.EnableTerminationProtection)
+		ok.Boolean(*v.EnableTerminationProtection)
 	}
 
 	if v.LastUpdatedTime != nil {
@@ -8189,9 +9759,9 @@ func awsRestjson1_serializeDocumentAwsCloudFormationStackDetails(v *types.AwsClo
 		ok.String(*v.StackStatusReason)
 	}
 
-	if v.TimeoutInMinutes != 0 {
+	if v.TimeoutInMinutes != nil {
 		ok := object.Key("TimeoutInMinutes")
-		ok.Integer(v.TimeoutInMinutes)
+		ok.Integer(*v.TimeoutInMinutes)
 	}
 
 	return nil
@@ -8383,14 +9953,14 @@ func awsRestjson1_serializeDocumentAwsCloudFrontDistributionLogging(v *types.Aws
 		ok.String(*v.Bucket)
 	}
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
-	if v.IncludeCookies {
+	if v.IncludeCookies != nil {
 		ok := object.Key("IncludeCookies")
-		ok.Boolean(v.IncludeCookies)
+		ok.Boolean(*v.IncludeCookies)
 	}
 
 	if v.Prefix != nil {
@@ -8405,19 +9975,19 @@ func awsRestjson1_serializeDocumentAwsCloudFrontDistributionOriginCustomOriginCo
 	object := value.Object()
 	defer object.Close()
 
-	if v.HttpPort != 0 {
+	if v.HttpPort != nil {
 		ok := object.Key("HttpPort")
-		ok.Integer(v.HttpPort)
+		ok.Integer(*v.HttpPort)
 	}
 
-	if v.HttpsPort != 0 {
+	if v.HttpsPort != nil {
 		ok := object.Key("HttpsPort")
-		ok.Integer(v.HttpsPort)
+		ok.Integer(*v.HttpsPort)
 	}
 
-	if v.OriginKeepaliveTimeout != 0 {
+	if v.OriginKeepaliveTimeout != nil {
 		ok := object.Key("OriginKeepaliveTimeout")
-		ok.Integer(v.OriginKeepaliveTimeout)
+		ok.Integer(*v.OriginKeepaliveTimeout)
 	}
 
 	if v.OriginProtocolPolicy != nil {
@@ -8425,9 +9995,9 @@ func awsRestjson1_serializeDocumentAwsCloudFrontDistributionOriginCustomOriginCo
 		ok.String(*v.OriginProtocolPolicy)
 	}
 
-	if v.OriginReadTimeout != 0 {
+	if v.OriginReadTimeout != nil {
 		ok := object.Key("OriginReadTimeout")
-		ok.Integer(v.OriginReadTimeout)
+		ok.Integer(*v.OriginReadTimeout)
 	}
 
 	if v.OriginSslProtocols != nil {
@@ -8479,9 +10049,9 @@ func awsRestjson1_serializeDocumentAwsCloudFrontDistributionOriginGroupFailoverS
 		}
 	}
 
-	if v.Quantity != 0 {
+	if v.Quantity != nil {
 		ok := object.Key("Quantity")
-		ok.Integer(v.Quantity)
+		ok.Integer(*v.Quantity)
 	}
 
 	return nil
@@ -8611,9 +10181,9 @@ func awsRestjson1_serializeDocumentAwsCloudFrontDistributionOriginSslProtocols(v
 		}
 	}
 
-	if v.Quantity != 0 {
+	if v.Quantity != nil {
 		ok := object.Key("Quantity")
-		ok.Integer(v.Quantity)
+		ok.Integer(*v.Quantity)
 	}
 
 	return nil
@@ -8638,9 +10208,9 @@ func awsRestjson1_serializeDocumentAwsCloudFrontDistributionViewerCertificate(v 
 		ok.String(*v.CertificateSource)
 	}
 
-	if v.CloudFrontDefaultCertificate {
+	if v.CloudFrontDefaultCertificate != nil {
 		ok := object.Key("CloudFrontDefaultCertificate")
-		ok.Boolean(v.CloudFrontDefaultCertificate)
+		ok.Boolean(*v.CloudFrontDefaultCertificate)
 	}
 
 	if v.IamCertificateId != nil {
@@ -8675,9 +10245,9 @@ func awsRestjson1_serializeDocumentAwsCloudTrailTrailDetails(v *types.AwsCloudTr
 		ok.String(*v.CloudWatchLogsRoleArn)
 	}
 
-	if v.HasCustomEventSelectors {
+	if v.HasCustomEventSelectors != nil {
 		ok := object.Key("HasCustomEventSelectors")
-		ok.Boolean(v.HasCustomEventSelectors)
+		ok.Boolean(*v.HasCustomEventSelectors)
 	}
 
 	if v.HomeRegion != nil {
@@ -8685,19 +10255,19 @@ func awsRestjson1_serializeDocumentAwsCloudTrailTrailDetails(v *types.AwsCloudTr
 		ok.String(*v.HomeRegion)
 	}
 
-	if v.IncludeGlobalServiceEvents {
+	if v.IncludeGlobalServiceEvents != nil {
 		ok := object.Key("IncludeGlobalServiceEvents")
-		ok.Boolean(v.IncludeGlobalServiceEvents)
+		ok.Boolean(*v.IncludeGlobalServiceEvents)
 	}
 
-	if v.IsMultiRegionTrail {
+	if v.IsMultiRegionTrail != nil {
 		ok := object.Key("IsMultiRegionTrail")
-		ok.Boolean(v.IsMultiRegionTrail)
+		ok.Boolean(*v.IsMultiRegionTrail)
 	}
 
-	if v.IsOrganizationTrail {
+	if v.IsOrganizationTrail != nil {
 		ok := object.Key("IsOrganizationTrail")
-		ok.Boolean(v.IsOrganizationTrail)
+		ok.Boolean(*v.IsOrganizationTrail)
 	}
 
 	if v.KmsKeyId != nil {
@@ -8705,9 +10275,9 @@ func awsRestjson1_serializeDocumentAwsCloudTrailTrailDetails(v *types.AwsCloudTr
 		ok.String(*v.KmsKeyId)
 	}
 
-	if v.LogFileValidationEnabled {
+	if v.LogFileValidationEnabled != nil {
 		ok := object.Key("LogFileValidationEnabled")
-		ok.Boolean(v.LogFileValidationEnabled)
+		ok.Boolean(*v.LogFileValidationEnabled)
 	}
 
 	if v.Name != nil {
@@ -8747,9 +10317,9 @@ func awsRestjson1_serializeDocumentAwsCloudWatchAlarmDetails(v *types.AwsCloudWa
 	object := value.Object()
 	defer object.Close()
 
-	if v.ActionsEnabled {
+	if v.ActionsEnabled != nil {
 		ok := object.Key("ActionsEnabled")
-		ok.Boolean(v.ActionsEnabled)
+		ok.Boolean(*v.ActionsEnabled)
 	}
 
 	if v.AlarmActions != nil {
@@ -8784,9 +10354,9 @@ func awsRestjson1_serializeDocumentAwsCloudWatchAlarmDetails(v *types.AwsCloudWa
 		ok.String(*v.ComparisonOperator)
 	}
 
-	if v.DatapointsToAlarm != 0 {
+	if v.DatapointsToAlarm != nil {
 		ok := object.Key("DatapointsToAlarm")
-		ok.Integer(v.DatapointsToAlarm)
+		ok.Integer(*v.DatapointsToAlarm)
 	}
 
 	if v.Dimensions != nil {
@@ -8801,9 +10371,9 @@ func awsRestjson1_serializeDocumentAwsCloudWatchAlarmDetails(v *types.AwsCloudWa
 		ok.String(*v.EvaluateLowSampleCountPercentile)
 	}
 
-	if v.EvaluationPeriods != 0 {
+	if v.EvaluationPeriods != nil {
 		ok := object.Key("EvaluationPeriods")
-		ok.Integer(v.EvaluationPeriods)
+		ok.Integer(*v.EvaluationPeriods)
 	}
 
 	if v.ExtendedStatistic != nil {
@@ -8835,9 +10405,9 @@ func awsRestjson1_serializeDocumentAwsCloudWatchAlarmDetails(v *types.AwsCloudWa
 		}
 	}
 
-	if v.Period != 0 {
+	if v.Period != nil {
 		ok := object.Key("Period")
-		ok.Integer(v.Period)
+		ok.Integer(*v.Period)
 	}
 
 	if v.Statistic != nil {
@@ -8845,20 +10415,20 @@ func awsRestjson1_serializeDocumentAwsCloudWatchAlarmDetails(v *types.AwsCloudWa
 		ok.String(*v.Statistic)
 	}
 
-	if v.Threshold != 0 {
+	if v.Threshold != nil {
 		ok := object.Key("Threshold")
 		switch {
-		case math.IsNaN(v.Threshold):
+		case math.IsNaN(*v.Threshold):
 			ok.String("NaN")
 
-		case math.IsInf(v.Threshold, 1):
+		case math.IsInf(*v.Threshold, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.Threshold, -1):
+		case math.IsInf(*v.Threshold, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.Threshold)
+			ok.Double(*v.Threshold)
 
 		}
 	}
@@ -8920,9 +10490,9 @@ func awsRestjson1_serializeDocumentAwsCodeBuildProjectArtifactsDetails(v *types.
 		ok.String(*v.ArtifactIdentifier)
 	}
 
-	if v.EncryptionDisabled {
+	if v.EncryptionDisabled != nil {
 		ok := object.Key("EncryptionDisabled")
-		ok.Boolean(v.EncryptionDisabled)
+		ok.Boolean(*v.EncryptionDisabled)
 	}
 
 	if v.Location != nil {
@@ -8940,9 +10510,9 @@ func awsRestjson1_serializeDocumentAwsCodeBuildProjectArtifactsDetails(v *types.
 		ok.String(*v.NamespaceType)
 	}
 
-	if v.OverrideArtifactName {
+	if v.OverrideArtifactName != nil {
 		ok := object.Key("OverrideArtifactName")
-		ok.Boolean(v.OverrideArtifactName)
+		ok.Boolean(*v.OverrideArtifactName)
 	}
 
 	if v.Packaging != nil {
@@ -9061,9 +10631,9 @@ func awsRestjson1_serializeDocumentAwsCodeBuildProjectEnvironment(v *types.AwsCo
 		ok.String(*v.ImagePullCredentialsType)
 	}
 
-	if v.PrivilegedMode {
+	if v.PrivilegedMode != nil {
 		ok := object.Key("PrivilegedMode")
-		ok.Boolean(v.PrivilegedMode)
+		ok.Boolean(*v.PrivilegedMode)
 	}
 
 	if v.RegistryCredential != nil {
@@ -9180,9 +10750,9 @@ func awsRestjson1_serializeDocumentAwsCodeBuildProjectLogsConfigS3LogsDetails(v 
 	object := value.Object()
 	defer object.Close()
 
-	if v.EncryptionDisabled {
+	if v.EncryptionDisabled != nil {
 		ok := object.Key("EncryptionDisabled")
-		ok.Boolean(v.EncryptionDisabled)
+		ok.Boolean(*v.EncryptionDisabled)
 	}
 
 	if v.Location != nil {
@@ -9202,14 +10772,14 @@ func awsRestjson1_serializeDocumentAwsCodeBuildProjectSource(v *types.AwsCodeBui
 	object := value.Object()
 	defer object.Close()
 
-	if v.GitCloneDepth != 0 {
+	if v.GitCloneDepth != nil {
 		ok := object.Key("GitCloneDepth")
-		ok.Integer(v.GitCloneDepth)
+		ok.Integer(*v.GitCloneDepth)
 	}
 
-	if v.InsecureSsl {
+	if v.InsecureSsl != nil {
 		ok := object.Key("InsecureSsl")
-		ok.Boolean(v.InsecureSsl)
+		ok.Boolean(*v.InsecureSsl)
 	}
 
 	if v.Location != nil {
@@ -9255,9 +10825,9 @@ func awsRestjson1_serializeDocumentAwsCorsConfiguration(v *types.AwsCorsConfigur
 	object := value.Object()
 	defer object.Close()
 
-	if v.AllowCredentials {
+	if v.AllowCredentials != nil {
 		ok := object.Key("AllowCredentials")
-		ok.Boolean(v.AllowCredentials)
+		ok.Boolean(*v.AllowCredentials)
 	}
 
 	if v.AllowHeaders != nil {
@@ -9288,9 +10858,261 @@ func awsRestjson1_serializeDocumentAwsCorsConfiguration(v *types.AwsCorsConfigur
 		}
 	}
 
-	if v.MaxAge != 0 {
+	if v.MaxAge != nil {
 		ok := object.Key("MaxAge")
-		ok.Integer(v.MaxAge)
+		ok.Integer(*v.MaxAge)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsDmsEndpointDetails(v *types.AwsDmsEndpointDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.CertificateArn != nil {
+		ok := object.Key("CertificateArn")
+		ok.String(*v.CertificateArn)
+	}
+
+	if v.DatabaseName != nil {
+		ok := object.Key("DatabaseName")
+		ok.String(*v.DatabaseName)
+	}
+
+	if v.EndpointArn != nil {
+		ok := object.Key("EndpointArn")
+		ok.String(*v.EndpointArn)
+	}
+
+	if v.EndpointIdentifier != nil {
+		ok := object.Key("EndpointIdentifier")
+		ok.String(*v.EndpointIdentifier)
+	}
+
+	if v.EndpointType != nil {
+		ok := object.Key("EndpointType")
+		ok.String(*v.EndpointType)
+	}
+
+	if v.EngineName != nil {
+		ok := object.Key("EngineName")
+		ok.String(*v.EngineName)
+	}
+
+	if v.ExternalId != nil {
+		ok := object.Key("ExternalId")
+		ok.String(*v.ExternalId)
+	}
+
+	if v.ExtraConnectionAttributes != nil {
+		ok := object.Key("ExtraConnectionAttributes")
+		ok.String(*v.ExtraConnectionAttributes)
+	}
+
+	if v.KmsKeyId != nil {
+		ok := object.Key("KmsKeyId")
+		ok.String(*v.KmsKeyId)
+	}
+
+	if v.Port != nil {
+		ok := object.Key("Port")
+		ok.Integer(*v.Port)
+	}
+
+	if v.ServerName != nil {
+		ok := object.Key("ServerName")
+		ok.String(*v.ServerName)
+	}
+
+	if v.SslMode != nil {
+		ok := object.Key("SslMode")
+		ok.String(*v.SslMode)
+	}
+
+	if v.Username != nil {
+		ok := object.Key("Username")
+		ok.String(*v.Username)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsDmsReplicationInstanceDetails(v *types.AwsDmsReplicationInstanceDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.AllocatedStorage != nil {
+		ok := object.Key("AllocatedStorage")
+		ok.Integer(*v.AllocatedStorage)
+	}
+
+	if v.AutoMinorVersionUpgrade != nil {
+		ok := object.Key("AutoMinorVersionUpgrade")
+		ok.Boolean(*v.AutoMinorVersionUpgrade)
+	}
+
+	if v.AvailabilityZone != nil {
+		ok := object.Key("AvailabilityZone")
+		ok.String(*v.AvailabilityZone)
+	}
+
+	if v.EngineVersion != nil {
+		ok := object.Key("EngineVersion")
+		ok.String(*v.EngineVersion)
+	}
+
+	if v.KmsKeyId != nil {
+		ok := object.Key("KmsKeyId")
+		ok.String(*v.KmsKeyId)
+	}
+
+	if v.MultiAZ != nil {
+		ok := object.Key("MultiAZ")
+		ok.Boolean(*v.MultiAZ)
+	}
+
+	if v.PreferredMaintenanceWindow != nil {
+		ok := object.Key("PreferredMaintenanceWindow")
+		ok.String(*v.PreferredMaintenanceWindow)
+	}
+
+	if v.PubliclyAccessible != nil {
+		ok := object.Key("PubliclyAccessible")
+		ok.Boolean(*v.PubliclyAccessible)
+	}
+
+	if v.ReplicationInstanceClass != nil {
+		ok := object.Key("ReplicationInstanceClass")
+		ok.String(*v.ReplicationInstanceClass)
+	}
+
+	if v.ReplicationInstanceIdentifier != nil {
+		ok := object.Key("ReplicationInstanceIdentifier")
+		ok.String(*v.ReplicationInstanceIdentifier)
+	}
+
+	if v.ReplicationSubnetGroup != nil {
+		ok := object.Key("ReplicationSubnetGroup")
+		if err := awsRestjson1_serializeDocumentAwsDmsReplicationInstanceReplicationSubnetGroupDetails(v.ReplicationSubnetGroup, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.VpcSecurityGroups != nil {
+		ok := object.Key("VpcSecurityGroups")
+		if err := awsRestjson1_serializeDocumentAwsDmsReplicationInstanceVpcSecurityGroupsList(v.VpcSecurityGroups, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsDmsReplicationInstanceReplicationSubnetGroupDetails(v *types.AwsDmsReplicationInstanceReplicationSubnetGroupDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ReplicationSubnetGroupIdentifier != nil {
+		ok := object.Key("ReplicationSubnetGroupIdentifier")
+		ok.String(*v.ReplicationSubnetGroupIdentifier)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsDmsReplicationInstanceVpcSecurityGroupsDetails(v *types.AwsDmsReplicationInstanceVpcSecurityGroupsDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.VpcSecurityGroupId != nil {
+		ok := object.Key("VpcSecurityGroupId")
+		ok.String(*v.VpcSecurityGroupId)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsDmsReplicationInstanceVpcSecurityGroupsList(v []types.AwsDmsReplicationInstanceVpcSecurityGroupsDetails, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentAwsDmsReplicationInstanceVpcSecurityGroupsDetails(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsDmsReplicationTaskDetails(v *types.AwsDmsReplicationTaskDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.CdcStartPosition != nil {
+		ok := object.Key("CdcStartPosition")
+		ok.String(*v.CdcStartPosition)
+	}
+
+	if v.CdcStartTime != nil {
+		ok := object.Key("CdcStartTime")
+		ok.String(*v.CdcStartTime)
+	}
+
+	if v.CdcStopPosition != nil {
+		ok := object.Key("CdcStopPosition")
+		ok.String(*v.CdcStopPosition)
+	}
+
+	if v.Id != nil {
+		ok := object.Key("Id")
+		ok.String(*v.Id)
+	}
+
+	if v.MigrationType != nil {
+		ok := object.Key("MigrationType")
+		ok.String(*v.MigrationType)
+	}
+
+	if v.ReplicationInstanceArn != nil {
+		ok := object.Key("ReplicationInstanceArn")
+		ok.String(*v.ReplicationInstanceArn)
+	}
+
+	if v.ReplicationTaskIdentifier != nil {
+		ok := object.Key("ReplicationTaskIdentifier")
+		ok.String(*v.ReplicationTaskIdentifier)
+	}
+
+	if v.ReplicationTaskSettings != nil {
+		ok := object.Key("ReplicationTaskSettings")
+		ok.String(*v.ReplicationTaskSettings)
+	}
+
+	if v.ResourceIdentifier != nil {
+		ok := object.Key("ResourceIdentifier")
+		ok.String(*v.ResourceIdentifier)
+	}
+
+	if v.SourceEndpointArn != nil {
+		ok := object.Key("SourceEndpointArn")
+		ok.String(*v.SourceEndpointArn)
+	}
+
+	if v.TableMappings != nil {
+		ok := object.Key("TableMappings")
+		ok.String(*v.TableMappings)
+	}
+
+	if v.TargetEndpointArn != nil {
+		ok := object.Key("TargetEndpointArn")
+		ok.String(*v.TargetEndpointArn)
+	}
+
+	if v.TaskData != nil {
+		ok := object.Key("TaskData")
+		ok.String(*v.TaskData)
 	}
 
 	return nil
@@ -9366,6 +11188,11 @@ func awsRestjson1_serializeDocumentAwsDynamoDbTableDetails(v *types.AwsDynamoDbT
 		ok.String(*v.CreationDateTime)
 	}
 
+	if v.DeletionProtectionEnabled != nil {
+		ok := object.Key("DeletionProtectionEnabled")
+		ok.Boolean(*v.DeletionProtectionEnabled)
+	}
+
 	if v.GlobalSecondaryIndexes != nil {
 		ok := object.Key("GlobalSecondaryIndexes")
 		if err := awsRestjson1_serializeDocumentAwsDynamoDbTableGlobalSecondaryIndexList(v.GlobalSecondaryIndexes, ok); err != nil {
@@ -9378,9 +11205,9 @@ func awsRestjson1_serializeDocumentAwsDynamoDbTableDetails(v *types.AwsDynamoDbT
 		ok.String(*v.GlobalTableVersion)
 	}
 
-	if v.ItemCount != 0 {
+	if v.ItemCount != nil {
 		ok := object.Key("ItemCount")
-		ok.Integer(v.ItemCount)
+		ok.Integer(*v.ItemCount)
 	}
 
 	if v.KeySchema != nil {
@@ -9452,9 +11279,9 @@ func awsRestjson1_serializeDocumentAwsDynamoDbTableDetails(v *types.AwsDynamoDbT
 		ok.String(*v.TableName)
 	}
 
-	if v.TableSizeBytes != 0 {
+	if v.TableSizeBytes != nil {
 		ok := object.Key("TableSizeBytes")
-		ok.Long(v.TableSizeBytes)
+		ok.Long(*v.TableSizeBytes)
 	}
 
 	if v.TableStatus != nil {
@@ -9469,9 +11296,9 @@ func awsRestjson1_serializeDocumentAwsDynamoDbTableGlobalSecondaryIndex(v *types
 	object := value.Object()
 	defer object.Close()
 
-	if v.Backfilling {
+	if v.Backfilling != nil {
 		ok := object.Key("Backfilling")
-		ok.Boolean(v.Backfilling)
+		ok.Boolean(*v.Backfilling)
 	}
 
 	if v.IndexArn != nil {
@@ -9484,9 +11311,9 @@ func awsRestjson1_serializeDocumentAwsDynamoDbTableGlobalSecondaryIndex(v *types
 		ok.String(*v.IndexName)
 	}
 
-	if v.IndexSizeBytes != 0 {
+	if v.IndexSizeBytes != nil {
 		ok := object.Key("IndexSizeBytes")
-		ok.Long(v.IndexSizeBytes)
+		ok.Long(*v.IndexSizeBytes)
 	}
 
 	if v.IndexStatus != nil {
@@ -9494,9 +11321,9 @@ func awsRestjson1_serializeDocumentAwsDynamoDbTableGlobalSecondaryIndex(v *types
 		ok.String(*v.IndexStatus)
 	}
 
-	if v.ItemCount != 0 {
+	if v.ItemCount != nil {
 		ok := object.Key("ItemCount")
-		ok.Integer(v.ItemCount)
+		ok.Integer(*v.ItemCount)
 	}
 
 	if v.KeySchema != nil {
@@ -9643,19 +11470,19 @@ func awsRestjson1_serializeDocumentAwsDynamoDbTableProvisionedThroughput(v *type
 		ok.String(*v.LastIncreaseDateTime)
 	}
 
-	if v.NumberOfDecreasesToday != 0 {
+	if v.NumberOfDecreasesToday != nil {
 		ok := object.Key("NumberOfDecreasesToday")
-		ok.Integer(v.NumberOfDecreasesToday)
+		ok.Integer(*v.NumberOfDecreasesToday)
 	}
 
-	if v.ReadCapacityUnits != 0 {
+	if v.ReadCapacityUnits != nil {
 		ok := object.Key("ReadCapacityUnits")
-		ok.Integer(v.ReadCapacityUnits)
+		ok.Integer(*v.ReadCapacityUnits)
 	}
 
-	if v.WriteCapacityUnits != 0 {
+	if v.WriteCapacityUnits != nil {
 		ok := object.Key("WriteCapacityUnits")
-		ok.Integer(v.WriteCapacityUnits)
+		ok.Integer(*v.WriteCapacityUnits)
 	}
 
 	return nil
@@ -9665,9 +11492,9 @@ func awsRestjson1_serializeDocumentAwsDynamoDbTableProvisionedThroughputOverride
 	object := value.Object()
 	defer object.Close()
 
-	if v.ReadCapacityUnits != 0 {
+	if v.ReadCapacityUnits != nil {
 		ok := object.Key("ReadCapacityUnits")
-		ok.Integer(v.ReadCapacityUnits)
+		ok.Integer(*v.ReadCapacityUnits)
 	}
 
 	return nil
@@ -9768,9 +11595,9 @@ func awsRestjson1_serializeDocumentAwsDynamoDbTableRestoreSummary(v *types.AwsDy
 		ok.String(*v.RestoreDateTime)
 	}
 
-	if v.RestoreInProgress {
+	if v.RestoreInProgress != nil {
 		ok := object.Key("RestoreInProgress")
-		ok.Boolean(v.RestoreInProgress)
+		ok.Boolean(*v.RestoreInProgress)
 	}
 
 	if v.SourceBackupArn != nil {
@@ -9817,14 +11644,280 @@ func awsRestjson1_serializeDocumentAwsDynamoDbTableStreamSpecification(v *types.
 	object := value.Object()
 	defer object.Close()
 
-	if v.StreamEnabled {
+	if v.StreamEnabled != nil {
 		ok := object.Key("StreamEnabled")
-		ok.Boolean(v.StreamEnabled)
+		ok.Boolean(*v.StreamEnabled)
 	}
 
 	if v.StreamViewType != nil {
 		ok := object.Key("StreamViewType")
 		ok.String(*v.StreamViewType)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointAuthenticationOptionsActiveDirectoryDetails(v *types.AwsEc2ClientVpnEndpointAuthenticationOptionsActiveDirectoryDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.DirectoryId != nil {
+		ok := object.Key("DirectoryId")
+		ok.String(*v.DirectoryId)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointAuthenticationOptionsDetails(v *types.AwsEc2ClientVpnEndpointAuthenticationOptionsDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ActiveDirectory != nil {
+		ok := object.Key("ActiveDirectory")
+		if err := awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointAuthenticationOptionsActiveDirectoryDetails(v.ActiveDirectory, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.FederatedAuthentication != nil {
+		ok := object.Key("FederatedAuthentication")
+		if err := awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointAuthenticationOptionsFederatedAuthenticationDetails(v.FederatedAuthentication, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.MutualAuthentication != nil {
+		ok := object.Key("MutualAuthentication")
+		if err := awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointAuthenticationOptionsMutualAuthenticationDetails(v.MutualAuthentication, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Type != nil {
+		ok := object.Key("Type")
+		ok.String(*v.Type)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointAuthenticationOptionsFederatedAuthenticationDetails(v *types.AwsEc2ClientVpnEndpointAuthenticationOptionsFederatedAuthenticationDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.SamlProviderArn != nil {
+		ok := object.Key("SamlProviderArn")
+		ok.String(*v.SamlProviderArn)
+	}
+
+	if v.SelfServiceSamlProviderArn != nil {
+		ok := object.Key("SelfServiceSamlProviderArn")
+		ok.String(*v.SelfServiceSamlProviderArn)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointAuthenticationOptionsList(v []types.AwsEc2ClientVpnEndpointAuthenticationOptionsDetails, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointAuthenticationOptionsDetails(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointAuthenticationOptionsMutualAuthenticationDetails(v *types.AwsEc2ClientVpnEndpointAuthenticationOptionsMutualAuthenticationDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ClientRootCertificateChain != nil {
+		ok := object.Key("ClientRootCertificateChain")
+		ok.String(*v.ClientRootCertificateChain)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointClientConnectOptionsDetails(v *types.AwsEc2ClientVpnEndpointClientConnectOptionsDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Enabled != nil {
+		ok := object.Key("Enabled")
+		ok.Boolean(*v.Enabled)
+	}
+
+	if v.LambdaFunctionArn != nil {
+		ok := object.Key("LambdaFunctionArn")
+		ok.String(*v.LambdaFunctionArn)
+	}
+
+	if v.Status != nil {
+		ok := object.Key("Status")
+		if err := awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointClientConnectOptionsStatusDetails(v.Status, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointClientConnectOptionsStatusDetails(v *types.AwsEc2ClientVpnEndpointClientConnectOptionsStatusDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Code != nil {
+		ok := object.Key("Code")
+		ok.String(*v.Code)
+	}
+
+	if v.Message != nil {
+		ok := object.Key("Message")
+		ok.String(*v.Message)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointClientLoginBannerOptionsDetails(v *types.AwsEc2ClientVpnEndpointClientLoginBannerOptionsDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.BannerText != nil {
+		ok := object.Key("BannerText")
+		ok.String(*v.BannerText)
+	}
+
+	if v.Enabled != nil {
+		ok := object.Key("Enabled")
+		ok.Boolean(*v.Enabled)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointConnectionLogOptionsDetails(v *types.AwsEc2ClientVpnEndpointConnectionLogOptionsDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.CloudwatchLogGroup != nil {
+		ok := object.Key("CloudwatchLogGroup")
+		ok.String(*v.CloudwatchLogGroup)
+	}
+
+	if v.CloudwatchLogStream != nil {
+		ok := object.Key("CloudwatchLogStream")
+		ok.String(*v.CloudwatchLogStream)
+	}
+
+	if v.Enabled != nil {
+		ok := object.Key("Enabled")
+		ok.Boolean(*v.Enabled)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointDetails(v *types.AwsEc2ClientVpnEndpointDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.AuthenticationOptions != nil {
+		ok := object.Key("AuthenticationOptions")
+		if err := awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointAuthenticationOptionsList(v.AuthenticationOptions, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ClientCidrBlock != nil {
+		ok := object.Key("ClientCidrBlock")
+		ok.String(*v.ClientCidrBlock)
+	}
+
+	if v.ClientConnectOptions != nil {
+		ok := object.Key("ClientConnectOptions")
+		if err := awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointClientConnectOptionsDetails(v.ClientConnectOptions, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ClientLoginBannerOptions != nil {
+		ok := object.Key("ClientLoginBannerOptions")
+		if err := awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointClientLoginBannerOptionsDetails(v.ClientLoginBannerOptions, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ClientVpnEndpointId != nil {
+		ok := object.Key("ClientVpnEndpointId")
+		ok.String(*v.ClientVpnEndpointId)
+	}
+
+	if v.ConnectionLogOptions != nil {
+		ok := object.Key("ConnectionLogOptions")
+		if err := awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointConnectionLogOptionsDetails(v.ConnectionLogOptions, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Description != nil {
+		ok := object.Key("Description")
+		ok.String(*v.Description)
+	}
+
+	if v.DnsServer != nil {
+		ok := object.Key("DnsServer")
+		if err := awsRestjson1_serializeDocumentStringList(v.DnsServer, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.SecurityGroupIdSet != nil {
+		ok := object.Key("SecurityGroupIdSet")
+		if err := awsRestjson1_serializeDocumentStringList(v.SecurityGroupIdSet, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.SelfServicePortalUrl != nil {
+		ok := object.Key("SelfServicePortalUrl")
+		ok.String(*v.SelfServicePortalUrl)
+	}
+
+	if v.ServerCertificateArn != nil {
+		ok := object.Key("ServerCertificateArn")
+		ok.String(*v.ServerCertificateArn)
+	}
+
+	if v.SessionTimeoutHours != nil {
+		ok := object.Key("SessionTimeoutHours")
+		ok.Integer(*v.SessionTimeoutHours)
+	}
+
+	if v.SplitTunnel != nil {
+		ok := object.Key("SplitTunnel")
+		ok.Boolean(*v.SplitTunnel)
+	}
+
+	if v.TransportProtocol != nil {
+		ok := object.Key("TransportProtocol")
+		ok.String(*v.TransportProtocol)
+	}
+
+	if v.VpcId != nil {
+		ok := object.Key("VpcId")
+		ok.String(*v.VpcId)
+	}
+
+	if v.VpnPort != nil {
+		ok := object.Key("VpnPort")
+		ok.Integer(*v.VpnPort)
 	}
 
 	return nil
@@ -9983,9 +12076,9 @@ func awsRestjson1_serializeDocumentAwsEc2InstanceMetadataOptions(v *types.AwsEc2
 		ok.String(*v.HttpProtocolIpv6)
 	}
 
-	if v.HttpPutResponseHopLimit != 0 {
+	if v.HttpPutResponseHopLimit != nil {
 		ok := object.Key("HttpPutResponseHopLimit")
-		ok.Integer(v.HttpPutResponseHopLimit)
+		ok.Integer(*v.HttpPutResponseHopLimit)
 	}
 
 	if v.HttpTokens != nil {
@@ -10071,19 +12164,19 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataBlockDeviceMappingSet
 	object := value.Object()
 	defer object.Close()
 
-	if v.DeleteOnTermination {
+	if v.DeleteOnTermination != nil {
 		ok := object.Key("DeleteOnTermination")
-		ok.Boolean(v.DeleteOnTermination)
+		ok.Boolean(*v.DeleteOnTermination)
 	}
 
-	if v.Encrypted {
+	if v.Encrypted != nil {
 		ok := object.Key("Encrypted")
-		ok.Boolean(v.Encrypted)
+		ok.Boolean(*v.Encrypted)
 	}
 
-	if v.Iops != 0 {
+	if v.Iops != nil {
 		ok := object.Key("Iops")
-		ok.Integer(v.Iops)
+		ok.Integer(*v.Iops)
 	}
 
 	if v.KmsKeyId != nil {
@@ -10096,14 +12189,14 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataBlockDeviceMappingSet
 		ok.String(*v.SnapshotId)
 	}
 
-	if v.Throughput != 0 {
+	if v.Throughput != nil {
 		ok := object.Key("Throughput")
-		ok.Integer(v.Throughput)
+		ok.Integer(*v.Throughput)
 	}
 
-	if v.VolumeSize != 0 {
+	if v.VolumeSize != nil {
 		ok := object.Key("VolumeSize")
-		ok.Integer(v.VolumeSize)
+		ok.Integer(*v.VolumeSize)
 	}
 
 	if v.VolumeType != nil {
@@ -10167,14 +12260,14 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataCpuOptionsDetails(v *
 	object := value.Object()
 	defer object.Close()
 
-	if v.CoreCount != 0 {
+	if v.CoreCount != nil {
 		ok := object.Key("CoreCount")
-		ok.Integer(v.CoreCount)
+		ok.Integer(*v.CoreCount)
 	}
 
-	if v.ThreadsPerCore != 0 {
+	if v.ThreadsPerCore != nil {
 		ok := object.Key("ThreadsPerCore")
-		ok.Integer(v.ThreadsPerCore)
+		ok.Integer(*v.ThreadsPerCore)
 	}
 
 	return nil
@@ -10224,19 +12317,19 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataDetails(v *types.AwsE
 		}
 	}
 
-	if v.DisableApiStop {
+	if v.DisableApiStop != nil {
 		ok := object.Key("DisableApiStop")
-		ok.Boolean(v.DisableApiStop)
+		ok.Boolean(*v.DisableApiStop)
 	}
 
-	if v.DisableApiTermination {
+	if v.DisableApiTermination != nil {
 		ok := object.Key("DisableApiTermination")
-		ok.Boolean(v.DisableApiTermination)
+		ok.Boolean(*v.DisableApiTermination)
 	}
 
-	if v.EbsOptimized {
+	if v.EbsOptimized != nil {
 		ok := object.Key("EbsOptimized")
-		ok.Boolean(v.EbsOptimized)
+		ok.Boolean(*v.EbsOptimized)
 	}
 
 	if v.ElasticGpuSpecificationSet != nil {
@@ -10418,9 +12511,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataElasticInferenceAccel
 	object := value.Object()
 	defer object.Close()
 
-	if v.Count != 0 {
+	if v.Count != nil {
 		ok := object.Key("Count")
-		ok.Integer(v.Count)
+		ok.Integer(*v.Count)
 	}
 
 	if v.Type != nil {
@@ -10448,9 +12541,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataEnclaveOptionsDetails
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	return nil
@@ -10460,9 +12553,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataHibernationOptionsDet
 	object := value.Object()
 	defer object.Close()
 
-	if v.Configured {
+	if v.Configured != nil {
 		ok := object.Key("Configured")
-		ok.Boolean(v.Configured)
+		ok.Boolean(*v.Configured)
 	}
 
 	return nil
@@ -10508,9 +12601,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataInstanceMarketOptions
 	object := value.Object()
 	defer object.Close()
 
-	if v.BlockDurationMinutes != 0 {
+	if v.BlockDurationMinutes != nil {
 		ok := object.Key("BlockDurationMinutes")
-		ok.Integer(v.BlockDurationMinutes)
+		ok.Integer(*v.BlockDurationMinutes)
 	}
 
 	if v.InstanceInterruptionBehavior != nil {
@@ -10540,14 +12633,14 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataInstanceRequirementsA
 	object := value.Object()
 	defer object.Close()
 
-	if v.Max != 0 {
+	if v.Max != nil {
 		ok := object.Key("Max")
-		ok.Integer(v.Max)
+		ok.Integer(*v.Max)
 	}
 
-	if v.Min != 0 {
+	if v.Min != nil {
 		ok := object.Key("Min")
-		ok.Integer(v.Min)
+		ok.Integer(*v.Min)
 	}
 
 	return nil
@@ -10557,14 +12650,14 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataInstanceRequirementsA
 	object := value.Object()
 	defer object.Close()
 
-	if v.Max != 0 {
+	if v.Max != nil {
 		ok := object.Key("Max")
-		ok.Integer(v.Max)
+		ok.Integer(*v.Max)
 	}
 
-	if v.Min != 0 {
+	if v.Min != nil {
 		ok := object.Key("Min")
-		ok.Integer(v.Min)
+		ok.Integer(*v.Min)
 	}
 
 	return nil
@@ -10574,14 +12667,14 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataInstanceRequirementsB
 	object := value.Object()
 	defer object.Close()
 
-	if v.Max != 0 {
+	if v.Max != nil {
 		ok := object.Key("Max")
-		ok.Integer(v.Max)
+		ok.Integer(*v.Max)
 	}
 
-	if v.Min != 0 {
+	if v.Min != nil {
 		ok := object.Key("Min")
-		ok.Integer(v.Min)
+		ok.Integer(*v.Min)
 	}
 
 	return nil
@@ -10697,19 +12790,19 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataInstanceRequirementsD
 		}
 	}
 
-	if v.OnDemandMaxPricePercentageOverLowestPrice != 0 {
+	if v.OnDemandMaxPricePercentageOverLowestPrice != nil {
 		ok := object.Key("OnDemandMaxPricePercentageOverLowestPrice")
-		ok.Integer(v.OnDemandMaxPricePercentageOverLowestPrice)
+		ok.Integer(*v.OnDemandMaxPricePercentageOverLowestPrice)
 	}
 
-	if v.RequireHibernateSupport {
+	if v.RequireHibernateSupport != nil {
 		ok := object.Key("RequireHibernateSupport")
-		ok.Boolean(v.RequireHibernateSupport)
+		ok.Boolean(*v.RequireHibernateSupport)
 	}
 
-	if v.SpotMaxPricePercentageOverLowestPrice != 0 {
+	if v.SpotMaxPricePercentageOverLowestPrice != nil {
 		ok := object.Key("SpotMaxPricePercentageOverLowestPrice")
-		ok.Integer(v.SpotMaxPricePercentageOverLowestPrice)
+		ok.Integer(*v.SpotMaxPricePercentageOverLowestPrice)
 	}
 
 	if v.TotalLocalStorageGB != nil {
@@ -10733,38 +12826,38 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataInstanceRequirementsM
 	object := value.Object()
 	defer object.Close()
 
-	if v.Max != 0 {
+	if v.Max != nil {
 		ok := object.Key("Max")
 		switch {
-		case math.IsNaN(v.Max):
+		case math.IsNaN(*v.Max):
 			ok.String("NaN")
 
-		case math.IsInf(v.Max, 1):
+		case math.IsInf(*v.Max, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.Max, -1):
+		case math.IsInf(*v.Max, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.Max)
+			ok.Double(*v.Max)
 
 		}
 	}
 
-	if v.Min != 0 {
+	if v.Min != nil {
 		ok := object.Key("Min")
 		switch {
-		case math.IsNaN(v.Min):
+		case math.IsNaN(*v.Min):
 			ok.String("NaN")
 
-		case math.IsInf(v.Min, 1):
+		case math.IsInf(*v.Min, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.Min, -1):
+		case math.IsInf(*v.Min, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.Min)
+			ok.Double(*v.Min)
 
 		}
 	}
@@ -10776,14 +12869,14 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataInstanceRequirementsM
 	object := value.Object()
 	defer object.Close()
 
-	if v.Max != 0 {
+	if v.Max != nil {
 		ok := object.Key("Max")
-		ok.Integer(v.Max)
+		ok.Integer(*v.Max)
 	}
 
-	if v.Min != 0 {
+	if v.Min != nil {
 		ok := object.Key("Min")
-		ok.Integer(v.Min)
+		ok.Integer(*v.Min)
 	}
 
 	return nil
@@ -10793,14 +12886,14 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataInstanceRequirementsN
 	object := value.Object()
 	defer object.Close()
 
-	if v.Max != 0 {
+	if v.Max != nil {
 		ok := object.Key("Max")
-		ok.Integer(v.Max)
+		ok.Integer(*v.Max)
 	}
 
-	if v.Min != 0 {
+	if v.Min != nil {
 		ok := object.Key("Min")
-		ok.Integer(v.Min)
+		ok.Integer(*v.Min)
 	}
 
 	return nil
@@ -10810,38 +12903,38 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataInstanceRequirementsT
 	object := value.Object()
 	defer object.Close()
 
-	if v.Max != 0 {
+	if v.Max != nil {
 		ok := object.Key("Max")
 		switch {
-		case math.IsNaN(v.Max):
+		case math.IsNaN(*v.Max):
 			ok.String("NaN")
 
-		case math.IsInf(v.Max, 1):
+		case math.IsInf(*v.Max, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.Max, -1):
+		case math.IsInf(*v.Max, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.Max)
+			ok.Double(*v.Max)
 
 		}
 	}
 
-	if v.Min != 0 {
+	if v.Min != nil {
 		ok := object.Key("Min")
 		switch {
-		case math.IsNaN(v.Min):
+		case math.IsNaN(*v.Min):
 			ok.String("NaN")
 
-		case math.IsInf(v.Min, 1):
+		case math.IsInf(*v.Min, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.Min, -1):
+		case math.IsInf(*v.Min, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.Min)
+			ok.Double(*v.Min)
 
 		}
 	}
@@ -10853,14 +12946,14 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataInstanceRequirementsV
 	object := value.Object()
 	defer object.Close()
 
-	if v.Max != 0 {
+	if v.Max != nil {
 		ok := object.Key("Max")
-		ok.Integer(v.Max)
+		ok.Integer(*v.Max)
 	}
 
-	if v.Min != 0 {
+	if v.Min != nil {
 		ok := object.Key("Min")
-		ok.Integer(v.Min)
+		ok.Integer(*v.Min)
 	}
 
 	return nil
@@ -10917,9 +13010,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataMetadataOptionsDetail
 		ok.String(*v.HttpProtocolIpv6)
 	}
 
-	if v.HttpPutResponseHopLimit != 0 {
+	if v.HttpPutResponseHopLimit != nil {
 		ok := object.Key("HttpPutResponseHopLimit")
-		ok.Integer(v.HttpPutResponseHopLimit)
+		ok.Integer(*v.HttpPutResponseHopLimit)
 	}
 
 	if v.HttpTokens != nil {
@@ -10939,9 +13032,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataMonitoringDetails(v *
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	return nil
@@ -10951,19 +13044,19 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataNetworkInterfaceSetDe
 	object := value.Object()
 	defer object.Close()
 
-	if v.AssociateCarrierIpAddress {
+	if v.AssociateCarrierIpAddress != nil {
 		ok := object.Key("AssociateCarrierIpAddress")
-		ok.Boolean(v.AssociateCarrierIpAddress)
+		ok.Boolean(*v.AssociateCarrierIpAddress)
 	}
 
-	if v.AssociatePublicIpAddress {
+	if v.AssociatePublicIpAddress != nil {
 		ok := object.Key("AssociatePublicIpAddress")
-		ok.Boolean(v.AssociatePublicIpAddress)
+		ok.Boolean(*v.AssociatePublicIpAddress)
 	}
 
-	if v.DeleteOnTermination {
+	if v.DeleteOnTermination != nil {
 		ok := object.Key("DeleteOnTermination")
-		ok.Boolean(v.DeleteOnTermination)
+		ok.Boolean(*v.DeleteOnTermination)
 	}
 
 	if v.Description != nil {
@@ -10971,9 +13064,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataNetworkInterfaceSetDe
 		ok.String(*v.Description)
 	}
 
-	if v.DeviceIndex != 0 {
+	if v.DeviceIndex != nil {
 		ok := object.Key("DeviceIndex")
-		ok.Integer(v.DeviceIndex)
+		ok.Integer(*v.DeviceIndex)
 	}
 
 	if v.Groups != nil {
@@ -10988,9 +13081,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataNetworkInterfaceSetDe
 		ok.String(*v.InterfaceType)
 	}
 
-	if v.Ipv4PrefixCount != 0 {
+	if v.Ipv4PrefixCount != nil {
 		ok := object.Key("Ipv4PrefixCount")
-		ok.Integer(v.Ipv4PrefixCount)
+		ok.Integer(*v.Ipv4PrefixCount)
 	}
 
 	if v.Ipv4Prefixes != nil {
@@ -11000,9 +13093,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataNetworkInterfaceSetDe
 		}
 	}
 
-	if v.Ipv6AddressCount != 0 {
+	if v.Ipv6AddressCount != nil {
 		ok := object.Key("Ipv6AddressCount")
-		ok.Integer(v.Ipv6AddressCount)
+		ok.Integer(*v.Ipv6AddressCount)
 	}
 
 	if v.Ipv6Addresses != nil {
@@ -11012,9 +13105,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataNetworkInterfaceSetDe
 		}
 	}
 
-	if v.Ipv6PrefixCount != 0 {
+	if v.Ipv6PrefixCount != nil {
 		ok := object.Key("Ipv6PrefixCount")
-		ok.Integer(v.Ipv6PrefixCount)
+		ok.Integer(*v.Ipv6PrefixCount)
 	}
 
 	if v.Ipv6Prefixes != nil {
@@ -11024,9 +13117,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataNetworkInterfaceSetDe
 		}
 	}
 
-	if v.NetworkCardIndex != 0 {
+	if v.NetworkCardIndex != nil {
 		ok := object.Key("NetworkCardIndex")
-		ok.Integer(v.NetworkCardIndex)
+		ok.Integer(*v.NetworkCardIndex)
 	}
 
 	if v.NetworkInterfaceId != nil {
@@ -11046,9 +13139,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataNetworkInterfaceSetDe
 		}
 	}
 
-	if v.SecondaryPrivateIpAddressCount != 0 {
+	if v.SecondaryPrivateIpAddressCount != nil {
 		ok := object.Key("SecondaryPrivateIpAddressCount")
-		ok.Integer(v.SecondaryPrivateIpAddressCount)
+		ok.Integer(*v.SecondaryPrivateIpAddressCount)
 	}
 
 	if v.SubnetId != nil {
@@ -11151,9 +13244,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataNetworkInterfaceSetPr
 	object := value.Object()
 	defer object.Close()
 
-	if v.Primary {
+	if v.Primary != nil {
 		ok := object.Key("Primary")
-		ok.Boolean(v.Primary)
+		ok.Boolean(*v.Primary)
 	}
 
 	if v.PrivateIpAddress != nil {
@@ -11206,9 +13299,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataPlacementDetails(v *t
 		ok.String(*v.HostResourceGroupArn)
 	}
 
-	if v.PartitionNumber != 0 {
+	if v.PartitionNumber != nil {
 		ok := object.Key("PartitionNumber")
-		ok.Integer(v.PartitionNumber)
+		ok.Integer(*v.PartitionNumber)
 	}
 
 	if v.SpreadDomain != nil {
@@ -11228,14 +13321,14 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDataPrivateDnsNameOptions
 	object := value.Object()
 	defer object.Close()
 
-	if v.EnableResourceNameDnsAAAARecord {
+	if v.EnableResourceNameDnsAAAARecord != nil {
 		ok := object.Key("EnableResourceNameDnsAAAARecord")
-		ok.Boolean(v.EnableResourceNameDnsAAAARecord)
+		ok.Boolean(*v.EnableResourceNameDnsAAAARecord)
 	}
 
-	if v.EnableResourceNameDnsARecord {
+	if v.EnableResourceNameDnsARecord != nil {
 		ok := object.Key("EnableResourceNameDnsARecord")
-		ok.Boolean(v.EnableResourceNameDnsARecord)
+		ok.Boolean(*v.EnableResourceNameDnsARecord)
 	}
 
 	if v.HostnameType != nil {
@@ -11250,9 +13343,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDetails(v *types.AwsEc2La
 	object := value.Object()
 	defer object.Close()
 
-	if v.DefaultVersionNumber != 0 {
+	if v.DefaultVersionNumber != nil {
 		ok := object.Key("DefaultVersionNumber")
-		ok.Long(v.DefaultVersionNumber)
+		ok.Long(*v.DefaultVersionNumber)
 	}
 
 	if v.Id != nil {
@@ -11260,9 +13353,9 @@ func awsRestjson1_serializeDocumentAwsEc2LaunchTemplateDetails(v *types.AwsEc2La
 		ok.String(*v.Id)
 	}
 
-	if v.LatestVersionNumber != 0 {
+	if v.LatestVersionNumber != nil {
 		ok := object.Key("LatestVersionNumber")
-		ok.Long(v.LatestVersionNumber)
+		ok.Long(*v.LatestVersionNumber)
 	}
 
 	if v.LaunchTemplateData != nil {
@@ -11333,9 +13426,9 @@ func awsRestjson1_serializeDocumentAwsEc2NetworkAclDetails(v *types.AwsEc2Networ
 		}
 	}
 
-	if v.IsDefault {
+	if v.IsDefault != nil {
 		ok := object.Key("IsDefault")
-		ok.Boolean(v.IsDefault)
+		ok.Boolean(*v.IsDefault)
 	}
 
 	if v.NetworkAclId != nil {
@@ -11365,9 +13458,9 @@ func awsRestjson1_serializeDocumentAwsEc2NetworkAclEntry(v *types.AwsEc2NetworkA
 		ok.String(*v.CidrBlock)
 	}
 
-	if v.Egress {
+	if v.Egress != nil {
 		ok := object.Key("Egress")
-		ok.Boolean(v.Egress)
+		ok.Boolean(*v.Egress)
 	}
 
 	if v.IcmpTypeCode != nil {
@@ -11399,9 +13492,9 @@ func awsRestjson1_serializeDocumentAwsEc2NetworkAclEntry(v *types.AwsEc2NetworkA
 		ok.String(*v.RuleAction)
 	}
 
-	if v.RuleNumber != 0 {
+	if v.RuleNumber != nil {
 		ok := object.Key("RuleNumber")
-		ok.Integer(v.RuleNumber)
+		ok.Integer(*v.RuleNumber)
 	}
 
 	return nil
@@ -11434,14 +13527,14 @@ func awsRestjson1_serializeDocumentAwsEc2NetworkInterfaceAttachment(v *types.Aws
 		ok.String(*v.AttachTime)
 	}
 
-	if v.DeleteOnTermination {
+	if v.DeleteOnTermination != nil {
 		ok := object.Key("DeleteOnTermination")
-		ok.Boolean(v.DeleteOnTermination)
+		ok.Boolean(*v.DeleteOnTermination)
 	}
 
-	if v.DeviceIndex != 0 {
+	if v.DeviceIndex != nil {
 		ok := object.Key("DeviceIndex")
-		ok.Integer(v.DeviceIndex)
+		ok.Integer(*v.DeviceIndex)
 	}
 
 	if v.InstanceId != nil {
@@ -11509,9 +13602,9 @@ func awsRestjson1_serializeDocumentAwsEc2NetworkInterfaceDetails(v *types.AwsEc2
 		}
 	}
 
-	if v.SourceDestCheck {
+	if v.SourceDestCheck != nil {
 		ok := object.Key("SourceDestCheck")
-		ok.Boolean(v.SourceDestCheck)
+		ok.Boolean(*v.SourceDestCheck)
 	}
 
 	return nil
@@ -11690,9 +13783,9 @@ func awsRestjson1_serializeDocumentAwsEc2SecurityGroupIpPermission(v *types.AwsE
 	object := value.Object()
 	defer object.Close()
 
-	if v.FromPort != 0 {
+	if v.FromPort != nil {
 		ok := object.Key("FromPort")
-		ok.Integer(v.FromPort)
+		ok.Integer(*v.FromPort)
 	}
 
 	if v.IpProtocol != nil {
@@ -11721,9 +13814,9 @@ func awsRestjson1_serializeDocumentAwsEc2SecurityGroupIpPermission(v *types.AwsE
 		}
 	}
 
-	if v.ToPort != 0 {
+	if v.ToPort != nil {
 		ok := object.Key("ToPort")
-		ok.Integer(v.ToPort)
+		ok.Integer(*v.ToPort)
 	}
 
 	if v.UserIdGroupPairs != nil {
@@ -11878,9 +13971,9 @@ func awsRestjson1_serializeDocumentAwsEc2SubnetDetails(v *types.AwsEc2SubnetDeta
 	object := value.Object()
 	defer object.Close()
 
-	if v.AssignIpv6AddressOnCreation {
+	if v.AssignIpv6AddressOnCreation != nil {
 		ok := object.Key("AssignIpv6AddressOnCreation")
-		ok.Boolean(v.AssignIpv6AddressOnCreation)
+		ok.Boolean(*v.AssignIpv6AddressOnCreation)
 	}
 
 	if v.AvailabilityZone != nil {
@@ -11893,9 +13986,9 @@ func awsRestjson1_serializeDocumentAwsEc2SubnetDetails(v *types.AwsEc2SubnetDeta
 		ok.String(*v.AvailabilityZoneId)
 	}
 
-	if v.AvailableIpAddressCount != 0 {
+	if v.AvailableIpAddressCount != nil {
 		ok := object.Key("AvailableIpAddressCount")
-		ok.Integer(v.AvailableIpAddressCount)
+		ok.Integer(*v.AvailableIpAddressCount)
 	}
 
 	if v.CidrBlock != nil {
@@ -11903,9 +13996,9 @@ func awsRestjson1_serializeDocumentAwsEc2SubnetDetails(v *types.AwsEc2SubnetDeta
 		ok.String(*v.CidrBlock)
 	}
 
-	if v.DefaultForAz {
+	if v.DefaultForAz != nil {
 		ok := object.Key("DefaultForAz")
-		ok.Boolean(v.DefaultForAz)
+		ok.Boolean(*v.DefaultForAz)
 	}
 
 	if v.Ipv6CidrBlockAssociationSet != nil {
@@ -11915,9 +14008,9 @@ func awsRestjson1_serializeDocumentAwsEc2SubnetDetails(v *types.AwsEc2SubnetDeta
 		}
 	}
 
-	if v.MapPublicIpOnLaunch {
+	if v.MapPublicIpOnLaunch != nil {
 		ok := object.Key("MapPublicIpOnLaunch")
-		ok.Boolean(v.MapPublicIpOnLaunch)
+		ok.Boolean(*v.MapPublicIpOnLaunch)
 	}
 
 	if v.OwnerId != nil {
@@ -11952,9 +14045,9 @@ func awsRestjson1_serializeDocumentAwsEc2TransitGatewayDetails(v *types.AwsEc2Tr
 	object := value.Object()
 	defer object.Close()
 
-	if v.AmazonSideAsn != 0 {
+	if v.AmazonSideAsn != nil {
 		ok := object.Key("AmazonSideAsn")
-		ok.Integer(v.AmazonSideAsn)
+		ok.Integer(*v.AmazonSideAsn)
 	}
 
 	if v.AssociationDefaultRouteTableId != nil {
@@ -12026,9 +14119,9 @@ func awsRestjson1_serializeDocumentAwsEc2VolumeAttachment(v *types.AwsEc2VolumeA
 		ok.String(*v.AttachTime)
 	}
 
-	if v.DeleteOnTermination {
+	if v.DeleteOnTermination != nil {
 		ok := object.Key("DeleteOnTermination")
-		ok.Boolean(v.DeleteOnTermination)
+		ok.Boolean(*v.DeleteOnTermination)
 	}
 
 	if v.InstanceId != nil {
@@ -12078,9 +14171,9 @@ func awsRestjson1_serializeDocumentAwsEc2VolumeDetails(v *types.AwsEc2VolumeDeta
 		ok.String(*v.DeviceName)
 	}
 
-	if v.Encrypted {
+	if v.Encrypted != nil {
 		ok := object.Key("Encrypted")
-		ok.Boolean(v.Encrypted)
+		ok.Boolean(*v.Encrypted)
 	}
 
 	if v.KmsKeyId != nil {
@@ -12088,9 +14181,9 @@ func awsRestjson1_serializeDocumentAwsEc2VolumeDetails(v *types.AwsEc2VolumeDeta
 		ok.String(*v.KmsKeyId)
 	}
 
-	if v.Size != 0 {
+	if v.Size != nil {
 		ok := object.Key("Size")
-		ok.Integer(v.Size)
+		ok.Integer(*v.Size)
 	}
 
 	if v.SnapshotId != nil {
@@ -12156,9 +14249,9 @@ func awsRestjson1_serializeDocumentAwsEc2VpcEndpointServiceDetails(v *types.AwsE
 	object := value.Object()
 	defer object.Close()
 
-	if v.AcceptanceRequired {
+	if v.AcceptanceRequired != nil {
 		ok := object.Key("AcceptanceRequired")
-		ok.Boolean(v.AcceptanceRequired)
+		ok.Boolean(*v.AcceptanceRequired)
 	}
 
 	if v.AvailabilityZones != nil {
@@ -12182,9 +14275,9 @@ func awsRestjson1_serializeDocumentAwsEc2VpcEndpointServiceDetails(v *types.AwsE
 		}
 	}
 
-	if v.ManagesVpcEndpoints {
+	if v.ManagesVpcEndpoints != nil {
 		ok := object.Key("ManagesVpcEndpoints")
-		ok.Boolean(v.ManagesVpcEndpoints)
+		ok.Boolean(*v.ManagesVpcEndpoints)
 	}
 
 	if v.NetworkLoadBalancerArns != nil {
@@ -12424,9 +14517,9 @@ func awsRestjson1_serializeDocumentAwsEc2VpnConnectionOptionsDetails(v *types.Aw
 	object := value.Object()
 	defer object.Close()
 
-	if v.StaticRoutesOnly {
+	if v.StaticRoutesOnly != nil {
 		ok := object.Key("StaticRoutesOnly")
-		ok.Boolean(v.StaticRoutesOnly)
+		ok.Boolean(*v.StaticRoutesOnly)
 	}
 
 	if v.TunnelOptions != nil {
@@ -12443,9 +14536,9 @@ func awsRestjson1_serializeDocumentAwsEc2VpnConnectionOptionsTunnelOptionsDetail
 	object := value.Object()
 	defer object.Close()
 
-	if v.DpdTimeoutSeconds != 0 {
+	if v.DpdTimeoutSeconds != nil {
 		ok := object.Key("DpdTimeoutSeconds")
-		ok.Integer(v.DpdTimeoutSeconds)
+		ok.Integer(*v.DpdTimeoutSeconds)
 	}
 
 	if v.IkeVersions != nil {
@@ -12481,9 +14574,9 @@ func awsRestjson1_serializeDocumentAwsEc2VpnConnectionOptionsTunnelOptionsDetail
 		}
 	}
 
-	if v.Phase1LifetimeSeconds != 0 {
+	if v.Phase1LifetimeSeconds != nil {
 		ok := object.Key("Phase1LifetimeSeconds")
-		ok.Integer(v.Phase1LifetimeSeconds)
+		ok.Integer(*v.Phase1LifetimeSeconds)
 	}
 
 	if v.Phase2DhGroupNumbers != nil {
@@ -12507,9 +14600,9 @@ func awsRestjson1_serializeDocumentAwsEc2VpnConnectionOptionsTunnelOptionsDetail
 		}
 	}
 
-	if v.Phase2LifetimeSeconds != 0 {
+	if v.Phase2LifetimeSeconds != nil {
 		ok := object.Key("Phase2LifetimeSeconds")
-		ok.Integer(v.Phase2LifetimeSeconds)
+		ok.Integer(*v.Phase2LifetimeSeconds)
 	}
 
 	if v.PreSharedKey != nil {
@@ -12517,19 +14610,19 @@ func awsRestjson1_serializeDocumentAwsEc2VpnConnectionOptionsTunnelOptionsDetail
 		ok.String(*v.PreSharedKey)
 	}
 
-	if v.RekeyFuzzPercentage != 0 {
+	if v.RekeyFuzzPercentage != nil {
 		ok := object.Key("RekeyFuzzPercentage")
-		ok.Integer(v.RekeyFuzzPercentage)
+		ok.Integer(*v.RekeyFuzzPercentage)
 	}
 
-	if v.RekeyMarginTimeSeconds != 0 {
+	if v.RekeyMarginTimeSeconds != nil {
 		ok := object.Key("RekeyMarginTimeSeconds")
-		ok.Integer(v.RekeyMarginTimeSeconds)
+		ok.Integer(*v.RekeyMarginTimeSeconds)
 	}
 
-	if v.ReplayWindowSize != 0 {
+	if v.ReplayWindowSize != nil {
 		ok := object.Key("ReplayWindowSize")
-		ok.Integer(v.ReplayWindowSize)
+		ok.Integer(*v.ReplayWindowSize)
 	}
 
 	if v.TunnelInsideCidr != nil {
@@ -12587,9 +14680,9 @@ func awsRestjson1_serializeDocumentAwsEc2VpnConnectionVgwTelemetryDetails(v *typ
 	object := value.Object()
 	defer object.Close()
 
-	if v.AcceptedRouteCount != 0 {
+	if v.AcceptedRouteCount != nil {
 		ok := object.Key("AcceptedRouteCount")
-		ok.Integer(v.AcceptedRouteCount)
+		ok.Integer(*v.AcceptedRouteCount)
 	}
 
 	if v.CertificateArn != nil {
@@ -12717,9 +14810,9 @@ func awsRestjson1_serializeDocumentAwsEcrRepositoryImageScanningConfigurationDet
 	object := value.Object()
 	defer object.Close()
 
-	if v.ScanOnPush {
+	if v.ScanOnPush != nil {
 		ok := object.Key("ScanOnPush")
-		ok.Boolean(v.ScanOnPush)
+		ok.Boolean(*v.ScanOnPush)
 	}
 
 	return nil
@@ -12814,9 +14907,9 @@ func awsRestjson1_serializeDocumentAwsEcsClusterConfigurationExecuteCommandConfi
 	object := value.Object()
 	defer object.Close()
 
-	if v.CloudWatchEncryptionEnabled {
+	if v.CloudWatchEncryptionEnabled != nil {
 		ok := object.Key("CloudWatchEncryptionEnabled")
-		ok.Boolean(v.CloudWatchEncryptionEnabled)
+		ok.Boolean(*v.CloudWatchEncryptionEnabled)
 	}
 
 	if v.CloudWatchLogGroupName != nil {
@@ -12829,9 +14922,9 @@ func awsRestjson1_serializeDocumentAwsEcsClusterConfigurationExecuteCommandConfi
 		ok.String(*v.S3BucketName)
 	}
 
-	if v.S3EncryptionEnabled {
+	if v.S3EncryptionEnabled != nil {
 		ok := object.Key("S3EncryptionEnabled")
-		ok.Boolean(v.S3EncryptionEnabled)
+		ok.Boolean(*v.S3EncryptionEnabled)
 	}
 
 	if v.S3KeyPrefix != nil {
@@ -12846,9 +14939,9 @@ func awsRestjson1_serializeDocumentAwsEcsClusterDefaultCapacityProviderStrategyD
 	object := value.Object()
 	defer object.Close()
 
-	if v.Base != 0 {
+	if v.Base != nil {
 		ok := object.Key("Base")
-		ok.Integer(v.Base)
+		ok.Integer(*v.Base)
 	}
 
 	if v.CapacityProvider != nil {
@@ -12856,9 +14949,9 @@ func awsRestjson1_serializeDocumentAwsEcsClusterDefaultCapacityProviderStrategyD
 		ok.String(*v.CapacityProvider)
 	}
 
-	if v.Weight != 0 {
+	if v.Weight != nil {
 		ok := object.Key("Weight")
-		ok.Integer(v.Weight)
+		ok.Integer(*v.Weight)
 	}
 
 	return nil
@@ -12881,9 +14974,9 @@ func awsRestjson1_serializeDocumentAwsEcsClusterDetails(v *types.AwsEcsClusterDe
 	object := value.Object()
 	defer object.Close()
 
-	if v.ActiveServicesCount != 0 {
+	if v.ActiveServicesCount != nil {
 		ok := object.Key("ActiveServicesCount")
-		ok.Integer(v.ActiveServicesCount)
+		ok.Integer(*v.ActiveServicesCount)
 	}
 
 	if v.CapacityProviders != nil {
@@ -12924,14 +15017,14 @@ func awsRestjson1_serializeDocumentAwsEcsClusterDetails(v *types.AwsEcsClusterDe
 		}
 	}
 
-	if v.RegisteredContainerInstancesCount != 0 {
+	if v.RegisteredContainerInstancesCount != nil {
 		ok := object.Key("RegisteredContainerInstancesCount")
-		ok.Integer(v.RegisteredContainerInstancesCount)
+		ok.Integer(*v.RegisteredContainerInstancesCount)
 	}
 
-	if v.RunningTasksCount != 0 {
+	if v.RunningTasksCount != nil {
 		ok := object.Key("RunningTasksCount")
-		ok.Integer(v.RunningTasksCount)
+		ok.Integer(*v.RunningTasksCount)
 	}
 
 	if v.Status != nil {
@@ -12963,9 +15056,9 @@ func awsRestjson1_serializeDocumentAwsEcsContainerDetails(v *types.AwsEcsContain
 		ok.String(*v.Name)
 	}
 
-	if v.Privileged {
+	if v.Privileged != nil {
 		ok := object.Key("Privileged")
-		ok.Boolean(v.Privileged)
+		ok.Boolean(*v.Privileged)
 	}
 
 	return nil
@@ -12988,9 +15081,9 @@ func awsRestjson1_serializeDocumentAwsEcsServiceCapacityProviderStrategyDetails(
 	object := value.Object()
 	defer object.Close()
 
-	if v.Base != 0 {
+	if v.Base != nil {
 		ok := object.Key("Base")
-		ok.Integer(v.Base)
+		ok.Integer(*v.Base)
 	}
 
 	if v.CapacityProvider != nil {
@@ -12998,9 +15091,9 @@ func awsRestjson1_serializeDocumentAwsEcsServiceCapacityProviderStrategyDetails(
 		ok.String(*v.CapacityProvider)
 	}
 
-	if v.Weight != 0 {
+	if v.Weight != nil {
 		ok := object.Key("Weight")
-		ok.Integer(v.Weight)
+		ok.Integer(*v.Weight)
 	}
 
 	return nil
@@ -13023,14 +15116,14 @@ func awsRestjson1_serializeDocumentAwsEcsServiceDeploymentConfigurationDeploymen
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enable {
+	if v.Enable != nil {
 		ok := object.Key("Enable")
-		ok.Boolean(v.Enable)
+		ok.Boolean(*v.Enable)
 	}
 
-	if v.Rollback {
+	if v.Rollback != nil {
 		ok := object.Key("Rollback")
-		ok.Boolean(v.Rollback)
+		ok.Boolean(*v.Rollback)
 	}
 
 	return nil
@@ -13047,14 +15140,14 @@ func awsRestjson1_serializeDocumentAwsEcsServiceDeploymentConfigurationDetails(v
 		}
 	}
 
-	if v.MaximumPercent != 0 {
+	if v.MaximumPercent != nil {
 		ok := object.Key("MaximumPercent")
-		ok.Integer(v.MaximumPercent)
+		ok.Integer(*v.MaximumPercent)
 	}
 
-	if v.MinimumHealthyPercent != 0 {
+	if v.MinimumHealthyPercent != nil {
 		ok := object.Key("MinimumHealthyPercent")
-		ok.Integer(v.MinimumHealthyPercent)
+		ok.Integer(*v.MinimumHealthyPercent)
 	}
 
 	return nil
@@ -13102,24 +15195,24 @@ func awsRestjson1_serializeDocumentAwsEcsServiceDetails(v *types.AwsEcsServiceDe
 		}
 	}
 
-	if v.DesiredCount != 0 {
+	if v.DesiredCount != nil {
 		ok := object.Key("DesiredCount")
-		ok.Integer(v.DesiredCount)
+		ok.Integer(*v.DesiredCount)
 	}
 
-	if v.EnableEcsManagedTags {
+	if v.EnableEcsManagedTags != nil {
 		ok := object.Key("EnableEcsManagedTags")
-		ok.Boolean(v.EnableEcsManagedTags)
+		ok.Boolean(*v.EnableEcsManagedTags)
 	}
 
-	if v.EnableExecuteCommand {
+	if v.EnableExecuteCommand != nil {
 		ok := object.Key("EnableExecuteCommand")
-		ok.Boolean(v.EnableExecuteCommand)
+		ok.Boolean(*v.EnableExecuteCommand)
 	}
 
-	if v.HealthCheckGracePeriodSeconds != 0 {
+	if v.HealthCheckGracePeriodSeconds != nil {
 		ok := object.Key("HealthCheckGracePeriodSeconds")
-		ok.Integer(v.HealthCheckGracePeriodSeconds)
+		ok.Integer(*v.HealthCheckGracePeriodSeconds)
 	}
 
 	if v.LaunchType != nil {
@@ -13214,9 +15307,9 @@ func awsRestjson1_serializeDocumentAwsEcsServiceLoadBalancersDetails(v *types.Aw
 		ok.String(*v.ContainerName)
 	}
 
-	if v.ContainerPort != 0 {
+	if v.ContainerPort != nil {
 		ok := object.Key("ContainerPort")
-		ok.Integer(v.ContainerPort)
+		ok.Integer(*v.ContainerPort)
 	}
 
 	if v.LoadBalancerName != nil {
@@ -13354,14 +15447,14 @@ func awsRestjson1_serializeDocumentAwsEcsServiceServiceRegistriesDetails(v *type
 		ok.String(*v.ContainerName)
 	}
 
-	if v.ContainerPort != 0 {
+	if v.ContainerPort != nil {
 		ok := object.Key("ContainerPort")
-		ok.Integer(v.ContainerPort)
+		ok.Integer(*v.ContainerPort)
 	}
 
-	if v.Port != 0 {
+	if v.Port != nil {
 		ok := object.Key("Port")
-		ok.Integer(v.Port)
+		ok.Integer(*v.Port)
 	}
 
 	if v.RegistryArn != nil {
@@ -13426,9 +15519,9 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsDetai
 		}
 	}
 
-	if v.Cpu != 0 {
+	if v.Cpu != nil {
 		ok := object.Key("Cpu")
-		ok.Integer(v.Cpu)
+		ok.Integer(*v.Cpu)
 	}
 
 	if v.DependsOn != nil {
@@ -13438,9 +15531,9 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsDetai
 		}
 	}
 
-	if v.DisableNetworking {
+	if v.DisableNetworking != nil {
 		ok := object.Key("DisableNetworking")
-		ok.Boolean(v.DisableNetworking)
+		ok.Boolean(*v.DisableNetworking)
 	}
 
 	if v.DnsSearchDomains != nil {
@@ -13492,9 +15585,9 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsDetai
 		}
 	}
 
-	if v.Essential {
+	if v.Essential != nil {
 		ok := object.Key("Essential")
-		ok.Boolean(v.Essential)
+		ok.Boolean(*v.Essential)
 	}
 
 	if v.ExtraHosts != nil {
@@ -13528,9 +15621,9 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsDetai
 		ok.String(*v.Image)
 	}
 
-	if v.Interactive {
+	if v.Interactive != nil {
 		ok := object.Key("Interactive")
-		ok.Boolean(v.Interactive)
+		ok.Boolean(*v.Interactive)
 	}
 
 	if v.Links != nil {
@@ -13554,14 +15647,14 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsDetai
 		}
 	}
 
-	if v.Memory != 0 {
+	if v.Memory != nil {
 		ok := object.Key("Memory")
-		ok.Integer(v.Memory)
+		ok.Integer(*v.Memory)
 	}
 
-	if v.MemoryReservation != 0 {
+	if v.MemoryReservation != nil {
 		ok := object.Key("MemoryReservation")
-		ok.Integer(v.MemoryReservation)
+		ok.Integer(*v.MemoryReservation)
 	}
 
 	if v.MountPoints != nil {
@@ -13583,19 +15676,19 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsDetai
 		}
 	}
 
-	if v.Privileged {
+	if v.Privileged != nil {
 		ok := object.Key("Privileged")
-		ok.Boolean(v.Privileged)
+		ok.Boolean(*v.Privileged)
 	}
 
-	if v.PseudoTerminal {
+	if v.PseudoTerminal != nil {
 		ok := object.Key("PseudoTerminal")
-		ok.Boolean(v.PseudoTerminal)
+		ok.Boolean(*v.PseudoTerminal)
 	}
 
-	if v.ReadonlyRootFilesystem {
+	if v.ReadonlyRootFilesystem != nil {
 		ok := object.Key("ReadonlyRootFilesystem")
-		ok.Boolean(v.ReadonlyRootFilesystem)
+		ok.Boolean(*v.ReadonlyRootFilesystem)
 	}
 
 	if v.RepositoryCredentials != nil {
@@ -13619,14 +15712,14 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsDetai
 		}
 	}
 
-	if v.StartTimeout != 0 {
+	if v.StartTimeout != nil {
 		ok := object.Key("StartTimeout")
-		ok.Integer(v.StartTimeout)
+		ok.Integer(*v.StartTimeout)
 	}
 
-	if v.StopTimeout != 0 {
+	if v.StopTimeout != nil {
 		ok := object.Key("StopTimeout")
-		ok.Integer(v.StopTimeout)
+		ok.Integer(*v.StopTimeout)
 	}
 
 	if v.SystemControls != nil {
@@ -13783,24 +15876,24 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsHealt
 		}
 	}
 
-	if v.Interval != 0 {
+	if v.Interval != nil {
 		ok := object.Key("Interval")
-		ok.Integer(v.Interval)
+		ok.Integer(*v.Interval)
 	}
 
-	if v.Retries != 0 {
+	if v.Retries != nil {
 		ok := object.Key("Retries")
-		ok.Integer(v.Retries)
+		ok.Integer(*v.Retries)
 	}
 
-	if v.StartPeriod != 0 {
+	if v.StartPeriod != nil {
 		ok := object.Key("StartPeriod")
-		ok.Integer(v.StartPeriod)
+		ok.Integer(*v.StartPeriod)
 	}
 
-	if v.Timeout != 0 {
+	if v.Timeout != nil {
 		ok := object.Key("Timeout")
-		ok.Integer(v.Timeout)
+		ok.Integer(*v.Timeout)
 	}
 
 	return nil
@@ -13845,24 +15938,24 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsLinux
 		}
 	}
 
-	if v.InitProcessEnabled {
+	if v.InitProcessEnabled != nil {
 		ok := object.Key("InitProcessEnabled")
-		ok.Boolean(v.InitProcessEnabled)
+		ok.Boolean(*v.InitProcessEnabled)
 	}
 
-	if v.MaxSwap != 0 {
+	if v.MaxSwap != nil {
 		ok := object.Key("MaxSwap")
-		ok.Integer(v.MaxSwap)
+		ok.Integer(*v.MaxSwap)
 	}
 
-	if v.SharedMemorySize != 0 {
+	if v.SharedMemorySize != nil {
 		ok := object.Key("SharedMemorySize")
-		ok.Integer(v.SharedMemorySize)
+		ok.Integer(*v.SharedMemorySize)
 	}
 
-	if v.Swappiness != 0 {
+	if v.Swappiness != nil {
 		ok := object.Key("Swappiness")
-		ok.Integer(v.Swappiness)
+		ok.Integer(*v.Swappiness)
 	}
 
 	if v.Tmpfs != nil {
@@ -13928,9 +16021,9 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsLinux
 		}
 	}
 
-	if v.Size != 0 {
+	if v.Size != nil {
 		ok := object.Key("Size")
-		ok.Integer(v.Size)
+		ok.Integer(*v.Size)
 	}
 
 	return nil
@@ -14027,9 +16120,9 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsMount
 		ok.String(*v.ContainerPath)
 	}
 
-	if v.ReadOnly {
+	if v.ReadOnly != nil {
 		ok := object.Key("ReadOnly")
-		ok.Boolean(v.ReadOnly)
+		ok.Boolean(*v.ReadOnly)
 	}
 
 	if v.SourceVolume != nil {
@@ -14057,14 +16150,14 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsPortM
 	object := value.Object()
 	defer object.Close()
 
-	if v.ContainerPort != 0 {
+	if v.ContainerPort != nil {
 		ok := object.Key("ContainerPort")
-		ok.Integer(v.ContainerPort)
+		ok.Integer(*v.ContainerPort)
 	}
 
-	if v.HostPort != 0 {
+	if v.HostPort != nil {
 		ok := object.Key("HostPort")
-		ok.Integer(v.HostPort)
+		ok.Integer(*v.HostPort)
 	}
 
 	if v.Protocol != nil {
@@ -14194,9 +16287,9 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsUlimi
 	object := value.Object()
 	defer object.Close()
 
-	if v.HardLimit != 0 {
+	if v.HardLimit != nil {
 		ok := object.Key("HardLimit")
-		ok.Integer(v.HardLimit)
+		ok.Integer(*v.HardLimit)
 	}
 
 	if v.Name != nil {
@@ -14204,9 +16297,9 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsUlimi
 		ok.String(*v.Name)
 	}
 
-	if v.SoftLimit != 0 {
+	if v.SoftLimit != nil {
 		ok := object.Key("SoftLimit")
-		ok.Integer(v.SoftLimit)
+		ok.Integer(*v.SoftLimit)
 	}
 
 	return nil
@@ -14229,9 +16322,9 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionContainerDefinitionsVolum
 	object := value.Object()
 	defer object.Close()
 
-	if v.ReadOnly {
+	if v.ReadOnly != nil {
 		ok := object.Key("ReadOnly")
-		ok.Boolean(v.ReadOnly)
+		ok.Boolean(*v.ReadOnly)
 	}
 
 	if v.SourceContainer != nil {
@@ -14327,6 +16420,11 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionDetails(v *types.AwsEcsTa
 		if err := awsRestjson1_serializeDocumentNonEmptyStringList(v.RequiresCompatibilities, ok); err != nil {
 			return err
 		}
+	}
+
+	if v.Status != nil {
+		ok := object.Key("Status")
+		ok.String(*v.Status)
 	}
 
 	if v.TaskRoleArn != nil {
@@ -14495,9 +16593,9 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionVolumesDockerVolumeConfig
 	object := value.Object()
 	defer object.Close()
 
-	if v.Autoprovision {
+	if v.Autoprovision != nil {
 		ok := object.Key("Autoprovision")
-		ok.Boolean(v.Autoprovision)
+		ok.Boolean(*v.Autoprovision)
 	}
 
 	if v.Driver != nil {
@@ -14570,9 +16668,9 @@ func awsRestjson1_serializeDocumentAwsEcsTaskDefinitionVolumesEfsVolumeConfigura
 		ok.String(*v.TransitEncryption)
 	}
 
-	if v.TransitEncryptionPort != 0 {
+	if v.TransitEncryptionPort != nil {
 		ok := object.Key("TransitEncryptionPort")
-		ok.Integer(v.TransitEncryptionPort)
+		ok.Integer(*v.TransitEncryptionPort)
 	}
 
 	return nil
@@ -14869,9 +16967,9 @@ func awsRestjson1_serializeDocumentAwsEksClusterLoggingClusterLoggingDetails(v *
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	if v.Types != nil {
@@ -14915,9 +17013,9 @@ func awsRestjson1_serializeDocumentAwsEksClusterResourcesVpcConfigDetails(v *typ
 	object := value.Object()
 	defer object.Close()
 
-	if v.EndpointPublicAccess {
+	if v.EndpointPublicAccess != nil {
 		ok := object.Key("EndpointPublicAccess")
-		ok.Boolean(v.EndpointPublicAccess)
+		ok.Boolean(*v.EndpointPublicAccess)
 	}
 
 	if v.SecurityGroupIds != nil {
@@ -15214,9 +17312,9 @@ func awsRestjson1_serializeDocumentAwsElasticsearchDomainDomainEndpointOptions(v
 	object := value.Object()
 	defer object.Close()
 
-	if v.EnforceHTTPS {
+	if v.EnforceHTTPS != nil {
 		ok := object.Key("EnforceHTTPS")
-		ok.Boolean(v.EnforceHTTPS)
+		ok.Boolean(*v.EnforceHTTPS)
 	}
 
 	if v.TLSSecurityPolicy != nil {
@@ -15231,14 +17329,14 @@ func awsRestjson1_serializeDocumentAwsElasticsearchDomainElasticsearchClusterCon
 	object := value.Object()
 	defer object.Close()
 
-	if v.DedicatedMasterCount != 0 {
+	if v.DedicatedMasterCount != nil {
 		ok := object.Key("DedicatedMasterCount")
-		ok.Integer(v.DedicatedMasterCount)
+		ok.Integer(*v.DedicatedMasterCount)
 	}
 
-	if v.DedicatedMasterEnabled {
+	if v.DedicatedMasterEnabled != nil {
 		ok := object.Key("DedicatedMasterEnabled")
-		ok.Boolean(v.DedicatedMasterEnabled)
+		ok.Boolean(*v.DedicatedMasterEnabled)
 	}
 
 	if v.DedicatedMasterType != nil {
@@ -15246,9 +17344,9 @@ func awsRestjson1_serializeDocumentAwsElasticsearchDomainElasticsearchClusterCon
 		ok.String(*v.DedicatedMasterType)
 	}
 
-	if v.InstanceCount != 0 {
+	if v.InstanceCount != nil {
 		ok := object.Key("InstanceCount")
-		ok.Integer(v.InstanceCount)
+		ok.Integer(*v.InstanceCount)
 	}
 
 	if v.InstanceType != nil {
@@ -15263,9 +17361,9 @@ func awsRestjson1_serializeDocumentAwsElasticsearchDomainElasticsearchClusterCon
 		}
 	}
 
-	if v.ZoneAwarenessEnabled {
+	if v.ZoneAwarenessEnabled != nil {
 		ok := object.Key("ZoneAwarenessEnabled")
-		ok.Boolean(v.ZoneAwarenessEnabled)
+		ok.Boolean(*v.ZoneAwarenessEnabled)
 	}
 
 	return nil
@@ -15275,9 +17373,9 @@ func awsRestjson1_serializeDocumentAwsElasticsearchDomainElasticsearchClusterCon
 	object := value.Object()
 	defer object.Close()
 
-	if v.AvailabilityZoneCount != 0 {
+	if v.AvailabilityZoneCount != nil {
 		ok := object.Key("AvailabilityZoneCount")
-		ok.Integer(v.AvailabilityZoneCount)
+		ok.Integer(*v.AvailabilityZoneCount)
 	}
 
 	return nil
@@ -15287,9 +17385,9 @@ func awsRestjson1_serializeDocumentAwsElasticsearchDomainEncryptionAtRestOptions
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	if v.KmsKeyId != nil {
@@ -15337,9 +17435,9 @@ func awsRestjson1_serializeDocumentAwsElasticsearchDomainLogPublishingOptionsLog
 		ok.String(*v.CloudWatchLogsLogGroupArn)
 	}
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	return nil
@@ -15349,9 +17447,9 @@ func awsRestjson1_serializeDocumentAwsElasticsearchDomainNodeToNodeEncryptionOpt
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	return nil
@@ -15366,9 +17464,9 @@ func awsRestjson1_serializeDocumentAwsElasticsearchDomainServiceSoftwareOptions(
 		ok.String(*v.AutomatedUpdateDate)
 	}
 
-	if v.Cancellable {
+	if v.Cancellable != nil {
 		ok := object.Key("Cancellable")
-		ok.Boolean(v.Cancellable)
+		ok.Boolean(*v.Cancellable)
 	}
 
 	if v.CurrentVersion != nil {
@@ -15386,9 +17484,9 @@ func awsRestjson1_serializeDocumentAwsElasticsearchDomainServiceSoftwareOptions(
 		ok.String(*v.NewVersion)
 	}
 
-	if v.UpdateAvailable {
+	if v.UpdateAvailable != nil {
 		ok := object.Key("UpdateAvailable")
-		ok.Boolean(v.UpdateAvailable)
+		ok.Boolean(*v.UpdateAvailable)
 	}
 
 	if v.UpdateStatus != nil {
@@ -15479,9 +17577,9 @@ func awsRestjson1_serializeDocumentAwsElbLbCookieStickinessPolicy(v *types.AwsEl
 	object := value.Object()
 	defer object.Close()
 
-	if v.CookieExpirationPeriod != 0 {
+	if v.CookieExpirationPeriod != nil {
 		ok := object.Key("CookieExpirationPeriod")
-		ok.Long(v.CookieExpirationPeriod)
+		ok.Long(*v.CookieExpirationPeriod)
 	}
 
 	if v.PolicyName != nil {
@@ -15496,14 +17594,14 @@ func awsRestjson1_serializeDocumentAwsElbLoadBalancerAccessLog(v *types.AwsElbLo
 	object := value.Object()
 	defer object.Close()
 
-	if v.EmitInterval != 0 {
+	if v.EmitInterval != nil {
 		ok := object.Key("EmitInterval")
-		ok.Integer(v.EmitInterval)
+		ok.Integer(*v.EmitInterval)
 	}
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	if v.S3BucketName != nil {
@@ -15595,9 +17693,9 @@ func awsRestjson1_serializeDocumentAwsElbLoadBalancerBackendServerDescription(v 
 	object := value.Object()
 	defer object.Close()
 
-	if v.InstancePort != 0 {
+	if v.InstancePort != nil {
 		ok := object.Key("InstancePort")
-		ok.Integer(v.InstancePort)
+		ok.Integer(*v.InstancePort)
 	}
 
 	if v.PolicyNames != nil {
@@ -15627,14 +17725,14 @@ func awsRestjson1_serializeDocumentAwsElbLoadBalancerConnectionDraining(v *types
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
-	if v.Timeout != 0 {
+	if v.Timeout != nil {
 		ok := object.Key("Timeout")
-		ok.Integer(v.Timeout)
+		ok.Integer(*v.Timeout)
 	}
 
 	return nil
@@ -15644,9 +17742,9 @@ func awsRestjson1_serializeDocumentAwsElbLoadBalancerConnectionSettings(v *types
 	object := value.Object()
 	defer object.Close()
 
-	if v.IdleTimeout != 0 {
+	if v.IdleTimeout != nil {
 		ok := object.Key("IdleTimeout")
-		ok.Integer(v.IdleTimeout)
+		ok.Integer(*v.IdleTimeout)
 	}
 
 	return nil
@@ -15656,9 +17754,9 @@ func awsRestjson1_serializeDocumentAwsElbLoadBalancerCrossZoneLoadBalancing(v *t
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	return nil
@@ -15780,14 +17878,14 @@ func awsRestjson1_serializeDocumentAwsElbLoadBalancerHealthCheck(v *types.AwsElb
 	object := value.Object()
 	defer object.Close()
 
-	if v.HealthyThreshold != 0 {
+	if v.HealthyThreshold != nil {
 		ok := object.Key("HealthyThreshold")
-		ok.Integer(v.HealthyThreshold)
+		ok.Integer(*v.HealthyThreshold)
 	}
 
-	if v.Interval != 0 {
+	if v.Interval != nil {
 		ok := object.Key("Interval")
-		ok.Integer(v.Interval)
+		ok.Integer(*v.Interval)
 	}
 
 	if v.Target != nil {
@@ -15795,14 +17893,14 @@ func awsRestjson1_serializeDocumentAwsElbLoadBalancerHealthCheck(v *types.AwsElb
 		ok.String(*v.Target)
 	}
 
-	if v.Timeout != 0 {
+	if v.Timeout != nil {
 		ok := object.Key("Timeout")
-		ok.Integer(v.Timeout)
+		ok.Integer(*v.Timeout)
 	}
 
-	if v.UnhealthyThreshold != 0 {
+	if v.UnhealthyThreshold != nil {
 		ok := object.Key("UnhealthyThreshold")
-		ok.Integer(v.UnhealthyThreshold)
+		ok.Integer(*v.UnhealthyThreshold)
 	}
 
 	return nil
@@ -15837,9 +17935,9 @@ func awsRestjson1_serializeDocumentAwsElbLoadBalancerListener(v *types.AwsElbLoa
 	object := value.Object()
 	defer object.Close()
 
-	if v.InstancePort != 0 {
+	if v.InstancePort != nil {
 		ok := object.Key("InstancePort")
-		ok.Integer(v.InstancePort)
+		ok.Integer(*v.InstancePort)
 	}
 
 	if v.InstanceProtocol != nil {
@@ -15847,9 +17945,9 @@ func awsRestjson1_serializeDocumentAwsElbLoadBalancerListener(v *types.AwsElbLoa
 		ok.String(*v.InstanceProtocol)
 	}
 
-	if v.LoadBalancerPort != 0 {
+	if v.LoadBalancerPort != nil {
 		ok := object.Key("LoadBalancerPort")
-		ok.Integer(v.LoadBalancerPort)
+		ok.Integer(*v.LoadBalancerPort)
 	}
 
 	if v.Protocol != nil {
@@ -16061,6 +18159,192 @@ func awsRestjson1_serializeDocumentAwsEventSchemasRegistryDetails(v *types.AwsEv
 	if v.RegistryName != nil {
 		ok := object.Key("RegistryName")
 		ok.String(*v.RegistryName)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEventsEndpointDetails(v *types.AwsEventsEndpointDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Arn != nil {
+		ok := object.Key("Arn")
+		ok.String(*v.Arn)
+	}
+
+	if v.Description != nil {
+		ok := object.Key("Description")
+		ok.String(*v.Description)
+	}
+
+	if v.EndpointId != nil {
+		ok := object.Key("EndpointId")
+		ok.String(*v.EndpointId)
+	}
+
+	if v.EndpointUrl != nil {
+		ok := object.Key("EndpointUrl")
+		ok.String(*v.EndpointUrl)
+	}
+
+	if v.EventBuses != nil {
+		ok := object.Key("EventBuses")
+		if err := awsRestjson1_serializeDocumentAwsEventsEndpointEventBusesList(v.EventBuses, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
+	}
+
+	if v.ReplicationConfig != nil {
+		ok := object.Key("ReplicationConfig")
+		if err := awsRestjson1_serializeDocumentAwsEventsEndpointReplicationConfigDetails(v.ReplicationConfig, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.RoleArn != nil {
+		ok := object.Key("RoleArn")
+		ok.String(*v.RoleArn)
+	}
+
+	if v.RoutingConfig != nil {
+		ok := object.Key("RoutingConfig")
+		if err := awsRestjson1_serializeDocumentAwsEventsEndpointRoutingConfigDetails(v.RoutingConfig, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.State != nil {
+		ok := object.Key("State")
+		ok.String(*v.State)
+	}
+
+	if v.StateReason != nil {
+		ok := object.Key("StateReason")
+		ok.String(*v.StateReason)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEventsEndpointEventBusesDetails(v *types.AwsEventsEndpointEventBusesDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.EventBusArn != nil {
+		ok := object.Key("EventBusArn")
+		ok.String(*v.EventBusArn)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEventsEndpointEventBusesList(v []types.AwsEventsEndpointEventBusesDetails, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentAwsEventsEndpointEventBusesDetails(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEventsEndpointReplicationConfigDetails(v *types.AwsEventsEndpointReplicationConfigDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.State != nil {
+		ok := object.Key("State")
+		ok.String(*v.State)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEventsEndpointRoutingConfigDetails(v *types.AwsEventsEndpointRoutingConfigDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.FailoverConfig != nil {
+		ok := object.Key("FailoverConfig")
+		if err := awsRestjson1_serializeDocumentAwsEventsEndpointRoutingConfigFailoverConfigDetails(v.FailoverConfig, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEventsEndpointRoutingConfigFailoverConfigDetails(v *types.AwsEventsEndpointRoutingConfigFailoverConfigDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Primary != nil {
+		ok := object.Key("Primary")
+		if err := awsRestjson1_serializeDocumentAwsEventsEndpointRoutingConfigFailoverConfigPrimaryDetails(v.Primary, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Secondary != nil {
+		ok := object.Key("Secondary")
+		if err := awsRestjson1_serializeDocumentAwsEventsEndpointRoutingConfigFailoverConfigSecondaryDetails(v.Secondary, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEventsEndpointRoutingConfigFailoverConfigPrimaryDetails(v *types.AwsEventsEndpointRoutingConfigFailoverConfigPrimaryDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.HealthCheck != nil {
+		ok := object.Key("HealthCheck")
+		ok.String(*v.HealthCheck)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEventsEndpointRoutingConfigFailoverConfigSecondaryDetails(v *types.AwsEventsEndpointRoutingConfigFailoverConfigSecondaryDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Route != nil {
+		ok := object.Key("Route")
+		ok.String(*v.Route)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsEventsEventbusDetails(v *types.AwsEventsEventbusDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Arn != nil {
+		ok := object.Key("Arn")
+		ok.String(*v.Arn)
+	}
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
+	}
+
+	if v.Policy != nil {
+		ok := object.Key("Policy")
+		ok.String(*v.Policy)
 	}
 
 	return nil
@@ -16389,9 +18673,9 @@ func awsRestjson1_serializeDocumentAwsIamAccessKeySessionContextAttributes(v *ty
 		ok.String(*v.CreationDate)
 	}
 
-	if v.MfaAuthenticated {
+	if v.MfaAuthenticated != nil {
 		ok := object.Key("MfaAuthenticated")
-		ok.Boolean(v.MfaAuthenticated)
+		ok.Boolean(*v.MfaAuthenticated)
 	}
 
 	return nil
@@ -16648,9 +18932,9 @@ func awsRestjson1_serializeDocumentAwsIamPolicyDetails(v *types.AwsIamPolicyDeta
 	object := value.Object()
 	defer object.Close()
 
-	if v.AttachmentCount != 0 {
+	if v.AttachmentCount != nil {
 		ok := object.Key("AttachmentCount")
-		ok.Integer(v.AttachmentCount)
+		ok.Integer(*v.AttachmentCount)
 	}
 
 	if v.CreateDate != nil {
@@ -16668,9 +18952,9 @@ func awsRestjson1_serializeDocumentAwsIamPolicyDetails(v *types.AwsIamPolicyDeta
 		ok.String(*v.Description)
 	}
 
-	if v.IsAttachable {
+	if v.IsAttachable != nil {
 		ok := object.Key("IsAttachable")
-		ok.Boolean(v.IsAttachable)
+		ok.Boolean(*v.IsAttachable)
 	}
 
 	if v.Path != nil {
@@ -16678,9 +18962,9 @@ func awsRestjson1_serializeDocumentAwsIamPolicyDetails(v *types.AwsIamPolicyDeta
 		ok.String(*v.Path)
 	}
 
-	if v.PermissionsBoundaryUsageCount != 0 {
+	if v.PermissionsBoundaryUsageCount != nil {
 		ok := object.Key("PermissionsBoundaryUsageCount")
-		ok.Integer(v.PermissionsBoundaryUsageCount)
+		ok.Integer(*v.PermissionsBoundaryUsageCount)
 	}
 
 	if v.PolicyId != nil {
@@ -16717,9 +19001,9 @@ func awsRestjson1_serializeDocumentAwsIamPolicyVersion(v *types.AwsIamPolicyVers
 		ok.String(*v.CreateDate)
 	}
 
-	if v.IsDefaultVersion {
+	if v.IsDefaultVersion != nil {
 		ok := object.Key("IsDefaultVersion")
-		ok.Boolean(v.IsDefaultVersion)
+		ok.Boolean(*v.IsDefaultVersion)
 	}
 
 	if v.VersionId != nil {
@@ -16771,9 +19055,9 @@ func awsRestjson1_serializeDocumentAwsIamRoleDetails(v *types.AwsIamRoleDetails,
 		}
 	}
 
-	if v.MaxSessionDuration != 0 {
+	if v.MaxSessionDuration != nil {
 		ok := object.Key("MaxSessionDuration")
-		ok.Integer(v.MaxSessionDuration)
+		ok.Integer(*v.MaxSessionDuration)
 	}
 
 	if v.Path != nil {
@@ -16927,14 +19211,14 @@ func awsRestjson1_serializeDocumentAwsKinesisStreamDetails(v *types.AwsKinesisSt
 		ok.String(*v.Name)
 	}
 
-	if v.RetentionPeriodHours != 0 {
+	if v.RetentionPeriodHours != nil {
 		ok := object.Key("RetentionPeriodHours")
-		ok.Integer(v.RetentionPeriodHours)
+		ok.Integer(*v.RetentionPeriodHours)
 	}
 
-	if v.ShardCount != 0 {
+	if v.ShardCount != nil {
 		ok := object.Key("ShardCount")
-		ok.Integer(v.ShardCount)
+		ok.Integer(*v.ShardCount)
 	}
 
 	if v.StreamEncryption != nil {
@@ -16973,20 +19257,20 @@ func awsRestjson1_serializeDocumentAwsKmsKeyDetails(v *types.AwsKmsKeyDetails, v
 		ok.String(*v.AWSAccountId)
 	}
 
-	if v.CreationDate != 0 {
+	if v.CreationDate != nil {
 		ok := object.Key("CreationDate")
 		switch {
-		case math.IsNaN(v.CreationDate):
+		case math.IsNaN(*v.CreationDate):
 			ok.String("NaN")
 
-		case math.IsInf(v.CreationDate, 1):
+		case math.IsInf(*v.CreationDate, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.CreationDate, -1):
+		case math.IsInf(*v.CreationDate, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.CreationDate)
+			ok.Double(*v.CreationDate)
 
 		}
 	}
@@ -17006,9 +19290,9 @@ func awsRestjson1_serializeDocumentAwsKmsKeyDetails(v *types.AwsKmsKeyDetails, v
 		ok.String(*v.KeyManager)
 	}
 
-	if v.KeyRotationStatus {
+	if v.KeyRotationStatus != nil {
 		ok := object.Key("KeyRotationStatus")
-		ok.Boolean(v.KeyRotationStatus)
+		ok.Boolean(*v.KeyRotationStatus)
 	}
 
 	if v.KeyState != nil {
@@ -17132,9 +19416,9 @@ func awsRestjson1_serializeDocumentAwsLambdaFunctionDetails(v *types.AwsLambdaFu
 		ok.String(*v.MasterArn)
 	}
 
-	if v.MemorySize != 0 {
+	if v.MemorySize != nil {
 		ok := object.Key("MemorySize")
-		ok.Integer(v.MemorySize)
+		ok.Integer(*v.MemorySize)
 	}
 
 	if v.PackageType != nil {
@@ -17157,9 +19441,9 @@ func awsRestjson1_serializeDocumentAwsLambdaFunctionDetails(v *types.AwsLambdaFu
 		ok.String(*v.Runtime)
 	}
 
-	if v.Timeout != 0 {
+	if v.Timeout != nil {
 		ok := object.Key("Timeout")
-		ok.Integer(v.Timeout)
+		ok.Integer(*v.Timeout)
 	}
 
 	if v.TracingConfig != nil {
@@ -17231,9 +19515,9 @@ func awsRestjson1_serializeDocumentAwsLambdaFunctionLayer(v *types.AwsLambdaFunc
 		ok.String(*v.Arn)
 	}
 
-	if v.CodeSize != 0 {
+	if v.CodeSize != nil {
 		ok := object.Key("CodeSize")
-		ok.Integer(v.CodeSize)
+		ok.Integer(*v.CodeSize)
 	}
 
 	return nil
@@ -17306,9 +19590,9 @@ func awsRestjson1_serializeDocumentAwsLambdaLayerVersionDetails(v *types.AwsLamb
 		ok.String(*v.CreatedDate)
 	}
 
-	if v.Version != 0 {
+	if v.Version != nil {
 		ok := object.Key("Version")
-		ok.Long(v.Version)
+		ok.Long(*v.Version)
 	}
 
 	return nil
@@ -17344,13 +19628,222 @@ func awsRestjson1_serializeDocumentAwsMountPointList(v []types.AwsMountPoint, va
 	return nil
 }
 
+func awsRestjson1_serializeDocumentAwsMskClusterClusterInfoClientAuthenticationDetails(v *types.AwsMskClusterClusterInfoClientAuthenticationDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Sasl != nil {
+		ok := object.Key("Sasl")
+		if err := awsRestjson1_serializeDocumentAwsMskClusterClusterInfoClientAuthenticationSaslDetails(v.Sasl, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Tls != nil {
+		ok := object.Key("Tls")
+		if err := awsRestjson1_serializeDocumentAwsMskClusterClusterInfoClientAuthenticationTlsDetails(v.Tls, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Unauthenticated != nil {
+		ok := object.Key("Unauthenticated")
+		if err := awsRestjson1_serializeDocumentAwsMskClusterClusterInfoClientAuthenticationUnauthenticatedDetails(v.Unauthenticated, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsMskClusterClusterInfoClientAuthenticationSaslDetails(v *types.AwsMskClusterClusterInfoClientAuthenticationSaslDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Iam != nil {
+		ok := object.Key("Iam")
+		if err := awsRestjson1_serializeDocumentAwsMskClusterClusterInfoClientAuthenticationSaslIamDetails(v.Iam, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Scram != nil {
+		ok := object.Key("Scram")
+		if err := awsRestjson1_serializeDocumentAwsMskClusterClusterInfoClientAuthenticationSaslScramDetails(v.Scram, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsMskClusterClusterInfoClientAuthenticationSaslIamDetails(v *types.AwsMskClusterClusterInfoClientAuthenticationSaslIamDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Enabled != nil {
+		ok := object.Key("Enabled")
+		ok.Boolean(*v.Enabled)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsMskClusterClusterInfoClientAuthenticationSaslScramDetails(v *types.AwsMskClusterClusterInfoClientAuthenticationSaslScramDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Enabled != nil {
+		ok := object.Key("Enabled")
+		ok.Boolean(*v.Enabled)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsMskClusterClusterInfoClientAuthenticationTlsDetails(v *types.AwsMskClusterClusterInfoClientAuthenticationTlsDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.CertificateAuthorityArnList != nil {
+		ok := object.Key("CertificateAuthorityArnList")
+		if err := awsRestjson1_serializeDocumentStringList(v.CertificateAuthorityArnList, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Enabled != nil {
+		ok := object.Key("Enabled")
+		ok.Boolean(*v.Enabled)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsMskClusterClusterInfoClientAuthenticationUnauthenticatedDetails(v *types.AwsMskClusterClusterInfoClientAuthenticationUnauthenticatedDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Enabled != nil {
+		ok := object.Key("Enabled")
+		ok.Boolean(*v.Enabled)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsMskClusterClusterInfoDetails(v *types.AwsMskClusterClusterInfoDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ClientAuthentication != nil {
+		ok := object.Key("ClientAuthentication")
+		if err := awsRestjson1_serializeDocumentAwsMskClusterClusterInfoClientAuthenticationDetails(v.ClientAuthentication, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ClusterName != nil {
+		ok := object.Key("ClusterName")
+		ok.String(*v.ClusterName)
+	}
+
+	if v.CurrentVersion != nil {
+		ok := object.Key("CurrentVersion")
+		ok.String(*v.CurrentVersion)
+	}
+
+	if v.EncryptionInfo != nil {
+		ok := object.Key("EncryptionInfo")
+		if err := awsRestjson1_serializeDocumentAwsMskClusterClusterInfoEncryptionInfoDetails(v.EncryptionInfo, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.EnhancedMonitoring != nil {
+		ok := object.Key("EnhancedMonitoring")
+		ok.String(*v.EnhancedMonitoring)
+	}
+
+	if v.NumberOfBrokerNodes != nil {
+		ok := object.Key("NumberOfBrokerNodes")
+		ok.Integer(*v.NumberOfBrokerNodes)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsMskClusterClusterInfoEncryptionInfoDetails(v *types.AwsMskClusterClusterInfoEncryptionInfoDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.EncryptionAtRest != nil {
+		ok := object.Key("EncryptionAtRest")
+		if err := awsRestjson1_serializeDocumentAwsMskClusterClusterInfoEncryptionInfoEncryptionAtRestDetails(v.EncryptionAtRest, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.EncryptionInTransit != nil {
+		ok := object.Key("EncryptionInTransit")
+		if err := awsRestjson1_serializeDocumentAwsMskClusterClusterInfoEncryptionInfoEncryptionInTransitDetails(v.EncryptionInTransit, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsMskClusterClusterInfoEncryptionInfoEncryptionAtRestDetails(v *types.AwsMskClusterClusterInfoEncryptionInfoEncryptionAtRestDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.DataVolumeKMSKeyId != nil {
+		ok := object.Key("DataVolumeKMSKeyId")
+		ok.String(*v.DataVolumeKMSKeyId)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsMskClusterClusterInfoEncryptionInfoEncryptionInTransitDetails(v *types.AwsMskClusterClusterInfoEncryptionInfoEncryptionInTransitDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ClientBroker != nil {
+		ok := object.Key("ClientBroker")
+		ok.String(*v.ClientBroker)
+	}
+
+	if v.InCluster != nil {
+		ok := object.Key("InCluster")
+		ok.Boolean(*v.InCluster)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsMskClusterDetails(v *types.AwsMskClusterDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ClusterInfo != nil {
+		ok := object.Key("ClusterInfo")
+		if err := awsRestjson1_serializeDocumentAwsMskClusterClusterInfoDetails(v.ClusterInfo, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func awsRestjson1_serializeDocumentAwsNetworkFirewallFirewallDetails(v *types.AwsNetworkFirewallFirewallDetails, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
 
-	if v.DeleteProtection {
+	if v.DeleteProtection != nil {
 		ok := object.Key("DeleteProtection")
-		ok.Boolean(v.DeleteProtection)
+		ok.Boolean(*v.DeleteProtection)
 	}
 
 	if v.Description != nil {
@@ -17378,14 +19871,14 @@ func awsRestjson1_serializeDocumentAwsNetworkFirewallFirewallDetails(v *types.Aw
 		ok.String(*v.FirewallPolicyArn)
 	}
 
-	if v.FirewallPolicyChangeProtection {
+	if v.FirewallPolicyChangeProtection != nil {
 		ok := object.Key("FirewallPolicyChangeProtection")
-		ok.Boolean(v.FirewallPolicyChangeProtection)
+		ok.Boolean(*v.FirewallPolicyChangeProtection)
 	}
 
-	if v.SubnetChangeProtection {
+	if v.SubnetChangeProtection != nil {
 		ok := object.Key("SubnetChangeProtection")
-		ok.Boolean(v.SubnetChangeProtection)
+		ok.Boolean(*v.SubnetChangeProtection)
 	}
 
 	if v.SubnetMappings != nil {
@@ -17466,9 +19959,9 @@ func awsRestjson1_serializeDocumentAwsNetworkFirewallRuleGroupDetails(v *types.A
 	object := value.Object()
 	defer object.Close()
 
-	if v.Capacity != 0 {
+	if v.Capacity != nil {
 		ok := object.Key("Capacity")
-		ok.Integer(v.Capacity)
+		ok.Integer(*v.Capacity)
 	}
 
 	if v.Description != nil {
@@ -17510,14 +20003,14 @@ func awsRestjson1_serializeDocumentAwsOpenSearchServiceDomainAdvancedSecurityOpt
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
-	if v.InternalUserDatabaseEnabled {
+	if v.InternalUserDatabaseEnabled != nil {
 		ok := object.Key("InternalUserDatabaseEnabled")
-		ok.Boolean(v.InternalUserDatabaseEnabled)
+		ok.Boolean(*v.InternalUserDatabaseEnabled)
 	}
 
 	if v.MasterUserOptions != nil {
@@ -17534,14 +20027,14 @@ func awsRestjson1_serializeDocumentAwsOpenSearchServiceDomainClusterConfigDetail
 	object := value.Object()
 	defer object.Close()
 
-	if v.DedicatedMasterCount != 0 {
+	if v.DedicatedMasterCount != nil {
 		ok := object.Key("DedicatedMasterCount")
-		ok.Integer(v.DedicatedMasterCount)
+		ok.Integer(*v.DedicatedMasterCount)
 	}
 
-	if v.DedicatedMasterEnabled {
+	if v.DedicatedMasterEnabled != nil {
 		ok := object.Key("DedicatedMasterEnabled")
-		ok.Boolean(v.DedicatedMasterEnabled)
+		ok.Boolean(*v.DedicatedMasterEnabled)
 	}
 
 	if v.DedicatedMasterType != nil {
@@ -17549,9 +20042,9 @@ func awsRestjson1_serializeDocumentAwsOpenSearchServiceDomainClusterConfigDetail
 		ok.String(*v.DedicatedMasterType)
 	}
 
-	if v.InstanceCount != 0 {
+	if v.InstanceCount != nil {
 		ok := object.Key("InstanceCount")
-		ok.Integer(v.InstanceCount)
+		ok.Integer(*v.InstanceCount)
 	}
 
 	if v.InstanceType != nil {
@@ -17559,14 +20052,14 @@ func awsRestjson1_serializeDocumentAwsOpenSearchServiceDomainClusterConfigDetail
 		ok.String(*v.InstanceType)
 	}
 
-	if v.WarmCount != 0 {
+	if v.WarmCount != nil {
 		ok := object.Key("WarmCount")
-		ok.Integer(v.WarmCount)
+		ok.Integer(*v.WarmCount)
 	}
 
-	if v.WarmEnabled {
+	if v.WarmEnabled != nil {
 		ok := object.Key("WarmEnabled")
-		ok.Boolean(v.WarmEnabled)
+		ok.Boolean(*v.WarmEnabled)
 	}
 
 	if v.WarmType != nil {
@@ -17581,9 +20074,9 @@ func awsRestjson1_serializeDocumentAwsOpenSearchServiceDomainClusterConfigDetail
 		}
 	}
 
-	if v.ZoneAwarenessEnabled {
+	if v.ZoneAwarenessEnabled != nil {
 		ok := object.Key("ZoneAwarenessEnabled")
-		ok.Boolean(v.ZoneAwarenessEnabled)
+		ok.Boolean(*v.ZoneAwarenessEnabled)
 	}
 
 	return nil
@@ -17593,9 +20086,9 @@ func awsRestjson1_serializeDocumentAwsOpenSearchServiceDomainClusterConfigZoneAw
 	object := value.Object()
 	defer object.Close()
 
-	if v.AvailabilityZoneCount != 0 {
+	if v.AvailabilityZoneCount != nil {
 		ok := object.Key("AvailabilityZoneCount")
-		ok.Integer(v.AvailabilityZoneCount)
+		ok.Integer(*v.AvailabilityZoneCount)
 	}
 
 	return nil
@@ -17715,14 +20208,14 @@ func awsRestjson1_serializeDocumentAwsOpenSearchServiceDomainDomainEndpointOptio
 		ok.String(*v.CustomEndpointCertificateArn)
 	}
 
-	if v.CustomEndpointEnabled {
+	if v.CustomEndpointEnabled != nil {
 		ok := object.Key("CustomEndpointEnabled")
-		ok.Boolean(v.CustomEndpointEnabled)
+		ok.Boolean(*v.CustomEndpointEnabled)
 	}
 
-	if v.EnforceHTTPS {
+	if v.EnforceHTTPS != nil {
 		ok := object.Key("EnforceHTTPS")
-		ok.Boolean(v.EnforceHTTPS)
+		ok.Boolean(*v.EnforceHTTPS)
 	}
 
 	if v.TLSSecurityPolicy != nil {
@@ -17737,9 +20230,9 @@ func awsRestjson1_serializeDocumentAwsOpenSearchServiceDomainEncryptionAtRestOpt
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	if v.KmsKeyId != nil {
@@ -17759,9 +20252,9 @@ func awsRestjson1_serializeDocumentAwsOpenSearchServiceDomainLogPublishingOption
 		ok.String(*v.CloudWatchLogsLogGroupArn)
 	}
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	return nil
@@ -17821,9 +20314,9 @@ func awsRestjson1_serializeDocumentAwsOpenSearchServiceDomainNodeToNodeEncryptio
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	return nil
@@ -17838,9 +20331,9 @@ func awsRestjson1_serializeDocumentAwsOpenSearchServiceDomainServiceSoftwareOpti
 		ok.String(*v.AutomatedUpdateDate)
 	}
 
-	if v.Cancellable {
+	if v.Cancellable != nil {
 		ok := object.Key("Cancellable")
-		ok.Boolean(v.Cancellable)
+		ok.Boolean(*v.Cancellable)
 	}
 
 	if v.CurrentVersion != nil {
@@ -17858,14 +20351,14 @@ func awsRestjson1_serializeDocumentAwsOpenSearchServiceDomainServiceSoftwareOpti
 		ok.String(*v.NewVersion)
 	}
 
-	if v.OptionalDeployment {
+	if v.OptionalDeployment != nil {
 		ok := object.Key("OptionalDeployment")
-		ok.Boolean(v.OptionalDeployment)
+		ok.Boolean(*v.OptionalDeployment)
 	}
 
-	if v.UpdateAvailable {
+	if v.UpdateAvailable != nil {
 		ok := object.Key("UpdateAvailable")
-		ok.Boolean(v.UpdateAvailable)
+		ok.Boolean(*v.UpdateAvailable)
 	}
 
 	if v.UpdateStatus != nil {
@@ -17936,9 +20429,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterDetails(v *types.AwsRdsDbClust
 		ok.String(*v.ActivityStreamStatus)
 	}
 
-	if v.AllocatedStorage != 0 {
+	if v.AllocatedStorage != nil {
 		ok := object.Key("AllocatedStorage")
-		ok.Integer(v.AllocatedStorage)
+		ok.Integer(*v.AllocatedStorage)
 	}
 
 	if v.AssociatedRoles != nil {
@@ -17948,6 +20441,11 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterDetails(v *types.AwsRdsDbClust
 		}
 	}
 
+	if v.AutoMinorVersionUpgrade != nil {
+		ok := object.Key("AutoMinorVersionUpgrade")
+		ok.Boolean(*v.AutoMinorVersionUpgrade)
+	}
+
 	if v.AvailabilityZones != nil {
 		ok := object.Key("AvailabilityZones")
 		if err := awsRestjson1_serializeDocumentStringList(v.AvailabilityZones, ok); err != nil {
@@ -17955,9 +20453,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterDetails(v *types.AwsRdsDbClust
 		}
 	}
 
-	if v.BackupRetentionPeriod != 0 {
+	if v.BackupRetentionPeriod != nil {
 		ok := object.Key("BackupRetentionPeriod")
-		ok.Integer(v.BackupRetentionPeriod)
+		ok.Integer(*v.BackupRetentionPeriod)
 	}
 
 	if v.ClusterCreateTime != nil {
@@ -17965,14 +20463,14 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterDetails(v *types.AwsRdsDbClust
 		ok.String(*v.ClusterCreateTime)
 	}
 
-	if v.CopyTagsToSnapshot {
+	if v.CopyTagsToSnapshot != nil {
 		ok := object.Key("CopyTagsToSnapshot")
-		ok.Boolean(v.CopyTagsToSnapshot)
+		ok.Boolean(*v.CopyTagsToSnapshot)
 	}
 
-	if v.CrossAccountClone {
+	if v.CrossAccountClone != nil {
 		ok := object.Key("CrossAccountClone")
-		ok.Boolean(v.CrossAccountClone)
+		ok.Boolean(*v.CrossAccountClone)
 	}
 
 	if v.CustomEndpoints != nil {
@@ -18021,9 +20519,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterDetails(v *types.AwsRdsDbClust
 		ok.String(*v.DbSubnetGroup)
 	}
 
-	if v.DeletionProtection {
+	if v.DeletionProtection != nil {
 		ok := object.Key("DeletionProtection")
-		ok.Boolean(v.DeletionProtection)
+		ok.Boolean(*v.DeletionProtection)
 	}
 
 	if v.DomainMemberships != nil {
@@ -18065,14 +20563,14 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterDetails(v *types.AwsRdsDbClust
 		ok.String(*v.HostedZoneId)
 	}
 
-	if v.HttpEndpointEnabled {
+	if v.HttpEndpointEnabled != nil {
 		ok := object.Key("HttpEndpointEnabled")
-		ok.Boolean(v.HttpEndpointEnabled)
+		ok.Boolean(*v.HttpEndpointEnabled)
 	}
 
-	if v.IamDatabaseAuthenticationEnabled {
+	if v.IamDatabaseAuthenticationEnabled != nil {
 		ok := object.Key("IamDatabaseAuthenticationEnabled")
-		ok.Boolean(v.IamDatabaseAuthenticationEnabled)
+		ok.Boolean(*v.IamDatabaseAuthenticationEnabled)
 	}
 
 	if v.KmsKeyId != nil {
@@ -18085,14 +20583,14 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterDetails(v *types.AwsRdsDbClust
 		ok.String(*v.MasterUsername)
 	}
 
-	if v.MultiAz {
+	if v.MultiAz != nil {
 		ok := object.Key("MultiAz")
-		ok.Boolean(v.MultiAz)
+		ok.Boolean(*v.MultiAz)
 	}
 
-	if v.Port != 0 {
+	if v.Port != nil {
 		ok := object.Key("Port")
-		ok.Integer(v.Port)
+		ok.Integer(*v.Port)
 	}
 
 	if v.PreferredBackupWindow != nil {
@@ -18122,9 +20620,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterDetails(v *types.AwsRdsDbClust
 		ok.String(*v.Status)
 	}
 
-	if v.StorageEncrypted {
+	if v.StorageEncrypted != nil {
 		ok := object.Key("StorageEncrypted")
-		ok.Boolean(v.StorageEncrypted)
+		ok.Boolean(*v.StorageEncrypted)
 	}
 
 	if v.VpcSecurityGroups != nil {
@@ -18151,14 +20649,14 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterMember(v *types.AwsRdsDbCluste
 		ok.String(*v.DbInstanceIdentifier)
 	}
 
-	if v.IsClusterWriter {
+	if v.IsClusterWriter != nil {
 		ok := object.Key("IsClusterWriter")
-		ok.Boolean(v.IsClusterWriter)
+		ok.Boolean(*v.IsClusterWriter)
 	}
 
-	if v.PromotionTier != 0 {
+	if v.PromotionTier != nil {
 		ok := object.Key("PromotionTier")
-		ok.Integer(v.PromotionTier)
+		ok.Integer(*v.PromotionTier)
 	}
 
 	return nil
@@ -18243,9 +20741,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterSnapshotDetails(v *types.AwsRd
 	object := value.Object()
 	defer object.Close()
 
-	if v.AllocatedStorage != 0 {
+	if v.AllocatedStorage != nil {
 		ok := object.Key("AllocatedStorage")
-		ok.Integer(v.AllocatedStorage)
+		ok.Integer(*v.AllocatedStorage)
 	}
 
 	if v.AvailabilityZones != nil {
@@ -18287,9 +20785,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterSnapshotDetails(v *types.AwsRd
 		ok.String(*v.EngineVersion)
 	}
 
-	if v.IamDatabaseAuthenticationEnabled {
+	if v.IamDatabaseAuthenticationEnabled != nil {
 		ok := object.Key("IamDatabaseAuthenticationEnabled")
-		ok.Boolean(v.IamDatabaseAuthenticationEnabled)
+		ok.Boolean(*v.IamDatabaseAuthenticationEnabled)
 	}
 
 	if v.KmsKeyId != nil {
@@ -18307,14 +20805,14 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterSnapshotDetails(v *types.AwsRd
 		ok.String(*v.MasterUsername)
 	}
 
-	if v.PercentProgress != 0 {
+	if v.PercentProgress != nil {
 		ok := object.Key("PercentProgress")
-		ok.Integer(v.PercentProgress)
+		ok.Integer(*v.PercentProgress)
 	}
 
-	if v.Port != 0 {
+	if v.Port != nil {
 		ok := object.Key("Port")
-		ok.Integer(v.Port)
+		ok.Integer(*v.Port)
 	}
 
 	if v.SnapshotCreateTime != nil {
@@ -18332,9 +20830,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbClusterSnapshotDetails(v *types.AwsRd
 		ok.String(*v.Status)
 	}
 
-	if v.StorageEncrypted {
+	if v.StorageEncrypted != nil {
 		ok := object.Key("StorageEncrypted")
-		ok.Boolean(v.StorageEncrypted)
+		ok.Boolean(*v.StorageEncrypted)
 	}
 
 	if v.VpcId != nil {
@@ -18424,9 +20922,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 	object := value.Object()
 	defer object.Close()
 
-	if v.AllocatedStorage != 0 {
+	if v.AllocatedStorage != nil {
 		ok := object.Key("AllocatedStorage")
-		ok.Integer(v.AllocatedStorage)
+		ok.Integer(*v.AllocatedStorage)
 	}
 
 	if v.AssociatedRoles != nil {
@@ -18436,9 +20934,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		}
 	}
 
-	if v.AutoMinorVersionUpgrade {
+	if v.AutoMinorVersionUpgrade != nil {
 		ok := object.Key("AutoMinorVersionUpgrade")
-		ok.Boolean(v.AutoMinorVersionUpgrade)
+		ok.Boolean(*v.AutoMinorVersionUpgrade)
 	}
 
 	if v.AvailabilityZone != nil {
@@ -18446,9 +20944,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		ok.String(*v.AvailabilityZone)
 	}
 
-	if v.BackupRetentionPeriod != 0 {
+	if v.BackupRetentionPeriod != nil {
 		ok := object.Key("BackupRetentionPeriod")
-		ok.Integer(v.BackupRetentionPeriod)
+		ok.Integer(*v.BackupRetentionPeriod)
 	}
 
 	if v.CACertificateIdentifier != nil {
@@ -18461,9 +20959,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		ok.String(*v.CharacterSetName)
 	}
 
-	if v.CopyTagsToSnapshot {
+	if v.CopyTagsToSnapshot != nil {
 		ok := object.Key("CopyTagsToSnapshot")
-		ok.Boolean(v.CopyTagsToSnapshot)
+		ok.Boolean(*v.CopyTagsToSnapshot)
 	}
 
 	if v.DBClusterIdentifier != nil {
@@ -18481,9 +20979,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		ok.String(*v.DBInstanceIdentifier)
 	}
 
-	if v.DbInstancePort != 0 {
+	if v.DbInstancePort != nil {
 		ok := object.Key("DbInstancePort")
-		ok.Integer(v.DbInstancePort)
+		ok.Integer(*v.DbInstancePort)
 	}
 
 	if v.DbInstanceStatus != nil {
@@ -18522,9 +21020,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		}
 	}
 
-	if v.DeletionProtection {
+	if v.DeletionProtection != nil {
 		ok := object.Key("DeletionProtection")
-		ok.Boolean(v.DeletionProtection)
+		ok.Boolean(*v.DeletionProtection)
 	}
 
 	if v.DomainMemberships != nil {
@@ -18563,9 +21061,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		ok.String(*v.EnhancedMonitoringResourceArn)
 	}
 
-	if v.IAMDatabaseAuthenticationEnabled {
+	if v.IAMDatabaseAuthenticationEnabled != nil {
 		ok := object.Key("IAMDatabaseAuthenticationEnabled")
-		ok.Boolean(v.IAMDatabaseAuthenticationEnabled)
+		ok.Boolean(*v.IAMDatabaseAuthenticationEnabled)
 	}
 
 	if v.InstanceCreateTime != nil {
@@ -18573,9 +21071,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		ok.String(*v.InstanceCreateTime)
 	}
 
-	if v.Iops != 0 {
+	if v.Iops != nil {
 		ok := object.Key("Iops")
-		ok.Integer(v.Iops)
+		ok.Integer(*v.Iops)
 	}
 
 	if v.KmsKeyId != nil {
@@ -18605,14 +21103,14 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		ok.String(*v.MasterUsername)
 	}
 
-	if v.MaxAllocatedStorage != 0 {
+	if v.MaxAllocatedStorage != nil {
 		ok := object.Key("MaxAllocatedStorage")
-		ok.Integer(v.MaxAllocatedStorage)
+		ok.Integer(*v.MaxAllocatedStorage)
 	}
 
-	if v.MonitoringInterval != 0 {
+	if v.MonitoringInterval != nil {
 		ok := object.Key("MonitoringInterval")
-		ok.Integer(v.MonitoringInterval)
+		ok.Integer(*v.MonitoringInterval)
 	}
 
 	if v.MonitoringRoleArn != nil {
@@ -18620,9 +21118,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		ok.String(*v.MonitoringRoleArn)
 	}
 
-	if v.MultiAz {
+	if v.MultiAz != nil {
 		ok := object.Key("MultiAz")
-		ok.Boolean(v.MultiAz)
+		ok.Boolean(*v.MultiAz)
 	}
 
 	if v.OptionGroupMemberships != nil {
@@ -18639,9 +21137,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		}
 	}
 
-	if v.PerformanceInsightsEnabled {
+	if v.PerformanceInsightsEnabled != nil {
 		ok := object.Key("PerformanceInsightsEnabled")
-		ok.Boolean(v.PerformanceInsightsEnabled)
+		ok.Boolean(*v.PerformanceInsightsEnabled)
 	}
 
 	if v.PerformanceInsightsKmsKeyId != nil {
@@ -18649,9 +21147,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		ok.String(*v.PerformanceInsightsKmsKeyId)
 	}
 
-	if v.PerformanceInsightsRetentionPeriod != 0 {
+	if v.PerformanceInsightsRetentionPeriod != nil {
 		ok := object.Key("PerformanceInsightsRetentionPeriod")
-		ok.Integer(v.PerformanceInsightsRetentionPeriod)
+		ok.Integer(*v.PerformanceInsightsRetentionPeriod)
 	}
 
 	if v.PreferredBackupWindow != nil {
@@ -18671,14 +21169,14 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		}
 	}
 
-	if v.PromotionTier != 0 {
+	if v.PromotionTier != nil {
 		ok := object.Key("PromotionTier")
-		ok.Integer(v.PromotionTier)
+		ok.Integer(*v.PromotionTier)
 	}
 
-	if v.PubliclyAccessible {
+	if v.PubliclyAccessible != nil {
 		ok := object.Key("PubliclyAccessible")
-		ok.Boolean(v.PubliclyAccessible)
+		ok.Boolean(*v.PubliclyAccessible)
 	}
 
 	if v.ReadReplicaDBClusterIdentifiers != nil {
@@ -18712,9 +21210,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceDetails(v *types.AwsRdsDbInst
 		}
 	}
 
-	if v.StorageEncrypted {
+	if v.StorageEncrypted != nil {
 		ok := object.Key("StorageEncrypted")
-		ok.Boolean(v.StorageEncrypted)
+		ok.Boolean(*v.StorageEncrypted)
 	}
 
 	if v.StorageType != nil {
@@ -18756,9 +21254,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbInstanceEndpoint(v *types.AwsRdsDbIns
 		ok.String(*v.HostedZoneId)
 	}
 
-	if v.Port != 0 {
+	if v.Port != nil {
 		ok := object.Key("Port")
-		ok.Integer(v.Port)
+		ok.Integer(*v.Port)
 	}
 
 	return nil
@@ -18858,14 +21356,14 @@ func awsRestjson1_serializeDocumentAwsRdsDbPendingModifiedValues(v *types.AwsRds
 	object := value.Object()
 	defer object.Close()
 
-	if v.AllocatedStorage != 0 {
+	if v.AllocatedStorage != nil {
 		ok := object.Key("AllocatedStorage")
-		ok.Integer(v.AllocatedStorage)
+		ok.Integer(*v.AllocatedStorage)
 	}
 
-	if v.BackupRetentionPeriod != 0 {
+	if v.BackupRetentionPeriod != nil {
 		ok := object.Key("BackupRetentionPeriod")
-		ok.Integer(v.BackupRetentionPeriod)
+		ok.Integer(*v.BackupRetentionPeriod)
 	}
 
 	if v.CaCertificateIdentifier != nil {
@@ -18893,9 +21391,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbPendingModifiedValues(v *types.AwsRds
 		ok.String(*v.EngineVersion)
 	}
 
-	if v.Iops != 0 {
+	if v.Iops != nil {
 		ok := object.Key("Iops")
-		ok.Integer(v.Iops)
+		ok.Integer(*v.Iops)
 	}
 
 	if v.LicenseModel != nil {
@@ -18908,9 +21406,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbPendingModifiedValues(v *types.AwsRds
 		ok.String(*v.MasterUserPassword)
 	}
 
-	if v.MultiAZ {
+	if v.MultiAZ != nil {
 		ok := object.Key("MultiAZ")
-		ok.Boolean(v.MultiAZ)
+		ok.Boolean(*v.MultiAZ)
 	}
 
 	if v.PendingCloudWatchLogsExports != nil {
@@ -18920,9 +21418,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbPendingModifiedValues(v *types.AwsRds
 		}
 	}
 
-	if v.Port != 0 {
+	if v.Port != nil {
 		ok := object.Key("Port")
-		ok.Integer(v.Port)
+		ok.Integer(*v.Port)
 	}
 
 	if v.ProcessorFeatures != nil {
@@ -19090,9 +21588,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbSnapshotDetails(v *types.AwsRdsDbSnap
 	object := value.Object()
 	defer object.Close()
 
-	if v.AllocatedStorage != 0 {
+	if v.AllocatedStorage != nil {
 		ok := object.Key("AllocatedStorage")
-		ok.Integer(v.AllocatedStorage)
+		ok.Integer(*v.AllocatedStorage)
 	}
 
 	if v.AvailabilityZone != nil {
@@ -19115,9 +21613,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbSnapshotDetails(v *types.AwsRdsDbSnap
 		ok.String(*v.DbSnapshotIdentifier)
 	}
 
-	if v.Encrypted {
+	if v.Encrypted != nil {
 		ok := object.Key("Encrypted")
-		ok.Boolean(v.Encrypted)
+		ok.Boolean(*v.Encrypted)
 	}
 
 	if v.Engine != nil {
@@ -19130,9 +21628,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbSnapshotDetails(v *types.AwsRdsDbSnap
 		ok.String(*v.EngineVersion)
 	}
 
-	if v.IamDatabaseAuthenticationEnabled {
+	if v.IamDatabaseAuthenticationEnabled != nil {
 		ok := object.Key("IamDatabaseAuthenticationEnabled")
-		ok.Boolean(v.IamDatabaseAuthenticationEnabled)
+		ok.Boolean(*v.IamDatabaseAuthenticationEnabled)
 	}
 
 	if v.InstanceCreateTime != nil {
@@ -19140,9 +21638,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbSnapshotDetails(v *types.AwsRdsDbSnap
 		ok.String(*v.InstanceCreateTime)
 	}
 
-	if v.Iops != 0 {
+	if v.Iops != nil {
 		ok := object.Key("Iops")
-		ok.Integer(v.Iops)
+		ok.Integer(*v.Iops)
 	}
 
 	if v.KmsKeyId != nil {
@@ -19165,14 +21663,14 @@ func awsRestjson1_serializeDocumentAwsRdsDbSnapshotDetails(v *types.AwsRdsDbSnap
 		ok.String(*v.OptionGroupName)
 	}
 
-	if v.PercentProgress != 0 {
+	if v.PercentProgress != nil {
 		ok := object.Key("PercentProgress")
-		ok.Integer(v.PercentProgress)
+		ok.Integer(*v.PercentProgress)
 	}
 
-	if v.Port != 0 {
+	if v.Port != nil {
 		ok := object.Key("Port")
-		ok.Integer(v.Port)
+		ok.Integer(*v.Port)
 	}
 
 	if v.ProcessorFeatures != nil {
@@ -19239,9 +21737,9 @@ func awsRestjson1_serializeDocumentAwsRdsDbStatusInfo(v *types.AwsRdsDbStatusInf
 		ok.String(*v.Message)
 	}
 
-	if v.Normal {
+	if v.Normal != nil {
 		ok := object.Key("Normal")
-		ok.Boolean(v.Normal)
+		ok.Boolean(*v.Normal)
 	}
 
 	if v.Status != nil {
@@ -19372,9 +21870,9 @@ func awsRestjson1_serializeDocumentAwsRdsEventSubscriptionDetails(v *types.AwsRd
 		ok.String(*v.CustSubscriptionId)
 	}
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	if v.EventCategoriesList != nil {
@@ -19586,14 +22084,14 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterClusterSnapshotCopyStatus(v
 		ok.String(*v.DestinationRegion)
 	}
 
-	if v.ManualSnapshotRetentionPeriod != 0 {
+	if v.ManualSnapshotRetentionPeriod != nil {
 		ok := object.Key("ManualSnapshotRetentionPeriod")
-		ok.Integer(v.ManualSnapshotRetentionPeriod)
+		ok.Integer(*v.ManualSnapshotRetentionPeriod)
 	}
 
-	if v.RetentionPeriod != 0 {
+	if v.RetentionPeriod != nil {
 		ok := object.Key("RetentionPeriod")
-		ok.Integer(v.RetentionPeriod)
+		ok.Integer(*v.RetentionPeriod)
 	}
 
 	if v.SnapshotCopyGrantName != nil {
@@ -19643,14 +22141,14 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterDetails(v *types.AwsRedshif
 	object := value.Object()
 	defer object.Close()
 
-	if v.AllowVersionUpgrade {
+	if v.AllowVersionUpgrade != nil {
 		ok := object.Key("AllowVersionUpgrade")
-		ok.Boolean(v.AllowVersionUpgrade)
+		ok.Boolean(*v.AllowVersionUpgrade)
 	}
 
-	if v.AutomatedSnapshotRetentionPeriod != 0 {
+	if v.AutomatedSnapshotRetentionPeriod != nil {
 		ok := object.Key("AutomatedSnapshotRetentionPeriod")
-		ok.Integer(v.AutomatedSnapshotRetentionPeriod)
+		ok.Integer(*v.AutomatedSnapshotRetentionPeriod)
 	}
 
 	if v.AvailabilityZone != nil {
@@ -19750,9 +22248,9 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterDetails(v *types.AwsRedshif
 		ok.String(*v.ElasticResizeNumberOfNodeOptions)
 	}
 
-	if v.Encrypted {
+	if v.Encrypted != nil {
 		ok := object.Key("Encrypted")
-		ok.Boolean(v.Encrypted)
+		ok.Boolean(*v.Encrypted)
 	}
 
 	if v.Endpoint != nil {
@@ -19762,9 +22260,9 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterDetails(v *types.AwsRedshif
 		}
 	}
 
-	if v.EnhancedVpcRouting {
+	if v.EnhancedVpcRouting != nil {
 		ok := object.Key("EnhancedVpcRouting")
-		ok.Boolean(v.EnhancedVpcRouting)
+		ok.Boolean(*v.EnhancedVpcRouting)
 	}
 
 	if v.ExpectedNextSnapshotScheduleTime != nil {
@@ -19808,9 +22306,9 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterDetails(v *types.AwsRedshif
 		ok.String(*v.MaintenanceTrackName)
 	}
 
-	if v.ManualSnapshotRetentionPeriod != 0 {
+	if v.ManualSnapshotRetentionPeriod != nil {
 		ok := object.Key("ManualSnapshotRetentionPeriod")
-		ok.Integer(v.ManualSnapshotRetentionPeriod)
+		ok.Integer(*v.ManualSnapshotRetentionPeriod)
 	}
 
 	if v.MasterUsername != nil {
@@ -19828,9 +22326,9 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterDetails(v *types.AwsRedshif
 		ok.String(*v.NodeType)
 	}
 
-	if v.NumberOfNodes != 0 {
+	if v.NumberOfNodes != nil {
 		ok := object.Key("NumberOfNodes")
-		ok.Integer(v.NumberOfNodes)
+		ok.Integer(*v.NumberOfNodes)
 	}
 
 	if v.PendingActions != nil {
@@ -19852,9 +22350,9 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterDetails(v *types.AwsRedshif
 		ok.String(*v.PreferredMaintenanceWindow)
 	}
 
-	if v.PubliclyAccessible {
+	if v.PubliclyAccessible != nil {
 		ok := object.Key("PubliclyAccessible")
-		ok.Boolean(v.PubliclyAccessible)
+		ok.Boolean(*v.PubliclyAccessible)
 	}
 
 	if v.ResizeInfo != nil {
@@ -19922,9 +22420,9 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterEndpoint(v *types.AwsRedshi
 		ok.String(*v.Address)
 	}
 
-	if v.Port != 0 {
+	if v.Port != nil {
 		ok := object.Key("Port")
-		ok.Integer(v.Port)
+		ok.Integer(*v.Port)
 	}
 
 	return nil
@@ -20006,9 +22504,9 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterLoggingStatus(v *types.AwsR
 		ok.String(*v.LastSuccessfulDeliveryTime)
 	}
 
-	if v.LoggingEnabled {
+	if v.LoggingEnabled != nil {
 		ok := object.Key("LoggingEnabled")
-		ok.Boolean(v.LoggingEnabled)
+		ok.Boolean(*v.LoggingEnabled)
 	}
 
 	if v.S3KeyPrefix != nil {
@@ -20023,9 +22521,9 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterPendingModifiedValues(v *ty
 	object := value.Object()
 	defer object.Close()
 
-	if v.AutomatedSnapshotRetentionPeriod != 0 {
+	if v.AutomatedSnapshotRetentionPeriod != nil {
 		ok := object.Key("AutomatedSnapshotRetentionPeriod")
-		ok.Integer(v.AutomatedSnapshotRetentionPeriod)
+		ok.Integer(*v.AutomatedSnapshotRetentionPeriod)
 	}
 
 	if v.ClusterIdentifier != nil {
@@ -20048,9 +22546,9 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterPendingModifiedValues(v *ty
 		ok.String(*v.EncryptionType)
 	}
 
-	if v.EnhancedVpcRouting {
+	if v.EnhancedVpcRouting != nil {
 		ok := object.Key("EnhancedVpcRouting")
-		ok.Boolean(v.EnhancedVpcRouting)
+		ok.Boolean(*v.EnhancedVpcRouting)
 	}
 
 	if v.MaintenanceTrackName != nil {
@@ -20068,14 +22566,14 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterPendingModifiedValues(v *ty
 		ok.String(*v.NodeType)
 	}
 
-	if v.NumberOfNodes != 0 {
+	if v.NumberOfNodes != nil {
 		ok := object.Key("NumberOfNodes")
-		ok.Integer(v.NumberOfNodes)
+		ok.Integer(*v.NumberOfNodes)
 	}
 
-	if v.PubliclyAccessible {
+	if v.PubliclyAccessible != nil {
 		ok := object.Key("PubliclyAccessible")
-		ok.Boolean(v.PubliclyAccessible)
+		ok.Boolean(*v.PubliclyAccessible)
 	}
 
 	return nil
@@ -20085,9 +22583,9 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterResizeInfo(v *types.AwsReds
 	object := value.Object()
 	defer object.Close()
 
-	if v.AllowCancelResize {
+	if v.AllowCancelResize != nil {
 		ok := object.Key("AllowCancelResize")
-		ok.Boolean(v.AllowCancelResize)
+		ok.Boolean(*v.AllowCancelResize)
 	}
 
 	if v.ResizeType != nil {
@@ -20102,42 +22600,42 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterRestoreStatus(v *types.AwsR
 	object := value.Object()
 	defer object.Close()
 
-	if v.CurrentRestoreRateInMegaBytesPerSecond != 0 {
+	if v.CurrentRestoreRateInMegaBytesPerSecond != nil {
 		ok := object.Key("CurrentRestoreRateInMegaBytesPerSecond")
 		switch {
-		case math.IsNaN(v.CurrentRestoreRateInMegaBytesPerSecond):
+		case math.IsNaN(*v.CurrentRestoreRateInMegaBytesPerSecond):
 			ok.String("NaN")
 
-		case math.IsInf(v.CurrentRestoreRateInMegaBytesPerSecond, 1):
+		case math.IsInf(*v.CurrentRestoreRateInMegaBytesPerSecond, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.CurrentRestoreRateInMegaBytesPerSecond, -1):
+		case math.IsInf(*v.CurrentRestoreRateInMegaBytesPerSecond, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.CurrentRestoreRateInMegaBytesPerSecond)
+			ok.Double(*v.CurrentRestoreRateInMegaBytesPerSecond)
 
 		}
 	}
 
-	if v.ElapsedTimeInSeconds != 0 {
+	if v.ElapsedTimeInSeconds != nil {
 		ok := object.Key("ElapsedTimeInSeconds")
-		ok.Long(v.ElapsedTimeInSeconds)
+		ok.Long(*v.ElapsedTimeInSeconds)
 	}
 
-	if v.EstimatedTimeToCompletionInSeconds != 0 {
+	if v.EstimatedTimeToCompletionInSeconds != nil {
 		ok := object.Key("EstimatedTimeToCompletionInSeconds")
-		ok.Long(v.EstimatedTimeToCompletionInSeconds)
+		ok.Long(*v.EstimatedTimeToCompletionInSeconds)
 	}
 
-	if v.ProgressInMegaBytes != 0 {
+	if v.ProgressInMegaBytes != nil {
 		ok := object.Key("ProgressInMegaBytes")
-		ok.Long(v.ProgressInMegaBytes)
+		ok.Long(*v.ProgressInMegaBytes)
 	}
 
-	if v.SnapshotSizeInMegaBytes != 0 {
+	if v.SnapshotSizeInMegaBytes != nil {
 		ok := object.Key("SnapshotSizeInMegaBytes")
-		ok.Long(v.SnapshotSizeInMegaBytes)
+		ok.Long(*v.SnapshotSizeInMegaBytes)
 	}
 
 	if v.Status != nil {
@@ -20178,28 +22676,217 @@ func awsRestjson1_serializeDocumentAwsRedshiftClusterVpcSecurityGroups(v []types
 	return nil
 }
 
+func awsRestjson1_serializeDocumentAwsRoute53HostedZoneConfigDetails(v *types.AwsRoute53HostedZoneConfigDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Comment != nil {
+		ok := object.Key("Comment")
+		ok.String(*v.Comment)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsRoute53HostedZoneDetails(v *types.AwsRoute53HostedZoneDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.HostedZone != nil {
+		ok := object.Key("HostedZone")
+		if err := awsRestjson1_serializeDocumentAwsRoute53HostedZoneObjectDetails(v.HostedZone, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.NameServers != nil {
+		ok := object.Key("NameServers")
+		if err := awsRestjson1_serializeDocumentAwsRoute53HostedZoneNameServersList(v.NameServers, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.QueryLoggingConfig != nil {
+		ok := object.Key("QueryLoggingConfig")
+		if err := awsRestjson1_serializeDocumentAwsRoute53QueryLoggingConfigDetails(v.QueryLoggingConfig, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Vpcs != nil {
+		ok := object.Key("Vpcs")
+		if err := awsRestjson1_serializeDocumentAwsRoute53HostedZoneVpcsList(v.Vpcs, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsRoute53HostedZoneNameServersList(v []string, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		av.String(v[i])
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsRoute53HostedZoneObjectDetails(v *types.AwsRoute53HostedZoneObjectDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Config != nil {
+		ok := object.Key("Config")
+		if err := awsRestjson1_serializeDocumentAwsRoute53HostedZoneConfigDetails(v.Config, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Id != nil {
+		ok := object.Key("Id")
+		ok.String(*v.Id)
+	}
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsRoute53HostedZoneVpcDetails(v *types.AwsRoute53HostedZoneVpcDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Id != nil {
+		ok := object.Key("Id")
+		ok.String(*v.Id)
+	}
+
+	if v.Region != nil {
+		ok := object.Key("Region")
+		ok.String(*v.Region)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsRoute53HostedZoneVpcsList(v []types.AwsRoute53HostedZoneVpcDetails, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentAwsRoute53HostedZoneVpcDetails(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsRoute53QueryLoggingConfigDetails(v *types.AwsRoute53QueryLoggingConfigDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.CloudWatchLogsLogGroupArn != nil {
+		ok := object.Key("CloudWatchLogsLogGroupArn")
+		if err := awsRestjson1_serializeDocumentCloudWatchLogsLogGroupArnConfigDetails(v.CloudWatchLogsLogGroupArn, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsS3AccessPointDetails(v *types.AwsS3AccessPointDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.AccessPointArn != nil {
+		ok := object.Key("AccessPointArn")
+		ok.String(*v.AccessPointArn)
+	}
+
+	if v.Alias != nil {
+		ok := object.Key("Alias")
+		ok.String(*v.Alias)
+	}
+
+	if v.Bucket != nil {
+		ok := object.Key("Bucket")
+		ok.String(*v.Bucket)
+	}
+
+	if v.BucketAccountId != nil {
+		ok := object.Key("BucketAccountId")
+		ok.String(*v.BucketAccountId)
+	}
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
+	}
+
+	if v.NetworkOrigin != nil {
+		ok := object.Key("NetworkOrigin")
+		ok.String(*v.NetworkOrigin)
+	}
+
+	if v.PublicAccessBlockConfiguration != nil {
+		ok := object.Key("PublicAccessBlockConfiguration")
+		if err := awsRestjson1_serializeDocumentAwsS3AccountPublicAccessBlockDetails(v.PublicAccessBlockConfiguration, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.VpcConfiguration != nil {
+		ok := object.Key("VpcConfiguration")
+		if err := awsRestjson1_serializeDocumentAwsS3AccessPointVpcConfigurationDetails(v.VpcConfiguration, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentAwsS3AccessPointVpcConfigurationDetails(v *types.AwsS3AccessPointVpcConfigurationDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.VpcId != nil {
+		ok := object.Key("VpcId")
+		ok.String(*v.VpcId)
+	}
+
+	return nil
+}
+
 func awsRestjson1_serializeDocumentAwsS3AccountPublicAccessBlockDetails(v *types.AwsS3AccountPublicAccessBlockDetails, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
 
-	if v.BlockPublicAcls {
+	if v.BlockPublicAcls != nil {
 		ok := object.Key("BlockPublicAcls")
-		ok.Boolean(v.BlockPublicAcls)
+		ok.Boolean(*v.BlockPublicAcls)
 	}
 
-	if v.BlockPublicPolicy {
+	if v.BlockPublicPolicy != nil {
 		ok := object.Key("BlockPublicPolicy")
-		ok.Boolean(v.BlockPublicPolicy)
+		ok.Boolean(*v.BlockPublicPolicy)
 	}
 
-	if v.IgnorePublicAcls {
+	if v.IgnorePublicAcls != nil {
 		ok := object.Key("IgnorePublicAcls")
-		ok.Boolean(v.IgnorePublicAcls)
+		ok.Boolean(*v.IgnorePublicAcls)
 	}
 
-	if v.RestrictPublicBuckets {
+	if v.RestrictPublicBuckets != nil {
 		ok := object.Key("RestrictPublicBuckets")
-		ok.Boolean(v.RestrictPublicBuckets)
+		ok.Boolean(*v.RestrictPublicBuckets)
 	}
 
 	return nil
@@ -20223,9 +22910,9 @@ func awsRestjson1_serializeDocumentAwsS3BucketBucketLifecycleConfigurationRulesA
 	object := value.Object()
 	defer object.Close()
 
-	if v.DaysAfterInitiation != 0 {
+	if v.DaysAfterInitiation != nil {
 		ok := object.Key("DaysAfterInitiation")
-		ok.Integer(v.DaysAfterInitiation)
+		ok.Integer(*v.DaysAfterInitiation)
 	}
 
 	return nil
@@ -20247,14 +22934,14 @@ func awsRestjson1_serializeDocumentAwsS3BucketBucketLifecycleConfigurationRulesD
 		ok.String(*v.ExpirationDate)
 	}
 
-	if v.ExpirationInDays != 0 {
+	if v.ExpirationInDays != nil {
 		ok := object.Key("ExpirationInDays")
-		ok.Integer(v.ExpirationInDays)
+		ok.Integer(*v.ExpirationInDays)
 	}
 
-	if v.ExpiredObjectDeleteMarker {
+	if v.ExpiredObjectDeleteMarker != nil {
 		ok := object.Key("ExpiredObjectDeleteMarker")
-		ok.Boolean(v.ExpiredObjectDeleteMarker)
+		ok.Boolean(*v.ExpiredObjectDeleteMarker)
 	}
 
 	if v.Filter != nil {
@@ -20269,9 +22956,9 @@ func awsRestjson1_serializeDocumentAwsS3BucketBucketLifecycleConfigurationRulesD
 		ok.String(*v.ID)
 	}
 
-	if v.NoncurrentVersionExpirationInDays != 0 {
+	if v.NoncurrentVersionExpirationInDays != nil {
 		ok := object.Key("NoncurrentVersionExpirationInDays")
-		ok.Integer(v.NoncurrentVersionExpirationInDays)
+		ok.Integer(*v.NoncurrentVersionExpirationInDays)
 	}
 
 	if v.NoncurrentVersionTransitions != nil {
@@ -20434,9 +23121,9 @@ func awsRestjson1_serializeDocumentAwsS3BucketBucketLifecycleConfigurationRulesN
 	object := value.Object()
 	defer object.Close()
 
-	if v.Days != 0 {
+	if v.Days != nil {
 		ok := object.Key("Days")
-		ok.Integer(v.Days)
+		ok.Integer(*v.Days)
 	}
 
 	if v.StorageClass != nil {
@@ -20469,9 +23156,9 @@ func awsRestjson1_serializeDocumentAwsS3BucketBucketLifecycleConfigurationRulesT
 		ok.String(*v.Date)
 	}
 
-	if v.Days != 0 {
+	if v.Days != nil {
 		ok := object.Key("Days")
-		ok.Integer(v.Days)
+		ok.Integer(*v.Days)
 	}
 
 	if v.StorageClass != nil {
@@ -20499,9 +23186,9 @@ func awsRestjson1_serializeDocumentAwsS3BucketBucketVersioningConfiguration(v *t
 	object := value.Object()
 	defer object.Close()
 
-	if v.IsMfaDeleteEnabled {
+	if v.IsMfaDeleteEnabled != nil {
 		ok := object.Key("IsMfaDeleteEnabled")
-		ok.Boolean(v.IsMfaDeleteEnabled)
+		ok.Boolean(*v.IsMfaDeleteEnabled)
 	}
 
 	if v.Status != nil {
@@ -20559,6 +23246,11 @@ func awsRestjson1_serializeDocumentAwsS3BucketDetails(v *types.AwsS3BucketDetail
 	if v.CreatedAt != nil {
 		ok := object.Key("CreatedAt")
 		ok.String(*v.CreatedAt)
+	}
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
 	}
 
 	if v.ObjectLockConfiguration != nil {
@@ -20767,9 +23459,9 @@ func awsRestjson1_serializeDocumentAwsS3BucketObjectLockConfigurationRuleDefault
 	object := value.Object()
 	defer object.Close()
 
-	if v.Days != 0 {
+	if v.Days != nil {
 		ok := object.Key("Days")
-		ok.Integer(v.Days)
+		ok.Integer(*v.Days)
 	}
 
 	if v.Mode != nil {
@@ -20777,9 +23469,9 @@ func awsRestjson1_serializeDocumentAwsS3BucketObjectLockConfigurationRuleDefault
 		ok.String(*v.Mode)
 	}
 
-	if v.Years != 0 {
+	if v.Years != nil {
 		ok := object.Key("Years")
-		ok.Integer(v.Years)
+		ok.Integer(*v.Years)
 	}
 
 	return nil
@@ -21132,9 +23824,9 @@ func awsRestjson1_serializeDocumentAwsSageMakerNotebookInstanceDetails(v *types.
 		ok.String(*v.Url)
 	}
 
-	if v.VolumeSizeInGB != 0 {
+	if v.VolumeSizeInGB != nil {
 		ok := object.Key("VolumeSizeInGB")
-		ok.Integer(v.VolumeSizeInGB)
+		ok.Integer(*v.VolumeSizeInGB)
 	}
 
 	return nil
@@ -21156,9 +23848,9 @@ func awsRestjson1_serializeDocumentAwsSecretsManagerSecretDetails(v *types.AwsSe
 	object := value.Object()
 	defer object.Close()
 
-	if v.Deleted {
+	if v.Deleted != nil {
 		ok := object.Key("Deleted")
-		ok.Boolean(v.Deleted)
+		ok.Boolean(*v.Deleted)
 	}
 
 	if v.Description != nil {
@@ -21176,9 +23868,9 @@ func awsRestjson1_serializeDocumentAwsSecretsManagerSecretDetails(v *types.AwsSe
 		ok.String(*v.Name)
 	}
 
-	if v.RotationEnabled {
+	if v.RotationEnabled != nil {
 		ok := object.Key("RotationEnabled")
-		ok.Boolean(v.RotationEnabled)
+		ok.Boolean(*v.RotationEnabled)
 	}
 
 	if v.RotationLambdaArn != nil {
@@ -21186,9 +23878,9 @@ func awsRestjson1_serializeDocumentAwsSecretsManagerSecretDetails(v *types.AwsSe
 		ok.String(*v.RotationLambdaArn)
 	}
 
-	if v.RotationOccurredWithinFrequency {
+	if v.RotationOccurredWithinFrequency != nil {
 		ok := object.Key("RotationOccurredWithinFrequency")
-		ok.Boolean(v.RotationOccurredWithinFrequency)
+		ok.Boolean(*v.RotationOccurredWithinFrequency)
 	}
 
 	if v.RotationRules != nil {
@@ -21205,9 +23897,9 @@ func awsRestjson1_serializeDocumentAwsSecretsManagerSecretRotationRules(v *types
 	object := value.Object()
 	defer object.Close()
 
-	if v.AutomaticallyAfterDays != 0 {
+	if v.AutomaticallyAfterDays != nil {
 		ok := object.Key("AutomaticallyAfterDays")
-		ok.Integer(v.AutomaticallyAfterDays)
+		ok.Integer(*v.AutomaticallyAfterDays)
 	}
 
 	return nil
@@ -21229,6 +23921,11 @@ func awsRestjson1_serializeDocumentAwsSecurityFinding(v *types.AwsSecurityFindin
 		ok.String(*v.AwsAccountId)
 	}
 
+	if v.AwsAccountName != nil {
+		ok := object.Key("AwsAccountName")
+		ok.String(*v.AwsAccountName)
+	}
+
 	if v.CompanyName != nil {
 		ok := object.Key("CompanyName")
 		ok.String(*v.CompanyName)
@@ -21241,9 +23938,9 @@ func awsRestjson1_serializeDocumentAwsSecurityFinding(v *types.AwsSecurityFindin
 		}
 	}
 
-	if v.Confidence != 0 {
+	if v.Confidence != nil {
 		ok := object.Key("Confidence")
-		ok.Integer(v.Confidence)
+		ok.Integer(*v.Confidence)
 	}
 
 	if v.CreatedAt != nil {
@@ -21251,14 +23948,21 @@ func awsRestjson1_serializeDocumentAwsSecurityFinding(v *types.AwsSecurityFindin
 		ok.String(*v.CreatedAt)
 	}
 
-	if v.Criticality != 0 {
+	if v.Criticality != nil {
 		ok := object.Key("Criticality")
-		ok.Integer(v.Criticality)
+		ok.Integer(*v.Criticality)
 	}
 
 	if v.Description != nil {
 		ok := object.Key("Description")
 		ok.String(*v.Description)
+	}
+
+	if v.Detection != nil {
+		ok := object.Key("Detection")
+		if err := awsRestjson1_serializeDocumentDetection(v.Detection, ok); err != nil {
+			return err
+		}
 	}
 
 	if v.FindingProviderFields != nil {
@@ -21271,6 +23975,13 @@ func awsRestjson1_serializeDocumentAwsSecurityFinding(v *types.AwsSecurityFindin
 	if v.FirstObservedAt != nil {
 		ok := object.Key("FirstObservedAt")
 		ok.String(*v.FirstObservedAt)
+	}
+
+	if v.GeneratorDetails != nil {
+		ok := object.Key("GeneratorDetails")
+		if err := awsRestjson1_serializeDocumentGeneratorDetails(v.GeneratorDetails, ok); err != nil {
+			return err
+		}
 	}
 
 	if v.GeneratorId != nil {
@@ -21330,6 +24041,11 @@ func awsRestjson1_serializeDocumentAwsSecurityFinding(v *types.AwsSecurityFindin
 		}
 	}
 
+	if v.ProcessedAt != nil {
+		ok := object.Key("ProcessedAt")
+		ok.String(*v.ProcessedAt)
+	}
+
 	if v.ProductArn != nil {
 		ok := object.Key("ProductArn")
 		ok.String(*v.ProductArn)
@@ -21378,9 +24094,9 @@ func awsRestjson1_serializeDocumentAwsSecurityFinding(v *types.AwsSecurityFindin
 		}
 	}
 
-	if v.Sample {
+	if v.Sample != nil {
 		ok := object.Key("Sample")
-		ok.Boolean(v.Sample)
+		ok.Boolean(*v.Sample)
 	}
 
 	if v.SchemaVersion != nil {
@@ -21476,6 +24192,13 @@ func awsRestjson1_serializeDocumentAwsSecurityFindingFilters(v *types.AwsSecurit
 		}
 	}
 
+	if v.AwsAccountName != nil {
+		ok := object.Key("AwsAccountName")
+		if err := awsRestjson1_serializeDocumentStringFilterList(v.AwsAccountName, ok); err != nil {
+			return err
+		}
+	}
+
 	if v.CompanyName != nil {
 		ok := object.Key("CompanyName")
 		if err := awsRestjson1_serializeDocumentStringFilterList(v.CompanyName, ok); err != nil {
@@ -21493,6 +24216,20 @@ func awsRestjson1_serializeDocumentAwsSecurityFindingFilters(v *types.AwsSecurit
 	if v.ComplianceSecurityControlId != nil {
 		ok := object.Key("ComplianceSecurityControlId")
 		if err := awsRestjson1_serializeDocumentStringFilterList(v.ComplianceSecurityControlId, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ComplianceSecurityControlParametersName != nil {
+		ok := object.Key("ComplianceSecurityControlParametersName")
+		if err := awsRestjson1_serializeDocumentStringFilterList(v.ComplianceSecurityControlParametersName, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ComplianceSecurityControlParametersValue != nil {
+		ok := object.Key("ComplianceSecurityControlParametersValue")
+		if err := awsRestjson1_serializeDocumentStringFilterList(v.ComplianceSecurityControlParametersValue, ok); err != nil {
 			return err
 		}
 	}
@@ -21840,6 +24577,20 @@ func awsRestjson1_serializeDocumentAwsSecurityFindingFilters(v *types.AwsSecurit
 		}
 	}
 
+	if v.ResourceApplicationArn != nil {
+		ok := object.Key("ResourceApplicationArn")
+		if err := awsRestjson1_serializeDocumentStringFilterList(v.ResourceApplicationArn, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ResourceApplicationName != nil {
+		ok := object.Key("ResourceApplicationName")
+		if err := awsRestjson1_serializeDocumentStringFilterList(v.ResourceApplicationName, ok); err != nil {
+			return err
+		}
+	}
+
 	if v.ResourceAwsEc2InstanceIamInstanceProfileArn != nil {
 		ok := object.Key("ResourceAwsEc2InstanceIamInstanceProfileArn")
 		if err := awsRestjson1_serializeDocumentStringFilterList(v.ResourceAwsEc2InstanceIamInstanceProfileArn, ok); err != nil {
@@ -22134,6 +24885,20 @@ func awsRestjson1_serializeDocumentAwsSecurityFindingFilters(v *types.AwsSecurit
 		}
 	}
 
+	if v.VulnerabilitiesExploitAvailable != nil {
+		ok := object.Key("VulnerabilitiesExploitAvailable")
+		if err := awsRestjson1_serializeDocumentStringFilterList(v.VulnerabilitiesExploitAvailable, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.VulnerabilitiesFixAvailable != nil {
+		ok := object.Key("VulnerabilitiesFixAvailable")
+		if err := awsRestjson1_serializeDocumentStringFilterList(v.VulnerabilitiesFixAvailable, ok); err != nil {
+			return err
+		}
+	}
+
 	if v.WorkflowState != nil {
 		ok := object.Key("WorkflowState")
 		if err := awsRestjson1_serializeDocumentStringFilterList(v.WorkflowState, ok); err != nil {
@@ -22284,9 +25049,9 @@ func awsRestjson1_serializeDocumentAwsSqsQueueDetails(v *types.AwsSqsQueueDetail
 		ok.String(*v.DeadLetterTargetArn)
 	}
 
-	if v.KmsDataKeyReusePeriodSeconds != 0 {
+	if v.KmsDataKeyReusePeriodSeconds != nil {
 		ok := object.Key("KmsDataKeyReusePeriodSeconds")
-		ok.Integer(v.KmsDataKeyReusePeriodSeconds)
+		ok.Integer(*v.KmsDataKeyReusePeriodSeconds)
 	}
 
 	if v.KmsMasterKeyId != nil {
@@ -22311,34 +25076,34 @@ func awsRestjson1_serializeDocumentAwsSsmComplianceSummary(v *types.AwsSsmCompli
 		ok.String(*v.ComplianceType)
 	}
 
-	if v.CompliantCriticalCount != 0 {
+	if v.CompliantCriticalCount != nil {
 		ok := object.Key("CompliantCriticalCount")
-		ok.Integer(v.CompliantCriticalCount)
+		ok.Integer(*v.CompliantCriticalCount)
 	}
 
-	if v.CompliantHighCount != 0 {
+	if v.CompliantHighCount != nil {
 		ok := object.Key("CompliantHighCount")
-		ok.Integer(v.CompliantHighCount)
+		ok.Integer(*v.CompliantHighCount)
 	}
 
-	if v.CompliantInformationalCount != 0 {
+	if v.CompliantInformationalCount != nil {
 		ok := object.Key("CompliantInformationalCount")
-		ok.Integer(v.CompliantInformationalCount)
+		ok.Integer(*v.CompliantInformationalCount)
 	}
 
-	if v.CompliantLowCount != 0 {
+	if v.CompliantLowCount != nil {
 		ok := object.Key("CompliantLowCount")
-		ok.Integer(v.CompliantLowCount)
+		ok.Integer(*v.CompliantLowCount)
 	}
 
-	if v.CompliantMediumCount != 0 {
+	if v.CompliantMediumCount != nil {
 		ok := object.Key("CompliantMediumCount")
-		ok.Integer(v.CompliantMediumCount)
+		ok.Integer(*v.CompliantMediumCount)
 	}
 
-	if v.CompliantUnspecifiedCount != 0 {
+	if v.CompliantUnspecifiedCount != nil {
 		ok := object.Key("CompliantUnspecifiedCount")
-		ok.Integer(v.CompliantUnspecifiedCount)
+		ok.Integer(*v.CompliantUnspecifiedCount)
 	}
 
 	if v.ExecutionType != nil {
@@ -22346,34 +25111,34 @@ func awsRestjson1_serializeDocumentAwsSsmComplianceSummary(v *types.AwsSsmCompli
 		ok.String(*v.ExecutionType)
 	}
 
-	if v.NonCompliantCriticalCount != 0 {
+	if v.NonCompliantCriticalCount != nil {
 		ok := object.Key("NonCompliantCriticalCount")
-		ok.Integer(v.NonCompliantCriticalCount)
+		ok.Integer(*v.NonCompliantCriticalCount)
 	}
 
-	if v.NonCompliantHighCount != 0 {
+	if v.NonCompliantHighCount != nil {
 		ok := object.Key("NonCompliantHighCount")
-		ok.Integer(v.NonCompliantHighCount)
+		ok.Integer(*v.NonCompliantHighCount)
 	}
 
-	if v.NonCompliantInformationalCount != 0 {
+	if v.NonCompliantInformationalCount != nil {
 		ok := object.Key("NonCompliantInformationalCount")
-		ok.Integer(v.NonCompliantInformationalCount)
+		ok.Integer(*v.NonCompliantInformationalCount)
 	}
 
-	if v.NonCompliantLowCount != 0 {
+	if v.NonCompliantLowCount != nil {
 		ok := object.Key("NonCompliantLowCount")
-		ok.Integer(v.NonCompliantLowCount)
+		ok.Integer(*v.NonCompliantLowCount)
 	}
 
-	if v.NonCompliantMediumCount != 0 {
+	if v.NonCompliantMediumCount != nil {
 		ok := object.Key("NonCompliantMediumCount")
-		ok.Integer(v.NonCompliantMediumCount)
+		ok.Integer(*v.NonCompliantMediumCount)
 	}
 
-	if v.NonCompliantUnspecifiedCount != 0 {
+	if v.NonCompliantUnspecifiedCount != nil {
 		ok := object.Key("NonCompliantUnspecifiedCount")
-		ok.Integer(v.NonCompliantUnspecifiedCount)
+		ok.Integer(*v.NonCompliantUnspecifiedCount)
 	}
 
 	if v.OverallSeverity != nil {
@@ -22528,9 +25293,9 @@ func awsRestjson1_serializeDocumentAwsStepFunctionStateMachineLoggingConfigurati
 		}
 	}
 
-	if v.IncludeExecutionData {
+	if v.IncludeExecutionData != nil {
 		ok := object.Key("IncludeExecutionData")
-		ok.Boolean(v.IncludeExecutionData)
+		ok.Boolean(*v.IncludeExecutionData)
 	}
 
 	if v.Level != nil {
@@ -22545,9 +25310,9 @@ func awsRestjson1_serializeDocumentAwsStepFunctionStateMachineTracingConfigurati
 	object := value.Object()
 	defer object.Close()
 
-	if v.Enabled {
+	if v.Enabled != nil {
 		ok := object.Key("Enabled")
-		ok.Boolean(v.Enabled)
+		ok.Boolean(*v.Enabled)
 	}
 
 	return nil
@@ -22579,9 +25344,9 @@ func awsRestjson1_serializeDocumentAwsWafRateBasedRuleDetails(v *types.AwsWafRat
 		ok.String(*v.RateKey)
 	}
 
-	if v.RateLimit != 0 {
+	if v.RateLimit != nil {
 		ok := object.Key("RateLimit")
-		ok.Long(v.RateLimit)
+		ok.Long(*v.RateLimit)
 	}
 
 	if v.RuleId != nil {
@@ -22601,9 +25366,9 @@ func awsRestjson1_serializeDocumentAwsWafRateBasedRuleMatchPredicate(v *types.Aw
 		ok.String(*v.DataId)
 	}
 
-	if v.Negated {
+	if v.Negated != nil {
 		ok := object.Key("Negated")
-		ok.Boolean(v.Negated)
+		ok.Boolean(*v.Negated)
 	}
 
 	if v.Type != nil {
@@ -22653,9 +25418,9 @@ func awsRestjson1_serializeDocumentAwsWafRegionalRateBasedRuleDetails(v *types.A
 		ok.String(*v.RateKey)
 	}
 
-	if v.RateLimit != 0 {
+	if v.RateLimit != nil {
 		ok := object.Key("RateLimit")
-		ok.Long(v.RateLimit)
+		ok.Long(*v.RateLimit)
 	}
 
 	if v.RuleId != nil {
@@ -22675,9 +25440,9 @@ func awsRestjson1_serializeDocumentAwsWafRegionalRateBasedRuleMatchPredicate(v *
 		ok.String(*v.DataId)
 	}
 
-	if v.Negated {
+	if v.Negated != nil {
 		ok := object.Key("Negated")
-		ok.Boolean(v.Negated)
+		ok.Boolean(*v.Negated)
 	}
 
 	if v.Type != nil {
@@ -22782,9 +25547,9 @@ func awsRestjson1_serializeDocumentAwsWafRegionalRuleGroupRulesDetails(v *types.
 		}
 	}
 
-	if v.Priority != 0 {
+	if v.Priority != nil {
 		ok := object.Key("Priority")
-		ok.Integer(v.Priority)
+		ok.Integer(*v.Priority)
 	}
 
 	if v.RuleId != nil {
@@ -22835,9 +25600,9 @@ func awsRestjson1_serializeDocumentAwsWafRegionalRulePredicateListDetails(v *typ
 		ok.String(*v.DataId)
 	}
 
-	if v.Negated {
+	if v.Negated != nil {
 		ok := object.Key("Negated")
-		ok.Boolean(v.Negated)
+		ok.Boolean(*v.Negated)
 	}
 
 	if v.Type != nil {
@@ -22925,9 +25690,9 @@ func awsRestjson1_serializeDocumentAwsWafRegionalWebAclRulesListDetails(v *types
 		}
 	}
 
-	if v.Priority != 0 {
+	if v.Priority != nil {
 		ok := object.Key("Priority")
-		ok.Integer(v.Priority)
+		ok.Integer(*v.Priority)
 	}
 
 	if v.RuleId != nil {
@@ -23036,9 +25801,9 @@ func awsRestjson1_serializeDocumentAwsWafRuleGroupRulesDetails(v *types.AwsWafRu
 		}
 	}
 
-	if v.Priority != 0 {
+	if v.Priority != nil {
 		ok := object.Key("Priority")
-		ok.Integer(v.Priority)
+		ok.Integer(*v.Priority)
 	}
 
 	if v.RuleId != nil {
@@ -23089,9 +25854,9 @@ func awsRestjson1_serializeDocumentAwsWafRulePredicateListDetails(v *types.AwsWa
 		ok.String(*v.DataId)
 	}
 
-	if v.Negated {
+	if v.Negated != nil {
 		ok := object.Key("Negated")
-		ok.Boolean(v.Negated)
+		ok.Boolean(*v.Negated)
 	}
 
 	if v.Type != nil {
@@ -23170,9 +25935,9 @@ func awsRestjson1_serializeDocumentAwsWafv2CustomResponseDetails(v *types.AwsWaf
 		ok.String(*v.CustomResponseBodyKey)
 	}
 
-	if v.ResponseCode != 0 {
+	if v.ResponseCode != nil {
 		ok := object.Key("ResponseCode")
-		ok.Integer(v.ResponseCode)
+		ok.Integer(*v.ResponseCode)
 	}
 
 	if v.ResponseHeaders != nil {
@@ -23207,9 +25972,9 @@ func awsRestjson1_serializeDocumentAwsWafv2RuleGroupDetails(v *types.AwsWafv2Rul
 		ok.String(*v.Arn)
 	}
 
-	if v.Capacity != 0 {
+	if v.Capacity != nil {
 		ok := object.Key("Capacity")
-		ok.Long(v.Capacity)
+		ok.Long(*v.Capacity)
 	}
 
 	if v.Description != nil {
@@ -23333,9 +26098,9 @@ func awsRestjson1_serializeDocumentAwsWafv2RulesDetails(v *types.AwsWafv2RulesDe
 		ok.String(*v.OverrideAction)
 	}
 
-	if v.Priority != 0 {
+	if v.Priority != nil {
 		ok := object.Key("Priority")
-		ok.Integer(v.Priority)
+		ok.Integer(*v.Priority)
 	}
 
 	if v.VisibilityConfig != nil {
@@ -23365,9 +26130,9 @@ func awsRestjson1_serializeDocumentAwsWafv2VisibilityConfigDetails(v *types.AwsW
 	object := value.Object()
 	defer object.Close()
 
-	if v.CloudWatchMetricsEnabled {
+	if v.CloudWatchMetricsEnabled != nil {
 		ok := object.Key("CloudWatchMetricsEnabled")
-		ok.Boolean(v.CloudWatchMetricsEnabled)
+		ok.Boolean(*v.CloudWatchMetricsEnabled)
 	}
 
 	if v.MetricName != nil {
@@ -23375,9 +26140,9 @@ func awsRestjson1_serializeDocumentAwsWafv2VisibilityConfigDetails(v *types.AwsW
 		ok.String(*v.MetricName)
 	}
 
-	if v.SampledRequestsEnabled {
+	if v.SampledRequestsEnabled != nil {
 		ok := object.Key("SampledRequestsEnabled")
-		ok.Boolean(v.SampledRequestsEnabled)
+		ok.Boolean(*v.SampledRequestsEnabled)
 	}
 
 	return nil
@@ -23422,9 +26187,9 @@ func awsRestjson1_serializeDocumentAwsWafv2WebAclCaptchaConfigImmunityTimeProper
 	object := value.Object()
 	defer object.Close()
 
-	if v.ImmunityTime != 0 {
+	if v.ImmunityTime != nil {
 		ok := object.Key("ImmunityTime")
-		ok.Long(v.ImmunityTime)
+		ok.Long(*v.ImmunityTime)
 	}
 
 	return nil
@@ -23439,9 +26204,9 @@ func awsRestjson1_serializeDocumentAwsWafv2WebAclDetails(v *types.AwsWafv2WebAcl
 		ok.String(*v.Arn)
 	}
 
-	if v.Capacity != 0 {
+	if v.Capacity != nil {
 		ok := object.Key("Capacity")
-		ok.Long(v.Capacity)
+		ok.Long(*v.Capacity)
 	}
 
 	if v.CaptchaConfig != nil {
@@ -23468,9 +26233,9 @@ func awsRestjson1_serializeDocumentAwsWafv2WebAclDetails(v *types.AwsWafv2WebAcl
 		ok.String(*v.Id)
 	}
 
-	if v.ManagedbyFirewallManager {
+	if v.ManagedbyFirewallManager != nil {
 		ok := object.Key("ManagedbyFirewallManager")
-		ok.Boolean(v.ManagedbyFirewallManager)
+		ok.Boolean(*v.ManagedbyFirewallManager)
 	}
 
 	if v.Name != nil {
@@ -23549,9 +26314,9 @@ func awsRestjson1_serializeDocumentAwsWafWebAclRule(v *types.AwsWafWebAclRule, v
 		}
 	}
 
-	if v.Priority != 0 {
+	if v.Priority != nil {
 		ok := object.Key("Priority")
-		ok.Integer(v.Priority)
+		ok.Integer(*v.Priority)
 	}
 
 	if v.RuleId != nil {
@@ -23619,9 +26384,9 @@ func awsRestjson1_serializeDocumentBooleanFilter(v *types.BooleanFilter, value s
 	object := value.Object()
 	defer object.Close()
 
-	if v.Value {
+	if v.Value != nil {
 		ok := object.Key("Value")
-		ok.Boolean(v.Value)
+		ok.Boolean(*v.Value)
 	}
 
 	return nil
@@ -23649,9 +26414,9 @@ func awsRestjson1_serializeDocumentCell(v *types.Cell, value smithyjson.Value) e
 		ok.String(*v.CellReference)
 	}
 
-	if v.Column != 0 {
+	if v.Column != nil {
 		ok := object.Key("Column")
-		ok.Long(v.Column)
+		ok.Long(*v.Column)
 	}
 
 	if v.ColumnName != nil {
@@ -23659,9 +26424,9 @@ func awsRestjson1_serializeDocumentCell(v *types.Cell, value smithyjson.Value) e
 		ok.String(*v.ColumnName)
 	}
 
-	if v.Row != 0 {
+	if v.Row != nil {
 		ok := object.Key("Row")
-		ok.Long(v.Row)
+		ok.Long(*v.Row)
 	}
 
 	return nil
@@ -23731,9 +26496,9 @@ func awsRestjson1_serializeDocumentClassificationResult(v *types.ClassificationR
 	object := value.Object()
 	defer object.Close()
 
-	if v.AdditionalOccurrences {
+	if v.AdditionalOccurrences != nil {
 		ok := object.Key("AdditionalOccurrences")
-		ok.Boolean(v.AdditionalOccurrences)
+		ok.Boolean(*v.AdditionalOccurrences)
 	}
 
 	if v.CustomDataIdentifiers != nil {
@@ -23755,9 +26520,9 @@ func awsRestjson1_serializeDocumentClassificationResult(v *types.ClassificationR
 		}
 	}
 
-	if v.SizeClassified != 0 {
+	if v.SizeClassified != nil {
 		ok := object.Key("SizeClassified")
-		ok.Long(v.SizeClassified)
+		ok.Long(*v.SizeClassified)
 	}
 
 	if v.Status != nil {
@@ -23787,6 +26552,55 @@ func awsRestjson1_serializeDocumentClassificationStatus(v *types.ClassificationS
 	return nil
 }
 
+func awsRestjson1_serializeDocumentCloudWatchLogsLogGroupArnConfigDetails(v *types.CloudWatchLogsLogGroupArnConfigDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.CloudWatchLogsLogGroupArn != nil {
+		ok := object.Key("CloudWatchLogsLogGroupArn")
+		ok.String(*v.CloudWatchLogsLogGroupArn)
+	}
+
+	if v.HostedZoneId != nil {
+		ok := object.Key("HostedZoneId")
+		ok.String(*v.HostedZoneId)
+	}
+
+	if v.Id != nil {
+		ok := object.Key("Id")
+		ok.String(*v.Id)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentCodeVulnerabilitiesFilePath(v *types.CodeVulnerabilitiesFilePath, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.EndLine != nil {
+		ok := object.Key("EndLine")
+		ok.Integer(*v.EndLine)
+	}
+
+	if v.FileName != nil {
+		ok := object.Key("FileName")
+		ok.String(*v.FileName)
+	}
+
+	if v.FilePath != nil {
+		ok := object.Key("FilePath")
+		ok.String(*v.FilePath)
+	}
+
+	if v.StartLine != nil {
+		ok := object.Key("StartLine")
+		ok.Integer(*v.StartLine)
+	}
+
+	return nil
+}
+
 func awsRestjson1_serializeDocumentCompliance(v *types.Compliance, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
@@ -23810,6 +26624,13 @@ func awsRestjson1_serializeDocumentCompliance(v *types.Compliance, value smithyj
 		ok.String(*v.SecurityControlId)
 	}
 
+	if v.SecurityControlParameters != nil {
+		ok := object.Key("SecurityControlParameters")
+		if err := awsRestjson1_serializeDocumentSecurityControlParametersList(v.SecurityControlParameters, ok); err != nil {
+			return err
+		}
+	}
+
 	if len(v.Status) > 0 {
 		ok := object.Key("Status")
 		ok.String(string(v.Status))
@@ -23822,6 +26643,33 @@ func awsRestjson1_serializeDocumentCompliance(v *types.Compliance, value smithyj
 		}
 	}
 
+	return nil
+}
+
+func awsRestjson1_serializeDocumentConfigurationPolicyAssociation(v *types.ConfigurationPolicyAssociation, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Target != nil {
+		ok := object.Key("Target")
+		if err := awsRestjson1_serializeDocumentTarget(v.Target, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentConfigurationPolicyAssociationsList(v []types.ConfigurationPolicyAssociation, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentConfigurationPolicyAssociation(&v[i], av); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -23854,9 +26702,9 @@ func awsRestjson1_serializeDocumentContainerDetails(v *types.ContainerDetails, v
 		ok.String(*v.Name)
 	}
 
-	if v.Privileged {
+	if v.Privileged != nil {
 		ok := object.Key("Privileged")
-		ok.Boolean(v.Privileged)
+		ok.Boolean(*v.Privileged)
 	}
 
 	if v.VolumeMounts != nil {
@@ -23895,9 +26743,9 @@ func awsRestjson1_serializeDocumentCustomDataIdentifiersDetections(v *types.Cust
 		ok.String(*v.Arn)
 	}
 
-	if v.Count != 0 {
+	if v.Count != nil {
 		ok := object.Key("Count")
-		ok.Long(v.Count)
+		ok.Long(*v.Count)
 	}
 
 	if v.Name != nil {
@@ -23939,9 +26787,9 @@ func awsRestjson1_serializeDocumentCustomDataIdentifiersResult(v *types.CustomDa
 		}
 	}
 
-	if v.TotalCount != 0 {
+	if v.TotalCount != nil {
 		ok := object.Key("TotalCount")
-		ok.Long(v.TotalCount)
+		ok.Long(*v.TotalCount)
 	}
 
 	return nil
@@ -23958,20 +26806,20 @@ func awsRestjson1_serializeDocumentCvss(v *types.Cvss, value smithyjson.Value) e
 		}
 	}
 
-	if v.BaseScore != 0 {
+	if v.BaseScore != nil {
 		ok := object.Key("BaseScore")
 		switch {
-		case math.IsNaN(v.BaseScore):
+		case math.IsNaN(*v.BaseScore):
 			ok.String("NaN")
 
-		case math.IsInf(v.BaseScore, 1):
+		case math.IsInf(*v.BaseScore, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.BaseScore, -1):
+		case math.IsInf(*v.BaseScore, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.BaseScore)
+			ok.Double(*v.BaseScore)
 
 		}
 	}
@@ -24072,11 +26920,36 @@ func awsRestjson1_serializeDocumentDateRange(v *types.DateRange, value smithyjso
 		ok.String(string(v.Unit))
 	}
 
-	if v.Value != 0 {
+	if v.Value != nil {
 		ok := object.Key("Value")
-		ok.Integer(v.Value)
+		ok.Integer(*v.Value)
 	}
 
+	return nil
+}
+
+func awsRestjson1_serializeDocumentDetection(v *types.Detection, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Sequence != nil {
+		ok := object.Key("Sequence")
+		if err := awsRestjson1_serializeDocumentSequence(v.Sequence, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentDisabledSecurityControlIdentifierList(v []string, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		av.String(v[i])
+	}
 	return nil
 }
 
@@ -24084,9 +26957,9 @@ func awsRestjson1_serializeDocumentDnsRequestAction(v *types.DnsRequestAction, v
 	object := value.Object()
 	defer object.Close()
 
-	if v.Blocked {
+	if v.Blocked != nil {
 		ok := object.Key("Blocked")
-		ok.Boolean(v.Blocked)
+		ok.Boolean(*v.Blocked)
 	}
 
 	if v.Domain != nil {
@@ -24099,6 +26972,28 @@ func awsRestjson1_serializeDocumentDnsRequestAction(v *types.DnsRequestAction, v
 		ok.String(*v.Protocol)
 	}
 
+	return nil
+}
+
+func awsRestjson1_serializeDocumentEnabledSecurityControlIdentifierList(v []string, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		av.String(v[i])
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentEnabledStandardIdentifierList(v []string, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		av.String(v[i])
+	}
 	return nil
 }
 
@@ -24157,14 +27052,14 @@ func awsRestjson1_serializeDocumentFindingProviderFields(v *types.FindingProvide
 	object := value.Object()
 	defer object.Close()
 
-	if v.Confidence != 0 {
+	if v.Confidence != nil {
 		ok := object.Key("Confidence")
-		ok.Integer(v.Confidence)
+		ok.Integer(*v.Confidence)
 	}
 
-	if v.Criticality != 0 {
+	if v.Criticality != nil {
 		ok := object.Key("Criticality")
-		ok.Integer(v.Criticality)
+		ok.Integer(*v.Criticality)
 	}
 
 	if v.RelatedFindings != nil {
@@ -24311,9 +27206,9 @@ func awsRestjson1_serializeDocumentFirewallPolicyStatelessRuleGroupReferencesDet
 	object := value.Object()
 	defer object.Close()
 
-	if v.Priority != 0 {
+	if v.Priority != nil {
 		ok := object.Key("Priority")
-		ok.Integer(v.Priority)
+		ok.Integer(*v.Priority)
 	}
 
 	if v.ResourceArn != nil {
@@ -24337,42 +27232,66 @@ func awsRestjson1_serializeDocumentFirewallPolicyStatelessRuleGroupReferencesLis
 	return nil
 }
 
+func awsRestjson1_serializeDocumentGeneratorDetails(v *types.GeneratorDetails, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Description != nil {
+		ok := object.Key("Description")
+		ok.String(*v.Description)
+	}
+
+	if v.Labels != nil {
+		ok := object.Key("Labels")
+		if err := awsRestjson1_serializeDocumentTypeList(v.Labels, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
+	}
+
+	return nil
+}
+
 func awsRestjson1_serializeDocumentGeoLocation(v *types.GeoLocation, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
 
-	if v.Lat != 0 {
+	if v.Lat != nil {
 		ok := object.Key("Lat")
 		switch {
-		case math.IsNaN(v.Lat):
+		case math.IsNaN(*v.Lat):
 			ok.String("NaN")
 
-		case math.IsInf(v.Lat, 1):
+		case math.IsInf(*v.Lat, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.Lat, -1):
+		case math.IsInf(*v.Lat, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.Lat)
+			ok.Double(*v.Lat)
 
 		}
 	}
 
-	if v.Lon != 0 {
+	if v.Lon != nil {
 		ok := object.Key("Lon")
 		switch {
-		case math.IsNaN(v.Lon):
+		case math.IsNaN(*v.Lon):
 			ok.String("NaN")
 
-		case math.IsInf(v.Lon, 1):
+		case math.IsInf(*v.Lon, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.Lon, -1):
+		case math.IsInf(*v.Lon, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.Lon)
+			ok.Double(*v.Lon)
 
 		}
 	}
@@ -24384,16 +27303,58 @@ func awsRestjson1_serializeDocumentIcmpTypeCode(v *types.IcmpTypeCode, value smi
 	object := value.Object()
 	defer object.Close()
 
-	if v.Code != 0 {
+	if v.Code != nil {
 		ok := object.Key("Code")
-		ok.Integer(v.Code)
+		ok.Integer(*v.Code)
 	}
 
-	if v.Type != 0 {
+	if v.Type != nil {
 		ok := object.Key("Type")
-		ok.Integer(v.Type)
+		ok.Integer(*v.Type)
 	}
 
+	return nil
+}
+
+func awsRestjson1_serializeDocumentIndicator(v *types.Indicator, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Key != nil {
+		ok := object.Key("Key")
+		ok.String(*v.Key)
+	}
+
+	if v.Title != nil {
+		ok := object.Key("Title")
+		ok.String(*v.Title)
+	}
+
+	if v.Type != nil {
+		ok := object.Key("Type")
+		ok.String(*v.Type)
+	}
+
+	if v.Values != nil {
+		ok := object.Key("Values")
+		if err := awsRestjson1_serializeDocumentNonEmptyStringList(v.Values, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentIndicatorsList(v []types.Indicator, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentIndicator(&v[i], av); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -24437,9 +27398,9 @@ func awsRestjson1_serializeDocumentIpOrganizationDetails(v *types.IpOrganization
 	object := value.Object()
 	defer object.Close()
 
-	if v.Asn != 0 {
+	if v.Asn != nil {
 		ok := object.Key("Asn")
-		ok.Integer(v.Asn)
+		ok.Integer(*v.Asn)
 	}
 
 	if v.AsnOrg != nil {
@@ -24631,9 +27592,9 @@ func awsRestjson1_serializeDocumentNetwork(v *types.Network, value smithyjson.Va
 		ok.String(*v.DestinationIpV6)
 	}
 
-	if v.DestinationPort != 0 {
+	if v.DestinationPort != nil {
 		ok := object.Key("DestinationPort")
-		ok.Integer(v.DestinationPort)
+		ok.Integer(*v.DestinationPort)
 	}
 
 	if len(v.Direction) > 0 {
@@ -24673,9 +27634,38 @@ func awsRestjson1_serializeDocumentNetwork(v *types.Network, value smithyjson.Va
 		ok.String(*v.SourceMac)
 	}
 
-	if v.SourcePort != 0 {
+	if v.SourcePort != nil {
 		ok := object.Key("SourcePort")
-		ok.Integer(v.SourcePort)
+		ok.Integer(*v.SourcePort)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentNetworkAutonomousSystem(v *types.NetworkAutonomousSystem, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
+	}
+
+	if v.Number != nil {
+		ok := object.Key("Number")
+		ok.Integer(*v.Number)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentNetworkConnection(v *types.NetworkConnection, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if len(v.Direction) > 0 {
+		ok := object.Key("Direction")
+		ok.String(string(v.Direction))
 	}
 
 	return nil
@@ -24685,9 +27675,9 @@ func awsRestjson1_serializeDocumentNetworkConnectionAction(v *types.NetworkConne
 	object := value.Object()
 	defer object.Close()
 
-	if v.Blocked {
+	if v.Blocked != nil {
 		ok := object.Key("Blocked")
-		ok.Boolean(v.Blocked)
+		ok.Boolean(*v.Blocked)
 	}
 
 	if v.ConnectionDirection != nil {
@@ -24718,6 +27708,120 @@ func awsRestjson1_serializeDocumentNetworkConnectionAction(v *types.NetworkConne
 		ok := object.Key("RemotePortDetails")
 		if err := awsRestjson1_serializeDocumentActionRemotePortDetails(v.RemotePortDetails, ok); err != nil {
 			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentNetworkEndpoint(v *types.NetworkEndpoint, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.AutonomousSystem != nil {
+		ok := object.Key("AutonomousSystem")
+		if err := awsRestjson1_serializeDocumentNetworkAutonomousSystem(v.AutonomousSystem, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Connection != nil {
+		ok := object.Key("Connection")
+		if err := awsRestjson1_serializeDocumentNetworkConnection(v.Connection, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Domain != nil {
+		ok := object.Key("Domain")
+		ok.String(*v.Domain)
+	}
+
+	if v.Id != nil {
+		ok := object.Key("Id")
+		ok.String(*v.Id)
+	}
+
+	if v.Ip != nil {
+		ok := object.Key("Ip")
+		ok.String(*v.Ip)
+	}
+
+	if v.Location != nil {
+		ok := object.Key("Location")
+		if err := awsRestjson1_serializeDocumentNetworkGeoLocation(v.Location, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Port != nil {
+		ok := object.Key("Port")
+		ok.Integer(*v.Port)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentNetworkEndpointsList(v []types.NetworkEndpoint, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentNetworkEndpoint(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentNetworkGeoLocation(v *types.NetworkGeoLocation, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.City != nil {
+		ok := object.Key("City")
+		ok.String(*v.City)
+	}
+
+	if v.Country != nil {
+		ok := object.Key("Country")
+		ok.String(*v.Country)
+	}
+
+	if v.Lat != nil {
+		ok := object.Key("Lat")
+		switch {
+		case math.IsNaN(*v.Lat):
+			ok.String("NaN")
+
+		case math.IsInf(*v.Lat, 1):
+			ok.String("Infinity")
+
+		case math.IsInf(*v.Lat, -1):
+			ok.String("-Infinity")
+
+		default:
+			ok.Double(*v.Lat)
+
+		}
+	}
+
+	if v.Lon != nil {
+		ok := object.Key("Lon")
+		switch {
+		case math.IsNaN(*v.Lon):
+			ok.String("NaN")
+
+		case math.IsInf(*v.Lon, 1):
+			ok.String("Infinity")
+
+		case math.IsInf(*v.Lon, -1):
+			ok.String("-Infinity")
+
+		default:
+			ok.Double(*v.Lon)
+
 		}
 	}
 
@@ -24869,56 +27973,92 @@ func awsRestjson1_serializeDocumentNumberFilter(v *types.NumberFilter, value smi
 	object := value.Object()
 	defer object.Close()
 
-	if v.Eq != 0 {
+	if v.Eq != nil {
 		ok := object.Key("Eq")
 		switch {
-		case math.IsNaN(v.Eq):
+		case math.IsNaN(*v.Eq):
 			ok.String("NaN")
 
-		case math.IsInf(v.Eq, 1):
+		case math.IsInf(*v.Eq, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.Eq, -1):
+		case math.IsInf(*v.Eq, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.Eq)
+			ok.Double(*v.Eq)
 
 		}
 	}
 
-	if v.Gte != 0 {
+	if v.Gt != nil {
+		ok := object.Key("Gt")
+		switch {
+		case math.IsNaN(*v.Gt):
+			ok.String("NaN")
+
+		case math.IsInf(*v.Gt, 1):
+			ok.String("Infinity")
+
+		case math.IsInf(*v.Gt, -1):
+			ok.String("-Infinity")
+
+		default:
+			ok.Double(*v.Gt)
+
+		}
+	}
+
+	if v.Gte != nil {
 		ok := object.Key("Gte")
 		switch {
-		case math.IsNaN(v.Gte):
+		case math.IsNaN(*v.Gte):
 			ok.String("NaN")
 
-		case math.IsInf(v.Gte, 1):
+		case math.IsInf(*v.Gte, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.Gte, -1):
+		case math.IsInf(*v.Gte, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.Gte)
+			ok.Double(*v.Gte)
 
 		}
 	}
 
-	if v.Lte != 0 {
-		ok := object.Key("Lte")
+	if v.Lt != nil {
+		ok := object.Key("Lt")
 		switch {
-		case math.IsNaN(v.Lte):
+		case math.IsNaN(*v.Lt):
 			ok.String("NaN")
 
-		case math.IsInf(v.Lte, 1):
+		case math.IsInf(*v.Lt, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.Lte, -1):
+		case math.IsInf(*v.Lt, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.Lte)
+			ok.Double(*v.Lt)
+
+		}
+	}
+
+	if v.Lte != nil {
+		ok := object.Key("Lte")
+		switch {
+		case math.IsNaN(*v.Lte):
+			ok.String("NaN")
+
+		case math.IsInf(*v.Lte, 1):
+			ok.String("Infinity")
+
+		case math.IsInf(*v.Lte, -1):
+			ok.String("-Infinity")
+
+		default:
+			ok.Double(*v.Lte)
 
 		}
 	}
@@ -24981,6 +28121,28 @@ func awsRestjson1_serializeDocumentOccurrences(v *types.Occurrences, value smith
 	return nil
 }
 
+func awsRestjson1_serializeDocumentOrganizationConfiguration(v *types.OrganizationConfiguration, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if len(v.ConfigurationType) > 0 {
+		ok := object.Key("ConfigurationType")
+		ok.String(string(v.ConfigurationType))
+	}
+
+	if len(v.Status) > 0 {
+		ok := object.Key("Status")
+		ok.String(string(v.Status))
+	}
+
+	if v.StatusMessage != nil {
+		ok := object.Key("StatusMessage")
+		ok.String(*v.StatusMessage)
+	}
+
+	return nil
+}
+
 func awsRestjson1_serializeDocumentPage(v *types.Page, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
@@ -24999,9 +28161,9 @@ func awsRestjson1_serializeDocumentPage(v *types.Page, value smithyjson.Value) e
 		}
 	}
 
-	if v.PageNumber != 0 {
+	if v.PageNumber != nil {
 		ok := object.Key("PageNumber")
-		ok.Long(v.PageNumber)
+		ok.Long(*v.PageNumber)
 	}
 
 	return nil
@@ -25020,13 +28182,109 @@ func awsRestjson1_serializeDocumentPages(v []types.Page, value smithyjson.Value)
 	return nil
 }
 
+func awsRestjson1_serializeDocumentParameterConfiguration(v *types.ParameterConfiguration, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Value != nil {
+		ok := object.Key("Value")
+		if err := awsRestjson1_serializeDocumentParameterValue(v.Value, ok); err != nil {
+			return err
+		}
+	}
+
+	if len(v.ValueType) > 0 {
+		ok := object.Key("ValueType")
+		ok.String(string(v.ValueType))
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentParameters(v map[string]types.ParameterConfiguration, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	for key := range v {
+		om := object.Key(key)
+		mapVar := v[key]
+		if err := awsRestjson1_serializeDocumentParameterConfiguration(&mapVar, om); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentParameterValue(v types.ParameterValue, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	switch uv := v.(type) {
+	case *types.ParameterValueMemberBoolean:
+		av := object.Key("Boolean")
+		av.Boolean(uv.Value)
+
+	case *types.ParameterValueMemberDouble:
+		av := object.Key("Double")
+		switch {
+		case math.IsNaN(uv.Value):
+			av.String("NaN")
+
+		case math.IsInf(uv.Value, 1):
+			av.String("Infinity")
+
+		case math.IsInf(uv.Value, -1):
+			av.String("-Infinity")
+
+		default:
+			av.Double(uv.Value)
+
+		}
+
+	case *types.ParameterValueMemberEnum:
+		av := object.Key("Enum")
+		av.String(uv.Value)
+
+	case *types.ParameterValueMemberEnumList:
+		av := object.Key("EnumList")
+		if err := awsRestjson1_serializeDocumentStringList(uv.Value, av); err != nil {
+			return err
+		}
+
+	case *types.ParameterValueMemberInteger:
+		av := object.Key("Integer")
+		av.Integer(uv.Value)
+
+	case *types.ParameterValueMemberIntegerList:
+		av := object.Key("IntegerList")
+		if err := awsRestjson1_serializeDocumentIntegerList(uv.Value, av); err != nil {
+			return err
+		}
+
+	case *types.ParameterValueMemberString:
+		av := object.Key("String")
+		av.String(uv.Value)
+
+	case *types.ParameterValueMemberStringList:
+		av := object.Key("StringList")
+		if err := awsRestjson1_serializeDocumentStringList(uv.Value, av); err != nil {
+			return err
+		}
+
+	default:
+		return fmt.Errorf("attempted to serialize unknown member type %T for union %T", uv, v)
+
+	}
+	return nil
+}
+
 func awsRestjson1_serializeDocumentPatchSummary(v *types.PatchSummary, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
 
-	if v.FailedCount != 0 {
+	if v.FailedCount != nil {
 		ok := object.Key("FailedCount")
-		ok.Integer(v.FailedCount)
+		ok.Integer(*v.FailedCount)
 	}
 
 	if v.Id != nil {
@@ -25034,29 +28292,29 @@ func awsRestjson1_serializeDocumentPatchSummary(v *types.PatchSummary, value smi
 		ok.String(*v.Id)
 	}
 
-	if v.InstalledCount != 0 {
+	if v.InstalledCount != nil {
 		ok := object.Key("InstalledCount")
-		ok.Integer(v.InstalledCount)
+		ok.Integer(*v.InstalledCount)
 	}
 
-	if v.InstalledOtherCount != 0 {
+	if v.InstalledOtherCount != nil {
 		ok := object.Key("InstalledOtherCount")
-		ok.Integer(v.InstalledOtherCount)
+		ok.Integer(*v.InstalledOtherCount)
 	}
 
-	if v.InstalledPendingReboot != 0 {
+	if v.InstalledPendingReboot != nil {
 		ok := object.Key("InstalledPendingReboot")
-		ok.Integer(v.InstalledPendingReboot)
+		ok.Integer(*v.InstalledPendingReboot)
 	}
 
-	if v.InstalledRejectedCount != 0 {
+	if v.InstalledRejectedCount != nil {
 		ok := object.Key("InstalledRejectedCount")
-		ok.Integer(v.InstalledRejectedCount)
+		ok.Integer(*v.InstalledRejectedCount)
 	}
 
-	if v.MissingCount != 0 {
+	if v.MissingCount != nil {
 		ok := object.Key("MissingCount")
-		ok.Integer(v.MissingCount)
+		ok.Integer(*v.MissingCount)
 	}
 
 	if v.Operation != nil {
@@ -25082,13 +28340,31 @@ func awsRestjson1_serializeDocumentPatchSummary(v *types.PatchSummary, value smi
 	return nil
 }
 
+func awsRestjson1_serializeDocumentPolicy(v types.Policy, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	switch uv := v.(type) {
+	case *types.PolicyMemberSecurityHub:
+		av := object.Key("SecurityHub")
+		if err := awsRestjson1_serializeDocumentSecurityHubPolicy(&uv.Value, av); err != nil {
+			return err
+		}
+
+	default:
+		return fmt.Errorf("attempted to serialize unknown member type %T for union %T", uv, v)
+
+	}
+	return nil
+}
+
 func awsRestjson1_serializeDocumentPortProbeAction(v *types.PortProbeAction, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
 
-	if v.Blocked {
+	if v.Blocked != nil {
 		ok := object.Key("Blocked")
-		ok.Boolean(v.Blocked)
+		ok.Boolean(*v.Blocked)
 	}
 
 	if v.PortProbeDetails != nil {
@@ -25146,14 +28422,14 @@ func awsRestjson1_serializeDocumentPortRange(v *types.PortRange, value smithyjso
 	object := value.Object()
 	defer object.Close()
 
-	if v.Begin != 0 {
+	if v.Begin != nil {
 		ok := object.Key("Begin")
-		ok.Integer(v.Begin)
+		ok.Integer(*v.Begin)
 	}
 
-	if v.End != 0 {
+	if v.End != nil {
 		ok := object.Key("End")
-		ok.Integer(v.End)
+		ok.Integer(*v.End)
 	}
 
 	return nil
@@ -25163,14 +28439,14 @@ func awsRestjson1_serializeDocumentPortRangeFromTo(v *types.PortRangeFromTo, val
 	object := value.Object()
 	defer object.Close()
 
-	if v.From != 0 {
+	if v.From != nil {
 		ok := object.Key("From")
-		ok.Integer(v.From)
+		ok.Integer(*v.From)
 	}
 
-	if v.To != 0 {
+	if v.To != nil {
 		ok := object.Key("To")
-		ok.Integer(v.To)
+		ok.Integer(*v.To)
 	}
 
 	return nil
@@ -25203,9 +28479,9 @@ func awsRestjson1_serializeDocumentProcessDetails(v *types.ProcessDetails, value
 		ok.String(*v.Name)
 	}
 
-	if v.ParentPid != 0 {
+	if v.ParentPid != nil {
 		ok := object.Key("ParentPid")
-		ok.Integer(v.ParentPid)
+		ok.Integer(*v.ParentPid)
 	}
 
 	if v.Path != nil {
@@ -25213,9 +28489,9 @@ func awsRestjson1_serializeDocumentProcessDetails(v *types.ProcessDetails, value
 		ok.String(*v.Path)
 	}
 
-	if v.Pid != 0 {
+	if v.Pid != nil {
 		ok := object.Key("Pid")
-		ok.Integer(v.Pid)
+		ok.Integer(*v.Pid)
 	}
 
 	if v.TerminatedAt != nil {
@@ -25255,19 +28531,19 @@ func awsRestjson1_serializeDocumentRange(v *types.Range, value smithyjson.Value)
 	object := value.Object()
 	defer object.Close()
 
-	if v.End != 0 {
+	if v.End != nil {
 		ok := object.Key("End")
-		ok.Long(v.End)
+		ok.Long(*v.End)
 	}
 
-	if v.Start != 0 {
+	if v.Start != nil {
 		ok := object.Key("Start")
-		ok.Long(v.Start)
+		ok.Long(*v.Start)
 	}
 
-	if v.StartColumn != 0 {
+	if v.StartColumn != nil {
 		ok := object.Key("StartColumn")
-		ok.Long(v.StartColumn)
+		ok.Long(*v.StartColumn)
 	}
 
 	return nil
@@ -25312,9 +28588,9 @@ func awsRestjson1_serializeDocumentRecord(v *types.Record, value smithyjson.Valu
 		ok.String(*v.JsonPath)
 	}
 
-	if v.RecordIndex != 0 {
+	if v.RecordIndex != nil {
 		ok := object.Key("RecordIndex")
-		ok.Long(v.RecordIndex)
+		ok.Long(*v.RecordIndex)
 	}
 
 	return nil
@@ -25391,6 +28667,16 @@ func awsRestjson1_serializeDocumentRemediation(v *types.Remediation, value smith
 func awsRestjson1_serializeDocumentResource(v *types.Resource, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
+
+	if v.ApplicationArn != nil {
+		ok := object.Key("ApplicationArn")
+		ok.String(*v.ApplicationArn)
+	}
+
+	if v.ApplicationName != nil {
+		ok := object.Key("ApplicationName")
+		ok.String(*v.ApplicationName)
+	}
 
 	if v.DataClassification != nil {
 		ok := object.Key("DataClassification")
@@ -25571,9 +28857,37 @@ func awsRestjson1_serializeDocumentResourceDetails(v *types.ResourceDetails, val
 		}
 	}
 
+	if v.AwsDmsEndpoint != nil {
+		ok := object.Key("AwsDmsEndpoint")
+		if err := awsRestjson1_serializeDocumentAwsDmsEndpointDetails(v.AwsDmsEndpoint, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.AwsDmsReplicationInstance != nil {
+		ok := object.Key("AwsDmsReplicationInstance")
+		if err := awsRestjson1_serializeDocumentAwsDmsReplicationInstanceDetails(v.AwsDmsReplicationInstance, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.AwsDmsReplicationTask != nil {
+		ok := object.Key("AwsDmsReplicationTask")
+		if err := awsRestjson1_serializeDocumentAwsDmsReplicationTaskDetails(v.AwsDmsReplicationTask, ok); err != nil {
+			return err
+		}
+	}
+
 	if v.AwsDynamoDbTable != nil {
 		ok := object.Key("AwsDynamoDbTable")
 		if err := awsRestjson1_serializeDocumentAwsDynamoDbTableDetails(v.AwsDynamoDbTable, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.AwsEc2ClientVpnEndpoint != nil {
+		ok := object.Key("AwsEc2ClientVpnEndpoint")
+		if err := awsRestjson1_serializeDocumentAwsEc2ClientVpnEndpointDetails(v.AwsEc2ClientVpnEndpoint, ok); err != nil {
 			return err
 		}
 	}
@@ -25774,6 +29088,20 @@ func awsRestjson1_serializeDocumentResourceDetails(v *types.ResourceDetails, val
 		}
 	}
 
+	if v.AwsEventsEndpoint != nil {
+		ok := object.Key("AwsEventsEndpoint")
+		if err := awsRestjson1_serializeDocumentAwsEventsEndpointDetails(v.AwsEventsEndpoint, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.AwsEventsEventbus != nil {
+		ok := object.Key("AwsEventsEventbus")
+		if err := awsRestjson1_serializeDocumentAwsEventsEventbusDetails(v.AwsEventsEventbus, ok); err != nil {
+			return err
+		}
+	}
+
 	if v.AwsGuardDutyDetector != nil {
 		ok := object.Key("AwsGuardDutyDetector")
 		if err := awsRestjson1_serializeDocumentAwsGuardDutyDetectorDetails(v.AwsGuardDutyDetector, ok); err != nil {
@@ -25840,6 +29168,13 @@ func awsRestjson1_serializeDocumentResourceDetails(v *types.ResourceDetails, val
 	if v.AwsLambdaLayerVersion != nil {
 		ok := object.Key("AwsLambdaLayerVersion")
 		if err := awsRestjson1_serializeDocumentAwsLambdaLayerVersionDetails(v.AwsLambdaLayerVersion, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.AwsMskCluster != nil {
+		ok := object.Key("AwsMskCluster")
+		if err := awsRestjson1_serializeDocumentAwsMskClusterDetails(v.AwsMskCluster, ok); err != nil {
 			return err
 		}
 	}
@@ -25917,6 +29252,20 @@ func awsRestjson1_serializeDocumentResourceDetails(v *types.ResourceDetails, val
 	if v.AwsRedshiftCluster != nil {
 		ok := object.Key("AwsRedshiftCluster")
 		if err := awsRestjson1_serializeDocumentAwsRedshiftClusterDetails(v.AwsRedshiftCluster, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.AwsRoute53HostedZone != nil {
+		ok := object.Key("AwsRoute53HostedZone")
+		if err := awsRestjson1_serializeDocumentAwsRoute53HostedZoneDetails(v.AwsRoute53HostedZone, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.AwsS3AccessPoint != nil {
+		ok := object.Key("AwsS3AccessPoint")
+		if err := awsRestjson1_serializeDocumentAwsS3AccessPointDetails(v.AwsS3AccessPoint, ok); err != nil {
 			return err
 		}
 	}
@@ -26496,14 +29845,14 @@ func awsRestjson1_serializeDocumentRuleGroupSourceStatelessRuleMatchAttributesDe
 	object := value.Object()
 	defer object.Close()
 
-	if v.FromPort != 0 {
+	if v.FromPort != nil {
 		ok := object.Key("FromPort")
-		ok.Integer(v.FromPort)
+		ok.Integer(*v.FromPort)
 	}
 
-	if v.ToPort != 0 {
+	if v.ToPort != nil {
 		ok := object.Key("ToPort")
-		ok.Integer(v.ToPort)
+		ok.Integer(*v.ToPort)
 	}
 
 	return nil
@@ -26562,14 +29911,14 @@ func awsRestjson1_serializeDocumentRuleGroupSourceStatelessRuleMatchAttributesSo
 	object := value.Object()
 	defer object.Close()
 
-	if v.FromPort != 0 {
+	if v.FromPort != nil {
 		ok := object.Key("FromPort")
-		ok.Integer(v.FromPort)
+		ok.Integer(*v.FromPort)
 	}
 
-	if v.ToPort != 0 {
+	if v.ToPort != nil {
 		ok := object.Key("ToPort")
-		ok.Integer(v.ToPort)
+		ok.Integer(*v.ToPort)
 	}
 
 	return nil
@@ -26672,9 +30021,9 @@ func awsRestjson1_serializeDocumentRuleGroupSourceStatelessRulesDetails(v *types
 	object := value.Object()
 	defer object.Close()
 
-	if v.Priority != 0 {
+	if v.Priority != nil {
 		ok := object.Key("Priority")
-		ok.Integer(v.Priority)
+		ok.Integer(*v.Priority)
 	}
 
 	if v.RuleDefinition != nil {
@@ -26749,6 +30098,98 @@ func awsRestjson1_serializeDocumentRuleGroupVariablesPortSetsDetails(v *types.Ru
 	return nil
 }
 
+func awsRestjson1_serializeDocumentSecurityControlCustomParameter(v *types.SecurityControlCustomParameter, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Parameters != nil {
+		ok := object.Key("Parameters")
+		if err := awsRestjson1_serializeDocumentParameters(v.Parameters, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.SecurityControlId != nil {
+		ok := object.Key("SecurityControlId")
+		ok.String(*v.SecurityControlId)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentSecurityControlCustomParametersList(v []types.SecurityControlCustomParameter, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentSecurityControlCustomParameter(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentSecurityControlParameter(v *types.SecurityControlParameter, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
+	}
+
+	if v.Value != nil {
+		ok := object.Key("Value")
+		if err := awsRestjson1_serializeDocumentTypeList(v.Value, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentSecurityControlParametersList(v []types.SecurityControlParameter, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentSecurityControlParameter(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentSecurityControlsConfiguration(v *types.SecurityControlsConfiguration, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.DisabledSecurityControlIdentifiers != nil {
+		ok := object.Key("DisabledSecurityControlIdentifiers")
+		if err := awsRestjson1_serializeDocumentDisabledSecurityControlIdentifierList(v.DisabledSecurityControlIdentifiers, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.EnabledSecurityControlIdentifiers != nil {
+		ok := object.Key("EnabledSecurityControlIdentifiers")
+		if err := awsRestjson1_serializeDocumentEnabledSecurityControlIdentifierList(v.EnabledSecurityControlIdentifiers, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.SecurityControlCustomParameters != nil {
+		ok := object.Key("SecurityControlCustomParameters")
+		if err := awsRestjson1_serializeDocumentSecurityControlCustomParametersList(v.SecurityControlCustomParameters, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func awsRestjson1_serializeDocumentSecurityGroups(v []string, value smithyjson.Value) error {
 	array := value.Array()
 	defer array.Close()
@@ -26760,13 +30201,39 @@ func awsRestjson1_serializeDocumentSecurityGroups(v []string, value smithyjson.V
 	return nil
 }
 
+func awsRestjson1_serializeDocumentSecurityHubPolicy(v *types.SecurityHubPolicy, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.EnabledStandardIdentifiers != nil {
+		ok := object.Key("EnabledStandardIdentifiers")
+		if err := awsRestjson1_serializeDocumentEnabledStandardIdentifierList(v.EnabledStandardIdentifiers, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.SecurityControlsConfiguration != nil {
+		ok := object.Key("SecurityControlsConfiguration")
+		if err := awsRestjson1_serializeDocumentSecurityControlsConfiguration(v.SecurityControlsConfiguration, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ServiceEnabled != nil {
+		ok := object.Key("ServiceEnabled")
+		ok.Boolean(*v.ServiceEnabled)
+	}
+
+	return nil
+}
+
 func awsRestjson1_serializeDocumentSensitiveDataDetections(v *types.SensitiveDataDetections, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
 
-	if v.Count != 0 {
+	if v.Count != nil {
 		ok := object.Key("Count")
-		ok.Long(v.Count)
+		ok.Long(*v.Count)
 	}
 
 	if v.Occurrences != nil {
@@ -26813,9 +30280,9 @@ func awsRestjson1_serializeDocumentSensitiveDataResult(v *types.SensitiveDataRes
 		}
 	}
 
-	if v.TotalCount != 0 {
+	if v.TotalCount != nil {
 		ok := object.Key("TotalCount")
-		ok.Long(v.TotalCount)
+		ok.Long(*v.TotalCount)
 	}
 
 	return nil
@@ -26834,6 +30301,46 @@ func awsRestjson1_serializeDocumentSensitiveDataResultList(v []types.SensitiveDa
 	return nil
 }
 
+func awsRestjson1_serializeDocumentSequence(v *types.Sequence, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Actors != nil {
+		ok := object.Key("Actors")
+		if err := awsRestjson1_serializeDocumentActorsList(v.Actors, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Endpoints != nil {
+		ok := object.Key("Endpoints")
+		if err := awsRestjson1_serializeDocumentNetworkEndpointsList(v.Endpoints, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.SequenceIndicators != nil {
+		ok := object.Key("SequenceIndicators")
+		if err := awsRestjson1_serializeDocumentIndicatorsList(v.SequenceIndicators, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Signals != nil {
+		ok := object.Key("Signals")
+		if err := awsRestjson1_serializeDocumentSignalsList(v.Signals, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Uid != nil {
+		ok := object.Key("Uid")
+		ok.String(*v.Uid)
+	}
+
+	return nil
+}
+
 func awsRestjson1_serializeDocumentSeverity(v *types.Severity, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
@@ -26843,9 +30350,9 @@ func awsRestjson1_serializeDocumentSeverity(v *types.Severity, value smithyjson.
 		ok.String(string(v.Label))
 	}
 
-	if v.Normalized != 0 {
+	if v.Normalized != nil {
 		ok := object.Key("Normalized")
-		ok.Integer(v.Normalized)
+		ok.Integer(*v.Normalized)
 	}
 
 	if v.Original != nil {
@@ -26853,20 +30360,20 @@ func awsRestjson1_serializeDocumentSeverity(v *types.Severity, value smithyjson.
 		ok.String(*v.Original)
 	}
 
-	if v.Product != 0 {
+	if v.Product != nil {
 		ok := object.Key("Product")
 		switch {
-		case math.IsNaN(v.Product):
+		case math.IsNaN(*v.Product):
 			ok.String("NaN")
 
-		case math.IsInf(v.Product, 1):
+		case math.IsInf(*v.Product, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.Product, -1):
+		case math.IsInf(*v.Product, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.Product)
+			ok.Double(*v.Product)
 
 		}
 	}
@@ -26883,29 +30390,145 @@ func awsRestjson1_serializeDocumentSeverityUpdate(v *types.SeverityUpdate, value
 		ok.String(string(v.Label))
 	}
 
-	if v.Normalized != 0 {
+	if v.Normalized != nil {
 		ok := object.Key("Normalized")
-		ok.Integer(v.Normalized)
+		ok.Integer(*v.Normalized)
 	}
 
-	if v.Product != 0 {
+	if v.Product != nil {
 		ok := object.Key("Product")
 		switch {
-		case math.IsNaN(v.Product):
+		case math.IsNaN(*v.Product):
 			ok.String("NaN")
 
-		case math.IsInf(v.Product, 1):
+		case math.IsInf(*v.Product, 1):
 			ok.String("Infinity")
 
-		case math.IsInf(v.Product, -1):
+		case math.IsInf(*v.Product, -1):
 			ok.String("-Infinity")
 
 		default:
-			ok.Double(v.Product)
+			ok.Double(*v.Product)
 
 		}
 	}
 
+	return nil
+}
+
+func awsRestjson1_serializeDocumentSignal(v *types.Signal, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ActorIds != nil {
+		ok := object.Key("ActorIds")
+		if err := awsRestjson1_serializeDocumentNonEmptyStringList(v.ActorIds, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Count != nil {
+		ok := object.Key("Count")
+		ok.Integer(*v.Count)
+	}
+
+	if v.CreatedAt != nil {
+		ok := object.Key("CreatedAt")
+		ok.Long(*v.CreatedAt)
+	}
+
+	if v.EndpointIds != nil {
+		ok := object.Key("EndpointIds")
+		if err := awsRestjson1_serializeDocumentNonEmptyStringList(v.EndpointIds, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.FirstSeenAt != nil {
+		ok := object.Key("FirstSeenAt")
+		ok.Long(*v.FirstSeenAt)
+	}
+
+	if v.Id != nil {
+		ok := object.Key("Id")
+		ok.String(*v.Id)
+	}
+
+	if v.LastSeenAt != nil {
+		ok := object.Key("LastSeenAt")
+		ok.Long(*v.LastSeenAt)
+	}
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
+	}
+
+	if v.ProductArn != nil {
+		ok := object.Key("ProductArn")
+		ok.String(*v.ProductArn)
+	}
+
+	if v.ResourceIds != nil {
+		ok := object.Key("ResourceIds")
+		if err := awsRestjson1_serializeDocumentNonEmptyStringList(v.ResourceIds, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Severity != nil {
+		ok := object.Key("Severity")
+		switch {
+		case math.IsNaN(*v.Severity):
+			ok.String("NaN")
+
+		case math.IsInf(*v.Severity, 1):
+			ok.String("Infinity")
+
+		case math.IsInf(*v.Severity, -1):
+			ok.String("-Infinity")
+
+		default:
+			ok.Double(*v.Severity)
+
+		}
+	}
+
+	if v.SignalIndicators != nil {
+		ok := object.Key("SignalIndicators")
+		if err := awsRestjson1_serializeDocumentIndicatorsList(v.SignalIndicators, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Title != nil {
+		ok := object.Key("Title")
+		ok.String(*v.Title)
+	}
+
+	if v.Type != nil {
+		ok := object.Key("Type")
+		ok.String(*v.Type)
+	}
+
+	if v.UpdatedAt != nil {
+		ok := object.Key("UpdatedAt")
+		ok.Long(*v.UpdatedAt)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentSignalsList(v []types.Signal, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentSignal(&v[i], av); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 
@@ -27273,6 +30896,30 @@ func awsRestjson1_serializeDocumentTagMap(v map[string]string, value smithyjson.
 	return nil
 }
 
+func awsRestjson1_serializeDocumentTarget(v types.Target, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	switch uv := v.(type) {
+	case *types.TargetMemberAccountId:
+		av := object.Key("AccountId")
+		av.String(uv.Value)
+
+	case *types.TargetMemberOrganizationalUnitId:
+		av := object.Key("OrganizationalUnitId")
+		av.String(uv.Value)
+
+	case *types.TargetMemberRootId:
+		av := object.Key("RootId")
+		av.String(uv.Value)
+
+	default:
+		return fmt.Errorf("attempted to serialize unknown member type %T for union %T", uv, v)
+
+	}
+	return nil
+}
+
 func awsRestjson1_serializeDocumentThreat(v *types.Threat, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
@@ -27284,9 +30931,9 @@ func awsRestjson1_serializeDocumentThreat(v *types.Threat, value smithyjson.Valu
 		}
 	}
 
-	if v.ItemCount != 0 {
+	if v.ItemCount != nil {
 		ok := object.Key("ItemCount")
-		ok.Integer(v.ItemCount)
+		ok.Integer(*v.ItemCount)
 	}
 
 	if v.Name != nil {
@@ -27399,9 +31046,9 @@ func awsRestjson1_serializeDocumentUpdateAutomationRulesRequestItem(v *types.Upd
 		ok.String(*v.Description)
 	}
 
-	if v.IsTerminal {
+	if v.IsTerminal != nil {
 		ok := object.Key("IsTerminal")
-		ok.Boolean(v.IsTerminal)
+		ok.Boolean(*v.IsTerminal)
 	}
 
 	if v.RuleArn != nil {
@@ -27414,9 +31061,9 @@ func awsRestjson1_serializeDocumentUpdateAutomationRulesRequestItem(v *types.Upd
 		ok.String(*v.RuleName)
 	}
 
-	if v.RuleOrder != 0 {
+	if v.RuleOrder != nil {
 		ok := object.Key("RuleOrder")
-		ok.Integer(v.RuleOrder)
+		ok.Integer(*v.RuleOrder)
 	}
 
 	if len(v.RuleStatus) > 0 {
@@ -27437,6 +31084,23 @@ func awsRestjson1_serializeDocumentUpdateAutomationRulesRequestItemsList(v []typ
 			return err
 		}
 	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentUserAccount(v *types.UserAccount, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Name != nil {
+		ok := object.Key("Name")
+		ok.String(*v.Name)
+	}
+
+	if v.Uid != nil {
+		ok := object.Key("Uid")
+		ok.String(*v.Uid)
+	}
+
 	return nil
 }
 
@@ -27524,19 +31188,19 @@ func awsRestjson1_serializeDocumentVpcInfoPeeringOptionsDetails(v *types.VpcInfo
 	object := value.Object()
 	defer object.Close()
 
-	if v.AllowDnsResolutionFromRemoteVpc {
+	if v.AllowDnsResolutionFromRemoteVpc != nil {
 		ok := object.Key("AllowDnsResolutionFromRemoteVpc")
-		ok.Boolean(v.AllowDnsResolutionFromRemoteVpc)
+		ok.Boolean(*v.AllowDnsResolutionFromRemoteVpc)
 	}
 
-	if v.AllowEgressFromLocalClassicLinkToRemoteVpc {
+	if v.AllowEgressFromLocalClassicLinkToRemoteVpc != nil {
 		ok := object.Key("AllowEgressFromLocalClassicLinkToRemoteVpc")
-		ok.Boolean(v.AllowEgressFromLocalClassicLinkToRemoteVpc)
+		ok.Boolean(*v.AllowEgressFromLocalClassicLinkToRemoteVpc)
 	}
 
-	if v.AllowEgressFromLocalVpcToRemoteClassicLink {
+	if v.AllowEgressFromLocalVpcToRemoteClassicLink != nil {
 		ok := object.Key("AllowEgressFromLocalVpcToRemoteClassicLink")
-		ok.Boolean(v.AllowEgressFromLocalVpcToRemoteClassicLink)
+		ok.Boolean(*v.AllowEgressFromLocalVpcToRemoteClassicLink)
 	}
 
 	return nil
@@ -27546,11 +31210,41 @@ func awsRestjson1_serializeDocumentVulnerability(v *types.Vulnerability, value s
 	object := value.Object()
 	defer object.Close()
 
+	if v.CodeVulnerabilities != nil {
+		ok := object.Key("CodeVulnerabilities")
+		if err := awsRestjson1_serializeDocumentVulnerabilityCodeVulnerabilitiesList(v.CodeVulnerabilities, ok); err != nil {
+			return err
+		}
+	}
+
 	if v.Cvss != nil {
 		ok := object.Key("Cvss")
 		if err := awsRestjson1_serializeDocumentCvssList(v.Cvss, ok); err != nil {
 			return err
 		}
+	}
+
+	if v.EpssScore != nil {
+		ok := object.Key("EpssScore")
+		switch {
+		case math.IsNaN(*v.EpssScore):
+			ok.String("NaN")
+
+		case math.IsInf(*v.EpssScore, 1):
+			ok.String("Infinity")
+
+		case math.IsInf(*v.EpssScore, -1):
+			ok.String("-Infinity")
+
+		default:
+			ok.Double(*v.EpssScore)
+
+		}
+	}
+
+	if len(v.ExploitAvailable) > 0 {
+		ok := object.Key("ExploitAvailable")
+		ok.String(string(v.ExploitAvailable))
 	}
 
 	if len(v.FixAvailable) > 0 {
@@ -27561,6 +31255,11 @@ func awsRestjson1_serializeDocumentVulnerability(v *types.Vulnerability, value s
 	if v.Id != nil {
 		ok := object.Key("Id")
 		ok.String(*v.Id)
+	}
+
+	if v.LastKnownExploitAt != nil {
+		ok := object.Key("LastKnownExploitAt")
+		ok.String(*v.LastKnownExploitAt)
 	}
 
 	if v.ReferenceUrls != nil {
@@ -27591,6 +31290,45 @@ func awsRestjson1_serializeDocumentVulnerability(v *types.Vulnerability, value s
 		}
 	}
 
+	return nil
+}
+
+func awsRestjson1_serializeDocumentVulnerabilityCodeVulnerabilities(v *types.VulnerabilityCodeVulnerabilities, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.Cwes != nil {
+		ok := object.Key("Cwes")
+		if err := awsRestjson1_serializeDocumentTypeList(v.Cwes, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.FilePath != nil {
+		ok := object.Key("FilePath")
+		if err := awsRestjson1_serializeDocumentCodeVulnerabilitiesFilePath(v.FilePath, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.SourceArn != nil {
+		ok := object.Key("SourceArn")
+		ok.String(*v.SourceArn)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentVulnerabilityCodeVulnerabilitiesList(v []types.VulnerabilityCodeVulnerabilities, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentVulnerabilityCodeVulnerabilities(&v[i], av); err != nil {
+			return err
+		}
+	}
 	return nil
 }
 

@@ -12,8 +12,80 @@ import (
 	"github.com/aws/smithy-go/encoding/httpbinding"
 	smithyjson "github.com/aws/smithy-go/encoding/json"
 	"github.com/aws/smithy-go/middleware"
+	"github.com/aws/smithy-go/tracing"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
+
+type awsRestjson1_serializeOpGetMedicalScribeStream struct {
+}
+
+func (*awsRestjson1_serializeOpGetMedicalScribeStream) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpGetMedicalScribeStream) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*GetMedicalScribeStreamInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/medical-scribe-stream/{SessionId}")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "GET"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if err := awsRestjson1_serializeOpHttpBindingsGetMedicalScribeStreamInput(input, restEncoder); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsGetMedicalScribeStreamInput(v *GetMedicalScribeStreamInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	if v.SessionId == nil || len(*v.SessionId) == 0 {
+		return &smithy.SerializationError{Err: fmt.Errorf("input member SessionId must not be empty")}
+	}
+	if v.SessionId != nil {
+		if err := encoder.SetURI("SessionId").String(*v.SessionId); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
 
 type awsRestjson1_serializeOpStartCallAnalyticsStreamTranscription struct {
 }
@@ -25,6 +97,10 @@ func (*awsRestjson1_serializeOpStartCallAnalyticsStreamTranscription) ID() strin
 func (m *awsRestjson1_serializeOpStartCallAnalyticsStreamTranscription) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -63,6 +139,8 @@ func (m *awsRestjson1_serializeOpStartCallAnalyticsStreamTranscription) HandleSe
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsStartCallAnalyticsStreamTranscriptionInput(v *StartCallAnalyticsStreamTranscriptionInput, encoder *httpbinding.Encoder) error {
@@ -90,7 +168,7 @@ func awsRestjson1_serializeOpHttpBindingsStartCallAnalyticsStreamTranscriptionIn
 		encoder.SetHeader(locationName).String(string(v.LanguageCode))
 	}
 
-	if v.LanguageModelName != nil && len(*v.LanguageModelName) > 0 {
+	if v.LanguageModelName != nil {
 		locationName := "X-Amzn-Transcribe-Language-Model-Name"
 		encoder.SetHeader(locationName).String(*v.LanguageModelName)
 	}
@@ -110,12 +188,12 @@ func awsRestjson1_serializeOpHttpBindingsStartCallAnalyticsStreamTranscriptionIn
 		encoder.SetHeader(locationName).String(string(v.PartialResultsStability))
 	}
 
-	if v.PiiEntityTypes != nil && len(*v.PiiEntityTypes) > 0 {
+	if v.PiiEntityTypes != nil {
 		locationName := "X-Amzn-Transcribe-Pii-Entity-Types"
 		encoder.SetHeader(locationName).String(*v.PiiEntityTypes)
 	}
 
-	if v.SessionId != nil && len(*v.SessionId) > 0 {
+	if v.SessionId != nil {
 		locationName := "X-Amzn-Transcribe-Session-Id"
 		encoder.SetHeader(locationName).String(*v.SessionId)
 	}
@@ -125,14 +203,98 @@ func awsRestjson1_serializeOpHttpBindingsStartCallAnalyticsStreamTranscriptionIn
 		encoder.SetHeader(locationName).String(string(v.VocabularyFilterMethod))
 	}
 
-	if v.VocabularyFilterName != nil && len(*v.VocabularyFilterName) > 0 {
+	if v.VocabularyFilterName != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Filter-Name"
 		encoder.SetHeader(locationName).String(*v.VocabularyFilterName)
 	}
 
-	if v.VocabularyName != nil && len(*v.VocabularyName) > 0 {
+	if v.VocabularyName != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Name"
 		encoder.SetHeader(locationName).String(*v.VocabularyName)
+	}
+
+	return nil
+}
+
+type awsRestjson1_serializeOpStartMedicalScribeStream struct {
+}
+
+func (*awsRestjson1_serializeOpStartMedicalScribeStream) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsRestjson1_serializeOpStartMedicalScribeStream) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*StartMedicalScribeStreamInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	opPath, opQuery := httpbinding.SplitURI("/medical-scribe-stream")
+	request.URL.Path = smithyhttp.JoinPath(request.URL.Path, opPath)
+	request.URL.RawQuery = smithyhttp.JoinRawQuery(request.URL.RawQuery, opQuery)
+	request.Method = "POST"
+	var restEncoder *httpbinding.Encoder
+	if request.URL.RawPath == "" {
+		restEncoder, err = httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	} else {
+		request.URL.RawPath = smithyhttp.JoinPath(request.URL.RawPath, opPath)
+		restEncoder, err = httpbinding.NewEncoderWithRawPath(request.URL.Path, request.URL.RawPath, request.URL.RawQuery, request.Header)
+	}
+
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if err := awsRestjson1_serializeOpHttpBindingsStartMedicalScribeStreamInput(input, restEncoder); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	restEncoder.SetHeader("Content-Type").String("application/vnd.amazon.eventstream")
+
+	if request.Request, err = restEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+func awsRestjson1_serializeOpHttpBindingsStartMedicalScribeStreamInput(v *StartMedicalScribeStreamInput, encoder *httpbinding.Encoder) error {
+	if v == nil {
+		return fmt.Errorf("unsupported serialization of nil %T", v)
+	}
+
+	if len(v.LanguageCode) > 0 {
+		locationName := "X-Amzn-Transcribe-Language-Code"
+		encoder.SetHeader(locationName).String(string(v.LanguageCode))
+	}
+
+	if len(v.MediaEncoding) > 0 {
+		locationName := "X-Amzn-Transcribe-Media-Encoding"
+		encoder.SetHeader(locationName).String(string(v.MediaEncoding))
+	}
+
+	if v.MediaSampleRateHertz != nil {
+		locationName := "X-Amzn-Transcribe-Sample-Rate"
+		encoder.SetHeader(locationName).Integer(*v.MediaSampleRateHertz)
+	}
+
+	if v.SessionId != nil {
+		locationName := "X-Amzn-Transcribe-Session-Id"
+		encoder.SetHeader(locationName).String(*v.SessionId)
 	}
 
 	return nil
@@ -148,6 +310,10 @@ func (*awsRestjson1_serializeOpStartMedicalStreamTranscription) ID() string {
 func (m *awsRestjson1_serializeOpStartMedicalStreamTranscription) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -186,6 +352,8 @@ func (m *awsRestjson1_serializeOpStartMedicalStreamTranscription) HandleSerializ
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsStartMedicalStreamTranscriptionInput(v *StartMedicalStreamTranscriptionInput, encoder *httpbinding.Encoder) error {
@@ -223,7 +391,7 @@ func awsRestjson1_serializeOpHttpBindingsStartMedicalStreamTranscriptionInput(v 
 		encoder.SetHeader(locationName).Integer(*v.NumberOfChannels)
 	}
 
-	if v.SessionId != nil && len(*v.SessionId) > 0 {
+	if v.SessionId != nil {
 		locationName := "X-Amzn-Transcribe-Session-Id"
 		encoder.SetHeader(locationName).String(*v.SessionId)
 	}
@@ -243,7 +411,7 @@ func awsRestjson1_serializeOpHttpBindingsStartMedicalStreamTranscriptionInput(v 
 		encoder.SetHeader(locationName).String(string(v.Type))
 	}
 
-	if v.VocabularyName != nil && len(*v.VocabularyName) > 0 {
+	if v.VocabularyName != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Name"
 		encoder.SetHeader(locationName).String(*v.VocabularyName)
 	}
@@ -261,6 +429,10 @@ func (*awsRestjson1_serializeOpStartStreamTranscription) ID() string {
 func (m *awsRestjson1_serializeOpStartStreamTranscription) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -299,6 +471,8 @@ func (m *awsRestjson1_serializeOpStartStreamTranscription) HandleSerialize(ctx c
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsRestjson1_serializeOpHttpBindingsStartStreamTranscriptionInput(v *StartStreamTranscriptionInput, encoder *httpbinding.Encoder) error {
@@ -331,17 +505,22 @@ func awsRestjson1_serializeOpHttpBindingsStartStreamTranscriptionInput(v *StartS
 		encoder.SetHeader(locationName).Boolean(v.IdentifyLanguage)
 	}
 
+	if v.IdentifyMultipleLanguages {
+		locationName := "X-Amzn-Transcribe-Identify-Multiple-Languages"
+		encoder.SetHeader(locationName).Boolean(v.IdentifyMultipleLanguages)
+	}
+
 	if len(v.LanguageCode) > 0 {
 		locationName := "X-Amzn-Transcribe-Language-Code"
 		encoder.SetHeader(locationName).String(string(v.LanguageCode))
 	}
 
-	if v.LanguageModelName != nil && len(*v.LanguageModelName) > 0 {
+	if v.LanguageModelName != nil {
 		locationName := "X-Amzn-Transcribe-Language-Model-Name"
 		encoder.SetHeader(locationName).String(*v.LanguageModelName)
 	}
 
-	if v.LanguageOptions != nil && len(*v.LanguageOptions) > 0 {
+	if v.LanguageOptions != nil {
 		locationName := "X-Amzn-Transcribe-Language-Options"
 		encoder.SetHeader(locationName).String(*v.LanguageOptions)
 	}
@@ -366,7 +545,7 @@ func awsRestjson1_serializeOpHttpBindingsStartStreamTranscriptionInput(v *StartS
 		encoder.SetHeader(locationName).String(string(v.PartialResultsStability))
 	}
 
-	if v.PiiEntityTypes != nil && len(*v.PiiEntityTypes) > 0 {
+	if v.PiiEntityTypes != nil {
 		locationName := "X-Amzn-Transcribe-Pii-Entity-Types"
 		encoder.SetHeader(locationName).String(*v.PiiEntityTypes)
 	}
@@ -376,7 +555,7 @@ func awsRestjson1_serializeOpHttpBindingsStartStreamTranscriptionInput(v *StartS
 		encoder.SetHeader(locationName).String(string(v.PreferredLanguage))
 	}
 
-	if v.SessionId != nil && len(*v.SessionId) > 0 {
+	if v.SessionId != nil {
 		locationName := "X-Amzn-Transcribe-Session-Id"
 		encoder.SetHeader(locationName).String(*v.SessionId)
 	}
@@ -391,24 +570,241 @@ func awsRestjson1_serializeOpHttpBindingsStartStreamTranscriptionInput(v *StartS
 		encoder.SetHeader(locationName).String(string(v.VocabularyFilterMethod))
 	}
 
-	if v.VocabularyFilterName != nil && len(*v.VocabularyFilterName) > 0 {
+	if v.VocabularyFilterName != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Filter-Name"
 		encoder.SetHeader(locationName).String(*v.VocabularyFilterName)
 	}
 
-	if v.VocabularyFilterNames != nil && len(*v.VocabularyFilterNames) > 0 {
+	if v.VocabularyFilterNames != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Filter-Names"
 		encoder.SetHeader(locationName).String(*v.VocabularyFilterNames)
 	}
 
-	if v.VocabularyName != nil && len(*v.VocabularyName) > 0 {
+	if v.VocabularyName != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Name"
 		encoder.SetHeader(locationName).String(*v.VocabularyName)
 	}
 
-	if v.VocabularyNames != nil && len(*v.VocabularyNames) > 0 {
+	if v.VocabularyNames != nil {
 		locationName := "X-Amzn-Transcribe-Vocabulary-Names"
 		encoder.SetHeader(locationName).String(*v.VocabularyNames)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeEventStreamMedicalScribeInputStream(v types.MedicalScribeInputStream, msg *eventstream.Message) error {
+	if v == nil {
+		return fmt.Errorf("unexpected serialization of nil %T", v)
+	}
+
+	switch vv := v.(type) {
+	case *types.MedicalScribeInputStreamMemberAudioEvent:
+		msg.Headers.Set(eventstreamapi.EventTypeHeader, eventstream.StringValue("AudioEvent"))
+		return awsRestjson1_serializeEventMessageMedicalScribeAudioEvent(&vv.Value, msg)
+
+	case *types.MedicalScribeInputStreamMemberSessionControlEvent:
+		msg.Headers.Set(eventstreamapi.EventTypeHeader, eventstream.StringValue("SessionControlEvent"))
+		return awsRestjson1_serializeEventMessageMedicalScribeSessionControlEvent(&vv.Value, msg)
+
+	case *types.MedicalScribeInputStreamMemberConfigurationEvent:
+		msg.Headers.Set(eventstreamapi.EventTypeHeader, eventstream.StringValue("ConfigurationEvent"))
+		return awsRestjson1_serializeEventMessageMedicalScribeConfigurationEvent(&vv.Value, msg)
+
+	default:
+		return fmt.Errorf("unexpected event message type: %v", v)
+
+	}
+}
+func awsRestjson1_serializeEventMessageMedicalScribeAudioEvent(v *types.MedicalScribeAudioEvent, msg *eventstream.Message) error {
+	if v == nil {
+		return fmt.Errorf("unexpected serialization of nil %T", v)
+	}
+
+	msg.Headers.Set(eventstreamapi.MessageTypeHeader, eventstream.StringValue(eventstreamapi.EventMessageType))
+	if v.AudioChunk != nil {
+		msg.Headers.Set(eventstreamapi.ContentTypeHeader, eventstream.StringValue("application/octet-stream"))
+		msg.Payload = v.AudioChunk
+	}
+	return nil
+}
+
+func awsRestjson1_serializeEventMessageMedicalScribeConfigurationEvent(v *types.MedicalScribeConfigurationEvent, msg *eventstream.Message) error {
+	if v == nil {
+		return fmt.Errorf("unexpected serialization of nil %T", v)
+	}
+
+	msg.Headers.Set(eventstreamapi.MessageTypeHeader, eventstream.StringValue(eventstreamapi.EventMessageType))
+	msg.Headers.Set(eventstreamapi.ContentTypeHeader, eventstream.StringValue("application/json"))
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsRestjson1_serializeDocumentMedicalScribeConfigurationEvent(v, jsonEncoder.Value); err != nil {
+		return err
+	}
+	msg.Payload = jsonEncoder.Bytes()
+	return nil
+}
+
+func awsRestjson1_serializeEventMessageMedicalScribeSessionControlEvent(v *types.MedicalScribeSessionControlEvent, msg *eventstream.Message) error {
+	if v == nil {
+		return fmt.Errorf("unexpected serialization of nil %T", v)
+	}
+
+	msg.Headers.Set(eventstreamapi.MessageTypeHeader, eventstream.StringValue(eventstreamapi.EventMessageType))
+	msg.Headers.Set(eventstreamapi.ContentTypeHeader, eventstream.StringValue("application/json"))
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsRestjson1_serializeDocumentMedicalScribeSessionControlEvent(v, jsonEncoder.Value); err != nil {
+		return err
+	}
+	msg.Payload = jsonEncoder.Bytes()
+	return nil
+}
+
+func awsRestjson1_serializeDocumentClinicalNoteGenerationSettings(v *types.ClinicalNoteGenerationSettings, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if len(v.NoteTemplate) > 0 {
+		ok := object.Key("NoteTemplate")
+		ok.String(string(v.NoteTemplate))
+	}
+
+	if v.OutputBucketName != nil {
+		ok := object.Key("OutputBucketName")
+		ok.String(*v.OutputBucketName)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentKMSEncryptionContextMap(v map[string]string, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	for key := range v {
+		om := object.Key(key)
+		om.String(v[key])
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentMedicalScribeChannelDefinition(v *types.MedicalScribeChannelDefinition, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	{
+		ok := object.Key("ChannelId")
+		ok.Integer(v.ChannelId)
+	}
+
+	if len(v.ParticipantRole) > 0 {
+		ok := object.Key("ParticipantRole")
+		ok.String(string(v.ParticipantRole))
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentMedicalScribeChannelDefinitions(v []types.MedicalScribeChannelDefinition, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsRestjson1_serializeDocumentMedicalScribeChannelDefinition(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func awsRestjson1_serializeDocumentMedicalScribeConfigurationEvent(v *types.MedicalScribeConfigurationEvent, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ChannelDefinitions != nil {
+		ok := object.Key("ChannelDefinitions")
+		if err := awsRestjson1_serializeDocumentMedicalScribeChannelDefinitions(v.ChannelDefinitions, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.EncryptionSettings != nil {
+		ok := object.Key("EncryptionSettings")
+		if err := awsRestjson1_serializeDocumentMedicalScribeEncryptionSettings(v.EncryptionSettings, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.PostStreamAnalyticsSettings != nil {
+		ok := object.Key("PostStreamAnalyticsSettings")
+		if err := awsRestjson1_serializeDocumentMedicalScribePostStreamAnalyticsSettings(v.PostStreamAnalyticsSettings, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ResourceAccessRoleArn != nil {
+		ok := object.Key("ResourceAccessRoleArn")
+		ok.String(*v.ResourceAccessRoleArn)
+	}
+
+	if len(v.VocabularyFilterMethod) > 0 {
+		ok := object.Key("VocabularyFilterMethod")
+		ok.String(string(v.VocabularyFilterMethod))
+	}
+
+	if v.VocabularyFilterName != nil {
+		ok := object.Key("VocabularyFilterName")
+		ok.String(*v.VocabularyFilterName)
+	}
+
+	if v.VocabularyName != nil {
+		ok := object.Key("VocabularyName")
+		ok.String(*v.VocabularyName)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentMedicalScribeEncryptionSettings(v *types.MedicalScribeEncryptionSettings, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.KmsEncryptionContext != nil {
+		ok := object.Key("KmsEncryptionContext")
+		if err := awsRestjson1_serializeDocumentKMSEncryptionContextMap(v.KmsEncryptionContext, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.KmsKeyId != nil {
+		ok := object.Key("KmsKeyId")
+		ok.String(*v.KmsKeyId)
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentMedicalScribePostStreamAnalyticsSettings(v *types.MedicalScribePostStreamAnalyticsSettings, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ClinicalNoteGenerationSettings != nil {
+		ok := object.Key("ClinicalNoteGenerationSettings")
+		if err := awsRestjson1_serializeDocumentClinicalNoteGenerationSettings(v.ClinicalNoteGenerationSettings, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsRestjson1_serializeDocumentMedicalScribeSessionControlEvent(v *types.MedicalScribeSessionControlEvent, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if len(v.Type) > 0 {
+		ok := object.Key("Type")
+		ok.String(string(v.Type))
 	}
 
 	return nil

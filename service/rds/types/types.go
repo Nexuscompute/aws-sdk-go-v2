@@ -7,82 +7,106 @@ import (
 	"time"
 )
 
-// Describes a quota for an Amazon Web Services account. The following are account
-// quotas:
+// Describes a quota for an Amazon Web Services account.
+//
+// The following are account quotas:
+//
 //   - AllocatedStorage - The total allocated storage per account, in GiB. The used
 //     value is the total allocated storage in the account, in GiB.
+//
 //   - AuthorizationsPerDBSecurityGroup - The number of ingress rules per DB
 //     security group. The used value is the highest number of ingress rules in a DB
 //     security group in the account. Other DB security groups in the account might
 //     have a lower number of ingress rules.
+//
 //   - CustomEndpointsPerDBCluster - The number of custom endpoints per DB cluster.
 //     The used value is the highest number of custom endpoints in a DB clusters in the
 //     account. Other DB clusters in the account might have a lower number of custom
 //     endpoints.
+//
 //   - DBClusterParameterGroups - The number of DB cluster parameter groups per
 //     account, excluding default parameter groups. The used value is the count of
 //     nondefault DB cluster parameter groups in the account.
+//
 //   - DBClusterRoles - The number of associated Amazon Web Services Identity and
 //     Access Management (IAM) roles per DB cluster. The used value is the highest
 //     number of associated IAM roles for a DB cluster in the account. Other DB
 //     clusters in the account might have a lower number of associated IAM roles.
+//
 //   - DBClusters - The number of DB clusters per account. The used value is the
 //     count of DB clusters in the account.
+//
 //   - DBInstanceRoles - The number of associated IAM roles per DB instance. The
 //     used value is the highest number of associated IAM roles for a DB instance in
 //     the account. Other DB instances in the account might have a lower number of
 //     associated IAM roles.
-//   - DBInstances - The number of DB instances per account. The used value is the
-//     count of the DB instances in the account. Amazon RDS DB instances, Amazon Aurora
-//     DB instances, Amazon Neptune instances, and Amazon DocumentDB instances apply to
-//     this quota.
-//   - DBParameterGroups - The number of DB parameter groups per account, excluding
-//     default parameter groups. The used value is the count of nondefault DB parameter
-//     groups in the account.
-//   - DBSecurityGroups - The number of DB security groups (not VPC security
-//     groups) per account, excluding the default security group. The used value is the
-//     count of nondefault DB security groups in the account.
-//   - DBSubnetGroups - The number of DB subnet groups per account. The used value
-//     is the count of the DB subnet groups in the account.
-//   - EventSubscriptions - The number of event subscriptions per account. The used
-//     value is the count of the event subscriptions in the account.
-//   - ManualClusterSnapshots - The number of manual DB cluster snapshots per
-//     account. The used value is the count of the manual DB cluster snapshots in the
-//     account.
-//   - ManualSnapshots - The number of manual DB instance snapshots per account.
-//     The used value is the count of the manual DB instance snapshots in the account.
-//   - OptionGroups - The number of DB option groups per account, excluding default
-//     option groups. The used value is the count of nondefault DB option groups in the
-//     account.
-//   - ReadReplicasPerMaster - The number of read replicas per DB instance. The
-//     used value is the highest number of read replicas for a DB instance in the
-//     account. Other DB instances in the account might have a lower number of read
-//     replicas.
-//   - ReservedDBInstances - The number of reserved DB instances per account. The
-//     used value is the count of the active reserved DB instances in the account.
-//   - SubnetsPerDBSubnetGroup - The number of subnets per DB subnet group. The
-//     used value is highest number of subnets for a DB subnet group in the account.
-//     Other DB subnet groups in the account might have a lower number of subnets.
 //
-// For more information, see Quotas for Amazon RDS (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Limits.html)
-// in the Amazon RDS User Guide and Quotas for Amazon Aurora (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_Limits.html)
-// in the Amazon Aurora User Guide.
+//   - DBInstances - The number of DB instances per account. The used value is the
+//     count of the DB instances in the account.
+//
+// Amazon RDS DB instances, Amazon Aurora DB instances, Amazon Neptune instances,
+//
+//	and Amazon DocumentDB instances apply to this quota.
+//
+//	- DBParameterGroups - The number of DB parameter groups per account, excluding
+//	default parameter groups. The used value is the count of nondefault DB parameter
+//	groups in the account.
+//
+//	- DBSecurityGroups - The number of DB security groups (not VPC security
+//	groups) per account, excluding the default security group. The used value is the
+//	count of nondefault DB security groups in the account.
+//
+//	- DBSubnetGroups - The number of DB subnet groups per account. The used value
+//	is the count of the DB subnet groups in the account.
+//
+//	- EventSubscriptions - The number of event subscriptions per account. The used
+//	value is the count of the event subscriptions in the account.
+//
+//	- ManualClusterSnapshots - The number of manual DB cluster snapshots per
+//	account. The used value is the count of the manual DB cluster snapshots in the
+//	account.
+//
+//	- ManualSnapshots - The number of manual DB instance snapshots per account.
+//	The used value is the count of the manual DB instance snapshots in the account.
+//
+//	- OptionGroups - The number of DB option groups per account, excluding default
+//	option groups. The used value is the count of nondefault DB option groups in the
+//	account.
+//
+//	- ReadReplicasPerMaster - The number of read replicas per DB instance. The
+//	used value is the highest number of read replicas for a DB instance in the
+//	account. Other DB instances in the account might have a lower number of read
+//	replicas.
+//
+//	- ReservedDBInstances - The number of reserved DB instances per account. The
+//	used value is the count of the active reserved DB instances in the account.
+//
+//	- SubnetsPerDBSubnetGroup - The number of subnets per DB subnet group. The
+//	used value is highest number of subnets for a DB subnet group in the account.
+//	Other DB subnet groups in the account might have a lower number of subnets.
+//
+// For more information, see [Quotas for Amazon RDS] in the Amazon RDS User Guide and [Quotas for Amazon Aurora] in the Amazon
+// Aurora User Guide.
+//
+// [Quotas for Amazon RDS]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/CHAP_Limits.html
+// [Quotas for Amazon Aurora]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_Limits.html
 type AccountQuota struct {
 
 	// The name of the Amazon RDS quota for this Amazon Web Services account.
 	AccountQuotaName *string
 
 	// The maximum allowed value for the quota.
-	Max int64
+	Max *int64
 
 	// The amount currently used toward the quota maximum.
-	Used int64
+	Used *int64
 
 	noSmithyDocumentSerde
 }
 
-// Contains Availability Zone information. This data type is used as an element in
-// the OrderableDBInstanceOption data type.
+// Contains Availability Zone information.
+//
+// This data type is used as an element in the OrderableDBInstanceOption data type.
 type AvailabilityZone struct {
 
 	// The name of the Availability Zone.
@@ -92,9 +116,11 @@ type AvailabilityZone struct {
 }
 
 // Contains the available processor feature information for the DB instance class
-// of a DB instance. For more information, see Configuring the Processor of the DB
-// Instance Class (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html#USER_ConfigureProcessor)
-// in the Amazon RDS User Guide.
+// of a DB instance.
+//
+// For more information, see [Configuring the Processor of the DB Instance Class] in the Amazon RDS User Guide.
+//
+// [Configuring the Processor of the DB Instance Class]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html#USER_ConfigureProcessor
 type AvailableProcessorFeature struct {
 
 	// The allowed values for the processor feature of the DB instance class.
@@ -109,11 +135,12 @@ type AvailableProcessorFeature struct {
 	noSmithyDocumentSerde
 }
 
-// Details about a blue/green deployment. For more information, see Using Amazon
-// RDS Blue/Green Deployments for database updates (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html)
-// in the Amazon RDS User Guide and Using Amazon RDS Blue/Green Deployments for
-// database updates (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html)
-// in the Amazon Aurora User Guide.
+// Details about a blue/green deployment.
+//
+// For more information, see [Using Amazon RDS Blue/Green Deployments for database updates] in the Amazon RDS User Guide and [Using Amazon RDS Blue/Green Deployments for database updates] in the Amazon
+// Aurora User Guide.
+//
+// [Using Amazon RDS Blue/Green Deployments for database updates]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html
 type BlueGreenDeployment struct {
 
 	// The unique identifier of the blue/green deployment.
@@ -130,20 +157,31 @@ type BlueGreenDeployment struct {
 	// Time (UTC).
 	DeleteTime *time.Time
 
-	// The source database for the blue/green deployment. Before switchover, the
-	// source database is the production database in the blue environment.
+	// The source database for the blue/green deployment.
+	//
+	// Before switchover, the source database is the production database in the blue
+	// environment.
 	Source *string
 
-	// The status of the blue/green deployment. Valid Values:
+	// The status of the blue/green deployment.
+	//
+	// Valid Values:
+	//
 	//   - PROVISIONING - Resources are being created in the green environment.
+	//
 	//   - AVAILABLE - Resources are available in the green environment.
+	//
 	//   - SWITCHOVER_IN_PROGRESS - The deployment is being switched from the blue
 	//   environment to the green environment.
+	//
 	//   - SWITCHOVER_COMPLETED - Switchover from the blue environment to the green
 	//   environment is complete.
+	//
 	//   - INVALID_CONFIGURATION - Resources in the green environment are invalid, so
 	//   switchover isn't possible.
+	//
 	//   - SWITCHOVER_FAILED - Switchover was attempted but failed.
+	//
 	//   - DELETING - The blue/green deployment is being deleted.
 	Status *string
 
@@ -153,12 +191,19 @@ type BlueGreenDeployment struct {
 	// The details about each source and target resource in the blue/green deployment.
 	SwitchoverDetails []SwitchoverDetail
 
-	// A list of tags. For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
-	// in the Amazon RDS User Guide.
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
 	TagList []Tag
 
-	// The target database for the blue/green deployment. Before switchover, the
-	// target database is the clone database in the green environment.
+	// The target database for the blue/green deployment.
+	//
+	// Before switchover, the target database is the clone database in the green
+	// environment.
 	Target *string
 
 	// Either tasks to be performed or tasks that have been completed on the target
@@ -168,31 +213,40 @@ type BlueGreenDeployment struct {
 	noSmithyDocumentSerde
 }
 
-// Details about a task for a blue/green deployment. For more information, see
-// Using Amazon RDS Blue/Green Deployments for database updates (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html)
-// in the Amazon RDS User Guide and Using Amazon RDS Blue/Green Deployments for
-// database updates (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html)
-// in the Amazon Aurora User Guide.
+// Details about a task for a blue/green deployment.
+//
+// For more information, see [Using Amazon RDS Blue/Green Deployments for database updates] in the Amazon RDS User Guide and [Using Amazon RDS Blue/Green Deployments for database updates] in the Amazon
+// Aurora User Guide.
+//
+// [Using Amazon RDS Blue/Green Deployments for database updates]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html
 type BlueGreenDeploymentTask struct {
 
 	// The name of the blue/green deployment task.
 	Name *string
 
-	// The status of the blue/green deployment task. Valid Values:
+	// The status of the blue/green deployment task.
+	//
+	// Valid Values:
+	//
 	//   - PENDING - The resource is being prepared for deployment.
+	//
 	//   - IN_PROGRESS - The resource is being deployed.
+	//
 	//   - COMPLETED - The resource has been deployed.
+	//
 	//   - FAILED - Deployment of the resource failed.
 	Status *string
 
 	noSmithyDocumentSerde
 }
 
-// A CA certificate for an Amazon Web Services account. For more information, see
-// Using SSL/TLS to encrypt a connection to a DB instance (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
-// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to a DB
-// cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
-// in the Amazon Aurora User Guide.
+// A CA certificate for an Amazon Web Services account.
+//
+// For more information, see [Using SSL/TLS to encrypt a connection to a DB instance] in the Amazon RDS User Guide and [Using SSL/TLS to encrypt a connection to a DB cluster] in the Amazon
+// Aurora User Guide.
+//
+// [Using SSL/TLS to encrypt a connection to a DB cluster]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html
+// [Using SSL/TLS to encrypt a connection to a DB instance]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html
 type Certificate struct {
 
 	// The Amazon Resource Name (ARN) for the certificate.
@@ -204,7 +258,7 @@ type Certificate struct {
 	// The type of the certificate.
 	CertificateType *string
 
-	// Whether there is an override for the default certificate identifier.
+	// Indicates whether there is an override for the default certificate identifier.
 	CustomerOverride *bool
 
 	// If there is an override for the default certificate identifier, when the
@@ -223,11 +277,13 @@ type Certificate struct {
 	noSmithyDocumentSerde
 }
 
-// Returns the details of the DB instance’s server certificate. For more
-// information, see Using SSL/TLS to encrypt a connection to a DB instance (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
-// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to a DB
-// cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
-// in the Amazon Aurora User Guide.
+// The details of the DB instance’s server certificate.
+//
+// For more information, see [Using SSL/TLS to encrypt a connection to a DB instance] in the Amazon RDS User Guide and [Using SSL/TLS to encrypt a connection to a DB cluster] in the Amazon
+// Aurora User Guide.
+//
+// [Using SSL/TLS to encrypt a connection to a DB cluster]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html
+// [Using SSL/TLS to encrypt a connection to a DB instance]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html
 type CertificateDetails struct {
 
 	// The CA identifier of the CA certificate used for the DB instance's server
@@ -254,21 +310,45 @@ type CharacterSet struct {
 }
 
 // The configuration setting for the log types to be enabled for export to
-// CloudWatch Logs for a specific DB instance or DB cluster. The EnableLogTypes
-// and DisableLogTypes arrays determine which logs will be exported (or not
-// exported) to CloudWatch Logs. The values within these arrays depend on the DB
-// engine being used. For more information about exporting CloudWatch Logs for
-// Amazon RDS DB instances, see Publishing Database Logs to Amazon CloudWatch Logs  (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch)
-// in the Amazon RDS User Guide. For more information about exporting CloudWatch
-// Logs for Amazon Aurora DB clusters, see Publishing Database Logs to Amazon
-// CloudWatch Logs (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch)
-// in the Amazon Aurora User Guide.
+// CloudWatch Logs for a specific DB instance or DB cluster.
+//
+// The EnableLogTypes and DisableLogTypes arrays determine which logs will be
+// exported (or not exported) to CloudWatch Logs. The values within these arrays
+// depend on the DB engine being used.
+//
+// For more information about exporting CloudWatch Logs for Amazon RDS DB
+// instances, see [Publishing Database Logs to Amazon CloudWatch Logs]in the Amazon RDS User Guide.
+//
+// For more information about exporting CloudWatch Logs for Amazon Aurora DB
+// clusters, see [Publishing Database Logs to Amazon CloudWatch Logs]in the Amazon Aurora User Guide.
+//
+// [Publishing Database Logs to Amazon CloudWatch Logs]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html#USER_LogAccess.Procedural.UploadtoCloudWatch
 type CloudwatchLogsExportConfiguration struct {
 
 	// The list of log types to disable.
+	//
+	// The following values are valid for each DB engine:
+	//
+	//   - Aurora MySQL - audit | error | general | slowquery
+	//
+	//   - Aurora PostgreSQL - postgresql
+	//
+	//   - RDS for MySQL - error | general | slowquery
+	//
+	//   - RDS for PostgreSQL - postgresql | upgrade
 	DisableLogTypes []string
 
 	// The list of log types to enable.
+	//
+	// The following values are valid for each DB engine:
+	//
+	//   - Aurora MySQL - audit | error | general | slowquery
+	//
+	//   - Aurora PostgreSQL - postgresql
+	//
+	//   - RDS for MySQL - error | general | slowquery
+	//
+	//   - RDS for PostgreSQL - postgresql | upgrade
 	EnableLogTypes []string
 
 	noSmithyDocumentSerde
@@ -286,14 +366,23 @@ type ClusterPendingModifiedValues struct {
 	// The number of days for which automatic DB snapshots are retained.
 	BackupRetentionPeriod *int32
 
+	// The details of the DB instance’s server certificate.
+	//
+	// For more information, see [Using SSL/TLS to encrypt a connection to a DB instance] in the Amazon RDS User Guide and [Using SSL/TLS to encrypt a connection to a DB cluster] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Using SSL/TLS to encrypt a connection to a DB cluster]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html
+	// [Using SSL/TLS to encrypt a connection to a DB instance]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html
+	CertificateDetails *CertificateDetails
+
 	// The DBClusterIdentifier value for the DB cluster.
 	DBClusterIdentifier *string
 
 	// The database engine version.
 	EngineVersion *string
 
-	// A value that indicates whether mapping of Amazon Web Services Identity and
-	// Access Management (IAM) accounts to database accounts is enabled.
+	// Indicates whether mapping of Amazon Web Services Identity and Access Management
+	// (IAM) accounts to database accounts is enabled.
 	IAMDatabaseAuthenticationEnabled *bool
 
 	// The Provisioned IOPS (I/O operations per second) value. This setting is only
@@ -307,6 +396,9 @@ type ClusterPendingModifiedValues struct {
 	// these log types are in the process of being activated or deactivated.
 	PendingCloudwatchLogsExports *PendingCloudwatchLogsExports
 
+	// Reserved for future use.
+	RdsCustomClusterConfiguration *RdsCustomClusterConfiguration
+
 	// The storage type for the DB cluster.
 	StorageType *string
 
@@ -318,45 +410,66 @@ type ClusterPendingModifiedValues struct {
 type ConnectionPoolConfiguration struct {
 
 	// The number of seconds for a proxy to wait for a connection to become available
-	// in the connection pool. Only applies when the proxy has opened its maximum
-	// number of connections and all connections are busy with client sessions.
-	// Default: 120 Constraints: between 1 and 3600, or 0 representing unlimited
+	// in the connection pool. This setting only applies when the proxy has opened its
+	// maximum number of connections and all connections are busy with client sessions.
+	//
+	// Default: 120
+	//
+	// Constraints:
+	//
+	//   - Must be between 0 and 3600.
 	ConnectionBorrowTimeout *int32
 
 	// One or more SQL statements for the proxy to run when opening each new database
 	// connection. Typically used with SET statements to make sure that each
 	// connection has identical settings such as time zone and character set. For
 	// multiple statements, use semicolons as the separator. You can also include
-	// multiple variables in a single SET statement, such as SET x=1, y=2 . Default: no
-	// initialization query
+	// multiple variables in a single SET statement, such as SET x=1, y=2 .
+	//
+	// Default: no initialization query
 	InitQuery *string
 
 	// The maximum size of the connection pool for each target in a target group. The
 	// value is expressed as a percentage of the max_connections setting for the RDS
-	// DB instance or Aurora DB cluster used by the target group. If you specify
-	// MaxIdleConnectionsPercent , then you must also include a value for this
-	// parameter. Default: 10 for RDS for Microsoft SQL Server, and 100 for all other
-	// engines Constraints: Must be between 1 and 100.
+	// DB instance or Aurora DB cluster used by the target group.
+	//
+	// If you specify MaxIdleConnectionsPercent , then you must also include a value
+	// for this parameter.
+	//
+	// Default: 10 for RDS for Microsoft SQL Server, and 100 for all other engines
+	//
+	// Constraints:
+	//
+	//   - Must be between 1 and 100.
 	MaxConnectionsPercent *int32
 
-	// Controls how actively the proxy closes idle database connections in the
-	// connection pool. The value is expressed as a percentage of the max_connections
-	// setting for the RDS DB instance or Aurora DB cluster used by the target group.
-	// With a high value, the proxy leaves a high percentage of idle database
-	// connections open. A low value causes the proxy to close more idle connections
-	// and return them to the database. If you specify this parameter, then you must
-	// also include a value for MaxConnectionsPercent . Default: The default value is
-	// half of the value of MaxConnectionsPercent . For example, if
-	// MaxConnectionsPercent is 80, then the default value of MaxIdleConnectionsPercent
-	// is 40. If the value of MaxConnectionsPercent isn't specified, then for SQL
-	// Server, MaxIdleConnectionsPercent is 5, and for all other engines, the default
-	// is 50. Constraints: Must be between 0 and the value of MaxConnectionsPercent .
+	// A value that controls how actively the proxy closes idle database connections
+	// in the connection pool. The value is expressed as a percentage of the
+	// max_connections setting for the RDS DB instance or Aurora DB cluster used by the
+	// target group. With a high value, the proxy leaves a high percentage of idle
+	// database connections open. A low value causes the proxy to close more idle
+	// connections and return them to the database.
+	//
+	// If you specify this parameter, then you must also include a value for
+	// MaxConnectionsPercent .
+	//
+	// Default: The default value is half of the value of MaxConnectionsPercent . For
+	// example, if MaxConnectionsPercent is 80, then the default value of
+	// MaxIdleConnectionsPercent is 40. If the value of MaxConnectionsPercent isn't
+	// specified, then for SQL Server, MaxIdleConnectionsPercent is 5 , and for all
+	// other engines, the default is 50 .
+	//
+	// Constraints:
+	//
+	//   - Must be between 0 and the value of MaxConnectionsPercent .
 	MaxIdleConnectionsPercent *int32
 
 	// Each item in the list represents a class of SQL operations that normally cause
 	// all later statements in a session using a proxy to be pinned to the same
 	// underlying database connection. Including an item in the list exempts that class
-	// of SQL operations from the pinning behavior. Default: no session pinning filters
+	// of SQL operations from the pinning behavior.
+	//
+	// Default: no session pinning filters
 	SessionPinningFilters []string
 
 	noSmithyDocumentSerde
@@ -369,7 +482,7 @@ type ConnectionPoolConfigurationInfo struct {
 	// The number of seconds for a proxy to wait for a connection to become available
 	// in the connection pool. Only applies when the proxy has opened its maximum
 	// number of connections and all connections are busy with client sessions.
-	ConnectionBorrowTimeout int32
+	ConnectionBorrowTimeout *int32
 
 	// One or more SQL statements for the proxy to run when opening each new database
 	// connection. Typically used with SET statements to make sure that each
@@ -382,7 +495,7 @@ type ConnectionPoolConfigurationInfo struct {
 	// The maximum size of the connection pool for each target in a target group. The
 	// value is expressed as a percentage of the max_connections setting for the RDS
 	// DB instance or Aurora DB cluster used by the target group.
-	MaxConnectionsPercent int32
+	MaxConnectionsPercent *int32
 
 	// Controls how actively the proxy closes idle database connections in the
 	// connection pool. The value is expressed as a percentage of the max_connections
@@ -390,7 +503,7 @@ type ConnectionPoolConfigurationInfo struct {
 	// With a high value, the proxy leaves a high percentage of idle database
 	// connections open. A low value causes the proxy to close more idle connections
 	// and return them to the database.
-	MaxIdleConnectionsPercent int32
+	MaxIdleConnectionsPercent *int32
 
 	// Each item in the list represents a class of SQL operations that normally cause
 	// all later statements in a session using a proxy to be pinned to the same
@@ -399,6 +512,18 @@ type ConnectionPoolConfigurationInfo struct {
 	// MySQL engine family databases. Currently, the only allowed value is
 	// EXCLUDE_VARIABLE_SETS .
 	SessionPinningFilters []string
+
+	noSmithyDocumentSerde
+}
+
+// The additional attributes of RecommendedAction data type.
+type ContextAttribute struct {
+
+	// The key of ContextAttribute .
+	Key *string
+
+	// The value of ContextAttribute .
+	Value *string
 
 	noSmithyDocumentSerde
 }
@@ -415,20 +540,27 @@ type CustomDBEngineVersionAMI struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster. For
-// an Amazon Aurora DB cluster, this data type is used as a response element in the
-// operations CreateDBCluster , DeleteDBCluster , DescribeDBClusters ,
+// Contains the details of an Amazon Aurora DB cluster or Multi-AZ DB cluster.
+//
+// For an Amazon Aurora DB cluster, this data type is used as a response element
+// in the operations CreateDBCluster , DeleteDBCluster , DescribeDBClusters ,
 // FailoverDBCluster , ModifyDBCluster , PromoteReadReplicaDBCluster ,
 // RestoreDBClusterFromS3 , RestoreDBClusterFromSnapshot ,
-// RestoreDBClusterToPointInTime , StartDBCluster , and StopDBCluster . For a
-// Multi-AZ DB cluster, this data type is used as a response element in the
+// RestoreDBClusterToPointInTime , StartDBCluster , and StopDBCluster .
+//
+// For a Multi-AZ DB cluster, this data type is used as a response element in the
 // operations CreateDBCluster , DeleteDBCluster , DescribeDBClusters ,
 // FailoverDBCluster , ModifyDBCluster , RebootDBCluster ,
-// RestoreDBClusterFromSnapshot , and RestoreDBClusterToPointInTime . For more
-// information on Amazon Aurora DB clusters, see What is Amazon Aurora? (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html)
-// in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters,
-// see Multi-AZ deployments with two readable standby DB instances (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html)
-// in the Amazon RDS User Guide.
+// RestoreDBClusterFromSnapshot , and RestoreDBClusterToPointInTime .
+//
+// For more information on Amazon Aurora DB clusters, see [What is Amazon Aurora?] in the Amazon Aurora
+// User Guide.
+//
+// For more information on Multi-AZ DB clusters, see [Multi-AZ deployments with two readable standby DB instances] in the Amazon RDS User
+// Guide.
+//
+// [Multi-AZ deployments with two readable standby DB instances]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html
+// [What is Amazon Aurora?]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html
 type DBCluster struct {
 
 	// The name of the Amazon Kinesis data stream used for the database activity
@@ -436,8 +568,10 @@ type DBCluster struct {
 	ActivityStreamKinesisStreamName *string
 
 	// The Amazon Web Services KMS key identifier used for encrypting messages in the
-	// database activity stream. The Amazon Web Services KMS key identifier is the key
-	// ARN, key ID, alias ARN, or alias name for the KMS key.
+	// database activity stream.
+	//
+	// The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN,
+	// or alias name for the KMS key.
 	ActivityStreamKmsKeyId *string
 
 	// The mode of the database activity stream. Database events such as a change or
@@ -448,10 +582,9 @@ type DBCluster struct {
 	// The status of the database activity stream.
 	ActivityStreamStatus ActivityStreamStatus
 
-	// For all database engines except Amazon Aurora, AllocatedStorage specifies the
-	// allocated storage size in gibibytes (GiB). For Aurora, AllocatedStorage always
-	// returns 1, because Aurora DB cluster storage size isn't fixed, but instead
-	// automatically adjusts as needed.
+	// AllocatedStorage specifies the allocated storage size in gibibytes (GiB). For
+	// Aurora, AllocatedStorage can vary because Aurora DB cluster storage size
+	// adjusts as needed.
 	AllocatedStorage *int32
 
 	// A list of the Amazon Web Services Identity and Access Management (IAM) roles
@@ -460,9 +593,10 @@ type DBCluster struct {
 	// on your behalf.
 	AssociatedRoles []DBClusterRole
 
-	// Indicates whether minor version patches are applied automatically. This setting
-	// is only for non-Aurora Multi-AZ DB clusters.
-	AutoMinorVersionUpgrade bool
+	// Indicates whether minor version patches are applied automatically.
+	//
+	// This setting is for Aurora DB clusters and Multi-AZ DB clusters.
+	AutoMinorVersionUpgrade *bool
 
 	// The time when a stopped DB cluster is restarted automatically.
 	AutomaticRestartTime *time.Time
@@ -470,6 +604,10 @@ type DBCluster struct {
 	// The list of Availability Zones (AZs) where instances in the DB cluster can be
 	// created.
 	AvailabilityZones []string
+
+	// The Amazon Resource Name (ARN) of the recovery point in Amazon Web Services
+	// Backup.
+	AwsBackupRecoveryPointArn *string
 
 	// The number of change records stored for Backtrack.
 	BacktrackConsumedChangeRecords *int64
@@ -482,20 +620,47 @@ type DBCluster struct {
 	BackupRetentionPeriod *int32
 
 	// The current capacity of an Aurora Serverless v1 DB cluster. The capacity is 0
-	// (zero) when the cluster is paused. For more information about Aurora Serverless
-	// v1, see Using Amazon Aurora Serverless v1 (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html)
-	// in the Amazon Aurora User Guide.
+	// (zero) when the cluster is paused.
+	//
+	// For more information about Aurora Serverless v1, see [Using Amazon Aurora Serverless v1] in the Amazon Aurora User
+	// Guide.
+	//
+	// [Using Amazon Aurora Serverless v1]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html
 	Capacity *int32
+
+	// The details of the DB instance’s server certificate.
+	//
+	// For more information, see [Using SSL/TLS to encrypt a connection to a DB instance] in the Amazon RDS User Guide and [Using SSL/TLS to encrypt a connection to a DB cluster] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Using SSL/TLS to encrypt a connection to a DB cluster]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html
+	// [Using SSL/TLS to encrypt a connection to a DB instance]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html
+	CertificateDetails *CertificateDetails
 
 	// If present, specifies the name of the character set that this cluster is
 	// associated with.
 	CharacterSetName *string
 
-	// The ID of the clone group with which the DB cluster is associated.
+	// The ID of the clone group with which the DB cluster is associated. For newly
+	// created clusters, the ID is typically null.
+	//
+	// If you clone a DB cluster when the ID is null, the operation populates the ID
+	// value for the source cluster and the clone because both clusters become part of
+	// the same clone group. Even if you delete the clone cluster, the clone group ID
+	// remains for the lifetime of the source cluster to show that it was used in a
+	// cloning operation.
+	//
+	// For PITR, the clone group ID is inherited from the source cluster. For snapshot
+	// restore operations, the clone group ID isn't inherited from the source cluster.
 	CloneGroupId *string
 
 	// The time when the DB cluster was created, in Universal Coordinated Time (UTC).
 	ClusterCreateTime *time.Time
+
+	// The scalability mode of the Aurora DB cluster. When set to limitless , the
+	// cluster operates as an Aurora Limitless Database. When set to standard (the
+	// default), the cluster uses normal DB instance creation.
+	ClusterScalabilityType ClusterScalabilityType
 
 	// Indicates whether tags are copied from the DB cluster to snapshots of the DB
 	// cluster.
@@ -515,8 +680,9 @@ type DBCluster struct {
 	// key that identifies a DB cluster.
 	DBClusterIdentifier *string
 
-	// The name of the compute and memory capacity class of the DB instance. This
-	// setting is only for non-Aurora Multi-AZ DB clusters.
+	// The name of the compute and memory capacity class of the DB instance.
+	//
+	// This setting is only for non-Aurora Multi-AZ DB clusters.
 	DBClusterInstanceClass *string
 
 	// The list of DB instances that make up the DB cluster.
@@ -534,6 +700,9 @@ type DBCluster struct {
 
 	// Reserved for future use.
 	DBSystemId *string
+
+	// The mode of Database Insights that is enabled for the DB cluster.
+	DatabaseInsightsMode DatabaseInsightsMode
 
 	// The name of the initial database that was specified for the DB cluster when it
 	// was created, if one was provided. This same name is returned for the life of the
@@ -560,9 +729,12 @@ type DBCluster struct {
 	EarliestRestorableTime *time.Time
 
 	// A list of log types that this DB cluster is configured to export to CloudWatch
-	// Logs. Log types vary by DB engine. For information about the log types for each
-	// DB engine, see Amazon RDS Database Log Files (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html)
-	// in the Amazon Aurora User Guide.
+	// Logs.
+	//
+	// Log types vary by DB engine. For information about the log types for each DB
+	// engine, see [Amazon RDS Database Log Files]in the Amazon Aurora User Guide.
+	//
+	// [Amazon RDS Database Log Files]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_LogAccess.html
 	EnabledCloudwatchLogsExports []string
 
 	// The connection endpoint for the primary instance of the DB cluster.
@@ -571,15 +743,22 @@ type DBCluster struct {
 	// The database engine used for this DB cluster.
 	Engine *string
 
-	// The DB engine mode of the DB cluster, either provisioned or serverless . For
-	// more information, see CreateDBCluster (https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBCluster.html)
-	// .
+	// The life cycle type for the DB cluster.
+	//
+	// For more information, see CreateDBCluster.
+	EngineLifecycleSupport *string
+
+	// The DB engine mode of the DB cluster, either provisioned or serverless .
+	//
+	// For more information, see [CreateDBCluster].
+	//
+	// [CreateDBCluster]: https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_CreateDBCluster.html
 	EngineMode *string
 
 	// The version of the database engine.
 	EngineVersion *string
 
-	// Specifies whether write forwarding is enabled for a secondary cluster in an
+	// Indicates whether write forwarding is enabled for a secondary cluster in an
 	// Aurora global database. Because write forwarding takes time to enable, check the
 	// value of GlobalWriteForwardingStatus to confirm that the request has completed
 	// before using the write forwarding feature for this cluster.
@@ -592,12 +771,15 @@ type DBCluster struct {
 	// The ID that Amazon Route 53 assigns when you create a hosted zone.
 	HostedZoneId *string
 
-	// Indicates whether the HTTP endpoint for an Aurora Serverless v1 DB cluster is
-	// enabled. When enabled, the HTTP endpoint provides a connectionless web service
-	// API for running SQL queries on the Aurora Serverless v1 DB cluster. You can also
-	// query your database from inside the RDS console with the query editor. For more
-	// information, see Using the Data API for Aurora Serverless v1 (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html)
-	// in the Amazon Aurora User Guide.
+	// Indicates whether the HTTP endpoint is enabled for an Aurora DB cluster.
+	//
+	// When enabled, the HTTP endpoint provides a connectionless web service API (RDS
+	// Data API) for running SQL queries on the DB cluster. You can also query your
+	// database from inside the RDS console with the RDS query editor.
+	//
+	// For more information, see [Using RDS Data API] in the Amazon Aurora User Guide.
+	//
+	// [Using RDS Data API]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
 	HttpEndpointEnabled *bool
 
 	// Indicates whether the mapping of Amazon Web Services Identity and Access
@@ -605,55 +787,73 @@ type DBCluster struct {
 	IAMDatabaseAuthenticationEnabled *bool
 
 	// The next time you can modify the DB cluster to use the aurora-iopt1 storage
-	// type. This setting is only for Aurora DB clusters.
+	// type.
+	//
+	// This setting is only for Aurora DB clusters.
 	IOOptimizedNextAllowedModificationTime *time.Time
 
-	// The Provisioned IOPS (I/O operations per second) value. This setting is only
-	// for non-Aurora Multi-AZ DB clusters.
+	// The Provisioned IOPS (I/O operations per second) value.
+	//
+	// This setting is only for non-Aurora Multi-AZ DB clusters.
 	Iops *int32
 
 	// If StorageEncrypted is enabled, the Amazon Web Services KMS key identifier for
-	// the encrypted DB cluster. The Amazon Web Services KMS key identifier is the key
-	// ARN, key ID, alias ARN, or alias name for the KMS key.
+	// the encrypted DB cluster.
+	//
+	// The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN,
+	// or alias name for the KMS key.
 	KmsKeyId *string
 
 	// The latest time to which a database can be restored with point-in-time restore.
 	LatestRestorableTime *time.Time
 
-	// Specifies whether an Aurora DB cluster has in-cluster write forwarding enabled,
+	// The details for Aurora Limitless Database.
+	LimitlessDatabase *LimitlessDatabase
+
+	// Indicates whether an Aurora DB cluster has in-cluster write forwarding enabled,
 	// not enabled, requested, or is in the process of enabling it.
 	LocalWriteForwardingStatus LocalWriteForwardingStatus
 
 	// The secret managed by RDS in Amazon Web Services Secrets Manager for the master
-	// user password. For more information, see Password management with Amazon Web
-	// Services Secrets Manager (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html)
-	// in the Amazon RDS User Guide and Password management with Amazon Web Services
-	// Secrets Manager (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-secrets-manager.html)
-	// in the Amazon Aurora User Guide.
+	// user password.
+	//
+	// For more information, see [Password management with Amazon Web Services Secrets Manager] in the Amazon RDS User Guide and [Password management with Amazon Web Services Secrets Manager] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Password management with Amazon Web Services Secrets Manager]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-secrets-manager.html
 	MasterUserSecret *MasterUserSecret
 
 	// The master username for the DB cluster.
 	MasterUsername *string
 
 	// The interval, in seconds, between points when Enhanced Monitoring metrics are
-	// collected for the DB cluster. This setting is only for non-Aurora Multi-AZ DB
-	// clusters.
+	// collected for the DB cluster.
+	//
+	// This setting is only for -Aurora DB clusters and Multi-AZ DB clusters.
 	MonitoringInterval *int32
 
 	// The ARN for the IAM role that permits RDS to send Enhanced Monitoring metrics
-	// to Amazon CloudWatch Logs. This setting is only for non-Aurora Multi-AZ DB
-	// clusters.
+	// to Amazon CloudWatch Logs.
+	//
+	// This setting is only for Aurora DB clusters and Multi-AZ DB clusters.
 	MonitoringRoleArn *string
 
 	// Indicates whether the DB cluster has instances in multiple Availability Zones.
 	MultiAZ *bool
 
-	// The network type of the DB instance. The network type is determined by the
-	// DBSubnetGroup specified for the DB cluster. A DBSubnetGroup can support only
-	// the IPv4 protocol or the IPv4 and the IPv6 protocols ( DUAL ). For more
-	// information, see Working with a DB instance in a VPC (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html)
-	// in the Amazon Aurora User Guide. This setting is only for Aurora DB clusters.
+	// The network type of the DB instance.
+	//
+	// The network type is determined by the DBSubnetGroup specified for the DB
+	// cluster. A DBSubnetGroup can support only the IPv4 protocol or the IPv4 and the
+	// IPv6 protocols ( DUAL ).
+	//
+	// For more information, see [Working with a DB instance in a VPC] in the Amazon Aurora User Guide.
+	//
+	// This setting is only for Aurora DB clusters.
+	//
 	// Valid Values: IPV4 | DUAL
+	//
+	// [Working with a DB instance in a VPC]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html
 	NetworkType *string
 
 	// Information about pending changes to the DB cluster. This information is
@@ -664,22 +864,33 @@ type DBCluster struct {
 	// The progress of the operation as a percentage.
 	PercentProgress *string
 
-	// Indicates whether Performance Insights is enabled for the DB cluster. This
-	// setting is only for non-Aurora Multi-AZ DB clusters.
+	// Indicates whether Performance Insights is enabled for the DB cluster.
+	//
+	// This setting is only for Aurora DB clusters and Multi-AZ DB clusters.
 	PerformanceInsightsEnabled *bool
 
 	// The Amazon Web Services KMS key identifier for encryption of Performance
-	// Insights data. The Amazon Web Services KMS key identifier is the key ARN, key
-	// ID, alias ARN, or alias name for the KMS key. This setting is only for
-	// non-Aurora Multi-AZ DB clusters.
+	// Insights data.
+	//
+	// The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN,
+	// or alias name for the KMS key.
+	//
+	// This setting is only for Aurora DB clusters and Multi-AZ DB clusters.
 	PerformanceInsightsKMSKeyId *string
 
-	// The number of days to retain Performance Insights data. This setting is only
-	// for non-Aurora Multi-AZ DB clusters. Valid Values:
+	// The number of days to retain Performance Insights data.
+	//
+	// This setting is only for Aurora DB clusters and Multi-AZ DB clusters.
+	//
+	// Valid Values:
+	//
 	//   - 7
+	//
 	//   - month * 31, where month is a number of months from 1-23. Examples: 93 (3
 	//   months * 31), 341 (11 months * 31), 589 (19 months * 31)
+	//
 	//   - 731
+	//
 	// Default: 7 days
 	PerformanceInsightsRetentionPeriod *int32
 
@@ -694,17 +905,26 @@ type DBCluster struct {
 	// Coordinated Time (UTC).
 	PreferredMaintenanceWindow *string
 
-	// Indicates whether the DB cluster is publicly accessible. When the DB cluster is
-	// publicly accessible, its Domain Name System (DNS) endpoint resolves to the
-	// private IP address from within the DB cluster's virtual private cloud (VPC). It
-	// resolves to the public IP address from outside of the DB cluster's VPC. Access
-	// to the DB cluster is ultimately controlled by the security group it uses. That
-	// public access isn't permitted if the security group assigned to the DB cluster
-	// doesn't permit it. When the DB cluster isn't publicly accessible, it is an
-	// internal DB cluster with a DNS name that resolves to a private IP address. For
-	// more information, see CreateDBCluster . This setting is only for non-Aurora
-	// Multi-AZ DB clusters.
+	// Indicates whether the DB cluster is publicly accessible.
+	//
+	// When the DB cluster is publicly accessible and you connect from outside of the
+	// DB cluster's virtual private cloud (VPC), its Domain Name System (DNS) endpoint
+	// resolves to the public IP address. When you connect from within the same VPC as
+	// the DB cluster, the endpoint resolves to the private IP address. Access to the
+	// DB cluster is ultimately controlled by the security group it uses. That public
+	// access isn't permitted if the security group assigned to the DB cluster doesn't
+	// permit it.
+	//
+	// When the DB cluster isn't publicly accessible, it is an internal DB cluster
+	// with a DNS name that resolves to a private IP address.
+	//
+	// For more information, see CreateDBCluster.
+	//
+	// This setting is only for non-Aurora Multi-AZ DB clusters.
 	PubliclyAccessible *bool
+
+	// Reserved for future use.
+	RdsCustomClusterConfiguration *RdsCustomClusterConfiguration
 
 	// Contains one or more identifiers of the read replicas associated with this DB
 	// cluster.
@@ -715,36 +935,56 @@ type DBCluster struct {
 	// cluster. As clients request new connections to the reader endpoint, Aurora
 	// distributes the connection requests among the Aurora Replicas in the DB cluster.
 	// This functionality can help balance your read workload across multiple Aurora
-	// Replicas in your DB cluster. If a failover occurs, and the Aurora Replica that
-	// you are connected to is promoted to be the primary instance, your connection is
-	// dropped. To continue sending your read workload to other Aurora Replicas in the
-	// cluster, you can then reconnect to the reader endpoint.
+	// Replicas in your DB cluster.
+	//
+	// If a failover occurs, and the Aurora Replica that you are connected to is
+	// promoted to be the primary instance, your connection is dropped. To continue
+	// sending your read workload to other Aurora Replicas in the cluster, you can then
+	// reconnect to the reader endpoint.
 	ReaderEndpoint *string
 
 	// The identifier of the source DB cluster if this DB cluster is a read replica.
 	ReplicationSourceIdentifier *string
 
-	// The scaling configuration for an Aurora DB cluster in serverless DB engine
-	// mode. For more information, see Using Amazon Aurora Serverless v1 (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html)
-	// in the Amazon Aurora User Guide.
+	// The scaling configuration for an Aurora DB cluster in serverless DB engine mode.
+	//
+	// For more information, see [Using Amazon Aurora Serverless v1] in the Amazon Aurora User Guide.
+	//
+	// [Using Amazon Aurora Serverless v1]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html
 	ScalingConfigurationInfo *ScalingConfigurationInfo
 
-	// The scaling configuration for an Aurora Serverless v2 DB cluster. For more
-	// information, see Using Amazon Aurora Serverless v2 (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html)
-	// in the Amazon Aurora User Guide.
+	// The scaling configuration for an Aurora Serverless v2 DB cluster.
+	//
+	// For more information, see [Using Amazon Aurora Serverless v2] in the Amazon Aurora User Guide.
+	//
+	// [Using Amazon Aurora Serverless v2]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html
 	ServerlessV2ScalingConfiguration *ServerlessV2ScalingConfigurationInfo
 
 	// The current state of this DB cluster.
 	Status *string
 
+	// Reserved for future use.
+	StatusInfos []DBClusterStatusInfo
+
 	// Indicates whether the DB cluster is encrypted.
-	StorageEncrypted bool
+	StorageEncrypted *bool
+
+	// The storage throughput for the DB cluster. The throughput is automatically set
+	// based on the IOPS that you provision, and is not configurable.
+	//
+	// This setting is only for non-Aurora Multi-AZ DB clusters.
+	StorageThroughput *int32
 
 	// The storage type associated with the DB cluster.
 	StorageType *string
 
-	// A list of tags. For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
-	// in the Amazon RDS User Guide.
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
 	TagList []Tag
 
 	// The list of VPC security groups that the DB cluster belongs to.
@@ -762,13 +1002,17 @@ type DBClusterAutomatedBackup struct {
 	// allocated storage size in gibibytes (GiB). For Aurora, AllocatedStorage always
 	// returns 1, because Aurora DB cluster storage size isn't fixed, but instead
 	// automatically adjusts as needed.
-	AllocatedStorage int32
+	AllocatedStorage *int32
 
 	// The Availability Zones where instances in the DB cluster can be created. For
-	// information on Amazon Web Services Regions and Availability Zones, see Regions
-	// and Availability Zones (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.RegionsAndAvailabilityZones.html)
-	// .
+	// information on Amazon Web Services Regions and Availability Zones, see [Regions and Availability Zones].
+	//
+	// [Regions and Availability Zones]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.RegionsAndAvailabilityZones.html
 	AvailabilityZones []string
+
+	// The Amazon Resource Name (ARN) of the recovery point in Amazon Web Services
+	// Backup.
+	AwsBackupRecoveryPointArn *string
 
 	// The retention period for the automated backups.
 	BackupRetentionPeriod *int32
@@ -799,17 +1043,19 @@ type DBClusterAutomatedBackup struct {
 	// The version of the database engine for the automated backup.
 	EngineVersion *string
 
-	// True if mapping of Amazon Web Services Identity and Access Management (IAM)
-	// accounts to database accounts is enabled, and otherwise false.
-	IAMDatabaseAuthenticationEnabled bool
+	// Indicates whether mapping of Amazon Web Services Identity and Access Management
+	// (IAM) accounts to database accounts is enabled.
+	IAMDatabaseAuthenticationEnabled *bool
 
-	// The IOPS (I/O operations per second) value for the automated backup. This
-	// setting is only for non-Aurora Multi-AZ DB clusters.
+	// The IOPS (I/O operations per second) value for the automated backup.
+	//
+	// This setting is only for non-Aurora Multi-AZ DB clusters.
 	Iops *int32
 
-	// The Amazon Web Services KMS key ID for an automated backup. The Amazon Web
-	// Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for
-	// the KMS key.
+	// The Amazon Web Services KMS key ID for an automated backup.
+	//
+	// The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN,
+	// or alias name for the KMS key.
 	KmsKeyId *string
 
 	// The license model information for this DB cluster automated backup.
@@ -818,9 +1064,12 @@ type DBClusterAutomatedBackup struct {
 	// The master user name of the automated backup.
 	MasterUsername *string
 
-	// The port number that the automated backup used for connections. Default:
-	// Inherits from the source DB cluster Valid Values: 1150-65535
-	Port int32
+	// The port number that the automated backup used for connections.
+	//
+	// Default: Inherits from the source DB cluster
+	//
+	// Valid Values: 1150-65535
+	Port *int32
 
 	// The Amazon Web Services Region associated with the automated backup.
 	Region *string
@@ -829,14 +1078,22 @@ type DBClusterAutomatedBackup struct {
 	RestoreWindow *RestoreWindow
 
 	// A list of status information for an automated backup:
+	//
 	//   - retained - Automated backups for deleted clusters.
 	Status *string
 
-	// Specifies whether the source DB cluster is encrypted.
-	StorageEncrypted bool
+	// Indicates whether the source DB cluster is encrypted.
+	StorageEncrypted *bool
 
-	// The storage type associated with the DB cluster. This setting is only for
-	// non-Aurora Multi-AZ DB clusters.
+	// The storage throughput for the automated backup. The throughput is
+	// automatically set based on the IOPS that you provision, and is not configurable.
+	//
+	// This setting is only for non-Aurora Multi-AZ DB clusters.
+	StorageThroughput *int32
+
+	// The storage type associated with the DB cluster.
+	//
+	// This setting is only for non-Aurora Multi-AZ DB clusters.
 	StorageType *string
 
 	// The VPC ID associated with the DB cluster.
@@ -866,12 +1123,16 @@ type DBClusterBacktrack struct {
 	DBClusterIdentifier *string
 
 	// The status of the backtrack. This property returns one of the following values:
+	//
 	//   - applying - The backtrack is currently being applied to or rolled back from
 	//   the DB cluster.
+	//
 	//   - completed - The backtrack has successfully been applied to or rolled back
 	//   from the DB cluster.
+	//
 	//   - failed - An error occurred while the backtrack was applied to or rolled back
 	//   from the DB cluster.
+	//
 	//   - pending - The backtrack is currently pending application to or rollback from
 	//   the DB cluster.
 	Status *string
@@ -882,9 +1143,13 @@ type DBClusterBacktrack struct {
 // This data type represents the information you need to connect to an Amazon
 // Aurora DB cluster. This data type is used as a response element in the following
 // actions:
+//
 //   - CreateDBClusterEndpoint
+//
 //   - DescribeDBClusterEndpoints
+//
 //   - ModifyDBClusterEndpoint
+//
 //   - DeleteDBClusterEndpoint
 //
 // For the data structure that represents Amazon RDS DB instance endpoints, see
@@ -942,14 +1207,15 @@ type DBClusterMember struct {
 	// Specifies the instance identifier for this member of the DB cluster.
 	DBInstanceIdentifier *string
 
-	// Value that is true if the cluster member is the primary instance for the DB
-	// cluster and false otherwise.
-	IsClusterWriter bool
+	// Indicates whether the cluster member is the primary DB instance for the DB
+	// cluster.
+	IsClusterWriter *bool
 
 	// A value that specifies the order in which an Aurora Replica is promoted to the
 	// primary instance after a failure of the existing primary instance. For more
-	// information, see Fault Tolerance for an Aurora DB Cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Backups.html#Aurora.Managing.FaultTolerance)
-	// in the Amazon Aurora User Guide.
+	// information, see [Fault Tolerance for an Aurora DB Cluster]in the Amazon Aurora User Guide.
+	//
+	// [Fault Tolerance for an Aurora DB Cluster]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Aurora.Managing.Backups.html#Aurora.Managing.FaultTolerance
 	PromotionTier *int32
 
 	noSmithyDocumentSerde
@@ -967,9 +1233,10 @@ type DBClusterOptionGroupStatus struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the details of an Amazon RDS DB cluster parameter group. This data
-// type is used as a response element in the DescribeDBClusterParameterGroups
-// action.
+// Contains the details of an Amazon RDS DB cluster parameter group.
+//
+// This data type is used as a response element in the
+// DescribeDBClusterParameterGroups action.
 type DBClusterParameterGroup struct {
 
 	// The Amazon Resource Name (ARN) for the DB cluster parameter group.
@@ -994,7 +1261,7 @@ type DBClusterRole struct {
 
 	// The name of the feature associated with the Amazon Web Services Identity and
 	// Access Management (IAM) role. For information about supported feature names, see
-	// DBEngineVersion .
+	// DBEngineVersion.
 	FeatureName *string
 
 	// The Amazon Resource Name (ARN) of the IAM role that is associated with the DB
@@ -1003,9 +1270,12 @@ type DBClusterRole struct {
 
 	// Describes the state of association between the IAM role and the DB cluster. The
 	// Status property returns one of the following values:
+	//
 	//   - ACTIVE - the IAM role ARN is associated with the DB cluster and can be used
 	//   to access other Amazon Web Services on your behalf.
+	//
 	//   - PENDING - the IAM role ARN is being associated with the DB cluster.
+	//
 	//   - INVALID - the IAM role ARN is associated with the DB cluster, but the DB
 	//   cluster is unable to assume the IAM role in order to access other Amazon Web
 	//   Services on your behalf.
@@ -1014,74 +1284,75 @@ type DBClusterRole struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the details for an Amazon RDS DB cluster snapshot This data type is
-// used as a response element in the DescribeDBClusterSnapshots action.
+// Contains the details for an Amazon RDS DB cluster snapshot
+//
+// This data type is used as a response element in the DescribeDBClusterSnapshots
+// action.
 type DBClusterSnapshot struct {
 
-	// Specifies the allocated storage size in gibibytes (GiB).
-	AllocatedStorage int32
+	// The allocated storage size of the DB cluster snapshot in gibibytes (GiB).
+	AllocatedStorage *int32
 
-	// Provides the list of Availability Zones (AZs) where instances in the DB cluster
-	// snapshot can be restored.
+	// The list of Availability Zones (AZs) where instances in the DB cluster snapshot
+	// can be restored.
 	AvailabilityZones []string
 
-	// Specifies the time when the DB cluster was created, in Universal Coordinated
-	// Time (UTC).
+	// The time when the DB cluster was created, in Universal Coordinated Time (UTC).
 	ClusterCreateTime *time.Time
 
-	// Specifies the DB cluster identifier of the DB cluster that this DB cluster
-	// snapshot was created from.
+	// The DB cluster identifier of the DB cluster that this DB cluster snapshot was
+	// created from.
 	DBClusterIdentifier *string
 
-	// Specifies the Amazon Resource Name (ARN) for the DB cluster snapshot.
+	// The Amazon Resource Name (ARN) for the DB cluster snapshot.
 	DBClusterSnapshotArn *string
 
-	// Specifies the identifier for the DB cluster snapshot.
+	// The identifier for the DB cluster snapshot.
 	DBClusterSnapshotIdentifier *string
 
 	// Reserved for future use.
 	DBSystemId *string
 
-	// Specifies the resource ID of the DB cluster that this DB cluster snapshot was
-	// created from.
+	// The resource ID of the DB cluster that this DB cluster snapshot was created
+	// from.
 	DbClusterResourceId *string
 
-	// Specifies the name of the database engine for this DB cluster snapshot.
+	// The name of the database engine for this DB cluster snapshot.
 	Engine *string
 
-	// Provides the engine mode of the database engine for this DB cluster snapshot.
+	// The engine mode of the database engine for this DB cluster snapshot.
 	EngineMode *string
 
-	// Provides the version of the database engine for this DB cluster snapshot.
+	// The version of the database engine for this DB cluster snapshot.
 	EngineVersion *string
 
-	// True if mapping of Amazon Web Services Identity and Access Management (IAM)
-	// accounts to database accounts is enabled, and otherwise false.
-	IAMDatabaseAuthenticationEnabled bool
+	// Indicates whether mapping of Amazon Web Services Identity and Access Management
+	// (IAM) accounts to database accounts is enabled.
+	IAMDatabaseAuthenticationEnabled *bool
 
 	// If StorageEncrypted is true, the Amazon Web Services KMS key identifier for the
-	// encrypted DB cluster snapshot. The Amazon Web Services KMS key identifier is the
-	// key ARN, key ID, alias ARN, or alias name for the KMS key.
+	// encrypted DB cluster snapshot.
+	//
+	// The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN,
+	// or alias name for the KMS key.
 	KmsKeyId *string
 
-	// Provides the license model information for this DB cluster snapshot.
+	// The license model information for this DB cluster snapshot.
 	LicenseModel *string
 
-	// Provides the master username for this DB cluster snapshot.
+	// The master username for this DB cluster snapshot.
 	MasterUsername *string
 
-	// Specifies the percentage of the estimated data that has been transferred.
-	PercentProgress int32
+	// The percentage of the estimated data that has been transferred.
+	PercentProgress *int32
 
-	// Specifies the port that the DB cluster was listening on at the time of the
-	// snapshot.
-	Port int32
+	// The port that the DB cluster was listening on at the time of the snapshot.
+	Port *int32
 
-	// Provides the time when the snapshot was taken, in Universal Coordinated Time
-	// (UTC).
+	// The time when the snapshot was taken, in Universal Coordinated Time (UTC).
 	SnapshotCreateTime *time.Time
 
-	// Provides the type of the DB cluster snapshot.
+	// The type of the DB cluster snapshot.
 	SnapshotType *string
 
 	// If the DB cluster snapshot was copied from a source DB cluster snapshot, the
@@ -1089,58 +1360,76 @@ type DBClusterSnapshot struct {
 	// value.
 	SourceDBClusterSnapshotArn *string
 
-	// Specifies the status of this DB cluster snapshot. Valid statuses are the
-	// following:
+	// The status of this DB cluster snapshot. Valid statuses are the following:
+	//
 	//   - available
+	//
 	//   - copying
+	//
 	//   - creating
 	Status *string
 
-	// Specifies whether the DB cluster snapshot is encrypted.
-	StorageEncrypted bool
+	// Indicates whether the DB cluster snapshot is encrypted.
+	StorageEncrypted *bool
 
-	// The storage type associated with the DB cluster snapshot. This setting is only
-	// for Aurora DB clusters.
+	// The storage throughput for the DB cluster snapshot. The throughput is
+	// automatically set based on the IOPS that you provision, and is not configurable.
+	//
+	// This setting is only for non-Aurora Multi-AZ DB clusters.
+	StorageThroughput *int32
+
+	// The storage type associated with the DB cluster snapshot.
+	//
+	// This setting is only for Aurora DB clusters.
 	StorageType *string
 
-	// A list of tags. For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
-	// in the Amazon RDS User Guide.
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
 	TagList []Tag
 
-	// Provides the VPC ID associated with the DB cluster snapshot.
+	// The VPC ID associated with the DB cluster snapshot.
 	VpcId *string
 
 	noSmithyDocumentSerde
 }
 
-// Contains the name and values of a manual DB cluster snapshot attribute. Manual
-// DB cluster snapshot attributes are used to authorize other Amazon Web Services
-// accounts to restore a manual DB cluster snapshot. For more information, see the
-// ModifyDBClusterSnapshotAttribute API action.
+// Contains the name and values of a manual DB cluster snapshot attribute.
+//
+// Manual DB cluster snapshot attributes are used to authorize other Amazon Web
+// Services accounts to restore a manual DB cluster snapshot. For more information,
+// see the ModifyDBClusterSnapshotAttribute API action.
 type DBClusterSnapshotAttribute struct {
 
-	// The name of the manual DB cluster snapshot attribute. The attribute named
-	// restore refers to the list of Amazon Web Services accounts that have permission
-	// to copy or restore the manual DB cluster snapshot. For more information, see the
-	// ModifyDBClusterSnapshotAttribute API action.
+	// The name of the manual DB cluster snapshot attribute.
+	//
+	// The attribute named restore refers to the list of Amazon Web Services accounts
+	// that have permission to copy or restore the manual DB cluster snapshot. For more
+	// information, see the ModifyDBClusterSnapshotAttribute API action.
 	AttributeName *string
 
-	// The value(s) for the manual DB cluster snapshot attribute. If the AttributeName
-	// field is set to restore , then this element returns a list of IDs of the Amazon
-	// Web Services accounts that are authorized to copy or restore the manual DB
-	// cluster snapshot. If a value of all is in the list, then the manual DB cluster
-	// snapshot is public and available for any Amazon Web Services account to copy or
-	// restore.
+	// The value(s) for the manual DB cluster snapshot attribute.
+	//
+	// If the AttributeName field is set to restore , then this element returns a list
+	// of IDs of the Amazon Web Services accounts that are authorized to copy or
+	// restore the manual DB cluster snapshot. If a value of all is in the list, then
+	// the manual DB cluster snapshot is public and available for any Amazon Web
+	// Services account to copy or restore.
 	AttributeValues []string
 
 	noSmithyDocumentSerde
 }
 
 // Contains the results of a successful call to the
-// DescribeDBClusterSnapshotAttributes API action. Manual DB cluster snapshot
-// attributes are used to authorize other Amazon Web Services accounts to copy or
-// restore a manual DB cluster snapshot. For more information, see the
-// ModifyDBClusterSnapshotAttribute API action.
+// DescribeDBClusterSnapshotAttributes API action.
+//
+// Manual DB cluster snapshot attributes are used to authorize other Amazon Web
+// Services accounts to copy or restore a manual DB cluster snapshot. For more
+// information, see the ModifyDBClusterSnapshotAttribute API action.
 type DBClusterSnapshotAttributesResult struct {
 
 	// The list of attributes and values for the manual DB cluster snapshot.
@@ -1148,6 +1437,24 @@ type DBClusterSnapshotAttributesResult struct {
 
 	// The identifier of the manual DB cluster snapshot that the attributes apply to.
 	DBClusterSnapshotIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// Reserved for future use.
+type DBClusterStatusInfo struct {
+
+	// Reserved for future use.
+	Message *string
+
+	// Reserved for future use.
+	Normal *bool
+
+	// Reserved for future use.
+	Status *string
+
+	// Reserved for future use.
+	StatusType *string
 
 	noSmithyDocumentSerde
 }
@@ -1163,8 +1470,9 @@ type DBEngineVersion struct {
 	// uses to create a custom engine version (CEV). RDS Custom applies the patches in
 	// the order in which they're listed in the manifest. You can set the Oracle home,
 	// Oracle base, and UNIX/Linux user and group using the installation parameters.
-	// For more information, see JSON fields in the CEV manifest (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.preparing.html#custom-cev.preparing.manifest.fields)
-	// in the Amazon RDS User Guide.
+	// For more information, see [JSON fields in the CEV manifest]in the Amazon RDS User Guide.
+	//
+	// [JSON fields in the CEV manifest]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-cev.preparing.html#custom-cev.preparing.manifest.fields
 	CustomDBEngineVersionManifest *string
 
 	// The description of the database engine.
@@ -1214,14 +1522,24 @@ type DBEngineVersion struct {
 	// The major engine version of the CEV.
 	MajorEngineVersion *string
 
+	// Specifies any Aurora Serverless v2 properties or limits that differ between
+	// Aurora engine versions. You can test the values of this attribute when deciding
+	// which Aurora version to use in a new or upgraded DB cluster. You can also
+	// retrieve the version of an existing DB cluster and check whether that version
+	// supports certain Aurora Serverless v2 features before you attempt to use those
+	// features.
+	ServerlessV2FeaturesSupport *ServerlessV2FeaturesSupport
+
 	// The status of the DB engine version, either available or deprecated .
 	Status *string
 
-	// A list of the supported CA certificate identifiers. For more information, see
-	// Using SSL/TLS to encrypt a connection to a DB instance (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
-	// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to a DB
-	// cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
-	// in the Amazon Aurora User Guide.
+	// A list of the supported CA certificate identifiers.
+	//
+	// For more information, see [Using SSL/TLS to encrypt a connection to a DB instance] in the Amazon RDS User Guide and [Using SSL/TLS to encrypt a connection to a DB cluster] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Using SSL/TLS to encrypt a connection to a DB cluster]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html
+	// [Using SSL/TLS to encrypt a connection to a DB instance]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html
 	SupportedCACertificateIdentifiers []string
 
 	// A list of the character sets supported by this engine for the CharacterSetName
@@ -1231,14 +1549,21 @@ type DBEngineVersion struct {
 	// A list of the supported DB engine modes.
 	SupportedEngineModes []string
 
-	// A list of features supported by the DB engine. The supported features vary by
-	// DB engine and DB engine version. To determine the supported features for a
-	// specific DB engine and DB engine version using the CLI, use the following
-	// command: aws rds describe-db-engine-versions --engine --engine-version  For
-	// example, to determine the supported features for RDS for PostgreSQL version 13.3
-	// using the CLI, use the following command: aws rds describe-db-engine-versions
-	// --engine postgres --engine-version 13.3 The supported features are listed under
-	// SupportedFeatureNames in the output.
+	// A list of features supported by the DB engine.
+	//
+	// The supported features vary by DB engine and DB engine version.
+	//
+	// To determine the supported features for a specific DB engine and DB engine
+	// version using the CLI, use the following command:
+	//
+	//     aws rds describe-db-engine-versions --engine --engine-version
+	//
+	// For example, to determine the supported features for RDS for PostgreSQL version
+	// 13.3 using the CLI, use the following command:
+	//
+	//     aws rds describe-db-engine-versions --engine postgres --engine-version 13.3
+	//
+	// The supported features are listed under SupportedFeatureNames in the output.
 	SupportedFeatureNames []string
 
 	// A list of the character sets supported by the Oracle DB engine for the
@@ -1249,37 +1574,49 @@ type DBEngineVersion struct {
 	// the CreateDBInstance action.
 	SupportedTimezones []Timezone
 
-	// A value that indicates whether the engine version supports Babelfish for Aurora
-	// PostgreSQL.
-	SupportsBabelfish bool
+	// Indicates whether the engine version supports Babelfish for Aurora PostgreSQL.
+	SupportsBabelfish *bool
 
-	// A value that indicates whether the engine version supports rotating the server
-	// certificate without rebooting the DB instance.
+	// Indicates whether the engine version supports rotating the server certificate
+	// without rebooting the DB instance.
 	SupportsCertificateRotationWithoutRestart *bool
 
-	// A value that indicates whether you can use Aurora global databases with a
-	// specific DB engine version.
-	SupportsGlobalDatabases bool
+	// Indicates whether you can use Aurora global databases with a specific DB engine
+	// version.
+	SupportsGlobalDatabases *bool
 
-	// A value that indicates whether the DB engine version supports forwarding write
-	// operations from reader DB instances to the writer DB instance in the DB cluster.
-	// By default, write operations aren't allowed on reader DB instances. Valid for:
-	// Aurora DB clusters only
+	// Indicates whether the DB engine version supports zero-ETL integrations with
+	// Amazon Redshift.
+	SupportsIntegrations *bool
+
+	// Indicates whether the DB engine version supports Aurora Limitless Database.
+	SupportsLimitlessDatabase *bool
+
+	// Indicates whether the DB engine version supports forwarding write operations
+	// from reader DB instances to the writer DB instance in the DB cluster. By
+	// default, write operations aren't allowed on reader DB instances.
+	//
+	// Valid for: Aurora DB clusters only
 	SupportsLocalWriteForwarding *bool
 
-	// A value that indicates whether the engine version supports exporting the log
-	// types specified by ExportableLogTypes to CloudWatch Logs.
-	SupportsLogExportsToCloudwatchLogs bool
+	// Indicates whether the engine version supports exporting the log types specified
+	// by ExportableLogTypes to CloudWatch Logs.
+	SupportsLogExportsToCloudwatchLogs *bool
 
-	// A value that indicates whether you can use Aurora parallel query with a
-	// specific DB engine version.
-	SupportsParallelQuery bool
+	// Indicates whether you can use Aurora parallel query with a specific DB engine
+	// version.
+	SupportsParallelQuery *bool
 
 	// Indicates whether the database engine version supports read replicas.
-	SupportsReadReplica bool
+	SupportsReadReplica *bool
 
-	// A list of tags. For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
-	// in the Amazon RDS User Guide.
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
 	TagList []Tag
 
 	// A list of engine versions that this database engine version can be upgraded to.
@@ -1288,9 +1625,10 @@ type DBEngineVersion struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the details of an Amazon RDS DB instance. This data type is used as a
-// response element in the operations CreateDBInstance ,
-// CreateDBInstanceReadReplica , DeleteDBInstance , DescribeDBInstances ,
+// Contains the details of an Amazon RDS DB instance.
+//
+// This data type is used as a response element in the operations CreateDBInstance
+// , CreateDBInstanceReadReplica , DeleteDBInstance , DescribeDBInstances ,
 // ModifyDBInstance , PromoteReadReplica , RebootDBInstance ,
 // RestoreDBInstanceFromDBSnapshot , RestoreDBInstanceFromS3 ,
 // RestoreDBInstanceToPointInTime , StartDBInstance , and StopDBInstance .
@@ -1321,14 +1659,14 @@ type DBInstance struct {
 	ActivityStreamStatus ActivityStreamStatus
 
 	// The amount of storage in gibibytes (GiB) allocated for the DB instance.
-	AllocatedStorage int32
+	AllocatedStorage *int32
 
 	// The Amazon Web Services Identity and Access Management (IAM) roles associated
 	// with the DB instance.
 	AssociatedRoles []DBInstanceRole
 
 	// Indicates whether minor version patches are applied automatically.
-	AutoMinorVersionUpgrade bool
+	AutoMinorVersionUpgrade *bool
 
 	// The time when a stopped DB instance is restarted automatically.
 	AutomaticRestartTime *time.Time
@@ -1347,17 +1685,19 @@ type DBInstance struct {
 	AwsBackupRecoveryPointArn *string
 
 	// The number of days for which automatic DB snapshots are retained.
-	BackupRetentionPeriod int32
+	BackupRetentionPeriod *int32
 
 	// The location where automated backups and manual snapshots are stored: Amazon
 	// Web Services Outposts or the Amazon Web Services Region.
 	BackupTarget *string
 
-	// The identifier of the CA certificate for this DB instance. For more
-	// information, see Using SSL/TLS to encrypt a connection to a DB instance (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
-	// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to a DB
-	// cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
-	// in the Amazon Aurora User Guide.
+	// The identifier of the CA certificate for this DB instance.
+	//
+	// For more information, see [Using SSL/TLS to encrypt a connection to a DB instance] in the Amazon RDS User Guide and [Using SSL/TLS to encrypt a connection to a DB cluster] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Using SSL/TLS to encrypt a connection to a DB cluster]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html
+	// [Using SSL/TLS to encrypt a connection to a DB instance]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html
 	CACertificateIdentifier *string
 
 	// The details of the DB instance's server certificate.
@@ -1368,35 +1708,46 @@ type DBInstance struct {
 	CharacterSetName *string
 
 	// Indicates whether tags are copied from the DB instance to snapshots of the DB
-	// instance. This setting doesn't apply to Amazon Aurora DB instances. Copying tags
-	// to snapshots is managed by the DB cluster. Setting this value for an Aurora DB
+	// instance.
+	//
+	// This setting doesn't apply to Amazon Aurora DB instances. Copying tags to
+	// snapshots is managed by the DB cluster. Setting this value for an Aurora DB
 	// instance has no effect on the DB cluster setting. For more information, see
 	// DBCluster .
-	CopyTagsToSnapshot bool
+	CopyTagsToSnapshot *bool
 
 	// The instance profile associated with the underlying Amazon EC2 instance of an
 	// RDS Custom DB instance. The instance profile must meet the following
 	// requirements:
+	//
 	//   - The profile must exist in your account.
-	//   - The profile must have an IAM role that Amazon EC2 has permissions to
-	//   assume.
+	//
+	//   - The profile must have an IAM role that Amazon EC2 has permissions to assume.
+	//
 	//   - The instance profile name and the associated IAM role name must start with
 	//   the prefix AWSRDSCustom .
-	// For the list of permissions required for the IAM role, see  Configure IAM and
-	// your VPC (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-setup-orcl.html#custom-setup-orcl.iam-vpc)
-	// in the Amazon RDS User Guide.
+	//
+	// For the list of permissions required for the IAM role, see [Configure IAM and your VPC] in the Amazon RDS
+	// User Guide.
+	//
+	// [Configure IAM and your VPC]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/custom-setup-orcl.html#custom-setup-orcl.iam-vpc
 	CustomIamInstanceProfile *string
 
 	// Indicates whether a customer-owned IP address (CoIP) is enabled for an RDS on
-	// Outposts DB instance. A CoIP provides local or external connectivity to
-	// resources in your Outpost subnets through your on-premises network. For some use
-	// cases, a CoIP can provide lower latency for connections to the DB instance from
-	// outside of its virtual private cloud (VPC) on your local network. For more
-	// information about RDS on Outposts, see Working with Amazon RDS on Amazon Web
-	// Services Outposts (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html)
-	// in the Amazon RDS User Guide. For more information about CoIPs, see
-	// Customer-owned IP addresses (https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing)
-	// in the Amazon Web Services Outposts User Guide.
+	// Outposts DB instance.
+	//
+	// A CoIP provides local or external connectivity to resources in your Outpost
+	// subnets through your on-premises network. For some use cases, a CoIP can provide
+	// lower latency for connections to the DB instance from outside of its virtual
+	// private cloud (VPC) on your local network.
+	//
+	// For more information about RDS on Outposts, see [Working with Amazon RDS on Amazon Web Services Outposts] in the Amazon RDS User Guide.
+	//
+	// For more information about CoIPs, see [Customer-owned IP addresses] in the Amazon Web Services Outposts User
+	// Guide.
+	//
+	// [Working with Amazon RDS on Amazon Web Services Outposts]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html
+	// [Customer-owned IP addresses]: https://docs.aws.amazon.com/outposts/latest/userguide/routing.html#ip-addressing
 	CustomerOwnedIpEnabled *bool
 
 	// If the DB instance is a member of a DB cluster, indicates the name of the DB
@@ -1416,15 +1767,16 @@ type DBInstance struct {
 	// identifies a DB instance.
 	DBInstanceIdentifier *string
 
-	// The current state of this database. For information about DB instance statuses,
-	// see Viewing DB instance status (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/accessing-monitoring.html#Overview.DBInstance.Status)
-	// in the Amazon RDS User Guide.
+	// The current state of this database.
+	//
+	// For information about DB instance statuses, see [Viewing DB instance status] in the Amazon RDS User Guide.
+	//
+	// [Viewing DB instance status]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/accessing-monitoring.html#Overview.DBInstance.Status
 	DBInstanceStatus *string
 
-	// Contains the initial database name that you provided (if required) when you
-	// created the DB instance. This name is returned for the life of your DB instance.
-	// For an RDS for Oracle CDB instance, the name identifies the PDB rather than the
-	// CDB.
+	// The initial database name that you provided (if required) when you created the
+	// DB instance. This name is returned for the life of your DB instance. For an RDS
+	// for Oracle CDB instance, the name identifies the PDB rather than the CDB.
 	DBName *string
 
 	// The list of DB parameter groups applied to this DB instance.
@@ -1443,36 +1795,52 @@ type DBInstance struct {
 	// instances.
 	DBSystemId *string
 
+	// The mode of Database Insights that is enabled for the instance.
+	DatabaseInsightsMode DatabaseInsightsMode
+
 	// The port that the DB instance listens on. If the DB instance is part of a DB
 	// cluster, this can be a different port than the DB cluster port.
-	DbInstancePort int32
+	DbInstancePort *int32
 
 	// The Amazon Web Services Region-unique, immutable identifier for the DB
 	// instance. This identifier is found in Amazon Web Services CloudTrail log entries
 	// whenever the Amazon Web Services KMS key for the DB instance is accessed.
 	DbiResourceId *string
 
+	// Indicates whether the DB instance has a dedicated log volume (DLV) enabled.
+	DedicatedLogVolume *bool
+
 	// Indicates whether the DB instance has deletion protection enabled. The database
-	// can't be deleted when deletion protection is enabled. For more information, see
-	// Deleting a DB Instance (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html)
+	// can't be deleted when deletion protection is enabled. For more information, see [Deleting a DB Instance]
 	// .
-	DeletionProtection bool
+	//
+	// [Deleting a DB Instance]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_DeleteInstance.html
+	DeletionProtection *bool
 
 	// The Active Directory Domain membership records associated with the DB instance.
 	DomainMemberships []DomainMembership
 
 	// A list of log types that this DB instance is configured to export to CloudWatch
-	// Logs. Log types vary by DB engine. For information about the log types for each
-	// DB engine, see Monitoring Amazon RDS log files (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html)
-	// in the Amazon RDS User Guide.
+	// Logs.
+	//
+	// Log types vary by DB engine. For information about the log types for each DB
+	// engine, see [Monitoring Amazon RDS log files]in the Amazon RDS User Guide.
+	//
+	// [Monitoring Amazon RDS log files]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_LogAccess.html
 	EnabledCloudwatchLogsExports []string
 
-	// The connection endpoint for the DB instance. The endpoint might not be shown
-	// for instances with the status of creating .
+	// The connection endpoint for the DB instance.
+	//
+	// The endpoint might not be shown for instances with the status of creating .
 	Endpoint *Endpoint
 
 	// The database engine used for this DB instance.
 	Engine *string
+
+	// The life cycle type for the DB instance.
+	//
+	// For more information, see CreateDBInstance.
+	EngineLifecycleSupport *string
 
 	// The version of the database engine.
 	EngineVersion *string
@@ -1482,12 +1850,14 @@ type DBInstance struct {
 	EnhancedMonitoringResourceArn *string
 
 	// Indicates whether mapping of Amazon Web Services Identity and Access Management
-	// (IAM) accounts to database accounts is enabled for the DB instance. For a list
-	// of engine versions that support IAM database authentication, see IAM database
-	// authentication (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RDS_Fea_Regions_DB-eng.Feature.IamDatabaseAuthentication.html)
-	// in the Amazon RDS User Guide and IAM database authentication in Aurora (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.Aurora_Fea_Regions_DB-eng.Feature.IAMdbauth.html)
-	// in the Amazon Aurora User Guide.
-	IAMDatabaseAuthenticationEnabled bool
+	// (IAM) accounts to database accounts is enabled for the DB instance.
+	//
+	// For a list of engine versions that support IAM database authentication, see [IAM database authentication] in
+	// the Amazon RDS User Guide and [IAM database authentication in Aurora]in the Amazon Aurora User Guide.
+	//
+	// [IAM database authentication]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RDS_Fea_Regions_DB-eng.Feature.IamDatabaseAuthentication.html
+	// [IAM database authentication in Aurora]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.Aurora_Fea_Regions_DB-eng.Feature.IAMdbauth.html
+	IAMDatabaseAuthenticationEnabled *bool
 
 	// The date and time when the DB instance was created.
 	InstanceCreateTime *time.Time
@@ -1495,9 +1865,19 @@ type DBInstance struct {
 	// The Provisioned IOPS (I/O operations per second) value for the DB instance.
 	Iops *int32
 
+	// Indicates whether an upgrade is recommended for the storage file system
+	// configuration on the DB instance. To migrate to the preferred configuration, you
+	// can either create a blue/green deployment, or create a read replica from the DB
+	// instance. For more information, see [Upgrading the storage file system for a DB instance].
+	//
+	// [Upgrading the storage file system for a DB instance]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_PIOPS.StorageTypes.html#USER_PIOPS.UpgradeFileSystem
+	IsStorageConfigUpgradeAvailable *bool
+
 	// If StorageEncrypted is enabled, the Amazon Web Services KMS key identifier for
-	// the encrypted DB instance. The Amazon Web Services KMS key identifier is the key
-	// ARN, key ID, alias ARN, or alias name for the KMS key.
+	// the encrypted DB instance.
+	//
+	// The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN,
+	// or alias name for the KMS key.
 	KmsKeyId *string
 
 	// The latest time to which a database in this DB instance can be restored with
@@ -1505,16 +1885,18 @@ type DBInstance struct {
 	LatestRestorableTime *time.Time
 
 	// The license model information for this DB instance. This setting doesn't apply
-	// to RDS Custom DB instances.
+	// to Amazon Aurora or RDS Custom DB instances.
 	LicenseModel *string
 
 	// The listener connection endpoint for SQL Server Always On.
 	ListenerEndpoint *Endpoint
 
 	// The secret managed by RDS in Amazon Web Services Secrets Manager for the master
-	// user password. For more information, see Password management with Amazon Web
-	// Services Secrets Manager (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html)
-	// in the Amazon RDS User Guide.
+	// user password.
+	//
+	// For more information, see [Password management with Amazon Web Services Secrets Manager] in the Amazon RDS User Guide.
+	//
+	// [Password management with Amazon Web Services Secrets Manager]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html
 	MasterUserSecret *MasterUserSecret
 
 	// The master username for the DB instance.
@@ -1534,19 +1916,29 @@ type DBInstance struct {
 
 	// Indicates whether the DB instance is a Multi-AZ deployment. This setting
 	// doesn't apply to RDS Custom DB instances.
-	MultiAZ bool
+	MultiAZ *bool
+
+	// Specifies whether the DB instance is in the multi-tenant configuration (TRUE)
+	// or the single-tenant configuration (FALSE).
+	MultiTenant *bool
 
 	// The name of the NCHAR character set for the Oracle DB instance. This character
 	// set specifies the Unicode encoding for data stored in table columns of type
 	// NCHAR, NCLOB, or NVARCHAR2.
 	NcharCharacterSetName *string
 
-	// The network type of the DB instance. The network type is determined by the
-	// DBSubnetGroup specified for the DB instance. A DBSubnetGroup can support only
-	// the IPv4 protocol or the IPv4 and the IPv6 protocols ( DUAL ). For more
-	// information, see Working with a DB instance in a VPC (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html)
-	// in the Amazon RDS User Guide and Working with a DB instance in a VPC (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html)
-	// in the Amazon Aurora User Guide. Valid Values: IPV4 | DUAL
+	// The network type of the DB instance.
+	//
+	// The network type is determined by the DBSubnetGroup specified for the DB
+	// instance. A DBSubnetGroup can support only the IPv4 protocol or the IPv4 and
+	// the IPv6 protocols ( DUAL ).
+	//
+	// For more information, see [Working with a DB instance in a VPC] in the Amazon RDS User Guide and [Working with a DB instance in a VPC] in the Amazon
+	// Aurora User Guide.
+	//
+	// Valid Values: IPV4 | DUAL
+	//
+	// [Working with a DB instance in a VPC]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html
 	NetworkType *string
 
 	// The list of option group memberships for this DB instance.
@@ -1564,15 +1956,23 @@ type DBInstance struct {
 	PerformanceInsightsEnabled *bool
 
 	// The Amazon Web Services KMS key identifier for encryption of Performance
-	// Insights data. The Amazon Web Services KMS key identifier is the key ARN, key
-	// ID, alias ARN, or alias name for the KMS key.
+	// Insights data.
+	//
+	// The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN,
+	// or alias name for the KMS key.
 	PerformanceInsightsKMSKeyId *string
 
-	// The number of days to retain Performance Insights data. Valid Values:
+	// The number of days to retain Performance Insights data.
+	//
+	// Valid Values:
+	//
 	//   - 7
+	//
 	//   - month * 31, where month is a number of months from 1-23. Examples: 93 (3
 	//   months * 31), 341 (11 months * 31), 589 (19 months * 31)
+	//
 	//   - 731
+	//
 	// Default: 7 days
 	PerformanceInsightsRetentionPeriod *int32
 
@@ -1590,27 +1990,34 @@ type DBInstance struct {
 
 	// The order of priority in which an Aurora Replica is promoted to the primary
 	// instance after a failure of the existing primary instance. For more information,
-	// see Fault Tolerance for an Aurora DB Cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html#Aurora.Managing.FaultTolerance)
-	// in the Amazon Aurora User Guide.
+	// see [Fault Tolerance for an Aurora DB Cluster]in the Amazon Aurora User Guide.
+	//
+	// [Fault Tolerance for an Aurora DB Cluster]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/Concepts.AuroraHighAvailability.html#Aurora.Managing.FaultTolerance
 	PromotionTier *int32
 
-	// Indicates whether the DB instance is publicly accessible. When the DB cluster
-	// is publicly accessible, its Domain Name System (DNS) endpoint resolves to the
-	// private IP address from within the DB cluster's virtual private cloud (VPC). It
-	// resolves to the public IP address from outside of the DB cluster's VPC. Access
-	// to the DB cluster is ultimately controlled by the security group it uses. That
-	// public access isn't permitted if the security group assigned to the DB cluster
-	// doesn't permit it. When the DB instance isn't publicly accessible, it is an
-	// internal DB instance with a DNS name that resolves to a private IP address. For
-	// more information, see CreateDBInstance .
-	PubliclyAccessible bool
+	// Indicates whether the DB instance is publicly accessible.
+	//
+	// When the DB instance is publicly accessible and you connect from outside of the
+	// DB instance's virtual private cloud (VPC), its Domain Name System (DNS) endpoint
+	// resolves to the public IP address. When you connect from within the same VPC as
+	// the DB instance, the endpoint resolves to the private IP address. Access to the
+	// DB cluster is ultimately controlled by the security group it uses. That public
+	// access isn't permitted if the security group assigned to the DB cluster doesn't
+	// permit it.
+	//
+	// When the DB instance isn't publicly accessible, it is an internal DB instance
+	// with a DNS name that resolves to a private IP address.
+	//
+	// For more information, see CreateDBInstance.
+	PubliclyAccessible *bool
 
 	// The identifiers of Aurora DB clusters to which the RDS DB instance is
 	// replicated as a read replica. For example, when you create an Aurora read
 	// replica of an RDS for MySQL DB instance, the Aurora MySQL DB cluster for the
 	// Aurora read replica is shown. This output doesn't contain information about
-	// cross-Region Aurora read replicas. Currently, each RDS DB instance can have only
-	// one Aurora read replica.
+	// cross-Region Aurora read replicas.
+	//
+	// Currently, each RDS DB instance can have only one Aurora read replica.
 	ReadReplicaDBClusterIdentifiers []string
 
 	// The identifiers of the read replicas associated with this DB instance.
@@ -1623,9 +2030,11 @@ type DBInstance struct {
 	ReadReplicaSourceDBInstanceIdentifier *string
 
 	// The open mode of an Oracle read replica. The default is open-read-only . For
-	// more information, see Working with Oracle Read Replicas for Amazon RDS (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/oracle-read-replicas.html)
-	// in the Amazon RDS User Guide. This attribute is only supported in RDS for
-	// Oracle.
+	// more information, see [Working with Oracle Read Replicas for Amazon RDS]in the Amazon RDS User Guide.
+	//
+	// This attribute is only supported in RDS for Oracle.
+	//
+	// [Working with Oracle Read Replicas for Amazon RDS]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/oracle-read-replicas.html
 	ReplicaMode ReplicaMode
 
 	// The number of minutes to pause the automation. When the time period ends, RDS
@@ -1642,17 +2051,23 @@ type DBInstance struct {
 	StatusInfos []DBInstanceStatusInfo
 
 	// Indicates whether the DB instance is encrypted.
-	StorageEncrypted bool
+	StorageEncrypted *bool
 
-	// The storage throughput for the DB instance. This setting applies only to the gp3
-	// storage type.
+	// The storage throughput for the DB instance.
+	//
+	// This setting applies only to the gp3 storage type.
 	StorageThroughput *int32
 
 	// The storage type associated with the DB instance.
 	StorageType *string
 
-	// A list of tags. For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
-	// in the Amazon RDS User Guide.
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
 	TagList []Tag
 
 	// The ARN from the key store with which the instance is associated for TDE
@@ -1660,8 +2075,8 @@ type DBInstance struct {
 	TdeCredentialArn *string
 
 	// The time zone of the DB instance. In most cases, the Timezone element is empty.
-	// Timezone content appears only for Microsoft SQL Server DB instances that were
-	// created with a time zone specified.
+	// Timezone content appears only for RDS for Db2 and RDS for SQL Server DB
+	// instances that were created with a time zone specified.
 	Timezone *string
 
 	// The list of Amazon EC2 VPC security groups that the DB instance belongs to.
@@ -1675,20 +2090,24 @@ type DBInstance struct {
 // you deleted the source instance.
 type DBInstanceAutomatedBackup struct {
 
-	// Specifies the allocated storage size in gibibytes (GiB).
-	AllocatedStorage int32
+	// The allocated storage size for the the automated backup in gibibytes (GiB).
+	AllocatedStorage *int32
 
 	// The Availability Zone that the automated backup was created in. For information
-	// on Amazon Web Services Regions and Availability Zones, see Regions and
-	// Availability Zones (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html)
-	// .
+	// on Amazon Web Services Regions and Availability Zones, see [Regions and Availability Zones].
+	//
+	// [Regions and Availability Zones]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.RegionsAndAvailabilityZones.html
 	AvailabilityZone *string
+
+	// The Amazon Resource Name (ARN) of the recovery point in Amazon Web Services
+	// Backup.
+	AwsBackupRecoveryPointArn *string
 
 	// The retention period for the automated backups.
 	BackupRetentionPeriod *int32
 
-	// Specifies where automated backups are stored: Amazon Web Services Outposts or
-	// the Amazon Web Services Region.
+	// The location where automated backups are stored: Amazon Web Services Outposts
+	// or the Amazon Web Services Region.
 	BackupTarget *string
 
 	// The Amazon Resource Name (ARN) for the automated backups.
@@ -1709,8 +2128,11 @@ type DBInstanceAutomatedBackup struct {
 	// unique to an Amazon Web Services Region.
 	DbiResourceId *string
 
-	// Specifies whether the automated backup is encrypted.
-	Encrypted bool
+	// Indicates whether the DB instance has a dedicated log volume (DLV) enabled.
+	DedicatedLogVolume *bool
+
+	// Indicates whether the automated backup is encrypted.
+	Encrypted *bool
 
 	// The name of the database engine for this automated backup.
 	Engine *string
@@ -1720,50 +2142,61 @@ type DBInstanceAutomatedBackup struct {
 
 	// True if mapping of Amazon Web Services Identity and Access Management (IAM)
 	// accounts to database accounts is enabled, and otherwise false.
-	IAMDatabaseAuthenticationEnabled bool
+	IAMDatabaseAuthenticationEnabled *bool
 
-	// Provides the date and time that the DB instance was created.
+	// The date and time when the DB instance was created.
 	InstanceCreateTime *time.Time
 
 	// The IOPS (I/O operations per second) value for the automated backup.
 	Iops *int32
 
-	// The Amazon Web Services KMS key ID for an automated backup. The Amazon Web
-	// Services KMS key identifier is the key ARN, key ID, alias ARN, or alias name for
-	// the KMS key.
+	// The Amazon Web Services KMS key ID for an automated backup.
+	//
+	// The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN,
+	// or alias name for the KMS key.
 	KmsKeyId *string
 
-	// License model information for the automated backup.
+	// The license model information for the automated backup.
 	LicenseModel *string
 
 	// The master user name of an automated backup.
 	MasterUsername *string
 
+	// Specifies whether the automatic backup is for a DB instance in the multi-tenant
+	// configuration (TRUE) or the single-tenant configuration (FALSE).
+	MultiTenant *bool
+
 	// The option group the automated backup is associated with. If omitted, the
 	// default option group for the engine specified is used.
 	OptionGroupName *string
 
-	// The port number that the automated backup used for connections. Default:
-	// Inherits from the source DB instance Valid Values: 1150-65535
-	Port int32
+	// The port number that the automated backup used for connections.
+	//
+	// Default: Inherits from the source DB instance
+	//
+	// Valid Values: 1150-65535
+	Port *int32
 
 	// The Amazon Web Services Region associated with the automated backup.
 	Region *string
 
-	// Earliest and latest time an instance can be restored to.
+	// The earliest and latest time a DB instance can be restored to.
 	RestoreWindow *RestoreWindow
 
-	// Provides a list of status information for an automated backup:
+	// A list of status information for an automated backup:
+	//
 	//   - active - Automated backups for current instances.
+	//
 	//   - retained - Automated backups for deleted instances.
+	//
 	//   - creating - Automated backups that are waiting for the first automated
 	//   snapshot to be available.
 	Status *string
 
-	// Specifies the storage throughput for the automated backup.
+	// The storage throughput for the automated backup.
 	StorageThroughput *int32
 
-	// Specifies the storage type associated with the automated backup.
+	// The storage type associated with the automated backup.
 	StorageType *string
 
 	// The ARN from the key store with which the automated backup is associated for
@@ -1775,7 +2208,7 @@ type DBInstanceAutomatedBackup struct {
 	// were created with a time zone specified.
 	Timezone *string
 
-	// Provides the VPC ID associated with the DB instance.
+	// The VPC ID associated with the DB instance.
 	VpcId *string
 
 	noSmithyDocumentSerde
@@ -1792,8 +2225,8 @@ type DBInstanceAutomatedBackupsReplication struct {
 	noSmithyDocumentSerde
 }
 
-// Describes an Amazon Web Services Identity and Access Management (IAM) role that
-// is associated with a DB instance.
+// Information about an Amazon Web Services Identity and Access Management (IAM)
+// role that is associated with a DB instance.
 type DBInstanceRole struct {
 
 	// The name of the feature associated with the Amazon Web Services Identity and
@@ -1805,11 +2238,14 @@ type DBInstanceRole struct {
 	// instance.
 	RoleArn *string
 
-	// Describes the state of association between the IAM role and the DB instance.
-	// The Status property returns one of the following values:
+	// Information about the state of association between the IAM role and the DB
+	// instance. The Status property returns one of the following values:
+	//
 	//   - ACTIVE - the IAM role ARN is associated with the DB instance and can be used
 	//   to access other Amazon Web Services services on your behalf.
+	//
 	//   - PENDING - the IAM role ARN is being associated with the DB instance.
+	//
 	//   - INVALID - the IAM role ARN is associated with the DB instance, but the DB
 	//   instance is unable to assume the IAM role in order to access other Amazon Web
 	//   Services services on your behalf.
@@ -1825,13 +2261,13 @@ type DBInstanceStatusInfo struct {
 	// isn't in an error state, this value is blank.
 	Message *string
 
-	// Boolean value that is true if the instance is operating normally, or false if
-	// the instance is in an error state.
-	Normal bool
+	// Indicates whether the instance is operating normally (TRUE) or is in an error
+	// state (FALSE).
+	Normal *bool
 
-	// Status of the DB instance. For a StatusType of read replica, the values can be
-	// replicating, replication stop point set, replication stop point reached, error,
-	// stopped, or terminated.
+	// The status of the DB instance. For a StatusType of read replica, the values can
+	// be replicating, replication stop point set, replication stop point reached,
+	// error, stopped, or terminated.
 	Status *string
 
 	// This value is currently "read replication."
@@ -1840,8 +2276,10 @@ type DBInstanceStatusInfo struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the details of an Amazon RDS DB parameter group. This data type is
-// used as a response element in the DescribeDBParameterGroups action.
+// Contains the details of an Amazon RDS DB parameter group.
+//
+// This data type is used as a response element in the DescribeDBParameterGroups
+// action.
 type DBParameterGroup struct {
 
 	// The Amazon Resource Name (ARN) for the DB parameter group.
@@ -1860,27 +2298,47 @@ type DBParameterGroup struct {
 	noSmithyDocumentSerde
 }
 
-// The status of the DB parameter group. This data type is used as a response
-// element in the following actions:
+// The status of the DB parameter group.
+//
+// This data type is used as a response element in the following actions:
+//
 //   - CreateDBInstance
+//
 //   - CreateDBInstanceReadReplica
+//
 //   - DeleteDBInstance
+//
 //   - ModifyDBInstance
+//
 //   - RebootDBInstance
+//
 //   - RestoreDBInstanceFromDBSnapshot
 type DBParameterGroupStatus struct {
 
 	// The name of the DB parameter group.
 	DBParameterGroupName *string
 
-	// The status of parameter updates.
+	// The status of parameter updates. Valid values are:
+	//
+	//   - applying : The parameter group change is being applied to the database.
+	//
+	//   - failed-to-apply : The parameter group is in an invalid state.
+	//
+	//   - in-sync : The parameter group change is synchronized with the database.
+	//
+	//   - pending-database-upgrade : The parameter group change will be applied after
+	//   the DB instance is upgraded.
+	//
+	//   - pending-reboot : The parameter group change will be applied after the DB
+	//   instance reboots.
 	ParameterApplyStatus *string
 
 	noSmithyDocumentSerde
 }
 
-// The data structure representing a proxy managed by the RDS Proxy. This data
-// type is used as a response element in the DescribeDBProxies action.
+// The data structure representing a proxy managed by the RDS Proxy.
+//
+// This data type is used as a response element in the DescribeDBProxies action.
 type DBProxy struct {
 
 	// One or more data structures specifying the authorization mechanism to connect
@@ -1897,14 +2355,14 @@ type DBProxy struct {
 	// your Amazon Web Services account in the specified Amazon Web Services Region.
 	DBProxyName *string
 
-	// Whether the proxy includes detailed information about SQL statements in its
-	// logs. This information helps you to debug issues involving SQL behavior or the
-	// performance and scalability of the proxy connections. The debug information
-	// includes the text of SQL statements that you submit through the proxy. Thus,
-	// only enable this setting when needed for debugging, and only when you have
-	// security measures in place to safeguard any sensitive information that appears
-	// in the logs.
-	DebugLogging bool
+	// Indicates whether the proxy includes detailed information about SQL statements
+	// in its logs. This information helps you to debug issues involving SQL behavior
+	// or the performance and scalability of the proxy connections. The debug
+	// information includes the text of SQL statements that you submit through the
+	// proxy. Thus, only enable this setting when needed for debugging, and only when
+	// you have security measures in place to safeguard any sensitive information that
+	// appears in the logs.
+	DebugLogging *bool
 
 	// The endpoint that you can use to connect to the DB proxy. You include the
 	// endpoint value in the connection string for a database client application.
@@ -1920,12 +2378,16 @@ type DBProxy struct {
 	// The number of seconds a connection to the proxy can have no activity before the
 	// proxy drops the client connection. The proxy keeps the underlying database
 	// connection open and puts it back into the connection pool for reuse by later
-	// connection requests. Default: 1800 (30 minutes) Constraints: 1 to 28,800
-	IdleClientTimeout int32
+	// connection requests.
+	//
+	// Default: 1800 (30 minutes)
+	//
+	// Constraints: 1 to 28,800
+	IdleClientTimeout *int32
 
 	// Indicates whether Transport Layer Security (TLS) encryption is required for
 	// connections to the proxy.
-	RequireTLS bool
+	RequireTLS *bool
 
 	// The Amazon Resource Name (ARN) for the IAM role that the proxy uses to access
 	// Amazon Secrets Manager.
@@ -1955,8 +2417,10 @@ type DBProxy struct {
 // automatically creates one endpoint for each DB proxy. For Aurora DB clusters,
 // you can associate additional endpoints with the same DB proxy. These endpoints
 // can be read/write or read-only. They can also reside in different VPCs than the
-// associated DB proxy. This data type is used as a response element in the
-// DescribeDBProxyEndpoints operation.
+// associated DB proxy.
+//
+// This data type is used as a response element in the DescribeDBProxyEndpoints
+// operation.
 type DBProxyEndpoint struct {
 
 	// The date and time when the DB proxy endpoint was first created.
@@ -1977,11 +2441,11 @@ type DBProxyEndpoint struct {
 	// endpoint value in the connection string for a database client application.
 	Endpoint *string
 
-	// A value that indicates whether this endpoint is the default endpoint for the
-	// associated DB proxy. Default DB proxy endpoints always have read/write
-	// capability. Other endpoints that you associate with the DB proxy can be either
-	// read/write or read-only.
-	IsDefault bool
+	// Indicates whether this endpoint is the default endpoint for the associated DB
+	// proxy. Default DB proxy endpoints always have read/write capability. Other
+	// endpoints that you associate with the DB proxy can be either read/write or
+	// read-only.
+	IsDefault *bool
 
 	// The current status of this DB proxy endpoint. A status of available means the
 	// endpoint is ready to handle requests. Other values indicate that you must wait
@@ -2006,8 +2470,10 @@ type DBProxyEndpoint struct {
 
 // Contains the details for an RDS Proxy target. It represents an RDS DB instance
 // or Aurora DB cluster that the proxy can connect to. One or more targets are
-// associated with an RDS Proxy target group. This data type is used as a response
-// element in the DescribeDBProxyTargets action.
+// associated with an RDS Proxy target group.
+//
+// This data type is used as a response element in the DescribeDBProxyTargets
+// action.
 type DBProxyTarget struct {
 
 	// The writer endpoint for the RDS DB instance or Aurora DB cluster.
@@ -2015,7 +2481,7 @@ type DBProxyTarget struct {
 
 	// The port that the RDS Proxy uses to connect to the target RDS DB instance or
 	// Aurora DB cluster.
-	Port int32
+	Port *int32
 
 	// The identifier representing the target. It can be the instance identifier for
 	// an RDS DB instance, or the cluster identifier for an Aurora DB cluster.
@@ -2044,8 +2510,10 @@ type DBProxyTarget struct {
 
 // Represents a set of RDS DB instances, Aurora DB clusters, or both that a proxy
 // can connect to. Currently, each target group is associated with exactly one RDS
-// DB instance or Aurora DB cluster. This data type is used as a response element
-// in the DescribeDBProxyTargetGroups action.
+// DB instance or Aurora DB cluster.
+//
+// This data type is used as a response element in the DescribeDBProxyTargetGroups
+// action.
 type DBProxyTargetGroup struct {
 
 	// The settings that determine the size and behavior of the connection pool for
@@ -2058,10 +2526,10 @@ type DBProxyTargetGroup struct {
 	// The identifier for the RDS proxy associated with this target group.
 	DBProxyName *string
 
-	// Whether this target group is the first one used for connection requests by the
-	// associated proxy. Because each proxy is currently associated with a single
-	// target group, currently this setting is always true .
-	IsDefault bool
+	// Indicates whether this target group is the first one used for connection
+	// requests by the associated proxy. Because each proxy is currently associated
+	// with a single target group, currently this setting is always true .
+	IsDefault *bool
 
 	// The current status of this target group. A status of available means the target
 	// group is correctly associated with a database. Other values indicate that you
@@ -2083,8 +2551,122 @@ type DBProxyTargetGroup struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the details for an Amazon RDS DB security group. This data type is
-// used as a response element in the DescribeDBSecurityGroups action.
+// The recommendation for your DB instances, DB clusters, and DB parameter groups.
+type DBRecommendation struct {
+
+	// Additional information about the recommendation. The information might contain
+	// markdown.
+	AdditionalInfo *string
+
+	// The category of the recommendation.
+	//
+	// Valid values:
+	//
+	//   - performance efficiency
+	//
+	//   - security
+	//
+	//   - reliability
+	//
+	//   - cost optimization
+	//
+	//   - operational excellence
+	//
+	//   - sustainability
+	Category *string
+
+	// The time when the recommendation was created. For example,
+	// 2023-09-28T01:13:53.931000+00:00 .
+	CreatedTime *time.Time
+
+	// A detailed description of the recommendation. The description might contain
+	// markdown.
+	Description *string
+
+	// A short description of the issue identified for this recommendation. The
+	// description might contain markdown.
+	Detection *string
+
+	// A short description that explains the possible impact of an issue.
+	Impact *string
+
+	// Details of the issue that caused the recommendation.
+	IssueDetails *IssueDetails
+
+	// A link to documentation that provides additional information about the
+	// recommendation.
+	Links []DocLink
+
+	// The reason why this recommendation was created. The information might contain
+	// markdown.
+	Reason *string
+
+	// A short description of the recommendation to resolve an issue. The description
+	// might contain markdown.
+	Recommendation *string
+
+	// The unique identifier of the recommendation.
+	RecommendationId *string
+
+	// A list of recommended actions.
+	RecommendedActions []RecommendedAction
+
+	// The Amazon Resource Name (ARN) of the RDS resource associated with the
+	// recommendation.
+	ResourceArn *string
+
+	// The severity level of the recommendation. The severity level can help you
+	// decide the urgency with which to address the recommendation.
+	//
+	// Valid values:
+	//
+	//   - high
+	//
+	//   - medium
+	//
+	//   - low
+	//
+	//   - informational
+	Severity *string
+
+	// The Amazon Web Services service that generated the recommendations.
+	Source *string
+
+	// The current status of the recommendation.
+	//
+	// Valid values:
+	//
+	//   - active - The recommendations which are ready for you to apply.
+	//
+	//   - pending - The applied or scheduled recommendations which are in progress.
+	//
+	//   - resolved - The recommendations which are completed.
+	//
+	//   - dismissed - The recommendations that you dismissed.
+	Status *string
+
+	// A short description of the recommendation type. The description might contain
+	// markdown.
+	TypeDetection *string
+
+	// A value that indicates the type of recommendation. This value determines how
+	// the description is rendered.
+	TypeId *string
+
+	// A short description that summarizes the recommendation to fix all the issues of
+	// the recommendation type. The description might contain markdown.
+	TypeRecommendation *string
+
+	// The time when the recommendation was last updated.
+	UpdatedTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Contains the details for an Amazon RDS DB security group.
+//
+// This data type is used as a response element in the DescribeDBSecurityGroups
+// action.
 type DBSecurityGroup struct {
 
 	// The Amazon Resource Name (ARN) for the DB security group.
@@ -2113,9 +2695,13 @@ type DBSecurityGroup struct {
 }
 
 // This data type is used as a response element in the following actions:
+//
 //   - ModifyDBInstance
+//
 //   - RebootDBInstance
+//
 //   - RestoreDBInstanceFromDBSnapshot
+//
 //   - RestoreDBInstanceToPointInTime
 type DBSecurityGroupMembership struct {
 
@@ -2128,12 +2714,83 @@ type DBSecurityGroupMembership struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the details of an Amazon RDS DB snapshot. This data type is used as a
-// response element in the DescribeDBSnapshots action.
+// Contains the details for an Amazon RDS DB shard group.
+type DBShardGroup struct {
+
+	// Specifies whether to create standby DB shard groups for the DB shard group.
+	// Valid values are the following:
+	//
+	//   - 0 - Creates a DB shard group without a standby DB shard group. This is the
+	//   default value.
+	//
+	//   - 1 - Creates a DB shard group with a standby DB shard group in a different
+	//   Availability Zone (AZ).
+	//
+	//   - 2 - Creates a DB shard group with two standby DB shard groups in two
+	//   different AZs.
+	ComputeRedundancy *int32
+
+	// The name of the primary DB cluster for the DB shard group.
+	DBClusterIdentifier *string
+
+	// The Amazon Resource Name (ARN) for the DB shard group.
+	DBShardGroupArn *string
+
+	// The name of the DB shard group.
+	DBShardGroupIdentifier *string
+
+	// The Amazon Web Services Region-unique, immutable identifier for the DB shard
+	// group.
+	DBShardGroupResourceId *string
+
+	// The connection endpoint for the DB shard group.
+	Endpoint *string
+
+	// The maximum capacity of the DB shard group in Aurora capacity units (ACUs).
+	MaxACU *float64
+
+	// The minimum capacity of the DB shard group in Aurora capacity units (ACUs).
+	MinACU *float64
+
+	// Indicates whether the DB shard group is publicly accessible.
+	//
+	// When the DB shard group is publicly accessible, its Domain Name System (DNS)
+	// endpoint resolves to the private IP address from within the DB shard group's
+	// virtual private cloud (VPC). It resolves to the public IP address from outside
+	// of the DB shard group's VPC. Access to the DB shard group is ultimately
+	// controlled by the security group it uses. That public access isn't permitted if
+	// the security group assigned to the DB shard group doesn't permit it.
+	//
+	// When the DB shard group isn't publicly accessible, it is an internal DB shard
+	// group with a DNS name that resolves to a private IP address.
+	//
+	// For more information, see CreateDBShardGroup.
+	//
+	// This setting is only for Aurora Limitless Database.
+	PubliclyAccessible *bool
+
+	// The status of the DB shard group.
+	Status *string
+
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
+	TagList []Tag
+
+	noSmithyDocumentSerde
+}
+
+// Contains the details of an Amazon RDS DB snapshot.
+//
+// This data type is used as a response element in the DescribeDBSnapshots action.
 type DBSnapshot struct {
 
 	// Specifies the allocated storage size in gibibytes (GiB).
-	AllocatedStorage int32
+	AllocatedStorage *int32
 
 	// Specifies the name of the Availability Zone the DB instance was located in at
 	// the time of the DB snapshot.
@@ -2158,8 +2815,11 @@ type DBSnapshot struct {
 	// unique to an Amazon Web Services Region.
 	DbiResourceId *string
 
-	// Specifies whether the DB snapshot is encrypted.
-	Encrypted bool
+	// Indicates whether the DB instance has a dedicated log volume (DLV) enabled.
+	DedicatedLogVolume *bool
+
+	// Indicates whether the DB snapshot is encrypted.
+	Encrypted *bool
 
 	// Specifies the name of the database engine.
 	Engine *string
@@ -2167,9 +2827,9 @@ type DBSnapshot struct {
 	// Specifies the version of the database engine.
 	EngineVersion *string
 
-	// True if mapping of Amazon Web Services Identity and Access Management (IAM)
-	// accounts to database accounts is enabled, and otherwise false.
-	IAMDatabaseAuthenticationEnabled bool
+	// Indicates whether mapping of Amazon Web Services Identity and Access Management
+	// (IAM) accounts to database accounts is enabled.
+	IAMDatabaseAuthenticationEnabled *bool
 
 	// Specifies the time in Coordinated Universal Time (UTC) when the DB instance,
 	// from which the snapshot was taken, was created.
@@ -2180,8 +2840,10 @@ type DBSnapshot struct {
 	Iops *int32
 
 	// If Encrypted is true, the Amazon Web Services KMS key identifier for the
-	// encrypted DB snapshot. The Amazon Web Services KMS key identifier is the key
-	// ARN, key ID, alias ARN, or alias name for the KMS key.
+	// encrypted DB snapshot.
+	//
+	// The Amazon Web Services KMS key identifier is the key ARN, key ID, alias ARN,
+	// or alias name for the KMS key.
 	KmsKeyId *string
 
 	// License model information for the restored DB instance.
@@ -2189,6 +2851,10 @@ type DBSnapshot struct {
 
 	// Provides the master username for the DB snapshot.
 	MasterUsername *string
+
+	// Indicates whether the snapshot is of a DB instance using the multi-tenant
+	// configuration (TRUE) or the single-tenant configuration (FALSE).
+	MultiTenant *bool
 
 	// Provides the option group name for the DB snapshot.
 	OptionGroupName *string
@@ -2198,11 +2864,11 @@ type DBSnapshot struct {
 	OriginalSnapshotCreateTime *time.Time
 
 	// The percentage of the estimated data that has been transferred.
-	PercentProgress int32
+	PercentProgress *int32
 
 	// Specifies the port that the database engine was listening on at the time of the
 	// snapshot.
-	Port int32
+	Port *int32
 
 	// The number of CPU cores and the number of threads per core for the DB instance
 	// class of the DB instance when the DB snapshot was created.
@@ -2216,8 +2882,10 @@ type DBSnapshot struct {
 	// you're backing up. Thus, if you restore a snapshot, SnapshotDatabaseTime is the
 	// most recent transaction in the restored DB instance. In contrast,
 	// originalSnapshotCreateTime specifies the system time that the snapshot
-	// completed. If you back up a read replica, you can determine the replica lag by
-	// comparing SnapshotDatabaseTime with originalSnapshotCreateTime. For example, if
+	// completed.
+	//
+	// If you back up a read replica, you can determine the replica lag by comparing
+	// SnapshotDatabaseTime with originalSnapshotCreateTime. For example, if
 	// originalSnapshotCreateTime is two hours later than SnapshotDatabaseTime, then
 	// the replica lag is two hours.
 	SnapshotDatabaseTime *time.Time
@@ -2246,8 +2914,13 @@ type DBSnapshot struct {
 	// Specifies the storage type associated with DB snapshot.
 	StorageType *string
 
-	// A list of tags. For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
-	// in the Amazon RDS User Guide.
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
 	TagList []Tag
 
 	// The ARN from the key store with which to associate the instance for TDE
@@ -2265,32 +2938,38 @@ type DBSnapshot struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the name and values of a manual DB snapshot attribute Manual DB
-// snapshot attributes are used to authorize other Amazon Web Services accounts to
-// restore a manual DB snapshot. For more information, see the
+// Contains the name and values of a manual DB snapshot attribute
+//
+// Manual DB snapshot attributes are used to authorize other Amazon Web Services
+// accounts to restore a manual DB snapshot. For more information, see the
 // ModifyDBSnapshotAttribute API.
 type DBSnapshotAttribute struct {
 
-	// The name of the manual DB snapshot attribute. The attribute named restore
-	// refers to the list of Amazon Web Services accounts that have permission to copy
-	// or restore the manual DB cluster snapshot. For more information, see the
-	// ModifyDBSnapshotAttribute API action.
+	// The name of the manual DB snapshot attribute.
+	//
+	// The attribute named restore refers to the list of Amazon Web Services accounts
+	// that have permission to copy or restore the manual DB cluster snapshot. For more
+	// information, see the ModifyDBSnapshotAttribute API action.
 	AttributeName *string
 
-	// The value or values for the manual DB snapshot attribute. If the AttributeName
-	// field is set to restore , then this element returns a list of IDs of the Amazon
-	// Web Services accounts that are authorized to copy or restore the manual DB
-	// snapshot. If a value of all is in the list, then the manual DB snapshot is
-	// public and available for any Amazon Web Services account to copy or restore.
+	// The value or values for the manual DB snapshot attribute.
+	//
+	// If the AttributeName field is set to restore , then this element returns a list
+	// of IDs of the Amazon Web Services accounts that are authorized to copy or
+	// restore the manual DB snapshot. If a value of all is in the list, then the
+	// manual DB snapshot is public and available for any Amazon Web Services account
+	// to copy or restore.
 	AttributeValues []string
 
 	noSmithyDocumentSerde
 }
 
 // Contains the results of a successful call to the DescribeDBSnapshotAttributes
-// API action. Manual DB snapshot attributes are used to authorize other Amazon Web
-// Services accounts to copy or restore a manual DB snapshot. For more information,
-// see the ModifyDBSnapshotAttribute API action.
+// API action.
+//
+// Manual DB snapshot attributes are used to authorize other Amazon Web Services
+// accounts to copy or restore a manual DB snapshot. For more information, see the
+// ModifyDBSnapshotAttribute API action.
 type DBSnapshotAttributesResult struct {
 
 	// The list of attributes and values for the manual DB snapshot.
@@ -2302,8 +2981,63 @@ type DBSnapshotAttributesResult struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the details of an Amazon RDS DB subnet group. This data type is used
-// as a response element in the DescribeDBSubnetGroups action.
+// Contains the details of a tenant database in a snapshot of a DB instance.
+type DBSnapshotTenantDatabase struct {
+
+	// The name of the character set of a tenant database.
+	CharacterSetName *string
+
+	// The ID for the DB instance that contains the tenant databases.
+	DBInstanceIdentifier *string
+
+	// The identifier for the snapshot of the DB instance.
+	DBSnapshotIdentifier *string
+
+	// The Amazon Resource Name (ARN) for the snapshot tenant database.
+	DBSnapshotTenantDatabaseARN *string
+
+	// The resource identifier of the source CDB instance. This identifier can't be
+	// changed and is unique to an Amazon Web Services Region.
+	DbiResourceId *string
+
+	// The name of the database engine.
+	EngineName *string
+
+	// The master username of the tenant database.
+	MasterUsername *string
+
+	// The NCHAR character set name of the tenant database.
+	NcharCharacterSetName *string
+
+	// The type of DB snapshot.
+	SnapshotType *string
+
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
+	TagList []Tag
+
+	// The name of the tenant database.
+	TenantDBName *string
+
+	// The time the DB snapshot was taken, specified in Coordinated Universal Time
+	// (UTC). If you copy the snapshot, the creation time changes.
+	TenantDatabaseCreateTime *time.Time
+
+	// The resource ID of the tenant database.
+	TenantDatabaseResourceId *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains the details of an Amazon RDS DB subnet group.
+//
+// This data type is used as a response element in the DescribeDBSubnetGroups
+// action.
 type DBSubnetGroup struct {
 
 	// The Amazon Resource Name (ARN) for the DB subnet group.
@@ -2321,13 +3055,20 @@ type DBSubnetGroup struct {
 	// Contains a list of Subnet elements.
 	Subnets []Subnet
 
-	// The network type of the DB subnet group. Valid values:
+	// The network type of the DB subnet group.
+	//
+	// Valid values:
+	//
 	//   - IPV4
+	//
 	//   - DUAL
+	//
 	// A DBSubnetGroup can support only the IPv4 protocol or the IPv4 and the IPv6
-	// protocols ( DUAL ). For more information, see  Working with a DB instance in a
-	// VPC (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html)
-	// in the Amazon RDS User Guide.
+	// protocols ( DUAL ).
+	//
+	// For more information, see [Working with a DB instance in a VPC] in the Amazon RDS User Guide.
+	//
+	// [Working with a DB instance in a VPC]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html
 	SupportedNetworkTypes []string
 
 	// Provides the VpcId of the DB subnet group.
@@ -2340,13 +3081,26 @@ type DBSubnetGroup struct {
 type DescribeDBLogFilesDetails struct {
 
 	// A POSIX timestamp when the last log entry was written.
-	LastWritten int64
+	LastWritten *int64
 
 	// The name of the log file for the specified DB instance.
 	LogFileName *string
 
 	// The size, in bytes, of the log file for the specified DB instance.
-	Size int64
+	Size *int64
+
+	noSmithyDocumentSerde
+}
+
+// A link to documentation that provides additional information for a
+// recommendation.
+type DocLink struct {
+
+	// The text with the link to documentation for the recommendation.
+	Text *string
+
+	// The URL for the documentation for the recommendation.
+	Url *string
 
 	noSmithyDocumentSerde
 }
@@ -2386,17 +3140,20 @@ type DomainMembership struct {
 type DoubleRange struct {
 
 	// The minimum value in the range.
-	From float64
+	From *float64
 
 	// The maximum value in the range.
-	To float64
+	To *float64
 
 	noSmithyDocumentSerde
 }
 
 // This data type is used as a response element in the following actions:
+//
 //   - AuthorizeDBSecurityGroupIngress
+//
 //   - DescribeDBSecurityGroups
+//
 //   - RevokeDBSecurityGroupIngress
 type EC2SecurityGroup struct {
 
@@ -2420,8 +3177,11 @@ type EC2SecurityGroup struct {
 // This data type represents the information you need to connect to an Amazon RDS
 // DB instance. This data type is used as a response element in the following
 // actions:
+//
 //   - CreateDBInstance
+//
 //   - DescribeDBInstances
+//
 //   - DeleteDBInstance
 //
 // For the data structure that represents Amazon Aurora DB cluster endpoints, see
@@ -2435,7 +3195,7 @@ type Endpoint struct {
 	HostedZoneId *string
 
 	// Specifies the port that the database engine is listening on.
-	Port int32
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -2459,8 +3219,9 @@ type EngineDefaults struct {
 	noSmithyDocumentSerde
 }
 
-// This data type is used as a response element in the DescribeEvents (https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeEvents.html)
-// action.
+// This data type is used as a response element in the [DescribeEvents] action.
+//
+// [DescribeEvents]: https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeEvents.html
 type Event struct {
 
 	// Specifies the date and time of the event.
@@ -2484,8 +3245,9 @@ type Event struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the results of a successful invocation of the DescribeEventCategories (https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeEventCategories.html)
-// operation.
+// Contains the results of a successful invocation of the [DescribeEventCategories] operation.
+//
+// [DescribeEventCategories]: https://docs.aws.amazon.com/AmazonRDS/latest/APIReference/API_DescribeEventCategories.html
 type EventCategoriesMap struct {
 
 	// The event categories for the specified source type
@@ -2508,9 +3270,9 @@ type EventSubscription struct {
 	// notification subscription.
 	CustomerAwsId *string
 
-	// A Boolean value indicating if the subscription is enabled. True indicates the
-	// subscription is enabled.
-	Enabled bool
+	// Specifies whether the subscription is enabled. True indicates the subscription
+	// is enabled.
+	Enabled *bool
 
 	// A list of event categories for the RDS event notification subscription.
 	EventCategoriesList []string
@@ -2527,11 +3289,16 @@ type EventSubscription struct {
 	// The source type for the RDS event notification subscription.
 	SourceType *string
 
-	// The status of the RDS event notification subscription. Constraints: Can be one
-	// of the following: creating | modifying | deleting | active | no-permission |
-	// topic-not-exist The status "no-permission" indicates that RDS no longer has
-	// permission to post to the SNS topic. The status "topic-not-exist" indicates that
-	// the topic was deleted after the subscription was created.
+	// The status of the RDS event notification subscription.
+	//
+	// Constraints:
+	//
+	// Can be one of the following: creating | modifying | deleting | active |
+	// no-permission | topic-not-exist
+	//
+	// The status "no-permission" indicates that RDS no longer has permission to post
+	// to the SNS topic. The status "topic-not-exist" indicates that the topic was
+	// deleted after the subscription was created.
 	Status *string
 
 	// The time the RDS event notification subscription was created.
@@ -2540,14 +3307,21 @@ type EventSubscription struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the details of a snapshot or cluster export to Amazon S3. This data
-// type is used as a response element in the DescribeExportTasks action.
+// Contains the details of a snapshot or cluster export to Amazon S3.
+//
+// This data type is used as a response element in the DescribeExportTasks
+// operation.
 type ExportTask struct {
 
-	// The data exported from the snapshot or cluster. Valid values are the following:
+	// The data exported from the snapshot or cluster.
+	//
+	// Valid Values:
+	//
 	//   - database - Export all the data from a specified database.
+	//
 	//   - database.table table-name - Export a table of the snapshot or cluster. This
 	//   format is valid only for RDS for MySQL, RDS for MariaDB, and Aurora MySQL.
+	//
 	//   - database.schema schema-name - Export a database schema of the snapshot or
 	//   cluster. This format is valid only for RDS for PostgreSQL and Aurora PostgreSQL.
 	//
@@ -2573,15 +3347,15 @@ type ExportTask struct {
 	KmsKeyId *string
 
 	// The progress of the snapshot or cluster export task as a percentage.
-	PercentProgress int32
+	PercentProgress *int32
 
-	// The Amazon S3 bucket that the snapshot or cluster is exported to.
+	// The Amazon S3 bucket where the snapshot or cluster is exported to.
 	S3Bucket *string
 
 	// The Amazon S3 bucket prefix that is the file name and path of the exported data.
 	S3Prefix *string
 
-	// The time that the snapshot was created.
+	// The time when the snapshot was created.
 	SnapshotTime *time.Time
 
 	// The Amazon Resource Name (ARN) of the snapshot or cluster exported to Amazon S3.
@@ -2591,22 +3365,28 @@ type ExportTask struct {
 	SourceType ExportSourceType
 
 	// The progress status of the export task. The status can be one of the following:
+	//
 	//   - CANCELED
+	//
 	//   - CANCELING
+	//
 	//   - COMPLETE
+	//
 	//   - FAILED
+	//
 	//   - IN_PROGRESS
+	//
 	//   - STARTING
 	Status *string
 
-	// The time that the snapshot or cluster export task ended.
+	// The time when the snapshot or cluster export task ended.
 	TaskEndTime *time.Time
 
-	// The time that the snapshot or cluster export task started.
+	// The time when the snapshot or cluster export task started.
 	TaskStartTime *time.Time
 
 	// The total amount of data exported, in gigabytes.
-	TotalExtractedDataInGB int32
+	TotalExtractedDataInGB *int32
 
 	// A warning about the snapshot or cluster export task.
 	WarningMessage *string
@@ -2614,27 +3394,37 @@ type ExportTask struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the state of scheduled or in-process failover operations on an Aurora
-// global database ( GlobalCluster ). This Data type is empty unless a failover
-// operation is scheduled or is currently underway on the Aurora global database.
+// Contains the state of scheduled or in-process operations on a global cluster
+// (Aurora global database). This data type is empty unless a switchover or
+// failover operation is scheduled or is in progress on the Aurora global database.
 type FailoverState struct {
 
 	// The Amazon Resource Name (ARN) of the Aurora DB cluster that is currently being
 	// demoted, and which is associated with this state.
 	FromDbClusterArn *string
 
-	// The current status of the Aurora global database ( GlobalCluster ). Possible
-	// values are as follows:
-	//   - pending  A request to fail over the Aurora global database ( GlobalCluster
-	//   ) has been received by the service. The GlobalCluster 's primary DB cluster
-	//   and the specified secondary DB cluster are being verified before the failover
-	//   process can start.
-	//   - failing-over  This status covers the range of Aurora internal operations
-	//   that take place during the failover process, such as demoting the primary Aurora
-	//   DB cluster, promoting the secondary Aurora DB, and synchronizing replicas.
-	//   - cancelling  The request to fail over the Aurora global database (
-	//   GlobalCluster ) was cancelled and the primary Aurora DB cluster and the
-	//   selected secondary Aurora DB cluster are returning to their previous states.
+	// Indicates whether the operation is a global switchover or a global failover. If
+	// data loss is allowed, then the operation is a global failover. Otherwise, it's a
+	// switchover.
+	IsDataLossAllowed *bool
+
+	// The current status of the global cluster. Possible values are as follows:
+	//
+	//   - pending  The service received a request to switch over or fail over the
+	//   global cluster. The global cluster's primary DB cluster and the specified
+	//   secondary DB cluster are being verified before the operation starts.
+	//
+	//   - failing-over  Aurora is promoting the chosen secondary Aurora DB cluster
+	//   to become the new primary DB cluster to fail over the global cluster.
+	//
+	//   - cancelling  The request to switch over or fail over the global cluster was
+	//   cancelled and the primary Aurora DB cluster and the selected secondary Aurora DB
+	//   cluster are returning to their previous states.
+	//
+	//   - switching-over  This status covers the range of Aurora internal operations
+	//   that take place during the switchover process, such as demoting the primary
+	//   Aurora DB cluster, promoting the secondary Aurora DB cluster, and synchronizing
+	//   replicas.
 	Status FailoverStatus
 
 	// The Amazon Resource Name (ARN) of the Aurora DB cluster that is currently being
@@ -2647,12 +3437,24 @@ type FailoverState struct {
 // A filter name and value pair that is used to return a more specific list of
 // results from a describe operation. Filters can be used to match a set of
 // resources by specific criteria, such as IDs. The filters supported by a describe
-// operation are documented with the describe operation. Currently, wildcards are
-// not supported in filters. The following actions can be filtered:
+// operation are documented with the describe operation.
+//
+// Currently, wildcards are not supported in filters.
+//
+// The following actions can be filtered:
+//
 //   - DescribeDBClusterBacktracks
+//
 //   - DescribeDBClusterEndpoints
+//
 //   - DescribeDBClusters
+//
 //   - DescribeDBInstances
+//
+//   - DescribeDBRecommendations
+//
+//   - DescribeDBShardGroups
+//
 //   - DescribePendingMaintenanceActions
 type Filter struct {
 
@@ -2678,16 +3480,25 @@ type GlobalCluster struct {
 	// The deletion protection setting for the new global database cluster.
 	DeletionProtection *bool
 
+	//  The writer endpoint for the new global database cluster. This endpoint always
+	// points to the writer DB instance in the current primary cluster.
+	Endpoint *string
+
 	// The Aurora database engine used by the global database cluster.
 	Engine *string
+
+	// The life cycle type for the global cluster.
+	//
+	// For more information, see CreateGlobalCluster.
+	EngineLifecycleSupport *string
 
 	// Indicates the database engine version.
 	EngineVersion *string
 
 	// A data object containing all properties for the current state of an in-process
-	// or pending failover process for this Aurora global database. This object is
-	// empty unless the FailoverGlobalCluster API operation has been called on this
-	// Aurora global database ( GlobalCluster ).
+	// or pending switchover or failover process for this global cluster (Aurora global
+	// database). This object is empty unless the SwitchoverGlobalCluster or
+	// FailoverGlobalCluster operation was called on this global cluster.
 	FailoverState *FailoverState
 
 	// The Amazon Resource Name (ARN) for the global database cluster.
@@ -2711,28 +3522,106 @@ type GlobalCluster struct {
 	// The storage encryption setting for the global database cluster.
 	StorageEncrypted *bool
 
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
+	TagList []Tag
+
 	noSmithyDocumentSerde
 }
 
 // A data structure with information about any primary and secondary clusters
-// associated with an Aurora global database.
+// associated with a global cluster (Aurora global database).
 type GlobalClusterMember struct {
 
-	// The Amazon Resource Name (ARN) for each Aurora cluster.
+	// The Amazon Resource Name (ARN) for each Aurora DB cluster in the global cluster.
 	DBClusterArn *string
 
-	// Specifies whether a secondary cluster in an Aurora global database has write
-	// forwarding enabled, not enabled, or is in the process of enabling it.
+	// The status of write forwarding for a secondary cluster in the global cluster.
 	GlobalWriteForwardingStatus WriteForwardingStatus
 
-	// Specifies whether the Aurora cluster is the primary cluster (that is, has
-	// read-write capability) for the Aurora global database with which it is
-	// associated.
-	IsWriter bool
+	// Indicates whether the Aurora DB cluster is the primary cluster (that is, has
+	// read-write capability) for the global cluster with which it is associated.
+	IsWriter *bool
 
 	// The Amazon Resource Name (ARN) for each read-only secondary cluster associated
-	// with the Aurora global database.
+	// with the global cluster.
 	Readers []string
+
+	// The status of synchronization of each Aurora DB cluster in the global cluster.
+	SynchronizationStatus GlobalClusterMemberSynchronizationStatus
+
+	noSmithyDocumentSerde
+}
+
+// A zero-ETL integration with Amazon Redshift.
+type Integration struct {
+
+	// The encryption context for the integration. For more information, see [Encryption context] in the
+	// Amazon Web Services Key Management Service Developer Guide.
+	//
+	// [Encryption context]: https://docs.aws.amazon.com/kms/latest/developerguide/concepts.html#encrypt_context
+	AdditionalEncryptionContext map[string]string
+
+	// The time when the integration was created, in Universal Coordinated Time (UTC).
+	CreateTime *time.Time
+
+	// Data filters for the integration. These filters determine which tables from the
+	// source database are sent to the target Amazon Redshift data warehouse.
+	DataFilter *string
+
+	// A description of the integration.
+	Description *string
+
+	// Any errors associated with the integration.
+	Errors []IntegrationError
+
+	// The ARN of the integration.
+	IntegrationArn *string
+
+	// The name of the integration.
+	IntegrationName *string
+
+	// The Amazon Web Services Key Management System (Amazon Web Services KMS) key
+	// identifier for the key used to to encrypt the integration.
+	KMSKeyId *string
+
+	// The Amazon Resource Name (ARN) of the database used as the source for
+	// replication.
+	SourceArn *string
+
+	// The current status of the integration.
+	Status IntegrationStatus
+
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
+	Tags []Tag
+
+	// The ARN of the Redshift data warehouse used as the target for replication.
+	TargetArn *string
+
+	noSmithyDocumentSerde
+}
+
+// An error associated with a zero-ETL integration with Amazon Redshift.
+type IntegrationError struct {
+
+	// The error code associated with the integration.
+	//
+	// This member is required.
+	ErrorCode *string
+
+	// A message explaining the error.
+	ErrorMessage *string
 
 	noSmithyDocumentSerde
 }
@@ -2741,22 +3630,47 @@ type GlobalClusterMember struct {
 // action.
 type IPRange struct {
 
-	// Specifies the IP range.
+	// The IP range.
 	CIDRIP *string
 
-	// Specifies the status of the IP range. Status can be "authorizing",
-	// "authorized", "revoking", and "revoked".
+	// The status of the IP range. Status can be "authorizing", "authorized",
+	// "revoking", and "revoked".
 	Status *string
 
 	noSmithyDocumentSerde
 }
 
+// The details of an issue with your DB instances, DB clusters, and DB parameter
+// groups.
+type IssueDetails struct {
+
+	// A detailed description of the issue when the recommendation category is
+	// performance .
+	PerformanceIssueDetails *PerformanceIssueDetails
+
+	noSmithyDocumentSerde
+}
+
+// Contains details for Aurora Limitless Database.
+type LimitlessDatabase struct {
+
+	// The minimum required capacity for Aurora Limitless Database in Aurora capacity
+	// units (ACUs).
+	MinRequiredACU *float64
+
+	// The status of Aurora Limitless Database.
+	Status LimitlessDatabaseStatus
+
+	noSmithyDocumentSerde
+}
+
 // Contains the secret managed by RDS in Amazon Web Services Secrets Manager for
-// the master user password. For more information, see Password management with
-// Amazon Web Services Secrets Manager (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-secrets-manager.html)
-// in the Amazon RDS User Guide and Password management with Amazon Web Services
-// Secrets Manager (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-secrets-manager.html)
-// in the Amazon Aurora User Guide.
+// the master user password.
+//
+// For more information, see [Password management with Amazon Web Services Secrets Manager] in the Amazon RDS User Guide and [Password management with Amazon Web Services Secrets Manager] in the Amazon
+// Aurora User Guide.
+//
+// [Password management with Amazon Web Services Secrets Manager]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/rds-secrets-manager.html
 type MasterUserSecret struct {
 
 	// The Amazon Web Services KMS key identifier that is used to encrypt the secret.
@@ -2765,18 +3679,67 @@ type MasterUserSecret struct {
 	// The Amazon Resource Name (ARN) of the secret.
 	SecretArn *string
 
-	// The status of the secret. The possible status values include the following:
+	// The status of the secret.
+	//
+	// The possible status values include the following:
+	//
 	//   - creating - The secret is being created.
+	//
 	//   - active - The secret is available for normal use and rotation.
+	//
 	//   - rotating - The secret is being rotated.
+	//
 	//   - impaired - The secret can be used to access database credentials, but it
 	//   can't be rotated. A secret might have this status if, for example, permissions
 	//   are changed so that RDS can no longer access either the secret or the KMS key
-	//   for the secret. When a secret has this status, you can correct the condition
-	//   that caused the status. Alternatively, modify the DB instance to turn off
-	//   automatic management of database credentials, and then modify the DB instance
-	//   again to turn on automatic management of database credentials.
+	//   for the secret.
+	//
+	// When a secret has this status, you can correct the condition that caused the
+	//   status. Alternatively, modify the DB instance to turn off automatic management
+	//   of database credentials, and then modify the DB instance again to turn on
+	//   automatic management of database credentials.
 	SecretStatus *string
+
+	noSmithyDocumentSerde
+}
+
+// The representation of a metric.
+type Metric struct {
+
+	// The query to retrieve metric data points.
+	MetricQuery *MetricQuery
+
+	// The name of a metric.
+	Name *string
+
+	// A list of metric references (thresholds).
+	References []MetricReference
+
+	// The details of different statistics for a metric. The description might contain
+	// markdown.
+	StatisticsDetails *string
+
+	noSmithyDocumentSerde
+}
+
+// The query to retrieve metric data points.
+type MetricQuery struct {
+
+	// The Performance Insights query that you can use to retrieve Performance
+	// Insights metric data points.
+	PerformanceInsightsMetricQuery *PerformanceInsightsMetricQuery
+
+	noSmithyDocumentSerde
+}
+
+// The reference (threshold) for a metric.
+type MetricReference struct {
+
+	// The name of the metric reference.
+	Name *string
+
+	// The details of a performance issue.
+	ReferenceDetails *ReferenceDetails
 
 	noSmithyDocumentSerde
 }
@@ -2794,7 +3757,7 @@ type MinimumEngineVersionPerAllowedValue struct {
 	noSmithyDocumentSerde
 }
 
-// Option details.
+// The details of an option.
 type Option struct {
 
 	// If the option requires access to a port, then this DB security group allows
@@ -2813,11 +3776,11 @@ type Option struct {
 	// The version of the option.
 	OptionVersion *string
 
-	// Indicate if this option is permanent.
-	Permanent bool
+	// Indicates whether this option is permanent.
+	Permanent *bool
 
-	// Indicate if this option is persistent.
-	Persistent bool
+	// Indicates whether this option is persistent.
+	Persistent *bool
 
 	// If required, the port configured for this option to use.
 	Port *int32
@@ -2829,7 +3792,7 @@ type Option struct {
 	noSmithyDocumentSerde
 }
 
-// A list of all available options
+// A list of all available options for an option group.
 type OptionConfiguration struct {
 
 	// The configuration of options to include in a group.
@@ -2837,7 +3800,7 @@ type OptionConfiguration struct {
 	// This member is required.
 	OptionName *string
 
-	// A list of DBSecurityGroupMembership name strings used for this option.
+	// A list of DB security groups used for this option.
 	DBSecurityGroupMemberships []string
 
 	// The option settings to include in an option group.
@@ -2849,7 +3812,7 @@ type OptionConfiguration struct {
 	// The optional port for the option.
 	Port *int32
 
-	// A list of VpcSecurityGroupMembership name strings used for this option.
+	// A list of VPC security group names used for this option.
 	VpcSecurityGroupMemberships []string
 
 	noSmithyDocumentSerde
@@ -2860,7 +3823,7 @@ type OptionGroup struct {
 	// Indicates whether this option group can be applied to both VPC and non-VPC
 	// instances. The value true indicates the option group can be applied to both VPC
 	// and non-VPC instances.
-	AllowsVpcAndNonVpcInstanceMemberships bool
+	AllowsVpcAndNonVpcInstanceMemberships *bool
 
 	// Indicates when the option group was copied.
 	CopyTimestamp *time.Time
@@ -2917,7 +3880,7 @@ type OptionGroupMembership struct {
 // Available option.
 type OptionGroupOption struct {
 
-	// Specifies whether the option can be copied across Amazon Web Services accounts.
+	// Indicates whether the option can be copied across Amazon Web Services accounts.
 	CopyableCrossAccount *bool
 
 	// If the option requires a port, specifies the default port for the option.
@@ -2953,28 +3916,28 @@ type OptionGroupOption struct {
 
 	// Permanent options can never be removed from an option group. An option group
 	// containing a permanent option can't be removed from a DB instance.
-	Permanent bool
+	Permanent *bool
 
 	// Persistent options can't be removed from an option group while DB instances are
 	// associated with the option group. If you disassociate all DB instances from the
 	// option group, your can remove the persistent option from the option group.
-	Persistent bool
+	Persistent *bool
 
-	// Specifies whether the option requires a port.
-	PortRequired bool
+	// Indicates whether the option requires a port.
+	PortRequired *bool
 
 	// If true, you must enable the Auto Minor Version Upgrade setting for your DB
 	// instance before you can use this option. You can enable Auto Minor Version
 	// Upgrade when you first create your DB instance, or by modifying your DB instance
 	// later.
-	RequiresAutoMinorEngineVersionUpgrade bool
+	RequiresAutoMinorEngineVersionUpgrade *bool
 
 	// If true, you can change the option to an earlier version of the option. This
 	// only applies to options that have different versions available.
 	SupportsOptionVersionDowngrade *bool
 
 	// If true, you can only use this option with a DB instance that is in a VPC.
-	VpcOnly bool
+	VpcOnly *bool
 
 	noSmithyDocumentSerde
 }
@@ -2993,13 +3956,13 @@ type OptionGroupOptionSetting struct {
 	// The default value for the option group option.
 	DefaultValue *string
 
-	// Boolean value where true indicates that this option group option can be changed
-	// from the default value.
-	IsModifiable bool
+	// Indicates whether this option group option can be changed from the default
+	// value.
+	IsModifiable *bool
 
-	// Boolean value where true indicates that a value must be specified for this
-	// option setting of the option group option.
-	IsRequired bool
+	// Indicates whether a value must be specified for this option setting of the
+	// option group option.
+	IsRequired *bool
 
 	// The minimum DB engine version required for the corresponding allowed value for
 	// this option setting.
@@ -3035,12 +3998,11 @@ type OptionSetting struct {
 	// The description of the option setting.
 	Description *string
 
-	// Indicates if the option setting is part of a collection.
-	IsCollection bool
+	// Indicates whether the option setting is part of a collection.
+	IsCollection *bool
 
-	// A Boolean value that, when true, indicates the option setting can be modified
-	// from the default.
-	IsModifiable bool
+	// Indicates whether the option setting can be modified from the default.
+	IsModifiable *bool
 
 	// The name of the option that has settings that you can set.
 	Name *string
@@ -3055,8 +4017,8 @@ type OptionSetting struct {
 // DescribeOptionGroupOptions action.
 type OptionVersion struct {
 
-	// True if the version is the default version of the option, and otherwise false.
-	IsDefault bool
+	// Indicates whether the version is the default version of the option.
+	IsDefault *bool
 
 	// The version of the option.
 	Version *string
@@ -3064,8 +4026,10 @@ type OptionVersion struct {
 	noSmithyDocumentSerde
 }
 
-// Contains a list of available options for a DB instance. This data type is used
-// as a response element in the DescribeOrderableDBInstanceOptions action.
+// Contains a list of available options for a DB instance.
+//
+// This data type is used as a response element in the
+// DescribeOrderableDBInstanceOptions action.
 type OrderableDBInstanceOption struct {
 
 	// The Availability Zone group for a DB instance.
@@ -3121,17 +4085,19 @@ type OrderableDBInstanceOption struct {
 	MinStorageThroughputPerIops *float64
 
 	// Indicates whether a DB instance is Multi-AZ capable.
-	MultiAZCapable bool
+	MultiAZCapable *bool
 
-	// Whether a DB instance supports RDS on Outposts. For more information about RDS
-	// on Outposts, see Amazon RDS on Amazon Web Services Outposts (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html)
-	// in the Amazon RDS User Guide.
-	OutpostCapable bool
+	// Indicates whether a DB instance supports RDS on Outposts.
+	//
+	// For more information about RDS on Outposts, see [Amazon RDS on Amazon Web Services Outposts] in the Amazon RDS User Guide.
+	//
+	// [Amazon RDS on Amazon Web Services Outposts]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html
+	OutpostCapable *bool
 
 	// Indicates whether a DB instance can have a read replica.
-	ReadReplicaCapable bool
+	ReadReplicaCapable *bool
 
-	// Indicates the storage type for a DB instance.
+	// The storage type for a DB instance.
 	StorageType *string
 
 	// The list of supported modes for Database Activity Streams. Aurora PostgreSQL
@@ -3143,57 +4109,68 @@ type OrderableDBInstanceOption struct {
 	// A list of the supported DB engine modes.
 	SupportedEngineModes []string
 
-	// The network types supported by the DB instance ( IPV4 or DUAL ). A DB instance
-	// can support only the IPv4 protocol or the IPv4 and the IPv6 protocols ( DUAL ).
-	// For more information, see Working with a DB instance in a VPC (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html)
-	// in the Amazon RDS User Guide.
+	// The network types supported by the DB instance ( IPV4 or DUAL ).
+	//
+	// A DB instance can support only the IPv4 protocol or the IPv4 and the IPv6
+	// protocols ( DUAL ).
+	//
+	// For more information, see [Working with a DB instance in a VPC] in the Amazon RDS User Guide.
+	//
+	// [Working with a DB instance in a VPC]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_VPC.WorkingWithRDSInstanceinaVPC.html
 	SupportedNetworkTypes []string
 
-	// Whether DB instances can be configured as a Multi-AZ DB cluster. For more
-	// information on Multi-AZ DB clusters, see Multi-AZ deployments with two readable
-	// standby DB instances (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html)
-	// in the Amazon RDS User Guide.
-	SupportsClusters bool
+	// Indicates whether DB instances can be configured as a Multi-AZ DB cluster.
+	//
+	// For more information on Multi-AZ DB clusters, see [Multi-AZ deployments with two readable standby DB instances] in the Amazon RDS User
+	// Guide.
+	//
+	// [Multi-AZ deployments with two readable standby DB instances]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html
+	SupportsClusters *bool
+
+	// Indicates whether a DB instance supports using a dedicated log volume (DLV).
+	SupportsDedicatedLogVolume *bool
 
 	// Indicates whether a DB instance supports Enhanced Monitoring at intervals from
 	// 1 to 60 seconds.
-	SupportsEnhancedMonitoring bool
+	SupportsEnhancedMonitoring *bool
 
-	// A value that indicates whether you can use Aurora global databases with a
-	// specific combination of other DB engine attributes.
-	SupportsGlobalDatabases bool
+	// Indicates whether you can use Aurora global databases with a specific
+	// combination of other DB engine attributes.
+	SupportsGlobalDatabases *bool
 
 	// Indicates whether a DB instance supports IAM database authentication.
-	SupportsIAMDatabaseAuthentication bool
+	SupportsIAMDatabaseAuthentication *bool
 
 	// Indicates whether a DB instance supports provisioned IOPS.
-	SupportsIops bool
+	SupportsIops *bool
 
-	// Whether a DB instance supports Kerberos Authentication.
+	// Indicates whether a DB instance supports Kerberos Authentication.
 	SupportsKerberosAuthentication *bool
 
-	// True if a DB instance supports Performance Insights, otherwise false.
-	SupportsPerformanceInsights bool
+	// Indicates whether a DB instance supports Performance Insights.
+	SupportsPerformanceInsights *bool
 
-	// Whether Amazon RDS can automatically scale storage for DB instances that use
-	// the specified DB instance class.
+	// Indicates whether Amazon RDS can automatically scale storage for DB instances
+	// that use the specified DB instance class.
 	SupportsStorageAutoscaling *bool
 
 	// Indicates whether a DB instance supports encrypted storage.
-	SupportsStorageEncryption bool
+	SupportsStorageEncryption *bool
 
 	// Indicates whether a DB instance supports storage throughput.
-	SupportsStorageThroughput bool
+	SupportsStorageThroughput *bool
 
 	// Indicates whether a DB instance is in a VPC.
-	Vpc bool
+	Vpc *bool
 
 	noSmithyDocumentSerde
 }
 
-// A data type that represents an Outpost. For more information about RDS on
-// Outposts, see Amazon RDS on Amazon Web Services Outposts (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html)
-// in the Amazon RDS User Guide.
+// A data type that represents an Outpost.
+//
+// For more information about RDS on Outposts, see [Amazon RDS on Amazon Web Services Outposts] in the Amazon RDS User Guide.
+//
+// [Amazon RDS on Amazon Web Services Outposts]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html
 type Outpost struct {
 
 	// The Amazon Resource Name (ARN) of the Outpost.
@@ -3203,8 +4180,10 @@ type Outpost struct {
 }
 
 // This data type is used as a request parameter in the ModifyDBParameterGroup and
-// ResetDBParameterGroup actions. This data type is used as a response element in
-// the DescribeEngineDefaultParameters and DescribeDBParameters actions.
+// ResetDBParameterGroup actions.
+//
+// This data type is used as a response element in the
+// DescribeEngineDefaultParameters and DescribeDBParameters actions.
 type Parameter struct {
 
 	// Specifies the valid range of values for the parameter.
@@ -3225,18 +4204,18 @@ type Parameter struct {
 	// Indicates whether ( true ) or not ( false ) the parameter can be modified. Some
 	// parameters have security or operational implications that prevent them from
 	// being changed.
-	IsModifiable bool
+	IsModifiable *bool
 
 	// The earliest engine version to which the parameter can apply.
 	MinimumEngineVersion *string
 
-	// Specifies the name of the parameter.
+	// The name of the parameter.
 	ParameterName *string
 
-	// Specifies the value of the parameter.
+	// The value of the parameter.
 	ParameterValue *string
 
-	// Indicates the source of the parameter value.
+	// The source of the parameter value.
 	Source *string
 
 	// The valid DB engine modes.
@@ -3264,8 +4243,26 @@ type PendingCloudwatchLogsExports struct {
 type PendingMaintenanceAction struct {
 
 	// The type of pending maintenance action that is available for the resource.
-	// Valid actions are system-update , db-upgrade , hardware-maintenance , and
-	// ca-certificate-rotation .
+	//
+	// For more information about maintenance actions, see [Maintaining a DB instance].
+	//
+	// Valid Values:
+	//
+	//   - ca-certificate-rotation
+	//
+	//   - db-upgrade
+	//
+	//   - hardware-maintenance
+	//
+	//   - os-upgrade
+	//
+	//   - system-update
+	//
+	// For more information about these actions, see [Maintenance actions for Amazon Aurora] or [Maintenance actions for Amazon RDS].
+	//
+	// [Maintenance actions for Amazon RDS]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-rds
+	// [Maintaining a DB instance]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_UpgradeDBInstance.Maintenance.html
+	// [Maintenance actions for Amazon Aurora]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_UpgradeDBInstance.Maintenance.html#maintenance-actions-aurora
 	Action *string
 
 	// The date of the maintenance window when the action is applied. The maintenance
@@ -3283,10 +4280,12 @@ type PendingMaintenanceAction struct {
 	// A description providing more detail about the maintenance action.
 	Description *string
 
-	// The date when the maintenance action is automatically applied. On this date,
-	// the maintenance action is applied to the resource as soon as possible,
-	// regardless of the maintenance window for the resource. There might be a delay of
-	// one or more days from this date before the maintenance action is applied.
+	// The date when the maintenance action is automatically applied.
+	//
+	// On this date, the maintenance action is applied to the resource as soon as
+	// possible, regardless of the maintenance window for the resource. There might be
+	// a delay of one or more days from this date before the maintenance action is
+	// applied.
 	ForcedApplyDate *time.Time
 
 	// Indicates the type of opt-in request that has been received for the resource.
@@ -3311,11 +4310,13 @@ type PendingModifiedValues struct {
 	// The number of days for which automated backups are retained.
 	BackupRetentionPeriod *int32
 
-	// The identifier of the CA certificate for the DB instance. For more information,
-	// see Using SSL/TLS to encrypt a connection to a DB instance (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html)
-	// in the Amazon RDS User Guide and Using SSL/TLS to encrypt a connection to a DB
-	// cluster (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html)
-	// in the Amazon Aurora User Guide.
+	// The identifier of the CA certificate for the DB instance.
+	//
+	// For more information, see [Using SSL/TLS to encrypt a connection to a DB instance] in the Amazon RDS User Guide and [Using SSL/TLS to encrypt a connection to a DB cluster] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Using SSL/TLS to encrypt a connection to a DB cluster]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/UsingWithRDS.SSL.html
+	// [Using SSL/TLS to encrypt a connection to a DB instance]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/UsingWithRDS.SSL.html
 	CACertificateIdentifier *string
 
 	// The name of the compute and memory capacity class for the DB instance.
@@ -3327,29 +4328,37 @@ type PendingModifiedValues struct {
 	// The DB subnet group for the DB instance.
 	DBSubnetGroupName *string
 
+	// Indicates whether the DB instance has a dedicated log volume (DLV) enabled.>
+	DedicatedLogVolume *bool
+
 	// The database engine of the DB instance.
 	Engine *string
 
 	// The database engine version.
 	EngineVersion *string
 
-	// Whether mapping of Amazon Web Services Identity and Access Management (IAM)
-	// accounts to database accounts is enabled.
+	// Indicates whether mapping of Amazon Web Services Identity and Access Management
+	// (IAM) accounts to database accounts is enabled.
 	IAMDatabaseAuthenticationEnabled *bool
 
 	// The Provisioned IOPS value for the DB instance.
 	Iops *int32
 
-	// The license model for the DB instance. Valid values: license-included |
-	// bring-your-own-license | general-public-license
+	// The license model for the DB instance.
+	//
+	// Valid values: license-included | bring-your-own-license | general-public-license
 	LicenseModel *string
 
 	// The master credentials for the DB instance.
 	MasterUserPassword *string
 
-	// A value that indicates that the Single-AZ DB instance will change to a Multi-AZ
+	// Indicates whether the Single-AZ DB instance will change to a Multi-AZ
 	// deployment.
 	MultiAZ *bool
+
+	// Indicates whether the DB instance will change to the multi-tenant configuration
+	// (TRUE) or the single-tenant configuration (FALSE).
+	MultiTenant *bool
 
 	// A list of the log types whose configuration is still pending. In other words,
 	// these log types are in the process of being activated or deactivated.
@@ -3376,40 +4385,151 @@ type PendingModifiedValues struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the processor features of a DB instance class. To specify the number
-// of CPU cores, use the coreCount feature name for the Name parameter. To specify
-// the number of threads per core, use the threadsPerCore feature name for the Name
-// parameter. You can set the processor features of the DB instance class for a DB
-// instance when you call one of the following actions:
+// A logical grouping of Performance Insights metrics for a related subject area.
+// For example, the db.sql dimension group consists of the following dimensions:
+//
+//   - db.sql.id - The hash of a running SQL statement, generated by Performance
+//     Insights.
+//
+//   - db.sql.db_id - Either the SQL ID generated by the database engine, or a
+//     value generated by Performance Insights that begins with pi- .
+//
+//   - db.sql.statement - The full text of the SQL statement that is running, for
+//     example, SELECT * FROM employees .
+//
+//   - db.sql_tokenized.id - The hash of the SQL digest generated by Performance
+//     Insights.
+//
+// Each response element returns a maximum of 500 bytes. For larger elements, such
+// as SQL statements, only the first 500 bytes are returned.
+type PerformanceInsightsMetricDimensionGroup struct {
+
+	// A list of specific dimensions from a dimension group. If this list isn't
+	// included, then all of the dimensions in the group were requested, or are present
+	// in the response.
+	Dimensions []string
+
+	// The available dimension groups for Performance Insights metric type.
+	Group *string
+
+	// The maximum number of items to fetch for this dimension group.
+	Limit *int32
+
+	noSmithyDocumentSerde
+}
+
+// A single Performance Insights metric query to process. You must provide the
+// metric to the query. If other parameters aren't specified, Performance Insights
+// returns all data points for the specified metric. Optionally, you can request
+// the data points to be aggregated by dimension group ( GroupBy ) and return only
+// those data points that match your criteria ( Filter ).
+//
+// Constraints:
+//
+//   - Must be a valid Performance Insights query.
+type PerformanceInsightsMetricQuery struct {
+
+	// A specification for how to aggregate the data points from a query result. You
+	// must specify a valid dimension group. Performance Insights will return all of
+	// the dimensions within that group, unless you provide the names of specific
+	// dimensions within that group. You can also request that Performance Insights
+	// return a limited number of values for a dimension.
+	GroupBy *PerformanceInsightsMetricDimensionGroup
+
+	// The name of a Performance Insights metric to be measured.
+	//
+	// Valid Values:
+	//
+	//   - db.load.avg - A scaled representation of the number of active sessions for
+	//   the database engine.
+	//
+	//   - db.sampledload.avg - The raw number of active sessions for the database
+	//   engine.
+	//
+	//   - The counter metrics listed in [Performance Insights operating system counters]in the Amazon Aurora User Guide.
+	//
+	// If the number of active sessions is less than an internal Performance Insights
+	// threshold, db.load.avg and db.sampledload.avg are the same value. If the number
+	// of active sessions is greater than the internal threshold, Performance Insights
+	// samples the active sessions, with db.load.avg showing the scaled values,
+	// db.sampledload.avg showing the raw values, and db.sampledload.avg less than
+	// db.load.avg . For most use cases, you can query db.load.avg only.
+	//
+	// [Performance Insights operating system counters]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_PerfInsights_Counters.html#USER_PerfInsights_Counters.OS
+	Metric *string
+
+	noSmithyDocumentSerde
+}
+
+// Details of the performance issue.
+type PerformanceIssueDetails struct {
+
+	// The analysis of the performance issue. The information might contain markdown.
+	Analysis *string
+
+	// The time when the performance issue stopped.
+	EndTime *time.Time
+
+	// The metrics that are relevant to the performance issue.
+	Metrics []Metric
+
+	// The time when the performance issue started.
+	StartTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Contains the processor features of a DB instance class.
+//
+// To specify the number of CPU cores, use the coreCount feature name for the Name
+// parameter. To specify the number of threads per core, use the threadsPerCore
+// feature name for the Name parameter.
+//
+// You can set the processor features of the DB instance class for a DB instance
+// when you call one of the following actions:
+//
 //   - CreateDBInstance
+//
 //   - ModifyDBInstance
+//
 //   - RestoreDBInstanceFromDBSnapshot
+//
 //   - RestoreDBInstanceFromS3
+//
 //   - RestoreDBInstanceToPointInTime
 //
 // You can view the valid processor values for a particular instance class by
 // calling the DescribeOrderableDBInstanceOptions action and specifying the
-// instance class for the DBInstanceClass parameter. In addition, you can use the
-// following actions for DB instance class processor information:
+// instance class for the DBInstanceClass parameter.
+//
+// In addition, you can use the following actions for DB instance class processor
+// information:
+//
 //   - DescribeDBInstances
+//
 //   - DescribeDBSnapshots
+//
 //   - DescribeValidDBInstanceModifications
 //
 // If you call DescribeDBInstances , ProcessorFeature returns non-null values only
 // if the following conditions are met:
+//
 //   - You are accessing an Oracle DB instance.
+//
 //   - Your Oracle DB instance class supports configuring the number of CPU cores
 //     and threads per core.
+//
 //   - The current number CPU cores and threads is set to a non-default value.
 //
-// For more information, see Configuring the Processor of the DB Instance Class (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html#USER_ConfigureProcessor)
-// in the Amazon RDS User Guide.
+// For more information, see [Configuring the processor for a DB instance class in RDS for Oracle] in the Amazon RDS User Guide.
+//
+// [Configuring the processor for a DB instance class in RDS for Oracle]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/Concepts.DBInstanceClass.html#USER_ConfigureProcessor
 type ProcessorFeature struct {
 
 	// The name of the processor feature. Valid names are coreCount and threadsPerCore .
 	Name *string
 
-	// The value of a processor feature name.
+	// The value of a processor feature.
 	Value *string
 
 	noSmithyDocumentSerde
@@ -3419,7 +4539,7 @@ type ProcessorFeature struct {
 type Range struct {
 
 	// The minimum value in the range.
-	From int32
+	From *int32
 
 	// The step value for the range. For example, if you have a range of 5,000 to
 	// 10,000, with a step value of 1,000, the valid values start at 5,000 and step up
@@ -3428,7 +4548,107 @@ type Range struct {
 	Step *int32
 
 	// The maximum value in the range.
-	To int32
+	To *int32
+
+	noSmithyDocumentSerde
+}
+
+// Reserved for future use.
+type RdsCustomClusterConfiguration struct {
+
+	// Reserved for future use.
+	InterconnectSubnetId *string
+
+	// Reserved for future use.
+	ReplicaMode ReplicaMode
+
+	// Reserved for future use.
+	TransitGatewayMulticastDomainId *string
+
+	noSmithyDocumentSerde
+}
+
+// The recommended actions to apply to resolve the issues associated with your DB
+// instances, DB clusters, and DB parameter groups.
+type RecommendedAction struct {
+
+	// The unique identifier of the recommended action.
+	ActionId *string
+
+	// The methods to apply the recommended action.
+	//
+	// Valid values:
+	//
+	//   - manual - The action requires you to resolve the recommendation manually.
+	//
+	//   - immediately - The action is applied immediately.
+	//
+	//   - next-maintainance-window - The action is applied during the next scheduled
+	//   maintainance.
+	ApplyModes []string
+
+	// The supporting attributes to explain the recommended action.
+	ContextAttributes []ContextAttribute
+
+	// A detailed description of the action. The description might contain markdown.
+	Description *string
+
+	// The details of the issue.
+	IssueDetails *IssueDetails
+
+	// An API operation for the action.
+	Operation *string
+
+	// The parameters for the API operation.
+	Parameters []RecommendedActionParameter
+
+	// The status of the action.
+	//
+	//   - ready
+	//
+	//   - applied
+	//
+	//   - scheduled
+	//
+	//   - resolved
+	Status *string
+
+	// A short description to summarize the action. The description might contain
+	// markdown.
+	Title *string
+
+	noSmithyDocumentSerde
+}
+
+// A single parameter to use with the RecommendedAction API operation to apply the
+// action.
+type RecommendedActionParameter struct {
+
+	// The key of the parameter to use with the RecommendedAction API operation.
+	Key *string
+
+	// The value of the parameter to use with the RecommendedAction API operation.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// The recommended status to update for the specified recommendation action ID.
+type RecommendedActionUpdate struct {
+
+	// A unique identifier of the updated recommendation action.
+	//
+	// This member is required.
+	ActionId *string
+
+	// The status of the updated recommendation action.
+	//
+	//   - applied
+	//
+	//   - scheduled
+	//
+	// This member is required.
+	Status *string
 
 	noSmithyDocumentSerde
 }
@@ -3438,10 +4658,19 @@ type Range struct {
 type RecurringCharge struct {
 
 	// The amount of the recurring charge.
-	RecurringChargeAmount float64
+	RecurringChargeAmount *float64
 
 	// The frequency of the recurring charge.
 	RecurringChargeFrequency *string
+
+	noSmithyDocumentSerde
+}
+
+// The reference details of a metric.
+type ReferenceDetails struct {
+
+	// The metric reference details when the reference is a scalar.
+	ScalarReferenceDetails *ScalarReferenceDetails
 
 	noSmithyDocumentSerde
 }
@@ -3457,21 +4686,22 @@ type ReservedDBInstance struct {
 	DBInstanceClass *string
 
 	// The number of reserved DB instances.
-	DBInstanceCount int32
+	DBInstanceCount *int32
 
 	// The duration of the reservation in seconds.
-	Duration int32
+	Duration *int32
 
 	// The fixed price charged for this reserved DB instance.
-	FixedPrice float64
+	FixedPrice *float64
 
 	// The unique identifier for the lease associated with the reserved DB instance.
-	// Amazon Web Services Support might request the lease ID for an issue related to a
-	// reserved DB instance.
+	//
+	// Amazon Web Services Support might request the lease ID for an issue related to
+	// a reserved DB instance.
 	LeaseId *string
 
-	// Indicates if the reservation applies to Multi-AZ deployments.
-	MultiAZ bool
+	// Indicates whether the reservation applies to Multi-AZ deployments.
+	MultiAZ *bool
 
 	// The offering type of this reserved DB instance.
 	OfferingType *string
@@ -3498,7 +4728,7 @@ type ReservedDBInstance struct {
 	State *string
 
 	// The hourly price charged for this reserved DB instance.
-	UsagePrice float64
+	UsagePrice *float64
 
 	noSmithyDocumentSerde
 }
@@ -3514,13 +4744,13 @@ type ReservedDBInstancesOffering struct {
 	DBInstanceClass *string
 
 	// The duration of the offering in seconds.
-	Duration int32
+	Duration *int32
 
 	// The fixed price charged for this offering.
-	FixedPrice float64
+	FixedPrice *float64
 
-	// Indicates if the offering applies to Multi-AZ deployments.
-	MultiAZ bool
+	// Indicates whether the offering applies to Multi-AZ deployments.
+	MultiAZ *bool
 
 	// The offering type.
 	OfferingType *string
@@ -3535,7 +4765,7 @@ type ReservedDBInstancesOffering struct {
 	ReservedDBInstancesOfferingId *string
 
 	// The hourly price charged for this offering.
-	UsagePrice float64
+	UsagePrice *float64
 
 	noSmithyDocumentSerde
 }
@@ -3565,62 +4795,97 @@ type RestoreWindow struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the scaling configuration of an Aurora Serverless v1 DB cluster. For
-// more information, see Using Amazon Aurora Serverless v1 (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html)
-// in the Amazon Aurora User Guide.
+// The metric reference details when the reference is a scalar.
+type ScalarReferenceDetails struct {
+
+	// The value of a scalar reference.
+	Value *float64
+
+	noSmithyDocumentSerde
+}
+
+// Contains the scaling configuration of an Aurora Serverless v1 DB cluster.
+//
+// For more information, see [Using Amazon Aurora Serverless v1] in the Amazon Aurora User Guide.
+//
+// [Using Amazon Aurora Serverless v1]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html
 type ScalingConfiguration struct {
 
-	// A value that indicates whether to allow or disallow automatic pause for an
-	// Aurora DB cluster in serverless DB engine mode. A DB cluster can be paused only
-	// when it's idle (it has no connections). If a DB cluster is paused for more than
-	// seven days, the DB cluster might be backed up with a snapshot. In this case, the
-	// DB cluster is restored when there is a request to connect to it.
+	// Indicates whether to allow or disallow automatic pause for an Aurora DB cluster
+	// in serverless DB engine mode. A DB cluster can be paused only when it's idle
+	// (it has no connections).
+	//
+	// If a DB cluster is paused for more than seven days, the DB cluster might be
+	// backed up with a snapshot. In this case, the DB cluster is restored when there
+	// is a request to connect to it.
 	AutoPause *bool
 
-	// The maximum capacity for an Aurora DB cluster in serverless DB engine mode. For
-	// Aurora MySQL, valid capacity values are 1 , 2 , 4 , 8 , 16 , 32 , 64 , 128 , and
-	// 256 . For Aurora PostgreSQL, valid capacity values are 2 , 4 , 8 , 16 , 32 , 64
-	// , 192 , and 384 . The maximum capacity must be greater than or equal to the
-	// minimum capacity.
+	// The maximum capacity for an Aurora DB cluster in serverless DB engine mode.
+	//
+	// For Aurora MySQL, valid capacity values are 1 , 2 , 4 , 8 , 16 , 32 , 64 , 128 ,
+	// and 256 .
+	//
+	// For Aurora PostgreSQL, valid capacity values are 2 , 4 , 8 , 16 , 32 , 64 , 192
+	// , and 384 .
+	//
+	// The maximum capacity must be greater than or equal to the minimum capacity.
 	MaxCapacity *int32
 
-	// The minimum capacity for an Aurora DB cluster in serverless DB engine mode. For
-	// Aurora MySQL, valid capacity values are 1 , 2 , 4 , 8 , 16 , 32 , 64 , 128 , and
-	// 256 . For Aurora PostgreSQL, valid capacity values are 2 , 4 , 8 , 16 , 32 , 64
-	// , 192 , and 384 . The minimum capacity must be less than or equal to the maximum
-	// capacity.
+	// The minimum capacity for an Aurora DB cluster in serverless DB engine mode.
+	//
+	// For Aurora MySQL, valid capacity values are 1 , 2 , 4 , 8 , 16 , 32 , 64 , 128 ,
+	// and 256 .
+	//
+	// For Aurora PostgreSQL, valid capacity values are 2 , 4 , 8 , 16 , 32 , 64 , 192
+	// , and 384 .
+	//
+	// The minimum capacity must be less than or equal to the maximum capacity.
 	MinCapacity *int32
 
 	// The amount of time, in seconds, that Aurora Serverless v1 tries to find a
 	// scaling point to perform seamless scaling before enforcing the timeout action.
-	// The default is 300. Specify a value between 60 and 600 seconds.
+	// The default is 300.
+	//
+	// Specify a value between 60 and 600 seconds.
 	SecondsBeforeTimeout *int32
 
 	// The time, in seconds, before an Aurora DB cluster in serverless mode is paused.
+	//
 	// Specify a value between 300 and 86,400 seconds.
 	SecondsUntilAutoPause *int32
 
 	// The action to take when the timeout is reached, either ForceApplyCapacityChange
-	// or RollbackCapacityChange . ForceApplyCapacityChange sets the capacity to the
-	// specified value as soon as possible. RollbackCapacityChange , the default,
-	// ignores the capacity change if a scaling point isn't found in the timeout
-	// period. If you specify ForceApplyCapacityChange , connections that prevent
-	// Aurora Serverless v1 from finding a scaling point might be dropped. For more
-	// information, see Autoscaling for Aurora Serverless v1 (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.how-it-works.html#aurora-serverless.how-it-works.auto-scaling)
-	// in the Amazon Aurora User Guide.
+	// or RollbackCapacityChange .
+	//
+	// ForceApplyCapacityChange sets the capacity to the specified value as soon as
+	// possible.
+	//
+	// RollbackCapacityChange , the default, ignores the capacity change if a scaling
+	// point isn't found in the timeout period.
+	//
+	// If you specify ForceApplyCapacityChange , connections that prevent Aurora
+	// Serverless v1 from finding a scaling point might be dropped.
+	//
+	// For more information, see [Autoscaling for Aurora Serverless v1] in the Amazon Aurora User Guide.
+	//
+	// [Autoscaling for Aurora Serverless v1]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.how-it-works.html#aurora-serverless.how-it-works.auto-scaling
 	TimeoutAction *string
 
 	noSmithyDocumentSerde
 }
 
-// The scaling configuration for an Aurora DB cluster in serverless DB engine
-// mode. For more information, see Using Amazon Aurora Serverless v1 (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html)
-// in the Amazon Aurora User Guide.
+// The scaling configuration for an Aurora DB cluster in serverless DB engine mode.
+//
+// For more information, see [Using Amazon Aurora Serverless v1] in the Amazon Aurora User Guide.
+//
+// [Using Amazon Aurora Serverless v1]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless.html
 type ScalingConfigurationInfo struct {
 
-	// A value that indicates whether automatic pause is allowed for the Aurora DB
-	// cluster in serverless DB engine mode. When the value is set to false for an
-	// Aurora Serverless v1 DB cluster, the DB cluster automatically resumes.
+	// Indicates whether automatic pause is allowed for the Aurora DB cluster in
+	// serverless DB engine mode.
+	//
+	// When the value is set to false for an Aurora Serverless v1 DB cluster, the DB
+	// cluster automatically resumes.
 	AutoPause *bool
 
 	// The maximum capacity for an Aurora DB cluster in serverless DB engine mode.
@@ -3640,8 +4905,11 @@ type ScalingConfigurationInfo struct {
 
 	// The action that occurs when Aurora times out while attempting to change the
 	// capacity of an Aurora Serverless v1 cluster. The value is either
-	// ForceApplyCapacityChange or RollbackCapacityChange . ForceApplyCapacityChange ,
-	// the default, sets the capacity to the specified value as soon as possible.
+	// ForceApplyCapacityChange or RollbackCapacityChange .
+	//
+	// ForceApplyCapacityChange , the default, sets the capacity to the specified value
+	// as soon as possible.
+	//
 	// RollbackCapacityChange ignores the capacity change if a scaling point isn't
 	// found in the timeout period.
 	TimeoutAction *string
@@ -3649,42 +4917,88 @@ type ScalingConfigurationInfo struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the scaling configuration of an Aurora Serverless v2 DB cluster. For
-// more information, see Using Amazon Aurora Serverless v2 (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html)
-// in the Amazon Aurora User Guide.
-type ServerlessV2ScalingConfiguration struct {
+// Specifies any Aurora Serverless v2 properties or limits that differ between
+// Aurora engine versions. You can test the values of this attribute when deciding
+// which Aurora version to use in a new or upgraded DB cluster. You can also
+// retrieve the version of an existing DB cluster and check whether that version
+// supports certain Aurora Serverless v2 features before you attempt to use those
+// features.
+type ServerlessV2FeaturesSupport struct {
 
-	// The maximum number of Aurora capacity units (ACUs) for a DB instance in an
-	// Aurora Serverless v2 cluster. You can specify ACU values in half-step
-	// increments, such as 40, 40.5, 41, and so on. The largest value that you can use
-	// is 128.
+	//  Specifies the upper Aurora Serverless v2 capacity limit for a particular
+	// engine version. Depending on the engine version, the maximum capacity for an
+	// Aurora Serverless v2 cluster might be 256 or 128 .
 	MaxCapacity *float64
 
-	// The minimum number of Aurora capacity units (ACUs) for a DB instance in an
-	// Aurora Serverless v2 cluster. You can specify ACU values in half-step
-	// increments, such as 8, 8.5, 9, and so on. The smallest value that you can use is
-	// 0.5.
+	// If the minimum capacity is 0 ACUs, the engine version supports the automatic
+	// pause/resume feature of Aurora Serverless v2.
 	MinCapacity *float64
 
 	noSmithyDocumentSerde
 }
 
-// The scaling configuration for an Aurora Serverless v2 DB cluster. For more
-// information, see Using Amazon Aurora Serverless v2 (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html)
-// in the Amazon Aurora User Guide.
-type ServerlessV2ScalingConfigurationInfo struct {
+// Contains the scaling configuration of an Aurora Serverless v2 DB cluster.
+//
+// For more information, see [Using Amazon Aurora Serverless v2] in the Amazon Aurora User Guide.
+//
+// [Using Amazon Aurora Serverless v2]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html
+type ServerlessV2ScalingConfiguration struct {
 
 	// The maximum number of Aurora capacity units (ACUs) for a DB instance in an
 	// Aurora Serverless v2 cluster. You can specify ACU values in half-step
-	// increments, such as 40, 40.5, 41, and so on. The largest value that you can use
-	// is 128.
+	// increments, such as 32, 32.5, 33, and so on. The largest value that you can use
+	// is 256 for recent Aurora versions, or 128 for older versions.
 	MaxCapacity *float64
 
 	// The minimum number of Aurora capacity units (ACUs) for a DB instance in an
 	// Aurora Serverless v2 cluster. You can specify ACU values in half-step
-	// increments, such as 8, 8.5, 9, and so on. The smallest value that you can use is
-	// 0.5.
+	// increments, such as 8, 8.5, 9, and so on. For Aurora versions that support the
+	// Aurora Serverless v2 auto-pause feature, the smallest value that you can use is
+	// 0. For versions that don't support Aurora Serverless v2 auto-pause, the smallest
+	// value that you can use is 0.5.
 	MinCapacity *float64
+
+	// Specifies the number of seconds an Aurora Serverless v2 DB instance must be
+	// idle before Aurora attempts to automatically pause it.
+	//
+	// Specify a value between 300 seconds (five minutes) and 86,400 seconds (one
+	// day). The default is 300 seconds.
+	SecondsUntilAutoPause *int32
+
+	noSmithyDocumentSerde
+}
+
+// The scaling configuration for an Aurora Serverless v2 DB cluster.
+//
+// For more information, see [Using Amazon Aurora Serverless v2] in the Amazon Aurora User Guide.
+//
+// [Using Amazon Aurora Serverless v2]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/aurora-serverless-v2.html
+type ServerlessV2ScalingConfigurationInfo struct {
+
+	// The maximum number of Aurora capacity units (ACUs) for a DB instance in an
+	// Aurora Serverless v2 cluster. You can specify ACU values in half-step
+	// increments, such as 32, 32.5, 33, and so on. The largest value that you can use
+	// is 256 for recent Aurora versions, or 128 for older versions.
+	MaxCapacity *float64
+
+	// The minimum number of Aurora capacity units (ACUs) for a DB instance in an
+	// Aurora Serverless v2 cluster. You can specify ACU values in half-step
+	// increments, such as 8, 8.5, 9, and so on. For Aurora versions that support the
+	// Aurora Serverless v2 auto-pause feature, the smallest value that you can use is
+	// 0. For versions that don't support Aurora Serverless v2 auto-pause, the smallest
+	// value that you can use is 0.5.
+	MinCapacity *float64
+
+	//  The number of seconds an Aurora Serverless v2 DB instance must be idle before
+	// Aurora attempts to automatically pause it. This property is only shown when the
+	// minimum capacity for the cluster is set to 0 ACUs. Changing the minimum capacity
+	// to a nonzero value removes this property. If you later change the minimum
+	// capacity back to 0 ACUs, this property is reset to its default value unless you
+	// specify it again.
+	//
+	// This value ranges between 300 seconds (five minutes) and 86,400 seconds (one
+	// day). The default is 300 seconds.
+	SecondsUntilAutoPause *int32
 
 	noSmithyDocumentSerde
 }
@@ -3702,9 +5016,9 @@ type SourceRegion struct {
 	// The status of the source Amazon Web Services Region.
 	Status *string
 
-	// Whether the source Amazon Web Services Region supports replicating automated
-	// backups to the current Amazon Web Services Region.
-	SupportsDBInstanceAutomatedBackupsReplication bool
+	// Indicates whether the source Amazon Web Services Region supports replicating
+	// automated backups to the current Amazon Web Services Region.
+	SupportsDBInstanceAutomatedBackupsReplication *bool
 
 	noSmithyDocumentSerde
 }
@@ -3713,17 +5027,19 @@ type SourceRegion struct {
 // operation.
 type Subnet struct {
 
-	// Contains Availability Zone information. This data type is used as an element in
-	// the OrderableDBInstanceOption data type.
+	// Contains Availability Zone information.
+	//
+	// This data type is used as an element in the OrderableDBInstanceOption data type.
 	SubnetAvailabilityZone *AvailabilityZone
 
 	// The identifier of the subnet.
 	SubnetIdentifier *string
 
 	// If the subnet is associated with an Outpost, this value specifies the Outpost.
-	// For more information about RDS on Outposts, see Amazon RDS on Amazon Web
-	// Services Outposts (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html)
-	// in the Amazon RDS User Guide.
+	//
+	// For more information about RDS on Outposts, see [Amazon RDS on Amazon Web Services Outposts] in the Amazon RDS User Guide.
+	//
+	// [Amazon RDS on Amazon Web Services Outposts]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/rds-on-outposts.html
 	SubnetOutpost *Outpost
 
 	// The status of the subnet.
@@ -3732,23 +5048,33 @@ type Subnet struct {
 	noSmithyDocumentSerde
 }
 
-// Contains the details about a blue/green deployment. For more information, see
-// Using Amazon RDS Blue/Green Deployments for database updates (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/blue-green-deployments.html)
-// in the Amazon RDS User Guide and Using Amazon RDS Blue/Green Deployments for
-// database updates (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html)
-// in the Amazon Aurora User Guide.
+// Contains the details about a blue/green deployment.
+//
+// For more information, see [Using Amazon RDS Blue/Green Deployments for database updates] in the Amazon RDS User Guide and [Using Amazon RDS Blue/Green Deployments for database updates] in the Amazon
+// Aurora User Guide.
+//
+// [Using Amazon RDS Blue/Green Deployments for database updates]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/blue-green-deployments.html
 type SwitchoverDetail struct {
 
 	// The Amazon Resource Name (ARN) of a resource in the blue environment.
 	SourceMember *string
 
-	// The switchover status of a resource in a blue/green deployment. Values:
+	// The switchover status of a resource in a blue/green deployment.
+	//
+	// Values:
+	//
 	//   - PROVISIONING - The resource is being prepared to switch over.
+	//
 	//   - AVAILABLE - The resource is ready to switch over.
+	//
 	//   - SWITCHOVER_IN_PROGRESS - The resource is being switched over.
+	//
 	//   - SWITCHOVER_COMPLETED - The resource has been switched over.
+	//
 	//   - SWITCHOVER_FAILED - The resource attempted to switch over but failed.
+	//
 	//   - MISSING_SOURCE - The source resource has been deleted.
+	//
 	//   - MISSING_TARGET - The target resource has been deleted.
 	Status *string
 
@@ -3758,9 +5084,13 @@ type SwitchoverDetail struct {
 	noSmithyDocumentSerde
 }
 
-// Metadata assigned to an Amazon RDS resource consisting of a key-value pair. For
-// more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
-// in the Amazon RDS User Guide.
+// Metadata assigned to an Amazon RDS resource consisting of a key-value pair.
+//
+// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+// Aurora User Guide.
+//
+// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
 type Tag struct {
 
 	// A key is the required name of the tag. The string value can be from 1 to 128
@@ -3792,8 +5122,76 @@ type TargetHealth struct {
 
 	// The current state of the connection health lifecycle for the RDS Proxy target.
 	// The following is a typical lifecycle example for the states of an RDS Proxy
-	// target: registering > unavailable > available > unavailable > available
+	// target:
+	//
+	// registering > unavailable > available > unavailable > available
 	State TargetState
+
+	noSmithyDocumentSerde
+}
+
+// A tenant database in the DB instance. This data type is an element in the
+// response to the DescribeTenantDatabases action.
+type TenantDatabase struct {
+
+	// The character set of the tenant database.
+	CharacterSetName *string
+
+	// The ID of the DB instance that contains the tenant database.
+	DBInstanceIdentifier *string
+
+	// The Amazon Web Services Region-unique, immutable identifier for the DB instance.
+	DbiResourceId *string
+
+	// Specifies whether deletion protection is enabled for the DB instance.
+	DeletionProtection *bool
+
+	// The master username of the tenant database.
+	MasterUsername *string
+
+	// The NCHAR character set name of the tenant database.
+	NcharCharacterSetName *string
+
+	// Information about pending changes for a tenant database.
+	PendingModifiedValues *TenantDatabasePendingModifiedValues
+
+	// The status of the tenant database.
+	Status *string
+
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
+	TagList []Tag
+
+	// The database name of the tenant database.
+	TenantDBName *string
+
+	// The Amazon Resource Name (ARN) for the tenant database.
+	TenantDatabaseARN *string
+
+	// The creation time of the tenant database.
+	TenantDatabaseCreateTime *time.Time
+
+	// The Amazon Web Services Region-unique, immutable identifier for the tenant
+	// database.
+	TenantDatabaseResourceId *string
+
+	noSmithyDocumentSerde
+}
+
+// A response element in the ModifyTenantDatabase operation that describes changes
+// that will be applied. Specific changes are identified by subelements.
+type TenantDatabasePendingModifiedValues struct {
+
+	// The master password for the tenant database.
+	MasterUserPassword *string
+
+	// The name of the tenant database.
+	TenantDBName *string
 
 	noSmithyDocumentSerde
 }
@@ -3812,9 +5210,11 @@ type Timezone struct {
 // The version of the database engine that a DB instance can be upgraded to.
 type UpgradeTarget struct {
 
-	// A value that indicates whether the target version is applied to any source DB
-	// instances that have AutoMinorVersionUpgrade set to true.
-	AutoUpgrade bool
+	// Indicates whether the target version is applied to any source DB instances that
+	// have AutoMinorVersionUpgrade set to true.
+	//
+	// This parameter is dynamic, and is set by RDS.
+	AutoUpgrade *bool
 
 	// The version of the database engine that a DB instance can be upgraded to.
 	Description *string
@@ -3825,29 +5225,37 @@ type UpgradeTarget struct {
 	// The version number of the upgrade target database engine.
 	EngineVersion *string
 
-	// A value that indicates whether upgrading to the target version requires
-	// upgrading the major version of the database engine.
-	IsMajorVersionUpgrade bool
+	// Indicates whether upgrading to the target version requires upgrading the major
+	// version of the database engine.
+	IsMajorVersionUpgrade *bool
 
 	// A list of the supported DB engine modes for the target engine version.
 	SupportedEngineModes []string
 
-	// A value that indicates whether you can use Babelfish for Aurora PostgreSQL with
-	// the target engine version.
+	// Indicates whether you can use Babelfish for Aurora PostgreSQL with the target
+	// engine version.
 	SupportsBabelfish *bool
 
-	// A value that indicates whether you can use Aurora global databases with the
-	// target engine version.
+	// Indicates whether you can use Aurora global databases with the target engine
+	// version.
 	SupportsGlobalDatabases *bool
 
-	// A value that indicates whether the target engine version supports forwarding
-	// write operations from reader DB instances to the writer DB instance in the DB
-	// cluster. By default, write operations aren't allowed on reader DB instances.
+	// Indicates whether the DB engine version supports zero-ETL integrations with
+	// Amazon Redshift.
+	SupportsIntegrations *bool
+
+	// Indicates whether the DB engine version supports Aurora Limitless Database.
+	SupportsLimitlessDatabase *bool
+
+	// Indicates whether the target engine version supports forwarding write
+	// operations from reader DB instances to the writer DB instance in the DB cluster.
+	// By default, write operations aren't allowed on reader DB instances.
+	//
 	// Valid for: Aurora DB clusters only
 	SupportsLocalWriteForwarding *bool
 
-	// A value that indicates whether you can use Aurora parallel query with the
-	// target engine version.
+	// Indicates whether you can use Aurora parallel query with the target engine
+	// version.
 	SupportsParallelQuery *bool
 
 	noSmithyDocumentSerde
@@ -3868,9 +5276,10 @@ type UserAuthConfig struct {
 	// as a specific database user.
 	Description *string
 
-	// Whether to require or disallow Amazon Web Services Identity and Access
-	// Management (IAM) authentication for connections to the proxy. The ENABLED value
-	// is valid only for proxies with RDS for Microsoft SQL Server.
+	// A value that indicates whether to require or disallow Amazon Web Services
+	// Identity and Access Management (IAM) authentication for connections to the
+	// proxy. The ENABLED value is valid only for proxies with RDS for Microsoft SQL
+	// Server.
 	IAMAuth IAMAuthMode
 
 	// The Amazon Resource Name (ARN) representing the secret that the proxy uses to
@@ -3924,6 +5333,9 @@ type ValidDBInstanceModificationsMessage struct {
 	// Valid storage options for your DB instance.
 	Storage []ValidStorageOptions
 
+	// Indicates whether a DB instance supports using a dedicated log volume (DLV).
+	SupportsDedicatedLogVolume *bool
+
 	// Valid processor features for your DB instance.
 	ValidProcessorFeatures []AvailableProcessorFeature
 
@@ -3954,12 +5366,12 @@ type ValidStorageOptions struct {
 	// 0-0.25.
 	StorageThroughputToIopsRatio []DoubleRange
 
-	// The valid storage types for your DB instance. For example: gp2, gp3, io1.
+	// The valid storage types for your DB instance. For example: gp2, gp3, io1, io2.
 	StorageType *string
 
-	// Whether or not Amazon RDS can automatically scale storage for DB instances that
-	// use the new instance class.
-	SupportsStorageAutoscaling bool
+	// Indicates whether or not Amazon RDS can automatically scale storage for DB
+	// instances that use the new instance class.
+	SupportsStorageAutoscaling *bool
 
 	noSmithyDocumentSerde
 }
@@ -3968,8 +5380,9 @@ type ValidStorageOptions struct {
 // membership.
 type VpcSecurityGroupMembership struct {
 
-	// The membership status of the VPC security group. Currently, the only valid
-	// status is active .
+	// The membership status of the VPC security group.
+	//
+	// Currently, the only valid status is active .
 	Status *string
 
 	// The name of the VPC security group.

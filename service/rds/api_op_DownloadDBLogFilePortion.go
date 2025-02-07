@@ -4,19 +4,15 @@ package rds
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Downloads all or a portion of the specified log file, up to 1 MB in size. This
-// command doesn't apply to RDS Custom.
+// Downloads all or a portion of the specified log file, up to 1 MB in size.
+//
+// This command doesn't apply to RDS Custom.
 func (c *Client) DownloadDBLogFilePortion(ctx context.Context, params *DownloadDBLogFilePortionInput, optFns ...func(*Options)) (*DownloadDBLogFilePortionOutput, error) {
 	if params == nil {
 		params = &DownloadDBLogFilePortionInput{}
@@ -35,7 +31,10 @@ func (c *Client) DownloadDBLogFilePortion(ctx context.Context, params *DownloadD
 type DownloadDBLogFilePortionInput struct {
 
 	// The customer-assigned name of the DB instance that contains the log files you
-	// want to list. Constraints:
+	// want to list.
+	//
+	// Constraints:
+	//
 	//   - Must match the identifier of an existing DBInstance.
 	//
 	// This member is required.
@@ -52,23 +51,28 @@ type DownloadDBLogFilePortionInput struct {
 	Marker *string
 
 	// The number of lines to download. If the number of lines specified results in a
-	// file over 1 MB in size, the file is truncated at 1 MB in size. If the
-	// NumberOfLines parameter is specified, then the block of lines returned can be
-	// from the beginning or the end of the log file, depending on the value of the
-	// Marker parameter.
+	// file over 1 MB in size, the file is truncated at 1 MB in size.
+	//
+	// If the NumberOfLines parameter is specified, then the block of lines returned
+	// can be from the beginning or the end of the log file, depending on the value of
+	// the Marker parameter.
+	//
 	//   - If neither Marker or NumberOfLines are specified, the entire log file is
 	//   returned up to a maximum of 10000 lines, starting with the most recent log
 	//   entries first.
+	//
 	//   - If NumberOfLines is specified and Marker isn't specified, then the most
 	//   recent lines from the end of the log file are returned.
+	//
 	//   - If Marker is specified as "0", then the specified number of lines from the
 	//   beginning of the log file are returned.
+	//
 	//   - You can download the log file in blocks of lines by specifying the size of
 	//   the block using the NumberOfLines parameter, and by specifying a value of "0"
 	//   for the Marker parameter in your first request. Include the Marker value
 	//   returned in the response as the Marker value for the next request, continuing
 	//   until the AdditionalDataPending response element returns false.
-	NumberOfLines int32
+	NumberOfLines *int32
 
 	noSmithyDocumentSerde
 }
@@ -76,8 +80,8 @@ type DownloadDBLogFilePortionInput struct {
 // This data type is used as a response element to DownloadDBLogFilePortion .
 type DownloadDBLogFilePortionOutput struct {
 
-	// Boolean value that if true, indicates there is more data to be downloaded.
-	AdditionalDataPending bool
+	// A Boolean value that, if true, indicates there is more data to be downloaded.
+	AdditionalDataPending *bool
 
 	// Entries from the specified log file.
 	LogFileData *string
@@ -92,6 +96,9 @@ type DownloadDBLogFilePortionOutput struct {
 }
 
 func (c *Client) addOperationDownloadDBLogFilePortionMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpDownloadDBLogFilePortion{}, middleware.After)
 	if err != nil {
 		return err
@@ -100,34 +107,38 @@ func (c *Client) addOperationDownloadDBLogFilePortionMiddlewares(stack *middlewa
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DownloadDBLogFilePortion"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -139,7 +150,13 @@ func (c *Client) addOperationDownloadDBLogFilePortionMiddlewares(stack *middlewa
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDownloadDBLogFilePortionResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDownloadDBLogFilePortionValidationMiddleware(stack); err != nil {
@@ -148,7 +165,7 @@ func (c *Client) addOperationDownloadDBLogFilePortionMiddlewares(stack *middlewa
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDownloadDBLogFilePortion(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -160,35 +177,44 @@ func (c *Client) addOperationDownloadDBLogFilePortionMiddlewares(stack *middlewa
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
 
-// DownloadDBLogFilePortionAPIClient is a client that implements the
-// DownloadDBLogFilePortion operation.
-type DownloadDBLogFilePortionAPIClient interface {
-	DownloadDBLogFilePortion(context.Context, *DownloadDBLogFilePortionInput, ...func(*Options)) (*DownloadDBLogFilePortionOutput, error)
-}
-
-var _ DownloadDBLogFilePortionAPIClient = (*Client)(nil)
-
 // DownloadDBLogFilePortionPaginatorOptions is the paginator options for
 // DownloadDBLogFilePortion
 type DownloadDBLogFilePortionPaginatorOptions struct {
 	// The number of lines to download. If the number of lines specified results in a
-	// file over 1 MB in size, the file is truncated at 1 MB in size. If the
-	// NumberOfLines parameter is specified, then the block of lines returned can be
-	// from the beginning or the end of the log file, depending on the value of the
-	// Marker parameter.
+	// file over 1 MB in size, the file is truncated at 1 MB in size.
+	//
+	// If the NumberOfLines parameter is specified, then the block of lines returned
+	// can be from the beginning or the end of the log file, depending on the value of
+	// the Marker parameter.
+	//
 	//   - If neither Marker or NumberOfLines are specified, the entire log file is
 	//   returned up to a maximum of 10000 lines, starting with the most recent log
 	//   entries first.
+	//
 	//   - If NumberOfLines is specified and Marker isn't specified, then the most
 	//   recent lines from the end of the log file are returned.
+	//
 	//   - If Marker is specified as "0", then the specified number of lines from the
 	//   beginning of the log file are returned.
+	//
 	//   - You can download the log file in blocks of lines by specifying the size of
 	//   the block using the NumberOfLines parameter, and by specifying a value of "0"
 	//   for the Marker parameter in your first request. Include the Marker value
@@ -218,8 +244,8 @@ func NewDownloadDBLogFilePortionPaginator(client DownloadDBLogFilePortionAPIClie
 	}
 
 	options := DownloadDBLogFilePortionPaginatorOptions{}
-	if params.NumberOfLines != 0 {
-		options.Limit = params.NumberOfLines
+	if params.NumberOfLines != nil {
+		options.Limit = *params.NumberOfLines
 	}
 
 	for _, fn := range optFns {
@@ -249,8 +275,15 @@ func (p *DownloadDBLogFilePortionPaginator) NextPage(ctx context.Context, optFns
 	params := *p.params
 	params.Marker = p.nextToken
 
-	params.NumberOfLines = p.options.Limit
+	var limit *int32
+	if p.options.Limit > 0 {
+		limit = &p.options.Limit
+	}
+	params.NumberOfLines = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DownloadDBLogFilePortion(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -270,134 +303,18 @@ func (p *DownloadDBLogFilePortionPaginator) NextPage(ctx context.Context, optFns
 	return result, nil
 }
 
+// DownloadDBLogFilePortionAPIClient is a client that implements the
+// DownloadDBLogFilePortion operation.
+type DownloadDBLogFilePortionAPIClient interface {
+	DownloadDBLogFilePortion(context.Context, *DownloadDBLogFilePortionInput, ...func(*Options)) (*DownloadDBLogFilePortionOutput, error)
+}
+
+var _ DownloadDBLogFilePortionAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opDownloadDBLogFilePortion(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "rds",
 		OperationName: "DownloadDBLogFilePortion",
 	}
-}
-
-type opDownloadDBLogFilePortionResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDownloadDBLogFilePortionResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDownloadDBLogFilePortionResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "rds"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "rds"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("rds")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDownloadDBLogFilePortionResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDownloadDBLogFilePortionResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

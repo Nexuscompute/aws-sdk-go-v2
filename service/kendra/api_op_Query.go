@@ -4,27 +4,34 @@ package kendra
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/kendra/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Searches an index given an input query. You can configure boosting or relevance
-// tuning at the query level to override boosting at the index level, filter based
-// on document fields/attributes and faceted search, and filter based on the user
-// or their group access to documents. You can also include certain fields in the
-// response that might provide useful additional information. A query response
-// contains three types of results.
+// Searches an index given an input query.
+//
+// If you are working with large language models (LLMs) or implementing retrieval
+// augmented generation (RAG) systems, you can use Amazon Kendra's [Retrieve]API, which can
+// return longer semantically relevant passages. We recommend using the Retrieve
+// API instead of filing a service limit increase to increase the Query API
+// document excerpt length.
+//
+// You can configure boosting or relevance tuning at the query level to override
+// boosting at the index level, filter based on document fields/attributes and
+// faceted search, and filter based on the user or their group access to documents.
+// You can also include certain fields in the response that might provide useful
+// additional information.
+//
+// A query response contains three types of results.
+//
 //   - Relevant suggested answers. The answers can be either a text excerpt or
 //     table excerpt. The answer can be highlighted in the excerpt.
+//
 //   - Matching FAQs or questions-answer from your FAQ file.
+//
 //   - Relevant documents. This result type includes an excerpt of the document
 //     with the document title. The searched terms can be highlighted in the excerpt.
 //
@@ -33,6 +40,14 @@ import (
 // results. If you filter result type to only question-answers, a maximum of four
 // results are returned. If you filter result type to only answers, a maximum of
 // three results are returned.
+//
+// If you're using an Amazon Kendra Gen AI Enterprise Edition index, you can only
+// use ATTRIBUTE_FILTER to filter search results by user context. If you're using
+// an Amazon Kendra Gen AI Enterprise Edition index and you try to use USER_TOKEN
+// to configure user context policy, Amazon Kendra returns a ValidationException
+// error.
+//
+// [Retrieve]: https://docs.aws.amazon.com/kendra/latest/APIReference/API_Retrieve.html
 func (c *Client) Query(ctx context.Context, params *QueryInput, optFns ...func(*Options)) (*QueryOutput, error) {
 	if params == nil {
 		params = &QueryInput{}
@@ -57,18 +72,31 @@ type QueryInput struct {
 
 	// Filters search results by document fields/attributes. You can only provide one
 	// attribute filter; however, the AndAllFilters , NotFilter , and OrAllFilters
-	// parameters contain a list of other filters. The AttributeFilter parameter means
-	// you can create a set of filtering rules that a document must satisfy to be
-	// included in the query results.
+	// parameters contain a list of other filters.
+	//
+	// The AttributeFilter parameter means you can create a set of filtering rules
+	// that a document must satisfy to be included in the query results.
+	//
+	// For Amazon Kendra Gen AI Enterprise Edition indices use AttributeFilter to
+	// enable document filtering for end users using _email_id or include public
+	// documents ( _email_id=null ).
 	AttributeFilter *types.AttributeFilter
 
+	// Provides configuration to determine how to group results by document attribute
+	// value, and how to display them (collapsed or expanded) under a designated
+	// primary document for each group.
+	CollapseConfiguration *types.CollapseConfiguration
+
 	// Overrides relevance tuning configurations of fields/attributes set at the index
-	// level. If you use this API to override the relevance tuning configured at the
-	// index level, but there is no relevance tuning configured at the index level,
-	// then Amazon Kendra does not apply any relevance tuning. If there is relevance
-	// tuning configured for fields at the index level, and you use this API to
-	// override only some of these fields, then for the fields you did not override,
-	// the importance is set to 1.
+	// level.
+	//
+	// If you use this API to override the relevance tuning configured at the index
+	// level, but there is no relevance tuning configured at the index level, then
+	// Amazon Kendra does not apply any relevance tuning.
+	//
+	// If there is relevance tuning configured for fields at the index level, and you
+	// use this API to override only some of these fields, then for the fields you did
+	// not override, the importance is set to 1.
 	DocumentRelevanceOverrideConfigurations []types.DocumentRelevanceConfiguration
 
 	// An array of documents fields/attributes for faceted search. Amazon Kendra
@@ -92,7 +120,11 @@ type QueryInput struct {
 
 	// The input query text for the search. Amazon Kendra truncates queries at 30
 	// token words, which excludes punctuation and stop words. Truncation still applies
-	// if you use Boolean or more advanced, complex queries.
+	// if you use Boolean or more advanced, complex queries. For example, Timeoff AND
+	// October AND Category:HR is counted as 3 tokens: timeoff , october , hr . For
+	// more information, see [Searching with advanced query syntax]in the Amazon Kendra Developer Guide.
+	//
+	// [Searching with advanced query syntax]: https://docs.aws.amazon.com/kendra/latest/dg/searching-example.html#searching-index-query-syntax
 	QueryText *string
 
 	// An array of document fields/attributes to include in the response. You can
@@ -103,10 +135,23 @@ type QueryInput struct {
 	// Provides information that determines how the results of the query are sorted.
 	// You can set the field that Amazon Kendra should sort the results on, and specify
 	// whether the results should be sorted in ascending or descending order. In the
-	// case of ties in sorting the results, the results are sorted by relevance. If you
-	// don't provide sorting configuration, the results are sorted by the relevance
-	// that Amazon Kendra determines for the result.
+	// case of ties in sorting the results, the results are sorted by relevance.
+	//
+	// If you don't provide sorting configuration, the results are sorted by the
+	// relevance that Amazon Kendra determines for the result.
 	SortingConfiguration *types.SortingConfiguration
+
+	// Provides configuration information to determine how the results of a query are
+	// sorted.
+	//
+	// You can set upto 3 fields that Amazon Kendra should sort the results on, and
+	// specify whether the results should be sorted in ascending or descending order.
+	// The sort field quota can be increased.
+	//
+	// If you don't provide a sorting configuration, the results are sorted by the
+	// relevance that Amazon Kendra determines for the result. In the case of ties in
+	// sorting the results, the results are sorted by relevance.
+	SortingConfigurations []types.SortingConfiguration
 
 	// Enables suggested spell corrections for queries.
 	SpellCorrectionConfiguration *types.SpellCorrectionConfiguration
@@ -135,8 +180,9 @@ type QueryOutput struct {
 	FeaturedResultsItems []types.FeaturedResultsItem
 
 	// The identifier for the search. You also use QueryId to identify the search when
-	// using the SubmitFeedback (https://docs.aws.amazon.com/kendra/latest/APIReference/API_SubmitFeedback.html)
-	// API.
+	// using the [SubmitFeedback]API.
+	//
+	// [SubmitFeedback]: https://docs.aws.amazon.com/kendra/latest/APIReference/API_SubmitFeedback.html
 	QueryId *string
 
 	// The results of the search.
@@ -150,11 +196,12 @@ type QueryOutput struct {
 	// retrieve the first 100 of the items.
 	TotalNumberOfResults *int32
 
-	// A list of warning codes and their messages on problems with your query. Amazon
-	// Kendra currently only supports one type of warning, which is a warning on
-	// invalid syntax used in the query. For examples of invalid query syntax, see
-	// Searching with advanced query syntax (https://docs.aws.amazon.com/kendra/latest/dg/searching-example.html#searching-index-query-syntax)
-	// .
+	// A list of warning codes and their messages on problems with your query.
+	//
+	// Amazon Kendra currently only supports one type of warning, which is a warning
+	// on invalid syntax used in the query. For examples of invalid query syntax, see [Searching with advanced query syntax].
+	//
+	// [Searching with advanced query syntax]: https://docs.aws.amazon.com/kendra/latest/dg/searching-example.html#searching-index-query-syntax
 	Warnings []types.Warning
 
 	// Metadata pertaining to the operation's result.
@@ -164,6 +211,9 @@ type QueryOutput struct {
 }
 
 func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpQuery{}, middleware.After)
 	if err != nil {
 		return err
@@ -172,34 +222,38 @@ func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options O
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "Query"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -211,7 +265,13 @@ func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options O
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addQueryResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpQueryValidationMiddleware(stack); err != nil {
@@ -220,7 +280,7 @@ func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options O
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opQuery(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -232,7 +292,19 @@ func (c *Client) addOperationQueryMiddlewares(stack *middleware.Stack, options O
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -242,130 +314,6 @@ func newServiceMetadataMiddleware_opQuery(region string) *awsmiddleware.Register
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "kendra",
 		OperationName: "Query",
 	}
-}
-
-type opQueryResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opQueryResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opQueryResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "kendra"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "kendra"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("kendra")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addQueryResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opQueryResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

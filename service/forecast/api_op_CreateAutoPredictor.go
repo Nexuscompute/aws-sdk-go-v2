@@ -4,34 +4,41 @@ package forecast
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/forecast/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates an Amazon Forecast predictor. Amazon Forecast creates predictors with
-// AutoPredictor, which involves applying the optimal combination of algorithms to
-// each time series in your datasets. You can use CreateAutoPredictor to create
-// new predictors or upgrade/retrain existing predictors. Creating new predictors
+// Creates an Amazon Forecast predictor.
+//
+// Amazon Forecast creates predictors with AutoPredictor, which involves applying
+// the optimal combination of algorithms to each time series in your datasets. You
+// can use CreateAutoPredictorto create new predictors or upgrade/retrain existing predictors.
+//
+// # Creating new predictors
+//
 // The following parameters are required when creating a new predictor:
+//
 //   - PredictorName - A unique name for the predictor.
+//
 //   - DatasetGroupArn - The ARN of the dataset group used to train the predictor.
+//
 //   - ForecastFrequency - The granularity of your forecasts (hourly, daily,
 //     weekly, etc).
+//
 //   - ForecastHorizon - The number of time-steps that the model predicts. The
 //     forecast horizon is also called the prediction length.
 //
-// When creating a new predictor, do not specify a value for ReferencePredictorArn
-// . Upgrading and retraining predictors The following parameters are required when
-// retraining or upgrading a predictor:
+// When creating a new predictor, do not specify a value for ReferencePredictorArn .
+//
+// # Upgrading and retraining predictors
+//
+// The following parameters are required when retraining or upgrading a predictor:
+//
 //   - PredictorName - A unique name for the predictor.
+//
 //   - ReferencePredictorArn - The ARN of the predictor to retrain or upgrade.
 //
 // When upgrading or retraining a predictor, only specify values for the
@@ -63,46 +70,62 @@ type CreateAutoPredictorInput struct {
 
 	// An Key Management Service (KMS) key and an Identity and Access Management (IAM)
 	// role that Amazon Forecast can assume to access the key. You can specify this
-	// optional object in the CreateDataset and CreatePredictor requests.
+	// optional object in the CreateDatasetand CreatePredictor requests.
 	EncryptionConfig *types.EncryptionConfig
 
 	// Create an Explainability resource for the predictor.
 	ExplainPredictor *bool
 
 	// An array of dimension (field) names that specify how to group the generated
-	// forecast. For example, if you are generating forecasts for item sales across all
-	// your stores, and your dataset contains a store_id field, you would specify
-	// store_id as a dimension to group sales forecasts for each store.
+	// forecast.
+	//
+	// For example, if you are generating forecasts for item sales across all your
+	// stores, and your dataset contains a store_id field, you would specify store_id
+	// as a dimension to group sales forecasts for each store.
 	ForecastDimensions []string
 
-	// The frequency of predictions in a forecast. Valid intervals are an integer
-	// followed by Y (Year), M (Month), W (Week), D (Day), H (Hour), and min (Minute).
-	// For example, "1D" indicates every day and "15min" indicates every 15 minutes.
-	// You cannot specify a value that would overlap with the next larger frequency.
-	// That means, for example, you cannot specify a frequency of 60 minutes, because
-	// that is equivalent to 1 hour. The valid values for each frequency are the
-	// following:
+	// The frequency of predictions in a forecast.
+	//
+	// Valid intervals are an integer followed by Y (Year), M (Month), W (Week), D
+	// (Day), H (Hour), and min (Minute). For example, "1D" indicates every day and
+	// "15min" indicates every 15 minutes. You cannot specify a value that would
+	// overlap with the next larger frequency. That means, for example, you cannot
+	// specify a frequency of 60 minutes, because that is equivalent to 1 hour. The
+	// valid values for each frequency are the following:
+	//
 	//   - Minute - 1-59
+	//
 	//   - Hour - 1-23
+	//
 	//   - Day - 1-6
+	//
 	//   - Week - 1-4
+	//
 	//   - Month - 1-11
+	//
 	//   - Year - 1
+	//
 	// Thus, if you want every other week forecasts, specify "2W". Or, if you want
-	// quarterly forecasts, you specify "3M". The frequency must be greater than or
-	// equal to the TARGET_TIME_SERIES dataset frequency. When a RELATED_TIME_SERIES
-	// dataset is provided, the frequency must be equal to the RELATED_TIME_SERIES
-	// dataset frequency.
+	// quarterly forecasts, you specify "3M".
+	//
+	// The frequency must be greater than or equal to the TARGET_TIME_SERIES dataset
+	// frequency.
+	//
+	// When a RELATED_TIME_SERIES dataset is provided, the frequency must be equal to
+	// the RELATED_TIME_SERIES dataset frequency.
 	ForecastFrequency *string
 
 	// The number of time-steps that the model predicts. The forecast horizon is also
-	// called the prediction length. The maximum forecast horizon is the lesser of 500
-	// time-steps or 1/4 of the TARGET_TIME_SERIES dataset length. If you are
-	// retraining an existing AutoPredictor, then the maximum forecast horizon is the
-	// lesser of 500 time-steps or 1/3 of the TARGET_TIME_SERIES dataset length. If you
-	// are upgrading to an AutoPredictor or retraining an existing AutoPredictor, you
-	// cannot update the forecast horizon parameter. You can meet this requirement by
-	// providing longer time-series in the dataset.
+	// called the prediction length.
+	//
+	// The maximum forecast horizon is the lesser of 500 time-steps or 1/4 of the
+	// TARGET_TIME_SERIES dataset length. If you are retraining an existing
+	// AutoPredictor, then the maximum forecast horizon is the lesser of 500 time-steps
+	// or 1/3 of the TARGET_TIME_SERIES dataset length.
+	//
+	// If you are upgrading to an AutoPredictor or retraining an existing
+	// AutoPredictor, you cannot update the forecast horizon parameter. You can meet
+	// this requirement by providing longer time-series in the dataset.
 	ForecastHorizon *int32
 
 	// The forecast types used to train a predictor. You can specify up to five
@@ -111,10 +134,12 @@ type CreateAutoPredictorInput struct {
 	ForecastTypes []string
 
 	// The configuration details for predictor monitoring. Provide a name for the
-	// monitor resource to enable predictor monitoring. Predictor monitoring allows you
-	// to see how your predictor's performance changes over time. For more information,
-	// see Predictor Monitoring (https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring.html)
-	// .
+	// monitor resource to enable predictor monitoring.
+	//
+	// Predictor monitoring allows you to see how your predictor's performance changes
+	// over time. For more information, see [Predictor Monitoring].
+	//
+	// [Predictor Monitoring]: https://docs.aws.amazon.com/forecast/latest/dg/predictor-monitoring.html
 	MonitorConfig *types.MonitorConfig
 
 	// The accuracy metric used to optimize the predictor.
@@ -122,22 +147,32 @@ type CreateAutoPredictorInput struct {
 
 	// The ARN of the predictor to retrain or upgrade. This parameter is only used
 	// when retraining or upgrading a predictor. When creating a new predictor, do not
-	// specify a value for this parameter. When upgrading or retraining a predictor,
-	// only specify values for the ReferencePredictorArn and PredictorName . The value
-	// for PredictorName must be a unique predictor name.
+	// specify a value for this parameter.
+	//
+	// When upgrading or retraining a predictor, only specify values for the
+	// ReferencePredictorArn and PredictorName . The value for PredictorName must be a
+	// unique predictor name.
 	ReferencePredictorArn *string
 
 	// Optional metadata to help you categorize and organize your predictors. Each tag
 	// consists of a key and an optional value, both of which you define. Tag keys and
-	// values are case sensitive. The following restrictions apply to tags:
+	// values are case sensitive.
+	//
+	// The following restrictions apply to tags:
+	//
 	//   - For each resource, each tag key must be unique and each tag key must have
 	//   one value.
+	//
 	//   - Maximum number of tags per resource: 50.
+	//
 	//   - Maximum key length: 128 Unicode characters in UTF-8.
+	//
 	//   - Maximum value length: 256 Unicode characters in UTF-8.
+	//
 	//   - Accepted characters: all letters and numbers, spaces representable in
 	//   UTF-8, and + - = . _ : / @. If your tagging schema is used across other services
 	//   and resources, the character restrictions of those services also apply.
+	//
 	//   - Key prefixes cannot include any upper or lowercase combination of aws: or
 	//   AWS: . Values can have this prefix. If a tag value has aws as its prefix but
 	//   the key does not, Forecast considers it to be a user tag and will count against
@@ -149,10 +184,10 @@ type CreateAutoPredictorInput struct {
 	// The time boundary Forecast uses to align and aggregate any data that doesn't
 	// align with your forecast frequency. Provide the unit of time and the time
 	// boundary as a key value pair. For more information on specifying a time
-	// boundary, see Specifying a Time Boundary (https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#specifying-time-boundary)
-	// . If you don't provide a time boundary, Forecast uses a set of Default Time
-	// Boundaries (https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#default-time-boundaries)
-	// .
+	// boundary, see [Specifying a Time Boundary]. If you don't provide a time boundary, Forecast uses a set of [Default Time Boundaries].
+	//
+	// [Specifying a Time Boundary]: https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#specifying-time-boundary
+	// [Default Time Boundaries]: https://docs.aws.amazon.com/forecast/latest/dg/data-aggregation.html#default-time-boundaries
 	TimeAlignmentBoundary *types.TimeAlignmentBoundary
 
 	noSmithyDocumentSerde
@@ -170,6 +205,9 @@ type CreateAutoPredictorOutput struct {
 }
 
 func (c *Client) addOperationCreateAutoPredictorMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateAutoPredictor{}, middleware.After)
 	if err != nil {
 		return err
@@ -178,34 +216,38 @@ func (c *Client) addOperationCreateAutoPredictorMiddlewares(stack *middleware.St
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateAutoPredictor"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -217,7 +259,13 @@ func (c *Client) addOperationCreateAutoPredictorMiddlewares(stack *middleware.St
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateAutoPredictorResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateAutoPredictorValidationMiddleware(stack); err != nil {
@@ -226,7 +274,7 @@ func (c *Client) addOperationCreateAutoPredictorMiddlewares(stack *middleware.St
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateAutoPredictor(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -238,7 +286,19 @@ func (c *Client) addOperationCreateAutoPredictorMiddlewares(stack *middleware.St
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -248,130 +308,6 @@ func newServiceMetadataMiddleware_opCreateAutoPredictor(region string) *awsmiddl
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "forecast",
 		OperationName: "CreateAutoPredictor",
 	}
-}
-
-type opCreateAutoPredictorResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateAutoPredictorResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateAutoPredictorResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "forecast"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "forecast"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("forecast")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateAutoPredictorResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateAutoPredictorResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

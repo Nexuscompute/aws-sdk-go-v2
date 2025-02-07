@@ -39,6 +39,8 @@ var setupMetadata = struct {
 		}
 	}
 
+	ExpressBucket string
+
 	AccessPoints struct {
 		Source struct {
 			Name string
@@ -196,10 +198,14 @@ func getAccountID(ctx context.Context) (string, error) {
 
 func setupBuckets(ctx context.Context) (func(), error) {
 	var cleanups []func()
+	var expressCleanups []func()
 
 	cleanup := func() {
 		for i := range cleanups {
 			cleanups[i]()
+		}
+		for i := range expressCleanups {
+			expressCleanups[i]()
 		}
 	}
 
@@ -236,6 +242,17 @@ func setupBuckets(ctx context.Context) (func(), error) {
 			}
 		})
 	}
+
+	setupMetadata.ExpressBucket = s3shared.GenerateExpressBucketName()
+	if err := s3shared.SetupExpressBucket(ctx, s3client, setupMetadata.ExpressBucket); err != nil {
+		return cleanup, fmt.Errorf("setup express bucket: %v", err)
+	}
+
+	expressCleanups = append(expressCleanups, func() {
+		if err := s3shared.CleanupBucket(ctx, s3client, setupMetadata.ExpressBucket); err != nil {
+			fmt.Fprintln(os.Stderr, err)
+		}
+	})
 
 	return cleanup, nil
 
@@ -329,8 +346,8 @@ func testWriteToObject(t *testing.T, bucket string, testData writeToObjectTestDa
 		}
 
 	} else {
-		if len(testData.ExpectError) != 0 {
-			t.Fatalf("expected error: %v, got none", err)
+		if e := testData.ExpectError; len(e) != 0 {
+			t.Fatalf("expected error: %v, got none", e)
 		}
 	}
 

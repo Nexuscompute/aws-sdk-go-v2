@@ -1335,6 +1335,12 @@ func validateSecurityHubConfiguration(v *types.SecurityHubConfiguration) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "SecurityHubConfiguration"}
+	if v.PublishClassificationFindings == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PublishClassificationFindings"))
+	}
+	if v.PublishPolicyFindings == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PublishPolicyFindings"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1347,6 +1353,9 @@ func validateSeverityLevel(v *types.SeverityLevel) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "SeverityLevel"}
+	if v.OccurrencesThreshold == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OccurrencesThreshold"))
+	}
 	if len(v.Severity) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Severity"))
 	}
@@ -1366,6 +1375,21 @@ func validateSeverityLevelList(v []types.SeverityLevel) error {
 		if err := validateSeverityLevel(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateUpdateRetrievalConfiguration(v *types.UpdateRetrievalConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateRetrievalConfiguration"}
+	if len(v.RetrievalMode) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("RetrievalMode"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2086,6 +2110,9 @@ func validateOpUpdateOrganizationConfigurationInput(v *UpdateOrganizationConfigu
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "UpdateOrganizationConfigurationInput"}
+	if v.AutoEnable == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AutoEnable"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -2133,6 +2160,11 @@ func validateOpUpdateRevealConfigurationInput(v *UpdateRevealConfigurationInput)
 	} else if v.Configuration != nil {
 		if err := validateRevealConfiguration(v.Configuration); err != nil {
 			invalidParams.AddNested("Configuration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.RetrievalConfiguration != nil {
+		if err := validateUpdateRetrievalConfiguration(v.RetrievalConfiguration); err != nil {
+			invalidParams.AddNested("RetrievalConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {

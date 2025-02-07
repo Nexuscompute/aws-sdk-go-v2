@@ -11,12 +11,30 @@ const (
 )
 
 // Values returns all known values for BaseModelName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BaseModelName) Values() []BaseModelName {
 	return []BaseModelName{
 		"NarrowBand",
 		"WideBand",
+	}
+}
+
+type CallAnalyticsFeature string
+
+// Enum values for CallAnalyticsFeature
+const (
+	CallAnalyticsFeatureGenerativeSummarization CallAnalyticsFeature = "GENERATIVE_SUMMARIZATION"
+)
+
+// Values returns all known values for CallAnalyticsFeature. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CallAnalyticsFeature) Values() []CallAnalyticsFeature {
+	return []CallAnalyticsFeature{
+		"GENERATIVE_SUMMARIZATION",
 	}
 }
 
@@ -31,14 +49,35 @@ const (
 )
 
 // Values returns all known values for CallAnalyticsJobStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CallAnalyticsJobStatus) Values() []CallAnalyticsJobStatus {
 	return []CallAnalyticsJobStatus{
 		"QUEUED",
 		"IN_PROGRESS",
 		"FAILED",
 		"COMPLETED",
+	}
+}
+
+type CallAnalyticsSkippedReasonCode string
+
+// Enum values for CallAnalyticsSkippedReasonCode
+const (
+	CallAnalyticsSkippedReasonCodeInsufficientConversationContent CallAnalyticsSkippedReasonCode = "INSUFFICIENT_CONVERSATION_CONTENT"
+	CallAnalyticsSkippedReasonCodeFailedSafetyGuidelines          CallAnalyticsSkippedReasonCode = "FAILED_SAFETY_GUIDELINES"
+)
+
+// Values returns all known values for CallAnalyticsSkippedReasonCode. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CallAnalyticsSkippedReasonCode) Values() []CallAnalyticsSkippedReasonCode {
+	return []CallAnalyticsSkippedReasonCode{
+		"INSUFFICIENT_CONVERSATION_CONTENT",
+		"FAILED_SAFETY_GUIDELINES",
 	}
 }
 
@@ -56,8 +95,9 @@ const (
 )
 
 // Values returns all known values for CLMLanguageCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CLMLanguageCode) Values() []CLMLanguageCode {
 	return []CLMLanguageCode{
 		"en-US",
@@ -79,8 +119,9 @@ const (
 )
 
 // Values returns all known values for InputType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputType) Values() []InputType {
 	return []InputType{
 		"REAL_TIME",
@@ -92,50 +133,115 @@ type LanguageCode string
 
 // Enum values for LanguageCode
 const (
-	LanguageCodeAfZa LanguageCode = "af-ZA"
-	LanguageCodeArAe LanguageCode = "ar-AE"
-	LanguageCodeArSa LanguageCode = "ar-SA"
-	LanguageCodeDaDk LanguageCode = "da-DK"
-	LanguageCodeDeCh LanguageCode = "de-CH"
-	LanguageCodeDeDe LanguageCode = "de-DE"
-	LanguageCodeEnAb LanguageCode = "en-AB"
-	LanguageCodeEnAu LanguageCode = "en-AU"
-	LanguageCodeEnGb LanguageCode = "en-GB"
-	LanguageCodeEnIe LanguageCode = "en-IE"
-	LanguageCodeEnIn LanguageCode = "en-IN"
-	LanguageCodeEnUs LanguageCode = "en-US"
-	LanguageCodeEnWl LanguageCode = "en-WL"
-	LanguageCodeEsEs LanguageCode = "es-ES"
-	LanguageCodeEsUs LanguageCode = "es-US"
-	LanguageCodeFaIr LanguageCode = "fa-IR"
-	LanguageCodeFrCa LanguageCode = "fr-CA"
-	LanguageCodeFrFr LanguageCode = "fr-FR"
-	LanguageCodeHeIl LanguageCode = "he-IL"
-	LanguageCodeHiIn LanguageCode = "hi-IN"
-	LanguageCodeIdId LanguageCode = "id-ID"
-	LanguageCodeItIt LanguageCode = "it-IT"
-	LanguageCodeJaJp LanguageCode = "ja-JP"
-	LanguageCodeKoKr LanguageCode = "ko-KR"
-	LanguageCodeMsMy LanguageCode = "ms-MY"
-	LanguageCodeNlNl LanguageCode = "nl-NL"
-	LanguageCodePtBr LanguageCode = "pt-BR"
-	LanguageCodePtPt LanguageCode = "pt-PT"
-	LanguageCodeRuRu LanguageCode = "ru-RU"
-	LanguageCodeTaIn LanguageCode = "ta-IN"
-	LanguageCodeTeIn LanguageCode = "te-IN"
-	LanguageCodeTrTr LanguageCode = "tr-TR"
-	LanguageCodeZhCn LanguageCode = "zh-CN"
-	LanguageCodeZhTw LanguageCode = "zh-TW"
-	LanguageCodeThTh LanguageCode = "th-TH"
-	LanguageCodeEnZa LanguageCode = "en-ZA"
-	LanguageCodeEnNz LanguageCode = "en-NZ"
-	LanguageCodeViVn LanguageCode = "vi-VN"
-	LanguageCodeSvSe LanguageCode = "sv-SE"
+	LanguageCodeAfZa  LanguageCode = "af-ZA"
+	LanguageCodeArAe  LanguageCode = "ar-AE"
+	LanguageCodeArSa  LanguageCode = "ar-SA"
+	LanguageCodeDaDk  LanguageCode = "da-DK"
+	LanguageCodeDeCh  LanguageCode = "de-CH"
+	LanguageCodeDeDe  LanguageCode = "de-DE"
+	LanguageCodeEnAb  LanguageCode = "en-AB"
+	LanguageCodeEnAu  LanguageCode = "en-AU"
+	LanguageCodeEnGb  LanguageCode = "en-GB"
+	LanguageCodeEnIe  LanguageCode = "en-IE"
+	LanguageCodeEnIn  LanguageCode = "en-IN"
+	LanguageCodeEnUs  LanguageCode = "en-US"
+	LanguageCodeEnWl  LanguageCode = "en-WL"
+	LanguageCodeEsEs  LanguageCode = "es-ES"
+	LanguageCodeEsUs  LanguageCode = "es-US"
+	LanguageCodeFaIr  LanguageCode = "fa-IR"
+	LanguageCodeFrCa  LanguageCode = "fr-CA"
+	LanguageCodeFrFr  LanguageCode = "fr-FR"
+	LanguageCodeHeIl  LanguageCode = "he-IL"
+	LanguageCodeHiIn  LanguageCode = "hi-IN"
+	LanguageCodeIdId  LanguageCode = "id-ID"
+	LanguageCodeItIt  LanguageCode = "it-IT"
+	LanguageCodeJaJp  LanguageCode = "ja-JP"
+	LanguageCodeKoKr  LanguageCode = "ko-KR"
+	LanguageCodeMsMy  LanguageCode = "ms-MY"
+	LanguageCodeNlNl  LanguageCode = "nl-NL"
+	LanguageCodePtBr  LanguageCode = "pt-BR"
+	LanguageCodePtPt  LanguageCode = "pt-PT"
+	LanguageCodeRuRu  LanguageCode = "ru-RU"
+	LanguageCodeTaIn  LanguageCode = "ta-IN"
+	LanguageCodeTeIn  LanguageCode = "te-IN"
+	LanguageCodeTrTr  LanguageCode = "tr-TR"
+	LanguageCodeZhCn  LanguageCode = "zh-CN"
+	LanguageCodeZhTw  LanguageCode = "zh-TW"
+	LanguageCodeThTh  LanguageCode = "th-TH"
+	LanguageCodeEnZa  LanguageCode = "en-ZA"
+	LanguageCodeEnNz  LanguageCode = "en-NZ"
+	LanguageCodeViVn  LanguageCode = "vi-VN"
+	LanguageCodeSvSe  LanguageCode = "sv-SE"
+	LanguageCodeAbGe  LanguageCode = "ab-GE"
+	LanguageCodeAstEs LanguageCode = "ast-ES"
+	LanguageCodeAzAz  LanguageCode = "az-AZ"
+	LanguageCodeBaRu  LanguageCode = "ba-RU"
+	LanguageCodeBeBy  LanguageCode = "be-BY"
+	LanguageCodeBgBg  LanguageCode = "bg-BG"
+	LanguageCodeBnIn  LanguageCode = "bn-IN"
+	LanguageCodeBsBa  LanguageCode = "bs-BA"
+	LanguageCodeCaEs  LanguageCode = "ca-ES"
+	LanguageCodeCkbIq LanguageCode = "ckb-IQ"
+	LanguageCodeCkbIr LanguageCode = "ckb-IR"
+	LanguageCodeCsCz  LanguageCode = "cs-CZ"
+	LanguageCodeCyWl  LanguageCode = "cy-WL"
+	LanguageCodeElGr  LanguageCode = "el-GR"
+	LanguageCodeEtEt  LanguageCode = "et-ET"
+	LanguageCodeEuEs  LanguageCode = "eu-ES"
+	LanguageCodeFiFi  LanguageCode = "fi-FI"
+	LanguageCodeGlEs  LanguageCode = "gl-ES"
+	LanguageCodeGuIn  LanguageCode = "gu-IN"
+	LanguageCodeHaNg  LanguageCode = "ha-NG"
+	LanguageCodeHrHr  LanguageCode = "hr-HR"
+	LanguageCodeHuHu  LanguageCode = "hu-HU"
+	LanguageCodeHyAm  LanguageCode = "hy-AM"
+	LanguageCodeIsIs  LanguageCode = "is-IS"
+	LanguageCodeKaGe  LanguageCode = "ka-GE"
+	LanguageCodeKabDz LanguageCode = "kab-DZ"
+	LanguageCodeKkKz  LanguageCode = "kk-KZ"
+	LanguageCodeKnIn  LanguageCode = "kn-IN"
+	LanguageCodeKyKg  LanguageCode = "ky-KG"
+	LanguageCodeLgIn  LanguageCode = "lg-IN"
+	LanguageCodeLtLt  LanguageCode = "lt-LT"
+	LanguageCodeLvLv  LanguageCode = "lv-LV"
+	LanguageCodeMhrRu LanguageCode = "mhr-RU"
+	LanguageCodeMiNz  LanguageCode = "mi-NZ"
+	LanguageCodeMkMk  LanguageCode = "mk-MK"
+	LanguageCodeMlIn  LanguageCode = "ml-IN"
+	LanguageCodeMnMn  LanguageCode = "mn-MN"
+	LanguageCodeMrIn  LanguageCode = "mr-IN"
+	LanguageCodeMtMt  LanguageCode = "mt-MT"
+	LanguageCodeNoNo  LanguageCode = "no-NO"
+	LanguageCodeOrIn  LanguageCode = "or-IN"
+	LanguageCodePaIn  LanguageCode = "pa-IN"
+	LanguageCodePlPl  LanguageCode = "pl-PL"
+	LanguageCodePsAf  LanguageCode = "ps-AF"
+	LanguageCodeRoRo  LanguageCode = "ro-RO"
+	LanguageCodeRwRw  LanguageCode = "rw-RW"
+	LanguageCodeSiLk  LanguageCode = "si-LK"
+	LanguageCodeSkSk  LanguageCode = "sk-SK"
+	LanguageCodeSlSi  LanguageCode = "sl-SI"
+	LanguageCodeSoSo  LanguageCode = "so-SO"
+	LanguageCodeSrRs  LanguageCode = "sr-RS"
+	LanguageCodeSuId  LanguageCode = "su-ID"
+	LanguageCodeSwBi  LanguageCode = "sw-BI"
+	LanguageCodeSwKe  LanguageCode = "sw-KE"
+	LanguageCodeSwRw  LanguageCode = "sw-RW"
+	LanguageCodeSwTz  LanguageCode = "sw-TZ"
+	LanguageCodeSwUg  LanguageCode = "sw-UG"
+	LanguageCodeTlPh  LanguageCode = "tl-PH"
+	LanguageCodeTtRu  LanguageCode = "tt-RU"
+	LanguageCodeUgCn  LanguageCode = "ug-CN"
+	LanguageCodeUkUa  LanguageCode = "uk-UA"
+	LanguageCodeUzUz  LanguageCode = "uz-UZ"
+	LanguageCodeWoSn  LanguageCode = "wo-SN"
+	LanguageCodeZuZa  LanguageCode = "zu-ZA"
 )
 
 // Values returns all known values for LanguageCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LanguageCode) Values() []LanguageCode {
 	return []LanguageCode{
 		"af-ZA",
@@ -177,6 +283,70 @@ func (LanguageCode) Values() []LanguageCode {
 		"en-NZ",
 		"vi-VN",
 		"sv-SE",
+		"ab-GE",
+		"ast-ES",
+		"az-AZ",
+		"ba-RU",
+		"be-BY",
+		"bg-BG",
+		"bn-IN",
+		"bs-BA",
+		"ca-ES",
+		"ckb-IQ",
+		"ckb-IR",
+		"cs-CZ",
+		"cy-WL",
+		"el-GR",
+		"et-ET",
+		"eu-ES",
+		"fi-FI",
+		"gl-ES",
+		"gu-IN",
+		"ha-NG",
+		"hr-HR",
+		"hu-HU",
+		"hy-AM",
+		"is-IS",
+		"ka-GE",
+		"kab-DZ",
+		"kk-KZ",
+		"kn-IN",
+		"ky-KG",
+		"lg-IN",
+		"lt-LT",
+		"lv-LV",
+		"mhr-RU",
+		"mi-NZ",
+		"mk-MK",
+		"ml-IN",
+		"mn-MN",
+		"mr-IN",
+		"mt-MT",
+		"no-NO",
+		"or-IN",
+		"pa-IN",
+		"pl-PL",
+		"ps-AF",
+		"ro-RO",
+		"rw-RW",
+		"si-LK",
+		"sk-SK",
+		"sl-SI",
+		"so-SO",
+		"sr-RS",
+		"su-ID",
+		"sw-BI",
+		"sw-KE",
+		"sw-RW",
+		"sw-TZ",
+		"sw-UG",
+		"tl-PH",
+		"tt-RU",
+		"ug-CN",
+		"uk-UA",
+		"uz-UZ",
+		"wo-SN",
+		"zu-ZA",
 	}
 }
 
@@ -191,11 +361,13 @@ const (
 	MediaFormatOgg  MediaFormat = "ogg"
 	MediaFormatAmr  MediaFormat = "amr"
 	MediaFormatWebm MediaFormat = "webm"
+	MediaFormatM4a  MediaFormat = "m4a"
 )
 
 // Values returns all known values for MediaFormat. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MediaFormat) Values() []MediaFormat {
 	return []MediaFormat{
 		"mp3",
@@ -205,6 +377,7 @@ func (MediaFormat) Values() []MediaFormat {
 		"ogg",
 		"amr",
 		"webm",
+		"m4a",
 	}
 }
 
@@ -217,11 +390,91 @@ const (
 
 // Values returns all known values for MedicalContentIdentificationType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MedicalContentIdentificationType) Values() []MedicalContentIdentificationType {
 	return []MedicalContentIdentificationType{
 		"PHI",
+	}
+}
+
+type MedicalScribeJobStatus string
+
+// Enum values for MedicalScribeJobStatus
+const (
+	MedicalScribeJobStatusQueued     MedicalScribeJobStatus = "QUEUED"
+	MedicalScribeJobStatusInProgress MedicalScribeJobStatus = "IN_PROGRESS"
+	MedicalScribeJobStatusFailed     MedicalScribeJobStatus = "FAILED"
+	MedicalScribeJobStatusCompleted  MedicalScribeJobStatus = "COMPLETED"
+)
+
+// Values returns all known values for MedicalScribeJobStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MedicalScribeJobStatus) Values() []MedicalScribeJobStatus {
+	return []MedicalScribeJobStatus{
+		"QUEUED",
+		"IN_PROGRESS",
+		"FAILED",
+		"COMPLETED",
+	}
+}
+
+type MedicalScribeLanguageCode string
+
+// Enum values for MedicalScribeLanguageCode
+const (
+	MedicalScribeLanguageCodeEnUs MedicalScribeLanguageCode = "en-US"
+)
+
+// Values returns all known values for MedicalScribeLanguageCode. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MedicalScribeLanguageCode) Values() []MedicalScribeLanguageCode {
+	return []MedicalScribeLanguageCode{
+		"en-US",
+	}
+}
+
+type MedicalScribeNoteTemplate string
+
+// Enum values for MedicalScribeNoteTemplate
+const (
+	MedicalScribeNoteTemplateHistoryAndPhysical MedicalScribeNoteTemplate = "HISTORY_AND_PHYSICAL"
+	MedicalScribeNoteTemplateGirpp              MedicalScribeNoteTemplate = "GIRPP"
+)
+
+// Values returns all known values for MedicalScribeNoteTemplate. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MedicalScribeNoteTemplate) Values() []MedicalScribeNoteTemplate {
+	return []MedicalScribeNoteTemplate{
+		"HISTORY_AND_PHYSICAL",
+		"GIRPP",
+	}
+}
+
+type MedicalScribeParticipantRole string
+
+// Enum values for MedicalScribeParticipantRole
+const (
+	MedicalScribeParticipantRolePatient   MedicalScribeParticipantRole = "PATIENT"
+	MedicalScribeParticipantRoleClinician MedicalScribeParticipantRole = "CLINICIAN"
+)
+
+// Values returns all known values for MedicalScribeParticipantRole. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MedicalScribeParticipantRole) Values() []MedicalScribeParticipantRole {
+	return []MedicalScribeParticipantRole{
+		"PATIENT",
+		"CLINICIAN",
 	}
 }
 
@@ -235,8 +488,9 @@ const (
 )
 
 // Values returns all known values for ModelStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ModelStatus) Values() []ModelStatus {
 	return []ModelStatus{
 		"IN_PROGRESS",
@@ -254,8 +508,9 @@ const (
 )
 
 // Values returns all known values for OutputLocationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OutputLocationType) Values() []OutputLocationType {
 	return []OutputLocationType{
 		"CUSTOMER_BUCKET",
@@ -272,8 +527,9 @@ const (
 )
 
 // Values returns all known values for ParticipantRole. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ParticipantRole) Values() []ParticipantRole {
 	return []ParticipantRole{
 		"AGENT",
@@ -300,8 +556,9 @@ const (
 )
 
 // Values returns all known values for PiiEntityType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PiiEntityType) Values() []PiiEntityType {
 	return []PiiEntityType{
 		"BANK_ACCOUNT_NUMBER",
@@ -328,8 +585,9 @@ const (
 )
 
 // Values returns all known values for RedactionOutput. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RedactionOutput) Values() []RedactionOutput {
 	return []RedactionOutput{
 		"redacted",
@@ -345,8 +603,9 @@ const (
 )
 
 // Values returns all known values for RedactionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RedactionType) Values() []RedactionType {
 	return []RedactionType{
 		"PII",
@@ -364,8 +623,9 @@ const (
 )
 
 // Values returns all known values for SentimentValue. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SentimentValue) Values() []SentimentValue {
 	return []SentimentValue{
 		"POSITIVE",
@@ -383,8 +643,9 @@ const (
 )
 
 // Values returns all known values for Specialty. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Specialty) Values() []Specialty {
 	return []Specialty{
 		"PRIMARYCARE",
@@ -400,8 +661,9 @@ const (
 )
 
 // Values returns all known values for SubtitleFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SubtitleFormat) Values() []SubtitleFormat {
 	return []SubtitleFormat{
 		"vtt",
@@ -417,8 +679,9 @@ const (
 )
 
 // Values returns all known values for ToxicityCategory. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ToxicityCategory) Values() []ToxicityCategory {
 	return []ToxicityCategory{
 		"ALL",
@@ -433,8 +696,9 @@ const (
 )
 
 // Values returns all known values for TranscriptFilterType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscriptFilterType) Values() []TranscriptFilterType {
 	return []TranscriptFilterType{
 		"EXACT",
@@ -452,8 +716,9 @@ const (
 )
 
 // Values returns all known values for TranscriptionJobStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TranscriptionJobStatus) Values() []TranscriptionJobStatus {
 	return []TranscriptionJobStatus{
 		"QUEUED",
@@ -472,8 +737,9 @@ const (
 )
 
 // Values returns all known values for Type. Note that this can be expanded in the
-// future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Type) Values() []Type {
 	return []Type{
 		"CONVERSATION",
@@ -491,8 +757,9 @@ const (
 )
 
 // Values returns all known values for VocabularyFilterMethod. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VocabularyFilterMethod) Values() []VocabularyFilterMethod {
 	return []VocabularyFilterMethod{
 		"remove",
@@ -511,8 +778,9 @@ const (
 )
 
 // Values returns all known values for VocabularyState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VocabularyState) Values() []VocabularyState {
 	return []VocabularyState{
 		"PENDING",

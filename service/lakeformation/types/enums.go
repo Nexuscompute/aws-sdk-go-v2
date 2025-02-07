@@ -2,6 +2,25 @@
 
 package types
 
+type ApplicationStatus string
+
+// Enum values for ApplicationStatus
+const (
+	ApplicationStatusEnabled  ApplicationStatus = "ENABLED"
+	ApplicationStatusDisabled ApplicationStatus = "DISABLED"
+)
+
+// Values returns all known values for ApplicationStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ApplicationStatus) Values() []ApplicationStatus {
+	return []ApplicationStatus{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type ComparisonOperator string
 
 // Enum values for ComparisonOperator
@@ -20,8 +39,9 @@ const (
 )
 
 // Values returns all known values for ComparisonOperator. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ComparisonOperator) Values() []ComparisonOperator {
 	return []ComparisonOperator{
 		"EQ",
@@ -42,19 +62,21 @@ type DataLakeResourceType string
 
 // Enum values for DataLakeResourceType
 const (
-	DataLakeResourceTypeCatalog             DataLakeResourceType = "CATALOG"
-	DataLakeResourceTypeDatabase            DataLakeResourceType = "DATABASE"
-	DataLakeResourceTypeTable               DataLakeResourceType = "TABLE"
-	DataLakeResourceTypeDataLocation        DataLakeResourceType = "DATA_LOCATION"
-	DataLakeResourceTypeLfTag               DataLakeResourceType = "LF_TAG"
-	DataLakeResourceTypeLfTagPolicy         DataLakeResourceType = "LF_TAG_POLICY"
-	DataLakeResourceTypeLfTagPolicyDatabase DataLakeResourceType = "LF_TAG_POLICY_DATABASE"
-	DataLakeResourceTypeLfTagPolicyTable    DataLakeResourceType = "LF_TAG_POLICY_TABLE"
+	DataLakeResourceTypeCatalog              DataLakeResourceType = "CATALOG"
+	DataLakeResourceTypeDatabase             DataLakeResourceType = "DATABASE"
+	DataLakeResourceTypeTable                DataLakeResourceType = "TABLE"
+	DataLakeResourceTypeDataLocation         DataLakeResourceType = "DATA_LOCATION"
+	DataLakeResourceTypeLfTag                DataLakeResourceType = "LF_TAG"
+	DataLakeResourceTypeLfTagPolicy          DataLakeResourceType = "LF_TAG_POLICY"
+	DataLakeResourceTypeLfTagPolicyDatabase  DataLakeResourceType = "LF_TAG_POLICY_DATABASE"
+	DataLakeResourceTypeLfTagPolicyTable     DataLakeResourceType = "LF_TAG_POLICY_TABLE"
+	DataLakeResourceTypeLfNamedTagExpression DataLakeResourceType = "LF_NAMED_TAG_EXPRESSION"
 )
 
 // Values returns all known values for DataLakeResourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DataLakeResourceType) Values() []DataLakeResourceType {
 	return []DataLakeResourceType{
 		"CATALOG",
@@ -65,6 +87,26 @@ func (DataLakeResourceType) Values() []DataLakeResourceType {
 		"LF_TAG_POLICY",
 		"LF_TAG_POLICY_DATABASE",
 		"LF_TAG_POLICY_TABLE",
+		"LF_NAMED_TAG_EXPRESSION",
+	}
+}
+
+type EnableStatus string
+
+// Enum values for EnableStatus
+const (
+	EnableStatusEnabled  EnableStatus = "ENABLED"
+	EnableStatusDisabled EnableStatus = "DISABLED"
+)
+
+// Values returns all known values for EnableStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EnableStatus) Values() []EnableStatus {
+	return []EnableStatus{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 
@@ -78,8 +120,9 @@ const (
 )
 
 // Values returns all known values for FieldNameString. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FieldNameString) Values() []FieldNameString {
 	return []FieldNameString{
 		"RESOURCE_ARN",
@@ -98,8 +141,9 @@ const (
 )
 
 // Values returns all known values for OptimizerType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OptimizerType) Values() []OptimizerType {
 	return []OptimizerType{
 		"COMPACTION",
@@ -125,11 +169,15 @@ const (
 	PermissionCreateLfTag              Permission = "CREATE_LF_TAG"
 	PermissionAssociate                Permission = "ASSOCIATE"
 	PermissionGrantWithLfTagExpression Permission = "GRANT_WITH_LF_TAG_EXPRESSION"
+	PermissionCreateLfTagExpression    Permission = "CREATE_LF_TAG_EXPRESSION"
+	PermissionCreateCatalog            Permission = "CREATE_CATALOG"
+	PermissionSuperUser                Permission = "SUPER_USER"
 )
 
 // Values returns all known values for Permission. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Permission) Values() []Permission {
 	return []Permission{
 		"ALL",
@@ -145,6 +193,9 @@ func (Permission) Values() []Permission {
 		"CREATE_LF_TAG",
 		"ASSOCIATE",
 		"GRANT_WITH_LF_TAG_EXPRESSION",
+		"CREATE_LF_TAG_EXPRESSION",
+		"CREATE_CATALOG",
+		"SUPER_USER",
 	}
 }
 
@@ -159,8 +210,9 @@ const (
 )
 
 // Values returns all known values for PermissionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PermissionType) Values() []PermissionType {
 	return []PermissionType{
 		"COLUMN_PERMISSION",
@@ -182,8 +234,9 @@ const (
 )
 
 // Values returns all known values for QueryStateString. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (QueryStateString) Values() []QueryStateString {
 	return []QueryStateString{
 		"PENDING",
@@ -203,8 +256,9 @@ const (
 )
 
 // Values returns all known values for ResourceShareType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceShareType) Values() []ResourceShareType {
 	return []ResourceShareType{
 		"FOREIGN",
@@ -221,8 +275,9 @@ const (
 )
 
 // Values returns all known values for ResourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceType) Values() []ResourceType {
 	return []ResourceType{
 		"DATABASE",
@@ -241,8 +296,9 @@ const (
 )
 
 // Values returns all known values for TransactionStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TransactionStatus) Values() []TransactionStatus {
 	return []TransactionStatus{
 		"ACTIVE",
@@ -264,8 +320,9 @@ const (
 )
 
 // Values returns all known values for TransactionStatusFilter. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TransactionStatusFilter) Values() []TransactionStatusFilter {
 	return []TransactionStatusFilter{
 		"ALL",
@@ -285,8 +342,9 @@ const (
 )
 
 // Values returns all known values for TransactionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TransactionType) Values() []TransactionType {
 	return []TransactionType{
 		"READ_AND_WRITE",

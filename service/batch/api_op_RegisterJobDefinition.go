@@ -4,14 +4,9 @@ package batch
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/batch/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -43,33 +38,48 @@ type RegisterJobDefinitionInput struct {
 	JobDefinitionName *string
 
 	// The type of job definition. For more information about multi-node parallel
-	// jobs, see Creating a multi-node parallel job definition (https://docs.aws.amazon.com/batch/latest/userguide/multi-node-job-def.html)
-	// in the Batch User Guide. If the job is run on Fargate resources, then multinode
-	// isn't supported.
+	// jobs, see [Creating a multi-node parallel job definition]in the Batch User Guide.
+	//
+	//   - If the value is container , then one of the following is required:
+	//   containerProperties , ecsProperties , or eksProperties .
+	//
+	//   - If the value is multinode , then nodeProperties is required.
+	//
+	// If the job is run on Fargate resources, then multinode isn't supported.
+	//
+	// [Creating a multi-node parallel job definition]: https://docs.aws.amazon.com/batch/latest/userguide/multi-node-job-def.html
 	//
 	// This member is required.
 	Type types.JobDefinitionType
 
-	// An object with various properties specific to Amazon ECS based single-node
+	// An object with properties specific to Amazon ECS-based single-node
 	// container-based jobs. If the job definition's type parameter is container , then
 	// you must specify either containerProperties or nodeProperties . This must not be
-	// specified for Amazon EKS based job definitions. If the job runs on Fargate
-	// resources, then you must not specify nodeProperties ; use only
-	// containerProperties .
+	// specified for Amazon EKS-based job definitions.
+	//
+	// If the job runs on Fargate resources, then you must not specify nodeProperties ;
+	// use only containerProperties .
 	ContainerProperties *types.ContainerProperties
 
-	// An object with various properties that are specific to Amazon EKS based jobs.
-	// This must not be specified for Amazon ECS based job definitions.
+	// An object with properties that are specific to Amazon ECS-based jobs. This must
+	// not be specified for Amazon EKS-based job definitions.
+	EcsProperties *types.EcsProperties
+
+	// An object with properties that are specific to Amazon EKS-based jobs. This must
+	// not be specified for Amazon ECS based job definitions.
 	EksProperties *types.EksProperties
 
-	// An object with various properties specific to multi-node parallel jobs. If you
-	// specify node properties for a job, it becomes a multi-node parallel job. For
-	// more information, see Multi-node Parallel Jobs (https://docs.aws.amazon.com/batch/latest/userguide/multi-node-parallel-jobs.html)
-	// in the Batch User Guide. If the job definition's type parameter is container ,
-	// then you must specify either containerProperties or nodeProperties . If the job
-	// runs on Fargate resources, then you must not specify nodeProperties ; use
-	// containerProperties instead. If the job runs on Amazon EKS resources, then you
-	// must not specify nodeProperties .
+	// An object with properties specific to multi-node parallel jobs. If you specify
+	// node properties for a job, it becomes a multi-node parallel job. For more
+	// information, see [Multi-node Parallel Jobs]in the Batch User Guide.
+	//
+	// If the job runs on Fargate resources, then you must not specify nodeProperties ;
+	// use containerProperties instead.
+	//
+	// If the job runs on Amazon EKS resources, then you must not specify
+	// nodeProperties .
+	//
+	// [Multi-node Parallel Jobs]: https://docs.aws.amazon.com/batch/latest/userguide/multi-node-parallel-jobs.html
 	NodeProperties *types.NodeProperties
 
 	// Default parameter substitution placeholders to set in the job definition.
@@ -79,7 +89,9 @@ type RegisterJobDefinitionInput struct {
 
 	// The platform capabilities required by the job definition. If no value is
 	// specified, it defaults to EC2 . To run the job on Fargate resources, specify
-	// FARGATE . If the job runs on Amazon EKS resources, then you must not specify
+	// FARGATE .
+	//
+	// If the job runs on Amazon EKS resources, then you must not specify
 	// platformCapabilities .
 	PlatformCapabilities []types.PlatformCapability
 
@@ -88,36 +100,41 @@ type RegisterJobDefinitionInput struct {
 	// propagated. Tags can only be propagated to the tasks during task creation. For
 	// tags with the same name, job tags are given priority over job definitions tags.
 	// If the total number of combined tags from the job and job definition is over 50,
-	// the job is moved to the FAILED state. If the job runs on Amazon EKS resources,
-	// then you must not specify propagateTags .
+	// the job is moved to the FAILED state.
+	//
+	// If the job runs on Amazon EKS resources, then you must not specify propagateTags
+	// .
 	PropagateTags *bool
 
 	// The retry strategy to use for failed jobs that are submitted with this job
-	// definition. Any retry strategy that's specified during a SubmitJob operation
-	// overrides the retry strategy defined here. If a job is terminated due to a
-	// timeout, it isn't retried.
+	// definition. Any retry strategy that's specified during a SubmitJoboperation overrides
+	// the retry strategy defined here. If a job is terminated due to a timeout, it
+	// isn't retried.
 	RetryStrategy *types.RetryStrategy
 
 	// The scheduling priority for jobs that are submitted with this job definition.
 	// This only affects jobs in job queues with a fair share policy. Jobs with a
 	// higher scheduling priority are scheduled before jobs with a lower scheduling
-	// priority. The minimum supported value is 0 and the maximum supported value is
-	// 9999.
+	// priority.
+	//
+	// The minimum supported value is 0 and the maximum supported value is 9999.
 	SchedulingPriority *int32
 
 	// The tags that you apply to the job definition to help you categorize and
 	// organize your resources. Each tag consists of a key and an optional value. For
-	// more information, see Tagging Amazon Web Services Resources (https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html)
-	// in Batch User Guide.
+	// more information, see [Tagging Amazon Web Services Resources]in Batch User Guide.
+	//
+	// [Tagging Amazon Web Services Resources]: https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html
 	Tags map[string]string
 
 	// The timeout configuration for jobs that are submitted with this job definition,
 	// after which Batch terminates your jobs if they have not finished. If a job is
 	// terminated due to a timeout, it isn't retried. The minimum value for the timeout
-	// is 60 seconds. Any timeout configuration that's specified during a SubmitJob
-	// operation overrides the timeout configuration defined here. For more
-	// information, see Job Timeouts (https://docs.aws.amazon.com/batch/latest/userguide/job_timeouts.html)
-	// in the Batch User Guide.
+	// is 60 seconds. Any timeout configuration that's specified during a SubmitJoboperation
+	// overrides the timeout configuration defined here. For more information, see [Job Timeouts]in
+	// the Batch User Guide.
+	//
+	// [Job Timeouts]: https://docs.aws.amazon.com/batch/latest/userguide/job_timeouts.html
 	Timeout *types.JobTimeout
 
 	noSmithyDocumentSerde
@@ -147,6 +164,9 @@ type RegisterJobDefinitionOutput struct {
 }
 
 func (c *Client) addOperationRegisterJobDefinitionMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpRegisterJobDefinition{}, middleware.After)
 	if err != nil {
 		return err
@@ -155,34 +175,38 @@ func (c *Client) addOperationRegisterJobDefinitionMiddlewares(stack *middleware.
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "RegisterJobDefinition"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -194,7 +218,13 @@ func (c *Client) addOperationRegisterJobDefinitionMiddlewares(stack *middleware.
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addRegisterJobDefinitionResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRegisterJobDefinitionValidationMiddleware(stack); err != nil {
@@ -203,7 +233,7 @@ func (c *Client) addOperationRegisterJobDefinitionMiddlewares(stack *middleware.
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opRegisterJobDefinition(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -215,7 +245,19 @@ func (c *Client) addOperationRegisterJobDefinitionMiddlewares(stack *middleware.
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -225,130 +267,6 @@ func newServiceMetadataMiddleware_opRegisterJobDefinition(region string) *awsmid
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "batch",
 		OperationName: "RegisterJobDefinition",
 	}
-}
-
-type opRegisterJobDefinitionResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opRegisterJobDefinitionResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opRegisterJobDefinitionResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "batch"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "batch"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("batch")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addRegisterJobDefinitionResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opRegisterJobDefinitionResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

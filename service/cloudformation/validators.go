@@ -110,6 +110,26 @@ func (m *validateOpCreateChangeSet) HandleInitialize(ctx context.Context, in mid
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateGeneratedTemplate struct {
+}
+
+func (*validateOpCreateGeneratedTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateGeneratedTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateGeneratedTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateGeneratedTemplateInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateStack struct {
 }
 
@@ -150,6 +170,26 @@ func (m *validateOpCreateStackInstances) HandleInitialize(ctx context.Context, i
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateStackRefactor struct {
+}
+
+func (*validateOpCreateStackRefactor) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateStackRefactor) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateStackRefactorInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateStackRefactorInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateStackSet struct {
 }
 
@@ -185,6 +225,26 @@ func (m *validateOpDeleteChangeSet) HandleInitialize(ctx context.Context, in mid
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeleteChangeSetInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteGeneratedTemplate struct {
+}
+
+func (*validateOpDeleteGeneratedTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteGeneratedTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteGeneratedTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteGeneratedTemplateInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -290,6 +350,46 @@ func (m *validateOpDescribeChangeSet) HandleInitialize(ctx context.Context, in m
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDescribeGeneratedTemplate struct {
+}
+
+func (*validateOpDescribeGeneratedTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeGeneratedTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeGeneratedTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeGeneratedTemplateInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeResourceScan struct {
+}
+
+func (*validateOpDescribeResourceScan) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeResourceScan) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeResourceScanInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeResourceScanInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDescribeStackDriftDetectionStatus struct {
 }
 
@@ -325,6 +425,26 @@ func (m *validateOpDescribeStackInstance) HandleInitialize(ctx context.Context, 
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDescribeStackInstanceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeStackRefactor struct {
+}
+
+func (*validateOpDescribeStackRefactor) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeStackRefactor) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeStackRefactorInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeStackRefactorInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -510,6 +630,46 @@ func (m *validateOpExecuteChangeSet) HandleInitialize(ctx context.Context, in mi
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpExecuteStackRefactor struct {
+}
+
+func (*validateOpExecuteStackRefactor) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpExecuteStackRefactor) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ExecuteStackRefactorInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpExecuteStackRefactorInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetGeneratedTemplate struct {
+}
+
+func (*validateOpGetGeneratedTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetGeneratedTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetGeneratedTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetGeneratedTemplateInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetStackPolicy struct {
 }
 
@@ -570,6 +730,26 @@ func (m *validateOpListChangeSets) HandleInitialize(ctx context.Context, in midd
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListHookResults struct {
+}
+
+func (*validateOpListHookResults) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListHookResults) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListHookResultsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListHookResultsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListImports struct {
 }
 
@@ -585,6 +765,46 @@ func (m *validateOpListImports) HandleInitialize(ctx context.Context, in middlew
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListImportsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListResourceScanRelatedResources struct {
+}
+
+func (*validateOpListResourceScanRelatedResources) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListResourceScanRelatedResources) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListResourceScanRelatedResourcesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListResourceScanRelatedResourcesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListResourceScanResources struct {
+}
+
+func (*validateOpListResourceScanResources) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListResourceScanResources) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListResourceScanResourcesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListResourceScanResourcesInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -630,6 +850,26 @@ func (m *validateOpListStackInstances) HandleInitialize(ctx context.Context, in 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListStackRefactorActions struct {
+}
+
+func (*validateOpListStackRefactorActions) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListStackRefactorActions) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListStackRefactorActionsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListStackRefactorActionsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListStackResources struct {
 }
 
@@ -645,6 +885,26 @@ func (m *validateOpListStackResources) HandleInitialize(ctx context.Context, in 
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListStackResourcesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListStackSetAutoDeploymentTargets struct {
+}
+
+func (*validateOpListStackSetAutoDeploymentTargets) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListStackSetAutoDeploymentTargets) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListStackSetAutoDeploymentTargetsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListStackSetAutoDeploymentTargetsInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -830,6 +1090,26 @@ func (m *validateOpStopStackSetOperation) HandleInitialize(ctx context.Context, 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateGeneratedTemplate struct {
+}
+
+func (*validateOpUpdateGeneratedTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateGeneratedTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateGeneratedTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateGeneratedTemplateInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateStack struct {
 }
 
@@ -930,6 +1210,10 @@ func addOpCreateChangeSetValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateChangeSet{}, middleware.After)
 }
 
+func addOpCreateGeneratedTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateGeneratedTemplate{}, middleware.After)
+}
+
 func addOpCreateStackValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateStack{}, middleware.After)
 }
@@ -938,12 +1222,20 @@ func addOpCreateStackInstancesValidationMiddleware(stack *middleware.Stack) erro
 	return stack.Initialize.Add(&validateOpCreateStackInstances{}, middleware.After)
 }
 
+func addOpCreateStackRefactorValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateStackRefactor{}, middleware.After)
+}
+
 func addOpCreateStackSetValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateStackSet{}, middleware.After)
 }
 
 func addOpDeleteChangeSetValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteChangeSet{}, middleware.After)
+}
+
+func addOpDeleteGeneratedTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteGeneratedTemplate{}, middleware.After)
 }
 
 func addOpDeleteStackValidationMiddleware(stack *middleware.Stack) error {
@@ -966,12 +1258,24 @@ func addOpDescribeChangeSetValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeChangeSet{}, middleware.After)
 }
 
+func addOpDescribeGeneratedTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeGeneratedTemplate{}, middleware.After)
+}
+
+func addOpDescribeResourceScanValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeResourceScan{}, middleware.After)
+}
+
 func addOpDescribeStackDriftDetectionStatusValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeStackDriftDetectionStatus{}, middleware.After)
 }
 
 func addOpDescribeStackInstanceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeStackInstance{}, middleware.After)
+}
+
+func addOpDescribeStackRefactorValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeStackRefactor{}, middleware.After)
 }
 
 func addOpDescribeStackResourceDriftsValidationMiddleware(stack *middleware.Stack) error {
@@ -1010,6 +1314,14 @@ func addOpExecuteChangeSetValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpExecuteChangeSet{}, middleware.After)
 }
 
+func addOpExecuteStackRefactorValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpExecuteStackRefactor{}, middleware.After)
+}
+
+func addOpGetGeneratedTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetGeneratedTemplate{}, middleware.After)
+}
+
 func addOpGetStackPolicyValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetStackPolicy{}, middleware.After)
 }
@@ -1022,8 +1334,20 @@ func addOpListChangeSetsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListChangeSets{}, middleware.After)
 }
 
+func addOpListHookResultsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListHookResults{}, middleware.After)
+}
+
 func addOpListImportsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListImports{}, middleware.After)
+}
+
+func addOpListResourceScanRelatedResourcesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListResourceScanRelatedResources{}, middleware.After)
+}
+
+func addOpListResourceScanResourcesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListResourceScanResources{}, middleware.After)
 }
 
 func addOpListStackInstanceResourceDriftsValidationMiddleware(stack *middleware.Stack) error {
@@ -1034,8 +1358,16 @@ func addOpListStackInstancesValidationMiddleware(stack *middleware.Stack) error 
 	return stack.Initialize.Add(&validateOpListStackInstances{}, middleware.After)
 }
 
+func addOpListStackRefactorActionsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListStackRefactorActions{}, middleware.After)
+}
+
 func addOpListStackResourcesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListStackResources{}, middleware.After)
+}
+
+func addOpListStackSetAutoDeploymentTargetsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListStackSetAutoDeploymentTargets{}, middleware.After)
 }
 
 func addOpListStackSetOperationResultsValidationMiddleware(stack *middleware.Stack) error {
@@ -1074,6 +1406,10 @@ func addOpStopStackSetOperationValidationMiddleware(stack *middleware.Stack) err
 	return stack.Initialize.Add(&validateOpStopStackSetOperation{}, middleware.After)
 }
 
+func addOpUpdateGeneratedTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateGeneratedTemplate{}, middleware.After)
+}
+
 func addOpUpdateStackValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateStack{}, middleware.After)
 }
@@ -1100,6 +1436,102 @@ func validateLoggingConfig(v *types.LoggingConfig) error {
 	}
 	if v.LogGroupName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("LogGroupName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateResourceDefinition(v *types.ResourceDefinition) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ResourceDefinition"}
+	if v.ResourceType == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ResourceType"))
+	}
+	if v.ResourceIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ResourceIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateResourceDefinitions(v []types.ResourceDefinition) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ResourceDefinitions"}
+	for i := range v {
+		if err := validateResourceDefinition(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateResourceLocation(v *types.ResourceLocation) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ResourceLocation"}
+	if v.StackName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StackName"))
+	}
+	if v.LogicalResourceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LogicalResourceId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateResourceMapping(v *types.ResourceMapping) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ResourceMapping"}
+	if v.Source == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Source"))
+	} else if v.Source != nil {
+		if err := validateResourceLocation(v.Source); err != nil {
+			invalidParams.AddNested("Source", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.Destination == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Destination"))
+	} else if v.Destination != nil {
+		if err := validateResourceLocation(v.Destination); err != nil {
+			invalidParams.AddNested("Destination", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateResourceMappings(v []types.ResourceMapping) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ResourceMappings"}
+	for i := range v {
+		if err := validateResourceMapping(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1188,6 +1620,41 @@ func validateRollbackTriggers(v []types.RollbackTrigger) error {
 	invalidParams := smithy.InvalidParamsError{Context: "RollbackTriggers"}
 	for i := range v {
 		if err := validateRollbackTrigger(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateScannedResourceIdentifier(v *types.ScannedResourceIdentifier) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ScannedResourceIdentifier"}
+	if v.ResourceType == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ResourceType"))
+	}
+	if v.ResourceIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ResourceIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateScannedResourceIdentifiers(v []types.ScannedResourceIdentifier) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ScannedResourceIdentifiers"}
+	for i := range v {
+		if err := validateScannedResourceIdentifier(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
 	}
@@ -1328,6 +1795,26 @@ func validateOpCreateChangeSetInput(v *CreateChangeSetInput) error {
 	}
 }
 
+func validateOpCreateGeneratedTemplateInput(v *CreateGeneratedTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateGeneratedTemplateInput"}
+	if v.Resources != nil {
+		if err := validateResourceDefinitions(v.Resources); err != nil {
+			invalidParams.AddNested("Resources", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.GeneratedTemplateName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("GeneratedTemplateName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpCreateStackInput(v *CreateStackInput) error {
 	if v == nil {
 		return nil
@@ -1371,6 +1858,26 @@ func validateOpCreateStackInstancesInput(v *CreateStackInstancesInput) error {
 	}
 }
 
+func validateOpCreateStackRefactorInput(v *CreateStackRefactorInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateStackRefactorInput"}
+	if v.ResourceMappings != nil {
+		if err := validateResourceMappings(v.ResourceMappings); err != nil {
+			invalidParams.AddNested("ResourceMappings", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.StackDefinitions == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StackDefinitions"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpCreateStackSetInput(v *CreateStackSetInput) error {
 	if v == nil {
 		return nil
@@ -1406,6 +1913,21 @@ func validateOpDeleteChangeSetInput(v *DeleteChangeSetInput) error {
 	}
 }
 
+func validateOpDeleteGeneratedTemplateInput(v *DeleteGeneratedTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteGeneratedTemplateInput"}
+	if v.GeneratedTemplateName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("GeneratedTemplateName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDeleteStackInput(v *DeleteStackInput) error {
 	if v == nil {
 		return nil
@@ -1431,6 +1953,9 @@ func validateOpDeleteStackInstancesInput(v *DeleteStackInstancesInput) error {
 	}
 	if v.Regions == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Regions"))
+	}
+	if v.RetainStacks == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RetainStacks"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1484,6 +2009,36 @@ func validateOpDescribeChangeSetInput(v *DescribeChangeSetInput) error {
 	}
 }
 
+func validateOpDescribeGeneratedTemplateInput(v *DescribeGeneratedTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeGeneratedTemplateInput"}
+	if v.GeneratedTemplateName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("GeneratedTemplateName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeResourceScanInput(v *DescribeResourceScanInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeResourceScanInput"}
+	if v.ResourceScanId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ResourceScanId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDescribeStackDriftDetectionStatusInput(v *DescribeStackDriftDetectionStatusInput) error {
 	if v == nil {
 		return nil
@@ -1512,6 +2067,21 @@ func validateOpDescribeStackInstanceInput(v *DescribeStackInstanceInput) error {
 	}
 	if v.StackInstanceRegion == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("StackInstanceRegion"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeStackRefactorInput(v *DescribeStackRefactorInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeStackRefactorInput"}
+	if v.StackRefactorId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StackRefactorId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1664,6 +2234,36 @@ func validateOpExecuteChangeSetInput(v *ExecuteChangeSetInput) error {
 	}
 }
 
+func validateOpExecuteStackRefactorInput(v *ExecuteStackRefactorInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ExecuteStackRefactorInput"}
+	if v.StackRefactorId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StackRefactorId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetGeneratedTemplateInput(v *GetGeneratedTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetGeneratedTemplateInput"}
+	if v.GeneratedTemplateName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("GeneratedTemplateName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetStackPolicyInput(v *GetStackPolicyInput) error {
 	if v == nil {
 		return nil
@@ -1709,6 +2309,24 @@ func validateOpListChangeSetsInput(v *ListChangeSetsInput) error {
 	}
 }
 
+func validateOpListHookResultsInput(v *ListHookResultsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListHookResultsInput"}
+	if len(v.TargetType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("TargetType"))
+	}
+	if v.TargetId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TargetId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListImportsInput(v *ListImportsInput) error {
 	if v == nil {
 		return nil
@@ -1716,6 +2334,43 @@ func validateOpListImportsInput(v *ListImportsInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ListImportsInput"}
 	if v.ExportName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ExportName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListResourceScanRelatedResourcesInput(v *ListResourceScanRelatedResourcesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListResourceScanRelatedResourcesInput"}
+	if v.ResourceScanId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ResourceScanId"))
+	}
+	if v.Resources == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Resources"))
+	} else if v.Resources != nil {
+		if err := validateScannedResourceIdentifiers(v.Resources); err != nil {
+			invalidParams.AddNested("Resources", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListResourceScanResourcesInput(v *ListResourceScanResourcesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListResourceScanResourcesInput"}
+	if v.ResourceScanId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ResourceScanId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1763,6 +2418,21 @@ func validateOpListStackInstancesInput(v *ListStackInstancesInput) error {
 	}
 }
 
+func validateOpListStackRefactorActionsInput(v *ListStackRefactorActionsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListStackRefactorActionsInput"}
+	if v.StackRefactorId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StackRefactorId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListStackResourcesInput(v *ListStackResourcesInput) error {
 	if v == nil {
 		return nil
@@ -1770,6 +2440,21 @@ func validateOpListStackResourcesInput(v *ListStackResourcesInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ListStackResourcesInput"}
 	if v.StackName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("StackName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListStackSetAutoDeploymentTargetsInput(v *ListStackSetAutoDeploymentTargetsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListStackSetAutoDeploymentTargetsInput"}
+	if v.StackSetName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StackSetName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1931,6 +2616,26 @@ func validateOpStopStackSetOperationInput(v *StopStackSetOperationInput) error {
 	}
 	if v.OperationId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("OperationId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateGeneratedTemplateInput(v *UpdateGeneratedTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateGeneratedTemplateInput"}
+	if v.GeneratedTemplateName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("GeneratedTemplateName"))
+	}
+	if v.AddResources != nil {
+		if err := validateResourceDefinitions(v.AddResources); err != nil {
+			invalidParams.AddNested("AddResources", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
