@@ -4,14 +4,9 @@ package networkfirewall
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/networkfirewall/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -34,19 +29,27 @@ func (c *Client) DescribeRuleGroup(ctx context.Context, params *DescribeRuleGrou
 
 type DescribeRuleGroupInput struct {
 
-	// The Amazon Resource Name (ARN) of the rule group. You must specify the ARN or
-	// the name, and you can specify both.
+	// Indicates whether you want Network Firewall to analyze the stateless rules in
+	// the rule group for rule behavior such as asymmetric routing. If set to TRUE ,
+	// Network Firewall runs the analysis.
+	AnalyzeRuleGroup bool
+
+	// The Amazon Resource Name (ARN) of the rule group.
+	//
+	// You must specify the ARN or the name, and you can specify both.
 	RuleGroupArn *string
 
 	// The descriptive name of the rule group. You can't change the name of a rule
-	// group after you create it. You must specify the ARN or the name, and you can
-	// specify both.
+	// group after you create it.
+	//
+	// You must specify the ARN or the name, and you can specify both.
 	RuleGroupName *string
 
 	// Indicates whether the rule group is stateless or stateful. If the rule group is
 	// stateless, it contains stateless rules. If it is stateful, it contains stateful
-	// rules. This setting is required for requests that do not include the
-	// RuleGroupARN .
+	// rules.
+	//
+	// This setting is required for requests that do not include the RuleGroupARN .
 	Type types.RuleGroupType
 
 	noSmithyDocumentSerde
@@ -54,35 +57,37 @@ type DescribeRuleGroupInput struct {
 
 type DescribeRuleGroupOutput struct {
 
-	// The high-level properties of a rule group. This, along with the RuleGroup ,
-	// define the rule group. You can retrieve all objects for a rule group by calling
-	// DescribeRuleGroup .
+	// The high-level properties of a rule group. This, along with the RuleGroup, define the
+	// rule group. You can retrieve all objects for a rule group by calling DescribeRuleGroup.
 	//
 	// This member is required.
 	RuleGroupResponse *types.RuleGroupResponse
 
 	// A token used for optimistic locking. Network Firewall returns a token to your
 	// requests that access the rule group. The token marks the state of the rule group
-	// resource at the time of the request. To make changes to the rule group, you
-	// provide the token in your request. Network Firewall uses the token to ensure
-	// that the rule group hasn't changed since you last retrieved it. If it has
-	// changed, the operation fails with an InvalidTokenException . If this happens,
-	// retrieve the rule group again to get a current copy of it with a current token.
-	// Reapply your changes as needed, then try the operation again using the new
-	// token.
+	// resource at the time of the request.
+	//
+	// To make changes to the rule group, you provide the token in your request.
+	// Network Firewall uses the token to ensure that the rule group hasn't changed
+	// since you last retrieved it. If it has changed, the operation fails with an
+	// InvalidTokenException . If this happens, retrieve the rule group again to get a
+	// current copy of it with a current token. Reapply your changes as needed, then
+	// try the operation again using the new token.
 	//
 	// This member is required.
 	UpdateToken *string
 
-	// The object that defines the rules in a rule group. This, along with
-	// RuleGroupResponse , define the rule group. You can retrieve all objects for a
-	// rule group by calling DescribeRuleGroup . Network Firewall uses a rule group to
-	// inspect and control network traffic. You define stateless rule groups to inspect
-	// individual packets and you define stateful rule groups to inspect packets in the
-	// context of their traffic flow. To use a rule group, you include it by reference
-	// in an Network Firewall firewall policy, then you use the policy in a firewall.
-	// You can reference a rule group from more than one firewall policy, and you can
-	// use a firewall policy in more than one firewall.
+	// The object that defines the rules in a rule group. This, along with RuleGroupResponse, define
+	// the rule group. You can retrieve all objects for a rule group by calling DescribeRuleGroup.
+	//
+	// Network Firewall uses a rule group to inspect and control network traffic. You
+	// define stateless rule groups to inspect individual packets and you define
+	// stateful rule groups to inspect packets in the context of their traffic flow.
+	//
+	// To use a rule group, you include it by reference in an Network Firewall
+	// firewall policy, then you use the policy in a firewall. You can reference a rule
+	// group from more than one firewall policy, and you can use a firewall policy in
+	// more than one firewall.
 	RuleGroup *types.RuleGroup
 
 	// Metadata pertaining to the operation's result.
@@ -92,6 +97,9 @@ type DescribeRuleGroupOutput struct {
 }
 
 func (c *Client) addOperationDescribeRuleGroupMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson10_serializeOpDescribeRuleGroup{}, middleware.After)
 	if err != nil {
 		return err
@@ -100,34 +108,38 @@ func (c *Client) addOperationDescribeRuleGroupMiddlewares(stack *middleware.Stac
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeRuleGroup"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -139,13 +151,19 @@ func (c *Client) addOperationDescribeRuleGroupMiddlewares(stack *middleware.Stac
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeRuleGroupResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeRuleGroup(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -157,7 +175,19 @@ func (c *Client) addOperationDescribeRuleGroupMiddlewares(stack *middleware.Stac
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -167,130 +197,6 @@ func newServiceMetadataMiddleware_opDescribeRuleGroup(region string) *awsmiddlew
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "network-firewall",
 		OperationName: "DescribeRuleGroup",
 	}
-}
-
-type opDescribeRuleGroupResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeRuleGroupResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeRuleGroupResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "network-firewall"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "network-firewall"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("network-firewall")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeRuleGroupResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeRuleGroupResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -350,6 +350,26 @@ func (m *validateOpListPipelineExecutions) HandleInitialize(ctx context.Context,
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListRuleExecutions struct {
+}
+
+func (*validateOpListRuleExecutions) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListRuleExecutions) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListRuleExecutionsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListRuleExecutionsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListTagsForResource struct {
 }
 
@@ -365,6 +385,26 @@ func (m *validateOpListTagsForResource) HandleInitialize(ctx context.Context, in
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListTagsForResourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpOverrideStageCondition struct {
+}
+
+func (*validateOpOverrideStageCondition) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpOverrideStageCondition) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*OverrideStageConditionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpOverrideStageConditionInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -570,6 +610,26 @@ func (m *validateOpRetryStageExecution) HandleInitialize(ctx context.Context, in
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpRollbackStage struct {
+}
+
+func (*validateOpRollbackStage) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpRollbackStage) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*RollbackStageInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpRollbackStageInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpStartPipelineExecution struct {
 }
 
@@ -758,8 +818,16 @@ func addOpListPipelineExecutionsValidationMiddleware(stack *middleware.Stack) er
 	return stack.Initialize.Add(&validateOpListPipelineExecutions{}, middleware.After)
 }
 
+func addOpListRuleExecutionsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListRuleExecutions{}, middleware.After)
+}
+
 func addOpListTagsForResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListTagsForResource{}, middleware.After)
+}
+
+func addOpOverrideStageConditionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpOverrideStageCondition{}, middleware.After)
 }
 
 func addOpPollForJobsValidationMiddleware(stack *middleware.Stack) error {
@@ -800,6 +868,10 @@ func addOpPutWebhookValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpRetryStageExecutionValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpRetryStageExecution{}, middleware.After)
+}
+
+func addOpRollbackStageValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpRollbackStage{}, middleware.After)
 }
 
 func addOpStartPipelineExecutionValidationMiddleware(stack *middleware.Stack) error {
@@ -881,6 +953,23 @@ func validateActionDeclaration(v *types.ActionDeclaration) error {
 	if v.InputArtifacts != nil {
 		if err := validateInputArtifactList(v.InputArtifacts); err != nil {
 			invalidParams.AddNested("InputArtifacts", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateActionExecutionFilter(v *types.ActionExecutionFilter) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ActionExecutionFilter"}
+	if v.LatestInPipelineExecution != nil {
+		if err := validateLatestInPipelineExecutionFilter(v.LatestInPipelineExecution); err != nil {
+			invalidParams.AddNested("LatestInPipelineExecution", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1161,6 +1250,25 @@ func validateArtifactStoreMap(v map[string]types.ArtifactStore) error {
 	}
 }
 
+func validateBeforeEntryConditions(v *types.BeforeEntryConditions) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BeforeEntryConditions"}
+	if v.Conditions == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Conditions"))
+	} else if v.Conditions != nil {
+		if err := validateConditionList(v.Conditions); err != nil {
+			invalidParams.AddNested("Conditions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateBlockerDeclaration(v *types.BlockerDeclaration) error {
 	if v == nil {
 		return nil
@@ -1171,6 +1279,40 @@ func validateBlockerDeclaration(v *types.BlockerDeclaration) error {
 	}
 	if len(v.Type) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Type"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateCondition(v *types.Condition) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "Condition"}
+	if v.Rules != nil {
+		if err := validateRuleDeclarationList(v.Rules); err != nil {
+			invalidParams.AddNested("Rules", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateConditionList(v []types.Condition) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ConditionList"}
+	for i := range v {
+		if err := validateCondition(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1232,6 +1374,23 @@ func validateExecutorConfiguration(v *types.ExecutorConfiguration) error {
 	}
 }
 
+func validateFailureConditions(v *types.FailureConditions) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "FailureConditions"}
+	if v.Conditions != nil {
+		if err := validateConditionList(v.Conditions); err != nil {
+			invalidParams.AddNested("Conditions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateFailureDetails(v *types.FailureDetails) error {
 	if v == nil {
 		return nil
@@ -1242,6 +1401,21 @@ func validateFailureDetails(v *types.FailureDetails) error {
 	}
 	if v.Message == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Message"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateGitConfiguration(v *types.GitConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GitConfiguration"}
+	if v.SourceActionName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SourceActionName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1289,6 +1463,24 @@ func validateLambdaExecutorConfiguration(v *types.LambdaExecutorConfiguration) e
 	invalidParams := smithy.InvalidParamsError{Context: "LambdaExecutorConfiguration"}
 	if v.LambdaFunctionArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("LambdaFunctionArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateLatestInPipelineExecutionFilter(v *types.LatestInPipelineExecutionFilter) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "LatestInPipelineExecutionFilter"}
+	if v.PipelineExecutionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PipelineExecutionId"))
+	}
+	if len(v.StartTimeRange) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("StartTimeRange"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1357,6 +1549,16 @@ func validatePipelineDeclaration(v *types.PipelineDeclaration) error {
 			invalidParams.AddNested("Stages", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.Variables != nil {
+		if err := validatePipelineVariableDeclarationList(v.Variables); err != nil {
+			invalidParams.AddNested("Variables", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.Triggers != nil {
+		if err := validatePipelineTriggerDeclarationList(v.Triggers); err != nil {
+			invalidParams.AddNested("Triggers", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1371,6 +1573,229 @@ func validatePipelineStageDeclarationList(v []types.StageDeclaration) error {
 	invalidParams := smithy.InvalidParamsError{Context: "PipelineStageDeclarationList"}
 	for i := range v {
 		if err := validateStageDeclaration(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePipelineTriggerDeclaration(v *types.PipelineTriggerDeclaration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PipelineTriggerDeclaration"}
+	if len(v.ProviderType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("ProviderType"))
+	}
+	if v.GitConfiguration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("GitConfiguration"))
+	} else if v.GitConfiguration != nil {
+		if err := validateGitConfiguration(v.GitConfiguration); err != nil {
+			invalidParams.AddNested("GitConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePipelineTriggerDeclarationList(v []types.PipelineTriggerDeclaration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PipelineTriggerDeclarationList"}
+	for i := range v {
+		if err := validatePipelineTriggerDeclaration(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePipelineVariable(v *types.PipelineVariable) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PipelineVariable"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.Value == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Value"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePipelineVariableDeclaration(v *types.PipelineVariableDeclaration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PipelineVariableDeclaration"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePipelineVariableDeclarationList(v []types.PipelineVariableDeclaration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PipelineVariableDeclarationList"}
+	for i := range v {
+		if err := validatePipelineVariableDeclaration(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePipelineVariableList(v []types.PipelineVariable) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PipelineVariableList"}
+	for i := range v {
+		if err := validatePipelineVariable(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRuleDeclaration(v *types.RuleDeclaration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RuleDeclaration"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.RuleTypeId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RuleTypeId"))
+	} else if v.RuleTypeId != nil {
+		if err := validateRuleTypeId(v.RuleTypeId); err != nil {
+			invalidParams.AddNested("RuleTypeId", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.InputArtifacts != nil {
+		if err := validateInputArtifactList(v.InputArtifacts); err != nil {
+			invalidParams.AddNested("InputArtifacts", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRuleDeclarationList(v []types.RuleDeclaration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RuleDeclarationList"}
+	for i := range v {
+		if err := validateRuleDeclaration(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRuleExecutionFilter(v *types.RuleExecutionFilter) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RuleExecutionFilter"}
+	if v.LatestInPipelineExecution != nil {
+		if err := validateLatestInPipelineExecutionFilter(v.LatestInPipelineExecution); err != nil {
+			invalidParams.AddNested("LatestInPipelineExecution", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRuleTypeId(v *types.RuleTypeId) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RuleTypeId"}
+	if len(v.Category) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Category"))
+	}
+	if v.Provider == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Provider"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSourceRevisionOverride(v *types.SourceRevisionOverride) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SourceRevisionOverride"}
+	if v.ActionName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ActionName"))
+	}
+	if len(v.RevisionType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("RevisionType"))
+	}
+	if v.RevisionValue == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RevisionValue"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSourceRevisionOverrideList(v []types.SourceRevisionOverride) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SourceRevisionOverrideList"}
+	for i := range v {
+		if err := validateSourceRevisionOverride(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
 	}
@@ -1433,6 +1858,40 @@ func validateStageDeclaration(v *types.StageDeclaration) error {
 	} else if v.Actions != nil {
 		if err := validateStageActionDeclarationList(v.Actions); err != nil {
 			invalidParams.AddNested("Actions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.OnFailure != nil {
+		if err := validateFailureConditions(v.OnFailure); err != nil {
+			invalidParams.AddNested("OnFailure", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.OnSuccess != nil {
+		if err := validateSuccessConditions(v.OnSuccess); err != nil {
+			invalidParams.AddNested("OnSuccess", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.BeforeEntry != nil {
+		if err := validateBeforeEntryConditions(v.BeforeEntry); err != nil {
+			invalidParams.AddNested("BeforeEntry", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSuccessConditions(v *types.SuccessConditions) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SuccessConditions"}
+	if v.Conditions == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Conditions"))
+	} else if v.Conditions != nil {
+		if err := validateConditionList(v.Conditions); err != nil {
+			invalidParams.AddNested("Conditions", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1860,6 +2319,11 @@ func validateOpListActionExecutionsInput(v *ListActionExecutionsInput) error {
 	if v.PipelineName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("PipelineName"))
 	}
+	if v.Filter != nil {
+		if err := validateActionExecutionFilter(v.Filter); err != nil {
+			invalidParams.AddNested("Filter", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1882,6 +2346,26 @@ func validateOpListPipelineExecutionsInput(v *ListPipelineExecutionsInput) error
 	}
 }
 
+func validateOpListRuleExecutionsInput(v *ListRuleExecutionsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListRuleExecutionsInput"}
+	if v.PipelineName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PipelineName"))
+	}
+	if v.Filter != nil {
+		if err := validateRuleExecutionFilter(v.Filter); err != nil {
+			invalidParams.AddNested("Filter", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListTagsForResourceInput(v *ListTagsForResourceInput) error {
 	if v == nil {
 		return nil
@@ -1889,6 +2373,30 @@ func validateOpListTagsForResourceInput(v *ListTagsForResourceInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ListTagsForResourceInput"}
 	if v.ResourceArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ResourceArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpOverrideStageConditionInput(v *OverrideStageConditionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "OverrideStageConditionInput"}
+	if v.PipelineName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PipelineName"))
+	}
+	if v.StageName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StageName"))
+	}
+	if v.PipelineExecutionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PipelineExecutionId"))
+	}
+	if len(v.ConditionType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("ConditionType"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2132,6 +2640,27 @@ func validateOpRetryStageExecutionInput(v *RetryStageExecutionInput) error {
 	}
 }
 
+func validateOpRollbackStageInput(v *RollbackStageInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RollbackStageInput"}
+	if v.PipelineName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PipelineName"))
+	}
+	if v.StageName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StageName"))
+	}
+	if v.TargetPipelineExecutionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TargetPipelineExecutionId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpStartPipelineExecutionInput(v *StartPipelineExecutionInput) error {
 	if v == nil {
 		return nil
@@ -2139,6 +2668,16 @@ func validateOpStartPipelineExecutionInput(v *StartPipelineExecutionInput) error
 	invalidParams := smithy.InvalidParamsError{Context: "StartPipelineExecutionInput"}
 	if v.Name == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.Variables != nil {
+		if err := validatePipelineVariableList(v.Variables); err != nil {
+			invalidParams.AddNested("Variables", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SourceRevisions != nil {
+		if err := validateSourceRevisionOverrideList(v.SourceRevisions); err != nil {
+			invalidParams.AddNested("SourceRevisions", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

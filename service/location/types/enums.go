@@ -5,8 +5,9 @@ package types
 type BatchItemErrorCode string
 
 // Values returns all known values for BatchItemErrorCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BatchItemErrorCode) Values() []BatchItemErrorCode {
 	return []BatchItemErrorCode{
 		"AccessDeniedError",
@@ -21,8 +22,9 @@ func (BatchItemErrorCode) Values() []BatchItemErrorCode {
 type DimensionUnit string
 
 // Values returns all known values for DimensionUnit. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DimensionUnit) Values() []DimensionUnit {
 	return []DimensionUnit{
 		"Meters",
@@ -33,8 +35,9 @@ func (DimensionUnit) Values() []DimensionUnit {
 type DistanceUnit string
 
 // Values returns all known values for DistanceUnit. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DistanceUnit) Values() []DistanceUnit {
 	return []DistanceUnit{
 		"Kilometers",
@@ -42,11 +45,26 @@ func (DistanceUnit) Values() []DistanceUnit {
 	}
 }
 
+type ForecastedGeofenceEventType string
+
+// Values returns all known values for ForecastedGeofenceEventType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ForecastedGeofenceEventType) Values() []ForecastedGeofenceEventType {
+	return []ForecastedGeofenceEventType{
+		"ENTER",
+		"EXIT",
+		"IDLE",
+	}
+}
+
 type IntendedUse string
 
 // Values returns all known values for IntendedUse. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (IntendedUse) Values() []IntendedUse {
 	return []IntendedUse{
 		"SingleUse",
@@ -54,11 +72,25 @@ func (IntendedUse) Values() []IntendedUse {
 	}
 }
 
+type OptimizationMode string
+
+// Values returns all known values for OptimizationMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OptimizationMode) Values() []OptimizationMode {
+	return []OptimizationMode{
+		"FastestRoute",
+		"ShortestRoute",
+	}
+}
+
 type PositionFiltering string
 
 // Values returns all known values for PositionFiltering. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PositionFiltering) Values() []PositionFiltering {
 	return []PositionFiltering{
 		"TimeBased",
@@ -70,8 +102,9 @@ func (PositionFiltering) Values() []PositionFiltering {
 type PricingPlan string
 
 // Values returns all known values for PricingPlan. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PricingPlan) Values() []PricingPlan {
 	return []PricingPlan{
 		"RequestBasedUsage",
@@ -83,8 +116,9 @@ func (PricingPlan) Values() []PricingPlan {
 type RouteMatrixErrorCode string
 
 // Values returns all known values for RouteMatrixErrorCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RouteMatrixErrorCode) Values() []RouteMatrixErrorCode {
 	return []RouteMatrixErrorCode{
 		"RouteNotFound",
@@ -96,11 +130,25 @@ func (RouteMatrixErrorCode) Values() []RouteMatrixErrorCode {
 	}
 }
 
+type SpeedUnit string
+
+// Values returns all known values for SpeedUnit. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SpeedUnit) Values() []SpeedUnit {
+	return []SpeedUnit{
+		"KilometersPerHour",
+		"MilesPerHour",
+	}
+}
+
 type Status string
 
 // Values returns all known values for Status. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Status) Values() []Status {
 	return []Status{
 		"Active",
@@ -111,8 +159,9 @@ func (Status) Values() []Status {
 type TravelMode string
 
 // Values returns all known values for TravelMode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TravelMode) Values() []TravelMode {
 	return []TravelMode{
 		"Car",
@@ -127,6 +176,7 @@ type ValidationExceptionReason string
 
 // Values returns all known values for ValidationExceptionReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 	return []ValidationExceptionReason{
@@ -141,8 +191,9 @@ func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 type VehicleWeightUnit string
 
 // Values returns all known values for VehicleWeightUnit. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VehicleWeightUnit) Values() []VehicleWeightUnit {
 	return []VehicleWeightUnit{
 		"Kilograms",

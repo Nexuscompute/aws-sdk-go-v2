@@ -4,21 +4,15 @@ package docdbelastic
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/docdbelastic/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Modifies a Elastic DocumentDB cluster. This includes updating
-// admin-username/password, upgrading API version setting up a backup window and
-// maintenance window
+// Modifies an elastic cluster. This includes updating admin-username/password,
+// upgrading the API version, and setting up a backup window and maintenance window
 func (c *Client) UpdateCluster(ctx context.Context, params *UpdateClusterInput, optFns ...func(*Options)) (*UpdateClusterOutput, error) {
 	if params == nil {
 		params = &UpdateClusterInput{}
@@ -36,40 +30,62 @@ func (c *Client) UpdateCluster(ctx context.Context, params *UpdateClusterInput, 
 
 type UpdateClusterInput struct {
 
-	// The arn of the Elastic DocumentDB cluster.
+	// The ARN identifier of the elastic cluster.
 	//
 	// This member is required.
 	ClusterArn *string
 
-	// The password for the Elastic DocumentDB cluster administrator. This password
+	// The password associated with the elastic cluster administrator. This password
 	// can contain any printable ASCII character except forward slash (/), double quote
-	// ("), or the "at" symbol (@). Constraints: Must contain from 8 to 100 characters.
+	// ("), or the "at" symbol (@).
+	//
+	// Constraints: Must contain from 8 to 100 characters.
 	AdminUserPassword *string
 
-	// The authentication type for the Elastic DocumentDB cluster.
+	// The authentication type used to determine where to fetch the password used for
+	// accessing the elastic cluster. Valid types are PLAIN_TEXT or SECRET_ARN .
 	AuthType types.Auth
 
-	// The client token for the Elastic DocumentDB cluster.
+	// The number of days for which automatic snapshots are retained.
+	BackupRetentionPeriod *int32
+
+	// The client token for the elastic cluster.
 	ClientToken *string
 
+	// The daily time range during which automated backups are created if automated
+	// backups are enabled, as determined by the backupRetentionPeriod .
+	PreferredBackupWindow *string
+
 	// The weekly time range during which system maintenance can occur, in Universal
-	// Coordinated Time (UTC). Format: ddd:hh24:mi-ddd:hh24:mi Default: a 30-minute
-	// window selected at random from an 8-hour block of time for each Amazon Web
-	// Services Region, occurring on a random day of the week. Valid days: Mon, Tue,
-	// Wed, Thu, Fri, Sat, Sun Constraints: Minimum 30-minute window.
+	// Coordinated Time (UTC).
+	//
+	// Format: ddd:hh24:mi-ddd:hh24:mi
+	//
+	// Default: a 30-minute window selected at random from an 8-hour block of time for
+	// each Amazon Web Services Region, occurring on a random day of the week.
+	//
+	// Valid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun
+	//
+	// Constraints: Minimum 30-minute window.
 	PreferredMaintenanceWindow *string
 
-	// The capacity of each shard in the Elastic DocumentDB cluster.
+	// The number of vCPUs assigned to each elastic cluster shard. Maximum is 64.
+	// Allowed values are 2, 4, 8, 16, 32, 64.
 	ShardCapacity *int32
 
-	// The number of shards to create in the Elastic DocumentDB cluster.
+	// The number of shards assigned to the elastic cluster. Maximum is 32.
 	ShardCount *int32
 
-	// The number of shards to create in the Elastic DocumentDB cluster.
+	// The number of replica instances applying to all shards in the elastic cluster.
+	// A shardInstanceCount value of 1 means there is one writer instance, and any
+	// additional instances are replicas that can be used for reads and to improve
+	// availability.
+	ShardInstanceCount *int32
+
+	// The Amazon EC2 subnet IDs for the elastic cluster.
 	SubnetIds []string
 
-	// A list of EC2 VPC security groups to associate with the new Elastic DocumentDB
-	// cluster.
+	// A list of EC2 VPC security groups to associate with the elastic cluster.
 	VpcSecurityGroupIds []string
 
 	noSmithyDocumentSerde
@@ -77,7 +93,7 @@ type UpdateClusterInput struct {
 
 type UpdateClusterOutput struct {
 
-	// Returns information about the updated Elastic DocumentDB cluster.
+	// Returns information about the updated elastic cluster.
 	//
 	// This member is required.
 	Cluster *types.Cluster
@@ -89,6 +105,9 @@ type UpdateClusterOutput struct {
 }
 
 func (c *Client) addOperationUpdateClusterMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpUpdateCluster{}, middleware.After)
 	if err != nil {
 		return err
@@ -97,34 +116,38 @@ func (c *Client) addOperationUpdateClusterMiddlewares(stack *middleware.Stack, o
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateCluster"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -136,7 +159,13 @@ func (c *Client) addOperationUpdateClusterMiddlewares(stack *middleware.Stack, o
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateClusterResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opUpdateClusterMiddleware(stack, options); err != nil {
@@ -148,7 +177,7 @@ func (c *Client) addOperationUpdateClusterMiddlewares(stack *middleware.Stack, o
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateCluster(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -160,7 +189,19 @@ func (c *Client) addOperationUpdateClusterMiddlewares(stack *middleware.Stack, o
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -203,130 +244,6 @@ func newServiceMetadataMiddleware_opUpdateCluster(region string) *awsmiddleware.
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "docdb-elastic",
 		OperationName: "UpdateCluster",
 	}
-}
-
-type opUpdateClusterResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateClusterResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateClusterResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "docdb-elastic"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "docdb-elastic"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("docdb-elastic")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateClusterResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateClusterResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -1810,6 +1810,26 @@ func (m *validateOpGetRelationalDatabaseSnapshot) HandleInitialize(ctx context.C
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetSetupHistory struct {
+}
+
+func (*validateOpGetSetupHistory) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetSetupHistory) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetSetupHistoryInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetSetupHistoryInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetStaticIp struct {
 }
 
@@ -2045,6 +2065,26 @@ func (m *validateOpSetResourceAccessForBucket) HandleInitialize(ctx context.Cont
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpSetResourceAccessForBucketInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpSetupInstanceHttps struct {
+}
+
+func (*validateOpSetupInstanceHttps) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpSetupInstanceHttps) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*SetupInstanceHttpsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpSetupInstanceHttpsInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -2770,6 +2810,10 @@ func addOpGetRelationalDatabaseSnapshotValidationMiddleware(stack *middleware.St
 	return stack.Initialize.Add(&validateOpGetRelationalDatabaseSnapshot{}, middleware.After)
 }
 
+func addOpGetSetupHistoryValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetSetupHistory{}, middleware.After)
+}
+
 func addOpGetStaticIpValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetStaticIp{}, middleware.After)
 }
@@ -2816,6 +2860,10 @@ func addOpSetIpAddressTypeValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpSetResourceAccessForBucketValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpSetResourceAccessForBucket{}, middleware.After)
+}
+
+func addOpSetupInstanceHttpsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpSetupInstanceHttps{}, middleware.After)
 }
 
 func addOpStartGUISessionValidationMiddleware(stack *middleware.Stack) error {
@@ -4094,6 +4142,9 @@ func validateOpGetBucketMetricDataInput(v *GetBucketMetricDataInput) error {
 	if v.EndTime == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("EndTime"))
 	}
+	if v.Period == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Period"))
+	}
 	if v.Statistics == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Statistics"))
 	}
@@ -4171,6 +4222,9 @@ func validateOpGetContainerServiceMetricDataInput(v *GetContainerServiceMetricDa
 	}
 	if v.EndTime == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("EndTime"))
+	}
+	if v.Period == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Period"))
 	}
 	if v.Statistics == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Statistics"))
@@ -4250,6 +4304,9 @@ func validateOpGetDistributionMetricDataInput(v *GetDistributionMetricDataInput)
 	if v.EndTime == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("EndTime"))
 	}
+	if v.Period == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Period"))
+	}
 	if len(v.Unit) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Unit"))
 	}
@@ -4318,6 +4375,9 @@ func validateOpGetInstanceMetricDataInput(v *GetInstanceMetricDataInput) error {
 	}
 	if len(v.MetricName) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("MetricName"))
+	}
+	if v.Period == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Period"))
 	}
 	if v.StartTime == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("StartTime"))
@@ -4423,6 +4483,9 @@ func validateOpGetLoadBalancerMetricDataInput(v *GetLoadBalancerMetricDataInput)
 	}
 	if len(v.MetricName) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("MetricName"))
+	}
+	if v.Period == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Period"))
 	}
 	if v.StartTime == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("StartTime"))
@@ -4577,6 +4640,9 @@ func validateOpGetRelationalDatabaseMetricDataInput(v *GetRelationalDatabaseMetr
 	if len(v.MetricName) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("MetricName"))
 	}
+	if v.Period == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Period"))
+	}
 	if v.StartTime == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("StartTime"))
 	}
@@ -4618,6 +4684,21 @@ func validateOpGetRelationalDatabaseSnapshotInput(v *GetRelationalDatabaseSnapsh
 	invalidParams := smithy.InvalidParamsError{Context: "GetRelationalDatabaseSnapshotInput"}
 	if v.RelationalDatabaseSnapshotName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("RelationalDatabaseSnapshotName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetSetupHistoryInput(v *GetSetupHistoryInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetSetupHistoryInput"}
+	if v.ResourceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ResourceName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -4840,6 +4921,30 @@ func validateOpSetResourceAccessForBucketInput(v *SetResourceAccessForBucketInpu
 	}
 	if len(v.Access) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Access"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpSetupInstanceHttpsInput(v *SetupInstanceHttpsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SetupInstanceHttpsInput"}
+	if v.InstanceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceName"))
+	}
+	if v.EmailAddress == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EmailAddress"))
+	}
+	if v.DomainNames == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainNames"))
+	}
+	if len(v.CertificateProvider) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("CertificateProvider"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

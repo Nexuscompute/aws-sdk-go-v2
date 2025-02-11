@@ -3,10 +3,18 @@
 // Package rdsdata provides the API client, operations, and parameter types for
 // AWS RDS DataService.
 //
-// Amazon RDS Data Service Amazon RDS provides an HTTP endpoint to run SQL
-// statements on an Amazon Aurora Serverless v1 DB cluster. To run these
-// statements, you work with the Data Service API. The Data Service API isn't
-// supported on Amazon Aurora Serverless v2 DB clusters. For more information about
-// the Data Service API, see Using the Data API (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html)
-// in the Amazon Aurora User Guide.
+// # RDS Data API
+//
+// Amazon RDS provides an HTTP endpoint to run SQL statements on an Amazon Aurora
+// DB cluster. To run these statements, you use the RDS Data API (Data API).
+//
+// Data API is available with the following types of Aurora databases:
+//
+//   - Aurora PostgreSQL - Serverless v2, provisioned, and Serverless v1
+//
+//   - Aurora MySQL - Serverless v2, provisioned, and Serverless v1
+//
+// For more information about the Data API, see [Using RDS Data API] in the Amazon Aurora User Guide.
+//
+// [Using RDS Data API]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/data-api.html
 package rdsdata

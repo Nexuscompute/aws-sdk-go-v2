@@ -1,3 +1,377 @@
+# v1.69.12 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.69.11 (2025-02-04)
+
+* No change notes available for this release.
+
+# v1.69.10 (2025-01-31)
+
+* **Dependency Update**: Switch to code-generated waiter matchers, removing the dependency on go-jmespath.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.69.9 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.69.8 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.69.7 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.69.6 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.69.5 (2025-01-14)
+
+* **Bug Fix**: Fix issue where waiters were not failing on unmatched errors as they should. This may have breaking behavioral changes for users in fringe cases. See [this announcement](https://github.com/aws/aws-sdk-go-v2/discussions/2954) for more information.
+
+# v1.69.4 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.69.3 (2025-01-08)
+
+* No change notes available for this release.
+
+# v1.69.2 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.69.1 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.69.0 (2024-11-22)
+
+* **Feature**: Add ProvisionedPollerConfig to Lambda event-source-mapping API.
+
+# v1.68.0 (2024-11-21)
+
+* **Feature**: Adds support for metrics for event source mappings for AWS Lambda
+
+# v1.67.0 (2024-11-20)
+
+* **Feature**: Add Node 22.x (node22.x) support to AWS Lambda
+
+# v1.66.1 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.66.0 (2024-11-11)
+
+* **Feature**: Add Python 3.13 (python3.13) support to AWS Lambda
+
+# v1.65.0 (2024-11-08)
+
+* **Feature**: This release adds support for using AWS KMS customer managed keys to encrypt AWS Lambda .zip deployment packages.
+
+# v1.64.3 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.64.2 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.64.1 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.64.0 (2024-10-25)
+
+* **Feature**: Add TagsError field in Lambda GetFunctionResponse. The TagsError field contains details related to errors retrieving tags.
+
+# v1.63.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.63.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.63.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.62.2 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.62.1 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.62.0 (2024-09-26)
+
+* **Feature**: Reverting Lambda resource-based policy and block public access APIs.
+
+# v1.61.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.61.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.61.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.60.0 (2024-09-19)
+
+* **Feature**: Tagging support for Lambda event source mapping, and code signing configuration resources.
+
+# v1.59.0 (2024-09-17)
+
+* **Feature**: Support for JSON resource-based policies and block public access
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.58.3 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.58.2 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.58.1 (2024-08-22)
+
+* No change notes available for this release.
+
+# v1.58.0 (2024-08-21)
+
+* **Feature**: Release FilterCriteria encryption for Lambda EventSourceMapping,  enabling customers to encrypt their filter criteria using a customer-owned KMS key.
+
+# v1.57.0 (2024-08-19)
+
+* **Feature**: Release Lambda FunctionRecursiveConfig, enabling customers to turn recursive loop detection on or off on individual functions. This release adds two new APIs, GetFunctionRecursionConfig and PutFunctionRecursionConfig.
+
+# v1.56.4 (2024-08-15)
+
+* **Dependency Update**: Bump minimum Go version to 1.21.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.56.3 (2024-07-10.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.56.2 (2024-07-10)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.56.1 (2024-06-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.56.0 (2024-06-26)
+
+* **Feature**: Support list-of-string endpoint parameter.
+
+# v1.55.1 (2024-06-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.55.0 (2024-06-18)
+
+* **Feature**: Track usage of various AWS SDK features in user-agent string.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.54.7 (2024-06-17)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.54.6 (2024-06-07)
+
+* **Bug Fix**: Add clock skew correction on all service clients
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.54.5 (2024-06-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.54.4 (2024-05-23)
+
+* No change notes available for this release.
+
+# v1.54.3 (2024-05-16)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.54.2 (2024-05-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.54.1 (2024-05-08)
+
+* **Bug Fix**: GoDoc improvement
+
+# v1.54.0 (2024-04-03)
+
+* **Feature**: Add Ruby 3.3 (ruby3.3) support to AWS Lambda
+
+# v1.53.4 (2024-03-29)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.3 (2024-03-18)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.2 (2024-03-07)
+
+* **Bug Fix**: Remove dependency on go-cmp.
+* **Documentation**: Documentation updates for AWS Lambda
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.1 (2024-02-23)
+
+* **Bug Fix**: Move all common, SDK-side middleware stack ops into the service client module to prevent cross-module compatibility issues in the future.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.53.0 (2024-02-22)
+
+* **Feature**: Add middleware stack snapshot tests.
+
+# v1.52.1 (2024-02-21)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.52.0 (2024-02-20)
+
+* **Feature**: Add .NET 8 (dotnet8) Runtime support to AWS Lambda.
+* **Bug Fix**: When sourcing values for a service's `EndpointParameters`, the lack of a configured region (i.e. `options.Region == ""`) will now translate to a `nil` value for `EndpointParameters.Region` instead of a pointer to the empty string `""`. This will result in a much more explicit error when calling an operation instead of an obscure hostname lookup failure.
+
+# v1.51.0 (2024-02-16)
+
+* **Feature**: Add new ClientOptions field to waiter config which allows you to extend the config for operation calls made by waiters.
+* **Documentation**: Documentation-only updates for Lambda to clarify a number of existing actions and properties.
+
+# v1.50.0 (2024-02-13)
+
+* **Feature**: Bump minimum Go version to 1.20 per our language support policy.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.7 (2024-01-04)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.6 (2023-12-20)
+
+* No change notes available for this release.
+
+# v1.49.5 (2023-12-08)
+
+* **Bug Fix**: Reinstate presence of default Retryer in functional options, but still respect max attempts set therein.
+
+# v1.49.4 (2023-12-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.3 (2023-12-06)
+
+* **Bug Fix**: Restore pre-refactor auth behavior where all operations could technically be performed anonymously.
+
+# v1.49.2 (2023-12-01)
+
+* **Bug Fix**: Correct wrapping of errors in authentication workflow.
+* **Bug Fix**: Correctly recognize cache-wrapped instances of AnonymousCredentials at client construction.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.1 (2023-11-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.49.0 (2023-11-29)
+
+* **Feature**: Expose Options() accessor on service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.3 (2023-11-28.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.2 (2023-11-28)
+
+* **Bug Fix**: Respect setting RetryMaxAttempts in functional options at client construction.
+
+# v1.48.1 (2023-11-20)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.48.0 (2023-11-16)
+
+* **Feature**: Adds support for logging configuration in Lambda Functions. Customers will have more control how their function logs are captured and to which cloud watch log group they are delivered also.
+
+# v1.47.0 (2023-11-15)
+
+* **Feature**: Add Java 21 (java21) support to AWS Lambda
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.46.0 (2023-11-14)
+
+* **Feature**: Add Python 3.12 (python3.12) support to AWS Lambda
+
+# v1.45.0 (2023-11-09.2)
+
+* **Feature**: Add Custom runtime on Amazon Linux 2023 (provided.al2023) support to AWS Lambda.
+
+# v1.44.1 (2023-11-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.0 (2023-11-08)
+
+* **Feature**: Add Node 20 (nodejs20.x) support to AWS Lambda.
+
+# v1.43.0 (2023-11-01)
+
+* **Feature**: Adds support for configured endpoints via environment variables and the AWS shared configuration file.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.42.0 (2023-10-31)
+
+* **Feature**: **BREAKING CHANGE**: Bump minimum go version to 1.19 per the revised [go version support policy](https://aws.amazon.com/blogs/developer/aws-sdk-for-go-aligns-with-go-release-policy-on-supported-runtimes/).
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.41.0 (2023-10-24)
+
+* **Feature**: **BREAKFIX**: Correct nullability and default value representation of various input fields across a large number of services. Calling code that references one or more of the affected fields will need to update usage accordingly. See [2162](https://github.com/aws/aws-sdk-go-v2/issues/2162).
+
+# v1.40.0 (2023-10-12)
+
+* **Feature**: Adds support for Lambda functions to access Dual-Stack subnets over IPv6, via an opt-in flag in CreateFunction and UpdateFunctionConfiguration APIs
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.39.6 (2023-10-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.39.5 (2023-08-21)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.39.4 (2023-08-18)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.39.3 (2023-08-17)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.39.2 (2023-08-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.39.1 (2023-08-01)
 
 * No change notes available for this release.

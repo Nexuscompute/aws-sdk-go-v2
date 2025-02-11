@@ -4,27 +4,25 @@ package sesv2
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/sesv2/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Sends an email message. You can use the Amazon SES API v2 to send the following
 // types of messages:
+//
 //   - Simple – A standard email message. When you create this type of message,
 //     you specify the sender, the recipient, and the message body, and Amazon SES
 //     assembles the message for you.
+//
 //   - Raw – A raw, MIME-formatted email message. When you send this type of
 //     email, you have to specify all of the message headers, as well as the message
 //     body. You can use this message type to send messages that contain attachments.
 //     The message that you specify has to be a valid MIME message.
+//
 //   - Templated – A message that contains personalization tags. When you send
 //     this type of email, Amazon SES API v2 automatically replaces the tags with
 //     values that you specify.
@@ -44,12 +42,13 @@ func (c *Client) SendEmail(ctx context.Context, params *SendEmailInput, optFns .
 }
 
 // Represents a request to send a single formatted email using Amazon SES. For
-// more information, see the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-formatted.html)
-// .
+// more information, see the [Amazon SES Developer Guide].
+//
+// [Amazon SES Developer Guide]: https://docs.aws.amazon.com/ses/latest/DeveloperGuide/send-email-formatted.html
 type SendEmailInput struct {
 
 	// An object that contains the body of the message. You can send either a Simple
-	// message Raw message or a template Message.
+	// message, Raw message, or a Templated message.
 	//
 	// This member is required.
 	Content *types.EmailContent
@@ -65,20 +64,27 @@ type SendEmailInput struct {
 	// email that you define, so that you can publish email sending events.
 	EmailTags []types.MessageTag
 
+	// The ID of the multi-region endpoint (global-endpoint).
+	EndpointId *string
+
 	// The address that you want bounce and complaint notifications to be sent to.
 	FeedbackForwardingEmailAddress *string
 
 	// This parameter is used only for sending authorization. It is the ARN of the
 	// identity that is associated with the sending authorization policy that permits
 	// you to use the email address specified in the FeedbackForwardingEmailAddress
-	// parameter. For example, if the owner of example.com (which has ARN
+	// parameter.
+	//
+	// For example, if the owner of example.com (which has ARN
 	// arn:aws:ses:us-east-1:123456789012:identity/example.com) attaches a policy to it
 	// that authorizes you to use feedback@example.com, then you would specify the
 	// FeedbackForwardingEmailAddressIdentityArn to be
 	// arn:aws:ses:us-east-1:123456789012:identity/example.com, and the
-	// FeedbackForwardingEmailAddress to be feedback@example.com. For more information
-	// about sending authorization, see the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html)
-	// .
+	// FeedbackForwardingEmailAddress to be feedback@example.com.
+	//
+	// For more information about sending authorization, see the [Amazon SES Developer Guide].
+	//
+	// [Amazon SES Developer Guide]: https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html
 	FeedbackForwardingEmailAddressIdentityArn *string
 
 	// The email address to use as the "From" address for the email. The address that
@@ -87,17 +93,22 @@ type SendEmailInput struct {
 
 	// This parameter is used only for sending authorization. It is the ARN of the
 	// identity that is associated with the sending authorization policy that permits
-	// you to use the email address specified in the FromEmailAddress parameter. For
-	// example, if the owner of example.com (which has ARN
+	// you to use the email address specified in the FromEmailAddress parameter.
+	//
+	// For example, if the owner of example.com (which has ARN
 	// arn:aws:ses:us-east-1:123456789012:identity/example.com) attaches a policy to it
 	// that authorizes you to use sender@example.com, then you would specify the
 	// FromEmailAddressIdentityArn to be
 	// arn:aws:ses:us-east-1:123456789012:identity/example.com, and the
-	// FromEmailAddress to be sender@example.com. For more information about sending
-	// authorization, see the Amazon SES Developer Guide (https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html)
-	// . For Raw emails, the FromEmailAddressIdentityArn value overrides the
+	// FromEmailAddress to be sender@example.com.
+	//
+	// For more information about sending authorization, see the [Amazon SES Developer Guide].
+	//
+	// For Raw emails, the FromEmailAddressIdentityArn value overrides the
 	// X-SES-SOURCE-ARN and X-SES-FROM-ARN headers specified in raw email message
 	// content.
+	//
+	// [Amazon SES Developer Guide]: https://docs.aws.amazon.com/ses/latest/DeveloperGuide/sending-authorization.html
 	FromEmailAddressIdentityArn *string
 
 	// An object used to specify a list or topic to which an email belongs, which will
@@ -111,14 +122,22 @@ type SendEmailInput struct {
 	noSmithyDocumentSerde
 }
 
+func (in *SendEmailInput) bindEndpointParams(p *EndpointParameters) {
+
+	p.EndpointId = in.EndpointId
+
+}
+
 // A unique message ID that you receive when an email is accepted for sending.
 type SendEmailOutput struct {
 
 	// A unique identifier for the message that is generated when the message is
-	// accepted. It's possible for Amazon SES to accept a message without sending it.
-	// This can happen when the message that you're trying to send has an attachment
-	// contains a virus, or when you send a templated email that contains invalid
-	// personalization content, for example.
+	// accepted.
+	//
+	// It's possible for Amazon SES to accept a message without sending it. For
+	// example, this can happen when the message that you're trying to send has an
+	// attachment that contains a virus, or when you send a templated email that
+	// contains invalid personalization content.
 	MessageId *string
 
 	// Metadata pertaining to the operation's result.
@@ -128,6 +147,9 @@ type SendEmailOutput struct {
 }
 
 func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpSendEmail{}, middleware.After)
 	if err != nil {
 		return err
@@ -136,34 +158,38 @@ func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, optio
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "SendEmail"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -175,7 +201,13 @@ func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, optio
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addSendEmailResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSendEmailValidationMiddleware(stack); err != nil {
@@ -184,7 +216,7 @@ func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, optio
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opSendEmail(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -196,7 +228,19 @@ func (c *Client) addOperationSendEmailMiddlewares(stack *middleware.Stack, optio
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -206,130 +250,6 @@ func newServiceMetadataMiddleware_opSendEmail(region string) *awsmiddleware.Regi
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "ses",
 		OperationName: "SendEmail",
 	}
-}
-
-type opSendEmailResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opSendEmailResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opSendEmailResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "ses"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "ses"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("ses")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addSendEmailResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opSendEmailResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

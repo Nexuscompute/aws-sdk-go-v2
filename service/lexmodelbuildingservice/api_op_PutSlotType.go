@@ -4,30 +4,28 @@ package lexmodelbuildingservice
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/lexmodelbuildingservice/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
 )
 
-// Creates a custom slot type or replaces an existing custom slot type. To create
-// a custom slot type, specify a name for the slot type and a set of enumeration
-// values, which are the values that a slot of this type can assume. For more
-// information, see how-it-works . If you specify the name of an existing slot
-// type, the fields in the request replace the existing values in the $LATEST
-// version of the slot type. Amazon Lex removes the fields that you don't provide
-// in the request. If you don't specify required fields, Amazon Lex throws an
-// exception. When you update the $LATEST version of a slot type, if a bot uses
-// the $LATEST version of an intent that contains the slot type, the bot's status
-// field is set to NOT_BUILT . This operation requires permissions for the
-// lex:PutSlotType action.
+// Creates a custom slot type or replaces an existing custom slot type.
+//
+// To create a custom slot type, specify a name for the slot type and a set of
+// enumeration values, which are the values that a slot of this type can assume.
+// For more information, see how-it-works.
+//
+// If you specify the name of an existing slot type, the fields in the request
+// replace the existing values in the $LATEST version of the slot type. Amazon Lex
+// removes the fields that you don't provide in the request. If you don't specify
+// required fields, Amazon Lex throws an exception. When you update the $LATEST
+// version of a slot type, if a bot uses the $LATEST version of an intent that
+// contains the slot type, the bot's status field is set to NOT_BUILT .
+//
+// This operation requires permissions for the lex:PutSlotType action.
 func (c *Client) PutSlotType(ctx context.Context, params *PutSlotTypeInput, optFns ...func(*Options)) (*PutSlotTypeOutput, error) {
 	if params == nil {
 		params = &PutSlotTypeInput{}
@@ -45,22 +43,28 @@ func (c *Client) PutSlotType(ctx context.Context, params *PutSlotTypeInput, optF
 
 type PutSlotTypeInput struct {
 
-	// The name of the slot type. The name is not case sensitive. The name can't match
-	// a built-in slot type name, or a built-in slot type name with "AMAZON." removed.
-	// For example, because there is a built-in slot type called AMAZON.DATE , you
-	// can't create a custom slot type called DATE . For a list of built-in slot types,
-	// see Slot Type Reference (https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/built-in-intent-ref/slot-type-reference)
-	// in the Alexa Skills Kit.
+	// The name of the slot type. The name is not case sensitive.
+	//
+	// The name can't match a built-in slot type name, or a built-in slot type name
+	// with "AMAZON." removed. For example, because there is a built-in slot type
+	// called AMAZON.DATE , you can't create a custom slot type called DATE .
+	//
+	// For a list of built-in slot types, see [Slot Type Reference] in the Alexa Skills Kit.
+	//
+	// [Slot Type Reference]: https://developer.amazon.com/public/solutions/alexa/alexa-skills-kit/docs/built-in-intent-ref/slot-type-reference
 	//
 	// This member is required.
 	Name *string
 
-	// Identifies a specific revision of the $LATEST version. When you create a new
-	// slot type, leave the checksum field blank. If you specify a checksum you get a
-	// BadRequestException exception. When you want to update a slot type, set the
-	// checksum field to the checksum of the most recent revision of the $LATEST
-	// version. If you don't specify the checksum field, or if the checksum does not
-	// match the $LATEST version, you get a PreconditionFailedException exception.
+	// Identifies a specific revision of the $LATEST version.
+	//
+	// When you create a new slot type, leave the checksum field blank. If you specify
+	// a checksum you get a BadRequestException exception.
+	//
+	// When you want to update a slot type, set the checksum field to the checksum of
+	// the most recent revision of the $LATEST version. If you don't specify the
+	// checksum field, or if the checksum does not match the $LATEST version, you get
+	// a PreconditionFailedException exception.
 	Checksum *string
 
 	// When set to true a new numbered version of the slot type is created. This is
@@ -74,18 +78,24 @@ type PutSlotTypeInput struct {
 	// A list of EnumerationValue objects that defines the values that the slot type
 	// can take. Each value can have a list of synonyms , which are additional values
 	// that help train the machine learning model about the values that it resolves for
-	// a slot. A regular expression slot type doesn't require enumeration values. All
-	// other slot types require a list of enumeration values. When Amazon Lex resolves
-	// a slot value, it generates a resolution list that contains up to five possible
-	// values for the slot. If you are using a Lambda function, this resolution list is
-	// passed to the function. If you are not using a Lambda function you can choose to
-	// return the value that the user entered or the first value in the resolution list
-	// as the slot value. The valueSelectionStrategy field indicates the option to use.
+	// a slot.
+	//
+	// A regular expression slot type doesn't require enumeration values. All other
+	// slot types require a list of enumeration values.
+	//
+	// When Amazon Lex resolves a slot value, it generates a resolution list that
+	// contains up to five possible values for the slot. If you are using a Lambda
+	// function, this resolution list is passed to the function. If you are not using a
+	// Lambda function you can choose to return the value that the user entered or the
+	// first value in the resolution list as the slot value. The valueSelectionStrategy
+	// field indicates the option to use.
 	EnumerationValues []types.EnumerationValue
 
 	// The built-in slot type used as the parent of the slot type. When you define a
 	// parent slot type, the new slot type has all of the same configuration as the
-	// parent. Only AMAZON.AlphaNumeric is supported.
+	// parent.
+	//
+	// Only AMAZON.AlphaNumeric is supported.
 	ParentSlotTypeSignature *string
 
 	// Configuration information that extends the parent built-in slot type. The
@@ -94,11 +104,14 @@ type PutSlotTypeInput struct {
 
 	// Determines the slot resolution strategy that Amazon Lex uses to return slot
 	// type values. The field can be set to one of the following values:
+	//
 	//   - ORIGINAL_VALUE - Returns the value entered by the user, if the user value is
 	//   similar to the slot value.
+	//
 	//   - TOP_RESOLUTION - If there is a resolution list for the slot, return the
 	//   first value in the resolution list as the slot type value. If there is no
 	//   resolution list, null is returned.
+	//
 	// If you don't specify the valueSelectionStrategy , the default is ORIGINAL_VALUE .
 	ValueSelectionStrategy types.SlotValueSelectionStrategy
 
@@ -139,7 +152,7 @@ type PutSlotTypeOutput struct {
 	SlotTypeConfigurations []types.SlotTypeConfiguration
 
 	// The slot resolution strategy that Amazon Lex uses to determine the value of the
-	// slot. For more information, see PutSlotType .
+	// slot. For more information, see PutSlotType.
 	ValueSelectionStrategy types.SlotValueSelectionStrategy
 
 	// The version of the slot type. For a new slot type, the version is always
@@ -153,6 +166,9 @@ type PutSlotTypeOutput struct {
 }
 
 func (c *Client) addOperationPutSlotTypeMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpPutSlotType{}, middleware.After)
 	if err != nil {
 		return err
@@ -161,34 +177,38 @@ func (c *Client) addOperationPutSlotTypeMiddlewares(stack *middleware.Stack, opt
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "PutSlotType"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -200,7 +220,13 @@ func (c *Client) addOperationPutSlotTypeMiddlewares(stack *middleware.Stack, opt
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addPutSlotTypeResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutSlotTypeValidationMiddleware(stack); err != nil {
@@ -209,7 +235,7 @@ func (c *Client) addOperationPutSlotTypeMiddlewares(stack *middleware.Stack, opt
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opPutSlotType(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -221,7 +247,19 @@ func (c *Client) addOperationPutSlotTypeMiddlewares(stack *middleware.Stack, opt
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -231,130 +269,6 @@ func newServiceMetadataMiddleware_opPutSlotType(region string) *awsmiddleware.Re
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "lex",
 		OperationName: "PutSlotType",
 	}
-}
-
-type opPutSlotTypeResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opPutSlotTypeResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opPutSlotTypeResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "lex"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "lex"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("lex")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addPutSlotTypeResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opPutSlotTypeResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

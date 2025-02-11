@@ -4,14 +4,9 @@ package cloudformation
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/cloudformation/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -19,16 +14,23 @@ import (
 // Returns Amazon Web Services resource descriptions for running and deleted
 // stacks. If StackName is specified, all the associated resources that are part
 // of the stack are returned. If PhysicalResourceId is specified, the associated
-// resources of the stack that the resource belongs to are returned. Only the first
-// 100 resources will be returned. If your stack has more resources than this, you
-// should use ListStackResources instead. For deleted stacks,
-// DescribeStackResources returns resource information for up to 90 days after the
-// stack has been deleted. You must specify either StackName or PhysicalResourceId
-// , but not both. In addition, you can specify LogicalResourceId to filter the
-// returned result. For more information about resources, the LogicalResourceId
-// and PhysicalResourceId , go to the CloudFormation User Guide (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/)
-// . A ValidationError is returned if you specify both StackName and
+// resources of the stack that the resource belongs to are returned.
+//
+// Only the first 100 resources will be returned. If your stack has more resources
+// than this, you should use ListStackResources instead.
+//
+// For deleted stacks, DescribeStackResources returns resource information for up
+// to 90 days after the stack has been deleted.
+//
+// You must specify either StackName or PhysicalResourceId , but not both. In
+// addition, you can specify LogicalResourceId to filter the returned result. For
+// more information about resources, the LogicalResourceId and PhysicalResourceId ,
+// see the [CloudFormation User Guide].
+//
+// A ValidationError is returned if you specify both StackName and
 // PhysicalResourceId in the same request.
+//
+// [CloudFormation User Guide]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/
 func (c *Client) DescribeStackResources(ctx context.Context, params *DescribeStackResourcesInput, optFns ...func(*Options)) (*DescribeStackResourcesOutput, error) {
 	if params == nil {
 		params = &DescribeStackResourcesInput{}
@@ -47,26 +49,37 @@ func (c *Client) DescribeStackResources(ctx context.Context, params *DescribeSta
 // The input for DescribeStackResources action.
 type DescribeStackResourcesInput struct {
 
-	// The logical name of the resource as specified in the template. Default: There
-	// is no default value.
+	// The logical name of the resource as specified in the template.
+	//
+	// Default: There is no default value.
 	LogicalResourceId *string
 
 	// The name or unique identifier that corresponds to a physical instance ID of a
-	// resource supported by CloudFormation. For example, for an Amazon Elastic Compute
-	// Cloud (EC2) instance, PhysicalResourceId corresponds to the InstanceId . You can
-	// pass the EC2 InstanceId to DescribeStackResources to find which stack the
-	// instance belongs to and what other resources are part of the stack. Required:
-	// Conditional. If you don't specify PhysicalResourceId , you must specify
-	// StackName . Default: There is no default value.
+	// resource supported by CloudFormation.
+	//
+	// For example, for an Amazon Elastic Compute Cloud (EC2) instance,
+	// PhysicalResourceId corresponds to the InstanceId . You can pass the EC2
+	// InstanceId to DescribeStackResources to find which stack the instance belongs
+	// to and what other resources are part of the stack.
+	//
+	// Required: Conditional. If you don't specify PhysicalResourceId , you must
+	// specify StackName .
+	//
+	// Default: There is no default value.
 	PhysicalResourceId *string
 
 	// The name or the unique stack ID that is associated with the stack, which aren't
 	// always interchangeable:
+	//
 	//   - Running stacks: You can specify either the stack's name or its unique stack
 	//   ID.
+	//
 	//   - Deleted stacks: You must specify the unique stack ID.
-	// Default: There is no default value. Required: Conditional. If you don't specify
-	// StackName , you must specify PhysicalResourceId .
+	//
+	// Default: There is no default value.
+	//
+	// Required: Conditional. If you don't specify StackName , you must specify
+	// PhysicalResourceId .
 	StackName *string
 
 	noSmithyDocumentSerde
@@ -85,6 +98,9 @@ type DescribeStackResourcesOutput struct {
 }
 
 func (c *Client) addOperationDescribeStackResourcesMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpDescribeStackResources{}, middleware.After)
 	if err != nil {
 		return err
@@ -93,34 +109,38 @@ func (c *Client) addOperationDescribeStackResourcesMiddlewares(stack *middleware
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeStackResources"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -132,13 +152,19 @@ func (c *Client) addOperationDescribeStackResourcesMiddlewares(stack *middleware
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeStackResourcesResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeStackResources(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -150,7 +176,19 @@ func (c *Client) addOperationDescribeStackResourcesMiddlewares(stack *middleware
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -160,130 +198,6 @@ func newServiceMetadataMiddleware_opDescribeStackResources(region string) *awsmi
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "cloudformation",
 		OperationName: "DescribeStackResources",
 	}
-}
-
-type opDescribeStackResourcesResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeStackResourcesResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeStackResourcesResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "cloudformation"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "cloudformation"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("cloudformation")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeStackResourcesResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeStackResourcesResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

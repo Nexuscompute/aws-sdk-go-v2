@@ -4,34 +4,36 @@ package sagemakerruntime
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // After you deploy a model into production using Amazon SageMaker hosting
 // services, your client applications use this API to get inferences from the model
-// hosted at the specified endpoint. For an overview of Amazon SageMaker, see How
-// It Works (https://docs.aws.amazon.com/sagemaker/latest/dg/how-it-works.html) .
+// hosted at the specified endpoint.
+//
+// For an overview of Amazon SageMaker, see [How It Works].
+//
 // Amazon SageMaker strips all POST headers except those supported by the API.
 // Amazon SageMaker might add additional headers. You should not rely on the
-// behavior of headers outside those enumerated in the request syntax. Calls to
-// InvokeEndpoint are authenticated by using Amazon Web Services Signature Version
-// 4. For information, see Authenticating Requests (Amazon Web Services Signature
-// Version 4) (https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html)
-// in the Amazon S3 API Reference. A customer's model containers must respond to
-// requests within 60 seconds. The model itself can have a maximum processing time
-// of 60 seconds before responding to invocations. If your model is going to take
-// 50-60 seconds of processing time, the SDK socket timeout should be set to be 70
-// seconds. Endpoints are scoped to an individual account, and are not public. The
-// URL does not contain the account ID, but Amazon SageMaker determines the account
-// ID from the authentication token that is supplied by the caller.
+// behavior of headers outside those enumerated in the request syntax.
+//
+// Calls to InvokeEndpoint are authenticated by using Amazon Web Services
+// Signature Version 4. For information, see [Authenticating Requests (Amazon Web Services Signature Version 4)]in the Amazon S3 API Reference.
+//
+// A customer's model containers must respond to requests within 60 seconds. The
+// model itself can have a maximum processing time of 60 seconds before responding
+// to invocations. If your model is going to take 50-60 seconds of processing time,
+// the SDK socket timeout should be set to be 70 seconds.
+//
+// Endpoints are scoped to an individual account, and are not public. The URL does
+// not contain the account ID, but Amazon SageMaker determines the account ID from
+// the authentication token that is supplied by the caller.
+//
+// [How It Works]: https://docs.aws.amazon.com/sagemaker/latest/dg/how-it-works.html
+// [Authenticating Requests (Amazon Web Services Signature Version 4)]: https://docs.aws.amazon.com/AmazonS3/latest/API/sig-v4-authenticating-requests.html
 func (c *Client) InvokeEndpoint(ctx context.Context, params *InvokeEndpointInput, optFns ...func(*Options)) (*InvokeEndpointOutput, error) {
 	if params == nil {
 		params = &InvokeEndpointInput{}
@@ -50,22 +52,24 @@ func (c *Client) InvokeEndpoint(ctx context.Context, params *InvokeEndpointInput
 type InvokeEndpointInput struct {
 
 	// Provides input data, in the format specified in the ContentType request header.
-	// Amazon SageMaker passes all of the data in the body to the model. For
-	// information about the format of the request body, see Common Data
-	// Formats-Inference (https://docs.aws.amazon.com/sagemaker/latest/dg/cdf-inference.html)
-	// .
+	// Amazon SageMaker passes all of the data in the body to the model.
+	//
+	// For information about the format of the request body, see [Common Data Formats-Inference].
+	//
+	// [Common Data Formats-Inference]: https://docs.aws.amazon.com/sagemaker/latest/dg/cdf-inference.html
 	//
 	// This member is required.
 	Body []byte
 
 	// The name of the endpoint that you specified when you created the endpoint using
-	// the CreateEndpoint (https://docs.aws.amazon.com/sagemaker/latest/dg/API_CreateEndpoint.html)
-	// API.
+	// the [CreateEndpoint]API.
+	//
+	// [CreateEndpoint]: https://docs.aws.amazon.com/sagemaker/latest/dg/API_CreateEndpoint.html
 	//
 	// This member is required.
 	EndpointName *string
 
-	// The desired MIME type of the inference in the response.
+	// The desired MIME type of the inference response from the model container.
 	Accept *string
 
 	// The MIME type of the input data in the request body.
@@ -76,26 +80,54 @@ type InvokeEndpointInput struct {
 	// that is forwarded verbatim. You could use this value, for example, to provide an
 	// ID that you can use to track a request or to provide other metadata that a
 	// service endpoint was programmed to process. The value must consist of no more
-	// than 1024 visible US-ASCII characters as specified in Section 3.3.6. Field
-	// Value Components (https://tools.ietf.org/html/rfc7230#section-3.2.6) of the
-	// Hypertext Transfer Protocol (HTTP/1.1). The code in your model is responsible
-	// for setting or updating any custom attributes in the response. If your code does
-	// not set this value in the response, an empty value is returned. For example, if
-	// a custom attribute represents the trace ID, your model can prepend the custom
-	// attribute with Trace ID: in your post-processing function. This feature is
-	// currently supported in the Amazon Web Services SDKs but not in the Amazon
-	// SageMaker Python SDK.
+	// than 1024 visible US-ASCII characters as specified in [Section 3.3.6. Field Value Components]of the Hypertext Transfer
+	// Protocol (HTTP/1.1).
+	//
+	// The code in your model is responsible for setting or updating any custom
+	// attributes in the response. If your code does not set this value in the
+	// response, an empty value is returned. For example, if a custom attribute
+	// represents the trace ID, your model can prepend the custom attribute with Trace
+	// ID: in your post-processing function.
+	//
+	// This feature is currently supported in the Amazon Web Services SDKs but not in
+	// the Amazon SageMaker Python SDK.
+	//
+	// [Section 3.3.6. Field Value Components]: https://datatracker.ietf.org/doc/html/rfc7230#section-3.2.6
 	CustomAttributes *string
 
 	// An optional JMESPath expression used to override the EnableExplanations
-	// parameter of the ClarifyExplainerConfig API. See the EnableExplanations (https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-online-explainability-create-endpoint.html#clarify-online-explainability-create-endpoint-enable)
-	// section in the developer guide for more information.
+	// parameter of the ClarifyExplainerConfig API. See the [EnableExplanations] section in the developer
+	// guide for more information.
+	//
+	// [EnableExplanations]: https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-online-explainability-create-endpoint.html#clarify-online-explainability-create-endpoint-enable
 	EnableExplanations *string
 
+	// If the endpoint hosts one or more inference components, this parameter
+	// specifies the name of inference component to invoke.
+	InferenceComponentName *string
+
 	// If you provide a value, it is added to the captured data when you enable data
-	// capture on the endpoint. For information about data capture, see Capture Data (https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-data-capture.html)
-	// .
+	// capture on the endpoint. For information about data capture, see [Capture Data].
+	//
+	// [Capture Data]: https://docs.aws.amazon.com/sagemaker/latest/dg/model-monitor-data-capture.html
 	InferenceId *string
+
+	// Creates a stateful session or identifies an existing one. You can do one of the
+	// following:
+	//
+	//   - Create a stateful session by specifying the value NEW_SESSION .
+	//
+	//   - Send your request to an existing stateful session by specifying the ID of
+	//   that session.
+	//
+	// With a stateful session, you can send multiple requests to a stateful model.
+	// When you create a session with a stateful model, the model must create the
+	// session ID and set the expiration time. The model must also provide that
+	// information in the response to your request. You can get the ID and timestamp
+	// from the NewSessionId response parameter. For any subsequent request where you
+	// specify that session ID, SageMaker routes the request to the same instance that
+	// supports the session.
+	SessionId *string
 
 	// If the endpoint hosts multiple containers and is configured to use direct
 	// invocation, this parameter specifies the host name of the container to invoke.
@@ -107,8 +139,11 @@ type InvokeEndpointInput struct {
 	// Specify the production variant to send the inference request to when invoking
 	// an endpoint that is running two or more variants. Note that this parameter
 	// overrides the default behavior for the endpoint, which is to distribute the
-	// invocation traffic based on the variant weights. For information about how to
-	// use variant targeting to perform a/b testing, see Test models in production (https://docs.aws.amazon.com/sagemaker/latest/dg/model-ab-testing.html)
+	// invocation traffic based on the variant weights.
+	//
+	// For information about how to use variant targeting to perform a/b testing, see [Test models in production]
+	//
+	// [Test models in production]: https://docs.aws.amazon.com/sagemaker/latest/dg/model-ab-testing.html
 	TargetVariant *string
 
 	noSmithyDocumentSerde
@@ -116,17 +151,24 @@ type InvokeEndpointInput struct {
 
 type InvokeEndpointOutput struct {
 
-	// Includes the inference provided by the model. For information about the format
-	// of the response body, see Common Data Formats-Inference (https://docs.aws.amazon.com/sagemaker/latest/dg/cdf-inference.html)
-	// . If the explainer is activated, the body includes the explanations provided by
-	// the model. For more information, see the Response section under Invoke the
-	// Endpoint (https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-online-explainability-invoke-endpoint.html#clarify-online-explainability-response)
-	// in the Developer Guide.
+	// Includes the inference provided by the model.
+	//
+	// For information about the format of the response body, see [Common Data Formats-Inference].
+	//
+	// If the explainer is activated, the body includes the explanations provided by
+	// the model. For more information, see the Response section under [Invoke the Endpoint]in the
+	// Developer Guide.
+	//
+	// [Common Data Formats-Inference]: https://docs.aws.amazon.com/sagemaker/latest/dg/cdf-inference.html
+	// [Invoke the Endpoint]: https://docs.aws.amazon.com/sagemaker/latest/dg/clarify-online-explainability-invoke-endpoint.html#clarify-online-explainability-response
 	//
 	// This member is required.
 	Body []byte
 
-	// The MIME type of the inference returned in the response body.
+	// If you closed a stateful session with your request, the ID of that session.
+	ClosedSessionId *string
+
+	// The MIME type of the inference returned from the model container.
 	ContentType *string
 
 	// Provides additional information in the response about the inference returned by
@@ -134,20 +176,29 @@ type InvokeEndpointOutput struct {
 	// value that is forwarded verbatim. You could use this value, for example, to
 	// return an ID received in the CustomAttributes header of a request or other
 	// metadata that a service endpoint was programmed to produce. The value must
-	// consist of no more than 1024 visible US-ASCII characters as specified in
-	// Section 3.3.6. Field Value Components (https://tools.ietf.org/html/rfc7230#section-3.2.6)
-	// of the Hypertext Transfer Protocol (HTTP/1.1). If the customer wants the custom
+	// consist of no more than 1024 visible US-ASCII characters as specified in [Section 3.3.6. Field Value Components]of the
+	// Hypertext Transfer Protocol (HTTP/1.1). If the customer wants the custom
 	// attribute returned, the model must set the custom attribute to be included on
-	// the way back. The code in your model is responsible for setting or updating any
-	// custom attributes in the response. If your code does not set this value in the
+	// the way back.
+	//
+	// The code in your model is responsible for setting or updating any custom
+	// attributes in the response. If your code does not set this value in the
 	// response, an empty value is returned. For example, if a custom attribute
 	// represents the trace ID, your model can prepend the custom attribute with Trace
-	// ID: in your post-processing function. This feature is currently supported in the
-	// Amazon Web Services SDKs but not in the Amazon SageMaker Python SDK.
+	// ID: in your post-processing function.
+	//
+	// This feature is currently supported in the Amazon Web Services SDKs but not in
+	// the Amazon SageMaker Python SDK.
+	//
+	// [Section 3.3.6. Field Value Components]: https://tools.ietf.org/html/rfc7230#section-3.2.6
 	CustomAttributes *string
 
 	// Identifies the production variant that was invoked.
 	InvokedProductionVariant *string
+
+	// If you created a stateful session with your request, the ID and expiration time
+	// that the model assigns to that session.
+	NewSessionId *string
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -156,6 +207,9 @@ type InvokeEndpointOutput struct {
 }
 
 func (c *Client) addOperationInvokeEndpointMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpInvokeEndpoint{}, middleware.After)
 	if err != nil {
 		return err
@@ -164,34 +218,38 @@ func (c *Client) addOperationInvokeEndpointMiddlewares(stack *middleware.Stack, 
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "InvokeEndpoint"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -203,7 +261,13 @@ func (c *Client) addOperationInvokeEndpointMiddlewares(stack *middleware.Stack, 
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addInvokeEndpointResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpInvokeEndpointValidationMiddleware(stack); err != nil {
@@ -212,7 +276,7 @@ func (c *Client) addOperationInvokeEndpointMiddlewares(stack *middleware.Stack, 
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opInvokeEndpoint(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -224,7 +288,19 @@ func (c *Client) addOperationInvokeEndpointMiddlewares(stack *middleware.Stack, 
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -234,130 +310,6 @@ func newServiceMetadataMiddleware_opInvokeEndpoint(region string) *awsmiddleware
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "sagemaker",
 		OperationName: "InvokeEndpoint",
 	}
-}
-
-type opInvokeEndpointResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opInvokeEndpointResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opInvokeEndpointResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "sagemaker"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "sagemaker"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("sagemaker")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addInvokeEndpointResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opInvokeEndpointResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -11,8 +11,9 @@ const (
 )
 
 // Values returns all known values for AccessControlRuleEffect. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AccessControlRuleEffect) Values() []AccessControlRuleEffect {
 	return []AccessControlRuleEffect{
 		"ALLOW",
@@ -29,8 +30,9 @@ const (
 )
 
 // Values returns all known values for AccessEffect. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AccessEffect) Values() []AccessEffect {
 	return []AccessEffect{
 		"ALLOW",
@@ -48,6 +50,7 @@ const (
 
 // Values returns all known values for AvailabilityProviderType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (AvailabilityProviderType) Values() []AvailabilityProviderType {
 	return []AvailabilityProviderType{
@@ -67,6 +70,7 @@ const (
 
 // Values returns all known values for DnsRecordVerificationStatus. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DnsRecordVerificationStatus) Values() []DnsRecordVerificationStatus {
 	return []DnsRecordVerificationStatus{
@@ -86,13 +90,35 @@ const (
 )
 
 // Values returns all known values for EntityState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EntityState) Values() []EntityState {
 	return []EntityState{
 		"ENABLED",
 		"DISABLED",
 		"DELETED",
+	}
+}
+
+type EntityType string
+
+// Enum values for EntityType
+const (
+	EntityTypeGroup    EntityType = "GROUP"
+	EntityTypeUser     EntityType = "USER"
+	EntityTypeResource EntityType = "RESOURCE"
+)
+
+// Values returns all known values for EntityType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EntityType) Values() []EntityType {
+	return []EntityType{
+		"GROUP",
+		"USER",
+		"RESOURCE",
 	}
 }
 
@@ -108,8 +134,9 @@ const (
 )
 
 // Values returns all known values for FolderName. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FolderName) Values() []FolderName {
 	return []FolderName{
 		"INBOX",
@@ -117,6 +144,26 @@ func (FolderName) Values() []FolderName {
 		"SENT_ITEMS",
 		"DRAFTS",
 		"JUNK_EMAIL",
+	}
+}
+
+type IdentityProviderAuthenticationMode string
+
+// Enum values for IdentityProviderAuthenticationMode
+const (
+	IdentityProviderAuthenticationModeIdentityProviderOnly         IdentityProviderAuthenticationMode = "IDENTITY_PROVIDER_ONLY"
+	IdentityProviderAuthenticationModeIdentityProviderAndDirectory IdentityProviderAuthenticationMode = "IDENTITY_PROVIDER_AND_DIRECTORY"
+)
+
+// Values returns all known values for IdentityProviderAuthenticationMode. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IdentityProviderAuthenticationMode) Values() []IdentityProviderAuthenticationMode {
+	return []IdentityProviderAuthenticationMode{
+		"IDENTITY_PROVIDER_ONLY",
+		"IDENTITY_PROVIDER_AND_DIRECTORY",
 	}
 }
 
@@ -129,8 +176,9 @@ const (
 )
 
 // Values returns all known values for ImpersonationRoleType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImpersonationRoleType) Values() []ImpersonationRoleType {
 	return []ImpersonationRoleType{
 		"FULL_ACCESS",
@@ -149,8 +197,9 @@ const (
 )
 
 // Values returns all known values for MailboxExportJobState. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MailboxExportJobState) Values() []MailboxExportJobState {
 	return []MailboxExportJobState{
 		"RUNNING",
@@ -169,8 +218,9 @@ const (
 )
 
 // Values returns all known values for MemberType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MemberType) Values() []MemberType {
 	return []MemberType{
 		"GROUP",
@@ -188,8 +238,9 @@ const (
 
 // Values returns all known values for MobileDeviceAccessRuleEffect. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MobileDeviceAccessRuleEffect) Values() []MobileDeviceAccessRuleEffect {
 	return []MobileDeviceAccessRuleEffect{
 		"ALLOW",
@@ -207,13 +258,34 @@ const (
 )
 
 // Values returns all known values for PermissionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PermissionType) Values() []PermissionType {
 	return []PermissionType{
 		"FULL_ACCESS",
 		"SEND_AS",
 		"SEND_ON_BEHALF",
+	}
+}
+
+type PersonalAccessTokenConfigurationStatus string
+
+// Enum values for PersonalAccessTokenConfigurationStatus
+const (
+	PersonalAccessTokenConfigurationStatusActive   PersonalAccessTokenConfigurationStatus = "ACTIVE"
+	PersonalAccessTokenConfigurationStatusInactive PersonalAccessTokenConfigurationStatus = "INACTIVE"
+)
+
+// Values returns all known values for PersonalAccessTokenConfigurationStatus.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PersonalAccessTokenConfigurationStatus) Values() []PersonalAccessTokenConfigurationStatus {
+	return []PersonalAccessTokenConfigurationStatus{
+		"ACTIVE",
+		"INACTIVE",
 	}
 }
 
@@ -226,8 +298,9 @@ const (
 )
 
 // Values returns all known values for ResourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceType) Values() []ResourceType {
 	return []ResourceType{
 		"ROOM",
@@ -245,8 +318,9 @@ const (
 )
 
 // Values returns all known values for RetentionAction. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RetentionAction) Values() []RetentionAction {
 	return []RetentionAction{
 		"NONE",
@@ -262,15 +336,18 @@ const (
 	UserRoleUser       UserRole = "USER"
 	UserRoleResource   UserRole = "RESOURCE"
 	UserRoleSystemUser UserRole = "SYSTEM_USER"
+	UserRoleRemoteUser UserRole = "REMOTE_USER"
 )
 
 // Values returns all known values for UserRole. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UserRole) Values() []UserRole {
 	return []UserRole{
 		"USER",
 		"RESOURCE",
 		"SYSTEM_USER",
+		"REMOTE_USER",
 	}
 }

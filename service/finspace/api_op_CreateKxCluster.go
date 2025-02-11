@@ -4,14 +4,9 @@ package finspace
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/finspace/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -37,18 +32,13 @@ type CreateKxClusterInput struct {
 
 	// The number of availability zones you want to assign per cluster. This can be
 	// one of the following
+	//
 	//   - SINGLE – Assigns one availability zone per cluster.
+	//
 	//   - MULTI – Assigns all the availability zones per cluster.
 	//
 	// This member is required.
 	AzMode types.KxAzMode
-
-	// A structure for the metadata of a cluster. It includes information about like
-	// the CPUs needed, memory of instances, number of instances, and the port used
-	// while establishing a connection.
-	//
-	// This member is required.
-	CapacityConfiguration *types.CapacityConfiguration
 
 	// A unique name for the cluster that you want to create.
 	//
@@ -57,19 +47,34 @@ type CreateKxClusterInput struct {
 
 	// Specifies the type of KDB database that is being created. The following types
 	// are available:
+	//
 	//   - HDB – A Historical Database. The data is only accessible with read-only
 	//   permissions from one of the FinSpace managed kdb databases mounted to the
 	//   cluster.
+	//
 	//   - RDB – A Realtime Database. This type of database captures all the data from
 	//   a ticker plant and stores it in memory until the end of day, after which it
 	//   writes all of its data to a disk and reloads the HDB. This cluster type requires
 	//   local storage for temporary storage of data during the savedown process. If you
 	//   specify this field in your request, you must provide the
 	//   savedownStorageConfiguration parameter.
+	//
 	//   - GATEWAY – A gateway cluster allows you to access data across processes in
 	//   kdb systems. It allows you to create your own routing logic using the
 	//   initialization scripts and custom code. This type of cluster does not require a
 	//   writable local storage.
+	//
+	//   - GP – A general purpose cluster allows you to quickly iterate on code during
+	//   development by granting greater access to system commands and enabling a fast
+	//   reload of custom code. This cluster type can optionally mount databases
+	//   including cache and savedown storage. For this cluster type, the node count is
+	//   fixed at 1. It does not support autoscaling and supports only SINGLE AZ mode.
+	//
+	//   - Tickerplant – A tickerplant cluster allows you to subscribe to feed
+	//   handlers based on IAM permissions. It can publish to RDBs, other Tickerplants,
+	//   and real-time subscribers (RTS). Tickerplants can persist messages to log, which
+	//   is readable by any RDB environment. It supports only single-node that is only
+	//   one kdb process.
 	//
 	// This member is required.
 	ClusterType types.KxClusterType
@@ -84,6 +89,12 @@ type CreateKxClusterInput struct {
 	// This member is required.
 	ReleaseLabel *string
 
+	// Configuration details about the network where the Privatelink endpoint of the
+	// cluster resides.
+	//
+	// This member is required.
+	VpcConfiguration *types.VpcConfiguration
+
 	// The configuration based on which FinSpace will scale in or scale out nodes in
 	// your cluster.
 	AutoScalingConfiguration *types.AutoScalingConfiguration
@@ -94,6 +105,10 @@ type CreateKxClusterInput struct {
 	// The configurations for a read only cache storage associated with a cluster.
 	// This cache will be stored as an FSx Lustre that reads from the S3 store.
 	CacheStorageConfigurations []types.KxCacheStorageConfiguration
+
+	// A structure for the metadata of a cluster. It includes information like the
+	// CPUs needed, memory of instances, and number of instances.
+	CapacityConfiguration *types.CapacityConfiguration
 
 	// A token that ensures idempotency. This token expires in 10 minutes.
 	ClientToken *string
@@ -128,13 +143,18 @@ type CreateKxClusterInput struct {
 	// restarted.
 	SavedownStorageConfiguration *types.KxSavedownStorageConfiguration
 
+	// The structure that stores the configuration details of a scaling group.
+	ScalingGroupConfiguration *types.KxScalingGroupConfiguration
+
 	// A list of key-value pairs to label the cluster. You can add up to 50 tags to a
 	// cluster.
 	Tags map[string]string
 
-	// Configuration details about the network where the Privatelink endpoint of the
-	// cluster resides.
-	VpcConfiguration *types.VpcConfiguration
+	//  A configuration to store Tickerplant logs. It consists of a list of volumes
+	// that will be mounted to your cluster. For the cluster type Tickerplant , the
+	// location of the TP volume on the cluster will be available by using the global
+	// variable .aws.tp_log_path .
+	TickerplantLogConfiguration *types.TickerplantLogConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -145,12 +165,14 @@ type CreateKxClusterOutput struct {
 	// your cluster.
 	AutoScalingConfiguration *types.AutoScalingConfiguration
 
-	// The availability zone identifiers for the requested regions.
+	//  The availability zone identifiers for the requested regions.
 	AvailabilityZoneId *string
 
 	// The number of availability zones you want to assign per cluster. This can be
 	// one of the following
+	//
 	//   - SINGLE – Assigns one availability zone per cluster.
+	//
 	//   - MULTI – Assigns all the availability zones per cluster.
 	AzMode types.KxAzMode
 
@@ -159,8 +181,7 @@ type CreateKxClusterOutput struct {
 	CacheStorageConfigurations []types.KxCacheStorageConfiguration
 
 	// A structure for the metadata of a cluster. It includes information like the
-	// CPUs needed, memory of instances, number of instances, and the port used while
-	// establishing a connection.
+	// CPUs needed, memory of instances, and number of instances.
 	CapacityConfiguration *types.CapacityConfiguration
 
 	// A description of the cluster.
@@ -171,19 +192,34 @@ type CreateKxClusterOutput struct {
 
 	// Specifies the type of KDB database that is being created. The following types
 	// are available:
+	//
 	//   - HDB – A Historical Database. The data is only accessible with read-only
 	//   permissions from one of the FinSpace managed kdb databases mounted to the
 	//   cluster.
+	//
 	//   - RDB – A Realtime Database. This type of database captures all the data from
 	//   a ticker plant and stores it in memory until the end of day, after which it
 	//   writes all of its data to a disk and reloads the HDB. This cluster type requires
 	//   local storage for temporary storage of data during the savedown process. If you
 	//   specify this field in your request, you must provide the
 	//   savedownStorageConfiguration parameter.
+	//
 	//   - GATEWAY – A gateway cluster allows you to access data across processes in
 	//   kdb systems. It allows you to create your own routing logic using the
 	//   initialization scripts and custom code. This type of cluster does not require a
 	//   writable local storage.
+	//
+	//   - GP – A general purpose cluster allows you to quickly iterate on code during
+	//   development by granting greater access to system commands and enabling a fast
+	//   reload of custom code. This cluster type can optionally mount databases
+	//   including cache and savedown storage. For this cluster type, the node count is
+	//   fixed at 1. It does not support autoscaling and supports only SINGLE AZ mode.
+	//
+	//   - Tickerplant – A tickerplant cluster allows you to subscribe to feed
+	//   handlers based on IAM permissions. It can publish to RDBs, other Tickerplants,
+	//   and real-time subscribers (RTS). Tickerplants can persist messages to log, which
+	//   is readable by any RDB environment. It supports only single-node that is only
+	//   one kdb process.
 	ClusterType types.KxClusterType
 
 	// The details of the custom code that you want to use inside a cluster when
@@ -206,7 +242,7 @@ type CreateKxClusterOutput struct {
 	// A unique identifier for the kdb environment.
 	EnvironmentId *string
 
-	// An IAM role that defines a set of permissions associated with a cluster. These
+	//  An IAM role that defines a set of permissions associated with a cluster. These
 	// permissions are assumed when a cluster attempts to access another cluster.
 	ExecutionRole *string
 
@@ -229,19 +265,39 @@ type CreateKxClusterOutput struct {
 	// restarted.
 	SavedownStorageConfiguration *types.KxSavedownStorageConfiguration
 
+	// The structure that stores the configuration details of a scaling group.
+	ScalingGroupConfiguration *types.KxScalingGroupConfiguration
+
 	// The status of cluster creation.
+	//
 	//   - PENDING – The cluster is pending creation.
+	//
 	//   - CREATING – The cluster creation process is in progress.
+	//
 	//   - CREATE_FAILED – The cluster creation process has failed.
+	//
 	//   - RUNNING – The cluster creation process is running.
+	//
 	//   - UPDATING – The cluster is in the process of being updated.
+	//
 	//   - DELETING – The cluster is in the process of being deleted.
+	//
 	//   - DELETED – The cluster has been deleted.
+	//
 	//   - DELETE_FAILED – The cluster failed to delete.
 	Status types.KxClusterStatus
 
 	// The error message when a failed state occurs.
 	StatusReason *string
+
+	//  A configuration to store the Tickerplant logs. It consists of a list of
+	// volumes that will be mounted to your cluster. For the cluster type Tickerplant ,
+	// the location of the TP volume on the cluster will be available by using the
+	// global variable .aws.tp_log_path .
+	TickerplantLogConfiguration *types.TickerplantLogConfiguration
+
+	//  A list of volumes mounted on the cluster.
+	Volumes []types.Volume
 
 	// Configuration details about the network where the Privatelink endpoint of the
 	// cluster resides.
@@ -254,6 +310,9 @@ type CreateKxClusterOutput struct {
 }
 
 func (c *Client) addOperationCreateKxClusterMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateKxCluster{}, middleware.After)
 	if err != nil {
 		return err
@@ -262,34 +321,38 @@ func (c *Client) addOperationCreateKxClusterMiddlewares(stack *middleware.Stack,
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateKxCluster"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -304,7 +367,13 @@ func (c *Client) addOperationCreateKxClusterMiddlewares(stack *middleware.Stack,
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateKxClusterResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateKxClusterMiddleware(stack, options); err != nil {
@@ -316,7 +385,7 @@ func (c *Client) addOperationCreateKxClusterMiddlewares(stack *middleware.Stack,
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateKxCluster(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -328,7 +397,19 @@ func (c *Client) addOperationCreateKxClusterMiddlewares(stack *middleware.Stack,
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -371,130 +452,6 @@ func newServiceMetadataMiddleware_opCreateKxCluster(region string) *awsmiddlewar
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "finspace",
 		OperationName: "CreateKxCluster",
 	}
-}
-
-type opCreateKxClusterResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateKxClusterResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateKxClusterResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "finspace"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "finspace"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("finspace")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateKxClusterResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateKxClusterResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

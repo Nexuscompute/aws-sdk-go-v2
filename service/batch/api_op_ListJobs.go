@@ -4,21 +4,21 @@ package batch
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/batch/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns a list of Batch jobs. You must specify only one of the following items:
+// Returns a list of Batch jobs.
+//
+// You must specify only one of the following items:
+//
 //   - A job queue ID to return a list of jobs in that job queue
+//
 //   - A multi-node parallel job ID to return a list of nodes for that job
+//
 //   - An array job ID to return a list of the children for that job
 //
 // You can filter the results by job status with the jobStatus parameter. If you
@@ -48,15 +48,18 @@ type ListJobsInput struct {
 	// The filter to apply to the query. Only one filter can be used at a time. When
 	// the filter is used, jobStatus is ignored. The filter doesn't apply to child
 	// jobs in an array or multi-node parallel (MNP) jobs. The results are sorted by
-	// the createdAt field, with the most recent jobs being first. JOB_NAME The value
-	// of the filter is a case-insensitive match for the job name. If the value ends
-	// with an asterisk (*), the filter matches any job name that begins with the
-	// string before the '*'. This corresponds to the jobName value. For example, test1
-	// matches both Test1 and test1 , and test1* matches both test1 and Test10 . When
-	// the JOB_NAME filter is used, the results are grouped by the job name and
-	// version. JOB_DEFINITION The value for the filter is the name or Amazon Resource
-	// Name (ARN) of the job definition. This corresponds to the jobDefinition value.
-	// The value is case sensitive. When the value for the filter is the job definition
+	// the createdAt field, with the most recent jobs being first.
+	//
+	// JOB_NAME The value of the filter is a case-insensitive match for the job name.
+	// If the value ends with an asterisk (*), the filter matches any job name that
+	// begins with the string before the '*'. This corresponds to the jobName value.
+	// For example, test1 matches both Test1 and test1 , and test1* matches both test1
+	// and Test10 . When the JOB_NAME filter is used, the results are grouped by the
+	// job name and version.
+	//
+	// JOB_DEFINITION The value for the filter is the name or Amazon Resource Name
+	// (ARN) of the job definition. This corresponds to the jobDefinition value. The
+	// value is case sensitive. When the value for the filter is the job definition
 	// name, the results include all the jobs that used any revision of that job
 	// definition name. If the value ends with an asterisk (*), the filter matches any
 	// job definition name that begins with the string before the '*'. For example, jd1
@@ -65,10 +68,13 @@ type ListJobsInput struct {
 	// filter is used and the ARN is used (which is in the form
 	// arn:${Partition}:batch:${Region}:${Account}:job-definition/${JobDefinitionName}:${Revision}
 	// ), the results include jobs that used the specified revision of the job
-	// definition. Asterisk (*) isn't supported when the ARN is used. BEFORE_CREATED_AT
-	// The value for the filter is the time that's before the job was created. This
-	// corresponds to the createdAt value. The value is a string representation of the
-	// number of milliseconds since 00:00:00 UTC (midnight) on January 1, 1970.
+	// definition. Asterisk (*) isn't supported when the ARN is used.
+	//
+	// BEFORE_CREATED_AT The value for the filter is the time that's before the job
+	// was created. This corresponds to the createdAt value. The value is a string
+	// representation of the number of milliseconds since 00:00:00 UTC (midnight) on
+	// January 1, 1970.
+	//
 	// AFTER_CREATED_AT The value for the filter is the time that's after the job was
 	// created. This corresponds to the createdAt value. The value is a string
 	// representation of the number of milliseconds since 00:00:00 UTC (midnight) on
@@ -84,13 +90,22 @@ type ListJobsInput struct {
 	// returned.
 	JobStatus types.JobStatus
 
-	// The maximum number of results returned by ListJobs in paginated output. When
-	// this parameter is used, ListJobs only returns maxResults results in a single
-	// page and a nextToken response element. The remaining results of the initial
-	// request can be seen by sending another ListJobs request with the returned
-	// nextToken value. This value can be between 1 and 100. If this parameter isn't
-	// used, then ListJobs returns up to 100 results and a nextToken value if
-	// applicable.
+	// The maximum number of results returned by ListJobs in a paginated output. When
+	// this parameter is used, ListJobs returns up to maxResults results in a single
+	// page and a nextToken response element, if applicable. The remaining results of
+	// the initial request can be seen by sending another ListJobs request with the
+	// returned nextToken value.
+	//
+	// The following outlines key parameters and limitations:
+	//
+	//   - The minimum value is 1.
+	//
+	//   - When --job-status is used, Batch returns up to 1000 values.
+	//
+	//   - When --filters is used, Batch returns up to 100 values.
+	//
+	//   - If neither parameter is used, then ListJobs returns up to 1000 results (jobs
+	//   that are in the RUNNING status) and a nextToken value, if applicable.
 	MaxResults *int32
 
 	// The job ID for a multi-node parallel job. Specifying a multi-node parallel job
@@ -102,6 +117,7 @@ type ListJobsInput struct {
 	// maxResults was used and the results exceeded the value of that parameter.
 	// Pagination continues from the end of the previous results that returned the
 	// nextToken value. This value is null when there are no more results to return.
+	//
 	// Treat this token as an opaque identifier that's only used to retrieve the next
 	// items in a list and not for other programmatic purposes.
 	NextToken *string
@@ -129,6 +145,9 @@ type ListJobsOutput struct {
 }
 
 func (c *Client) addOperationListJobsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpListJobs{}, middleware.After)
 	if err != nil {
 		return err
@@ -137,34 +156,38 @@ func (c *Client) addOperationListJobsMiddlewares(stack *middleware.Stack, option
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListJobs"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -176,13 +199,19 @@ func (c *Client) addOperationListJobsMiddlewares(stack *middleware.Stack, option
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListJobsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListJobs(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -194,28 +223,42 @@ func (c *Client) addOperationListJobsMiddlewares(stack *middleware.Stack, option
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
 
-// ListJobsAPIClient is a client that implements the ListJobs operation.
-type ListJobsAPIClient interface {
-	ListJobs(context.Context, *ListJobsInput, ...func(*Options)) (*ListJobsOutput, error)
-}
-
-var _ ListJobsAPIClient = (*Client)(nil)
-
 // ListJobsPaginatorOptions is the paginator options for ListJobs
 type ListJobsPaginatorOptions struct {
-	// The maximum number of results returned by ListJobs in paginated output. When
-	// this parameter is used, ListJobs only returns maxResults results in a single
-	// page and a nextToken response element. The remaining results of the initial
-	// request can be seen by sending another ListJobs request with the returned
-	// nextToken value. This value can be between 1 and 100. If this parameter isn't
-	// used, then ListJobs returns up to 100 results and a nextToken value if
-	// applicable.
+	// The maximum number of results returned by ListJobs in a paginated output. When
+	// this parameter is used, ListJobs returns up to maxResults results in a single
+	// page and a nextToken response element, if applicable. The remaining results of
+	// the initial request can be seen by sending another ListJobs request with the
+	// returned nextToken value.
+	//
+	// The following outlines key parameters and limitations:
+	//
+	//   - The minimum value is 1.
+	//
+	//   - When --job-status is used, Batch returns up to 1000 values.
+	//
+	//   - When --filters is used, Batch returns up to 100 values.
+	//
+	//   - If neither parameter is used, then ListJobs returns up to 1000 results (jobs
+	//   that are in the RUNNING status) and a nextToken value, if applicable.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token
@@ -276,6 +319,9 @@ func (p *ListJobsPaginator) NextPage(ctx context.Context, optFns ...func(*Option
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListJobs(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -295,134 +341,17 @@ func (p *ListJobsPaginator) NextPage(ctx context.Context, optFns ...func(*Option
 	return result, nil
 }
 
+// ListJobsAPIClient is a client that implements the ListJobs operation.
+type ListJobsAPIClient interface {
+	ListJobs(context.Context, *ListJobsInput, ...func(*Options)) (*ListJobsOutput, error)
+}
+
+var _ ListJobsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListJobs(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "batch",
 		OperationName: "ListJobs",
 	}
-}
-
-type opListJobsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListJobsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListJobsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "batch"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "batch"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("batch")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListJobsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListJobsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

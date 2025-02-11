@@ -4,22 +4,39 @@ package cognitoidentityprovider
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates the user pool client. When you create a new user pool client, token
-// revocation is automatically activated. For more information about revoking
-// tokens, see RevokeToken (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RevokeToken.html)
-// .
+// Creates an app client in a user pool. This operation sets basic and advanced
+// configuration options. You can create an app client in the Amazon Cognito
+// console to your preferences and use the output of [DescribeUserPoolClient]to generate requests from
+// that baseline.
+//
+// New app clients activate token revocation by default. For more information
+// about revoking tokens, see [RevokeToken].
+//
+// If you don't provide a value for an attribute, Amazon Cognito sets it to its
+// default value.
+//
+// Amazon Cognito evaluates Identity and Access Management (IAM) policies in
+// requests for this API operation. For this operation, you must use IAM
+// credentials to authorize requests, and you must grant yourself the corresponding
+// IAM permission in a policy.
+//
+// # Learn more
+//
+// [Signing Amazon Web Services API Requests]
+//
+// [Using the Amazon Cognito user pools API and user pool endpoints]
+//
+// [RevokeToken]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RevokeToken.html
+// [Using the Amazon Cognito user pools API and user pool endpoints]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html
+// [DescribeUserPoolClient]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_DescribeUserPoolClient.html
+// [Signing Amazon Web Services API Requests]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html
 func (c *Client) CreateUserPoolClient(ctx context.Context, params *CreateUserPoolClientInput, optFns ...func(*Options)) (*CreateUserPoolClientOutput, error) {
 	if params == nil {
 		params = &CreateUserPoolClientInput{}
@@ -38,12 +55,12 @@ func (c *Client) CreateUserPoolClient(ctx context.Context, params *CreateUserPoo
 // Represents the request to create a user pool client.
 type CreateUserPoolClientInput struct {
 
-	// The client name for the user pool client you would like to create.
+	// A friendly name for the app client that you want to create.
 	//
 	// This member is required.
 	ClientName *string
 
-	// The user pool ID for the user pool where you want to create a user pool client.
+	// The ID of the user pool where you want to create an app client.
 	//
 	// This member is required.
 	UserPoolId *string
@@ -51,38 +68,71 @@ type CreateUserPoolClientInput struct {
 	// The access token time limit. After this limit expires, your user can't use
 	// their access token. To specify the time unit for AccessTokenValidity as seconds
 	// , minutes , hours , or days , set a TokenValidityUnits value in your API
-	// request. For example, when you set AccessTokenValidity to 10 and
-	// TokenValidityUnits to hours , your user can authorize access with their access
-	// token for 10 hours. The default time unit for AccessTokenValidity in an API
-	// request is hours. Valid range is displayed below in seconds. If you don't
-	// specify otherwise in the configuration of your app client, your access tokens
-	// are valid for one hour.
+	// request.
+	//
+	// For example, when you set AccessTokenValidity to 10 and TokenValidityUnits to
+	// hours , your user can authorize access with their access token for 10 hours.
+	//
+	// The default time unit for AccessTokenValidity in an API request is hours. Valid
+	// range is displayed below in seconds.
+	//
+	// If you don't specify otherwise in the configuration of your app client, your
+	// access tokens are valid for one hour.
 	AccessTokenValidity *int32
 
-	// The allowed OAuth flows. code Use a code grant flow, which provides an
-	// authorization code as the response. This code can be exchanged for access tokens
-	// with the /oauth2/token endpoint. implicit Issue the access token (and,
-	// optionally, ID token, based on scopes) directly to your user. client_credentials
-	// Issue the access token from the /oauth2/token endpoint directly to a non-person
-	// user using a combination of the client ID and client secret.
+	// The OAuth grant types that you want your app client to generate. To create an
+	// app client that generates client credentials grants, you must add
+	// client_credentials as the only allowed OAuth flow.
+	//
+	// code Use a code grant flow, which provides an authorization code as the
+	// response. This code can be exchanged for access tokens with the /oauth2/token
+	// endpoint.
+	//
+	// implicit Issue the access token (and, optionally, ID token, based on scopes)
+	// directly to your user.
+	//
+	// client_credentials Issue the access token from the /oauth2/token endpoint
+	// directly to a non-person user using a combination of the client ID and client
+	// secret.
 	AllowedOAuthFlows []types.OAuthFlowType
 
-	// Set to true if the client is allowed to follow the OAuth protocol when
-	// interacting with Amazon Cognito user pools.
+	// Set to true to use OAuth 2.0 features in your user pool app client.
+	//
+	// AllowedOAuthFlowsUserPoolClient must be true before you can configure the
+	// following features in your app client.
+	//
+	//   - CallBackURLs : Callback URLs.
+	//
+	//   - LogoutURLs : Sign-out redirect URLs.
+	//
+	//   - AllowedOAuthScopes : OAuth 2.0 scopes.
+	//
+	//   - AllowedOAuthFlows : Support for authorization code, implicit, and client
+	//   credentials OAuth 2.0 grants.
+	//
+	// To use OAuth 2.0 features, configure one of these features in the Amazon
+	// Cognito console or set AllowedOAuthFlowsUserPoolClient to true in a
+	// CreateUserPoolClient or UpdateUserPoolClient API request. If you don't set a
+	// value for AllowedOAuthFlowsUserPoolClient in a request with the CLI or SDKs, it
+	// defaults to false .
 	AllowedOAuthFlowsUserPoolClient bool
 
-	// The allowed OAuth scopes. Possible values provided by OAuth are phone , email ,
-	// openid , and profile . Possible values provided by Amazon Web Services are
-	// aws.cognito.signin.user.admin . Custom scopes created in Resource Servers are
-	// also supported.
+	// The OAuth 2.0 scopes that you want to permit your app client to authorize.
+	// Scopes govern access control to user pool self-service API operations, user data
+	// from the userInfo endpoint, and third-party APIs. Possible values provided by
+	// OAuth are phone , email , openid , and profile . Possible values provided by
+	// Amazon Web Services are aws.cognito.signin.user.admin . Custom scopes created in
+	// Resource Servers are also supported.
 	AllowedOAuthScopes []string
 
 	// The user pool analytics configuration for collecting metrics and sending them
-	// to your Amazon Pinpoint campaign. In Amazon Web Services Regions where Amazon
-	// Pinpoint isn't available, user pools only support sending events to Amazon
-	// Pinpoint projects in Amazon Web Services Region us-east-1. In Regions where
-	// Amazon Pinpoint is available, user pools support sending events to Amazon
-	// Pinpoint projects within that same Region.
+	// to your Amazon Pinpoint campaign.
+	//
+	// In Amazon Web Services Regions where Amazon Pinpoint isn't available, user
+	// pools might not have access to analytics or might be configurable with campaigns
+	// in the US East (N. Virginia) Region. For more information, see [Using Amazon Pinpoint analytics].
+	//
+	// [Using Amazon Pinpoint analytics]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-pinpoint-integration.html
 	AnalyticsConfiguration *types.AnalyticsConfigurationType
 
 	// Amazon Cognito creates a session token for each API request in an
@@ -91,81 +141,117 @@ type CreateUserPoolClientInput struct {
 	// challenge before the session expires.
 	AuthSessionValidity *int32
 
-	// A list of allowed redirect (callback) URLs for the IdPs. A redirect URI must:
+	// A list of allowed redirect (callback) URLs for the IdPs.
+	//
+	// A redirect URI must:
+	//
 	//   - Be an absolute URI.
-	//   - Be registered with the authorization server.
+	//
+	//   - Be registered with the authorization server. Amazon Cognito doesn't accept
+	//   authorization requests with redirect_uri values that aren't in the list of
+	//   CallbackURLs that you provide in this parameter.
+	//
 	//   - Not include a fragment component.
-	// See OAuth 2.0 - Redirection Endpoint (https://tools.ietf.org/html/rfc6749#section-3.1.2)
-	// . Amazon Cognito requires HTTPS over HTTP except for http://localhost for
-	// testing purposes only. App callback URLs such as myapp://example are also
-	// supported.
+	//
+	// See [OAuth 2.0 - Redirection Endpoint].
+	//
+	// Amazon Cognito requires HTTPS over HTTP except for http://localhost for testing
+	// purposes only.
+	//
+	// App callback URLs such as myapp://example are also supported.
+	//
+	// [OAuth 2.0 - Redirection Endpoint]: https://tools.ietf.org/html/rfc6749#section-3.1.2
 	CallbackURLs []string
 
-	// The default redirect URI. Must be in the CallbackURLs list. A redirect URI
-	// must:
-	//   - Be an absolute URI.
-	//   - Be registered with the authorization server.
-	//   - Not include a fragment component.
-	// See OAuth 2.0 - Redirection Endpoint (https://tools.ietf.org/html/rfc6749#section-3.1.2)
-	// . Amazon Cognito requires HTTPS over HTTP except for http://localhost for
-	// testing purposes only. App callback URLs such as myapp://example are also
-	// supported.
+	// The default redirect URI. In app clients with one assigned IdP, replaces
+	// redirect_uri in authentication requests. Must be in the CallbackURLs list.
 	DefaultRedirectURI *string
 
 	// Activates the propagation of additional user context data. For more information
-	// about propagation of user context data, see Adding advanced security to a user
-	// pool (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html)
-	// . If you don’t include this parameter, you can't send device fingerprint
-	// information, including source IP address, to Amazon Cognito advanced security.
-	// You can only activate EnablePropagateAdditionalUserContextData in an app client
-	// that has a client secret.
+	// about propagation of user context data, see [Adding advanced security to a user pool]. If you don’t include this
+	// parameter, you can't send device fingerprint information, including source IP
+	// address, to Amazon Cognito advanced security. You can only activate
+	// EnablePropagateAdditionalUserContextData in an app client that has a client
+	// secret.
+	//
+	// [Adding advanced security to a user pool]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-threat-protection.html
 	EnablePropagateAdditionalUserContextData *bool
 
 	// Activates or deactivates token revocation. For more information about revoking
-	// tokens, see RevokeToken (https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RevokeToken.html)
-	// . If you don't include this parameter, token revocation is automatically
+	// tokens, see [RevokeToken].
+	//
+	// If you don't include this parameter, token revocation is automatically
 	// activated for the new user pool client.
+	//
+	// [RevokeToken]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_RevokeToken.html
 	EnableTokenRevocation *bool
 
 	// The authentication flows that you want your user pool client to support. For
 	// each app client in your user pool, you can sign in your users with any
 	// combination of one or more flows, including with a user name and Secure Remote
 	// Password (SRP), a user name and password, or a custom authentication process
-	// that you define with Lambda functions. If you don't specify a value for
-	// ExplicitAuthFlows , your user client supports ALLOW_REFRESH_TOKEN_AUTH ,
-	// ALLOW_USER_SRP_AUTH , and ALLOW_CUSTOM_AUTH . Valid values include:
+	// that you define with Lambda functions.
+	//
+	// If you don't specify a value for ExplicitAuthFlows , your user client supports
+	// ALLOW_REFRESH_TOKEN_AUTH , ALLOW_USER_SRP_AUTH , and ALLOW_CUSTOM_AUTH .
+	//
+	// Valid values include:
+	//
+	//   - ALLOW_USER_AUTH : Enable selection-based sign-in with USER_AUTH . This
+	//   setting covers username-password, secure remote password (SRP), passwordless,
+	//   and passkey authentication. This authentiation flow can do username-password and
+	//   SRP authentication without other ExplicitAuthFlows permitting them. For
+	//   example users can complete an SRP challenge through USER_AUTH without the flow
+	//   USER_SRP_AUTH being active for the app client. This flow doesn't include
+	//   CUSTOM_AUTH .
+	//
 	//   - ALLOW_ADMIN_USER_PASSWORD_AUTH : Enable admin based user password
 	//   authentication flow ADMIN_USER_PASSWORD_AUTH . This setting replaces the
 	//   ADMIN_NO_SRP_AUTH setting. With this authentication flow, your app passes a
 	//   user name and password to Amazon Cognito in the request, instead of using the
 	//   Secure Remote Password (SRP) protocol to securely transmit the password.
+	//
 	//   - ALLOW_CUSTOM_AUTH : Enable Lambda trigger based authentication.
+	//
 	//   - ALLOW_USER_PASSWORD_AUTH : Enable user password-based authentication. In
 	//   this flow, Amazon Cognito receives the password in the request instead of using
 	//   the SRP protocol to verify passwords.
+	//
 	//   - ALLOW_USER_SRP_AUTH : Enable SRP-based authentication.
+	//
 	//   - ALLOW_REFRESH_TOKEN_AUTH : Enable authflow to refresh tokens.
+	//
 	// In some environments, you will see the values ADMIN_NO_SRP_AUTH ,
 	// CUSTOM_AUTH_FLOW_ONLY , or USER_PASSWORD_AUTH . You can't assign these legacy
 	// ExplicitAuthFlows values to user pool clients at the same time as values that
 	// begin with ALLOW_ , like ALLOW_USER_SRP_AUTH .
 	ExplicitAuthFlows []types.ExplicitAuthFlowsType
 
-	// Boolean to specify whether you want to generate a secret for the user pool
-	// client being created.
+	// When true , generates a client secret for the app client. Client secrets are
+	// used with server-side and machine-to-machine applications. For more information,
+	// see [App client types].
+	//
+	// [App client types]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-client-apps.html#user-pool-settings-client-app-client-types
 	GenerateSecret bool
 
 	// The ID token time limit. After this limit expires, your user can't use their ID
 	// token. To specify the time unit for IdTokenValidity as seconds , minutes , hours
-	// , or days , set a TokenValidityUnits value in your API request. For example,
-	// when you set IdTokenValidity as 10 and TokenValidityUnits as hours , your user
-	// can authenticate their session with their ID token for 10 hours. The default
-	// time unit for AccessTokenValidity in an API request is hours. Valid range is
-	// displayed below in seconds. If you don't specify otherwise in the configuration
-	// of your app client, your ID tokens are valid for one hour.
+	// , or days , set a TokenValidityUnits value in your API request.
+	//
+	// For example, when you set IdTokenValidity as 10 and TokenValidityUnits as hours
+	// , your user can authenticate their session with their ID token for 10 hours.
+	//
+	// The default time unit for IdTokenValidity in an API request is hours. Valid
+	// range is displayed below in seconds.
+	//
+	// If you don't specify otherwise in the configuration of your app client, your ID
+	// tokens are valid for one hour.
 	IdTokenValidity *int32
 
-	// A list of allowed logout URLs for the IdPs.
+	// A list of allowed logout URLs for managed login authentication. For more
+	// information, see [Logout endpoint].
+	//
+	// [Logout endpoint]: https://docs.aws.amazon.com/cognito/latest/developerguide/logout-endpoint.html
 	LogoutURLs []string
 
 	// Errors and responses that you want Amazon Cognito APIs to return during
@@ -175,26 +261,51 @@ type CreateUserPoolClientInput struct {
 	// incorrect. Account confirmation and password recovery return a response
 	// indicating a code was sent to a simulated destination. When set to LEGACY ,
 	// those APIs return a UserNotFoundException exception if the user doesn't exist
-	// in the user pool. Valid values include:
+	// in the user pool.
+	//
+	// Valid values include:
+	//
 	//   - ENABLED - This prevents user existence-related errors.
+	//
 	//   - LEGACY - This represents the early behavior of Amazon Cognito where user
 	//   existence related errors aren't prevented.
+	//
+	// Defaults to LEGACY when you don't provide a value.
 	PreventUserExistenceErrors types.PreventUserExistenceErrorTypes
 
-	// The read attributes.
+	// The list of user attributes that you want your app client to have read access
+	// to. After your user authenticates in your app, their access token authorizes
+	// them to read their own attribute value for any attribute in this list. An
+	// example of this kind of activity is when your user selects a link to view their
+	// profile information. Your app makes a [GetUser]API request to retrieve and display your
+	// user's profile data.
+	//
+	// When you don't specify the ReadAttributes for your app client, your app can
+	// read the values of email_verified , phone_number_verified , and the Standard
+	// attributes of your user pool. When your user pool app client has read access to
+	// these default attributes, ReadAttributes doesn't return any information. Amazon
+	// Cognito only populates ReadAttributes in the API response if you have specified
+	// your own custom set of read attributes.
+	//
+	// [GetUser]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_GetUser.html
 	ReadAttributes []string
 
 	// The refresh token time limit. After this limit expires, your user can't use
 	// their refresh token. To specify the time unit for RefreshTokenValidity as
 	// seconds , minutes , hours , or days , set a TokenValidityUnits value in your
-	// API request. For example, when you set RefreshTokenValidity as 10 and
-	// TokenValidityUnits as days , your user can refresh their session and retrieve
-	// new access and ID tokens for 10 days. The default time unit for
-	// RefreshTokenValidity in an API request is days. You can't set
-	// RefreshTokenValidity to 0. If you do, Amazon Cognito overrides the value with
-	// the default value of 30 days. Valid range is displayed below in seconds. If you
-	// don't specify otherwise in the configuration of your app client, your refresh
-	// tokens are valid for 30 days.
+	// API request.
+	//
+	// For example, when you set RefreshTokenValidity as 10 and TokenValidityUnits as
+	// days , your user can refresh their session and retrieve new access and ID tokens
+	// for 10 days.
+	//
+	// The default time unit for RefreshTokenValidity in an API request is days. You
+	// can't set RefreshTokenValidity to 0. If you do, Amazon Cognito overrides the
+	// value with the default value of 30 days. Valid range is displayed below in
+	// seconds.
+	//
+	// If you don't specify otherwise in the configuration of your app client, your
+	// refresh tokens are valid for 30 days.
 	RefreshTokenValidity int32
 
 	// A list of provider names for the identity providers (IdPs) that are supported
@@ -202,20 +313,42 @@ type CreateUserPoolClientInput struct {
 	// SignInWithApple , and LoginWithAmazon . You can also specify the names that you
 	// configured for the SAML and OIDC IdPs in your user pool, for example MySAMLIdP
 	// or MyOIDCIdP .
+	//
+	// This setting applies to providers that you can access with [managed login]. The removal of
+	// COGNITO from this list doesn't prevent authentication operations for local users
+	// with the user pools API in an Amazon Web Services SDK. The only way to prevent
+	// API-based authentication is to block access with a [WAF rule].
+	//
+	// [WAF rule]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-waf.html
+	// [managed login]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managed-login.html
 	SupportedIdentityProviders []string
 
-	// The units in which the validity times are represented. The default unit for
-	// RefreshToken is days, and default for ID and access tokens are hours.
+	// The units that validity times are represented in. The default unit for refresh
+	// tokens is days, and the default for ID and access tokens are hours.
 	TokenValidityUnits *types.TokenValidityUnitsType
 
-	// The user pool attributes that the app client can write to. If your app client
-	// allows users to sign in through an IdP, this array must include all attributes
-	// that you have mapped to IdP attributes. Amazon Cognito updates mapped attributes
-	// when users sign in to your application through an IdP. If your app client does
-	// not have write access to a mapped attribute, Amazon Cognito throws an error when
-	// it tries to update the attribute. For more information, see Specifying IdP
-	// Attribute Mappings for Your user pool (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-specifying-attribute-mapping.html)
-	// .
+	// The list of user attributes that you want your app client to have write access
+	// to. After your user authenticates in your app, their access token authorizes
+	// them to set or modify their own attribute value for any attribute in this list.
+	// An example of this kind of activity is when you present your user with a form to
+	// update their profile information and they change their last name. Your app then
+	// makes an [UpdateUserAttributes]API request and sets family_name to the new value.
+	//
+	// When you don't specify the WriteAttributes for your app client, your app can
+	// write the values of the Standard attributes of your user pool. When your user
+	// pool has write access to these default attributes, WriteAttributes doesn't
+	// return any information. Amazon Cognito only populates WriteAttributes in the
+	// API response if you have specified your own custom set of write attributes.
+	//
+	// If your app client allows users to sign in through an IdP, this array must
+	// include all attributes that you have mapped to IdP attributes. Amazon Cognito
+	// updates mapped attributes when users sign in to your application through an IdP.
+	// If your app client does not have write access to a mapped attribute, Amazon
+	// Cognito throws an error when it tries to update the attribute. For more
+	// information, see [Specifying IdP Attribute Mappings for Your user pool].
+	//
+	// [Specifying IdP Attribute Mappings for Your user pool]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-specifying-attribute-mapping.html
+	// [UpdateUserAttributes]: https://docs.aws.amazon.com/cognito-user-identity-pools/latest/APIReference/API_UpdateUserAttributes.html
 	WriteAttributes []string
 
 	noSmithyDocumentSerde
@@ -224,7 +357,7 @@ type CreateUserPoolClientInput struct {
 // Represents the response from the server to create a user pool client.
 type CreateUserPoolClientOutput struct {
 
-	// The user pool client that was just created.
+	// The details of the new app client.
 	UserPoolClient *types.UserPoolClientType
 
 	// Metadata pertaining to the operation's result.
@@ -234,6 +367,9 @@ type CreateUserPoolClientOutput struct {
 }
 
 func (c *Client) addOperationCreateUserPoolClientMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateUserPoolClient{}, middleware.After)
 	if err != nil {
 		return err
@@ -242,34 +378,38 @@ func (c *Client) addOperationCreateUserPoolClientMiddlewares(stack *middleware.S
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateUserPoolClient"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -281,7 +421,13 @@ func (c *Client) addOperationCreateUserPoolClientMiddlewares(stack *middleware.S
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateUserPoolClientResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateUserPoolClientValidationMiddleware(stack); err != nil {
@@ -290,7 +436,7 @@ func (c *Client) addOperationCreateUserPoolClientMiddlewares(stack *middleware.S
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateUserPoolClient(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -302,7 +448,19 @@ func (c *Client) addOperationCreateUserPoolClientMiddlewares(stack *middleware.S
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -312,130 +470,6 @@ func newServiceMetadataMiddleware_opCreateUserPoolClient(region string) *awsmidd
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "cognito-idp",
 		OperationName: "CreateUserPoolClient",
 	}
-}
-
-type opCreateUserPoolClientResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateUserPoolClientResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateUserPoolClientResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "cognito-idp"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "cognito-idp"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("cognito-idp")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateUserPoolClientResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateUserPoolClientResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

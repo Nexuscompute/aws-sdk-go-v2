@@ -2,6 +2,33 @@
 
 package types
 
+type ApplicationLogLevel string
+
+// Enum values for ApplicationLogLevel
+const (
+	ApplicationLogLevelTrace ApplicationLogLevel = "TRACE"
+	ApplicationLogLevelDebug ApplicationLogLevel = "DEBUG"
+	ApplicationLogLevelInfo  ApplicationLogLevel = "INFO"
+	ApplicationLogLevelWarn  ApplicationLogLevel = "WARN"
+	ApplicationLogLevelError ApplicationLogLevel = "ERROR"
+	ApplicationLogLevelFatal ApplicationLogLevel = "FATAL"
+)
+
+// Values returns all known values for ApplicationLogLevel. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ApplicationLogLevel) Values() []ApplicationLogLevel {
+	return []ApplicationLogLevel{
+		"TRACE",
+		"DEBUG",
+		"INFO",
+		"WARN",
+		"ERROR",
+		"FATAL",
+	}
+}
+
 type Architecture string
 
 // Enum values for Architecture
@@ -11,8 +38,9 @@ const (
 )
 
 // Values returns all known values for Architecture. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Architecture) Values() []Architecture {
 	return []Architecture{
 		"x86_64",
@@ -29,8 +57,9 @@ const (
 )
 
 // Values returns all known values for CodeSigningPolicy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CodeSigningPolicy) Values() []CodeSigningPolicy {
 	return []CodeSigningPolicy{
 		"Warn",
@@ -46,11 +75,29 @@ const (
 )
 
 // Values returns all known values for EndPointType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EndPointType) Values() []EndPointType {
 	return []EndPointType{
 		"KAFKA_BOOTSTRAP_SERVERS",
+	}
+}
+
+type EventSourceMappingMetric string
+
+// Enum values for EventSourceMappingMetric
+const (
+	EventSourceMappingMetricEventCount EventSourceMappingMetric = "EventCount"
+)
+
+// Values returns all known values for EventSourceMappingMetric. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EventSourceMappingMetric) Values() []EventSourceMappingMetric {
+	return []EventSourceMappingMetric{
+		"EventCount",
 	}
 }
 
@@ -64,8 +111,9 @@ const (
 )
 
 // Values returns all known values for EventSourcePosition. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EventSourcePosition) Values() []EventSourcePosition {
 	return []EventSourcePosition{
 		"TRIM_HORIZON",
@@ -83,8 +131,9 @@ const (
 )
 
 // Values returns all known values for FullDocument. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FullDocument) Values() []FullDocument {
 	return []FullDocument{
 		"UpdateLookup",
@@ -100,8 +149,9 @@ const (
 )
 
 // Values returns all known values for FunctionResponseType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FunctionResponseType) Values() []FunctionResponseType {
 	return []FunctionResponseType{
 		"ReportBatchItemFailures",
@@ -117,8 +167,9 @@ const (
 )
 
 // Values returns all known values for FunctionUrlAuthType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FunctionUrlAuthType) Values() []FunctionUrlAuthType {
 	return []FunctionUrlAuthType{
 		"NONE",
@@ -134,8 +185,9 @@ const (
 )
 
 // Values returns all known values for FunctionVersion. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FunctionVersion) Values() []FunctionVersion {
 	return []FunctionVersion{
 		"ALL",
@@ -152,8 +204,9 @@ const (
 )
 
 // Values returns all known values for InvocationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InvocationType) Values() []InvocationType {
 	return []InvocationType{
 		"Event",
@@ -171,8 +224,9 @@ const (
 )
 
 // Values returns all known values for InvokeMode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InvokeMode) Values() []InvokeMode {
 	return []InvokeMode{
 		"BUFFERED",
@@ -190,8 +244,9 @@ const (
 )
 
 // Values returns all known values for LastUpdateStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LastUpdateStatus) Values() []LastUpdateStatus {
 	return []LastUpdateStatus{
 		"Successful",
@@ -229,6 +284,7 @@ const (
 
 // Values returns all known values for LastUpdateStatusReasonCode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (LastUpdateStatusReasonCode) Values() []LastUpdateStatusReasonCode {
 	return []LastUpdateStatusReasonCode{
@@ -256,6 +312,25 @@ func (LastUpdateStatusReasonCode) Values() []LastUpdateStatusReasonCode {
 	}
 }
 
+type LogFormat string
+
+// Enum values for LogFormat
+const (
+	LogFormatJson LogFormat = "JSON"
+	LogFormatText LogFormat = "Text"
+)
+
+// Values returns all known values for LogFormat. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LogFormat) Values() []LogFormat {
+	return []LogFormat{
+		"JSON",
+		"Text",
+	}
+}
+
 type LogType string
 
 // Enum values for LogType
@@ -265,8 +340,9 @@ const (
 )
 
 // Values returns all known values for LogType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogType) Values() []LogType {
 	return []LogType{
 		"None",
@@ -283,8 +359,9 @@ const (
 )
 
 // Values returns all known values for PackageType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PackageType) Values() []PackageType {
 	return []PackageType{
 		"Zip",
@@ -303,13 +380,33 @@ const (
 
 // Values returns all known values for ProvisionedConcurrencyStatusEnum. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProvisionedConcurrencyStatusEnum) Values() []ProvisionedConcurrencyStatusEnum {
 	return []ProvisionedConcurrencyStatusEnum{
 		"IN_PROGRESS",
 		"READY",
 		"FAILED",
+	}
+}
+
+type RecursiveLoop string
+
+// Enum values for RecursiveLoop
+const (
+	RecursiveLoopAllow     RecursiveLoop = "Allow"
+	RecursiveLoopTerminate RecursiveLoop = "Terminate"
+)
+
+// Values returns all known values for RecursiveLoop. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RecursiveLoop) Values() []RecursiveLoop {
+	return []RecursiveLoop{
+		"Allow",
+		"Terminate",
 	}
 }
 
@@ -323,8 +420,9 @@ const (
 
 // Values returns all known values for ResponseStreamingInvocationType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResponseStreamingInvocationType) Values() []ResponseStreamingInvocationType {
 	return []ResponseStreamingInvocationType{
 		"RequestResponse",
@@ -336,43 +434,52 @@ type Runtime string
 
 // Enum values for Runtime
 const (
-	RuntimeNodejs       Runtime = "nodejs"
-	RuntimeNodejs43     Runtime = "nodejs4.3"
-	RuntimeNodejs610    Runtime = "nodejs6.10"
-	RuntimeNodejs810    Runtime = "nodejs8.10"
-	RuntimeNodejs10x    Runtime = "nodejs10.x"
-	RuntimeNodejs12x    Runtime = "nodejs12.x"
-	RuntimeNodejs14x    Runtime = "nodejs14.x"
-	RuntimeNodejs16x    Runtime = "nodejs16.x"
-	RuntimeJava8        Runtime = "java8"
-	RuntimeJava8al2     Runtime = "java8.al2"
-	RuntimeJava11       Runtime = "java11"
-	RuntimePython27     Runtime = "python2.7"
-	RuntimePython36     Runtime = "python3.6"
-	RuntimePython37     Runtime = "python3.7"
-	RuntimePython38     Runtime = "python3.8"
-	RuntimePython39     Runtime = "python3.9"
-	RuntimeDotnetcore10 Runtime = "dotnetcore1.0"
-	RuntimeDotnetcore20 Runtime = "dotnetcore2.0"
-	RuntimeDotnetcore21 Runtime = "dotnetcore2.1"
-	RuntimeDotnetcore31 Runtime = "dotnetcore3.1"
-	RuntimeDotnet6      Runtime = "dotnet6"
-	RuntimeNodejs43edge Runtime = "nodejs4.3-edge"
-	RuntimeGo1x         Runtime = "go1.x"
-	RuntimeRuby25       Runtime = "ruby2.5"
-	RuntimeRuby27       Runtime = "ruby2.7"
-	RuntimeProvided     Runtime = "provided"
-	RuntimeProvidedal2  Runtime = "provided.al2"
-	RuntimeNodejs18x    Runtime = "nodejs18.x"
-	RuntimePython310    Runtime = "python3.10"
-	RuntimeJava17       Runtime = "java17"
-	RuntimeRuby32       Runtime = "ruby3.2"
-	RuntimePython311    Runtime = "python3.11"
+	RuntimeNodejs         Runtime = "nodejs"
+	RuntimeNodejs43       Runtime = "nodejs4.3"
+	RuntimeNodejs610      Runtime = "nodejs6.10"
+	RuntimeNodejs810      Runtime = "nodejs8.10"
+	RuntimeNodejs10x      Runtime = "nodejs10.x"
+	RuntimeNodejs12x      Runtime = "nodejs12.x"
+	RuntimeNodejs14x      Runtime = "nodejs14.x"
+	RuntimeNodejs16x      Runtime = "nodejs16.x"
+	RuntimeJava8          Runtime = "java8"
+	RuntimeJava8al2       Runtime = "java8.al2"
+	RuntimeJava11         Runtime = "java11"
+	RuntimePython27       Runtime = "python2.7"
+	RuntimePython36       Runtime = "python3.6"
+	RuntimePython37       Runtime = "python3.7"
+	RuntimePython38       Runtime = "python3.8"
+	RuntimePython39       Runtime = "python3.9"
+	RuntimeDotnetcore10   Runtime = "dotnetcore1.0"
+	RuntimeDotnetcore20   Runtime = "dotnetcore2.0"
+	RuntimeDotnetcore21   Runtime = "dotnetcore2.1"
+	RuntimeDotnetcore31   Runtime = "dotnetcore3.1"
+	RuntimeDotnet6        Runtime = "dotnet6"
+	RuntimeDotnet8        Runtime = "dotnet8"
+	RuntimeNodejs43edge   Runtime = "nodejs4.3-edge"
+	RuntimeGo1x           Runtime = "go1.x"
+	RuntimeRuby25         Runtime = "ruby2.5"
+	RuntimeRuby27         Runtime = "ruby2.7"
+	RuntimeProvided       Runtime = "provided"
+	RuntimeProvidedal2    Runtime = "provided.al2"
+	RuntimeNodejs18x      Runtime = "nodejs18.x"
+	RuntimePython310      Runtime = "python3.10"
+	RuntimeJava17         Runtime = "java17"
+	RuntimeRuby32         Runtime = "ruby3.2"
+	RuntimeRuby33         Runtime = "ruby3.3"
+	RuntimePython311      Runtime = "python3.11"
+	RuntimeNodejs20x      Runtime = "nodejs20.x"
+	RuntimeProvidedal2023 Runtime = "provided.al2023"
+	RuntimePython312      Runtime = "python3.12"
+	RuntimeJava21         Runtime = "java21"
+	RuntimePython313      Runtime = "python3.13"
+	RuntimeNodejs22x      Runtime = "nodejs22.x"
 )
 
 // Values returns all known values for Runtime. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Runtime) Values() []Runtime {
 	return []Runtime{
 		"nodejs",
@@ -396,6 +503,7 @@ func (Runtime) Values() []Runtime {
 		"dotnetcore2.1",
 		"dotnetcore3.1",
 		"dotnet6",
+		"dotnet8",
 		"nodejs4.3-edge",
 		"go1.x",
 		"ruby2.5",
@@ -406,7 +514,14 @@ func (Runtime) Values() []Runtime {
 		"python3.10",
 		"java17",
 		"ruby3.2",
+		"ruby3.3",
 		"python3.11",
+		"nodejs20.x",
+		"provided.al2023",
+		"python3.12",
+		"java21",
+		"python3.13",
+		"nodejs22.x",
 	}
 }
 
@@ -419,8 +534,9 @@ const (
 )
 
 // Values returns all known values for SnapStartApplyOn. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SnapStartApplyOn) Values() []SnapStartApplyOn {
 	return []SnapStartApplyOn{
 		"PublishedVersions",
@@ -438,6 +554,7 @@ const (
 
 // Values returns all known values for SnapStartOptimizationStatus. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (SnapStartOptimizationStatus) Values() []SnapStartOptimizationStatus {
 	return []SnapStartOptimizationStatus{
@@ -461,8 +578,9 @@ const (
 )
 
 // Values returns all known values for SourceAccessType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SourceAccessType) Values() []SourceAccessType {
 	return []SourceAccessType{
 		"BASIC_AUTH",
@@ -487,8 +605,9 @@ const (
 )
 
 // Values returns all known values for State. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (State) Values() []State {
 	return []State{
 		"Pending",
@@ -529,8 +648,9 @@ const (
 )
 
 // Values returns all known values for StateReasonCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StateReasonCode) Values() []StateReasonCode {
 	return []StateReasonCode{
 		"Idle",
@@ -560,6 +680,27 @@ func (StateReasonCode) Values() []StateReasonCode {
 	}
 }
 
+type SystemLogLevel string
+
+// Enum values for SystemLogLevel
+const (
+	SystemLogLevelDebug SystemLogLevel = "DEBUG"
+	SystemLogLevelInfo  SystemLogLevel = "INFO"
+	SystemLogLevelWarn  SystemLogLevel = "WARN"
+)
+
+// Values returns all known values for SystemLogLevel. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SystemLogLevel) Values() []SystemLogLevel {
+	return []SystemLogLevel{
+		"DEBUG",
+		"INFO",
+		"WARN",
+	}
+}
+
 type ThrottleReason string
 
 // Enum values for ThrottleReason
@@ -573,8 +714,9 @@ const (
 )
 
 // Values returns all known values for ThrottleReason. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ThrottleReason) Values() []ThrottleReason {
 	return []ThrottleReason{
 		"ConcurrentInvocationLimitExceeded",
@@ -595,8 +737,9 @@ const (
 )
 
 // Values returns all known values for TracingMode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TracingMode) Values() []TracingMode {
 	return []TracingMode{
 		"Active",
@@ -614,8 +757,9 @@ const (
 )
 
 // Values returns all known values for UpdateRuntimeOn. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UpdateRuntimeOn) Values() []UpdateRuntimeOn {
 	return []UpdateRuntimeOn{
 		"Auto",

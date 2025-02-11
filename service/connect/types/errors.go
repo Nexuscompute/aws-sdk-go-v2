@@ -33,6 +33,61 @@ func (e *AccessDeniedException) ErrorCode() string {
 }
 func (e *AccessDeniedException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// Request processing failed because dependent condition failed.
+type ConditionalOperationFailedException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ConditionalOperationFailedException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ConditionalOperationFailedException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ConditionalOperationFailedException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ConditionalOperationFailedException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ConditionalOperationFailedException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
+// Operation cannot be performed at this time as there is a conflict with another
+// operation or contact state.
+type ConflictException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ConflictException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ConflictException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ConflictException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ConflictException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ConflictException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // The flow has not been published.
 type ContactFlowNotPublishedException struct {
 	Message *string
@@ -60,7 +115,7 @@ func (e *ContactFlowNotPublishedException) ErrorCode() string {
 func (e *ContactFlowNotPublishedException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The contact with the specified ID is not active or does not exist. Applies to
-// Voice calls only, not to Chat, Task, or Voice Callback.
+// Voice calls only, not to Chat or Task contacts.
 type ContactNotFoundException struct {
 	Message *string
 
@@ -278,6 +333,8 @@ type InvalidRequestException struct {
 
 	ErrorCodeOverride *string
 
+	Reason InvalidRequestExceptionReason
+
 	noSmithyDocumentSerde
 }
 
@@ -378,6 +435,34 @@ func (e *OutboundContactNotPermittedException) ErrorCode() string {
 func (e *OutboundContactNotPermittedException) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
+
+// Thrown for analyzed content when requested OutputType was not enabled for a
+// given contact. For example, if an OutputType.Raw was requested for a contact
+// that had `RedactedOnly` Redaction policy set in the flow.
+type OutputTypeNotFoundException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *OutputTypeNotFoundException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *OutputTypeNotFoundException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *OutputTypeNotFoundException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "OutputTypeNotFoundException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *OutputTypeNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The property is not valid.
 type PropertyValidationException struct {
@@ -520,6 +605,8 @@ type ServiceQuotaExceededException struct {
 
 	ErrorCodeOverride *string
 
+	Reason ServiceQuotaExceededExceptionReason
+
 	noSmithyDocumentSerde
 }
 
@@ -565,6 +652,32 @@ func (e *ThrottlingException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *ThrottlingException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// Displayed when rate-related API limits are exceeded.
+type TooManyRequestsException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *TooManyRequestsException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *TooManyRequestsException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *TooManyRequestsException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "TooManyRequestsException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *TooManyRequestsException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // No user with the specified credentials was found in the Amazon Connect instance.
 type UserNotFoundException struct {

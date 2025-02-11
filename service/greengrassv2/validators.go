@@ -594,6 +594,39 @@ func validateAssociateClientDeviceWithCoreDeviceEntryList(v []types.AssociateCli
 	}
 }
 
+func validateComponentDeploymentSpecification(v *types.ComponentDeploymentSpecification) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ComponentDeploymentSpecification"}
+	if v.ComponentVersion == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ComponentVersion"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateComponentDeploymentSpecifications(v map[string]types.ComponentDeploymentSpecification) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ComponentDeploymentSpecifications"}
+	for key := range v {
+		value := v[key]
+		if err := validateComponentDeploymentSpecification(&value); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%q]", key), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateDeploymentIoTJobConfiguration(v *types.DeploymentIoTJobConfiguration) error {
 	if v == nil {
 		return nil
@@ -678,6 +711,9 @@ func validateIoTJobAbortCriteria(v *types.IoTJobAbortCriteria) error {
 	if len(v.Action) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Action"))
 	}
+	if v.MinNumberOfExecutedThings == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MinNumberOfExecutedThings"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -724,6 +760,12 @@ func validateIoTJobExponentialRolloutRate(v *types.IoTJobExponentialRolloutRate)
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "IoTJobExponentialRolloutRate"}
+	if v.BaseRatePerMinute == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BaseRatePerMinute"))
+	}
+	if v.IncrementFactor == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IncrementFactor"))
+	}
 	if v.RateIncreaseCriteria == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("RateIncreaseCriteria"))
 	}
@@ -1011,6 +1053,11 @@ func validateOpCreateDeploymentInput(v *CreateDeploymentInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "CreateDeploymentInput"}
 	if v.TargetArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("TargetArn"))
+	}
+	if v.Components != nil {
+		if err := validateComponentDeploymentSpecifications(v.Components); err != nil {
+			invalidParams.AddNested("Components", err.(smithy.InvalidParamsError))
+		}
 	}
 	if v.IotJobConfiguration != nil {
 		if err := validateDeploymentIoTJobConfiguration(v.IotJobConfiguration); err != nil {

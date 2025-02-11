@@ -298,6 +298,21 @@ func addOpValidatePipelineValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpValidatePipeline{}, middleware.After)
 }
 
+func validateBufferOptions(v *types.BufferOptions) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BufferOptions"}
+	if v.PersistentBufferEnabled == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PersistentBufferEnabled"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateCloudWatchLogDestination(v *types.CloudWatchLogDestination) error {
 	if v == nil {
 		return nil
@@ -305,6 +320,21 @@ func validateCloudWatchLogDestination(v *types.CloudWatchLogDestination) error {
 	invalidParams := smithy.InvalidParamsError{Context: "CloudWatchLogDestination"}
 	if v.LogGroup == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("LogGroup"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateEncryptionAtRestOptions(v *types.EncryptionAtRestOptions) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "EncryptionAtRestOptions"}
+	if v.KmsKeyArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("KmsKeyArn"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -365,6 +395,21 @@ func validateTagList(v []types.Tag) error {
 	}
 }
 
+func validateVpcAttachmentOptions(v *types.VpcAttachmentOptions) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "VpcAttachmentOptions"}
+	if v.AttachToVpc == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AttachToVpc"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateVpcOptions(v *types.VpcOptions) error {
 	if v == nil {
 		return nil
@@ -372,6 +417,11 @@ func validateVpcOptions(v *types.VpcOptions) error {
 	invalidParams := smithy.InvalidParamsError{Context: "VpcOptions"}
 	if v.SubnetIds == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("SubnetIds"))
+	}
+	if v.VpcAttachmentOptions != nil {
+		if err := validateVpcAttachmentOptions(v.VpcAttachmentOptions); err != nil {
+			invalidParams.AddNested("VpcAttachmentOptions", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -405,6 +455,16 @@ func validateOpCreatePipelineInput(v *CreatePipelineInput) error {
 	if v.VpcOptions != nil {
 		if err := validateVpcOptions(v.VpcOptions); err != nil {
 			invalidParams.AddNested("VpcOptions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.BufferOptions != nil {
+		if err := validateBufferOptions(v.BufferOptions); err != nil {
+			invalidParams.AddNested("BufferOptions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.EncryptionAtRestOptions != nil {
+		if err := validateEncryptionAtRestOptions(v.EncryptionAtRestOptions); err != nil {
+			invalidParams.AddNested("EncryptionAtRestOptions", err.(smithy.InvalidParamsError))
 		}
 	}
 	if v.Tags != nil {
@@ -575,6 +635,16 @@ func validateOpUpdatePipelineInput(v *UpdatePipelineInput) error {
 	if v.LogPublishingOptions != nil {
 		if err := validateLogPublishingOptions(v.LogPublishingOptions); err != nil {
 			invalidParams.AddNested("LogPublishingOptions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.BufferOptions != nil {
+		if err := validateBufferOptions(v.BufferOptions); err != nil {
+			invalidParams.AddNested("BufferOptions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.EncryptionAtRestOptions != nil {
+		if err := validateEncryptionAtRestOptions(v.EncryptionAtRestOptions); err != nil {
+			invalidParams.AddNested("EncryptionAtRestOptions", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {

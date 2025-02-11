@@ -3,6 +3,7 @@ package v4
 import (
 	"bytes"
 	"context"
+	"encoding/hex"
 	"errors"
 	"fmt"
 	"io"
@@ -19,7 +20,6 @@ import (
 	"github.com/aws/smithy-go/logging"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
-	"github.com/google/go-cmp/cmp"
 )
 
 func TestComputePayloadHashMiddleware(t *testing.T) {
@@ -51,9 +51,9 @@ func TestComputePayloadHashMiddleware(t *testing.T) {
 
 	for i, tt := range cases {
 		t.Run(strconv.Itoa(i), func(t *testing.T) {
-			c := &computePayloadSHA256{}
+			c := &ComputePayloadSHA256{}
 
-			next := middleware.BuildHandlerFunc(func(ctx context.Context, in middleware.BuildInput) (out middleware.BuildOutput, metadata middleware.Metadata, err error) {
+			next := middleware.FinalizeHandlerFunc(func(ctx context.Context, in middleware.FinalizeInput) (out middleware.FinalizeOutput, metadata middleware.Metadata, err error) {
 				value := GetPayloadHash(ctx)
 				if len(value) == 0 {
 					t.Fatalf("expected payload hash value to be on context")
@@ -70,7 +70,7 @@ func TestComputePayloadHashMiddleware(t *testing.T) {
 				t.Fatalf("expected no error, got %v", err)
 			}
 
-			_, _, err = c.HandleBuild(context.Background(), middleware.BuildInput{Request: stream}, next)
+			_, _, err = c.HandleFinalize(context.Background(), middleware.FinalizeInput{Request: stream}, next)
 			if err != nil && tt.expectedErr == nil {
 				t.Errorf("expected no error, got %v", err)
 			} else if err != nil && tt.expectedErr != nil {
@@ -216,7 +216,7 @@ func TestSwapComputePayloadSHA256ForUnsignedPayloadMiddleware(t *testing.T) {
 	}{
 		"swap in place": {
 			InitStep: func(s *middleware.Stack) (err error) {
-				err = s.Build.Add(middleware.BuildMiddlewareFunc("before", nil), middleware.After)
+				err = s.Finalize.Add(middleware.FinalizeMiddlewareFunc("before", nil), middleware.After)
 				if err != nil {
 					return err
 				}
@@ -224,7 +224,7 @@ func TestSwapComputePayloadSHA256ForUnsignedPayloadMiddleware(t *testing.T) {
 				if err != nil {
 					return err
 				}
-				err = s.Build.Add(middleware.BuildMiddlewareFunc("after", nil), middleware.After)
+				err = s.Finalize.Add(middleware.FinalizeMiddlewareFunc("after", nil), middleware.After)
 				if err != nil {
 					return err
 				}
@@ -232,15 +232,16 @@ func TestSwapComputePayloadSHA256ForUnsignedPayloadMiddleware(t *testing.T) {
 			},
 			Mutator: SwapComputePayloadSHA256ForUnsignedPayloadMiddleware,
 			ExpectIDs: []string{
+				"ResolveEndpointV2",
+				computePayloadHashMiddlewareID, // should snap to after resolve endpoint
 				"before",
-				computePayloadHashMiddlewareID,
 				"after",
 			},
 		},
 
 		"already unsigned payload exists": {
 			InitStep: func(s *middleware.Stack) (err error) {
-				err = s.Build.Add(middleware.BuildMiddlewareFunc("before", nil), middleware.After)
+				err = s.Finalize.Add(middleware.FinalizeMiddlewareFunc("before", nil), middleware.After)
 				if err != nil {
 					return err
 				}
@@ -248,7 +249,7 @@ func TestSwapComputePayloadSHA256ForUnsignedPayloadMiddleware(t *testing.T) {
 				if err != nil {
 					return err
 				}
-				err = s.Build.Add(middleware.BuildMiddlewareFunc("after", nil), middleware.After)
+				err = s.Finalize.Add(middleware.FinalizeMiddlewareFunc("after", nil), middleware.After)
 				if err != nil {
 					return err
 				}
@@ -256,19 +257,20 @@ func TestSwapComputePayloadSHA256ForUnsignedPayloadMiddleware(t *testing.T) {
 			},
 			Mutator: SwapComputePayloadSHA256ForUnsignedPayloadMiddleware,
 			ExpectIDs: []string{
-				"before",
+				"ResolveEndpointV2",
 				computePayloadHashMiddlewareID,
+				"before",
 				"after",
 			},
 		},
 
 		"no compute payload": {
 			InitStep: func(s *middleware.Stack) (err error) {
-				err = s.Build.Add(middleware.BuildMiddlewareFunc("before", nil), middleware.After)
+				err = s.Finalize.Add(middleware.FinalizeMiddlewareFunc("before", nil), middleware.After)
 				if err != nil {
 					return err
 				}
-				err = s.Build.Add(middleware.BuildMiddlewareFunc("after", nil), middleware.After)
+				err = s.Finalize.Add(middleware.FinalizeMiddlewareFunc("after", nil), middleware.After)
 				if err != nil {
 					return err
 				}
@@ -282,6 +284,7 @@ func TestSwapComputePayloadSHA256ForUnsignedPayloadMiddleware(t *testing.T) {
 	for name, c := range cases {
 		t.Run(name, func(t *testing.T) {
 			stack := middleware.NewStack(t.Name(), smithyhttp.NewStackRequest)
+			stack.Finalize.Add(&nopResolveEndpoint{}, middleware.After)
 			if err := c.InitStep(stack); err != nil {
 				t.Fatalf("expect no error, got %v", err)
 			}
@@ -300,7 +303,7 @@ func TestSwapComputePayloadSHA256ForUnsignedPayloadMiddleware(t *testing.T) {
 				t.Fatalf("expect no error, got %v", err)
 			}
 
-			if diff := cmp.Diff(c.ExpectIDs, stack.Build.List()); len(diff) != 0 {
+			if diff := cmpDiff(c.ExpectIDs, stack.Finalize.List()); len(diff) != 0 {
 				t.Errorf("expect match\n%v", diff)
 			}
 		})
@@ -336,7 +339,7 @@ func TestUseDynamicPayloadSigningMiddleware(t *testing.T) {
 		t.Run(name, func(t *testing.T) {
 			c := &dynamicPayloadSigningMiddleware{}
 
-			next := middleware.BuildHandlerFunc(func(ctx context.Context, in middleware.BuildInput) (out middleware.BuildOutput, metadata middleware.Metadata, err error) {
+			next := middleware.FinalizeHandlerFunc(func(ctx context.Context, in middleware.FinalizeInput) (out middleware.FinalizeOutput, metadata middleware.Metadata, err error) {
 				value := GetPayloadHash(ctx)
 				if len(value) == 0 {
 					t.Fatalf("expected payload hash value to be on context")
@@ -355,7 +358,7 @@ func TestUseDynamicPayloadSigningMiddleware(t *testing.T) {
 				t.Fatalf("expected no error, got %v", err)
 			}
 
-			_, _, err = c.HandleBuild(context.Background(), middleware.BuildInput{Request: stream}, next)
+			_, _, err = c.HandleFinalize(context.Background(), middleware.FinalizeInput{Request: stream}, next)
 			if err != nil && tt.expectedErr == nil {
 				t.Errorf("expected no error, got %v", err)
 			} else if err != nil && tt.expectedErr != nil {
@@ -365,6 +368,62 @@ func TestUseDynamicPayloadSigningMiddleware(t *testing.T) {
 				}
 			} else if err == nil && tt.expectedErr != nil {
 				t.Errorf("expected error, got nil")
+			}
+		})
+	}
+}
+
+func TestGetSignedRequestSignature(t *testing.T) {
+	testCases := map[string]struct {
+		authHeader     string
+		expectedSig    string
+		expectedErrMsg string
+	}{
+		"Valid signature": {
+			authHeader:  "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20150830/us-east-1/service/aws4_request, SignedHeaders=host;x-amz-date, Signature=fe5f80f77d5fa3beca038a248ff027d0445342fe2855ddc963176630326f1024",
+			expectedSig: "fe5f80f77d5fa3beca038a248ff027d0445342fe2855ddc963176630326f1024",
+		},
+		"Whitespace after Signature": {
+			authHeader:  "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20150830/us-east-1/service/aws4_request, SignedHeaders=host;x-amz-date, Signature=fe5f80f77d5fa3beca038a248ff027d0445342fe2855ddc963176630326f1024 ",
+			expectedSig: "fe5f80f77d5fa3beca038a248ff027d0445342fe2855ddc963176630326f1024",
+		},
+		"Whitespaces before Signature": {
+			authHeader:  "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20150830/us-east-1/service/aws4_request, SignedHeaders=host;x-amz-date,     Signature=fe5f80f77d5fa3beca038a248ff027d0445342fe2855ddc963176630326f1024 ",
+			expectedSig: "fe5f80f77d5fa3beca038a248ff027d0445342fe2855ddc963176630326f1024",
+		},
+		"Empty signature": {
+			authHeader:     "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20150830/us-east-1/service/aws4_request, SignedHeaders=host;x-amz-date, Signature=",
+			expectedErrMsg: "invalid request signature authorization header",
+		},
+		"Missing signature": {
+			authHeader:     "AWS4-HMAC-SHA256 Credential=AKIAIOSFODNN7EXAMPLE/20150830/us-east-1/service/aws4_request, SignedHeaders=host;x-amz-date",
+			expectedErrMsg: "request not signed",
+		},
+	}
+
+	for name, tc := range testCases {
+		t.Run(name, func(t *testing.T) {
+			r, err := http.NewRequest("GET", "/", nil)
+			if err != nil {
+				t.Fatalf("Failed to create request: %v", err)
+			}
+			r.Header.Set("Authorization", tc.authHeader)
+
+			sig, err := GetSignedRequestSignature(r)
+
+			if tc.expectedErrMsg != "" {
+				if err == nil {
+					t.Errorf("Expected error with message '%s', but got no error", tc.expectedErrMsg)
+				} else if err.Error() != tc.expectedErrMsg {
+					t.Errorf("Expected error message '%s', but got '%s'", tc.expectedErrMsg, err.Error())
+				}
+			} else {
+				if err != nil {
+					t.Errorf("Unexpected error: %v", err)
+				}
+				if hex.EncodeToString(sig) != tc.expectedSig {
+					t.Errorf("Expected signature '%s', but got '%s'", tc.expectedSig, hex.EncodeToString(sig))
+				}
 			}
 		})
 	}
@@ -392,9 +451,21 @@ func (*semiSeekable) Read(p []byte) (n int, err error) {
 	return 0, io.EOF
 }
 
+type nopResolveEndpoint struct{}
+
+func (*nopResolveEndpoint) ID() string { return "ResolveEndpointV2" }
+
+func (*nopResolveEndpoint) HandleFinalize(
+	ctx context.Context, in middleware.FinalizeInput, next middleware.FinalizeHandler,
+) (
+	out middleware.FinalizeOutput, metadata middleware.Metadata, err error,
+) {
+	return out, metadata, err
+}
+
 var (
-	_ middleware.BuildMiddleware    = &unsignedPayload{}
-	_ middleware.BuildMiddleware    = &computePayloadSHA256{}
-	_ middleware.BuildMiddleware    = &contentSHA256Header{}
+	_ middleware.FinalizeMiddleware = &UnsignedPayload{}
+	_ middleware.FinalizeMiddleware = &ComputePayloadSHA256{}
+	_ middleware.FinalizeMiddleware = &ContentSHA256Header{}
 	_ middleware.FinalizeMiddleware = &SignHTTPRequestMiddleware{}
 )

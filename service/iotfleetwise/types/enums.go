@@ -13,8 +13,9 @@ const (
 )
 
 // Values returns all known values for CampaignStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CampaignStatus) Values() []CampaignStatus {
 	return []CampaignStatus{
 		"CREATING",
@@ -33,8 +34,9 @@ const (
 )
 
 // Values returns all known values for Compression. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Compression) Values() []Compression {
 	return []Compression{
 		"OFF",
@@ -51,12 +53,31 @@ const (
 )
 
 // Values returns all known values for DataFormat. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DataFormat) Values() []DataFormat {
 	return []DataFormat{
 		"JSON",
 		"PARQUET",
+	}
+}
+
+type DefaultForUnmappedSignalsType string
+
+// Enum values for DefaultForUnmappedSignalsType
+const (
+	DefaultForUnmappedSignalsTypeCustomDecoding DefaultForUnmappedSignalsType = "CUSTOM_DECODING"
+)
+
+// Values returns all known values for DefaultForUnmappedSignalsType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DefaultForUnmappedSignalsType) Values() []DefaultForUnmappedSignalsType {
+	return []DefaultForUnmappedSignalsType{
+		"CUSTOM_DECODING",
 	}
 }
 
@@ -69,12 +90,53 @@ const (
 )
 
 // Values returns all known values for DiagnosticsMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DiagnosticsMode) Values() []DiagnosticsMode {
 	return []DiagnosticsMode{
 		"OFF",
 		"SEND_ACTIVE_DTCS",
+	}
+}
+
+type EncryptionStatus string
+
+// Enum values for EncryptionStatus
+const (
+	EncryptionStatusPending EncryptionStatus = "PENDING"
+	EncryptionStatusSuccess EncryptionStatus = "SUCCESS"
+	EncryptionStatusFailure EncryptionStatus = "FAILURE"
+)
+
+// Values returns all known values for EncryptionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EncryptionStatus) Values() []EncryptionStatus {
+	return []EncryptionStatus{
+		"PENDING",
+		"SUCCESS",
+		"FAILURE",
+	}
+}
+
+type EncryptionType string
+
+// Enum values for EncryptionType
+const (
+	EncryptionTypeKmsBasedEncryption         EncryptionType = "KMS_BASED_ENCRYPTION"
+	EncryptionTypeFleetwiseDefaultEncryption EncryptionType = "FLEETWISE_DEFAULT_ENCRYPTION"
+)
+
+// Values returns all known values for EncryptionType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EncryptionType) Values() []EncryptionType {
+	return []EncryptionType{
+		"KMS_BASED_ENCRYPTION",
+		"FLEETWISE_DEFAULT_ENCRYPTION",
 	}
 }
 
@@ -87,8 +149,9 @@ const (
 )
 
 // Values returns all known values for LogType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogType) Values() []LogType {
 	return []LogType{
 		"OFF",
@@ -100,17 +163,22 @@ type ManifestStatus string
 
 // Enum values for ManifestStatus
 const (
-	ManifestStatusActive ManifestStatus = "ACTIVE"
-	ManifestStatusDraft  ManifestStatus = "DRAFT"
+	ManifestStatusActive     ManifestStatus = "ACTIVE"
+	ManifestStatusDraft      ManifestStatus = "DRAFT"
+	ManifestStatusInvalid    ManifestStatus = "INVALID"
+	ManifestStatusValidating ManifestStatus = "VALIDATING"
 )
 
 // Values returns all known values for ManifestStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ManifestStatus) Values() []ManifestStatus {
 	return []ManifestStatus{
 		"ACTIVE",
 		"DRAFT",
+		"INVALID",
+		"VALIDATING",
 	}
 }
 
@@ -118,18 +186,21 @@ type NetworkInterfaceFailureReason string
 
 // Enum values for NetworkInterfaceFailureReason
 const (
-	NetworkInterfaceFailureReasonDuplicateInterface                            NetworkInterfaceFailureReason = "DUPLICATE_NETWORK_INTERFACE"
-	NetworkInterfaceFailureReasonConflictingNetworkInterface                   NetworkInterfaceFailureReason = "CONFLICTING_NETWORK_INTERFACE"
-	NetworkInterfaceFailureReasonNetworkInterfaceToAddAlreadyExists            NetworkInterfaceFailureReason = "NETWORK_INTERFACE_TO_ADD_ALREADY_EXISTS"
-	NetworkInterfaceFailureReasonCanNetworkInterfaceInfoIsNull                 NetworkInterfaceFailureReason = "CAN_NETWORK_INTERFACE_INFO_IS_NULL"
-	NetworkInterfaceFailureReasonObdNetworkInterfaceInfoIsNull                 NetworkInterfaceFailureReason = "OBD_NETWORK_INTERFACE_INFO_IS_NULL"
-	NetworkInterfaceFailureReasonNetworkInterfaceToRemoveAssociatedWithSignals NetworkInterfaceFailureReason = "NETWORK_INTERFACE_TO_REMOVE_ASSOCIATED_WITH_SIGNALS"
+	NetworkInterfaceFailureReasonDuplicateInterface                             NetworkInterfaceFailureReason = "DUPLICATE_NETWORK_INTERFACE"
+	NetworkInterfaceFailureReasonConflictingNetworkInterface                    NetworkInterfaceFailureReason = "CONFLICTING_NETWORK_INTERFACE"
+	NetworkInterfaceFailureReasonNetworkInterfaceToAddAlreadyExists             NetworkInterfaceFailureReason = "NETWORK_INTERFACE_TO_ADD_ALREADY_EXISTS"
+	NetworkInterfaceFailureReasonCanNetworkInterfaceInfoIsNull                  NetworkInterfaceFailureReason = "CAN_NETWORK_INTERFACE_INFO_IS_NULL"
+	NetworkInterfaceFailureReasonObdNetworkInterfaceInfoIsNull                  NetworkInterfaceFailureReason = "OBD_NETWORK_INTERFACE_INFO_IS_NULL"
+	NetworkInterfaceFailureReasonNetworkInterfaceToRemoveAssociatedWithSignals  NetworkInterfaceFailureReason = "NETWORK_INTERFACE_TO_REMOVE_ASSOCIATED_WITH_SIGNALS"
+	NetworkInterfaceFailureReasonVehicleMiddlewareNetworkInterfaceInfoIsNull    NetworkInterfaceFailureReason = "VEHICLE_MIDDLEWARE_NETWORK_INTERFACE_INFO_IS_NULL"
+	NetworkInterfaceFailureReasonCustomDecodingSignalNetworkInterfaceInfoIsNull NetworkInterfaceFailureReason = "CUSTOM_DECODING_SIGNAL_NETWORK_INTERFACE_INFO_IS_NULL"
 )
 
 // Values returns all known values for NetworkInterfaceFailureReason. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NetworkInterfaceFailureReason) Values() []NetworkInterfaceFailureReason {
 	return []NetworkInterfaceFailureReason{
 		"DUPLICATE_NETWORK_INTERFACE",
@@ -138,6 +209,8 @@ func (NetworkInterfaceFailureReason) Values() []NetworkInterfaceFailureReason {
 		"CAN_NETWORK_INTERFACE_INFO_IS_NULL",
 		"OBD_NETWORK_INTERFACE_INFO_IS_NULL",
 		"NETWORK_INTERFACE_TO_REMOVE_ASSOCIATED_WITH_SIGNALS",
+		"VEHICLE_MIDDLEWARE_NETWORK_INTERFACE_INFO_IS_NULL",
+		"CUSTOM_DECODING_SIGNAL_NETWORK_INTERFACE_INFO_IS_NULL",
 	}
 }
 
@@ -145,17 +218,41 @@ type NetworkInterfaceType string
 
 // Enum values for NetworkInterfaceType
 const (
-	NetworkInterfaceTypeCanInterface NetworkInterfaceType = "CAN_INTERFACE"
-	NetworkInterfaceTypeObdInterface NetworkInterfaceType = "OBD_INTERFACE"
+	NetworkInterfaceTypeCanInterface            NetworkInterfaceType = "CAN_INTERFACE"
+	NetworkInterfaceTypeObdInterface            NetworkInterfaceType = "OBD_INTERFACE"
+	NetworkInterfaceTypeVehicleMiddleware       NetworkInterfaceType = "VEHICLE_MIDDLEWARE"
+	NetworkInterfaceTypeCustomDecodingInterface NetworkInterfaceType = "CUSTOM_DECODING_INTERFACE"
 )
 
 // Values returns all known values for NetworkInterfaceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NetworkInterfaceType) Values() []NetworkInterfaceType {
 	return []NetworkInterfaceType{
 		"CAN_INTERFACE",
 		"OBD_INTERFACE",
+		"VEHICLE_MIDDLEWARE",
+		"CUSTOM_DECODING_INTERFACE",
+	}
+}
+
+type NodeDataEncoding string
+
+// Enum values for NodeDataEncoding
+const (
+	NodeDataEncodingBinary NodeDataEncoding = "BINARY"
+	NodeDataEncodingTyped  NodeDataEncoding = "TYPED"
+)
+
+// Values returns all known values for NodeDataEncoding. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (NodeDataEncoding) Values() []NodeDataEncoding {
+	return []NodeDataEncoding{
+		"BINARY",
+		"TYPED",
 	}
 }
 
@@ -190,11 +287,14 @@ const (
 	NodeDataTypeStringArray        NodeDataType = "STRING_ARRAY"
 	NodeDataTypeUnixTimestampArray NodeDataType = "UNIX_TIMESTAMP_ARRAY"
 	NodeDataTypeUnknown            NodeDataType = "UNKNOWN"
+	NodeDataTypeStruct             NodeDataType = "STRUCT"
+	NodeDataTypeStructArray        NodeDataType = "STRUCT_ARRAY"
 )
 
 // Values returns all known values for NodeDataType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NodeDataType) Values() []NodeDataType {
 	return []NodeDataType{
 		"INT8",
@@ -224,6 +324,8 @@ func (NodeDataType) Values() []NodeDataType {
 		"STRING_ARRAY",
 		"UNIX_TIMESTAMP_ARRAY",
 		"UNKNOWN",
+		"STRUCT",
+		"STRUCT_ARRAY",
 	}
 }
 
@@ -237,13 +339,59 @@ const (
 )
 
 // Values returns all known values for RegistrationStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RegistrationStatus) Values() []RegistrationStatus {
 	return []RegistrationStatus{
 		"REGISTRATION_PENDING",
 		"REGISTRATION_SUCCESS",
 		"REGISTRATION_FAILURE",
+	}
+}
+
+type ROS2PrimitiveType string
+
+// Enum values for ROS2PrimitiveType
+const (
+	ROS2PrimitiveTypeBool    ROS2PrimitiveType = "BOOL"
+	ROS2PrimitiveTypeByte    ROS2PrimitiveType = "BYTE"
+	ROS2PrimitiveTypeChar    ROS2PrimitiveType = "CHAR"
+	ROS2PrimitiveTypeFloat32 ROS2PrimitiveType = "FLOAT32"
+	ROS2PrimitiveTypeFloat64 ROS2PrimitiveType = "FLOAT64"
+	ROS2PrimitiveTypeInt8    ROS2PrimitiveType = "INT8"
+	ROS2PrimitiveTypeUint8   ROS2PrimitiveType = "UINT8"
+	ROS2PrimitiveTypeInt16   ROS2PrimitiveType = "INT16"
+	ROS2PrimitiveTypeUint16  ROS2PrimitiveType = "UINT16"
+	ROS2PrimitiveTypeInt32   ROS2PrimitiveType = "INT32"
+	ROS2PrimitiveTypeUint32  ROS2PrimitiveType = "UINT32"
+	ROS2PrimitiveTypeInt64   ROS2PrimitiveType = "INT64"
+	ROS2PrimitiveTypeUint64  ROS2PrimitiveType = "UINT64"
+	ROS2PrimitiveTypeString  ROS2PrimitiveType = "STRING"
+	ROS2PrimitiveTypeWstring ROS2PrimitiveType = "WSTRING"
+)
+
+// Values returns all known values for ROS2PrimitiveType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ROS2PrimitiveType) Values() []ROS2PrimitiveType {
+	return []ROS2PrimitiveType{
+		"BOOL",
+		"BYTE",
+		"CHAR",
+		"FLOAT32",
+		"FLOAT64",
+		"INT8",
+		"UINT8",
+		"INT16",
+		"UINT16",
+		"INT32",
+		"UINT32",
+		"INT64",
+		"UINT64",
+		"STRING",
+		"WSTRING",
 	}
 }
 
@@ -260,10 +408,18 @@ const (
 	SignalDecoderFailureReasonCanSignalInfoIsNull                                   SignalDecoderFailureReason = "CAN_SIGNAL_INFO_IS_NULL"
 	SignalDecoderFailureReasonObdSignalInfoIsNull                                   SignalDecoderFailureReason = "OBD_SIGNAL_INFO_IS_NULL"
 	SignalDecoderFailureReasonNoDecoderInfoForSignalInModel                         SignalDecoderFailureReason = "NO_DECODER_INFO_FOR_SIGNAL_IN_MODEL"
+	SignalDecoderFailureReasonMessageSignalInfoIsNull                               SignalDecoderFailureReason = "MESSAGE_SIGNAL_INFO_IS_NULL"
+	SignalDecoderFailureReasonSignalDecoderTypeIncompatibleWithMessageSignalType    SignalDecoderFailureReason = "SIGNAL_DECODER_TYPE_INCOMPATIBLE_WITH_MESSAGE_SIGNAL_TYPE"
+	SignalDecoderFailureReasonStructSizeMismatch                                    SignalDecoderFailureReason = "STRUCT_SIZE_MISMATCH"
+	SignalDecoderFailureReasonNoSignalInCatalogForDecoderSignal                     SignalDecoderFailureReason = "NO_SIGNAL_IN_CATALOG_FOR_DECODER_SIGNAL"
+	SignalDecoderFailureReasonSignalDecoderIncompatibleWithSignalCatalog            SignalDecoderFailureReason = "SIGNAL_DECODER_INCOMPATIBLE_WITH_SIGNAL_CATALOG"
+	SignalDecoderFailureReasonEmptyMessageSignal                                    SignalDecoderFailureReason = "EMPTY_MESSAGE_SIGNAL"
+	SignalDecoderFailureReasonCustomDecodingSignalInfoIsNull                        SignalDecoderFailureReason = "CUSTOM_DECODING_SIGNAL_INFO_IS_NULL"
 )
 
 // Values returns all known values for SignalDecoderFailureReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (SignalDecoderFailureReason) Values() []SignalDecoderFailureReason {
 	return []SignalDecoderFailureReason{
@@ -276,6 +432,13 @@ func (SignalDecoderFailureReason) Values() []SignalDecoderFailureReason {
 		"CAN_SIGNAL_INFO_IS_NULL",
 		"OBD_SIGNAL_INFO_IS_NULL",
 		"NO_DECODER_INFO_FOR_SIGNAL_IN_MODEL",
+		"MESSAGE_SIGNAL_INFO_IS_NULL",
+		"SIGNAL_DECODER_TYPE_INCOMPATIBLE_WITH_MESSAGE_SIGNAL_TYPE",
+		"STRUCT_SIZE_MISMATCH",
+		"NO_SIGNAL_IN_CATALOG_FOR_DECODER_SIGNAL",
+		"SIGNAL_DECODER_INCOMPATIBLE_WITH_SIGNAL_CATALOG",
+		"EMPTY_MESSAGE_SIGNAL",
+		"CUSTOM_DECODING_SIGNAL_INFO_IS_NULL",
 	}
 }
 
@@ -283,17 +446,49 @@ type SignalDecoderType string
 
 // Enum values for SignalDecoderType
 const (
-	SignalDecoderTypeCanSignal SignalDecoderType = "CAN_SIGNAL"
-	SignalDecoderTypeObdSignal SignalDecoderType = "OBD_SIGNAL"
+	SignalDecoderTypeCanSignal            SignalDecoderType = "CAN_SIGNAL"
+	SignalDecoderTypeObdSignal            SignalDecoderType = "OBD_SIGNAL"
+	SignalDecoderTypeMessageSignal        SignalDecoderType = "MESSAGE_SIGNAL"
+	SignalDecoderTypeCustomDecodingSignal SignalDecoderType = "CUSTOM_DECODING_SIGNAL"
 )
 
 // Values returns all known values for SignalDecoderType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SignalDecoderType) Values() []SignalDecoderType {
 	return []SignalDecoderType{
 		"CAN_SIGNAL",
 		"OBD_SIGNAL",
+		"MESSAGE_SIGNAL",
+		"CUSTOM_DECODING_SIGNAL",
+	}
+}
+
+type SignalNodeType string
+
+// Enum values for SignalNodeType
+const (
+	SignalNodeTypeSensor         SignalNodeType = "SENSOR"
+	SignalNodeTypeActuator       SignalNodeType = "ACTUATOR"
+	SignalNodeTypeAttribute      SignalNodeType = "ATTRIBUTE"
+	SignalNodeTypeBranch         SignalNodeType = "BRANCH"
+	SignalNodeTypeCustomStruct   SignalNodeType = "CUSTOM_STRUCT"
+	SignalNodeTypeCustomProperty SignalNodeType = "CUSTOM_PROPERTY"
+)
+
+// Values returns all known values for SignalNodeType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SignalNodeType) Values() []SignalNodeType {
+	return []SignalNodeType{
+		"SENSOR",
+		"ACTUATOR",
+		"ATTRIBUTE",
+		"BRANCH",
+		"CUSTOM_STRUCT",
+		"CUSTOM_PROPERTY",
 	}
 }
 
@@ -306,8 +501,9 @@ const (
 )
 
 // Values returns all known values for SpoolingMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SpoolingMode) Values() []SpoolingMode {
 	return []SpoolingMode{
 		"OFF",
@@ -325,11 +521,99 @@ const (
 
 // Values returns all known values for StorageCompressionFormat. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (StorageCompressionFormat) Values() []StorageCompressionFormat {
 	return []StorageCompressionFormat{
 		"NONE",
 		"GZIP",
+	}
+}
+
+type StorageMaximumSizeUnit string
+
+// Enum values for StorageMaximumSizeUnit
+const (
+	StorageMaximumSizeUnitMb StorageMaximumSizeUnit = "MB"
+	StorageMaximumSizeUnitGb StorageMaximumSizeUnit = "GB"
+	StorageMaximumSizeUnitTb StorageMaximumSizeUnit = "TB"
+)
+
+// Values returns all known values for StorageMaximumSizeUnit. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StorageMaximumSizeUnit) Values() []StorageMaximumSizeUnit {
+	return []StorageMaximumSizeUnit{
+		"MB",
+		"GB",
+		"TB",
+	}
+}
+
+type StorageMinimumTimeToLiveUnit string
+
+// Enum values for StorageMinimumTimeToLiveUnit
+const (
+	StorageMinimumTimeToLiveUnitHours StorageMinimumTimeToLiveUnit = "HOURS"
+	StorageMinimumTimeToLiveUnitDays  StorageMinimumTimeToLiveUnit = "DAYS"
+	StorageMinimumTimeToLiveUnitWeeks StorageMinimumTimeToLiveUnit = "WEEKS"
+)
+
+// Values returns all known values for StorageMinimumTimeToLiveUnit. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StorageMinimumTimeToLiveUnit) Values() []StorageMinimumTimeToLiveUnit {
+	return []StorageMinimumTimeToLiveUnit{
+		"HOURS",
+		"DAYS",
+		"WEEKS",
+	}
+}
+
+type StructuredMessageListType string
+
+// Enum values for StructuredMessageListType
+const (
+	StructuredMessageListTypeFixedCapacity            StructuredMessageListType = "FIXED_CAPACITY"
+	StructuredMessageListTypeDynamicUnboundedCapacity StructuredMessageListType = "DYNAMIC_UNBOUNDED_CAPACITY"
+	StructuredMessageListTypeDynamicBoundedCapacity   StructuredMessageListType = "DYNAMIC_BOUNDED_CAPACITY"
+)
+
+// Values returns all known values for StructuredMessageListType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StructuredMessageListType) Values() []StructuredMessageListType {
+	return []StructuredMessageListType{
+		"FIXED_CAPACITY",
+		"DYNAMIC_UNBOUNDED_CAPACITY",
+		"DYNAMIC_BOUNDED_CAPACITY",
+	}
+}
+
+type TimeUnit string
+
+// Enum values for TimeUnit
+const (
+	TimeUnitMillisecond TimeUnit = "MILLISECOND"
+	TimeUnitSecond      TimeUnit = "SECOND"
+	TimeUnitMinute      TimeUnit = "MINUTE"
+	TimeUnitHour        TimeUnit = "HOUR"
+)
+
+// Values returns all known values for TimeUnit. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TimeUnit) Values() []TimeUnit {
+	return []TimeUnit{
+		"MILLISECOND",
+		"SECOND",
+		"MINUTE",
+		"HOUR",
 	}
 }
 
@@ -342,8 +626,9 @@ const (
 )
 
 // Values returns all known values for TriggerMode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TriggerMode) Values() []TriggerMode {
 	return []TriggerMode{
 		"ALWAYS",
@@ -362,8 +647,9 @@ const (
 )
 
 // Values returns all known values for UpdateCampaignAction. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UpdateCampaignAction) Values() []UpdateCampaignAction {
 	return []UpdateCampaignAction{
 		"APPROVE",
@@ -382,8 +668,9 @@ const (
 )
 
 // Values returns all known values for UpdateMode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UpdateMode) Values() []UpdateMode {
 	return []UpdateMode{
 		"Overwrite",
@@ -403,6 +690,7 @@ const (
 
 // Values returns all known values for ValidationExceptionReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 	return []ValidationExceptionReason{
@@ -423,11 +711,29 @@ const (
 
 // Values returns all known values for VehicleAssociationBehavior. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (VehicleAssociationBehavior) Values() []VehicleAssociationBehavior {
 	return []VehicleAssociationBehavior{
 		"CreateIotThing",
 		"ValidateIotThingExists",
+	}
+}
+
+type VehicleMiddlewareProtocol string
+
+// Enum values for VehicleMiddlewareProtocol
+const (
+	VehicleMiddlewareProtocolRos2 VehicleMiddlewareProtocol = "ROS_2"
+)
+
+// Values returns all known values for VehicleMiddlewareProtocol. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VehicleMiddlewareProtocol) Values() []VehicleMiddlewareProtocol {
+	return []VehicleMiddlewareProtocol{
+		"ROS_2",
 	}
 }
 
@@ -443,8 +749,9 @@ const (
 )
 
 // Values returns all known values for VehicleState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VehicleState) Values() []VehicleState {
 	return []VehicleState{
 		"CREATED",

@@ -4,14 +4,9 @@ package lexmodelbuildingservice
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/lexmodelbuildingservice/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -20,11 +15,14 @@ import (
 // Creates a new version of the bot based on the $LATEST version. If the $LATEST
 // version of this resource hasn't changed since you created the last version,
 // Amazon Lex doesn't create a new version. It returns the last created version.
+//
 // You can update only the $LATEST version of the bot. You can't update the
-// numbered versions that you create with the CreateBotVersion operation. When you
-// create the first version of a bot, Amazon Lex sets the version to 1. Subsequent
-// versions increment by 1. For more information, see versioning-intro . This
-// operation requires permission for the lex:CreateBotVersion action.
+// numbered versions that you create with the CreateBotVersion operation.
+//
+// When you create the first version of a bot, Amazon Lex sets the version to 1.
+// Subsequent versions increment by 1. For more information, see versioning-intro.
+//
+// This operation requires permission for the lex:CreateBotVersion action.
 func (c *Client) CreateBotVersion(ctx context.Context, params *CreateBotVersionInput, optFns ...func(*Options)) (*CreateBotVersionOutput, error) {
 	if params == nil {
 		params = &CreateBotVersionInput{}
@@ -61,7 +59,7 @@ type CreateBotVersionInput struct {
 type CreateBotVersionOutput struct {
 
 	// The message that Amazon Lex uses to cancel a conversation. For more
-	// information, see PutBot .
+	// information, see PutBot.
 	AbortStatement *types.Statement
 
 	// Checksum identifying the version of the bot that was created.
@@ -81,16 +79,20 @@ type CreateBotVersionOutput struct {
 	// You may not specify a default value for the childDirected field that does not
 	// accurately reflect whether your use of Amazon Lex is related to a website,
 	// program, or other application that is directed or targeted, in whole or in part,
-	// to children under age 13 and subject to COPPA. If your use of Amazon Lex relates
-	// to a website, program, or other application that is directed in whole or in
-	// part, to children under age 13, you must obtain any required verifiable parental
-	// consent under COPPA. For information regarding the use of Amazon Lex in
-	// connection with websites, programs, or other applications that are directed or
-	// targeted, in whole or in part, to children under age 13, see the Amazon Lex FAQ. (https://aws.amazon.com/lex/faqs#data-security)
+	// to children under age 13 and subject to COPPA.
+	//
+	// If your use of Amazon Lex relates to a website, program, or other application
+	// that is directed in whole or in part, to children under age 13, you must obtain
+	// any required verifiable parental consent under COPPA. For information regarding
+	// the use of Amazon Lex in connection with websites, programs, or other
+	// applications that are directed or targeted, in whole or in part, to children
+	// under age 13, see the [Amazon Lex FAQ.]
+	//
+	// [Amazon Lex FAQ.]: https://aws.amazon.com/lex/faqs#data-security
 	ChildDirected *bool
 
 	// The message that Amazon Lex uses when it doesn't understand the user's request.
-	// For more information, see PutBot .
+	// For more information, see PutBot.
 	ClarificationPrompt *types.Prompt
 
 	// The date when the bot version was created.
@@ -112,22 +114,22 @@ type CreateBotVersionOutput struct {
 	FailureReason *string
 
 	// The maximum time in seconds that Amazon Lex retains the data gathered in a
-	// conversation. For more information, see PutBot .
+	// conversation. For more information, see PutBot.
 	IdleSessionTTLInSeconds *int32
 
-	// An array of Intent objects. For more information, see PutBot .
+	// An array of Intent objects. For more information, see PutBot.
 	Intents []types.Intent
 
 	// The date when the $LATEST version of this bot was updated.
 	LastUpdatedDate *time.Time
 
-	// Specifies the target locale for the bot.
+	//  Specifies the target locale for the bot.
 	Locale types.Locale
 
 	// The name of the bot.
 	Name *string
 
-	// When you send a request to create or update a bot, Amazon Lex sets the status
+	//  When you send a request to create or update a bot, Amazon Lex sets the status
 	// response element to BUILDING . After Amazon Lex builds the bot, it sets status
 	// to READY . If Amazon Lex can't build the bot, it sets status to FAILED . Amazon
 	// Lex returns the reason for the failure in the failureReason response element.
@@ -147,6 +149,9 @@ type CreateBotVersionOutput struct {
 }
 
 func (c *Client) addOperationCreateBotVersionMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateBotVersion{}, middleware.After)
 	if err != nil {
 		return err
@@ -155,34 +160,38 @@ func (c *Client) addOperationCreateBotVersionMiddlewares(stack *middleware.Stack
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateBotVersion"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -194,7 +203,13 @@ func (c *Client) addOperationCreateBotVersionMiddlewares(stack *middleware.Stack
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateBotVersionResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateBotVersionValidationMiddleware(stack); err != nil {
@@ -203,7 +218,7 @@ func (c *Client) addOperationCreateBotVersionMiddlewares(stack *middleware.Stack
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateBotVersion(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -215,7 +230,19 @@ func (c *Client) addOperationCreateBotVersionMiddlewares(stack *middleware.Stack
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -225,130 +252,6 @@ func newServiceMetadataMiddleware_opCreateBotVersion(region string) *awsmiddlewa
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "lex",
 		OperationName: "CreateBotVersion",
 	}
-}
-
-type opCreateBotVersionResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateBotVersionResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateBotVersionResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "lex"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "lex"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("lex")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateBotVersionResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateBotVersionResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

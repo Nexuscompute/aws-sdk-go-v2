@@ -150,6 +150,26 @@ func (m *validateOpCreateGroup) HandleInitialize(ctx context.Context, in middlew
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateIdentityCenterApplication struct {
+}
+
+func (*validateOpCreateIdentityCenterApplication) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateIdentityCenterApplication) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateIdentityCenterApplicationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateIdentityCenterApplicationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateImpersonationRole struct {
 }
 
@@ -350,6 +370,46 @@ func (m *validateOpDeleteGroup) HandleInitialize(ctx context.Context, in middlew
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeleteIdentityCenterApplication struct {
+}
+
+func (*validateOpDeleteIdentityCenterApplication) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteIdentityCenterApplication) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteIdentityCenterApplicationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteIdentityCenterApplicationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteIdentityProviderConfiguration struct {
+}
+
+func (*validateOpDeleteIdentityProviderConfiguration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteIdentityProviderConfiguration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteIdentityProviderConfigurationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteIdentityProviderConfigurationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteImpersonationRole struct {
 }
 
@@ -445,6 +505,26 @@ func (m *validateOpDeleteOrganization) HandleInitialize(ctx context.Context, in 
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeleteOrganizationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeletePersonalAccessToken struct {
+}
+
+func (*validateOpDeletePersonalAccessToken) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeletePersonalAccessToken) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeletePersonalAccessTokenInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeletePersonalAccessTokenInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -570,6 +650,26 @@ func (m *validateOpDescribeEmailMonitoringConfiguration) HandleInitialize(ctx co
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDescribeEntity struct {
+}
+
+func (*validateOpDescribeEntity) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeEntity) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeEntityInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeEntityInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDescribeGroup struct {
 }
 
@@ -585,6 +685,26 @@ func (m *validateOpDescribeGroup) HandleInitialize(ctx context.Context, in middl
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDescribeGroupInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeIdentityProviderConfiguration struct {
+}
+
+func (*validateOpDescribeIdentityProviderConfiguration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeIdentityProviderConfiguration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeIdentityProviderConfigurationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeIdentityProviderConfigurationInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -890,6 +1010,26 @@ func (m *validateOpGetMobileDeviceAccessOverride) HandleInitialize(ctx context.C
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetPersonalAccessTokenMetadata struct {
+}
+
+func (*validateOpGetPersonalAccessTokenMetadata) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetPersonalAccessTokenMetadata) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetPersonalAccessTokenMetadataInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetPersonalAccessTokenMetadataInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListAccessControlRules struct {
 }
 
@@ -965,6 +1105,26 @@ func (m *validateOpListGroupMembers) HandleInitialize(ctx context.Context, in mi
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListGroupMembersInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListGroupsForEntity struct {
+}
+
+func (*validateOpListGroupsForEntity) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListGroupsForEntity) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListGroupsForEntityInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListGroupsForEntityInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1110,6 +1270,26 @@ func (m *validateOpListMobileDeviceAccessRules) HandleInitialize(ctx context.Con
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListPersonalAccessTokens struct {
+}
+
+func (*validateOpListPersonalAccessTokens) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListPersonalAccessTokens) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListPersonalAccessTokensInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListPersonalAccessTokensInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListResourceDelegates struct {
 }
 
@@ -1225,6 +1405,26 @@ func (m *validateOpPutEmailMonitoringConfiguration) HandleInitialize(ctx context
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpPutEmailMonitoringConfigurationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpPutIdentityProviderConfiguration struct {
+}
+
+func (*validateOpPutIdentityProviderConfiguration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpPutIdentityProviderConfiguration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*PutIdentityProviderConfigurationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpPutIdentityProviderConfigurationInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1490,6 +1690,26 @@ func (m *validateOpUpdateDefaultMailDomain) HandleInitialize(ctx context.Context
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateGroup struct {
+}
+
+func (*validateOpUpdateGroup) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateGroup) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateGroupInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateGroupInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateImpersonationRole struct {
 }
 
@@ -1590,6 +1810,26 @@ func (m *validateOpUpdateResource) HandleInitialize(ctx context.Context, in midd
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateUser struct {
+}
+
+func (*validateOpUpdateUser) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateUser) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateUserInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateUserInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 func addOpAssociateDelegateToResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpAssociateDelegateToResource{}, middleware.After)
 }
@@ -1616,6 +1856,10 @@ func addOpCreateAvailabilityConfigurationValidationMiddleware(stack *middleware.
 
 func addOpCreateGroupValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateGroup{}, middleware.After)
+}
+
+func addOpCreateIdentityCenterApplicationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateIdentityCenterApplication{}, middleware.After)
 }
 
 func addOpCreateImpersonationRoleValidationMiddleware(stack *middleware.Stack) error {
@@ -1658,6 +1902,14 @@ func addOpDeleteGroupValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteGroup{}, middleware.After)
 }
 
+func addOpDeleteIdentityCenterApplicationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteIdentityCenterApplication{}, middleware.After)
+}
+
+func addOpDeleteIdentityProviderConfigurationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteIdentityProviderConfiguration{}, middleware.After)
+}
+
 func addOpDeleteImpersonationRoleValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteImpersonationRole{}, middleware.After)
 }
@@ -1676,6 +1928,10 @@ func addOpDeleteMobileDeviceAccessRuleValidationMiddleware(stack *middleware.Sta
 
 func addOpDeleteOrganizationValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteOrganization{}, middleware.After)
+}
+
+func addOpDeletePersonalAccessTokenValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeletePersonalAccessToken{}, middleware.After)
 }
 
 func addOpDeleteResourceValidationMiddleware(stack *middleware.Stack) error {
@@ -1702,8 +1958,16 @@ func addOpDescribeEmailMonitoringConfigurationValidationMiddleware(stack *middle
 	return stack.Initialize.Add(&validateOpDescribeEmailMonitoringConfiguration{}, middleware.After)
 }
 
+func addOpDescribeEntityValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeEntity{}, middleware.After)
+}
+
 func addOpDescribeGroupValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeGroup{}, middleware.After)
+}
+
+func addOpDescribeIdentityProviderConfigurationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeIdentityProviderConfiguration{}, middleware.After)
 }
 
 func addOpDescribeInboundDmarcSettingsValidationMiddleware(stack *middleware.Stack) error {
@@ -1766,6 +2030,10 @@ func addOpGetMobileDeviceAccessOverrideValidationMiddleware(stack *middleware.St
 	return stack.Initialize.Add(&validateOpGetMobileDeviceAccessOverride{}, middleware.After)
 }
 
+func addOpGetPersonalAccessTokenMetadataValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetPersonalAccessTokenMetadata{}, middleware.After)
+}
+
 func addOpListAccessControlRulesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListAccessControlRules{}, middleware.After)
 }
@@ -1780,6 +2048,10 @@ func addOpListAvailabilityConfigurationsValidationMiddleware(stack *middleware.S
 
 func addOpListGroupMembersValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListGroupMembers{}, middleware.After)
+}
+
+func addOpListGroupsForEntityValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListGroupsForEntity{}, middleware.After)
 }
 
 func addOpListGroupsValidationMiddleware(stack *middleware.Stack) error {
@@ -1810,6 +2082,10 @@ func addOpListMobileDeviceAccessRulesValidationMiddleware(stack *middleware.Stac
 	return stack.Initialize.Add(&validateOpListMobileDeviceAccessRules{}, middleware.After)
 }
 
+func addOpListPersonalAccessTokensValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListPersonalAccessTokens{}, middleware.After)
+}
+
 func addOpListResourceDelegatesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListResourceDelegates{}, middleware.After)
 }
@@ -1832,6 +2108,10 @@ func addOpPutAccessControlRuleValidationMiddleware(stack *middleware.Stack) erro
 
 func addOpPutEmailMonitoringConfigurationValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpPutEmailMonitoringConfiguration{}, middleware.After)
+}
+
+func addOpPutIdentityProviderConfigurationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpPutIdentityProviderConfiguration{}, middleware.After)
 }
 
 func addOpPutInboundDmarcSettingsValidationMiddleware(stack *middleware.Stack) error {
@@ -1886,6 +2166,10 @@ func addOpUpdateDefaultMailDomainValidationMiddleware(stack *middleware.Stack) e
 	return stack.Initialize.Add(&validateOpUpdateDefaultMailDomain{}, middleware.After)
 }
 
+func addOpUpdateGroupValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateGroup{}, middleware.After)
+}
+
 func addOpUpdateImpersonationRoleValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateImpersonationRole{}, middleware.After)
 }
@@ -1904,6 +2188,42 @@ func addOpUpdatePrimaryEmailAddressValidationMiddleware(stack *middleware.Stack)
 
 func addOpUpdateResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateResource{}, middleware.After)
+}
+
+func addOpUpdateUserValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateUser{}, middleware.After)
+}
+
+func validateDomain(v *types.Domain) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "Domain"}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDomains(v []types.Domain) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "Domains"}
+	for i := range v {
+		if err := validateDomain(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
 }
 
 func validateEwsAvailabilityProvider(v *types.EwsAvailabilityProvider) error {
@@ -1962,6 +2282,24 @@ func validateFolderConfigurations(v []types.FolderConfiguration) error {
 	}
 }
 
+func validateIdentityCenterConfiguration(v *types.IdentityCenterConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "IdentityCenterConfiguration"}
+	if v.InstanceArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceArn"))
+	}
+	if v.ApplicationArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ApplicationArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateImpersonationRule(v *types.ImpersonationRule) error {
 	if v == nil {
 		return nil
@@ -2004,6 +2342,21 @@ func validateLambdaAvailabilityProvider(v *types.LambdaAvailabilityProvider) err
 	invalidParams := smithy.InvalidParamsError{Context: "LambdaAvailabilityProvider"}
 	if v.LambdaArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("LambdaArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePersonalAccessTokenConfiguration(v *types.PersonalAccessTokenConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PersonalAccessTokenConfiguration"}
+	if len(v.Status) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Status"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2195,6 +2548,24 @@ func validateOpCreateGroupInput(v *CreateGroupInput) error {
 	}
 }
 
+func validateOpCreateIdentityCenterApplicationInput(v *CreateIdentityCenterApplicationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateIdentityCenterApplicationInput"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.InstanceArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("InstanceArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpCreateImpersonationRoleInput(v *CreateImpersonationRoleInput) error {
 	if v == nil {
 		return nil
@@ -2252,6 +2623,11 @@ func validateOpCreateOrganizationInput(v *CreateOrganizationInput) error {
 	if v.Alias == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Alias"))
 	}
+	if v.Domains != nil {
+		if err := validateDomains(v.Domains); err != nil {
+			invalidParams.AddNested("Domains", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -2293,9 +2669,6 @@ func validateOpCreateUserInput(v *CreateUserInput) error {
 	}
 	if v.DisplayName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DisplayName"))
-	}
-	if v.Password == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Password"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2394,6 +2767,36 @@ func validateOpDeleteGroupInput(v *DeleteGroupInput) error {
 	}
 }
 
+func validateOpDeleteIdentityCenterApplicationInput(v *DeleteIdentityCenterApplicationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteIdentityCenterApplicationInput"}
+	if v.ApplicationArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ApplicationArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteIdentityProviderConfigurationInput(v *DeleteIdentityProviderConfigurationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteIdentityProviderConfigurationInput"}
+	if v.OrganizationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OrganizationId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDeleteImpersonationRoleInput(v *DeleteImpersonationRoleInput) error {
 	if v == nil {
 		return nil
@@ -2479,6 +2882,24 @@ func validateOpDeleteOrganizationInput(v *DeleteOrganizationInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "DeleteOrganizationInput"}
 	if v.OrganizationId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("OrganizationId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeletePersonalAccessTokenInput(v *DeletePersonalAccessTokenInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeletePersonalAccessTokenInput"}
+	if v.OrganizationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OrganizationId"))
+	}
+	if v.PersonalAccessTokenId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PersonalAccessTokenId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2592,6 +3013,24 @@ func validateOpDescribeEmailMonitoringConfigurationInput(v *DescribeEmailMonitor
 	}
 }
 
+func validateOpDescribeEntityInput(v *DescribeEntityInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeEntityInput"}
+	if v.OrganizationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OrganizationId"))
+	}
+	if v.Email == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Email"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDescribeGroupInput(v *DescribeGroupInput) error {
 	if v == nil {
 		return nil
@@ -2602,6 +3041,21 @@ func validateOpDescribeGroupInput(v *DescribeGroupInput) error {
 	}
 	if v.GroupId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("GroupId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeIdentityProviderConfigurationInput(v *DescribeIdentityProviderConfigurationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeIdentityProviderConfigurationInput"}
+	if v.OrganizationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OrganizationId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2883,6 +3337,24 @@ func validateOpGetMobileDeviceAccessOverrideInput(v *GetMobileDeviceAccessOverri
 	}
 }
 
+func validateOpGetPersonalAccessTokenMetadataInput(v *GetPersonalAccessTokenMetadataInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetPersonalAccessTokenMetadataInput"}
+	if v.OrganizationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OrganizationId"))
+	}
+	if v.PersonalAccessTokenId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PersonalAccessTokenId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListAccessControlRulesInput(v *ListAccessControlRulesInput) error {
 	if v == nil {
 		return nil
@@ -2941,6 +3413,24 @@ func validateOpListGroupMembersInput(v *ListGroupMembersInput) error {
 	}
 	if v.GroupId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("GroupId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListGroupsForEntityInput(v *ListGroupsForEntityInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListGroupsForEntityInput"}
+	if v.OrganizationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OrganizationId"))
+	}
+	if v.EntityId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EntityId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -3057,6 +3547,21 @@ func validateOpListMobileDeviceAccessRulesInput(v *ListMobileDeviceAccessRulesIn
 	}
 }
 
+func validateOpListPersonalAccessTokensInput(v *ListPersonalAccessTokensInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListPersonalAccessTokensInput"}
+	if v.OrganizationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OrganizationId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListResourceDelegatesInput(v *ListResourceDelegatesInput) error {
 	if v == nil {
 		return nil
@@ -3157,6 +3662,38 @@ func validateOpPutEmailMonitoringConfigurationInput(v *PutEmailMonitoringConfigu
 	}
 	if v.LogGroupArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("LogGroupArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpPutIdentityProviderConfigurationInput(v *PutIdentityProviderConfigurationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PutIdentityProviderConfigurationInput"}
+	if v.OrganizationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OrganizationId"))
+	}
+	if len(v.AuthenticationMode) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("AuthenticationMode"))
+	}
+	if v.IdentityCenterConfiguration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IdentityCenterConfiguration"))
+	} else if v.IdentityCenterConfiguration != nil {
+		if err := validateIdentityCenterConfiguration(v.IdentityCenterConfiguration); err != nil {
+			invalidParams.AddNested("IdentityCenterConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.PersonalAccessTokenConfiguration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PersonalAccessTokenConfiguration"))
+	} else if v.PersonalAccessTokenConfiguration != nil {
+		if err := validatePersonalAccessTokenConfiguration(v.PersonalAccessTokenConfiguration); err != nil {
+			invalidParams.AddNested("PersonalAccessTokenConfiguration", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -3460,6 +3997,24 @@ func validateOpUpdateDefaultMailDomainInput(v *UpdateDefaultMailDomainInput) err
 	}
 }
 
+func validateOpUpdateGroupInput(v *UpdateGroupInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateGroupInput"}
+	if v.OrganizationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OrganizationId"))
+	}
+	if v.GroupId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("GroupId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpUpdateImpersonationRoleInput(v *UpdateImpersonationRoleInput) error {
 	if v == nil {
 		return nil
@@ -3567,6 +4122,24 @@ func validateOpUpdateResourceInput(v *UpdateResourceInput) error {
 	}
 	if v.ResourceId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ResourceId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateUserInput(v *UpdateUserInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateUserInput"}
+	if v.OrganizationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OrganizationId"))
+	}
+	if v.UserId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("UserId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

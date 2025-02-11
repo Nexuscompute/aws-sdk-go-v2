@@ -4,48 +4,78 @@ package personalize
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/personalize/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a campaign that deploys a solution version. When a client calls the
-// GetRecommendations (https://docs.aws.amazon.com/personalize/latest/dg/API_RS_GetRecommendations.html)
-// and GetPersonalizedRanking (https://docs.aws.amazon.com/personalize/latest/dg/API_RS_GetPersonalizedRanking.html)
-// APIs, a campaign is specified in the request. Minimum Provisioned TPS and
-// Auto-Scaling A high minProvisionedTPS will increase your bill. We recommend
-// starting with 1 for minProvisionedTPS (the default). Track your usage using
-// Amazon CloudWatch metrics, and increase the minProvisionedTPS as necessary. A
-// transaction is a single GetRecommendations or GetPersonalizedRanking call.
-// Transactions per second (TPS) is the throughput and unit of billing for Amazon
-// Personalize. The minimum provisioned TPS ( minProvisionedTPS ) specifies the
-// baseline throughput provisioned by Amazon Personalize, and thus, the minimum
-// billing charge. If your TPS increases beyond minProvisionedTPS , Amazon
-// Personalize auto-scales the provisioned capacity up and down, but never below
+//	You incur campaign costs while it is active. To avoid unnecessary costs, make
+//
+// sure to delete the campaign when you are finished. For information about
+// campaign costs, see [Amazon Personalize pricing].
+//
+// Creates a campaign that deploys a solution version. When a client calls the [GetRecommendations]
+// and [GetPersonalizedRanking]APIs, a campaign is specified in the request.
+//
+// # Minimum Provisioned TPS and Auto-Scaling
+//
+// A high minProvisionedTPS will increase your cost. We recommend starting with 1
+// for minProvisionedTPS (the default). Track your usage using Amazon CloudWatch
+// metrics, and increase the minProvisionedTPS as necessary.
+//
+// When you create an Amazon Personalize campaign, you can specify the minimum
+// provisioned transactions per second ( minProvisionedTPS ) for the campaign. This
+// is the baseline transaction throughput for the campaign provisioned by Amazon
+// Personalize. It sets the minimum billing charge for the campaign while it is
+// active. A transaction is a single GetRecommendations or GetPersonalizedRanking
+// request. The default minProvisionedTPS is 1.
+//
+// If your TPS increases beyond the minProvisionedTPS , Amazon Personalize
+// auto-scales the provisioned capacity up and down, but never below
 // minProvisionedTPS . There's a short time delay while the capacity is increased
-// that might cause loss of transactions. The actual TPS used is calculated as the
-// average requests/second within a 5-minute window. You pay for maximum of either
-// the minimum provisioned TPS or the actual TPS. We recommend starting with a low
+// that might cause loss of transactions. When your traffic reduces, capacity
+// returns to the minProvisionedTPS .
+//
+// You are charged for the the minimum provisioned TPS or, if your requests exceed
+// the minProvisionedTPS , the actual TPS. The actual TPS is the total number of
+// recommendation requests you make. We recommend starting with a low
 // minProvisionedTPS , track your usage using Amazon CloudWatch metrics, and then
-// increase the minProvisionedTPS as necessary. Status A campaign can be in one of
-// the following states:
+// increase the minProvisionedTPS as necessary.
+//
+// For more information about campaign costs, see [Amazon Personalize pricing].
+//
+// # Status
+//
+// A campaign can be in one of the following states:
+//
 //   - CREATE PENDING > CREATE IN_PROGRESS > ACTIVE -or- CREATE FAILED
+//
 //   - DELETE PENDING > DELETE IN_PROGRESS
 //
-// To get the campaign status, call DescribeCampaign (https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html)
-// . Wait until the status of the campaign is ACTIVE before asking the campaign
-// for recommendations. Related APIs
-//   - ListCampaigns (https://docs.aws.amazon.com/personalize/latest/dg/API_ListCampaigns.html)
-//   - DescribeCampaign (https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html)
-//   - UpdateCampaign (https://docs.aws.amazon.com/personalize/latest/dg/API_UpdateCampaign.html)
-//   - DeleteCampaign (https://docs.aws.amazon.com/personalize/latest/dg/API_DeleteCampaign.html)
+// To get the campaign status, call [DescribeCampaign].
+//
+// Wait until the status of the campaign is ACTIVE before asking the campaign for
+// recommendations.
+//
+// # Related APIs
+//
+// [ListCampaigns]
+//
+// [DescribeCampaign]
+//
+// [UpdateCampaign]
+//
+// [DeleteCampaign]
+//
+// [UpdateCampaign]: https://docs.aws.amazon.com/personalize/latest/dg/API_UpdateCampaign.html
+// [GetRecommendations]: https://docs.aws.amazon.com/personalize/latest/dg/API_RS_GetRecommendations.html
+// [ListCampaigns]: https://docs.aws.amazon.com/personalize/latest/dg/API_ListCampaigns.html
+// [DeleteCampaign]: https://docs.aws.amazon.com/personalize/latest/dg/API_DeleteCampaign.html
+// [GetPersonalizedRanking]: https://docs.aws.amazon.com/personalize/latest/dg/API_RS_GetPersonalizedRanking.html
+// [Amazon Personalize pricing]: https://aws.amazon.com/personalize/pricing/
+// [DescribeCampaign]: https://docs.aws.amazon.com/personalize/latest/dg/API_DescribeCampaign.html
 func (c *Client) CreateCampaign(ctx context.Context, params *CreateCampaignInput, optFns ...func(*Options)) (*CreateCampaignOutput, error) {
 	if params == nil {
 		params = &CreateCampaignInput{}
@@ -69,7 +99,18 @@ type CreateCampaignInput struct {
 	// This member is required.
 	Name *string
 
-	// The Amazon Resource Name (ARN) of the solution version to deploy.
+	// The Amazon Resource Name (ARN) of the trained model to deploy with the
+	// campaign. To specify the latest solution version of your solution, specify the
+	// ARN of your solution in SolutionArn/$LATEST format. You must use this format if
+	// you set syncWithLatestSolutionVersion to True in the [CampaignConfig].
+	//
+	// To deploy a model that isn't the latest solution version of your solution,
+	// specify the ARN of the solution version.
+	//
+	// For more information about automatic campaign updates, see [Enabling automatic campaign updates].
+	//
+	// [Enabling automatic campaign updates]: https://docs.aws.amazon.com/personalize/latest/dg/campaigns.html#create-campaign-automatic-latest-sv-update
+	// [CampaignConfig]: https://docs.aws.amazon.com/personalize/latest/dg/API_CampaignConfig.html
 	//
 	// This member is required.
 	SolutionVersionArn *string
@@ -84,8 +125,9 @@ type CreateCampaignInput struct {
 	// minProvisionedTPS as necessary.
 	MinProvisionedTPS *int32
 
-	// A list of tags (https://docs.aws.amazon.com/personalize/latest/dg/tagging-resources.html)
-	// to apply to the campaign.
+	// A list of [tags] to apply to the campaign.
+	//
+	// [tags]: https://docs.aws.amazon.com/personalize/latest/dg/tagging-resources.html
 	Tags []types.Tag
 
 	noSmithyDocumentSerde
@@ -103,6 +145,9 @@ type CreateCampaignOutput struct {
 }
 
 func (c *Client) addOperationCreateCampaignMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateCampaign{}, middleware.After)
 	if err != nil {
 		return err
@@ -111,34 +156,38 @@ func (c *Client) addOperationCreateCampaignMiddlewares(stack *middleware.Stack, 
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateCampaign"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -150,7 +199,13 @@ func (c *Client) addOperationCreateCampaignMiddlewares(stack *middleware.Stack, 
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateCampaignResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateCampaignValidationMiddleware(stack); err != nil {
@@ -159,7 +214,7 @@ func (c *Client) addOperationCreateCampaignMiddlewares(stack *middleware.Stack, 
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateCampaign(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -171,7 +226,19 @@ func (c *Client) addOperationCreateCampaignMiddlewares(stack *middleware.Stack, 
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -181,130 +248,6 @@ func newServiceMetadataMiddleware_opCreateCampaign(region string) *awsmiddleware
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "personalize",
 		OperationName: "CreateCampaign",
 	}
-}
-
-type opCreateCampaignResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateCampaignResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateCampaignResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "personalize"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "personalize"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("personalize")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateCampaignResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateCampaignResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

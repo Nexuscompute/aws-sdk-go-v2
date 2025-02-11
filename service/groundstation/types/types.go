@@ -33,8 +33,10 @@ type AgentDetails struct {
 	// List of CPU cores reserved for the agent.
 	AgentCpuCores []int32
 
-	// This field should not be used. Use agentCpuCores instead. List of CPU cores
-	// reserved for processes other than the agent running on the EC2 instance.
+	// This field should not be used. Use agentCpuCores instead.
+	//
+	// List of CPU cores reserved for processes other than the agent running on the
+	// EC2 instance.
 	ReservedCpuCores []int32
 
 	noSmithyDocumentSerde
@@ -251,8 +253,9 @@ type ConfigListItem struct {
 	noSmithyDocumentSerde
 }
 
-// Object containing the parameters of a Config . See the subtype definitions for
-// what each type of Config contains.
+// Object containing the parameters of a Config .
+//
+// See the subtype definitions for what each type of Config contains.
 //
 // The following types satisfy this interface:
 //
@@ -325,9 +328,11 @@ type ConfigTypeDataMemberTrackingConfig struct {
 
 func (*ConfigTypeDataMemberTrackingConfig) isConfigTypeData() {}
 
-// Information about an uplink echo Config . Parameters from the
-// AntennaUplinkConfig , corresponding to the specified AntennaUplinkConfigArn ,
-// are used when this UplinkEchoConfig is used in a contact.
+// Information about an uplink echo Config .
+//
+// Parameters from the AntennaUplinkConfig , corresponding to the specified
+// AntennaUplinkConfigArn , are used when this UplinkEchoConfig is used in a
+// contact.
 type ConfigTypeDataMemberUplinkEchoConfig struct {
 	Value UplinkEchoConfig
 
@@ -393,6 +398,22 @@ type ContactData struct {
 
 	// Tags assigned to a contact.
 	Tags map[string]string
+
+	//  Projected time in UTC your satellite will set below the [receive mask]. This time is based
+	// on the satellite's current active ephemeris for future contacts and the
+	// ephemeris that was active during contact execution for completed contacts. This
+	// field is not present for contacts with a SCHEDULING or SCHEDULED status.
+	//
+	// [receive mask]: https://docs.aws.amazon.com/ground-station/latest/ug/site-masks.html
+	VisibilityEndTime *time.Time
+
+	//  Projected time in UTC your satellite will rise above the [receive mask]. This time is based
+	// on the satellite's current active ephemeris for future contacts and the
+	// ephemeris that was active during contact execution for completed contacts. This
+	// field is not present for contacts with a SCHEDULING or SCHEDULED status.
+	//
+	// [receive mask]: https://docs.aws.amazon.com/ground-station/latest/ug/site-masks.html
+	VisibilityStartTime *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -584,7 +605,15 @@ type EphemerisData interface {
 	isEphemerisData()
 }
 
-// Ephemeris data in Orbit Ephemeris Message (OEM) format.
+//	Ephemeris data in Orbit Ephemeris Message (OEM) format.
+//
+// AWS Ground Station processes OEM Customer Provided Ephemerides according to the [CCSDS standard]
+// with some extra restrictions. OEM files should be in KVN format. For more detail
+// about the OEM format that AWS Ground Station supports, see [OEM ephemeris format]in the AWS Ground
+// Station user guide.
+//
+// [CCSDS standard]: https://public.ccsds.org/Pubs/502x0b3e1.pdf
+// [OEM ephemeris format]: https://docs.aws.amazon.com/ground-station/latest/ug/providing-custom-ephemeris-data.html#oem-ephemeris-format
 type EphemerisDataMemberOem struct {
 	Value OEMEphemeris
 
@@ -631,8 +660,12 @@ type EphemerisItem struct {
 	Name *string
 
 	// Customer-provided priority score to establish the order in which overlapping
-	// ephemerides should be used. The default for customer-provided ephemeris priority
-	// is 1, and higher numbers take precedence. Priority must be 1 or greater
+	// ephemerides should be used.
+	//
+	// The default for customer-provided ephemeris priority is 1, and higher numbers
+	// take precedence.
+	//
+	// Priority must be 1 or greater
 	Priority *int32
 
 	// Source S3 object used for the ephemeris.
@@ -652,17 +685,21 @@ type EphemerisMetaData struct {
 	// This member is required.
 	Source EphemerisSource
 
-	// UUID of a customer-provided ephemeris. This field is not populated for default
-	// ephemerides from Space Track.
+	// UUID of a customer-provided ephemeris.
+	//
+	// This field is not populated for default ephemerides from Space Track.
 	EphemerisId *string
 
-	// The epoch of a default, ephemeris from Space Track in UTC. This field is not
-	// populated for customer-provided ephemerides.
+	// The epoch of a default, ephemeris from Space Track in UTC.
+	//
+	// This field is not populated for customer-provided ephemerides.
 	Epoch *time.Time
 
 	// A name string associated with the ephemeris. Used as a human-readable
-	// identifier for the ephemeris. A name is only returned for customer-provider
-	// ephemerides that have a name associated.
+	// identifier for the ephemeris.
+	//
+	// A name is only returned for customer-provider ephemerides that have a name
+	// associated.
 	Name *string
 
 	noSmithyDocumentSerde
@@ -721,9 +758,12 @@ type FrequencyBandwidth struct {
 
 	// Frequency bandwidth value. AWS Ground Station currently has the following
 	// bandwidth limitations:
+	//
 	//   - For AntennaDownlinkDemodDecodeconfig , valid values are between 125 kHz to
 	//   650 MHz.
+	//
 	//   - For AntennaDownlinkconfig , valid values are between 10 kHz to 54 MHz.
+	//
 	//   - For AntennaUplinkConfig , valid values are between 10 kHz to 54 MHz.
 	//
 	// This member is required.
@@ -768,6 +808,7 @@ type IntegerRange struct {
 // The following types satisfy this interface:
 //
 //	KmsKeyMemberKmsAliasArn
+//	KmsKeyMemberKmsAliasName
 //	KmsKeyMemberKmsKeyArn
 type KmsKey interface {
 	isKmsKey()
@@ -781,6 +822,15 @@ type KmsKeyMemberKmsAliasArn struct {
 }
 
 func (*KmsKeyMemberKmsAliasArn) isKmsKey() {}
+
+// KMS Alias Name.
+type KmsKeyMemberKmsAliasName struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*KmsKeyMemberKmsAliasName) isKmsKey() {}
 
 // KMS Key Arn.
 type KmsKeyMemberKmsKeyArn struct {
@@ -809,7 +859,15 @@ type MissionProfileListItem struct {
 	noSmithyDocumentSerde
 }
 
-// Ephemeris data in Orbit Ephemeris Message (OEM) format.
+//	Ephemeris data in Orbit Ephemeris Message (OEM) format.
+//
+// AWS Ground Station processes OEM Customer Provided Ephemerides according to the [CCSDS standard]
+// with some extra restrictions. OEM files should be in KVN format. For more detail
+// about the OEM format that AWS Ground Station supports, see [OEM ephemeris format]in the AWS Ground
+// Station user guide.
+//
+// [CCSDS standard]: https://public.ccsds.org/Pubs/502x0b3e1.pdf
+// [OEM ephemeris format]: https://docs.aws.amazon.com/ground-station/latest/ug/providing-custom-ephemeris-data.html#oem-ephemeris-format
 type OEMEphemeris struct {
 
 	// The data for an OEM ephemeris, supplied directly in the request rather than
@@ -981,9 +1039,12 @@ type SpectrumConfig struct {
 
 	// Bandwidth of a spectral Config . AWS Ground Station currently has the following
 	// bandwidth limitations:
+	//
 	//   - For AntennaDownlinkDemodDecodeconfig , valid values are between 125 kHz to
 	//   650 MHz.
+	//
 	//   - For AntennaDownlinkconfig valid values are between 10 kHz to 54 MHz.
+	//
 	//   - For AntennaUplinkConfig , valid values are between 10 kHz to 54 MHz.
 	//
 	// This member is required.
@@ -1064,9 +1125,11 @@ type TrackingConfig struct {
 	noSmithyDocumentSerde
 }
 
-// Information about an uplink echo Config . Parameters from the
-// AntennaUplinkConfig , corresponding to the specified AntennaUplinkConfigArn ,
-// are used when this UplinkEchoConfig is used in a contact.
+// Information about an uplink echo Config .
+//
+// Parameters from the AntennaUplinkConfig , corresponding to the specified
+// AntennaUplinkConfigArn , are used when this UplinkEchoConfig is used in a
+// contact.
 type UplinkEchoConfig struct {
 
 	// ARN of an uplink Config .

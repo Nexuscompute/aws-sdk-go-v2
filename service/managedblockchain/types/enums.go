@@ -2,6 +2,31 @@
 
 package types
 
+type AccessorNetworkType string
+
+// Enum values for AccessorNetworkType
+const (
+	AccessorNetworkTypeEthereumGoerli           AccessorNetworkType = "ETHEREUM_GOERLI"
+	AccessorNetworkTypeEthereumMainnet          AccessorNetworkType = "ETHEREUM_MAINNET"
+	AccessorNetworkTypeEthereumMainnetAndGoerli AccessorNetworkType = "ETHEREUM_MAINNET_AND_GOERLI"
+	AccessorNetworkTypePolygonMainnet           AccessorNetworkType = "POLYGON_MAINNET"
+	AccessorNetworkTypePolygonMumbai            AccessorNetworkType = "POLYGON_MUMBAI"
+)
+
+// Values returns all known values for AccessorNetworkType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AccessorNetworkType) Values() []AccessorNetworkType {
+	return []AccessorNetworkType{
+		"ETHEREUM_GOERLI",
+		"ETHEREUM_MAINNET",
+		"ETHEREUM_MAINNET_AND_GOERLI",
+		"POLYGON_MAINNET",
+		"POLYGON_MUMBAI",
+	}
+}
+
 type AccessorStatus string
 
 // Enum values for AccessorStatus
@@ -12,8 +37,9 @@ const (
 )
 
 // Values returns all known values for AccessorStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AccessorStatus) Values() []AccessorStatus {
 	return []AccessorStatus{
 		"AVAILABLE",
@@ -30,8 +56,9 @@ const (
 )
 
 // Values returns all known values for AccessorType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AccessorType) Values() []AccessorType {
 	return []AccessorType{
 		"BILLING_TOKEN",
@@ -47,8 +74,9 @@ const (
 )
 
 // Values returns all known values for Edition. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Edition) Values() []Edition {
 	return []Edition{
 		"STARTER",
@@ -65,8 +93,9 @@ const (
 )
 
 // Values returns all known values for Framework. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Framework) Values() []Framework {
 	return []Framework{
 		"HYPERLEDGER_FABRIC",
@@ -86,8 +115,9 @@ const (
 )
 
 // Values returns all known values for InvitationStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InvitationStatus) Values() []InvitationStatus {
 	return []InvitationStatus{
 		"PENDING",
@@ -112,8 +142,9 @@ const (
 )
 
 // Values returns all known values for MemberStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MemberStatus) Values() []MemberStatus {
 	return []MemberStatus{
 		"CREATING",
@@ -138,8 +169,9 @@ const (
 )
 
 // Values returns all known values for NetworkStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NetworkStatus) Values() []NetworkStatus {
 	return []NetworkStatus{
 		"CREATING",
@@ -166,8 +198,9 @@ const (
 )
 
 // Values returns all known values for NodeStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NodeStatus) Values() []NodeStatus {
 	return []NodeStatus{
 		"CREATING",
@@ -194,8 +227,9 @@ const (
 )
 
 // Values returns all known values for ProposalStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProposalStatus) Values() []ProposalStatus {
 	return []ProposalStatus{
 		"IN_PROGRESS",
@@ -215,8 +249,9 @@ const (
 )
 
 // Values returns all known values for StateDBType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StateDBType) Values() []StateDBType {
 	return []StateDBType{
 		"LevelDB",
@@ -233,8 +268,9 @@ const (
 )
 
 // Values returns all known values for ThresholdComparator. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ThresholdComparator) Values() []ThresholdComparator {
 	return []ThresholdComparator{
 		"GREATER_THAN",
@@ -251,8 +287,9 @@ const (
 )
 
 // Values returns all known values for VoteValue. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VoteValue) Values() []VoteValue {
 	return []VoteValue{
 		"YES",

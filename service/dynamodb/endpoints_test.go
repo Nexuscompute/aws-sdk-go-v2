@@ -5,11 +5,13 @@ package dynamodb
 import (
 	"context"
 	smithy "github.com/aws/smithy-go"
+	smithyauth "github.com/aws/smithy-go/auth"
 	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/ptr"
-	"github.com/google/go-cmp/cmp"
+	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -42,14 +44,12 @@ func TestEndpointCase0(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -81,14 +81,12 @@ func TestEndpointCase1(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -120,14 +118,12 @@ func TestEndpointCase2(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -159,14 +155,12 @@ func TestEndpointCase3(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -198,14 +192,12 @@ func TestEndpointCase4(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -237,14 +229,12 @@ func TestEndpointCase5(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -276,14 +266,12 @@ func TestEndpointCase6(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -315,14 +303,12 @@ func TestEndpointCase7(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -354,14 +340,12 @@ func TestEndpointCase8(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -393,14 +377,12 @@ func TestEndpointCase9(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -432,14 +414,12 @@ func TestEndpointCase10(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -471,14 +451,12 @@ func TestEndpointCase11(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -510,14 +488,12 @@ func TestEndpointCase12(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -549,14 +525,12 @@ func TestEndpointCase13(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -588,14 +562,12 @@ func TestEndpointCase14(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -627,14 +599,12 @@ func TestEndpointCase15(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -666,14 +636,12 @@ func TestEndpointCase16(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -699,15 +667,21 @@ func TestEndpointCase17(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":          "sigv4",
-					"signingName":   "dynamodb",
-					"signingRegion": "us-east-1",
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "dynamodb")
+						smithyhttp.SetSigV4ASigningName(&sp, "dynamodb")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -715,14 +689,12 @@ func TestEndpointCase17(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -754,14 +726,12 @@ func TestEndpointCase18(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -793,14 +763,12 @@ func TestEndpointCase19(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -832,14 +800,12 @@ func TestEndpointCase20(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -871,14 +837,12 @@ func TestEndpointCase21(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -910,14 +874,12 @@ func TestEndpointCase22(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -949,14 +911,12 @@ func TestEndpointCase23(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -988,14 +948,12 @@ func TestEndpointCase24(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1027,14 +985,12 @@ func TestEndpointCase25(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1066,14 +1022,12 @@ func TestEndpointCase26(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1105,14 +1059,12 @@ func TestEndpointCase27(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1144,14 +1096,12 @@ func TestEndpointCase28(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1183,14 +1133,12 @@ func TestEndpointCase29(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1222,14 +1170,12 @@ func TestEndpointCase30(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1261,14 +1207,12 @@ func TestEndpointCase31(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1300,14 +1244,12 @@ func TestEndpointCase32(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1339,14 +1281,12 @@ func TestEndpointCase33(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1378,14 +1318,12 @@ func TestEndpointCase34(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1417,14 +1355,12 @@ func TestEndpointCase35(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1456,14 +1392,12 @@ func TestEndpointCase36(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1495,14 +1429,12 @@ func TestEndpointCase37(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1534,14 +1466,12 @@ func TestEndpointCase38(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1573,14 +1503,12 @@ func TestEndpointCase39(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1612,14 +1540,12 @@ func TestEndpointCase40(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1651,14 +1577,12 @@ func TestEndpointCase41(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1690,14 +1614,12 @@ func TestEndpointCase42(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1749,14 +1671,12 @@ func TestEndpointCase44(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1808,14 +1728,12 @@ func TestEndpointCase46(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1867,14 +1785,12 @@ func TestEndpointCase48(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1927,14 +1843,12 @@ func TestEndpointCase50(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1966,14 +1880,12 @@ func TestEndpointCase51(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2032,5 +1944,1510 @@ func TestEndpointCase54(t *testing.T) {
 	}
 	if e, a := "Invalid Configuration: Missing Region", err.Error(); !strings.Contains(a, e) {
 		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// For custom endpoint with account ID available, FIPS enabled, and DualStack
+// enabled
+func TestEndpointCase55(t *testing.T) {
+	var params = EndpointParameters{
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(true),
+		UseDualStack: ptr.Bool(true),
+		Endpoint:     ptr.String("https://example.com"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "Invalid Configuration: FIPS and custom endpoint are not supported", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// For custom endpoint with account ID available, FIPS enabled, and DualStack
+// disabled
+func TestEndpointCase56(t *testing.T) {
+	var params = EndpointParameters{
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(true),
+		UseDualStack: ptr.Bool(false),
+		Endpoint:     ptr.String("https://example.com"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "Invalid Configuration: FIPS and custom endpoint are not supported", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// For custom endpoint with account ID available, FIPS disabled, and DualStack
+// enabled
+func TestEndpointCase57(t *testing.T) {
+	var params = EndpointParameters{
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(true),
+		Endpoint:     ptr.String("https://example.com"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "Invalid Configuration: Dualstack and custom endpoint are not supported", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// For custom endpoint with account ID available, FIPS disabled, and DualStack
+// disabled
+func TestEndpointCase58(t *testing.T) {
+	var params = EndpointParameters{
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+		Endpoint:     ptr.String("https://example.com"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://example.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For custom endpoint with empty account ID available, FIPS disabled, and
+// DualStack disabled
+func TestEndpointCase59(t *testing.T) {
+	var params = EndpointParameters{
+		AccountId:    ptr.String(""),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+		Endpoint:     ptr.String("https://example.com"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://example.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region local with account ID available, FIPS enabled, and DualStack enabled
+func TestEndpointCase60(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("local"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(true),
+		UseDualStack: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "Invalid Configuration: FIPS and local endpoint are not supported", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// For region local with account ID available, FIPS enabled, and DualStack disabled
+func TestEndpointCase61(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("local"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(true),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "Invalid Configuration: FIPS and local endpoint are not supported", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// For region local with account ID available, FIPS disabled, and DualStack enabled
+func TestEndpointCase62(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("local"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "Invalid Configuration: Dualstack and local endpoint are not supported", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// For region local with account ID available, FIPS disabled, and DualStack
+// disabled
+func TestEndpointCase63(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("local"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("http://localhost:8000")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "dynamodb")
+						smithyhttp.SetSigV4ASigningName(&sp, "dynamodb")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+						return sp
+					}(),
+				},
+			})
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region local with empty account ID available, FIPS disabled, and DualStack
+// disabled
+func TestEndpointCase64(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("local"),
+		AccountId:    ptr.String(""),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("http://localhost:8000")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "dynamodb")
+						smithyhttp.SetSigV4ASigningName(&sp, "dynamodb")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+						return sp
+					}(),
+				},
+			})
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For AccountIdEndpointMode required and no AccountId set
+func TestEndpointCase65(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                ptr.String("us-east-1"),
+		AccountIdEndpointMode: ptr.String("required"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "AccountIdEndpointMode is required but no AccountID was provided or able to be loaded.", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// For region us-east-1 with account ID available, FIPS enabled, and DualStack
+// enabled
+func TestEndpointCase66(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-east-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(true),
+		UseDualStack: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb-fips.us-east-1.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-east-1 with account ID available, FIPS enabled, and DualStack
+// disabled
+func TestEndpointCase67(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-east-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(true),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb-fips.us-east-1.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-east-1 with account ID available, AccountIdEndpointMode preferred,
+// FIPS enabled, and DualStack disabled
+func TestEndpointCase68(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                ptr.String("us-east-1"),
+		AccountId:             ptr.String("012345678901"),
+		AccountIdEndpointMode: ptr.String("preferred"),
+		UseFIPS:               ptr.Bool(true),
+		UseDualStack:          ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb-fips.us-east-1.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-east-1 with account ID available, AccountIdEndpointMode required,
+// FIPS enabled, and DualStack disabled
+func TestEndpointCase69(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                ptr.String("us-east-1"),
+		AccountId:             ptr.String("012345678901"),
+		AccountIdEndpointMode: ptr.String("required"),
+		UseFIPS:               ptr.Bool(true),
+		UseDualStack:          ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb-fips.us-east-1.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-east-1 with account ID available, FIPS disabled, and DualStack
+// enabled
+func TestEndpointCase70(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-east-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.us-east-1.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-east-1 with account ID available, FIPS disabled, and DualStack
+// enabled
+func TestEndpointCase71(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-east-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.us-east-1.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-east-1 with account ID available, AccountIdEndpointMode preferred,
+// FIPS disabled, and DualStack enabled
+func TestEndpointCase72(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                ptr.String("us-east-1"),
+		AccountId:             ptr.String("012345678901"),
+		AccountIdEndpointMode: ptr.String("preferred"),
+		UseFIPS:               ptr.Bool(false),
+		UseDualStack:          ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.us-east-1.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-east-1 with account ID available, AccountIdEndpointMode disabled,
+// FIPS disabled, and DualStack enabled
+func TestEndpointCase73(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                ptr.String("us-east-1"),
+		AccountId:             ptr.String("012345678901"),
+		AccountIdEndpointMode: ptr.String("disabled"),
+		UseFIPS:               ptr.Bool(false),
+		UseDualStack:          ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.us-east-1.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-east-1 with account ID available, AccountIdEndpointMode required,
+// FIPS disabled, and DualStack enabled
+func TestEndpointCase74(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                ptr.String("us-east-1"),
+		AccountId:             ptr.String("012345678901"),
+		AccountIdEndpointMode: ptr.String("required"),
+		UseFIPS:               ptr.Bool(false),
+		UseDualStack:          ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.us-east-1.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-east-1 with account ID available, AccountIdEndpointMode preferred,
+// FIPS disabled, and DualStack disabled
+func TestEndpointCase75(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                ptr.String("us-east-1"),
+		AccountId:             ptr.String("012345678901"),
+		UseFIPS:               ptr.Bool(false),
+		UseDualStack:          ptr.Bool(false),
+		AccountIdEndpointMode: ptr.String("preferred"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://012345678901.ddb.us-east-1.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-east-1 with account ID available, AccountIdEndpointMode required,
+// FIPS disabled, and DualStack disabled
+func TestEndpointCase76(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                ptr.String("us-east-1"),
+		AccountId:             ptr.String("012345678901"),
+		UseFIPS:               ptr.Bool(false),
+		UseDualStack:          ptr.Bool(false),
+		AccountIdEndpointMode: ptr.String("required"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://012345678901.ddb.us-east-1.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-east-1 with account ID available, AccountIdEndpointMode disabled,
+// FIPS disabled, and DualStack disabled
+func TestEndpointCase77(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                ptr.String("us-east-1"),
+		AccountId:             ptr.String("012345678901"),
+		UseFIPS:               ptr.Bool(false),
+		UseDualStack:          ptr.Bool(false),
+		AccountIdEndpointMode: ptr.String("disabled"),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.us-east-1.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-east-1 with empty account ID, FIPS disabled, and DualStack
+// disabled
+func TestEndpointCase78(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-east-1"),
+		AccountId:    ptr.String(""),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "Credentials-sourced account ID parameter is invalid", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// For region cn-north-1 with account ID available, FIPS enabled, and DualStack
+// enabled
+func TestEndpointCase79(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("cn-north-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(true),
+		UseDualStack: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb-fips.cn-north-1.api.amazonwebservices.com.cn")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region cn-north-1 with account ID available, FIPS enabled, and DualStack
+// disabled
+func TestEndpointCase80(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("cn-north-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(true),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb-fips.cn-north-1.amazonaws.com.cn")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region cn-north-1 with account ID available, FIPS disabled, and DualStack
+// enabled
+func TestEndpointCase81(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("cn-north-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.cn-north-1.api.amazonwebservices.com.cn")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region cn-north-1 with account ID available, FIPS disabled, and DualStack
+// disabled
+func TestEndpointCase82(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("cn-north-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.cn-north-1.amazonaws.com.cn")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region cn-north-1 with account ID available, AccountIdEndpointMode
+// preferred, FIPS disabled, and DualStack disabled
+func TestEndpointCase83(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                ptr.String("cn-north-1"),
+		AccountId:             ptr.String("012345678901"),
+		AccountIdEndpointMode: ptr.String("preferred"),
+		UseFIPS:               ptr.Bool(false),
+		UseDualStack:          ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.cn-north-1.amazonaws.com.cn")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region cn-north-1 with account ID available, AccountIdEndpointMode disabled,
+// FIPS disabled, and DualStack disabled
+func TestEndpointCase84(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                ptr.String("cn-north-1"),
+		AccountId:             ptr.String("012345678901"),
+		AccountIdEndpointMode: ptr.String("disabled"),
+		UseFIPS:               ptr.Bool(false),
+		UseDualStack:          ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.cn-north-1.amazonaws.com.cn")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region cn-north-1 with account ID available, AccountIdEndpointMode required,
+// FIPS disabled, and DualStack disabled
+func TestEndpointCase85(t *testing.T) {
+	var params = EndpointParameters{
+		Region:                ptr.String("cn-north-1"),
+		AccountId:             ptr.String("012345678901"),
+		AccountIdEndpointMode: ptr.String("required"),
+		UseFIPS:               ptr.Bool(false),
+		UseDualStack:          ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.cn-north-1.amazonaws.com.cn")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region cn-north-1 with empty account ID available, FIPS disabled, and
+// DualStack disabled
+func TestEndpointCase86(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("cn-north-1"),
+		AccountId:    ptr.String(""),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.cn-north-1.amazonaws.com.cn")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-iso-east-1 with account ID available, FIPS enabled, and DualStack
+// enabled
+func TestEndpointCase87(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-iso-east-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(true),
+		UseDualStack: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "FIPS and DualStack are enabled, but this partition does not support one or both", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// For region us-iso-east-1 with account ID available, FIPS enabled, and DualStack
+// disabled
+func TestEndpointCase88(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-iso-east-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(true),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb-fips.us-iso-east-1.c2s.ic.gov")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-iso-east-1 with account ID available, FIPS disabled, and DualStack
+// enabled
+func TestEndpointCase89(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-iso-east-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err == nil {
+		t.Fatalf("expect error, got none")
+	}
+	if e, a := "DualStack is enabled but this partition does not support DualStack", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
+	}
+}
+
+// For region us-iso-east-1 with account ID available, FIPS disabled, and DualStack
+// disabled
+func TestEndpointCase90(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-iso-east-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.us-iso-east-1.c2s.ic.gov")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-iso-east-1 with empty account ID available, FIPS disabled, and
+// DualStack disabled
+func TestEndpointCase91(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-iso-east-1"),
+		AccountId:    ptr.String(""),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.us-iso-east-1.c2s.ic.gov")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-gov-east-1 with account ID available, FIPS enabled, and DualStack
+// enabled
+func TestEndpointCase92(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-gov-east-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(true),
+		UseDualStack: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb-fips.us-gov-east-1.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-gov-east-1 with account ID available, FIPS enabled, and DualStack
+// disabled
+func TestEndpointCase93(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-gov-east-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(true),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.us-gov-east-1.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-gov-east-1 with account ID available, FIPS disabled, and DualStack
+// enabled
+func TestEndpointCase94(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-gov-east-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.us-gov-east-1.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-gov-east-1 with account ID available, FIPS disabled, and DualStack
+// disabled
+func TestEndpointCase95(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-gov-east-1"),
+		AccountId:    ptr.String("012345678901"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.us-gov-east-1.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// For region us-gov-east-1 with empty account ID available, FIPS disabled, and
+// DualStack disabled
+func TestEndpointCase96(t *testing.T) {
+	var params = EndpointParameters{
+		Region:       ptr.String("us-gov-east-1"),
+		AccountId:    ptr.String(""),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(false),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://dynamodb.us-gov-east-1.amazonaws.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:        *uri,
+		Headers:    http.Header{},
+		Properties: smithy.Properties{},
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }

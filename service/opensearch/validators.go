@@ -30,6 +30,46 @@ func (m *validateOpAcceptInboundConnection) HandleInitialize(ctx context.Context
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpAddDataSource struct {
+}
+
+func (*validateOpAddDataSource) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpAddDataSource) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*AddDataSourceInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpAddDataSourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpAddDirectQueryDataSource struct {
+}
+
+func (*validateOpAddDirectQueryDataSource) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpAddDirectQueryDataSource) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*AddDirectQueryDataSourceInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpAddDirectQueryDataSourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpAddTags struct {
 }
 
@@ -70,6 +110,26 @@ func (m *validateOpAssociatePackage) HandleInitialize(ctx context.Context, in mi
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpAssociatePackages struct {
+}
+
+func (*validateOpAssociatePackages) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpAssociatePackages) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*AssociatePackagesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpAssociatePackagesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpAuthorizeVpcEndpointAccess struct {
 }
 
@@ -90,6 +150,26 @@ func (m *validateOpAuthorizeVpcEndpointAccess) HandleInitialize(ctx context.Cont
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCancelDomainConfigChange struct {
+}
+
+func (*validateOpCancelDomainConfigChange) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCancelDomainConfigChange) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CancelDomainConfigChangeInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCancelDomainConfigChangeInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCancelServiceSoftwareUpdate struct {
 }
 
@@ -105,6 +185,26 @@ func (m *validateOpCancelServiceSoftwareUpdate) HandleInitialize(ctx context.Con
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpCancelServiceSoftwareUpdateInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateApplication struct {
+}
+
+func (*validateOpCreateApplication) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateApplication) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateApplicationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateApplicationInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -185,6 +285,66 @@ func (m *validateOpCreateVpcEndpoint) HandleInitialize(ctx context.Context, in m
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpCreateVpcEndpointInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteApplication struct {
+}
+
+func (*validateOpDeleteApplication) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteApplication) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteApplicationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteApplicationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteDataSource struct {
+}
+
+func (*validateOpDeleteDataSource) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteDataSource) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteDataSourceInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteDataSourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteDirectQueryDataSource struct {
+}
+
+func (*validateOpDeleteDirectQueryDataSource) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteDirectQueryDataSource) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteDirectQueryDataSourceInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteDirectQueryDataSourceInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -510,6 +670,106 @@ func (m *validateOpDissociatePackage) HandleInitialize(ctx context.Context, in m
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDissociatePackages struct {
+}
+
+func (*validateOpDissociatePackages) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDissociatePackages) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DissociatePackagesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDissociatePackagesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetApplication struct {
+}
+
+func (*validateOpGetApplication) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetApplication) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetApplicationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetApplicationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetDataSource struct {
+}
+
+func (*validateOpGetDataSource) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetDataSource) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetDataSourceInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetDataSourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetDirectQueryDataSource struct {
+}
+
+func (*validateOpGetDirectQueryDataSource) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetDirectQueryDataSource) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetDirectQueryDataSourceInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetDirectQueryDataSourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetDomainMaintenanceStatus struct {
+}
+
+func (*validateOpGetDomainMaintenanceStatus) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetDomainMaintenanceStatus) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetDomainMaintenanceStatusInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetDomainMaintenanceStatusInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetPackageVersionHistory struct {
 }
 
@@ -565,6 +825,46 @@ func (m *validateOpGetUpgradeStatus) HandleInitialize(ctx context.Context, in mi
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetUpgradeStatusInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListDataSources struct {
+}
+
+func (*validateOpListDataSources) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListDataSources) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListDataSourcesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListDataSourcesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListDomainMaintenances struct {
+}
+
+func (*validateOpListDomainMaintenances) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListDomainMaintenances) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListDomainMaintenancesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListDomainMaintenancesInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -790,6 +1090,26 @@ func (m *validateOpRevokeVpcEndpointAccess) HandleInitialize(ctx context.Context
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpStartDomainMaintenance struct {
+}
+
+func (*validateOpStartDomainMaintenance) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStartDomainMaintenance) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StartDomainMaintenanceInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStartDomainMaintenanceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpStartServiceSoftwareUpdate struct {
 }
 
@@ -805,6 +1125,66 @@ func (m *validateOpStartServiceSoftwareUpdate) HandleInitialize(ctx context.Cont
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpStartServiceSoftwareUpdateInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateApplication struct {
+}
+
+func (*validateOpUpdateApplication) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateApplication) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateApplicationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateApplicationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateDataSource struct {
+}
+
+func (*validateOpUpdateDataSource) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateDataSource) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateDataSourceInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateDataSourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateDirectQueryDataSource struct {
+}
+
+func (*validateOpUpdateDirectQueryDataSource) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateDirectQueryDataSource) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateDirectQueryDataSourceInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateDirectQueryDataSourceInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -845,6 +1225,26 @@ func (m *validateOpUpdatePackage) HandleInitialize(ctx context.Context, in middl
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpUpdatePackageInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdatePackageScope struct {
+}
+
+func (*validateOpUpdatePackageScope) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdatePackageScope) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdatePackageScopeInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdatePackageScopeInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -914,6 +1314,14 @@ func addOpAcceptInboundConnectionValidationMiddleware(stack *middleware.Stack) e
 	return stack.Initialize.Add(&validateOpAcceptInboundConnection{}, middleware.After)
 }
 
+func addOpAddDataSourceValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpAddDataSource{}, middleware.After)
+}
+
+func addOpAddDirectQueryDataSourceValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpAddDirectQueryDataSource{}, middleware.After)
+}
+
 func addOpAddTagsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpAddTags{}, middleware.After)
 }
@@ -922,12 +1330,24 @@ func addOpAssociatePackageValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpAssociatePackage{}, middleware.After)
 }
 
+func addOpAssociatePackagesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpAssociatePackages{}, middleware.After)
+}
+
 func addOpAuthorizeVpcEndpointAccessValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpAuthorizeVpcEndpointAccess{}, middleware.After)
 }
 
+func addOpCancelDomainConfigChangeValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCancelDomainConfigChange{}, middleware.After)
+}
+
 func addOpCancelServiceSoftwareUpdateValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCancelServiceSoftwareUpdate{}, middleware.After)
+}
+
+func addOpCreateApplicationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateApplication{}, middleware.After)
 }
 
 func addOpCreateDomainValidationMiddleware(stack *middleware.Stack) error {
@@ -944,6 +1364,18 @@ func addOpCreatePackageValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpCreateVpcEndpointValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateVpcEndpoint{}, middleware.After)
+}
+
+func addOpDeleteApplicationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteApplication{}, middleware.After)
+}
+
+func addOpDeleteDataSourceValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteDataSource{}, middleware.After)
+}
+
+func addOpDeleteDirectQueryDataSourceValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteDirectQueryDataSource{}, middleware.After)
 }
 
 func addOpDeleteDomainValidationMiddleware(stack *middleware.Stack) error {
@@ -1010,6 +1442,26 @@ func addOpDissociatePackageValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDissociatePackage{}, middleware.After)
 }
 
+func addOpDissociatePackagesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDissociatePackages{}, middleware.After)
+}
+
+func addOpGetApplicationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetApplication{}, middleware.After)
+}
+
+func addOpGetDataSourceValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetDataSource{}, middleware.After)
+}
+
+func addOpGetDirectQueryDataSourceValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetDirectQueryDataSource{}, middleware.After)
+}
+
+func addOpGetDomainMaintenanceStatusValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetDomainMaintenanceStatus{}, middleware.After)
+}
+
 func addOpGetPackageVersionHistoryValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetPackageVersionHistory{}, middleware.After)
 }
@@ -1020,6 +1472,14 @@ func addOpGetUpgradeHistoryValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpGetUpgradeStatusValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetUpgradeStatus{}, middleware.After)
+}
+
+func addOpListDataSourcesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListDataSources{}, middleware.After)
+}
+
+func addOpListDomainMaintenancesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListDomainMaintenances{}, middleware.After)
 }
 
 func addOpListDomainsForPackageValidationMiddleware(stack *middleware.Stack) error {
@@ -1066,8 +1526,24 @@ func addOpRevokeVpcEndpointAccessValidationMiddleware(stack *middleware.Stack) e
 	return stack.Initialize.Add(&validateOpRevokeVpcEndpointAccess{}, middleware.After)
 }
 
+func addOpStartDomainMaintenanceValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStartDomainMaintenance{}, middleware.After)
+}
+
 func addOpStartServiceSoftwareUpdateValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpStartServiceSoftwareUpdate{}, middleware.After)
+}
+
+func addOpUpdateApplicationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateApplication{}, middleware.After)
+}
+
+func addOpUpdateDataSourceValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateDataSource{}, middleware.After)
+}
+
+func addOpUpdateDirectQueryDataSourceValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateDirectQueryDataSource{}, middleware.After)
 }
 
 func addOpUpdateDomainConfigValidationMiddleware(stack *middleware.Stack) error {
@@ -1076,6 +1552,10 @@ func addOpUpdateDomainConfigValidationMiddleware(stack *middleware.Stack) error 
 
 func addOpUpdatePackageValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdatePackage{}, middleware.After)
+}
+
+func addOpUpdatePackageScopeValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdatePackageScope{}, middleware.After)
 }
 
 func addOpUpdateScheduledActionValidationMiddleware(stack *middleware.Stack) error {
@@ -1122,6 +1602,21 @@ func validateAWSDomainInformation(v *types.AWSDomainInformation) error {
 	}
 }
 
+func validateCloudWatchDirectQueryDataSource(v *types.CloudWatchDirectQueryDataSource) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CloudWatchDirectQueryDataSource"}
+	if v.RoleArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RoleArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateClusterConfig(v *types.ClusterConfig) error {
 	if v == nil {
 		return nil
@@ -1154,6 +1649,30 @@ func validateColdStorageOptions(v *types.ColdStorageOptions) error {
 	}
 }
 
+func validateDirectQueryDataSourceType(v types.DirectQueryDataSourceType) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DirectQueryDataSourceType"}
+	switch uv := v.(type) {
+	case *types.DirectQueryDataSourceTypeMemberCloudWatchLog:
+		if err := validateCloudWatchDirectQueryDataSource(&uv.Value); err != nil {
+			invalidParams.AddNested("[CloudWatchLog]", err.(smithy.InvalidParamsError))
+		}
+
+	case *types.DirectQueryDataSourceTypeMemberSecurityLake:
+		if err := validateSecurityLakeDirectQueryDataSource(&uv.Value); err != nil {
+			invalidParams.AddNested("[SecurityLake]", err.(smithy.InvalidParamsError))
+		}
+
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateDomainInformationContainer(v *types.DomainInformationContainer) error {
 	if v == nil {
 		return nil
@@ -1163,6 +1682,21 @@ func validateDomainInformationContainer(v *types.DomainInformationContainer) err
 		if err := validateAWSDomainInformation(v.AWSDomainInformation); err != nil {
 			invalidParams.AddNested("AWSDomainInformation", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateKeyStoreAccessOption(v *types.KeyStoreAccessOption) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "KeyStoreAccessOption"}
+	if v.KeyStoreAccessEnabled == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("KeyStoreAccessEnabled"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1205,6 +1739,108 @@ func validateOffPeakWindowOptions(v *types.OffPeakWindowOptions) error {
 	}
 }
 
+func validatePackageAssociationConfiguration(v *types.PackageAssociationConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PackageAssociationConfiguration"}
+	if v.KeyStoreAccessOption != nil {
+		if err := validateKeyStoreAccessOption(v.KeyStoreAccessOption); err != nil {
+			invalidParams.AddNested("KeyStoreAccessOption", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePackageConfiguration(v *types.PackageConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PackageConfiguration"}
+	if len(v.LicenseRequirement) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("LicenseRequirement"))
+	}
+	if len(v.ConfigurationRequirement) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("ConfigurationRequirement"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePackageDetailsForAssociation(v *types.PackageDetailsForAssociation) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PackageDetailsForAssociation"}
+	if v.PackageID == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PackageID"))
+	}
+	if v.AssociationConfiguration != nil {
+		if err := validatePackageAssociationConfiguration(v.AssociationConfiguration); err != nil {
+			invalidParams.AddNested("AssociationConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePackageDetailsForAssociationList(v []types.PackageDetailsForAssociation) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PackageDetailsForAssociationList"}
+	for i := range v {
+		if err := validatePackageDetailsForAssociation(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePackageEncryptionOptions(v *types.PackageEncryptionOptions) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PackageEncryptionOptions"}
+	if v.EncryptionEnabled == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EncryptionEnabled"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePackageVendingOptions(v *types.PackageVendingOptions) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PackageVendingOptions"}
+	if v.VendingEnabled == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("VendingEnabled"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateSAMLIdp(v *types.SAMLIdp) error {
 	if v == nil {
 		return nil
@@ -1232,6 +1868,21 @@ func validateSAMLOptionsInput(v *types.SAMLOptionsInput) error {
 		if err := validateSAMLIdp(v.Idp); err != nil {
 			invalidParams.AddNested("Idp", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSecurityLakeDirectQueryDataSource(v *types.SecurityLakeDirectQueryDataSource) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SecurityLakeDirectQueryDataSource"}
+	if v.RoleArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RoleArn"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1302,6 +1953,57 @@ func validateOpAcceptInboundConnectionInput(v *AcceptInboundConnectionInput) err
 	}
 }
 
+func validateOpAddDataSourceInput(v *AddDataSourceInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AddDataSourceInput"}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.DataSourceType == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataSourceType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpAddDirectQueryDataSourceInput(v *AddDirectQueryDataSourceInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AddDirectQueryDataSourceInput"}
+	if v.DataSourceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataSourceName"))
+	}
+	if v.DataSourceType == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataSourceType"))
+	} else if v.DataSourceType != nil {
+		if err := validateDirectQueryDataSourceType(v.DataSourceType); err != nil {
+			invalidParams.AddNested("DataSourceType", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.OpenSearchArns == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OpenSearchArns"))
+	}
+	if v.TagList != nil {
+		if err := validateTagList(v.TagList); err != nil {
+			invalidParams.AddNested("TagList", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpAddTagsInput(v *AddTagsInput) error {
 	if v == nil {
 		return nil
@@ -1335,6 +2037,33 @@ func validateOpAssociatePackageInput(v *AssociatePackageInput) error {
 	if v.DomainName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
 	}
+	if v.AssociationConfiguration != nil {
+		if err := validatePackageAssociationConfiguration(v.AssociationConfiguration); err != nil {
+			invalidParams.AddNested("AssociationConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpAssociatePackagesInput(v *AssociatePackagesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AssociatePackagesInput"}
+	if v.PackageList == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PackageList"))
+	} else if v.PackageList != nil {
+		if err := validatePackageDetailsForAssociationList(v.PackageList); err != nil {
+			invalidParams.AddNested("PackageList", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1350,8 +2079,20 @@ func validateOpAuthorizeVpcEndpointAccessInput(v *AuthorizeVpcEndpointAccessInpu
 	if v.DomainName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
 	}
-	if v.Account == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Account"))
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCancelDomainConfigChangeInput(v *CancelDomainConfigChangeInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CancelDomainConfigChangeInput"}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1367,6 +2108,26 @@ func validateOpCancelServiceSoftwareUpdateInput(v *CancelServiceSoftwareUpdateIn
 	invalidParams := smithy.InvalidParamsError{Context: "CancelServiceSoftwareUpdateInput"}
 	if v.DomainName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateApplicationInput(v *CreateApplicationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateApplicationInput"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.TagList != nil {
+		if err := validateTagList(v.TagList); err != nil {
+			invalidParams.AddNested("TagList", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1453,6 +2214,21 @@ func validateOpCreatePackageInput(v *CreatePackageInput) error {
 	if v.PackageSource == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("PackageSource"))
 	}
+	if v.PackageConfiguration != nil {
+		if err := validatePackageConfiguration(v.PackageConfiguration); err != nil {
+			invalidParams.AddNested("PackageConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.PackageVendingOptions != nil {
+		if err := validatePackageVendingOptions(v.PackageVendingOptions); err != nil {
+			invalidParams.AddNested("PackageVendingOptions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.PackageEncryptionOptions != nil {
+		if err := validatePackageEncryptionOptions(v.PackageEncryptionOptions); err != nil {
+			invalidParams.AddNested("PackageEncryptionOptions", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1470,6 +2246,54 @@ func validateOpCreateVpcEndpointInput(v *CreateVpcEndpointInput) error {
 	}
 	if v.VpcOptions == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("VpcOptions"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteApplicationInput(v *DeleteApplicationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteApplicationInput"}
+	if v.Id == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Id"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteDataSourceInput(v *DeleteDataSourceInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteDataSourceInput"}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteDirectQueryDataSourceInput(v *DeleteDirectQueryDataSourceInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteDirectQueryDataSourceInput"}
+	if v.DataSourceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataSourceName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1724,6 +2548,90 @@ func validateOpDissociatePackageInput(v *DissociatePackageInput) error {
 	}
 }
 
+func validateOpDissociatePackagesInput(v *DissociatePackagesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DissociatePackagesInput"}
+	if v.PackageList == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PackageList"))
+	}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetApplicationInput(v *GetApplicationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetApplicationInput"}
+	if v.Id == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Id"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetDataSourceInput(v *GetDataSourceInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetDataSourceInput"}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetDirectQueryDataSourceInput(v *GetDirectQueryDataSourceInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetDirectQueryDataSourceInput"}
+	if v.DataSourceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataSourceName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetDomainMaintenanceStatusInput(v *GetDomainMaintenanceStatusInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetDomainMaintenanceStatusInput"}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if v.MaintenanceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaintenanceId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetPackageVersionHistoryInput(v *GetPackageVersionHistoryInput) error {
 	if v == nil {
 		return nil
@@ -1759,6 +2667,36 @@ func validateOpGetUpgradeStatusInput(v *GetUpgradeStatusInput) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "GetUpgradeStatusInput"}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListDataSourcesInput(v *ListDataSourcesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListDataSourcesInput"}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListDomainMaintenancesInput(v *ListDomainMaintenancesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListDomainMaintenancesInput"}
 	if v.DomainName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
 	}
@@ -1933,8 +2871,23 @@ func validateOpRevokeVpcEndpointAccessInput(v *RevokeVpcEndpointAccessInput) err
 	if v.DomainName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
 	}
-	if v.Account == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Account"))
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStartDomainMaintenanceInput(v *StartDomainMaintenanceInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StartDomainMaintenanceInput"}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if len(v.Action) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Action"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1950,6 +2903,67 @@ func validateOpStartServiceSoftwareUpdateInput(v *StartServiceSoftwareUpdateInpu
 	invalidParams := smithy.InvalidParamsError{Context: "StartServiceSoftwareUpdateInput"}
 	if v.DomainName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateApplicationInput(v *UpdateApplicationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateApplicationInput"}
+	if v.Id == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Id"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateDataSourceInput(v *UpdateDataSourceInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateDataSourceInput"}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.DataSourceType == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataSourceType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateDirectQueryDataSourceInput(v *UpdateDirectQueryDataSourceInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateDirectQueryDataSourceInput"}
+	if v.DataSourceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataSourceName"))
+	}
+	if v.DataSourceType == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataSourceType"))
+	} else if v.DataSourceType != nil {
+		if err := validateDirectQueryDataSourceType(v.DataSourceType); err != nil {
+			invalidParams.AddNested("DataSourceType", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.OpenSearchArns == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("OpenSearchArns"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1998,6 +3012,37 @@ func validateOpUpdatePackageInput(v *UpdatePackageInput) error {
 	}
 	if v.PackageSource == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("PackageSource"))
+	}
+	if v.PackageConfiguration != nil {
+		if err := validatePackageConfiguration(v.PackageConfiguration); err != nil {
+			invalidParams.AddNested("PackageConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.PackageEncryptionOptions != nil {
+		if err := validatePackageEncryptionOptions(v.PackageEncryptionOptions); err != nil {
+			invalidParams.AddNested("PackageEncryptionOptions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdatePackageScopeInput(v *UpdatePackageScopeInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdatePackageScopeInput"}
+	if v.PackageID == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PackageID"))
+	}
+	if len(v.Operation) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Operation"))
+	}
+	if v.PackageUserList == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PackageUserList"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

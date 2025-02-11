@@ -23,6 +23,7 @@ import java.util.TreeMap;
 import java.util.TreeSet;
 import software.amazon.smithy.aws.go.codegen.customization.AwsCustomGoDependency;
 import software.amazon.smithy.aws.go.codegen.customization.PresignURLAutoFill;
+import software.amazon.smithy.aws.traits.HttpChecksumTrait;
 import software.amazon.smithy.aws.traits.ServiceTrait;
 import software.amazon.smithy.aws.traits.protocols.AwsQueryTrait;
 import software.amazon.smithy.aws.traits.protocols.Ec2QueryTrait;
@@ -30,10 +31,14 @@ import software.amazon.smithy.codegen.core.Symbol;
 import software.amazon.smithy.codegen.core.SymbolProvider;
 import software.amazon.smithy.go.codegen.GoDelegator;
 import software.amazon.smithy.go.codegen.GoSettings;
+import software.amazon.smithy.go.codegen.GoStdlibTypes;
 import software.amazon.smithy.go.codegen.GoWriter;
+import software.amazon.smithy.go.codegen.MiddlewareIdentifier;
 import software.amazon.smithy.go.codegen.OperationGenerator;
 import software.amazon.smithy.go.codegen.SmithyGoDependency;
+import software.amazon.smithy.go.codegen.SmithyGoTypes;
 import software.amazon.smithy.go.codegen.SymbolUtils;
+import software.amazon.smithy.go.codegen.auth.SignRequestMiddlewareGenerator;
 import software.amazon.smithy.go.codegen.integration.GoIntegration;
 import software.amazon.smithy.model.Model;
 import software.amazon.smithy.model.knowledge.TopDownIndex;
@@ -44,6 +49,10 @@ import software.amazon.smithy.model.shapes.ShapeId;
 import software.amazon.smithy.model.traits.StreamingTrait;
 import software.amazon.smithy.utils.MapUtils;
 import software.amazon.smithy.utils.SetUtils;
+
+import static software.amazon.smithy.go.codegen.GoStackStepMiddlewareGenerator.createFinalizeStepMiddleware;
+import static software.amazon.smithy.go.codegen.GoWriter.emptyGoTemplate;
+import static software.amazon.smithy.go.codegen.GoWriter.goTemplate;
 
 /**
  * AwsHttpPresignURLClientGenerator class is a runtime plugin integration class
@@ -59,7 +68,7 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
     private static final String CONVERT_TO_PRESIGN_MIDDLEWARE_NAME = "convertToPresignMiddleware";
     private static final String CONVERT_TO_PRESIGN_TYPE_NAME = "presignConverter";
     private static final String NOP_HTTP_CLIENT_OPTION_FUNC_NAME = "withNopHTTPClientAPIOption";
-
+    private static final String NO_DEFAULT_CHECKSUM_OPTION_FUNC_NAME = "withNoDefaultChecksumAPIOption";
     private static final String PRESIGN_CLIENT = "PresignClient";
     private static final Symbol presignClientSymbol = buildSymbol(PRESIGN_CLIENT, true);
 
@@ -101,6 +110,9 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
             ShapeId.from("com.amazonaws.sts#AWSSecurityTokenServiceV20110615"), SetUtils.of(
                     ShapeId.from("com.amazonaws.sts#GetCallerIdentity"),
                     ShapeId.from("com.amazonaws.sts#AssumeRole")
+            ),
+            ShapeId.from("com.amazonaws.polly#Parrot_v1"), SetUtils.of(
+                    ShapeId.from("com.amazonaws.polly#SynthesizeSpeech")
             )
     );
 
@@ -201,11 +213,17 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
             // generate client helpers such as copyAPIClient, GetAPIClientOptions()
             writePresignClientHelpers(writer, model, symbolProvider, serviceShape);
 
+            writer.write(new PresignContextPolyfillMiddleware(serviceShape));
+
             // generate convertToPresignMiddleware per service
             writeConvertToPresignMiddleware(writer, model, symbolProvider, serviceShape);
         });
 
+        boolean supportsComputeInputChecksumsWorkflow = false;
         for (OperationShape operationShape : TopDownIndex.of(model).getContainedOperations(serviceShape)) {
+            if (hasInputChecksumTrait(operationShape)) {
+                supportsComputeInputChecksumsWorkflow = true;
+            }
             if (!validOperations.contains(operationShape.getId())) {
                 continue;
             }
@@ -217,6 +235,10 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
                 // generate s3 unsigned payload middleware helper
                 writeS3AddAsUnsignedPayloadHelper(writer, model, symbolProvider, serviceShape, operationShape);
             });
+        }
+
+        if (supportsComputeInputChecksumsWorkflow) {
+            writePresignRequestChecksumConfigHelpers(settings, goDelegator);
         }
     }
 
@@ -250,6 +272,10 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
 
                     writer.write("clientOptFns := append(options.ClientOptions, $L)", NOP_HTTP_CLIENT_OPTION_FUNC_NAME);
                     writer.write("");
+                    if (hasInputChecksumTrait(operationShape)) {
+                        writer.write("clientOptFns = append(options.ClientOptions, $L)", NO_DEFAULT_CHECKSUM_OPTION_FUNC_NAME);
+                        writer.write("");
+                    }
 
                     writer.openBlock("result, _, err := c.client.invokeOperation(ctx, $S, params, clientOptFns,", ")",
                             operationSymbol.getName(), () -> {
@@ -358,20 +384,43 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
                             .build();
 
                     // Middleware to add
-                    writer.write("stack.Finalize.Clear()");
+                    writer.write("""
+                            if _, ok := stack.Finalize.Get(($1P)(nil).ID()); ok {
+                                stack.Finalize.Remove(($1P)(nil).ID())
+                            }""", SdkGoTypes.ServiceInternal.AcceptEncoding.DisableGzip);
+                    writer.write("""
+                        if _, ok := stack.Finalize.Get(($1P)(nil).ID()); ok {
+                            stack.Finalize.Remove(($1P)(nil).ID())
+                        }""", SdkGoTypes.Aws.Retry.Attempt);
+                    writer.write("""
+                        if _, ok := stack.Finalize.Get(($1P)(nil).ID()); ok {
+                            stack.Finalize.Remove(($1P)(nil).ID())
+                        }""", SdkGoTypes.Aws.Retry.MetricsHeader);
                     writer.write("stack.Deserialize.Clear()");
                     writer.write("stack.Build.Remove(($P)(nil).ID())", requestInvocationID);
                     writer.write("stack.Build.Remove($S)", "UserAgent");
 
                     Symbol middlewareOptionsSymbol = SymbolUtils.createValueSymbolBuilder(
                             "PresignHTTPRequestMiddlewareOptions", AwsGoDependency.AWS_SIGNER_V4).build();
+
+                    writer.write("""
+                            if err := stack.Finalize.Insert(&$L{}, $S, $T); err != nil {
+                                return err
+                            }
+                            """,
+                            PresignContextPolyfillMiddleware.NAME,
+                            SignRequestMiddlewareGenerator.MIDDLEWARE_ID,
+                            SmithyGoTypes.Middleware.Before);
+
                     writer.openBlock("pmw := $T($T{", "})", presignMiddleware, middlewareOptionsSymbol, () -> {
                         writer.write("CredentialsProvider: options.$L,", AddAwsConfigFields.CREDENTIALS_CONFIG_NAME);
                         writer.write("Presigner: c.Presigner,");
                         writer.write("LogSigning: options.$L.IsSigning(),", AddAwsConfigFields.LOG_MODE_CONFIG_NAME);
                     });
-                    writer.write("err = stack.Finalize.Add(pmw, $T)", smithyAfter);
-                    writer.write("if err != nil { return err }");
+                    writer.write("""
+                            if _, err := stack.Finalize.Swap($S, pmw); err != nil {
+                                return err
+                            }""", SignRequestMiddlewareGenerator.MIDDLEWARE_ID);
 
                     // Add the default content-type remover middleware
                     writer.openBlock("if err = $T(stack); err != nil {", "}",
@@ -381,8 +430,8 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
                                 writer.write("return err");
                             });
 
-                    // if protocol used is ec2query or query
-                    if (serviceShape.hasTrait(AwsQueryTrait.ID) || serviceShape.hasTrait(Ec2QueryTrait.ID)) {
+                    // if protocol used is ec2query or query or if service is polly
+                    if (serviceShape.hasTrait(AwsQueryTrait.ID) || serviceShape.hasTrait(Ec2QueryTrait.ID) || isPollyServiceShape(serviceShape)) {
                         // presigned url should convert to Get request
                         Symbol queryAsGetMiddleware = SymbolUtils.createValueSymbolBuilder("AddAsGetRequestMiddleware",
                                 AwsGoDependency.AWS_QUERY_PROTOCOL).build();
@@ -392,13 +441,21 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
                         writer.write("if err != nil { return err }");
                     }
 
+                    // polly presigner needs to serialize input param into query string
+                    if (isPollyServiceShape(serviceShape)) {
+                        Symbol serializeInputMiddleware = SymbolUtils.createValueSymbolBuilder("AddPresignSynthesizeSpeechMiddleware",
+                                AwsGoDependency.AWS_QUERY_PROTOCOL).build();
+                        writer.writeDocs("use query encoder to encode GET request query string");
+                        writer.write("err = AddPresignSynthesizeSpeechMiddleware(stack)");
+                        writer.write("if err != nil { return err }");
+                    }
+
                     // s3 service needs expires and sets unsignedPayload if input is stream
                     if (isS3ServiceShape(model, serviceShape)) {
 
                         writer.write("");
-                        writer.write("// add multi-region access point presigner");
+                        writer.write("// extended s3 presigning");
 
-                        // ==== multi-region access point support
                         Symbol PresignConstructor = SymbolUtils.createValueSymbolBuilder(
                                 "NewPresignHTTPRequestMiddleware", AwsCustomGoDependency.S3_CUSTOMIZATION
                         ).build();
@@ -414,6 +471,7 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
                         writer.openBlock("signermv := $T($T{", "})",
                                 PresignConstructor, PresignOptions, () -> {
                                     writer.write("CredentialsProvider : options.Credentials,");
+                                    writer.write("ExpressCredentials : options.ExpressCredentials,");
                                     writer.write("V4Presigner : c.Presigner,");
                                     writer.write("V4aPresigner : c.presignerV4a,");
                                     writer.write("LogSigning : options.ClientLogMode.IsSigning(),");
@@ -422,8 +480,6 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
                         writer.write("err = $T(stack, signermv)", RegisterPresigningMiddleware);
                         writer.write("if err != nil { return err }");
                         writer.write("");
-
-                        // =======
 
                         writer.openBlock("if c.Expires < 0 {", "}", () -> {
                             writer.addUseImports(SmithyGoDependency.FMT);
@@ -441,7 +497,7 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
                     }
 
                     Symbol addAsPresignMiddlewareSymbol = SymbolUtils.createValueSymbolBuilder(
-                            "AddAsIsPresigingMiddleware",
+                            "AddAsIsPresigningMiddleware",
                             AwsCustomGoDependency.PRESIGNEDURL_CUSTOMIZATION).build();
                     writer.write("err = $T(stack)", addAsPresignMiddlewareSymbol);
                     writer.write("if err != nil { return err }");
@@ -527,6 +583,29 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
             writer.write("o.HTTPClient = $T{}", nopClientSymbol);
         });
         writer.write("");
+    }
+
+    private void writePresignRequestChecksumConfigHelpers(
+            GoSettings settings,
+            GoDelegator goDelegator
+    ) {
+        goDelegator.useFileWriter("api_client.go", settings.getModuleName(), goTemplate("""
+            func $fn:L(options *Options) {
+                options.RequestChecksumCalculation = $requestChecksumCalculationWhenRequired:T
+            }""",
+                Map.of(
+                        "fn", NO_DEFAULT_CHECKSUM_OPTION_FUNC_NAME,
+                        "requestChecksumCalculationWhenRequired",
+                        AwsGoDependency.AWS_CORE.valueSymbol("RequestChecksumCalculationWhenRequired")
+                    )));
+    }
+
+    private static boolean hasInputChecksumTrait(OperationShape operation) {
+        if (!operation.hasTrait(HttpChecksumTrait.class)) {
+            return false;
+        }
+        HttpChecksumTrait trait = operation.expectTrait(HttpChecksumTrait.class);
+        return trait.isRequestChecksumRequired() || trait.getRequestAlgorithmMember().isPresent();
     }
 
     /**
@@ -681,6 +760,81 @@ public class AwsHttpPresignURLClientGenerator implements GoIntegration {
     private final boolean isS3ServiceShape(Model model, ServiceShape service) {
         String serviceId = service.expectTrait(ServiceTrait.class).getSdkId();
         return serviceId.equalsIgnoreCase("S3");
+    }
+
+    private final boolean isPollyServiceShape(ServiceShape service) {
+        return service.expectTrait(ServiceTrait.class).getSdkId().equalsIgnoreCase("Polly");
+    }
+
+    private static final class PresignContextPolyfillMiddleware implements GoWriter.Writable {
+        public static final String NAME = "presignContextPolyfillMiddleware";
+        public static final String ID = "presignContextPolyfill";
+
+        private final ServiceShape service;
+
+        public PresignContextPolyfillMiddleware(ServiceShape service) {
+            this.service = service;
+        }
+
+        @Override
+        public void accept(GoWriter writer) {
+            writer.write(generateMiddleware());
+        }
+
+        private GoWriter.Writable generateMiddleware() {
+            return createFinalizeStepMiddleware(NAME, MiddlewareIdentifier.string(ID))
+                    .asWritable(generateBody(), emptyGoTemplate());
+        }
+
+        private GoWriter.Writable generateBody() {
+            return goTemplate("""
+                rscheme := getResolvedAuthScheme(ctx)
+                if rscheme == nil {
+                    return out, metadata, $errorf:T("no resolved auth scheme")
+                }
+
+                schemeID := rscheme.Scheme.SchemeID()
+                $setSignerVersion:W
+                if schemeID == "aws.auth#sigv4" || schemeID == "com.amazonaws.s3#sigv4express" {
+                    if sn, ok := smithyhttp.GetSigV4SigningName(&rscheme.SignerProperties); ok {
+                        ctx = $ctxSetName:T(ctx, sn)
+                    }
+                    if sr, ok := smithyhttp.GetSigV4SigningRegion(&rscheme.SignerProperties); ok {
+                        ctx = $ctxSetRegion:T(ctx, sr)
+                    }
+                } else if schemeID == "aws.auth#sigv4a" {
+                    if sn, ok := smithyhttp.GetSigV4ASigningName(&rscheme.SignerProperties); ok {
+                        ctx = $ctxSetName:T(ctx, sn)
+                    }
+                    if sr, ok := smithyhttp.GetSigV4ASigningRegions(&rscheme.SignerProperties); ok {
+                        ctx = $ctxSetRegion:T(ctx, sr[0])
+                    }
+                }
+
+                return next.HandleFinalize(ctx, in)
+                """,
+                MapUtils.of(
+                        "errorf", GoStdlibTypes.Fmt.Errorf,
+                        "setSignerVersion", generateSetSignerVersion(),
+                        "propsGetV4Name", SmithyGoTypes.Transport.Http.GetSigV4SigningName,
+                        "propsGetV4AName", SmithyGoTypes.Transport.Http.GetSigV4ASigningName,
+                        "propsGetV4Region",  SmithyGoTypes.Transport.Http.GetSigV4SigningRegion,
+                        "propsGetV4ARegions",  SmithyGoTypes.Transport.Http.GetSigV4ASigningRegions,
+                        "ctxSetName",  SdkGoTypes.Aws.Middleware.SetSigningName,
+                        "ctxSetRegion", SdkGoTypes.Aws.Middleware.SetSigningRegion
+                ));
+        }
+
+        private GoWriter.Writable generateSetSignerVersion() {
+            return switch (service.expectTrait(ServiceTrait.class).getSdkId().toLowerCase()) {
+                case "s3" ->
+                        goTemplate("ctx = $T(ctx, schemeID)", SdkGoTypes.ServiceCustomizations.S3.SetSignerVersion);
+                case "eventbridge" ->
+                        goTemplate("ctx = $T(ctx, schemeID)", SdkGoTypes.ServiceCustomizations.EventBridge.SetSignerVersion);
+                default ->
+                        emptyGoTemplate();
+            };
+        }
     }
 }
 

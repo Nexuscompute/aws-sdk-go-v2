@@ -59,7 +59,10 @@ type AssertionRule struct {
 	// The wait period is 5000 ms by default, but you can choose a custom value.
 	//
 	// This member is required.
-	WaitPeriodMs int32
+	WaitPeriodMs *int32
+
+	// The Amazon Web Services account ID of the assertion rule owner.
+	Owner *string
 
 	noSmithyDocumentSerde
 }
@@ -85,7 +88,7 @@ type AssertionRuleUpdate struct {
 	// The wait period is 5000 ms by default, but you can choose a custom value.
 	//
 	// This member is required.
-	WaitPeriodMs int32
+	WaitPeriodMs *int32
 
 	noSmithyDocumentSerde
 }
@@ -99,13 +102,17 @@ type Cluster struct {
 	ClusterArn *string
 
 	// Endpoints for a cluster. Specify one of these endpoints when you want to set or
-	// retrieve a routing control state in the cluster. To get or update the routing
-	// control state, see the Amazon Route 53 Application Recovery Controller Routing
-	// Control Actions.
+	// retrieve a routing control state in the cluster.
+	//
+	// To get or update the routing control state, see the Amazon Route 53 Application
+	// Recovery Controller Routing Control Actions.
 	ClusterEndpoints []ClusterEndpoint
 
 	// The name of the cluster.
 	Name *string
+
+	// The Amazon Web Services account ID of the cluster owner.
+	Owner *string
 
 	// Deployment status of a resource. Status can be one of the following: PENDING,
 	// DEPLOYED, PENDING_DELETION.
@@ -119,9 +126,10 @@ type Cluster struct {
 type ClusterEndpoint struct {
 
 	// A cluster endpoint. Specify an endpoint and Amazon Web Services Region when you
-	// want to set or retrieve a routing control state in the cluster. To get or update
-	// the routing control state, see the Amazon Route 53 Application Recovery
-	// Controller Routing Control Actions.
+	// want to set or retrieve a routing control state in the cluster.
+	//
+	// To get or update the routing control state, see the Amazon Route 53 Application
+	// Recovery Controller Routing Control Actions.
 	Endpoint *string
 
 	// The Amazon Web Services Region for a cluster endpoint.
@@ -145,14 +153,17 @@ type ControlPanel struct {
 	// Amazon Route 53 Application Recovery Controller creates a control panel, and
 	// sets this flag for that control panel. If you create a control panel yourself,
 	// this flag is set to false.
-	DefaultControlPanel bool
+	DefaultControlPanel *bool
 
 	// The name of the control panel. You can use any non-white space character in the
 	// name.
 	Name *string
 
+	// The Amazon Web Services account ID of the control panel owner.
+	Owner *string
+
 	// The number of routing controls in the control panel.
-	RoutingControlCount int32
+	RoutingControlCount *int32
 
 	// The deployment status of control panel. Status can be one of the following:
 	// PENDING, DEPLOYED, PENDING_DELETION.
@@ -163,12 +174,14 @@ type ControlPanel struct {
 
 // A gating rule verifies that a gating routing control or set of gating routing
 // controls, evaluates as true, based on a rule configuration that you specify,
-// which allows a set of routing control state changes to complete. For example, if
-// you specify one gating routing control and you set the Type in the rule
-// configuration to OR, that indicates that you must set the gating routing control
-// to On for the rule to evaluate as true; that is, for the gating control "switch"
-// to be "On". When you do that, then you can update the routing control states for
-// the target routing controls that you specify in the gating rule.
+// which allows a set of routing control state changes to complete.
+//
+// For example, if you specify one gating routing control and you set the Type in
+// the rule configuration to OR, that indicates that you must set the gating
+// routing control to On for the rule to evaluate as true; that is, for the gating
+// control "switch" to be "On". When you do that, then you can update the routing
+// control states for the target routing controls that you specify in the gating
+// rule.
 type GatingRule struct {
 
 	// The Amazon Resource Name (ARN) of the control panel.
@@ -223,7 +236,10 @@ type GatingRule struct {
 	// The wait period is 5000 ms by default, but you can choose a custom value.
 	//
 	// This member is required.
-	WaitPeriodMs int32
+	WaitPeriodMs *int32
+
+	// The Amazon Web Services account ID of the gating rule owner.
+	Owner *string
 
 	noSmithyDocumentSerde
 }
@@ -248,7 +264,7 @@ type GatingRuleUpdate struct {
 	// The wait period is 5000 ms by default, but you can choose a custom value.
 	//
 	// This member is required.
-	WaitPeriodMs int32
+	WaitPeriodMs *int32
 
 	noSmithyDocumentSerde
 }
@@ -290,7 +306,7 @@ type NewAssertionRule struct {
 	// The wait period is 5000 ms by default, but you can choose a custom value.
 	//
 	// This member is required.
-	WaitPeriodMs int32
+	WaitPeriodMs *int32
 
 	noSmithyDocumentSerde
 }
@@ -326,9 +342,11 @@ type NewGatingRule struct {
 	// three gating controls, one for each of three Amazon Web Services Regions. Now
 	// you specify ATLEAST 2 as your RuleConfig. With these settings, you can only
 	// change (set or unset) the routing controls that you have specified as
-	// TargetControls if that rule evaluates to true. In other words, your ability to
-	// change the routing controls that you have specified as TargetControls is gated
-	// by the rule that you set for the routing controls in GatingControls.
+	// TargetControls if that rule evaluates to true.
+	//
+	// In other words, your ability to change the routing controls that you have
+	// specified as TargetControls is gated by the rule that you set for the routing
+	// controls in GatingControls.
 	//
 	// This member is required.
 	TargetControls []string
@@ -338,7 +356,7 @@ type NewGatingRule struct {
 	// The wait period is 5000 ms by default, but you can choose a custom value.
 	//
 	// This member is required.
-	WaitPeriodMs int32
+	WaitPeriodMs *int32
 
 	noSmithyDocumentSerde
 }
@@ -354,6 +372,9 @@ type RoutingControl struct {
 
 	// The name of the routing control.
 	Name *string
+
+	// The Amazon Web Services account ID of the routing control owner.
+	Owner *string
 
 	// The Amazon Resource Name (ARN) of the routing control.
 	RoutingControlArn *string
@@ -378,12 +399,14 @@ type Rule struct {
 
 	// A gating rule verifies that a gating routing control or set of gating routing
 	// controls, evaluates as true, based on a rule configuration that you specify,
-	// which allows a set of routing control state changes to complete. For example, if
-	// you specify one gating routing control and you set the Type in the rule
-	// configuration to OR, that indicates that you must set the gating routing control
-	// to On for the rule to evaluate as true; that is, for the gating control "switch"
-	// to be "On". When you do that, then you can update the routing control states for
-	// the target routing controls that you specify in the gating rule.
+	// which allows a set of routing control state changes to complete.
+	//
+	// For example, if you specify one gating routing control and you set the Type in
+	// the rule configuration to OR, that indicates that you must set the gating
+	// routing control to On for the rule to evaluate as true; that is, for the gating
+	// control "switch" to be "On". When you do that, then you can update the routing
+	// control states for the target routing controls that you specify in the gating
+	// rule.
 	GATING *GatingRule
 
 	noSmithyDocumentSerde
@@ -398,13 +421,13 @@ type RuleConfig struct {
 	// evaluated as false, and vice versa.
 	//
 	// This member is required.
-	Inverted bool
+	Inverted *bool
 
 	// The value of N, when you specify an ATLEAST rule type. That is, Threshold is
 	// the number of controls that must be set when you specify an ATLEAST type.
 	//
 	// This member is required.
-	Threshold int32
+	Threshold *int32
 
 	// A rule can be one of the following: ATLEAST, AND, or OR.
 	//

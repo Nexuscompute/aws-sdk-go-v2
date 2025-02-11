@@ -6,6 +6,46 @@ import (
 	smithydocument "github.com/aws/smithy-go/document"
 )
 
+// Parameters to derive the confidentiality and integrity keys for a payment card
+// using Amex derivation method.
+type AmexAttributes struct {
+
+	// The transaction counter of the current transaction that is provided by the
+	// terminal during transaction processing.
+	//
+	// This member is required.
+	ApplicationTransactionCounter *string
+
+	// The keyArn of the issuer master key for cryptogram (IMK-AC) for the payment
+	// card.
+	//
+	// This member is required.
+	AuthorizationRequestKeyIdentifier *string
+
+	// The method to use when deriving the master key for a payment card using Amex
+	// derivation.
+	//
+	// This member is required.
+	MajorKeyDerivationMode MajorKeyDerivationMode
+
+	// A number that identifies and differentiates payment cards with the same Primary
+	// Account Number (PAN). Typically 00 is used, if no value is provided by the
+	// terminal.
+	//
+	// This member is required.
+	PanSequenceNumber *string
+
+	// The Primary Account Number (PAN) of the cardholder.
+	//
+	// This member is required.
+	PrimaryAccountNumber *string
+
+	// The encrypted pinblock of the old pin stored on the chip card.
+	CurrentPinAttributes *CurrentPinAttributes
+
+	noSmithyDocumentSerde
+}
+
 // Card data parameters that are required to generate a Card Security Code (CSC2)
 // for an AMEX payment card.
 type AmexCardSecurityCodeVersion1 struct {
@@ -347,6 +387,86 @@ type CryptogramVerificationArpcMethod2 struct {
 	noSmithyDocumentSerde
 }
 
+// The parameter values of the current PIN to be changed on the EMV chip card.
+type CurrentPinAttributes struct {
+
+	// The encrypted pinblock of the current pin stored on the chip card.
+	//
+	// This member is required.
+	CurrentEncryptedPinBlock *string
+
+	// The keyArn of the current PIN PEK.
+	//
+	// This member is required.
+	CurrentPinPekIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// Parameters to derive the payment card specific confidentiality and integrity
+// keys.
+//
+// The following types satisfy this interface:
+//
+//	DerivationMethodAttributesMemberAmex
+//	DerivationMethodAttributesMemberEmv2000
+//	DerivationMethodAttributesMemberEmvCommon
+//	DerivationMethodAttributesMemberMastercard
+//	DerivationMethodAttributesMemberVisa
+type DerivationMethodAttributes interface {
+	isDerivationMethodAttributes()
+}
+
+// Parameters to derive the confidentiality and integrity keys for a payment card
+// using Amex derivation method.
+type DerivationMethodAttributesMemberAmex struct {
+	Value AmexAttributes
+
+	noSmithyDocumentSerde
+}
+
+func (*DerivationMethodAttributesMemberAmex) isDerivationMethodAttributes() {}
+
+// Parameters to derive the confidentiality and integrity keys for a payment card
+// using Emv2000 derivation method.
+type DerivationMethodAttributesMemberEmv2000 struct {
+	Value Emv2000Attributes
+
+	noSmithyDocumentSerde
+}
+
+func (*DerivationMethodAttributesMemberEmv2000) isDerivationMethodAttributes() {}
+
+// Parameters to derive the confidentiality and integrity keys for a payment card
+// using Emv common derivation method.
+type DerivationMethodAttributesMemberEmvCommon struct {
+	Value EmvCommonAttributes
+
+	noSmithyDocumentSerde
+}
+
+func (*DerivationMethodAttributesMemberEmvCommon) isDerivationMethodAttributes() {}
+
+// Parameters to derive the confidentiality and integrity keys for a payment card
+// using Mastercard derivation method.
+type DerivationMethodAttributesMemberMastercard struct {
+	Value MasterCardAttributes
+
+	noSmithyDocumentSerde
+}
+
+func (*DerivationMethodAttributesMemberMastercard) isDerivationMethodAttributes() {}
+
+// Parameters to derive the confidentiality and integrity keys for a a payment
+// card using Visa derivation method.
+type DerivationMethodAttributesMemberVisa struct {
+	Value VisaAttributes
+
+	noSmithyDocumentSerde
+}
+
+func (*DerivationMethodAttributesMemberVisa) isDerivationMethodAttributes() {}
+
 // Parameters that are required to generate or verify dCVC (Dynamic Card
 // Verification Code).
 type DiscoverDynamicCardVerificationCode struct {
@@ -434,18 +554,13 @@ type DukptEncryptionAttributes struct {
 	// encryption, or both.
 	DukptKeyVariant DukptKeyVariant
 
-	// An input to cryptographic primitive used to provide the intial state. Typically
-	// the InitializationVector must have a random or psuedo-random value, but
-	// sometimes it only needs to be unpredictable or unique. If you don't provide a
-	// value, Amazon Web Services Payment Cryptography generates a random value.
+	// An input used to provide the intial state. If no value is provided, Amazon Web
+	// Services Payment Cryptography defaults it to zero.
 	InitializationVector *string
 
-	// The block cipher mode of operation. Block ciphers are designed to encrypt a
-	// block of data of fixed size, for example, 128 bits. The size of the input block
-	// is usually same as the size of the encrypted output block, while the key length
-	// can be different. A mode of operation describes how to repeatedly apply a
-	// cipher's single-block operation to securely transform amounts of data larger
-	// than a block. The default is CBC.
+	// The block cipher method to use for encryption.
+	//
+	// The default is CBC.
 	Mode DukptEncryptionMode
 
 	noSmithyDocumentSerde
@@ -510,12 +625,177 @@ type DynamicCardVerificationValue struct {
 	noSmithyDocumentSerde
 }
 
+// Parameters required to establish ECDH based key exchange.
+type EcdhDerivationAttributes struct {
+
+	// The keyArn of the certificate that signed the client's PublicKeyCertificate .
+	//
+	// This member is required.
+	CertificateAuthorityPublicKeyIdentifier *string
+
+	// The key algorithm of the derived ECDH key.
+	//
+	// This member is required.
+	KeyAlgorithm SymmetricKeyAlgorithm
+
+	// The key derivation function to use for deriving a key using ECDH.
+	//
+	// This member is required.
+	KeyDerivationFunction KeyDerivationFunction
+
+	// The hash type to use for deriving a key using ECDH.
+	//
+	// This member is required.
+	KeyDerivationHashAlgorithm KeyDerivationHashAlgorithm
+
+	// The client's public key certificate in PEM format (base64 encoded) to use for
+	// ECDH key derivation.
+	//
+	// This member is required.
+	PublicKeyCertificate *string
+
+	// A byte string containing information that binds the ECDH derived key to the two
+	// parties involved or to the context of the key.
+	//
+	// It may include details like identities of the two parties deriving the key,
+	// context of the operation, session IDs, and optionally a nonce. It must not
+	// contain zero bytes, and re-using shared information for multiple ECDH key
+	// derivations is not recommended.
+	//
+	// This member is required.
+	SharedInformation *string
+
+	noSmithyDocumentSerde
+}
+
+// Parameters to derive the confidentiality and integrity keys for a payment card
+// using EMV2000 deruv.
+type Emv2000Attributes struct {
+
+	// The transaction counter of the current transaction that is provided by the
+	// terminal during transaction processing.
+	//
+	// This member is required.
+	ApplicationTransactionCounter *string
+
+	// The method to use when deriving the master key for the payment card.
+	//
+	// This member is required.
+	MajorKeyDerivationMode MajorKeyDerivationMode
+
+	// A number that identifies and differentiates payment cards with the same Primary
+	// Account Number (PAN). Typically 00 is used, if no value is provided by the
+	// terminal.
+	//
+	// This member is required.
+	PanSequenceNumber *string
+
+	// The Primary Account Number (PAN) of the cardholder.
+	//
+	// This member is required.
+	PrimaryAccountNumber *string
+
+	noSmithyDocumentSerde
+}
+
+// Parameters to derive the confidentiality and integrity keys for an Emv common
+// payment card.
+type EmvCommonAttributes struct {
+
+	// The application cryptogram for the current transaction that is provided by the
+	// terminal during transaction processing.
+	//
+	// This member is required.
+	ApplicationCryptogram *string
+
+	// The method to use when deriving the master key for the payment card.
+	//
+	// This member is required.
+	MajorKeyDerivationMode MajorKeyDerivationMode
+
+	// The block cipher method to use for encryption.
+	//
+	// This member is required.
+	Mode EmvEncryptionMode
+
+	// A number that identifies and differentiates payment cards with the same Primary
+	// Account Number (PAN). Typically 00 is used, if no value is provided by the
+	// terminal.
+	//
+	// This member is required.
+	PanSequenceNumber *string
+
+	// Specifies if PIN block length should be added to front of the pin block.
+	//
+	// If value is set to FRONT_OF_PIN_BLOCK , then PIN block padding type should be
+	// ISO_IEC_7816_4 .
+	//
+	// This member is required.
+	PinBlockLengthPosition PinBlockLengthPosition
+
+	// The padding to be added to the PIN block prior to encryption.
+	//
+	// Padding type should be ISO_IEC_7816_4 , if PinBlockLengthPosition is set to
+	// FRONT_OF_PIN_BLOCK . No padding is required, if PinBlockLengthPosition is set
+	// to NONE .
+	//
+	// This member is required.
+	PinBlockPaddingType PinBlockPaddingType
+
+	// The Primary Account Number (PAN) of the cardholder.
+	//
+	// This member is required.
+	PrimaryAccountNumber *string
+
+	noSmithyDocumentSerde
+}
+
+// Parameters for plaintext encryption using EMV keys.
+type EmvEncryptionAttributes struct {
+
+	// The EMV derivation mode to use for ICC master key derivation as per EMV version
+	// 4.3 book 2.
+	//
+	// This member is required.
+	MajorKeyDerivationMode EmvMajorKeyDerivationMode
+
+	// A number that identifies and differentiates payment cards with the same Primary
+	// Account Number (PAN). Typically 00 is used, if no value is provided by the
+	// terminal.
+	//
+	// This member is required.
+	PanSequenceNumber *string
+
+	// The Primary Account Number (PAN), a unique identifier for a payment credit or
+	// debit card and associates the card to a specific account holder.
+	//
+	// This member is required.
+	PrimaryAccountNumber *string
+
+	// The derivation value used to derive the ICC session key. It is typically the
+	// application transaction counter value padded with zeros or previous ARQC value
+	// padded with zeros as per EMV version 4.3 book 2.
+	//
+	// This member is required.
+	SessionDerivationData *string
+
+	// An input used to provide the intial state. If no value is provided, Amazon Web
+	// Services Payment Cryptography defaults it to zero.
+	InitializationVector *string
+
+	// The block cipher method to use for encryption.
+	Mode EmvEncryptionMode
+
+	noSmithyDocumentSerde
+}
+
 // Parameters that are required to perform encryption and decryption operations.
 //
 // The following types satisfy this interface:
 //
 //	EncryptionDecryptionAttributesMemberAsymmetric
 //	EncryptionDecryptionAttributesMemberDukpt
+//	EncryptionDecryptionAttributesMemberEmv
 //	EncryptionDecryptionAttributesMemberSymmetric
 type EncryptionDecryptionAttributes interface {
 	isEncryptionDecryptionAttributes()
@@ -538,6 +818,15 @@ type EncryptionDecryptionAttributesMemberDukpt struct {
 }
 
 func (*EncryptionDecryptionAttributesMemberDukpt) isEncryptionDecryptionAttributes() {}
+
+// Parameters for plaintext encryption using EMV keys.
+type EncryptionDecryptionAttributesMemberEmv struct {
+	Value EmvEncryptionAttributes
+
+	noSmithyDocumentSerde
+}
+
+func (*EncryptionDecryptionAttributesMemberEmv) isEncryptionDecryptionAttributes() {}
 
 // Parameters that are required to perform encryption and decryption using
 // symmetric keys.
@@ -785,7 +1074,7 @@ type MacAttributesMemberDukptIso9797Algorithm1 struct {
 func (*MacAttributesMemberDukptIso9797Algorithm1) isMacAttributes() {}
 
 // Parameters that are required for MAC generation or verification using DUKPT ISO
-// 9797 algorithm2.
+// 9797 algorithm3.
 type MacAttributesMemberDukptIso9797Algorithm3 struct {
 	Value MacAlgorithmDukpt
 
@@ -803,6 +1092,36 @@ type MacAttributesMemberEmvMac struct {
 }
 
 func (*MacAttributesMemberEmvMac) isMacAttributes() {}
+
+// Parameters to derive the confidentiality and integrity keys for a Mastercard
+// payment card.
+type MasterCardAttributes struct {
+
+	// The application cryptogram for the current transaction that is provided by the
+	// terminal during transaction processing.
+	//
+	// This member is required.
+	ApplicationCryptogram *string
+
+	// The method to use when deriving the master key for the payment card.
+	//
+	// This member is required.
+	MajorKeyDerivationMode MajorKeyDerivationMode
+
+	// A number that identifies and differentiates payment cards with the same Primary
+	// Account Number (PAN). Typically 00 is used, if no value is provided by the
+	// terminal.
+	//
+	// This member is required.
+	PanSequenceNumber *string
+
+	// The Primary Account Number (PAN) of the cardholder.
+	//
+	// This member is required.
+	PrimaryAccountNumber *string
+
+	noSmithyDocumentSerde
+}
 
 // Parameters that are required to generate, translate, or verify PIN data.
 //
@@ -1174,20 +1493,13 @@ type SessionKeyVisa struct {
 // Parameters requried to encrypt plaintext data using symmetric keys.
 type SymmetricEncryptionAttributes struct {
 
-	// The block cipher mode of operation. Block ciphers are designed to encrypt a
-	// block of data of fixed size (for example, 128 bits). The size of the input block
-	// is usually same as the size of the encrypted output block, while the key length
-	// can be different. A mode of operation describes how to repeatedly apply a
-	// cipher's single-block operation to securely transform amounts of data larger
-	// than a block.
+	// The block cipher method to use for encryption.
 	//
 	// This member is required.
 	Mode EncryptionMode
 
-	// An input to cryptographic primitive used to provide the intial state. The
-	// InitializationVector is typically required have a random or psuedo-random value,
-	// but sometimes it only needs to be unpredictable or unique. If a value is not
-	// provided, Amazon Web Services Payment Cryptography generates a random value.
+	// An input used to provide the intial state. If no value is provided, Amazon Web
+	// Services Payment Cryptography defaults it to zero.
 	InitializationVector *string
 
 	// The padding to be included with the data.
@@ -1280,6 +1592,69 @@ type ValidationExceptionField struct {
 	noSmithyDocumentSerde
 }
 
+// The attributes values used for Amex and Visa derivation methods.
+type VisaAmexDerivationOutputs struct {
+
+	// The keyArn of the issuer master key for cryptogram (IMK-AC) used by the
+	// operation.
+	//
+	// This member is required.
+	AuthorizationRequestKeyArn *string
+
+	// The key check value (KCV) of the issuer master key for cryptogram (IMK-AC) used
+	// by the operation.
+	//
+	// This member is required.
+	AuthorizationRequestKeyCheckValue *string
+
+	// The keyArn of the current PIN PEK.
+	CurrentPinPekArn *string
+
+	// The key check value (KCV) of the current PIN PEK.
+	CurrentPinPekKeyCheckValue *string
+
+	noSmithyDocumentSerde
+}
+
+// Parameters to derive the confidentiality and integrity keys for a Visa payment
+// card.
+type VisaAttributes struct {
+
+	// The transaction counter of the current transaction that is provided by the
+	// terminal during transaction processing.
+	//
+	// This member is required.
+	ApplicationTransactionCounter *string
+
+	// The keyArn of the issuer master key for cryptogram (IMK-AC) for the payment
+	// card.
+	//
+	// This member is required.
+	AuthorizationRequestKeyIdentifier *string
+
+	// The method to use when deriving the master key for the payment card.
+	//
+	// This member is required.
+	MajorKeyDerivationMode MajorKeyDerivationMode
+
+	// A number that identifies and differentiates payment cards with the same Primary
+	// Account Number (PAN). Typically 00 is used, if no value is provided by the
+	// terminal.
+	//
+	// This member is required.
+	PanSequenceNumber *string
+
+	// The Primary Account Number (PAN) of the cardholder.
+	//
+	// This member is required.
+	PrimaryAccountNumber *string
+
+	// The encrypted pinblock of the old pin stored on the chip card.
+	CurrentPinAttributes *CurrentPinAttributes
+
+	noSmithyDocumentSerde
+}
+
 // Parameters that are required to generate or verify Visa PIN.
 type VisaPin struct {
 
@@ -1328,6 +1703,55 @@ type VisaPinVerificationValue struct {
 	noSmithyDocumentSerde
 }
 
+// Parameter information of a WrappedKeyBlock for encryption key exchange.
+type WrappedKey struct {
+
+	// Parameter information of a WrappedKeyBlock for encryption key exchange.
+	//
+	// This member is required.
+	WrappedKeyMaterial WrappedKeyMaterial
+
+	// The algorithm that Amazon Web Services Payment Cryptography uses to calculate
+	// the key check value (KCV). It is used to validate the key integrity.
+	//
+	// For TDES keys, the KCV is computed by encrypting 8 bytes, each with value of
+	// zero, with the key to be checked and retaining the 3 highest order bytes of the
+	// encrypted result. For AES keys, the KCV is computed using a CMAC algorithm where
+	// the input data is 16 bytes of zero and retaining the 3 highest order bytes of
+	// the encrypted result.
+	KeyCheckValueAlgorithm KeyCheckValueAlgorithm
+
+	noSmithyDocumentSerde
+}
+
+// Parameter information of a WrappedKeyBlock for encryption key exchange.
+//
+// The following types satisfy this interface:
+//
+//	WrappedKeyMaterialMemberDiffieHellmanSymmetricKey
+//	WrappedKeyMaterialMemberTr31KeyBlock
+type WrappedKeyMaterial interface {
+	isWrappedKeyMaterial()
+}
+
+// The parameter information for deriving a ECDH shared key.
+type WrappedKeyMaterialMemberDiffieHellmanSymmetricKey struct {
+	Value EcdhDerivationAttributes
+
+	noSmithyDocumentSerde
+}
+
+func (*WrappedKeyMaterialMemberDiffieHellmanSymmetricKey) isWrappedKeyMaterial() {}
+
+// The TR-31 wrapped key block.
+type WrappedKeyMaterialMemberTr31KeyBlock struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*WrappedKeyMaterialMemberTr31KeyBlock) isWrappedKeyMaterial() {}
+
 type noSmithyDocumentSerde = smithydocument.NoSerde
 
 // UnknownUnionMember is returned when a union member is returned over the wire,
@@ -1342,6 +1766,7 @@ type UnknownUnionMember struct {
 func (*UnknownUnionMember) isCardGenerationAttributes()       {}
 func (*UnknownUnionMember) isCardVerificationAttributes()     {}
 func (*UnknownUnionMember) isCryptogramAuthResponse()         {}
+func (*UnknownUnionMember) isDerivationMethodAttributes()     {}
 func (*UnknownUnionMember) isEncryptionDecryptionAttributes() {}
 func (*UnknownUnionMember) isMacAttributes()                  {}
 func (*UnknownUnionMember) isPinData()                        {}
@@ -1351,3 +1776,4 @@ func (*UnknownUnionMember) isReEncryptionAttributes()         {}
 func (*UnknownUnionMember) isSessionKeyDerivation()           {}
 func (*UnknownUnionMember) isSessionKeyDerivationValue()      {}
 func (*UnknownUnionMember) isTranslationIsoFormats()          {}
+func (*UnknownUnionMember) isWrappedKeyMaterial()             {}

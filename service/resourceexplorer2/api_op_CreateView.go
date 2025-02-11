@@ -4,14 +4,9 @@ package resourceexplorer2
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/resourceexplorer2/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -19,11 +14,14 @@ import (
 // Creates a view that users can query by using the Search operation. Results from
 // queries that you make using this view include only resources that match the
 // view's Filters . For more information about Amazon Web Services Resource
-// Explorer views, see Managing views (https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-views.html)
-// in the Amazon Web Services Resource Explorer User Guide. Only the principals
-// with an IAM identity-based policy that grants Allow to the Search action on a
-// Resource with the Amazon resource name (ARN) (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
-// of this view can Search using views you create with this operation.
+// Explorer views, see [Managing views]in the Amazon Web Services Resource Explorer User Guide.
+//
+// Only the principals with an IAM identity-based policy that grants Allow to the
+// Search action on a Resource with the [Amazon resource name (ARN)] of this view can Search using views you create
+// with this operation.
+//
+// [Managing views]: https://docs.aws.amazon.com/resource-explorer/latest/userguide/manage-views.html
+// [Amazon resource name (ARN)]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 func (c *Client) CreateView(ctx context.Context, params *CreateViewInput, optFns ...func(*Options)) (*CreateViewOutput, error) {
 	if params == nil {
 		params = &CreateViewInput{}
@@ -42,37 +40,50 @@ func (c *Client) CreateView(ctx context.Context, params *CreateViewInput, optFns
 type CreateViewInput struct {
 
 	// The name of the new view. This name appears in the list of views in Resource
-	// Explorer. The name must be no more than 64 characters long, and can include
-	// letters, digits, and the dash (-) character. The name must be unique within its
-	// Amazon Web Services Region.
+	// Explorer.
+	//
+	// The name must be no more than 64 characters long, and can include letters,
+	// digits, and the dash (-) character. The name must be unique within its Amazon
+	// Web Services Region.
 	//
 	// This member is required.
 	ViewName *string
 
 	// This value helps ensure idempotency. Resource Explorer uses this value to
 	// prevent the accidental creation of duplicate versions. We recommend that you
-	// generate a UUID-type value (https://wikipedia.org/wiki/Universally_unique_identifier)
-	// to ensure the uniqueness of your views.
+	// generate a [UUID-type value]to ensure the uniqueness of your views.
+	//
+	// [UUID-type value]: https://wikipedia.org/wiki/Universally_unique_identifier
 	ClientToken *string
 
 	// An array of strings that specify which resources are included in the results of
-	// queries made using this view. When you use this view in a Search operation, the
-	// filter string is combined with the search's QueryString parameter using a
-	// logical AND operator. For information about the supported syntax, see Search
-	// query reference for Resource Explorer (https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html)
-	// in the Amazon Web Services Resource Explorer User Guide. This query string in
-	// the context of this operation supports only filter prefixes (https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html#query-syntax-filters)
-	// with optional operators (https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html#query-syntax-operators)
+	// queries made using this view. When you use this view in a Searchoperation, the filter
+	// string is combined with the search's QueryString parameter using a logical AND
+	// operator.
+	//
+	// For information about the supported syntax, see [Search query reference for Resource Explorer] in the Amazon Web Services
+	// Resource Explorer User Guide.
+	//
+	// This query string in the context of this operation supports only [filter prefixes] with optional [operators]
 	// . It doesn't support free-form text. For example, the string region:us*
 	// service:ec2 -tag:stage=prod includes all Amazon EC2 resources in any Amazon Web
 	// Services Region that begins with the letters us and is not tagged with a key
 	// Stage that has the value prod .
+	//
+	// [filter prefixes]: https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html#query-syntax-filters
+	// [Search query reference for Resource Explorer]: https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html
+	// [operators]: https://docs.aws.amazon.com/resource-explorer/latest/userguide/using-search-query-syntax.html#query-syntax-operators
 	Filters *types.SearchFilter
 
 	// Specifies optional fields that you want included in search results from this
-	// view. It is a list of objects that each describe a field to include. The default
-	// is an empty list, with no optional fields included in the results.
+	// view. It is a list of objects that each describe a field to include.
+	//
+	// The default is an empty list, with no optional fields included in the results.
 	IncludedProperties []types.IncludedProperty
+
+	// The root ARN of the account, an organizational unit (OU), or an organization
+	// ARN. If left empty, the default is account.
+	Scope *string
 
 	// Tag key and value pairs that are attached to the view.
 	Tags map[string]string
@@ -92,6 +103,9 @@ type CreateViewOutput struct {
 }
 
 func (c *Client) addOperationCreateViewMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateView{}, middleware.After)
 	if err != nil {
 		return err
@@ -100,34 +114,38 @@ func (c *Client) addOperationCreateViewMiddlewares(stack *middleware.Stack, opti
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateView"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -139,7 +157,13 @@ func (c *Client) addOperationCreateViewMiddlewares(stack *middleware.Stack, opti
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateViewResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateViewMiddleware(stack, options); err != nil {
@@ -151,7 +175,7 @@ func (c *Client) addOperationCreateViewMiddlewares(stack *middleware.Stack, opti
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateView(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -163,7 +187,19 @@ func (c *Client) addOperationCreateViewMiddlewares(stack *middleware.Stack, opti
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -206,129 +242,6 @@ func newServiceMetadataMiddleware_opCreateView(region string) *awsmiddleware.Reg
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "resource-explorer-2",
 		OperationName: "CreateView",
 	}
-}
-
-type opCreateViewResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateViewResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateViewResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "resource-explorer-2"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "resource-explorer-2"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("resource-explorer-2")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateViewResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateViewResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:   options.Region,
-			UseFIPS:  options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint: options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

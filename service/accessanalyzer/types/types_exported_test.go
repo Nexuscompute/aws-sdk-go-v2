@@ -29,10 +29,34 @@ func ExampleAclGrantee_outputUsage() {
 var _ *string
 var _ *string
 
+func ExampleAnalyzerConfiguration_outputUsage() {
+	var union types.AnalyzerConfiguration
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.AnalyzerConfigurationMemberUnusedAccess:
+		_ = v.Value // Value is types.UnusedAccessConfiguration
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.UnusedAccessConfiguration
+
 func ExampleConfiguration_outputUsage() {
 	var union types.Configuration
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.ConfigurationMemberDynamodbStream:
+		_ = v.Value // Value is types.DynamodbStreamConfiguration
+
+	case *types.ConfigurationMemberDynamodbTable:
+		_ = v.Value // Value is types.DynamodbTableConfiguration
+
 	case *types.ConfigurationMemberEbsSnapshot:
 		_ = v.Value // Value is types.EbsSnapshotConfiguration
 
@@ -57,6 +81,9 @@ func ExampleConfiguration_outputUsage() {
 	case *types.ConfigurationMemberS3Bucket:
 		_ = v.Value // Value is types.S3BucketConfiguration
 
+	case *types.ConfigurationMemberS3ExpressDirectoryBucket:
+		_ = v.Value // Value is types.S3ExpressDirectoryBucketConfiguration
+
 	case *types.ConfigurationMemberSecretsManagerSecret:
 		_ = v.Value // Value is types.SecretsManagerSecretConfiguration
 
@@ -75,17 +102,54 @@ func ExampleConfiguration_outputUsage() {
 	}
 }
 
+var _ *types.S3ExpressDirectoryBucketConfiguration
 var _ *types.SnsTopicConfiguration
-var _ *types.SqsQueueConfiguration
-var _ *types.EcrRepositoryConfiguration
 var _ *types.IamRoleConfiguration
-var _ *types.RdsDbClusterSnapshotConfiguration
-var _ *types.RdsDbSnapshotConfiguration
 var _ *types.SecretsManagerSecretConfiguration
 var _ *types.EfsFileSystemConfiguration
-var _ *types.S3BucketConfiguration
 var _ *types.KmsKeyConfiguration
+var _ *types.DynamodbStreamConfiguration
+var _ *types.SqsQueueConfiguration
+var _ *types.EcrRepositoryConfiguration
+var _ *types.RdsDbClusterSnapshotConfiguration
+var _ *types.RdsDbSnapshotConfiguration
+var _ *types.DynamodbTableConfiguration
+var _ *types.S3BucketConfiguration
 var _ *types.EbsSnapshotConfiguration
+
+func ExampleFindingDetails_outputUsage() {
+	var union types.FindingDetails
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.FindingDetailsMemberExternalAccessDetails:
+		_ = v.Value // Value is types.ExternalAccessDetails
+
+	case *types.FindingDetailsMemberUnusedIamRoleDetails:
+		_ = v.Value // Value is types.UnusedIamRoleDetails
+
+	case *types.FindingDetailsMemberUnusedIamUserAccessKeyDetails:
+		_ = v.Value // Value is types.UnusedIamUserAccessKeyDetails
+
+	case *types.FindingDetailsMemberUnusedIamUserPasswordDetails:
+		_ = v.Value // Value is types.UnusedIamUserPasswordDetails
+
+	case *types.FindingDetailsMemberUnusedPermissionDetails:
+		_ = v.Value // Value is types.UnusedPermissionDetails
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.ExternalAccessDetails
+var _ *types.UnusedIamRoleDetails
+var _ *types.UnusedPermissionDetails
+var _ *types.UnusedIamUserAccessKeyDetails
+var _ *types.UnusedIamUserPasswordDetails
 
 func ExampleNetworkOriginConfiguration_outputUsage() {
 	var union types.NetworkOriginConfiguration
@@ -173,3 +237,21 @@ func ExampleRdsDbSnapshotAttributeValue_outputUsage() {
 }
 
 var _ []string
+
+func ExampleRecommendedStep_outputUsage() {
+	var union types.RecommendedStep
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.RecommendedStepMemberUnusedPermissionsRecommendedStep:
+		_ = v.Value // Value is types.UnusedPermissionsRecommendedStep
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.UnusedPermissionsRecommendedStep

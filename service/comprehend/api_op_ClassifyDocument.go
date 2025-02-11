@@ -4,27 +4,37 @@ package comprehend
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/comprehend/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a new document classification request to analyze a single document in
-// real-time, using a previously created and trained custom model and an endpoint.
-// You can input plain text or you can upload a single-page input document (text,
-// PDF, Word, or image). If the system detects errors while processing a page in
-// the input document, the API response includes an entry in Errors that describes
-// the errors. If the system detects a document-level error in your input document,
-// the API returns an InvalidRequestException error response. For details about
-// this exception, see Errors in semi-structured documents (https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync-err.html)
-// in the Comprehend Developer Guide.
+// Creates a classification request to analyze a single document in real-time.
+// ClassifyDocument supports the following model types:
+//
+//   - Custom classifier - a custom model that you have created and trained. For
+//     input, you can provide plain text, a single-page document (PDF, Word, or image),
+//     or Amazon Textract API output. For more information, see [Custom classification]in the Amazon
+//     Comprehend Developer Guide.
+//
+//   - Prompt safety classifier - Amazon Comprehend provides a pre-trained model
+//     for classifying input prompts for generative AI applications. For input, you
+//     provide English plain text input. For prompt safety classification, the response
+//     includes only the Classes field. For more information about prompt safety
+//     classifiers, see [Prompt safety classification]in the Amazon Comprehend Developer Guide.
+//
+// If the system detects errors while processing a page in the input document, the
+// API response includes an Errors field that describes the errors.
+//
+// If the system detects a document-level error in your input document, the API
+// returns an InvalidRequestException error response. For details about this
+// exception, see [Errors in semi-structured documents]in the Comprehend Developer Guide.
+//
+// [Custom classification]: https://docs.aws.amazon.com/comprehend/latest/dg/how-document-classification.html
+// [Prompt safety classification]: https://docs.aws.amazon.com/comprehend/latest/dg/trust-safety.html#prompt-classification
+// [Errors in semi-structured documents]: https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync-err.html
 func (c *Client) ClassifyDocument(ctx context.Context, params *ClassifyDocumentInput, optFns ...func(*Options)) (*ClassifyDocumentOutput, error) {
 	if params == nil {
 		params = &ClassifyDocumentInput{}
@@ -42,22 +52,40 @@ func (c *Client) ClassifyDocument(ctx context.Context, params *ClassifyDocumentI
 
 type ClassifyDocumentInput struct {
 
-	// The Amazon Resource Number (ARN) of the endpoint. For information about
-	// endpoints, see Managing endpoints (https://docs.aws.amazon.com/comprehend/latest/dg/manage-endpoints.html)
-	// .
+	// The Amazon Resource Number (ARN) of the endpoint.
+	//
+	// For prompt safety classification, Amazon Comprehend provides the endpoint ARN.
+	// For more information about prompt safety classifiers, see [Prompt safety classification]in the Amazon
+	// Comprehend Developer Guide
+	//
+	// For custom classification, you create an endpoint for your custom model. For
+	// more information, see [Using Amazon Comprehend endpoints].
+	//
+	// [Prompt safety classification]: https://docs.aws.amazon.com/comprehend/latest/dg/trust-safety.html#prompt-classification
+	// [Using Amazon Comprehend endpoints]: https://docs.aws.amazon.com/comprehend/latest/dg/using-endpoints.html
 	//
 	// This member is required.
 	EndpointArn *string
 
-	// Use the Bytes parameter to input a text, PDF, Word or image file. You can also
-	// use the Bytes parameter to input an Amazon Textract DetectDocumentText or
-	// AnalyzeDocument output file. Provide the input document as a sequence of
-	// base64-encoded bytes. If your code uses an Amazon Web Services SDK to classify
-	// documents, the SDK may encode the document file bytes for you. The maximum
-	// length of this field depends on the input document type. For details, see
-	// Inputs for real-time custom analysis (https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync.html)
-	// in the Comprehend Developer Guide. If you use the Bytes parameter, do not use
-	// the Text parameter.
+	// Use the Bytes parameter to input a text, PDF, Word or image file.
+	//
+	// When you classify a document using a custom model, you can also use the Bytes
+	// parameter to input an Amazon Textract DetectDocumentText or AnalyzeDocument
+	// output file.
+	//
+	// To classify a document using the prompt safety classifier, use the Text
+	// parameter for input.
+	//
+	// Provide the input document as a sequence of base64-encoded bytes. If your code
+	// uses an Amazon Web Services SDK to classify documents, the SDK may encode the
+	// document file bytes for you.
+	//
+	// The maximum length of this field depends on the input document type. For
+	// details, see [Inputs for real-time custom analysis]in the Comprehend Developer Guide.
+	//
+	// If you use the Bytes parameter, do not use the Text parameter.
+	//
+	// [Inputs for real-time custom analysis]: https://docs.aws.amazon.com/comprehend/latest/dg/idp-inputs-sync.html
 	Bytes []byte
 
 	// Provides configuration parameters to override the default actions for
@@ -73,10 +101,15 @@ type ClassifyDocumentInput struct {
 
 type ClassifyDocumentOutput struct {
 
-	// The classes used by the document being analyzed. These are used for multi-class
-	// trained models. Individual classes are mutually exclusive and each document is
-	// expected to have only a single class assigned to it. For example, an animal can
-	// be a dog or a cat, but not both at the same time.
+	// The classes used by the document being analyzed. These are used for models
+	// trained in multi-class mode. Individual classes are mutually exclusive and each
+	// document is expected to have only a single class assigned to it. For example, an
+	// animal can be a dog or a cat, but not both at the same time.
+	//
+	// For prompt safety classification, the response includes only two classes
+	// (SAFE_PROMPT and UNSAFE_PROMPT), along with a confidence score for each class.
+	// The value range of the score is zero to one, where one is the highest
+	// confidence.
 	Classes []types.DocumentClass
 
 	// Extraction information about the document. This field is present in the
@@ -91,7 +124,7 @@ type ClassifyDocumentOutput struct {
 	// The field is empty if the system encountered no errors.
 	Errors []types.ErrorsListItem
 
-	// The labels used the document being analyzed. These are used for multi-label
+	// The labels used in the document being analyzed. These are used for multi-label
 	// trained models. Individual labels represent different categories that are
 	// related in some manner and are not mutually exclusive. For example, a movie can
 	// be just an action movie, or it can be an action movie, a science fiction movie,
@@ -101,8 +134,9 @@ type ClassifyDocumentOutput struct {
 	// Warnings detected while processing the input document. The response includes a
 	// warning if there is a mismatch between the input document type and the model
 	// type associated with the endpoint that you specified. The response can also
-	// include warnings for individual pages that have a mismatch. The field is empty
-	// if the system generated no warnings.
+	// include warnings for individual pages that have a mismatch.
+	//
+	// The field is empty if the system generated no warnings.
 	Warnings []types.WarningsListItem
 
 	// Metadata pertaining to the operation's result.
@@ -112,6 +146,9 @@ type ClassifyDocumentOutput struct {
 }
 
 func (c *Client) addOperationClassifyDocumentMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpClassifyDocument{}, middleware.After)
 	if err != nil {
 		return err
@@ -120,34 +157,38 @@ func (c *Client) addOperationClassifyDocumentMiddlewares(stack *middleware.Stack
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ClassifyDocument"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -159,7 +200,13 @@ func (c *Client) addOperationClassifyDocumentMiddlewares(stack *middleware.Stack
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addClassifyDocumentResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpClassifyDocumentValidationMiddleware(stack); err != nil {
@@ -168,7 +215,7 @@ func (c *Client) addOperationClassifyDocumentMiddlewares(stack *middleware.Stack
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opClassifyDocument(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -180,7 +227,19 @@ func (c *Client) addOperationClassifyDocumentMiddlewares(stack *middleware.Stack
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -190,130 +249,6 @@ func newServiceMetadataMiddleware_opClassifyDocument(region string) *awsmiddlewa
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "comprehend",
 		OperationName: "ClassifyDocument",
 	}
-}
-
-type opClassifyDocumentResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opClassifyDocumentResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opClassifyDocumentResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "comprehend"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "comprehend"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("comprehend")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addClassifyDocumentResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opClassifyDocumentResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

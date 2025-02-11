@@ -170,6 +170,26 @@ func (m *validateOpCreateSignalCatalog) HandleInitialize(ctx context.Context, in
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateStateTemplate struct {
+}
+
+func (*validateOpCreateStateTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateStateTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateStateTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateStateTemplateInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateVehicle struct {
 }
 
@@ -285,6 +305,26 @@ func (m *validateOpDeleteSignalCatalog) HandleInitialize(ctx context.Context, in
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeleteSignalCatalogInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteStateTemplate struct {
+}
+
+func (*validateOpDeleteStateTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteStateTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteStateTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteStateTemplateInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -425,6 +465,26 @@ func (m *validateOpGetSignalCatalog) HandleInitialize(ctx context.Context, in mi
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetSignalCatalogInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetStateTemplate struct {
+}
+
+func (*validateOpGetStateTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetStateTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetStateTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetStateTemplateInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -650,6 +710,26 @@ func (m *validateOpListVehiclesInFleet) HandleInitialize(ctx context.Context, in
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpPutEncryptionConfiguration struct {
+}
+
+func (*validateOpPutEncryptionConfiguration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpPutEncryptionConfiguration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*PutEncryptionConfigurationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpPutEncryptionConfigurationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpPutLoggingOptions struct {
 }
 
@@ -830,6 +910,26 @@ func (m *validateOpUpdateSignalCatalog) HandleInitialize(ctx context.Context, in
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateStateTemplate struct {
+}
+
+func (*validateOpUpdateStateTemplate) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateStateTemplate) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateStateTemplateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateStateTemplateInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateVehicle struct {
 }
 
@@ -882,6 +982,10 @@ func addOpCreateSignalCatalogValidationMiddleware(stack *middleware.Stack) error
 	return stack.Initialize.Add(&validateOpCreateSignalCatalog{}, middleware.After)
 }
 
+func addOpCreateStateTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateStateTemplate{}, middleware.After)
+}
+
 func addOpCreateVehicleValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateVehicle{}, middleware.After)
 }
@@ -904,6 +1008,10 @@ func addOpDeleteModelManifestValidationMiddleware(stack *middleware.Stack) error
 
 func addOpDeleteSignalCatalogValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteSignalCatalog{}, middleware.After)
+}
+
+func addOpDeleteStateTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteStateTemplate{}, middleware.After)
 }
 
 func addOpDeleteVehicleValidationMiddleware(stack *middleware.Stack) error {
@@ -932,6 +1040,10 @@ func addOpGetModelManifestValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpGetSignalCatalogValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetSignalCatalog{}, middleware.After)
+}
+
+func addOpGetStateTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetStateTemplate{}, middleware.After)
 }
 
 func addOpGetVehicleValidationMiddleware(stack *middleware.Stack) error {
@@ -978,6 +1090,10 @@ func addOpListVehiclesInFleetValidationMiddleware(stack *middleware.Stack) error
 	return stack.Initialize.Add(&validateOpListVehiclesInFleet{}, middleware.After)
 }
 
+func addOpPutEncryptionConfigurationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpPutEncryptionConfiguration{}, middleware.After)
+}
+
 func addOpPutLoggingOptionsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpPutLoggingOptions{}, middleware.After)
 }
@@ -1012,6 +1128,10 @@ func addOpUpdateModelManifestValidationMiddleware(stack *middleware.Stack) error
 
 func addOpUpdateSignalCatalogValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateSignalCatalog{}, middleware.After)
+}
+
+func addOpUpdateStateTemplateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateStateTemplate{}, middleware.After)
 }
 
 func addOpUpdateVehicleValidationMiddleware(stack *middleware.Stack) error {
@@ -1174,6 +1294,24 @@ func validateConditionBasedCollectionScheme(v *types.ConditionBasedCollectionSch
 	}
 }
 
+func validateConditionBasedSignalFetchConfig(v *types.ConditionBasedSignalFetchConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ConditionBasedSignalFetchConfig"}
+	if v.ConditionExpression == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ConditionExpression"))
+	}
+	if len(v.TriggerMode) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("TriggerMode"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateCreateVehicleRequestItem(v *types.CreateVehicleRequestItem) error {
 	if v == nil {
 		return nil
@@ -1191,6 +1329,11 @@ func validateCreateVehicleRequestItem(v *types.CreateVehicleRequestItem) error {
 	if v.Tags != nil {
 		if err := validateTagList(v.Tags); err != nil {
 			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.StateTemplates != nil {
+		if err := validateStateTemplateAssociations(v.StateTemplates); err != nil {
+			invalidParams.AddNested("StateTemplates", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1217,12 +1360,80 @@ func validateCreateVehicleRequestItems(v []types.CreateVehicleRequestItem) error
 	}
 }
 
+func validateCustomDecodingInterface(v *types.CustomDecodingInterface) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CustomDecodingInterface"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateCustomDecodingSignal(v *types.CustomDecodingSignal) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CustomDecodingSignal"}
+	if v.Id == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Id"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateCustomProperty(v *types.CustomProperty) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CustomProperty"}
+	if v.FullyQualifiedName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FullyQualifiedName"))
+	}
+	if len(v.DataType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("DataType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateCustomStruct(v *types.CustomStruct) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CustomStruct"}
+	if v.FullyQualifiedName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FullyQualifiedName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateDataDestinationConfig(v types.DataDestinationConfig) error {
 	if v == nil {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "DataDestinationConfig"}
 	switch uv := v.(type) {
+	case *types.DataDestinationConfigMemberMqttTopicConfig:
+		if err := validateMqttTopicConfig(&uv.Value); err != nil {
+			invalidParams.AddNested("[mqttTopicConfig]", err.(smithy.InvalidParamsError))
+		}
+
 	case *types.DataDestinationConfigMemberS3Config:
 		if err := validateS3Config(&uv.Value); err != nil {
 			invalidParams.AddNested("[s3Config]", err.(smithy.InvalidParamsError))
@@ -1258,6 +1469,94 @@ func validateDataDestinationConfigs(v []types.DataDestinationConfig) error {
 	}
 }
 
+func validateDataPartition(v *types.DataPartition) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DataPartition"}
+	if v.Id == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Id"))
+	}
+	if v.StorageOptions == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StorageOptions"))
+	} else if v.StorageOptions != nil {
+		if err := validateDataPartitionStorageOptions(v.StorageOptions); err != nil {
+			invalidParams.AddNested("StorageOptions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.UploadOptions != nil {
+		if err := validateDataPartitionUploadOptions(v.UploadOptions); err != nil {
+			invalidParams.AddNested("UploadOptions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDataPartitions(v []types.DataPartition) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DataPartitions"}
+	for i := range v {
+		if err := validateDataPartition(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDataPartitionStorageOptions(v *types.DataPartitionStorageOptions) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DataPartitionStorageOptions"}
+	if v.MaximumSize == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaximumSize"))
+	} else if v.MaximumSize != nil {
+		if err := validateStorageMaximumSize(v.MaximumSize); err != nil {
+			invalidParams.AddNested("MaximumSize", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.StorageLocation == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StorageLocation"))
+	}
+	if v.MinimumTimeToLive == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MinimumTimeToLive"))
+	} else if v.MinimumTimeToLive != nil {
+		if err := validateStorageMinimumTimeToLive(v.MinimumTimeToLive); err != nil {
+			invalidParams.AddNested("MinimumTimeToLive", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDataPartitionUploadOptions(v *types.DataPartitionUploadOptions) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DataPartitionUploadOptions"}
+	if v.Expression == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Expression"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateIamResources(v *types.IamResources) error {
 	if v == nil {
 		return nil
@@ -1265,6 +1564,46 @@ func validateIamResources(v *types.IamResources) error {
 	invalidParams := smithy.InvalidParamsError{Context: "IamResources"}
 	if v.RoleArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("RoleArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMessageSignal(v *types.MessageSignal) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MessageSignal"}
+	if v.TopicName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TopicName"))
+	}
+	if v.StructuredMessage == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StructuredMessage"))
+	} else if v.StructuredMessage != nil {
+		if err := validateStructuredMessage(v.StructuredMessage); err != nil {
+			invalidParams.AddNested("StructuredMessage", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMqttTopicConfig(v *types.MqttTopicConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MqttTopicConfig"}
+	if v.MqttTopicArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MqttTopicArn"))
+	}
+	if v.ExecutionRoleArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ExecutionRoleArn"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1330,6 +1669,16 @@ func validateNetworkInterface(v *types.NetworkInterface) error {
 			invalidParams.AddNested("ObdInterface", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.VehicleMiddleware != nil {
+		if err := validateVehicleMiddleware(v.VehicleMiddleware); err != nil {
+			invalidParams.AddNested("VehicleMiddleware", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.CustomDecodingInterface != nil {
+		if err := validateCustomDecodingInterface(v.CustomDecodingInterface); err != nil {
+			invalidParams.AddNested("CustomDecodingInterface", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1375,9 +1724,19 @@ func validateNode(v types.Node) error {
 			invalidParams.AddNested("[branch]", err.(smithy.InvalidParamsError))
 		}
 
+	case *types.NodeMemberProperty:
+		if err := validateCustomProperty(&uv.Value); err != nil {
+			invalidParams.AddNested("[property]", err.(smithy.InvalidParamsError))
+		}
+
 	case *types.NodeMemberSensor:
 		if err := validateSensor(&uv.Value); err != nil {
 			invalidParams.AddNested("[sensor]", err.(smithy.InvalidParamsError))
+		}
+
+	case *types.NodeMemberStruct:
+		if err := validateCustomStruct(&uv.Value); err != nil {
+			invalidParams.AddNested("[struct]", err.(smithy.InvalidParamsError))
 		}
 
 	}
@@ -1425,6 +1784,9 @@ func validateObdSignal(v *types.ObdSignal) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "ObdSignal"}
+	if v.PidResponseLength == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PidResponseLength"))
+	}
 	if v.Scaling == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Scaling"))
 	}
@@ -1433,6 +1795,59 @@ func validateObdSignal(v *types.ObdSignal) error {
 	}
 	if v.ByteLength == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ByteLength"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePeriodicStateTemplateUpdateStrategy(v *types.PeriodicStateTemplateUpdateStrategy) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PeriodicStateTemplateUpdateStrategy"}
+	if v.StateTemplateUpdateRate == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StateTemplateUpdateRate"))
+	} else if v.StateTemplateUpdateRate != nil {
+		if err := validateTimePeriod(v.StateTemplateUpdateRate); err != nil {
+			invalidParams.AddNested("StateTemplateUpdateRate", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validatePrimitiveMessageDefinition(v types.PrimitiveMessageDefinition) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PrimitiveMessageDefinition"}
+	switch uv := v.(type) {
+	case *types.PrimitiveMessageDefinitionMemberRos2PrimitiveMessageDefinition:
+		if err := validateROS2PrimitiveMessageDefinition(&uv.Value); err != nil {
+			invalidParams.AddNested("[ros2PrimitiveMessageDefinition]", err.(smithy.InvalidParamsError))
+		}
+
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateROS2PrimitiveMessageDefinition(v *types.ROS2PrimitiveMessageDefinition) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ROS2PrimitiveMessageDefinition"}
+	if len(v.PrimitiveType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("PrimitiveType"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1498,6 +1913,16 @@ func validateSignalDecoder(v *types.SignalDecoder) error {
 			invalidParams.AddNested("ObdSignal", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.MessageSignal != nil {
+		if err := validateMessageSignal(v.MessageSignal); err != nil {
+			invalidParams.AddNested("MessageSignal", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.CustomDecodingSignal != nil {
+		if err := validateCustomDecodingSignal(v.CustomDecodingSignal); err != nil {
+			invalidParams.AddNested("CustomDecodingSignal", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1512,6 +1937,72 @@ func validateSignalDecoders(v []types.SignalDecoder) error {
 	invalidParams := smithy.InvalidParamsError{Context: "SignalDecoders"}
 	for i := range v {
 		if err := validateSignalDecoder(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSignalFetchConfig(v types.SignalFetchConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SignalFetchConfig"}
+	switch uv := v.(type) {
+	case *types.SignalFetchConfigMemberConditionBased:
+		if err := validateConditionBasedSignalFetchConfig(&uv.Value); err != nil {
+			invalidParams.AddNested("[conditionBased]", err.(smithy.InvalidParamsError))
+		}
+
+	case *types.SignalFetchConfigMemberTimeBased:
+		if err := validateTimeBasedSignalFetchConfig(&uv.Value); err != nil {
+			invalidParams.AddNested("[timeBased]", err.(smithy.InvalidParamsError))
+		}
+
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSignalFetchInformation(v *types.SignalFetchInformation) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SignalFetchInformation"}
+	if v.FullyQualifiedName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FullyQualifiedName"))
+	}
+	if v.SignalFetchConfig == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SignalFetchConfig"))
+	} else if v.SignalFetchConfig != nil {
+		if err := validateSignalFetchConfig(v.SignalFetchConfig); err != nil {
+			invalidParams.AddNested("SignalFetchConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.Actions == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Actions"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSignalFetchInformationList(v []types.SignalFetchInformation) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SignalFetchInformationList"}
+	for i := range v {
+		if err := validateSignalFetchInformation(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
 	}
@@ -1546,6 +2037,193 @@ func validateSignalInformationList(v []types.SignalInformation) error {
 		if err := validateSignalInformation(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateStateTemplateAssociation(v *types.StateTemplateAssociation) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StateTemplateAssociation"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
+	}
+	if v.StateTemplateUpdateStrategy == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StateTemplateUpdateStrategy"))
+	} else if v.StateTemplateUpdateStrategy != nil {
+		if err := validateStateTemplateUpdateStrategy(v.StateTemplateUpdateStrategy); err != nil {
+			invalidParams.AddNested("StateTemplateUpdateStrategy", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateStateTemplateAssociations(v []types.StateTemplateAssociation) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StateTemplateAssociations"}
+	for i := range v {
+		if err := validateStateTemplateAssociation(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateStateTemplateUpdateStrategy(v types.StateTemplateUpdateStrategy) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StateTemplateUpdateStrategy"}
+	switch uv := v.(type) {
+	case *types.StateTemplateUpdateStrategyMemberPeriodic:
+		if err := validatePeriodicStateTemplateUpdateStrategy(&uv.Value); err != nil {
+			invalidParams.AddNested("[periodic]", err.(smithy.InvalidParamsError))
+		}
+
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateStorageMaximumSize(v *types.StorageMaximumSize) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StorageMaximumSize"}
+	if len(v.Unit) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Unit"))
+	}
+	if v.Value == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Value"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateStorageMinimumTimeToLive(v *types.StorageMinimumTimeToLive) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StorageMinimumTimeToLive"}
+	if len(v.Unit) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Unit"))
+	}
+	if v.Value == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Value"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateStructuredMessage(v types.StructuredMessage) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StructuredMessage"}
+	switch uv := v.(type) {
+	case *types.StructuredMessageMemberPrimitiveMessageDefinition:
+		if err := validatePrimitiveMessageDefinition(uv.Value); err != nil {
+			invalidParams.AddNested("[primitiveMessageDefinition]", err.(smithy.InvalidParamsError))
+		}
+
+	case *types.StructuredMessageMemberStructuredMessageDefinition:
+		if err := validateStructuredMessageDefinition(uv.Value); err != nil {
+			invalidParams.AddNested("[structuredMessageDefinition]", err.(smithy.InvalidParamsError))
+		}
+
+	case *types.StructuredMessageMemberStructuredMessageListDefinition:
+		if err := validateStructuredMessageListDefinition(&uv.Value); err != nil {
+			invalidParams.AddNested("[structuredMessageListDefinition]", err.(smithy.InvalidParamsError))
+		}
+
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateStructuredMessageDefinition(v []types.StructuredMessageFieldNameAndDataTypePair) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StructuredMessageDefinition"}
+	for i := range v {
+		if err := validateStructuredMessageFieldNameAndDataTypePair(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateStructuredMessageFieldNameAndDataTypePair(v *types.StructuredMessageFieldNameAndDataTypePair) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StructuredMessageFieldNameAndDataTypePair"}
+	if v.FieldName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FieldName"))
+	}
+	if v.DataType == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DataType"))
+	} else if v.DataType != nil {
+		if err := validateStructuredMessage(v.DataType); err != nil {
+			invalidParams.AddNested("DataType", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateStructuredMessageListDefinition(v *types.StructuredMessageListDefinition) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StructuredMessageListDefinition"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.MemberType == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MemberType"))
+	} else if v.MemberType != nil {
+		if err := validateStructuredMessage(v.MemberType); err != nil {
+			invalidParams.AddNested("MemberType", err.(smithy.InvalidParamsError))
+		}
+	}
+	if len(v.ListType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("ListType"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1604,6 +2282,39 @@ func validateTimeBasedCollectionScheme(v *types.TimeBasedCollectionScheme) error
 	}
 }
 
+func validateTimeBasedSignalFetchConfig(v *types.TimeBasedSignalFetchConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "TimeBasedSignalFetchConfig"}
+	if v.ExecutionFrequencyMs == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ExecutionFrequencyMs"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateTimePeriod(v *types.TimePeriod) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "TimePeriod"}
+	if len(v.Unit) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Unit"))
+	}
+	if v.Value == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Value"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateTimestreamConfig(v *types.TimestreamConfig) error {
 	if v == nil {
 		return nil
@@ -1648,6 +2359,11 @@ func validateUpdateVehicleRequestItem(v *types.UpdateVehicleRequestItem) error {
 	if v.VehicleName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("VehicleName"))
 	}
+	if v.StateTemplatesToAdd != nil {
+		if err := validateStateTemplateAssociations(v.StateTemplatesToAdd); err != nil {
+			invalidParams.AddNested("StateTemplatesToAdd", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1664,6 +2380,24 @@ func validateUpdateVehicleRequestItems(v []types.UpdateVehicleRequestItem) error
 		if err := validateUpdateVehicleRequestItem(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateVehicleMiddleware(v *types.VehicleMiddleware) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "VehicleMiddleware"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if len(v.ProtocolName) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("ProtocolName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1762,6 +2496,16 @@ func validateOpCreateCampaignInput(v *CreateCampaignInput) error {
 	if v.DataDestinationConfigs != nil {
 		if err := validateDataDestinationConfigs(v.DataDestinationConfigs); err != nil {
 			invalidParams.AddNested("DataDestinationConfigs", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.DataPartitions != nil {
+		if err := validateDataPartitions(v.DataPartitions); err != nil {
+			invalidParams.AddNested("DataPartitions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.SignalsToFetch != nil {
+		if err := validateSignalFetchInformationList(v.SignalsToFetch); err != nil {
+			invalidParams.AddNested("SignalsToFetch", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1878,6 +2622,32 @@ func validateOpCreateSignalCatalogInput(v *CreateSignalCatalogInput) error {
 	}
 }
 
+func validateOpCreateStateTemplateInput(v *CreateStateTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateStateTemplateInput"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.SignalCatalogArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SignalCatalogArn"))
+	}
+	if v.StateTemplateProperties == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StateTemplateProperties"))
+	}
+	if v.Tags != nil {
+		if err := validateTagList(v.Tags); err != nil {
+			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpCreateVehicleInput(v *CreateVehicleInput) error {
 	if v == nil {
 		return nil
@@ -1895,6 +2665,11 @@ func validateOpCreateVehicleInput(v *CreateVehicleInput) error {
 	if v.Tags != nil {
 		if err := validateTagList(v.Tags); err != nil {
 			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.StateTemplates != nil {
+		if err := validateStateTemplateAssociations(v.StateTemplates); err != nil {
+			invalidParams.AddNested("StateTemplates", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1971,6 +2746,21 @@ func validateOpDeleteSignalCatalogInput(v *DeleteSignalCatalogInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "DeleteSignalCatalogInput"}
 	if v.Name == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteStateTemplateInput(v *DeleteStateTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteStateTemplateInput"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2079,6 +2869,21 @@ func validateOpGetSignalCatalogInput(v *GetSignalCatalogInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "GetSignalCatalogInput"}
 	if v.Name == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetStateTemplateInput(v *GetStateTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetStateTemplateInput"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2256,6 +3061,21 @@ func validateOpListVehiclesInFleetInput(v *ListVehiclesInFleetInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ListVehiclesInFleetInput"}
 	if v.FleetId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("FleetId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpPutEncryptionConfigurationInput(v *PutEncryptionConfigurationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PutEncryptionConfigurationInput"}
+	if len(v.EncryptionType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("EncryptionType"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2453,6 +3273,21 @@ func validateOpUpdateSignalCatalogInput(v *UpdateSignalCatalogInput) error {
 	}
 }
 
+func validateOpUpdateStateTemplateInput(v *UpdateStateTemplateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateStateTemplateInput"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpUpdateVehicleInput(v *UpdateVehicleInput) error {
 	if v == nil {
 		return nil
@@ -2460,6 +3295,11 @@ func validateOpUpdateVehicleInput(v *UpdateVehicleInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "UpdateVehicleInput"}
 	if v.VehicleName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("VehicleName"))
+	}
+	if v.StateTemplatesToAdd != nil {
+		if err := validateStateTemplateAssociations(v.StateTemplatesToAdd); err != nil {
+			invalidParams.AddNested("StateTemplatesToAdd", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

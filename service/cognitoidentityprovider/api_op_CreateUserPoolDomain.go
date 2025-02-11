@@ -4,19 +4,40 @@ package cognitoidentityprovider
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a new domain for a user pool.
+// A user pool domain hosts managed login, an authorization server and web server
+// for authentication in your application. This operation creates a new user pool
+// prefix or custom domain and sets the managed login branding version. Set the
+// branding version to 1 for hosted UI (classic) or 2 for managed login. When you
+// choose a custom domain, you must provide an SSL certificate in the US East (N.
+// Virginia) Amazon Web Services Region in your request.
+//
+// Your prefix domain might take up to one minute to take effect. Your custom
+// domain is online within five minutes, but it can take up to one hour to
+// distribute your SSL certificate.
+//
+// For more information about adding a custom domain to your user pool, see [Configuring a user pool domain].
+//
+// Amazon Cognito evaluates Identity and Access Management (IAM) policies in
+// requests for this API operation. For this operation, you must use IAM
+// credentials to authorize requests, and you must grant yourself the corresponding
+// IAM permission in a policy.
+//
+// # Learn more
+//
+// [Signing Amazon Web Services API Requests]
+//
+// [Using the Amazon Cognito user pools API and user pool endpoints]
+//
+// [Using the Amazon Cognito user pools API and user pool endpoints]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html
+// [Configuring a user pool domain]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-add-custom-domain.html
+// [Signing Amazon Web Services API Requests]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html
 func (c *Client) CreateUserPoolDomain(ctx context.Context, params *CreateUserPoolDomainInput, optFns ...func(*Options)) (*CreateUserPoolDomainOutput, error) {
 	if params == nil {
 		params = &CreateUserPoolDomainInput{}
@@ -35,24 +56,38 @@ func (c *Client) CreateUserPoolDomain(ctx context.Context, params *CreateUserPoo
 type CreateUserPoolDomainInput struct {
 
 	// The domain string. For custom domains, this is the fully-qualified domain name,
-	// such as auth.example.com . For Amazon Cognito prefix domains, this is the prefix
-	// alone, such as auth .
+	// such as auth.example.com . For prefix domains, this is the prefix alone, such as
+	// myprefix . A prefix value of myprefix for a user pool in the us-east-1 Region
+	// results in a domain of myprefix.auth.us-east-1.amazoncognito.com .
 	//
 	// This member is required.
 	Domain *string
 
-	// The user pool ID.
+	// The ID of the user pool where you want to add a domain.
 	//
 	// This member is required.
 	UserPoolId *string
 
-	// The configuration for a custom domain that hosts the sign-up and sign-in
-	// webpages for your application. Provide this parameter only if you want to use a
-	// custom domain for your user pool. Otherwise, you can exclude this parameter and
-	// use the Amazon Cognito hosted domain instead. For more information about the
-	// hosted domain and custom domains, see Configuring a User Pool Domain (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html)
-	// .
+	// The configuration for a custom domain. Configures your domain with an
+	// Certificate Manager certificate in the us-east-1 Region.
+	//
+	// Provide this parameter only if you want to use a custom domain for your user
+	// pool. Otherwise, you can exclude this parameter and use a prefix domain instead.
+	//
+	// For more information about the hosted domain and custom domains, see [Configuring a User Pool Domain].
+	//
+	// [Configuring a User Pool Domain]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-assign-domain.html
 	CustomDomainConfig *types.CustomDomainConfigType
+
+	// The version of managed login branding that you want to apply to your domain. A
+	// value of 1 indicates hosted UI (classic) and a version of 2 indicates managed
+	// login.
+	//
+	// Managed login requires that your user pool be configured for any [feature plan] other than
+	// Lite .
+	//
+	// [feature plan]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-sign-in-feature-plans.html
+	ManagedLoginVersion *int32
 
 	noSmithyDocumentSerde
 }
@@ -60,8 +95,14 @@ type CreateUserPoolDomainInput struct {
 type CreateUserPoolDomainOutput struct {
 
 	// The Amazon CloudFront endpoint that you use as the target of the alias that you
-	// set up with your Domain Name Service (DNS) provider.
+	// set up with your Domain Name Service (DNS) provider. Amazon Cognito returns this
+	// value if you set a custom domain with CustomDomainConfig . If you set an Amazon
+	// Cognito prefix domain, this operation returns a blank response.
 	CloudFrontDomain *string
+
+	// The version of managed login branding applied your domain. A value of 1
+	// indicates hosted UI (classic) and a version of 2 indicates managed login.
+	ManagedLoginVersion *int32
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -70,6 +111,9 @@ type CreateUserPoolDomainOutput struct {
 }
 
 func (c *Client) addOperationCreateUserPoolDomainMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateUserPoolDomain{}, middleware.After)
 	if err != nil {
 		return err
@@ -78,34 +122,38 @@ func (c *Client) addOperationCreateUserPoolDomainMiddlewares(stack *middleware.S
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateUserPoolDomain"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -117,7 +165,13 @@ func (c *Client) addOperationCreateUserPoolDomainMiddlewares(stack *middleware.S
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateUserPoolDomainResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateUserPoolDomainValidationMiddleware(stack); err != nil {
@@ -126,7 +180,7 @@ func (c *Client) addOperationCreateUserPoolDomainMiddlewares(stack *middleware.S
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateUserPoolDomain(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -138,7 +192,19 @@ func (c *Client) addOperationCreateUserPoolDomainMiddlewares(stack *middleware.S
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -148,130 +214,6 @@ func newServiceMetadataMiddleware_opCreateUserPoolDomain(region string) *awsmidd
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "cognito-idp",
 		OperationName: "CreateUserPoolDomain",
 	}
-}
-
-type opCreateUserPoolDomainResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateUserPoolDomainResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateUserPoolDomainResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "cognito-idp"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "cognito-idp"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("cognito-idp")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateUserPoolDomainResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateUserPoolDomainResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

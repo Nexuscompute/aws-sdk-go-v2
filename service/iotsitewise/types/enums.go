@@ -15,8 +15,9 @@ const (
 )
 
 // Values returns all known values for AggregateType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AggregateType) Values() []AggregateType {
 	return []AggregateType{
 		"AVERAGE",
@@ -36,8 +37,9 @@ const (
 )
 
 // Values returns all known values for AssetErrorCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AssetErrorCode) Values() []AssetErrorCode {
 	return []AssetErrorCode{
 		"INTERNAL_FAILURE",
@@ -57,8 +59,9 @@ const (
 )
 
 // Values returns all known values for AssetModelState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AssetModelState) Values() []AssetModelState {
 	return []AssetModelState{
 		"CREATING",
@@ -70,6 +73,44 @@ func (AssetModelState) Values() []AssetModelState {
 	}
 }
 
+type AssetModelType string
+
+// Enum values for AssetModelType
+const (
+	AssetModelTypeAssetModel     AssetModelType = "ASSET_MODEL"
+	AssetModelTypeComponentModel AssetModelType = "COMPONENT_MODEL"
+)
+
+// Values returns all known values for AssetModelType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AssetModelType) Values() []AssetModelType {
+	return []AssetModelType{
+		"ASSET_MODEL",
+		"COMPONENT_MODEL",
+	}
+}
+
+type AssetModelVersionType string
+
+// Enum values for AssetModelVersionType
+const (
+	AssetModelVersionTypeLatest AssetModelVersionType = "LATEST"
+	AssetModelVersionTypeActive AssetModelVersionType = "ACTIVE"
+)
+
+// Values returns all known values for AssetModelVersionType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AssetModelVersionType) Values() []AssetModelVersionType {
+	return []AssetModelVersionType{
+		"LATEST",
+		"ACTIVE",
+	}
+}
+
 type AssetRelationshipType string
 
 // Enum values for AssetRelationshipType
@@ -78,8 +119,9 @@ const (
 )
 
 // Values returns all known values for AssetRelationshipType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AssetRelationshipType) Values() []AssetRelationshipType {
 	return []AssetRelationshipType{
 		"HIERARCHY",
@@ -98,8 +140,9 @@ const (
 )
 
 // Values returns all known values for AssetState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AssetState) Values() []AssetState {
 	return []AssetState{
 		"CREATING",
@@ -119,8 +162,9 @@ const (
 )
 
 // Values returns all known values for AuthMode. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AuthMode) Values() []AuthMode {
 	return []AuthMode{
 		"IAM",
@@ -138,6 +182,7 @@ const (
 
 // Values returns all known values for BatchEntryCompletionStatus. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (BatchEntryCompletionStatus) Values() []BatchEntryCompletionStatus {
 	return []BatchEntryCompletionStatus{
@@ -157,8 +202,9 @@ const (
 
 // Values returns all known values for BatchGetAssetPropertyAggregatesErrorCode.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BatchGetAssetPropertyAggregatesErrorCode) Values() []BatchGetAssetPropertyAggregatesErrorCode {
 	return []BatchGetAssetPropertyAggregatesErrorCode{
 		"ResourceNotFoundException",
@@ -178,8 +224,9 @@ const (
 
 // Values returns all known values for BatchGetAssetPropertyValueErrorCode. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BatchGetAssetPropertyValueErrorCode) Values() []BatchGetAssetPropertyValueErrorCode {
 	return []BatchGetAssetPropertyValueErrorCode{
 		"ResourceNotFoundException",
@@ -199,8 +246,9 @@ const (
 
 // Values returns all known values for BatchGetAssetPropertyValueHistoryErrorCode.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BatchGetAssetPropertyValueHistoryErrorCode) Values() []BatchGetAssetPropertyValueHistoryErrorCode {
 	return []BatchGetAssetPropertyValueHistoryErrorCode{
 		"ResourceNotFoundException",
@@ -226,8 +274,9 @@ const (
 
 // Values returns all known values for BatchPutAssetPropertyValueErrorCode. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BatchPutAssetPropertyValueErrorCode) Values() []BatchPutAssetPropertyValueErrorCode {
 	return []BatchPutAssetPropertyValueErrorCode{
 		"ResourceNotFoundException",
@@ -246,21 +295,24 @@ type CapabilitySyncStatus string
 
 // Enum values for CapabilitySyncStatus
 const (
-	CapabilitySyncStatusInSync     CapabilitySyncStatus = "IN_SYNC"
-	CapabilitySyncStatusOutOfSync  CapabilitySyncStatus = "OUT_OF_SYNC"
-	CapabilitySyncStatusSyncFailed CapabilitySyncStatus = "SYNC_FAILED"
-	CapabilitySyncStatusUnknown    CapabilitySyncStatus = "UNKNOWN"
+	CapabilitySyncStatusInSync        CapabilitySyncStatus = "IN_SYNC"
+	CapabilitySyncStatusOutOfSync     CapabilitySyncStatus = "OUT_OF_SYNC"
+	CapabilitySyncStatusSyncFailed    CapabilitySyncStatus = "SYNC_FAILED"
+	CapabilitySyncStatusUnknown       CapabilitySyncStatus = "UNKNOWN"
+	CapabilitySyncStatusNotApplicable CapabilitySyncStatus = "NOT_APPLICABLE"
 )
 
 // Values returns all known values for CapabilitySyncStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CapabilitySyncStatus) Values() []CapabilitySyncStatus {
 	return []CapabilitySyncStatus{
 		"IN_SYNC",
 		"OUT_OF_SYNC",
 		"SYNC_FAILED",
 		"UNKNOWN",
+		"NOT_APPLICABLE",
 	}
 }
 
@@ -279,8 +331,9 @@ const (
 )
 
 // Values returns all known values for ColumnName. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ColumnName) Values() []ColumnName {
 	return []ColumnName{
 		"ALIAS",
@@ -303,8 +356,9 @@ const (
 )
 
 // Values returns all known values for ComputeLocation. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ComputeLocation) Values() []ComputeLocation {
 	return []ComputeLocation{
 		"EDGE",
@@ -322,13 +376,73 @@ const (
 )
 
 // Values returns all known values for ConfigurationState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConfigurationState) Values() []ConfigurationState {
 	return []ConfigurationState{
 		"ACTIVE",
 		"UPDATE_IN_PROGRESS",
 		"UPDATE_FAILED",
+	}
+}
+
+type DatasetSourceFormat string
+
+// Enum values for DatasetSourceFormat
+const (
+	DatasetSourceFormatKnowledgeBase DatasetSourceFormat = "KNOWLEDGE_BASE"
+)
+
+// Values returns all known values for DatasetSourceFormat. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DatasetSourceFormat) Values() []DatasetSourceFormat {
+	return []DatasetSourceFormat{
+		"KNOWLEDGE_BASE",
+	}
+}
+
+type DatasetSourceType string
+
+// Enum values for DatasetSourceType
+const (
+	DatasetSourceTypeKendra DatasetSourceType = "KENDRA"
+)
+
+// Values returns all known values for DatasetSourceType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DatasetSourceType) Values() []DatasetSourceType {
+	return []DatasetSourceType{
+		"KENDRA",
+	}
+}
+
+type DatasetState string
+
+// Enum values for DatasetState
+const (
+	DatasetStateCreating DatasetState = "CREATING"
+	DatasetStateActive   DatasetState = "ACTIVE"
+	DatasetStateUpdating DatasetState = "UPDATING"
+	DatasetStateDeleting DatasetState = "DELETING"
+	DatasetStateFailed   DatasetState = "FAILED"
+)
+
+// Values returns all known values for DatasetState. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DatasetState) Values() []DatasetState {
+	return []DatasetState{
+		"CREATING",
+		"ACTIVE",
+		"UPDATING",
+		"DELETING",
+		"FAILED",
 	}
 }
 
@@ -341,8 +455,9 @@ const (
 )
 
 // Values returns all known values for DetailedErrorCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DetailedErrorCode) Values() []DetailedErrorCode {
 	return []DetailedErrorCode{
 		"INCOMPATIBLE_COMPUTE_LOCATION",
@@ -360,8 +475,9 @@ const (
 
 // Values returns all known values for DisassociatedDataStorageState. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DisassociatedDataStorageState) Values() []DisassociatedDataStorageState {
 	return []DisassociatedDataStorageState{
 		"ENABLED",
@@ -378,8 +494,9 @@ const (
 )
 
 // Values returns all known values for EncryptionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EncryptionType) Values() []EncryptionType {
 	return []EncryptionType{
 		"SITEWISE_DEFAULT_ENCRYPTION",
@@ -396,8 +513,9 @@ const (
 )
 
 // Values returns all known values for ErrorCode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ErrorCode) Values() []ErrorCode {
 	return []ErrorCode{
 		"VALIDATION_ERROR",
@@ -414,8 +532,9 @@ const (
 )
 
 // Values returns all known values for ForwardingConfigState. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ForwardingConfigState) Values() []ForwardingConfigState {
 	return []ForwardingConfigState{
 		"DISABLED",
@@ -433,8 +552,9 @@ const (
 )
 
 // Values returns all known values for IdentityType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (IdentityType) Values() []IdentityType {
 	return []IdentityType{
 		"USER",
@@ -451,8 +571,9 @@ const (
 )
 
 // Values returns all known values for ImageFileType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImageFileType) Values() []ImageFileType {
 	return []ImageFileType{
 		"PNG",
@@ -472,8 +593,9 @@ const (
 )
 
 // Values returns all known values for JobStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobStatus) Values() []JobStatus {
 	return []JobStatus{
 		"PENDING",
@@ -495,8 +617,9 @@ const (
 
 // Values returns all known values for ListAssetModelPropertiesFilter. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ListAssetModelPropertiesFilter) Values() []ListAssetModelPropertiesFilter {
 	return []ListAssetModelPropertiesFilter{
 		"ALL",
@@ -514,6 +637,7 @@ const (
 
 // Values returns all known values for ListAssetPropertiesFilter. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ListAssetPropertiesFilter) Values() []ListAssetPropertiesFilter {
 	return []ListAssetPropertiesFilter{
@@ -531,8 +655,9 @@ const (
 )
 
 // Values returns all known values for ListAssetsFilter. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ListAssetsFilter) Values() []ListAssetsFilter {
 	return []ListAssetsFilter{
 		"ALL",
@@ -555,6 +680,7 @@ const (
 
 // Values returns all known values for ListBulkImportJobsFilter. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ListBulkImportJobsFilter) Values() []ListBulkImportJobsFilter {
 	return []ListBulkImportJobsFilter{
@@ -577,8 +703,9 @@ const (
 )
 
 // Values returns all known values for ListTimeSeriesType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ListTimeSeriesType) Values() []ListTimeSeriesType {
 	return []ListTimeSeriesType{
 		"ASSOCIATED",
@@ -596,8 +723,9 @@ const (
 )
 
 // Values returns all known values for LoggingLevel. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LoggingLevel) Values() []LoggingLevel {
 	return []LoggingLevel{
 		"ERROR",
@@ -616,8 +744,9 @@ const (
 )
 
 // Values returns all known values for MonitorErrorCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MonitorErrorCode) Values() []MonitorErrorCode {
 	return []MonitorErrorCode{
 		"INTERNAL_FAILURE",
@@ -635,8 +764,9 @@ const (
 )
 
 // Values returns all known values for Permission. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Permission) Values() []Permission {
 	return []Permission{
 		"ADMINISTRATOR",
@@ -649,6 +779,7 @@ type PortalState string
 // Enum values for PortalState
 const (
 	PortalStateCreating PortalState = "CREATING"
+	PortalStatePending  PortalState = "PENDING"
 	PortalStateUpdating PortalState = "UPDATING"
 	PortalStateDeleting PortalState = "DELETING"
 	PortalStateActive   PortalState = "ACTIVE"
@@ -656,15 +787,36 @@ const (
 )
 
 // Values returns all known values for PortalState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PortalState) Values() []PortalState {
 	return []PortalState{
 		"CREATING",
+		"PENDING",
 		"UPDATING",
 		"DELETING",
 		"ACTIVE",
 		"FAILED",
+	}
+}
+
+type PortalType string
+
+// Enum values for PortalType
+const (
+	PortalTypeSitewisePortalV1 PortalType = "SITEWISE_PORTAL_V1"
+	PortalTypeSitewisePortalV2 PortalType = "SITEWISE_PORTAL_V2"
+)
+
+// Values returns all known values for PortalType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PortalType) Values() []PortalType {
+	return []PortalType{
+		"SITEWISE_PORTAL_V1",
+		"SITEWISE_PORTAL_V2",
 	}
 }
 
@@ -680,8 +832,9 @@ const (
 )
 
 // Values returns all known values for PropertyDataType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PropertyDataType) Values() []PropertyDataType {
 	return []PropertyDataType{
 		"STRING",
@@ -702,6 +855,7 @@ const (
 
 // Values returns all known values for PropertyNotificationState. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (PropertyNotificationState) Values() []PropertyNotificationState {
 	return []PropertyNotificationState{
@@ -720,13 +874,39 @@ const (
 )
 
 // Values returns all known values for Quality. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Quality) Values() []Quality {
 	return []Quality{
 		"GOOD",
 		"BAD",
 		"UNCERTAIN",
+	}
+}
+
+type RawValueType string
+
+// Enum values for RawValueType
+const (
+	RawValueTypeDouble  RawValueType = "D"
+	RawValueTypeBoolean RawValueType = "B"
+	RawValueTypeString  RawValueType = "S"
+	RawValueTypeInteger RawValueType = "I"
+	RawValueTypeUnknown RawValueType = "U"
+)
+
+// Values returns all known values for RawValueType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RawValueType) Values() []RawValueType {
+	return []RawValueType{
+		"D",
+		"B",
+		"S",
+		"I",
+		"U",
 	}
 }
 
@@ -739,12 +919,38 @@ const (
 )
 
 // Values returns all known values for ResourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceType) Values() []ResourceType {
 	return []ResourceType{
 		"PORTAL",
 		"PROJECT",
+	}
+}
+
+type ScalarType string
+
+// Enum values for ScalarType
+const (
+	ScalarTypeBoolean   ScalarType = "BOOLEAN"
+	ScalarTypeInt       ScalarType = "INT"
+	ScalarTypeDouble    ScalarType = "DOUBLE"
+	ScalarTypeTimestamp ScalarType = "TIMESTAMP"
+	ScalarTypeString    ScalarType = "STRING"
+)
+
+// Values returns all known values for ScalarType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ScalarType) Values() []ScalarType {
+	return []ScalarType{
+		"BOOLEAN",
+		"INT",
+		"DOUBLE",
+		"TIMESTAMP",
+		"STRING",
 	}
 }
 
@@ -757,12 +963,30 @@ const (
 )
 
 // Values returns all known values for StorageType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StorageType) Values() []StorageType {
 	return []StorageType{
 		"SITEWISE_DEFAULT_STORAGE",
 		"MULTI_LAYER_STORAGE",
+	}
+}
+
+type TargetResourceType string
+
+// Enum values for TargetResourceType
+const (
+	TargetResourceTypeAsset TargetResourceType = "ASSET"
+)
+
+// Values returns all known values for TargetResourceType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TargetResourceType) Values() []TargetResourceType {
+	return []TargetResourceType{
+		"ASSET",
 	}
 }
 
@@ -775,8 +999,9 @@ const (
 )
 
 // Values returns all known values for TimeOrdering. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TimeOrdering) Values() []TimeOrdering {
 	return []TimeOrdering{
 		"ASCENDING",
@@ -793,8 +1018,9 @@ const (
 )
 
 // Values returns all known values for TraversalDirection. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TraversalDirection) Values() []TraversalDirection {
 	return []TraversalDirection{
 		"PARENT",
@@ -810,10 +1036,30 @@ const (
 )
 
 // Values returns all known values for TraversalType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TraversalType) Values() []TraversalType {
 	return []TraversalType{
 		"PATH_TO_ROOT",
+	}
+}
+
+type WarmTierState string
+
+// Enum values for WarmTierState
+const (
+	WarmTierStateEnabled  WarmTierState = "ENABLED"
+	WarmTierStateDisabled WarmTierState = "DISABLED"
+)
+
+// Values returns all known values for WarmTierState. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WarmTierState) Values() []WarmTierState {
+	return []WarmTierState{
+		"ENABLED",
+		"DISABLED",
 	}
 }

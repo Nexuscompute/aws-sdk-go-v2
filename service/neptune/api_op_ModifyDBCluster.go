@@ -4,14 +4,9 @@ package neptune
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/neptune/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -37,39 +32,55 @@ func (c *Client) ModifyDBCluster(ctx context.Context, params *ModifyDBClusterInp
 type ModifyDBClusterInput struct {
 
 	// The DB cluster identifier for the cluster being modified. This parameter is not
-	// case-sensitive. Constraints:
+	// case-sensitive.
+	//
+	// Constraints:
+	//
 	//   - Must match the identifier of an existing DBCluster.
 	//
 	// This member is required.
 	DBClusterIdentifier *string
 
 	// A value that indicates whether upgrades between different major versions are
-	// allowed. Constraints: You must set the allow-major-version-upgrade flag when
-	// providing an EngineVersion parameter that uses a different major version than
-	// the DB cluster's current version.
-	AllowMajorVersionUpgrade bool
+	// allowed.
+	//
+	// Constraints: You must set the allow-major-version-upgrade flag when providing
+	// an EngineVersion parameter that uses a different major version than the DB
+	// cluster's current version.
+	AllowMajorVersionUpgrade *bool
 
 	// A value that specifies whether the modifications in this request and any
 	// pending modifications are asynchronously applied as soon as possible, regardless
 	// of the PreferredMaintenanceWindow setting for the DB cluster. If this parameter
 	// is set to false , changes to the DB cluster are applied during the next
-	// maintenance window. The ApplyImmediately parameter only affects
-	// NewDBClusterIdentifier values. If you set the ApplyImmediately parameter value
-	// to false, then changes to NewDBClusterIdentifier values are applied during the
-	// next maintenance window. All other changes are applied immediately, regardless
-	// of the value of the ApplyImmediately parameter. Default: false
-	ApplyImmediately bool
+	// maintenance window.
+	//
+	// The ApplyImmediately parameter only affects NewDBClusterIdentifier values. If
+	// you set the ApplyImmediately parameter value to false, then changes to
+	// NewDBClusterIdentifier values are applied during the next maintenance window.
+	// All other changes are applied immediately, regardless of the value of the
+	// ApplyImmediately parameter.
+	//
+	// Default: false
+	ApplyImmediately *bool
 
 	// The number of days for which automated backups are retained. You must specify a
-	// minimum value of 1. Default: 1 Constraints:
+	// minimum value of 1.
+	//
+	// Default: 1
+	//
+	// Constraints:
+	//
 	//   - Must be a value from 1 to 35
 	BackupRetentionPeriod *int32
 
 	// The configuration setting for the log types to be enabled for export to
-	// CloudWatch Logs for a specific DB cluster.
+	// CloudWatch Logs for a specific DB cluster. See [Using the CLI to publish Neptune audit logs to CloudWatch Logs].
+	//
+	// [Using the CLI to publish Neptune audit logs to CloudWatch Logs]: https://docs.aws.amazon.com/neptune/latest/userguide/cloudwatch-logs.html#cloudwatch-logs-cli
 	CloudwatchLogsExportConfiguration *types.CloudwatchLogsExportConfiguration
 
-	// If set to true , tags are copied to any snapshot of the DB cluster that is
+	//  If set to true , tags are copied to any snapshot of the DB cluster that is
 	// created.
 	CopyTagsToSnapshot *bool
 
@@ -77,11 +88,18 @@ type ModifyDBClusterInput struct {
 	DBClusterParameterGroupName *string
 
 	// The name of the DB parameter group to apply to all instances of the DB cluster.
+	//
 	// When you apply a parameter group using DBInstanceParameterGroupName , parameter
 	// changes aren't applied during the next maintenance window but instead are
-	// applied immediately. Default: The existing name setting Constraints:
+	// applied immediately.
+	//
+	// Default: The existing name setting
+	//
+	// Constraints:
+	//
 	//   - The DB parameter group must be in the same DB parameter group family as the
 	//   target DB cluster version.
+	//
 	//   - The DBInstanceParameterGroupName parameter is only valid in combination with
 	//   the AllowMajorVersionUpgrade parameter.
 	DBInstanceParameterGroupName *string
@@ -92,56 +110,94 @@ type ModifyDBClusterInput struct {
 	DeletionProtection *bool
 
 	// True to enable mapping of Amazon Identity and Access Management (IAM) accounts
-	// to database accounts, and otherwise false. Default: false
+	// to database accounts, and otherwise false.
+	//
+	// Default: false
 	EnableIAMDatabaseAuthentication *bool
 
 	// The version number of the database engine to which you want to upgrade.
 	// Changing this parameter results in an outage. The change is applied during the
 	// next maintenance window unless the ApplyImmediately parameter is set to true.
-	// For a list of valid engine versions, see Engine Releases for Amazon Neptune (https://docs.aws.amazon.com/neptune/latest/userguide/engine-releases.html)
-	// , or call DescribeDBEngineVersions (https://docs.aws.amazon.com/neptune/latest/userguide/api-other-apis.html#DescribeDBEngineVersions)
-	// .
+	//
+	// For a list of valid engine versions, see [Engine Releases for Amazon Neptune], or call DescribeDBEngineVersions.
+	//
+	// [Engine Releases for Amazon Neptune]: https://docs.aws.amazon.com/neptune/latest/userguide/engine-releases.html
 	EngineVersion *string
 
 	// Not supported by Neptune.
 	MasterUserPassword *string
 
 	// The new DB cluster identifier for the DB cluster when renaming a DB cluster.
-	// This value is stored as a lowercase string. Constraints:
+	// This value is stored as a lowercase string.
+	//
+	// Constraints:
+	//
 	//   - Must contain from 1 to 63 letters, numbers, or hyphens
+	//
 	//   - The first character must be a letter
+	//
 	//   - Cannot end with a hyphen or contain two consecutive hyphens
+	//
 	// Example: my-cluster2
 	NewDBClusterIdentifier *string
 
-	// Not supported by Neptune.
+	//  Not supported by Neptune.
 	OptionGroupName *string
 
-	// The port number on which the DB cluster accepts connections. Constraints: Value
-	// must be 1150-65535 Default: The same port as the original DB cluster.
+	// The port number on which the DB cluster accepts connections.
+	//
+	// Constraints: Value must be 1150-65535
+	//
+	// Default: The same port as the original DB cluster.
 	Port *int32
 
 	// The daily time range during which automated backups are created if automated
-	// backups are enabled, using the BackupRetentionPeriod parameter. The default is
-	// a 30-minute window selected at random from an 8-hour block of time for each
-	// Amazon Region. Constraints:
+	// backups are enabled, using the BackupRetentionPeriod parameter.
+	//
+	// The default is a 30-minute window selected at random from an 8-hour block of
+	// time for each Amazon Region.
+	//
+	// Constraints:
+	//
 	//   - Must be in the format hh24:mi-hh24:mi .
+	//
 	//   - Must be in Universal Coordinated Time (UTC).
+	//
 	//   - Must not conflict with the preferred maintenance window.
+	//
 	//   - Must be at least 30 minutes.
 	PreferredBackupWindow *string
 
 	// The weekly time range during which system maintenance can occur, in Universal
-	// Coordinated Time (UTC). Format: ddd:hh24:mi-ddd:hh24:mi The default is a
-	// 30-minute window selected at random from an 8-hour block of time for each Amazon
-	// Region, occurring on a random day of the week. Valid Days: Mon, Tue, Wed, Thu,
-	// Fri, Sat, Sun. Constraints: Minimum 30-minute window.
+	// Coordinated Time (UTC).
+	//
+	// Format: ddd:hh24:mi-ddd:hh24:mi
+	//
+	// The default is a 30-minute window selected at random from an 8-hour block of
+	// time for each Amazon Region, occurring on a random day of the week.
+	//
+	// Valid Days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.
+	//
+	// Constraints: Minimum 30-minute window.
 	PreferredMaintenanceWindow *string
 
-	// Contains the scaling configuration of a Neptune Serverless DB cluster. For more
-	// information, see Using Amazon Neptune Serverless (https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html)
-	// in the Amazon Neptune User Guide.
+	// Contains the scaling configuration of a Neptune Serverless DB cluster.
+	//
+	// For more information, see [Using Amazon Neptune Serverless] in the Amazon Neptune User Guide.
+	//
+	// [Using Amazon Neptune Serverless]: https://docs.aws.amazon.com/neptune/latest/userguide/neptune-serverless-using.html
 	ServerlessV2ScalingConfiguration *types.ServerlessV2ScalingConfiguration
+
+	// The storage type to associate with the DB cluster.
+	//
+	// Valid Values:
+	//
+	//   - standard | iopt1
+	//
+	// Default:
+	//
+	//   - standard
+	StorageType *string
 
 	// A list of VPC security groups that the DB cluster will belong to.
 	VpcSecurityGroupIds []string
@@ -151,8 +207,9 @@ type ModifyDBClusterInput struct {
 
 type ModifyDBClusterOutput struct {
 
-	// Contains the details of an Amazon Neptune DB cluster. This data type is used as
-	// a response element in the DescribeDBClusters action.
+	// Contains the details of an Amazon Neptune DB cluster.
+	//
+	// This data type is used as a response element in the DescribeDBClusters.
 	DBCluster *types.DBCluster
 
 	// Metadata pertaining to the operation's result.
@@ -162,6 +219,9 @@ type ModifyDBClusterOutput struct {
 }
 
 func (c *Client) addOperationModifyDBClusterMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpModifyDBCluster{}, middleware.After)
 	if err != nil {
 		return err
@@ -170,34 +230,38 @@ func (c *Client) addOperationModifyDBClusterMiddlewares(stack *middleware.Stack,
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ModifyDBCluster"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -209,7 +273,13 @@ func (c *Client) addOperationModifyDBClusterMiddlewares(stack *middleware.Stack,
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addModifyDBClusterResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyDBClusterValidationMiddleware(stack); err != nil {
@@ -218,7 +288,7 @@ func (c *Client) addOperationModifyDBClusterMiddlewares(stack *middleware.Stack,
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opModifyDBCluster(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -230,7 +300,19 @@ func (c *Client) addOperationModifyDBClusterMiddlewares(stack *middleware.Stack,
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -240,130 +322,6 @@ func newServiceMetadataMiddleware_opModifyDBCluster(region string) *awsmiddlewar
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "rds",
 		OperationName: "ModifyDBCluster",
 	}
-}
-
-type opModifyDBClusterResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opModifyDBClusterResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opModifyDBClusterResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "rds"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "rds"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("rds")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addModifyDBClusterResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opModifyDBClusterResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

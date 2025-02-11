@@ -4,13 +4,8 @@ package backup
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -20,10 +15,17 @@ import (
 // attempts to update the lifecycle policy that controls the retention period of
 // any recovery point currently stored in a backup vault. If specified, Vault Lock
 // enforces a minimum and maximum retention period for future backup and copy jobs
-// that target a backup vault. Backup Vault Lock has been assessed by Cohasset
-// Associates for use in environments that are subject to SEC 17a-4, CFTC, and
-// FINRA regulations. For more information about how Backup Vault Lock relates to
-// these regulations, see the Cohasset Associates Compliance Assessment.
+// that target a backup vault.
+//
+// Backup Vault Lock has been assessed by Cohasset Associates for use in
+// environments that are subject to SEC 17a-4, CFTC, and FINRA regulations. For
+// more information about how Backup Vault Lock relates to these regulations, see
+// the [Cohasset Associates Compliance Assessment.]
+//
+// For more information, see [Backup Vault Lock].
+//
+// [Cohasset Associates Compliance Assessment.]: https://docs.aws.amazon.com/aws-backup/latest/devguide/samples/cohassetreport.zip
+// [Backup Vault Lock]: https://docs.aws.amazon.com/aws-backup/latest/devguide/vault-lock.html
 func (c *Client) PutBackupVaultLockConfiguration(ctx context.Context, params *PutBackupVaultLockConfigurationInput, optFns ...func(*Options)) (*PutBackupVaultLockConfigurationOutput, error) {
 	if params == nil {
 		params = &PutBackupVaultLockConfigurationInput{}
@@ -49,46 +51,57 @@ type PutBackupVaultLockConfigurationInput struct {
 
 	// The Backup Vault Lock configuration that specifies the number of days before
 	// the lock date. For example, setting ChangeableForDays to 30 on Jan. 1, 2022 at
-	// 8pm UTC will set the lock date to Jan. 31, 2022 at 8pm UTC. Backup enforces a
-	// 72-hour cooling-off period before Vault Lock takes effect and becomes immutable.
-	// Therefore, you must set ChangeableForDays to 3 or greater. Before the lock
-	// date, you can delete Vault Lock from the vault using
+	// 8pm UTC will set the lock date to Jan. 31, 2022 at 8pm UTC.
+	//
+	// Backup enforces a 72-hour cooling-off period before Vault Lock takes effect and
+	// becomes immutable. Therefore, you must set ChangeableForDays to 3 or greater.
+	//
+	// Before the lock date, you can delete Vault Lock from the vault using
 	// DeleteBackupVaultLockConfiguration or change the Vault Lock configuration using
 	// PutBackupVaultLockConfiguration . On and after the lock date, the Vault Lock
-	// becomes immutable and cannot be changed or deleted. If this parameter is not
-	// specified, you can delete Vault Lock from the vault using
-	// DeleteBackupVaultLockConfiguration or change the Vault Lock configuration using
-	// PutBackupVaultLockConfiguration at any time.
+	// becomes immutable and cannot be changed or deleted.
+	//
+	// If this parameter is not specified, you can delete Vault Lock from the vault
+	// using DeleteBackupVaultLockConfiguration or change the Vault Lock configuration
+	// using PutBackupVaultLockConfiguration at any time.
 	ChangeableForDays *int64
 
 	// The Backup Vault Lock configuration that specifies the maximum retention period
 	// that the vault retains its recovery points. This setting can be useful if, for
 	// example, your organization's policies require you to destroy certain data after
-	// retaining it for four years (1460 days). If this parameter is not included,
-	// Vault Lock does not enforce a maximum retention period on the recovery points in
-	// the vault. If this parameter is included without a value, Vault Lock will not
-	// enforce a maximum retention period. If this parameter is specified, any backup
-	// or copy job to the vault must have a lifecycle policy with a retention period
-	// equal to or shorter than the maximum retention period. If the job's retention
-	// period is longer than that maximum retention period, then the vault fails the
-	// backup or copy job, and you should either modify your lifecycle settings or use
-	// a different vault. The longest maximum retention period you can specify is 36500
-	// days (approximately 100 years). Recovery points already saved in the vault prior
-	// to Vault Lock are not affected.
+	// retaining it for four years (1460 days).
+	//
+	// If this parameter is not included, Vault Lock does not enforce a maximum
+	// retention period on the recovery points in the vault. If this parameter is
+	// included without a value, Vault Lock will not enforce a maximum retention
+	// period.
+	//
+	// If this parameter is specified, any backup or copy job to the vault must have a
+	// lifecycle policy with a retention period equal to or shorter than the maximum
+	// retention period. If the job's retention period is longer than that maximum
+	// retention period, then the vault fails the backup or copy job, and you should
+	// either modify your lifecycle settings or use a different vault. The longest
+	// maximum retention period you can specify is 36500 days (approximately 100
+	// years). Recovery points already saved in the vault prior to Vault Lock are not
+	// affected.
 	MaxRetentionDays *int64
 
 	// The Backup Vault Lock configuration that specifies the minimum retention period
 	// that the vault retains its recovery points. This setting can be useful if, for
 	// example, your organization's policies require you to retain certain data for at
-	// least seven years (2555 days). If this parameter is not specified, Vault Lock
-	// will not enforce a minimum retention period. If this parameter is specified, any
-	// backup or copy job to the vault must have a lifecycle policy with a retention
-	// period equal to or longer than the minimum retention period. If the job's
-	// retention period is shorter than that minimum retention period, then the vault
-	// fails that backup or copy job, and you should either modify your lifecycle
-	// settings or use a different vault. The shortest minimum retention period you can
-	// specify is 1 day. Recovery points already saved in the vault prior to Vault Lock
-	// are not affected.
+	// least seven years (2555 days).
+	//
+	// This parameter is required when a vault lock is created through CloudFormation;
+	// otherwise, this parameter is optional. If this parameter is not specified, Vault
+	// Lock will not enforce a minimum retention period.
+	//
+	// If this parameter is specified, any backup or copy job to the vault must have a
+	// lifecycle policy with a retention period equal to or longer than the minimum
+	// retention period. If the job's retention period is shorter than that minimum
+	// retention period, then the vault fails that backup or copy job, and you should
+	// either modify your lifecycle settings or use a different vault. The shortest
+	// minimum retention period you can specify is 1 day. Recovery points already saved
+	// in the vault prior to Vault Lock are not affected.
 	MinRetentionDays *int64
 
 	noSmithyDocumentSerde
@@ -102,6 +115,9 @@ type PutBackupVaultLockConfigurationOutput struct {
 }
 
 func (c *Client) addOperationPutBackupVaultLockConfigurationMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpPutBackupVaultLockConfiguration{}, middleware.After)
 	if err != nil {
 		return err
@@ -110,34 +126,38 @@ func (c *Client) addOperationPutBackupVaultLockConfigurationMiddlewares(stack *m
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "PutBackupVaultLockConfiguration"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -149,7 +169,13 @@ func (c *Client) addOperationPutBackupVaultLockConfigurationMiddlewares(stack *m
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addPutBackupVaultLockConfigurationResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutBackupVaultLockConfigurationValidationMiddleware(stack); err != nil {
@@ -158,7 +184,7 @@ func (c *Client) addOperationPutBackupVaultLockConfigurationMiddlewares(stack *m
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opPutBackupVaultLockConfiguration(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -170,7 +196,19 @@ func (c *Client) addOperationPutBackupVaultLockConfigurationMiddlewares(stack *m
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -180,130 +218,6 @@ func newServiceMetadataMiddleware_opPutBackupVaultLockConfiguration(region strin
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "backup",
 		OperationName: "PutBackupVaultLockConfiguration",
 	}
-}
-
-type opPutBackupVaultLockConfigurationResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opPutBackupVaultLockConfigurationResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opPutBackupVaultLockConfigurationResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "backup"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "backup"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("backup")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addPutBackupVaultLockConfigurationResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opPutBackupVaultLockConfigurationResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

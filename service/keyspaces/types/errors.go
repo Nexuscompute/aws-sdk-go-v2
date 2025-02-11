@@ -7,7 +7,7 @@ import (
 	smithy "github.com/aws/smithy-go"
 )
 
-// You do not have sufficient access to perform this action.
+// You don't have sufficient access permissions to perform this action.
 type AccessDeniedException struct {
 	Message *string
 
@@ -33,7 +33,7 @@ func (e *AccessDeniedException) ErrorCode() string {
 }
 func (e *AccessDeniedException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// Amazon Keyspaces could not complete the requested action. This error may occur
+// Amazon Keyspaces couldn't complete the requested action. This error may occur
 // if you try to perform an action and the same or a different action is already in
 // progress, or if you try to create a resource that already exists.
 type ConflictException struct {
@@ -88,8 +88,9 @@ func (e *InternalServerException) ErrorCode() string {
 }
 func (e *InternalServerException) ErrorFault() smithy.ErrorFault { return smithy.FaultServer }
 
-// The operation tried to access a keyspace or table that doesn't exist. The
-// resource might not be specified correctly, or its status might not be ACTIVE .
+// The operation tried to access a keyspace, table, or type that doesn't exist.
+// The resource might not be specified correctly, or its status might not be ACTIVE
+// .
 type ResourceNotFoundException struct {
 	Message *string
 
@@ -118,8 +119,9 @@ func (e *ResourceNotFoundException) ErrorCode() string {
 func (e *ResourceNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The operation exceeded the service quota for this resource. For more
-// information on service quotas, see Quotas (https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html)
-// in the Amazon Keyspaces Developer Guide.
+// information on service quotas, see [Quotas]in the Amazon Keyspaces Developer Guide.
+//
+// [Quotas]: https://docs.aws.amazon.com/keyspaces/latest/devguide/quotas.html
 type ServiceQuotaExceededException struct {
 	Message *string
 

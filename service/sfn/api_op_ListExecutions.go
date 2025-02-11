@@ -4,14 +4,9 @@ package sfn
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/sfn/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -19,17 +14,27 @@ import (
 // Lists all executions of a state machine or a Map Run. You can list all
 // executions related to a state machine by specifying a state machine Amazon
 // Resource Name (ARN), or those related to a Map Run by specifying a Map Run ARN.
-// You can also provide a state machine alias (https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html)
-// ARN or version (https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html)
-// ARN to list the executions associated with a specific alias or version. Results
-// are sorted by time, with the most recent execution first. If nextToken is
-// returned, there are more results available. The value of nextToken is a unique
-// pagination token for each page. Make the call again using the returned token to
-// retrieve the next page. Keep all other arguments unchanged. Each pagination
-// token expires after 24 hours. Using an expired pagination token will return an
-// HTTP 400 InvalidToken error. This operation is eventually consistent. The
-// results are best effort and may not reflect very recent updates and changes.
+// Using this API action, you can also list all [redriven]executions.
+//
+// You can also provide a state machine [alias] ARN or [version] ARN to list the executions
+// associated with a specific alias or version.
+//
+// Results are sorted by time, with the most recent execution first.
+//
+// If nextToken is returned, there are more results available. The value of
+// nextToken is a unique pagination token for each page. Make the call again using
+// the returned token to retrieve the next page. Keep all other arguments
+// unchanged. Each pagination token expires after 24 hours. Using an expired
+// pagination token will return an HTTP 400 InvalidToken error.
+//
+// This operation is eventually consistent. The results are best effort and may
+// not reflect very recent updates and changes.
+//
 // This API action is not supported by EXPRESS state machines.
+//
+// [redriven]: https://docs.aws.amazon.com/step-functions/latest/dg/redrive-executions.html
+// [alias]: https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html
+// [version]: https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html
 func (c *Client) ListExecutions(ctx context.Context, params *ListExecutionsInput, optFns ...func(*Options)) (*ListExecutionsOutput, error) {
 	if params == nil {
 		params = &ListExecutionsInput{}
@@ -49,17 +54,20 @@ type ListExecutionsInput struct {
 
 	// The Amazon Resource Name (ARN) of the Map Run that started the child workflow
 	// executions. If the mapRunArn field is specified, a list of all of the child
-	// workflow executions started by a Map Run is returned. For more information, see
-	// Examining Map Run (https://docs.aws.amazon.com/step-functions/latest/dg/concepts-examine-map-run.html)
-	// in the Step Functions Developer Guide. You can specify either a mapRunArn or a
-	// stateMachineArn , but not both.
+	// workflow executions started by a Map Run is returned. For more information, see [Examining Map Run]
+	// in the Step Functions Developer Guide.
+	//
+	// You can specify either a mapRunArn or a stateMachineArn , but not both.
+	//
+	// [Examining Map Run]: https://docs.aws.amazon.com/step-functions/latest/dg/concepts-examine-map-run.html
 	MapRunArn *string
 
 	// The maximum number of results that are returned per call. You can use nextToken
 	// to obtain further pages of results. The default is 100 and the maximum allowed
-	// page size is 1000. A value of 0 uses the default. This is only an upper limit.
-	// The actual number of results returned per call might be fewer than the specified
-	// maximum.
+	// page size is 1000. A value of 0 uses the default.
+	//
+	// This is only an upper limit. The actual number of results returned per call
+	// might be fewer than the specified maximum.
 	MaxResults int32
 
 	// If nextToken is returned, there are more results available. The value of
@@ -69,11 +77,28 @@ type ListExecutionsInput struct {
 	// pagination token will return an HTTP 400 InvalidToken error.
 	NextToken *string
 
+	// Sets a filter to list executions based on whether or not they have been
+	// redriven.
+	//
+	// For a Distributed Map, redriveFilter sets a filter to list child workflow
+	// executions based on whether or not they have been redriven.
+	//
+	// If you do not provide a redriveFilter , Step Functions returns a list of both
+	// redriven and non-redriven executions.
+	//
+	// If you provide a state machine ARN in redriveFilter , the API returns a
+	// validation exception.
+	RedriveFilter types.ExecutionRedriveFilter
+
 	// The Amazon Resource Name (ARN) of the state machine whose executions is listed.
-	// You can specify either a mapRunArn or a stateMachineArn , but not both. You can
-	// also return a list of executions associated with a specific alias (https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html)
-	// or version (https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html)
-	// , by specifying an alias ARN or a version ARN in the stateMachineArn parameter.
+	//
+	// You can specify either a mapRunArn or a stateMachineArn , but not both.
+	//
+	// You can also return a list of executions associated with a specific [alias] or [version], by
+	// specifying an alias ARN or a version ARN in the stateMachineArn parameter.
+	//
+	// [alias]: https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-alias.html
+	// [version]: https://docs.aws.amazon.com/step-functions/latest/dg/concepts-state-machine-version.html
 	StateMachineArn *string
 
 	// If specified, only list the executions whose current execution status matches
@@ -104,6 +129,9 @@ type ListExecutionsOutput struct {
 }
 
 func (c *Client) addOperationListExecutionsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson10_serializeOpListExecutions{}, middleware.After)
 	if err != nil {
 		return err
@@ -112,34 +140,38 @@ func (c *Client) addOperationListExecutionsMiddlewares(stack *middleware.Stack, 
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListExecutions"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -151,13 +183,19 @@ func (c *Client) addOperationListExecutionsMiddlewares(stack *middleware.Stack, 
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListExecutionsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListExecutions(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -169,27 +207,32 @@ func (c *Client) addOperationListExecutionsMiddlewares(stack *middleware.Stack, 
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
 
-// ListExecutionsAPIClient is a client that implements the ListExecutions
-// operation.
-type ListExecutionsAPIClient interface {
-	ListExecutions(context.Context, *ListExecutionsInput, ...func(*Options)) (*ListExecutionsOutput, error)
-}
-
-var _ ListExecutionsAPIClient = (*Client)(nil)
-
 // ListExecutionsPaginatorOptions is the paginator options for ListExecutions
 type ListExecutionsPaginatorOptions struct {
 	// The maximum number of results that are returned per call. You can use nextToken
 	// to obtain further pages of results. The default is 100 and the maximum allowed
-	// page size is 1000. A value of 0 uses the default. This is only an upper limit.
-	// The actual number of results returned per call might be fewer than the specified
-	// maximum.
+	// page size is 1000. A value of 0 uses the default.
+	//
+	// This is only an upper limit. The actual number of results returned per call
+	// might be fewer than the specified maximum.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token
@@ -246,6 +289,9 @@ func (p *ListExecutionsPaginator) NextPage(ctx context.Context, optFns ...func(*
 
 	params.MaxResults = p.options.Limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListExecutions(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -265,134 +311,18 @@ func (p *ListExecutionsPaginator) NextPage(ctx context.Context, optFns ...func(*
 	return result, nil
 }
 
+// ListExecutionsAPIClient is a client that implements the ListExecutions
+// operation.
+type ListExecutionsAPIClient interface {
+	ListExecutions(context.Context, *ListExecutionsInput, ...func(*Options)) (*ListExecutionsOutput, error)
+}
+
+var _ ListExecutionsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListExecutions(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "states",
 		OperationName: "ListExecutions",
 	}
-}
-
-type opListExecutionsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListExecutionsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListExecutionsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "states"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "states"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("states")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListExecutionsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListExecutionsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

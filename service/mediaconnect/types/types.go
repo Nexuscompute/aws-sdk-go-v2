@@ -4,6 +4,7 @@ package types
 
 import (
 	smithydocument "github.com/aws/smithy-go/document"
+	"time"
 )
 
 // Add a flow source to an existing bridge.
@@ -49,7 +50,7 @@ type AddBridgeNetworkOutputRequest struct {
 	// The network output port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	// The network output protocol.
 	//
@@ -59,7 +60,7 @@ type AddBridgeNetworkOutputRequest struct {
 	// The network output TTL.
 	//
 	// This member is required.
-	Ttl int32
+	Ttl *int32
 
 	noSmithyDocumentSerde
 }
@@ -86,12 +87,15 @@ type AddBridgeNetworkSourceRequest struct {
 	// The network source port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	// The network source protocol.
 	//
 	// This member is required.
 	Protocol Protocol
+
+	// The settings related to the multicast source.
+	MulticastSourceSettings *MulticastSourceSettings
 
 	noSmithyDocumentSerde
 }
@@ -122,7 +126,7 @@ type AddEgressGatewayBridgeRequest struct {
 	// The maximum expected bitrate (in bps).
 	//
 	// This member is required.
-	MaxBitrate int32
+	MaxBitrate *int32
 
 	noSmithyDocumentSerde
 }
@@ -132,12 +136,12 @@ type AddIngressGatewayBridgeRequest struct {
 	// The maximum expected bitrate (in bps).
 	//
 	// This member is required.
-	MaxBitrate int32
+	MaxBitrate *int32
 
 	// The maximum number of expected outputs.
 	//
 	// This member is required.
-	MaxOutputs int32
+	MaxOutputs *int32
 
 	noSmithyDocumentSerde
 }
@@ -166,7 +170,7 @@ type AddMediaStreamRequest struct {
 	// A unique identifier for the media stream.
 	//
 	// This member is required.
-	MediaStreamId int32
+	MediaStreamId *int32
 
 	// A name that helps you distinguish one media stream from another.
 	//
@@ -184,7 +188,7 @@ type AddMediaStreamRequest struct {
 	// The sample rate (in Hz) for the stream. If the media stream type is video or
 	// ancillary data, set this value to 90000. If the media stream type is audio, set
 	// this value to either 48000 or 96000.
-	ClockRate int32
+	ClockRate *int32
 
 	// A description that can help you quickly identify what your media stream is used
 	// for.
@@ -223,7 +227,7 @@ type AddOutputRequest struct {
 
 	// The maximum latency in milliseconds. This parameter applies only to RIST-based,
 	// Zixi-based, and Fujitsu-based streams.
-	MaxLatency int32
+	MaxLatency *int32
 
 	// The media streams that are associated with the output, and the parameters for
 	// those associations.
@@ -234,23 +238,28 @@ type AddOutputRequest struct {
 	// represents the minimal potential latency of that connection. The latency of the
 	// stream is set to the highest number between the sender’s minimum latency and the
 	// receiver’s minimum latency.
-	MinLatency int32
+	MinLatency *int32
 
 	// The name of the output. This value must be unique within the current flow.
 	Name *string
 
+	// An indication of whether the new output should be enabled or disabled as soon
+	// as it is created. If you don't specify the outputStatus field in your request,
+	// MediaConnect sets it to ENABLED.
+	OutputStatus OutputStatus
+
 	// The port to use when content is distributed to this output.
-	Port int32
+	Port *int32
 
 	// The remote ID for the Zixi-pull output stream.
 	RemoteId *string
 
 	// The port that the flow uses to send outbound requests to initiate connection
 	// with the sender.
-	SenderControlPort int32
+	SenderControlPort *int32
 
 	// The smoothing latency in milliseconds for RIST, RTP, and RTP-FEC streams.
-	SmoothingLatency int32
+	SmoothingLatency *int32
 
 	// The stream ID that you want to use for this transport. This parameter applies
 	// only to Zixi and SRT caller-based streams.
@@ -258,6 +267,28 @@ type AddOutputRequest struct {
 
 	// The name of the VPC interface attachment to use for this output.
 	VpcInterfaceAttachment *VpcInterfaceAttachment
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the configuration for audio stream metrics monitoring.
+type AudioMonitoringSetting struct {
+
+	// Detects periods of silence.
+	SilentAudio *SilentAudio
+
+	noSmithyDocumentSerde
+}
+
+// Configures settings for the BlackFrames metric.
+type BlackFrames struct {
+
+	// Indicates whether the BlackFrames metric is enabled or disabled.
+	State State
+
+	// Specifies the number of consecutive seconds of black frames that triggers an
+	// event or alert.
+	ThresholdSeconds *int32
 
 	noSmithyDocumentSerde
 }
@@ -368,7 +399,7 @@ type BridgeNetworkOutput struct {
 	// The network output port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	// The network output protocol.
 	//
@@ -378,7 +409,7 @@ type BridgeNetworkOutput struct {
 	// The network output TTL.
 	//
 	// This member is required.
-	Ttl int32
+	Ttl *int32
 
 	noSmithyDocumentSerde
 }
@@ -404,12 +435,15 @@ type BridgeNetworkSource struct {
 	// The network source port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	// The network source protocol.
 	//
 	// This member is required.
 	Protocol Protocol
+
+	// The settings related to the multicast source.
+	MulticastSourceSettings *MulticastSourceSettings
 
 	noSmithyDocumentSerde
 }
@@ -451,7 +485,7 @@ type DestinationConfiguration struct {
 	// output.
 	//
 	// This member is required.
-	DestinationPort int32
+	DestinationPort *int32
 
 	// The VPC interface that is used for the media stream associated with the output.
 	//
@@ -482,7 +516,7 @@ type DestinationConfigurationRequest struct {
 	// to the output.
 	//
 	// This member is required.
-	DestinationPort int32
+	DestinationPort *int32
 
 	// The VPC interface that you want to use for the media stream associated with the
 	// output.
@@ -498,7 +532,7 @@ type EgressGatewayBridge struct {
 	// The maximum expected bitrate (in bps) of the egress bridge.
 	//
 	// This member is required.
-	MaxBitrate int32
+	MaxBitrate *int32
 
 	// The ID of the instance running this bridge.
 	InstanceId *string
@@ -517,7 +551,7 @@ type EncodingParameters struct {
 	// floating point numbers in the range of 3.0 to 10.0, inclusive.
 	//
 	// This member is required.
-	CompressionFactor float64
+	CompressionFactor *float64
 
 	// A setting on the encoder that drives compression settings. This property only
 	// applies to video media streams associated with outputs that use the ST 2110 JPEG
@@ -540,7 +574,7 @@ type EncodingParametersRequest struct {
 	// floating point numbers in the range of 3.0 to 10.0, inclusive.
 	//
 	// This member is required.
-	CompressionFactor float64
+	CompressionFactor *float64
 
 	// A setting on the encoder that drives compression settings. This property only
 	// applies to video media streams associated with outputs that use the ST 2110 JPEG
@@ -624,7 +658,7 @@ type Entitlement struct {
 	Subscribers []string
 
 	// Percentage from 0-100 of the data transfer cost to be billed to the subscriber.
-	DataTransferSubscriberFeePercent int32
+	DataTransferSubscriberFeePercent *int32
 
 	// A description of the entitlement.
 	Description *string
@@ -648,7 +682,7 @@ type FailoverConfig struct {
 	FailoverMode FailoverMode
 
 	// Search window time to look for dash-7 packets
-	RecoveryWindow int32
+	RecoveryWindow *int32
 
 	// The priority you want to assign to a source. You can have a primary stream and
 	// a backup stream or two equally prioritized streams.
@@ -715,6 +749,9 @@ type Flow struct {
 	// The settings for source failover.
 	SourceFailoverConfig *FailoverConfig
 
+	// The settings for source monitoring.
+	SourceMonitoringConfig *MonitoringConfig
+
 	Sources []Source
 
 	// The VPC Interfaces for this flow.
@@ -777,6 +814,35 @@ type FmtpRequest struct {
 
 	// The transfer characteristic system (TCS) that is used in the video.
 	Tcs Tcs
+
+	noSmithyDocumentSerde
+}
+
+// The frame resolution used by the video stream.
+type FrameResolution struct {
+
+	// The number of pixels in the height of the video frame.
+	//
+	// This member is required.
+	FrameHeight *int32
+
+	// The number of pixels in the width of the video frame.
+	//
+	// This member is required.
+	FrameWidth *int32
+
+	noSmithyDocumentSerde
+}
+
+// Configures settings for the FrozenFrames metric.
+type FrozenFrames struct {
+
+	// Indicates whether the FrozenFrames metric is enabled or disabled.
+	State State
+
+	// Specifies the number of consecutive seconds of a static image that triggers an
+	// event or alert.
+	ThresholdSeconds *int32
 
 	noSmithyDocumentSerde
 }
@@ -869,7 +935,7 @@ type GatewayInstance struct {
 	// The running bridge count.
 	//
 	// This member is required.
-	RunningBridgeCount int32
+	RunningBridgeCount *int32
 
 	InstanceMessages []MessageDetail
 
@@ -906,7 +972,7 @@ type GrantEntitlementRequest struct {
 	Subscribers []string
 
 	// Percentage from 0-100 of the data transfer cost to be billed to the subscriber.
-	DataTransferSubscriberFeePercent int32
+	DataTransferSubscriberFeePercent *int32
 
 	// A description of the entitlement. This description appears only on the AWS
 	// Elemental MediaConnect console and will not be seen by the subscriber or end
@@ -933,12 +999,12 @@ type IngressGatewayBridge struct {
 	// The maximum expected bitrate (in bps) of the ingress bridge.
 	//
 	// This member is required.
-	MaxBitrate int32
+	MaxBitrate *int32
 
 	// The maximum number of outputs on the ingress bridge.
 	//
 	// This member is required.
-	MaxOutputs int32
+	MaxOutputs *int32
 
 	// The ID of the instance running this bridge.
 	InstanceId *string
@@ -957,7 +1023,7 @@ type InputConfiguration struct {
 	// The port that the flow listens on for an incoming media stream.
 	//
 	// This member is required.
-	InputPort int32
+	InputPort *int32
 
 	// The VPC interface where the media stream comes in from.
 	//
@@ -974,7 +1040,7 @@ type InputConfigurationRequest struct {
 	// The port that you want the flow to listen on for an incoming media stream.
 	//
 	// This member is required.
-	InputPort int32
+	InputPort *int32
 
 	// The VPC interface that you want to use for the incoming media stream.
 	//
@@ -1051,7 +1117,7 @@ type ListedEntitlement struct {
 	EntitlementName *string
 
 	// Percentage from 0-100 of the data transfer cost to be billed to the subscriber.
-	DataTransferSubscriberFeePercent int32
+	DataTransferSubscriberFeePercent *int32
 
 	noSmithyDocumentSerde
 }
@@ -1176,12 +1242,12 @@ type MediaStream struct {
 	// outputs, you need to provide this value to the receiver.
 	//
 	// This member is required.
-	Fmt int32
+	Fmt *int32
 
 	// A unique identifier for the media stream.
 	//
 	// This member is required.
-	MediaStreamId int32
+	MediaStreamId *int32
 
 	// A name that helps you distinguish one media stream from another.
 	//
@@ -1197,7 +1263,7 @@ type MediaStream struct {
 	Attributes *MediaStreamAttributes
 
 	// The sample rate for the stream. This value is measured in Hz.
-	ClockRate int32
+	ClockRate *int32
 
 	// A description that can help you quickly identify what your media stream is used
 	// for.
@@ -1363,6 +1429,33 @@ type Messages struct {
 	noSmithyDocumentSerde
 }
 
+// The settings for source monitoring.
+type MonitoringConfig struct {
+
+	// Contains the settings for audio stream metrics monitoring.
+	AudioMonitoringSettings []AudioMonitoringSetting
+
+	// Indicates whether content quality analysis is enabled or disabled.
+	ContentQualityAnalysisState ContentQualityAnalysisState
+
+	// The state of thumbnail monitoring.
+	ThumbnailState ThumbnailState
+
+	// Contains the settings for video stream metrics monitoring.
+	VideoMonitoringSettings []VideoMonitoringSetting
+
+	noSmithyDocumentSerde
+}
+
+// The settings related to the multicast source.
+type MulticastSourceSettings struct {
+
+	// The IP address of the source for source-specific multicast (SSM).
+	MulticastSourceIp *string
+
+	noSmithyDocumentSerde
+}
+
 // A savings plan that reserves a certain amount of outbound bandwidth usage at a
 // discounted rate each month over a period of time.
 type Offering struct {
@@ -1376,7 +1469,7 @@ type Offering struct {
 	// The length of time that your reservation would be active.
 	//
 	// This member is required.
-	Duration int32
+	Duration *int32
 
 	// The unit of measurement for the duration of the offering.
 	//
@@ -1434,7 +1527,7 @@ type Output struct {
 	BridgePorts []int32
 
 	// Percentage from 0-100 of the data transfer cost to be billed to the subscriber.
-	DataTransferSubscriberFeePercent int32
+	DataTransferSubscriberFeePercent *int32
 
 	// A description of the output.
 	Description *string
@@ -1464,8 +1557,11 @@ type Output struct {
 	// The configuration for each media stream that is associated with the output.
 	MediaStreamOutputConfigurations []MediaStreamOutputConfiguration
 
+	// An indication of whether the output is transmitting data or not.
+	OutputStatus OutputStatus
+
 	// The port to use when content is distributed to this output.
-	Port int32
+	Port *int32
 
 	// Attributes related to the transport stream that are used in the output.
 	Transport *Transport
@@ -1494,7 +1590,7 @@ type Reservation struct {
 	// value in the offering.
 	//
 	// This member is required.
-	Duration int32
+	Duration *int32
 
 	// The unit of measurement for the duration of the reservation. MediaConnect
 	// defines this value in the offering.
@@ -1572,7 +1668,7 @@ type ResourceSpecification struct {
 	ResourceType ResourceType
 
 	// The amount of outbound bandwidth that is discounted in the offering.
-	ReservedBitrate int32
+	ReservedBitrate *int32
 
 	noSmithyDocumentSerde
 }
@@ -1611,17 +1707,17 @@ type SetSourceRequest struct {
 	GatewayBridgeSource *SetGatewayBridgeSourceRequest
 
 	// The port that the flow will be listening on for incoming content.
-	IngestPort int32
+	IngestPort *int32
 
 	// The smoothing max bitrate (in bps) for RIST, RTP, and RTP-FEC streams.
-	MaxBitrate int32
+	MaxBitrate *int32
 
 	// The maximum latency in milliseconds. This parameter applies only to RIST-based,
 	// Zixi-based, and Fujitsu-based streams.
-	MaxLatency int32
+	MaxLatency *int32
 
 	// The size of the buffer (in milliseconds) to use to sync incoming source data.
-	MaxSyncBuffer int32
+	MaxSyncBuffer *int32
 
 	// The media streams that are associated with the source, and the parameters for
 	// those associations.
@@ -1632,7 +1728,7 @@ type SetSourceRequest struct {
 	// represents the minimal potential latency of that connection. The latency of the
 	// stream is set to the highest number between the sender’s minimum latency and the
 	// receiver’s minimum latency.
-	MinLatency int32
+	MinLatency *int32
 
 	// The name of the source.
 	Name *string
@@ -1642,7 +1738,7 @@ type SetSourceRequest struct {
 
 	// The port that the flow uses to send outbound requests to initiate connection
 	// with the sender.
-	SenderControlPort int32
+	SenderControlPort *int32
 
 	// The IP address that the flow communicates with to initiate connection with the
 	// sender.
@@ -1652,7 +1748,7 @@ type SetSourceRequest struct {
 	SourceListenerAddress *string
 
 	// Source port for SRT-caller protocol.
-	SourceListenerPort int32
+	SourceListenerPort *int32
 
 	// The stream ID that you want to use for this transport. This parameter applies
 	// only to Zixi and SRT caller-based streams.
@@ -1665,6 +1761,19 @@ type SetSourceRequest struct {
 	// source. These IP addresses should be in the form of a Classless Inter-Domain
 	// Routing (CIDR) block; for example, 10.0.0.0/16.
 	WhitelistCidr *string
+
+	noSmithyDocumentSerde
+}
+
+// Configures settings for the SilentAudio metric.
+type SilentAudio struct {
+
+	// Indicates whether the SilentAudio metric is enabled or disabled.
+	State State
+
+	// Specifies the number of consecutive seconds of silence that triggers an event
+	// or alert.
+	ThresholdSeconds *int32
 
 	noSmithyDocumentSerde
 }
@@ -1683,7 +1792,7 @@ type Source struct {
 	SourceArn *string
 
 	// Percentage from 0-100 of the data transfer cost to be billed to the subscriber.
-	DataTransferSubscriberFeePercent int32
+	DataTransferSubscriberFeePercent *int32
 
 	// The type of encryption that is used on the content ingested from this source.
 	Decryption *Encryption
@@ -1704,7 +1813,7 @@ type Source struct {
 	IngestIp *string
 
 	// The port that the flow will be listening on for incoming content.
-	IngestPort int32
+	IngestPort *int32
 
 	// The media streams that are associated with the source, and the parameters for
 	// those associations.
@@ -1712,7 +1821,7 @@ type Source struct {
 
 	// The port that the flow uses to send outbound requests to initiate connection
 	// with the sender.
-	SenderControlPort int32
+	SenderControlPort *int32
 
 	// The IP address that the flow communicates with to initiate connection with the
 	// sender.
@@ -1742,6 +1851,32 @@ type SourcePriority struct {
 	noSmithyDocumentSerde
 }
 
+// The details of the thumbnail, including thumbnail base64 string, timecode and
+// the time when thumbnail was generated.
+type ThumbnailDetails struct {
+
+	// The ARN of the flow that DescribeFlowSourceThumbnail was performed on.
+	//
+	// This member is required.
+	FlowArn *string
+
+	// Status code and messages about the flow source thumbnail.
+	//
+	// This member is required.
+	ThumbnailMessages []MessageDetail
+
+	// Thumbnail Base64 string.
+	Thumbnail *string
+
+	// Timecode of thumbnail.
+	Timecode *string
+
+	// The timestamp of when thumbnail was generated.
+	Timestamp *time.Time
+
+	noSmithyDocumentSerde
+}
+
 // Attributes related to the transport stream that are used in a source or output.
 type Transport struct {
 
@@ -1756,45 +1891,121 @@ type Transport struct {
 	CidrAllowList []string
 
 	// The smoothing max bitrate (in bps) for RIST, RTP, and RTP-FEC streams.
-	MaxBitrate int32
+	MaxBitrate *int32
 
 	// The maximum latency in milliseconds. This parameter applies only to RIST-based,
 	// Zixi-based, and Fujitsu-based streams.
-	MaxLatency int32
+	MaxLatency *int32
 
 	// The size of the buffer (in milliseconds) to use to sync incoming source data.
-	MaxSyncBuffer int32
+	MaxSyncBuffer *int32
 
 	// The minimum latency in milliseconds for SRT-based streams. In streams that use
 	// the SRT protocol, this value that you set on your MediaConnect source or output
 	// represents the minimal potential latency of that connection. The latency of the
 	// stream is set to the highest number between the sender’s minimum latency and the
 	// receiver’s minimum latency.
-	MinLatency int32
+	MinLatency *int32
 
 	// The remote ID for the Zixi-pull stream.
 	RemoteId *string
 
 	// The port that the flow uses to send outbound requests to initiate connection
 	// with the sender.
-	SenderControlPort int32
+	SenderControlPort *int32
 
 	// The IP address that the flow communicates with to initiate connection with the
 	// sender.
 	SenderIpAddress *string
 
 	// The smoothing latency in milliseconds for RIST, RTP, and RTP-FEC streams.
-	SmoothingLatency int32
+	SmoothingLatency *int32
 
 	// Source IP or domain name for SRT-caller protocol.
 	SourceListenerAddress *string
 
 	// Source port for SRT-caller protocol.
-	SourceListenerPort int32
+	SourceListenerPort *int32
 
 	// The stream ID that you want to use for this transport. This parameter applies
 	// only to Zixi and SRT caller-based streams.
 	StreamId *string
+
+	noSmithyDocumentSerde
+}
+
+// The metadata of the transport stream in the current flow's source.
+type TransportMediaInfo struct {
+
+	// The list of transport stream programs in the current flow's source.
+	//
+	// This member is required.
+	Programs []TransportStreamProgram
+
+	noSmithyDocumentSerde
+}
+
+// The metadata of an elementary transport stream.
+type TransportStream struct {
+
+	// The Packet ID (PID) as it is reported in the Program Map Table.
+	//
+	// This member is required.
+	Pid *int32
+
+	// The Stream Type as it is reported in the Program Map Table.
+	//
+	// This member is required.
+	StreamType *string
+
+	// The number of channels in the audio stream.
+	Channels *int32
+
+	// The codec used by the stream.
+	Codec *string
+
+	// The frame rate used by the video stream.
+	FrameRate *string
+
+	// The frame resolution used by the video stream.
+	FrameResolution *FrameResolution
+
+	// The sample rate used by the audio stream.
+	SampleRate *int32
+
+	// The sample bit size used by the audio stream.
+	SampleSize *int32
+
+	noSmithyDocumentSerde
+}
+
+// The metadata of a single transport stream program.
+type TransportStreamProgram struct {
+
+	// The Program Clock Reference (PCR) Packet ID (PID) as it is reported in the
+	// Program Association Table.
+	//
+	// This member is required.
+	PcrPid *int32
+
+	// The program number as it is reported in the Program Association Table.
+	//
+	// This member is required.
+	ProgramNumber *int32
+
+	// The program Packet ID (PID) as it is reported in the Program Association Table.
+	//
+	// This member is required.
+	ProgramPid *int32
+
+	// The list of elementary transport streams in the program. The list includes
+	// video, audio, and data streams.
+	//
+	// This member is required.
+	Streams []TransportStream
+
+	// The program name as it is reported in the Program Association Table.
+	ProgramName *string
 
 	noSmithyDocumentSerde
 }
@@ -1821,13 +2032,13 @@ type UpdateBridgeNetworkOutputRequest struct {
 	NetworkName *string
 
 	// The network output port.
-	Port int32
+	Port *int32
 
 	// The network output protocol.
 	Protocol Protocol
 
 	// The network output TTL.
-	Ttl int32
+	Ttl *int32
 
 	noSmithyDocumentSerde
 }
@@ -1838,11 +2049,14 @@ type UpdateBridgeNetworkSourceRequest struct {
 	// The network source multicast IP.
 	MulticastIp *string
 
+	// The settings related to the multicast source.
+	MulticastSourceSettings *MulticastSourceSettings
+
 	// The network source's gateway network name.
 	NetworkName *string
 
 	// The network source port.
-	Port int32
+	Port *int32
 
 	// The network source protocol.
 	Protocol Protocol
@@ -1853,7 +2067,7 @@ type UpdateBridgeNetworkSourceRequest struct {
 type UpdateEgressGatewayBridgeRequest struct {
 
 	// Update an existing egress-type bridge.
-	MaxBitrate int32
+	MaxBitrate *int32
 
 	noSmithyDocumentSerde
 }
@@ -1916,7 +2130,7 @@ type UpdateFailoverConfig struct {
 	FailoverMode FailoverMode
 
 	// Recovery window time to look for dash-7 packets
-	RecoveryWindow int32
+	RecoveryWindow *int32
 
 	// The priority you want to assign to a source. You can have a primary stream and
 	// a backup stream or two equally prioritized streams.
@@ -1942,10 +2156,10 @@ type UpdateGatewayBridgeSourceRequest struct {
 type UpdateIngressGatewayBridgeRequest struct {
 
 	// The maximum expected bitrate (in bps).
-	MaxBitrate int32
+	MaxBitrate *int32
 
 	// The maximum number of expected outputs.
-	MaxOutputs int32
+	MaxOutputs *int32
 
 	noSmithyDocumentSerde
 }
@@ -1964,6 +2178,18 @@ type UpdateMaintenance struct {
 	// UTC time when the maintenance will happen. Use 24-hour HH:MM format. Minutes
 	// must be 00. Example: 13:00. The default value is 02:00.
 	MaintenanceStartHour *string
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the configuration for video stream metrics monitoring.
+type VideoMonitoringSetting struct {
+
+	// Detects video frames that are black.
+	BlackFrames *BlackFrames
+
+	// Detects video frames that have not changed.
+	FrozenFrames *FrozenFrames
 
 	noSmithyDocumentSerde
 }

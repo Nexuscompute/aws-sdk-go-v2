@@ -2,6 +2,25 @@
 
 package types
 
+type ConfirmationStatus string
+
+// Enum values for ConfirmationStatus
+const (
+	ConfirmationStatusFinal    ConfirmationStatus = "FINAL"
+	ConfirmationStatusNonfinal ConfirmationStatus = "NONFINAL"
+)
+
+// Values returns all known values for ConfirmationStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ConfirmationStatus) Values() []ConfirmationStatus {
+	return []ConfirmationStatus{
+		"FINAL",
+		"NONFINAL",
+	}
+}
+
 type ErrorType string
 
 // Enum values for ErrorType
@@ -13,12 +32,51 @@ const (
 )
 
 // Values returns all known values for ErrorType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ErrorType) Values() []ErrorType {
 	return []ErrorType{
 		"VALIDATION_EXCEPTION",
 		"RESOURCE_NOT_FOUND_EXCEPTION",
+	}
+}
+
+type ExecutionStatus string
+
+// Enum values for ExecutionStatus
+const (
+	ExecutionStatusFailed    ExecutionStatus = "FAILED"
+	ExecutionStatusSucceeded ExecutionStatus = "SUCCEEDED"
+)
+
+// Values returns all known values for ExecutionStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ExecutionStatus) Values() []ExecutionStatus {
+	return []ExecutionStatus{
+		"FAILED",
+		"SUCCEEDED",
+	}
+}
+
+type ListFilteredTransactionEventsSortBy string
+
+// Enum values for ListFilteredTransactionEventsSortBy
+const (
+	// Timestamp of a transaction
+	ListFilteredTransactionEventsSortByBlockchainInstant ListFilteredTransactionEventsSortBy = "blockchainInstant"
+)
+
+// Values returns all known values for ListFilteredTransactionEventsSortBy. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ListFilteredTransactionEventsSortBy) Values() []ListFilteredTransactionEventsSortBy {
+	return []ListFilteredTransactionEventsSortBy{
+		"blockchainInstant",
 	}
 }
 
@@ -31,8 +89,9 @@ const (
 )
 
 // Values returns all known values for ListTransactionsSortBy. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ListTransactionsSortBy) Values() []ListTransactionsSortBy {
 	return []ListTransactionsSortBy{
 		"TRANSACTION_TIMESTAMP",
@@ -45,17 +104,45 @@ type QueryNetwork string
 const (
 	// Ethereum main network
 	QueryNetworkEthereumMainnet QueryNetwork = "ETHEREUM_MAINNET"
+	// SEPOLIA network (ethereum testnet)
+	QueryNetworkEthereumSepoliaTestnet QueryNetwork = "ETHEREUM_SEPOLIA_TESTNET"
 	// Bitcoin main network
 	QueryNetworkBitcoinMainnet QueryNetwork = "BITCOIN_MAINNET"
+	// Bitcoin test network
+	QueryNetworkBitcoinTestnet QueryNetwork = "BITCOIN_TESTNET"
 )
 
 // Values returns all known values for QueryNetwork. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (QueryNetwork) Values() []QueryNetwork {
 	return []QueryNetwork{
 		"ETHEREUM_MAINNET",
+		"ETHEREUM_SEPOLIA_TESTNET",
 		"BITCOIN_MAINNET",
+		"BITCOIN_TESTNET",
+	}
+}
+
+type QueryTokenStandard string
+
+// Enum values for QueryTokenStandard
+const (
+	QueryTokenStandardErc20   QueryTokenStandard = "ERC20"
+	QueryTokenStandardErc721  QueryTokenStandard = "ERC721"
+	QueryTokenStandardErc1155 QueryTokenStandard = "ERC1155"
+)
+
+// Values returns all known values for QueryTokenStandard. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QueryTokenStandard) Values() []QueryTokenStandard {
+	return []QueryTokenStandard{
+		"ERC20",
+		"ERC721",
+		"ERC1155",
 	}
 }
 
@@ -89,6 +176,7 @@ const (
 
 // Values returns all known values for QueryTransactionEventType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (QueryTransactionEventType) Values() []QueryTransactionEventType {
 	return []QueryTransactionEventType{
@@ -106,26 +194,6 @@ func (QueryTransactionEventType) Values() []QueryTransactionEventType {
 	}
 }
 
-type QueryTransactionStatus string
-
-// Enum values for QueryTransactionStatus
-const (
-	// The transaction has been confirmed and is final in the blockchain
-	QueryTransactionStatusFinal QueryTransactionStatus = "FINAL"
-	// The transaction completed on the blockchain, but failed
-	QueryTransactionStatusFailed QueryTransactionStatus = "FAILED"
-)
-
-// Values returns all known values for QueryTransactionStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
-func (QueryTransactionStatus) Values() []QueryTransactionStatus {
-	return []QueryTransactionStatus{
-		"FINAL",
-		"FAILED",
-	}
-}
-
 type ResourceType string
 
 // Enum values for ResourceType
@@ -134,8 +202,9 @@ const (
 )
 
 // Values returns all known values for ResourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceType) Values() []ResourceType {
 	return []ResourceType{
 		"collection",
@@ -153,8 +222,9 @@ const (
 )
 
 // Values returns all known values for SortOrder. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SortOrder) Values() []SortOrder {
 	return []SortOrder{
 		"ASCENDING",
@@ -174,6 +244,7 @@ const (
 
 // Values returns all known values for ValidationExceptionReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ValidationExceptionReason) Values() []ValidationExceptionReason {
 	return []ValidationExceptionReason{

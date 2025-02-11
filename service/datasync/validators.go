@@ -990,6 +990,106 @@ func (m *validateOpUpdateLocationAzureBlob) HandleInitialize(ctx context.Context
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateLocationEfs struct {
+}
+
+func (*validateOpUpdateLocationEfs) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateLocationEfs) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateLocationEfsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateLocationEfsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateLocationFsxLustre struct {
+}
+
+func (*validateOpUpdateLocationFsxLustre) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateLocationFsxLustre) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateLocationFsxLustreInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateLocationFsxLustreInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateLocationFsxOntap struct {
+}
+
+func (*validateOpUpdateLocationFsxOntap) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateLocationFsxOntap) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateLocationFsxOntapInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateLocationFsxOntapInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateLocationFsxOpenZfs struct {
+}
+
+func (*validateOpUpdateLocationFsxOpenZfs) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateLocationFsxOpenZfs) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateLocationFsxOpenZfsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateLocationFsxOpenZfsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateLocationFsxWindows struct {
+}
+
+func (*validateOpUpdateLocationFsxWindows) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateLocationFsxWindows) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateLocationFsxWindowsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateLocationFsxWindowsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateLocationHdfs struct {
 }
 
@@ -1045,6 +1145,26 @@ func (m *validateOpUpdateLocationObjectStorage) HandleInitialize(ctx context.Con
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpUpdateLocationObjectStorageInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateLocationS3 struct {
+}
+
+func (*validateOpUpdateLocationS3) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateLocationS3) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateLocationS3Input)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateLocationS3Input(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1326,6 +1446,26 @@ func addOpUpdateLocationAzureBlobValidationMiddleware(stack *middleware.Stack) e
 	return stack.Initialize.Add(&validateOpUpdateLocationAzureBlob{}, middleware.After)
 }
 
+func addOpUpdateLocationEfsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateLocationEfs{}, middleware.After)
+}
+
+func addOpUpdateLocationFsxLustreValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateLocationFsxLustre{}, middleware.After)
+}
+
+func addOpUpdateLocationFsxOntapValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateLocationFsxOntap{}, middleware.After)
+}
+
+func addOpUpdateLocationFsxOpenZfsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateLocationFsxOpenZfs{}, middleware.After)
+}
+
+func addOpUpdateLocationFsxWindowsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateLocationFsxWindows{}, middleware.After)
+}
+
 func addOpUpdateLocationHdfsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateLocationHdfs{}, middleware.After)
 }
@@ -1336,6 +1476,10 @@ func addOpUpdateLocationNfsValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpUpdateLocationObjectStorageValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateLocationObjectStorage{}, middleware.After)
+}
+
+func addOpUpdateLocationS3ValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateLocationS3{}, middleware.After)
 }
 
 func addOpUpdateLocationSmbValidationMiddleware(stack *middleware.Stack) error {
@@ -1545,6 +1689,23 @@ func validateLocationFilters(v []types.LocationFilter) error {
 	}
 }
 
+func validateManifestConfig(v *types.ManifestConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ManifestConfig"}
+	if v.Source != nil {
+		if err := validateSourceManifestConfig(v.Source); err != nil {
+			invalidParams.AddNested("Source", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOnPremConfig(v *types.OnPremConfig) error {
 	if v == nil {
 		return nil
@@ -1560,6 +1721,41 @@ func validateOnPremConfig(v *types.OnPremConfig) error {
 	}
 }
 
+func validateReportDestination(v *types.ReportDestination) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ReportDestination"}
+	if v.S3 != nil {
+		if err := validateReportDestinationS3(v.S3); err != nil {
+			invalidParams.AddNested("S3", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateReportDestinationS3(v *types.ReportDestinationS3) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ReportDestinationS3"}
+	if v.S3BucketArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("S3BucketArn"))
+	}
+	if v.BucketAccessRoleArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BucketAccessRoleArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateS3Config(v *types.S3Config) error {
 	if v == nil {
 		return nil
@@ -1567,6 +1763,46 @@ func validateS3Config(v *types.S3Config) error {
 	invalidParams := smithy.InvalidParamsError{Context: "S3Config"}
 	if v.BucketAccessRoleArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("BucketAccessRoleArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateS3ManifestConfig(v *types.S3ManifestConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "S3ManifestConfig"}
+	if v.ManifestObjectPath == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ManifestObjectPath"))
+	}
+	if v.BucketAccessRoleArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BucketAccessRoleArn"))
+	}
+	if v.S3BucketArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("S3BucketArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSourceManifestConfig(v *types.SourceManifestConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SourceManifestConfig"}
+	if v.S3 == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("S3"))
+	} else if v.S3 != nil {
+		if err := validateS3ManifestConfig(v.S3); err != nil {
+			invalidParams.AddNested("S3", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1619,6 +1855,23 @@ func validateTaskFilters(v []types.TaskFilter) error {
 	for i := range v {
 		if err := validateTaskFilter(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateTaskReportConfig(v *types.TaskReportConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "TaskReportConfig"}
+	if v.Destination != nil {
+		if err := validateReportDestination(v.Destination); err != nil {
+			invalidParams.AddNested("Destination", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -2012,12 +2265,6 @@ func validateOpCreateLocationSmbInput(v *CreateLocationSmbInput) error {
 	if v.ServerHostname == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ServerHostname"))
 	}
-	if v.User == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("User"))
-	}
-	if v.Password == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Password"))
-	}
 	if v.AgentArns == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("AgentArns"))
 	}
@@ -2052,6 +2299,16 @@ func validateOpCreateTaskInput(v *CreateTaskInput) error {
 	if v.Tags != nil {
 		if err := validateInputTagList(v.Tags); err != nil {
 			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ManifestConfig != nil {
+		if err := validateManifestConfig(v.ManifestConfig); err != nil {
+			invalidParams.AddNested("ManifestConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.TaskReportConfig != nil {
+		if err := validateTaskReportConfig(v.TaskReportConfig); err != nil {
+			invalidParams.AddNested("TaskReportConfig", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -2504,6 +2761,16 @@ func validateOpStartTaskExecutionInput(v *StartTaskExecutionInput) error {
 	if v.TaskArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("TaskArn"))
 	}
+	if v.ManifestConfig != nil {
+		if err := validateManifestConfig(v.ManifestConfig); err != nil {
+			invalidParams.AddNested("ManifestConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.TaskReportConfig != nil {
+		if err := validateTaskReportConfig(v.TaskReportConfig); err != nil {
+			invalidParams.AddNested("TaskReportConfig", err.(smithy.InvalidParamsError))
+		}
+	}
 	if v.Tags != nil {
 		if err := validateInputTagList(v.Tags); err != nil {
 			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
@@ -2624,6 +2891,86 @@ func validateOpUpdateLocationAzureBlobInput(v *UpdateLocationAzureBlobInput) err
 	}
 }
 
+func validateOpUpdateLocationEfsInput(v *UpdateLocationEfsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateLocationEfsInput"}
+	if v.LocationArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LocationArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateLocationFsxLustreInput(v *UpdateLocationFsxLustreInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateLocationFsxLustreInput"}
+	if v.LocationArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LocationArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateLocationFsxOntapInput(v *UpdateLocationFsxOntapInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateLocationFsxOntapInput"}
+	if v.LocationArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LocationArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateLocationFsxOpenZfsInput(v *UpdateLocationFsxOpenZfsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateLocationFsxOpenZfsInput"}
+	if v.LocationArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LocationArn"))
+	}
+	if v.Protocol != nil {
+		if err := validateFsxProtocol(v.Protocol); err != nil {
+			invalidParams.AddNested("Protocol", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateLocationFsxWindowsInput(v *UpdateLocationFsxWindowsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateLocationFsxWindowsInput"}
+	if v.LocationArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LocationArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpUpdateLocationHdfsInput(v *UpdateLocationHdfsInput) error {
 	if v == nil {
 		return nil
@@ -2671,6 +3018,26 @@ func validateOpUpdateLocationObjectStorageInput(v *UpdateLocationObjectStorageIn
 	invalidParams := smithy.InvalidParamsError{Context: "UpdateLocationObjectStorageInput"}
 	if v.LocationArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("LocationArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateLocationS3Input(v *UpdateLocationS3Input) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateLocationS3Input"}
+	if v.LocationArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LocationArn"))
+	}
+	if v.S3Config != nil {
+		if err := validateS3Config(v.S3Config); err != nil {
+			invalidParams.AddNested("S3Config", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2748,6 +3115,16 @@ func validateOpUpdateTaskInput(v *UpdateTaskInput) error {
 	if v.Schedule != nil {
 		if err := validateTaskSchedule(v.Schedule); err != nil {
 			invalidParams.AddNested("Schedule", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ManifestConfig != nil {
+		if err := validateManifestConfig(v.ManifestConfig); err != nil {
+			invalidParams.AddNested("ManifestConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.TaskReportConfig != nil {
+		if err := validateTaskReportConfig(v.TaskReportConfig); err != nil {
+			invalidParams.AddNested("TaskReportConfig", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {

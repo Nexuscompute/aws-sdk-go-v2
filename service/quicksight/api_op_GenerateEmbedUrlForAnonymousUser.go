@@ -4,14 +4,9 @@ package quicksight
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/quicksight/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -19,21 +14,29 @@ import (
 // Generates an embed URL that you can use to embed an Amazon QuickSight dashboard
 // or visual in your website, without having to register any reader users. Before
 // you use this action, make sure that you have configured the dashboards and
-// permissions. The following rules apply to the generated URL:
+// permissions.
+//
+// The following rules apply to the generated URL:
+//
 //   - It contains a temporary bearer token. It is valid for 5 minutes after it is
 //     generated. Once redeemed within this period, it cannot be re-used again.
+//
 //   - The URL validity period should not be confused with the actual session
-//     lifetime that can be customized using the SessionLifetimeInMinutes (https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GenerateEmbedUrlForAnonymousUser.html#QS-GenerateEmbedUrlForAnonymousUser-request-SessionLifetimeInMinutes)
-//     parameter. The resulting user session is valid for 15 minutes (minimum) to 10
-//     hours (maximum). The default session duration is 10 hours.
+//     lifetime that can be customized using the [SessionLifetimeInMinutes]parameter. The resulting user
+//     session is valid for 15 minutes (minimum) to 10 hours (maximum). The default
+//     session duration is 10 hours.
+//
 //   - You are charged only when the URL is used or there is interaction with
 //     Amazon QuickSight.
 //
-// For more information, see Embedded Analytics (https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics.html)
-// in the Amazon QuickSight User Guide. For more information about the high-level
-// steps for embedding and for an interactive demo of the ways you can customize
-// embedding, visit the Amazon QuickSight Developer Portal (https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html)
-// .
+// For more information, see [Embedded Analytics] in the Amazon QuickSight User Guide.
+//
+// For more information about the high-level steps for embedding and for an
+// interactive demo of the ways you can customize embedding, visit the [Amazon QuickSight Developer Portal].
+//
+// [Embedded Analytics]: https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics.html
+// [Amazon QuickSight Developer Portal]: https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html
+// [SessionLifetimeInMinutes]: https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GenerateEmbedUrlForAnonymousUser.html#QS-GenerateEmbedUrlForAnonymousUser-request-SessionLifetimeInMinutes
 func (c *Client) GenerateEmbedUrlForAnonymousUser(ctx context.Context, params *GenerateEmbedUrlForAnonymousUserInput, optFns ...func(*Options)) (*GenerateEmbedUrlForAnonymousUserOutput, error) {
 	if params == nil {
 		params = &GenerateEmbedUrlForAnonymousUserInput{}
@@ -52,10 +55,15 @@ func (c *Client) GenerateEmbedUrlForAnonymousUser(ctx context.Context, params *G
 type GenerateEmbedUrlForAnonymousUserInput struct {
 
 	// The Amazon Resource Names (ARNs) for the Amazon QuickSight resources that the
-	// user is authorized to access during the lifetime of the session. If you choose
-	// Dashboard embedding experience, pass the list of dashboard ARNs in the account
-	// that you want the user to be able to view. Currently, you can pass up to 25
-	// dashboard ARNs in each API call.
+	// user is authorized to access during the lifetime of the session.
+	//
+	// If you choose Dashboard embedding experience, pass the list of dashboard ARNs
+	// in the account that you want the user to be able to view.
+	//
+	// If you want to make changes to the theme of your embedded content, pass a list
+	// of theme ARNs that the anonymous users need access to.
+	//
+	// Currently, you can pass up to 25 theme ARNs in each API call.
 	//
 	// This member is required.
 	AuthorizedResourceArns []string
@@ -81,9 +89,11 @@ type GenerateEmbedUrlForAnonymousUserInput struct {
 	// URL that is then embedded. This optional parameter overrides the static domains
 	// that are configured in the Manage QuickSight menu in the Amazon QuickSight
 	// console. Instead, it allows only the domains that you include in this parameter.
-	// You can list up to three domains or subdomains in each API call. To include all
-	// subdomains under a specific domain to the allow list, use * . For example,
-	// https://*.sapp.amazon.com includes all subdomains under https://sapp.amazon.com .
+	// You can list up to three domains or subdomains in each API call.
+	//
+	// To include all subdomains under a specific domain to the allow list, use * . For
+	// example, https://*.sapp.amazon.com includes all subdomains under
+	// https://sapp.amazon.com .
 	AllowedDomains []string
 
 	// How many minutes the session is valid. The session lifetime must be in [15-600]
@@ -93,10 +103,12 @@ type GenerateEmbedUrlForAnonymousUserInput struct {
 	// The session tags used for row-level security. Before you use this parameter,
 	// make sure that you have configured the relevant datasets using the
 	// DataSet$RowLevelPermissionTagConfiguration parameter so that session tags can be
-	// used to provide row-level security. These are not the tags used for the Amazon
-	// Web Services resource tagging feature. For more information, see Using
-	// Row-Level Security (RLS) with Tags (https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-rls-tags.html)
-	// in the Amazon QuickSight User Guide.
+	// used to provide row-level security.
+	//
+	// These are not the tags used for the Amazon Web Services resource tagging
+	// feature. For more information, see [Using Row-Level Security (RLS) with Tags]in the Amazon QuickSight User Guide.
+	//
+	// [Using Row-Level Security (RLS) with Tags]: https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-rls-tags.html
 	SessionTags []types.SessionTag
 
 	noSmithyDocumentSerde
@@ -131,6 +143,9 @@ type GenerateEmbedUrlForAnonymousUserOutput struct {
 }
 
 func (c *Client) addOperationGenerateEmbedUrlForAnonymousUserMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpGenerateEmbedUrlForAnonymousUser{}, middleware.After)
 	if err != nil {
 		return err
@@ -139,34 +154,38 @@ func (c *Client) addOperationGenerateEmbedUrlForAnonymousUserMiddlewares(stack *
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GenerateEmbedUrlForAnonymousUser"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -178,7 +197,13 @@ func (c *Client) addOperationGenerateEmbedUrlForAnonymousUserMiddlewares(stack *
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGenerateEmbedUrlForAnonymousUserResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGenerateEmbedUrlForAnonymousUserValidationMiddleware(stack); err != nil {
@@ -187,7 +212,7 @@ func (c *Client) addOperationGenerateEmbedUrlForAnonymousUserMiddlewares(stack *
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGenerateEmbedUrlForAnonymousUser(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -199,7 +224,19 @@ func (c *Client) addOperationGenerateEmbedUrlForAnonymousUserMiddlewares(stack *
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -209,130 +246,6 @@ func newServiceMetadataMiddleware_opGenerateEmbedUrlForAnonymousUser(region stri
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "quicksight",
 		OperationName: "GenerateEmbedUrlForAnonymousUser",
 	}
-}
-
-type opGenerateEmbedUrlForAnonymousUserResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opGenerateEmbedUrlForAnonymousUserResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGenerateEmbedUrlForAnonymousUserResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "quicksight"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "quicksight"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("quicksight")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addGenerateEmbedUrlForAnonymousUserResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGenerateEmbedUrlForAnonymousUserResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -4,24 +4,23 @@ package elasticbeanstalk
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/elasticbeanstalk/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
 )
 
 // Updates the specified configuration template to have the specified properties
-// or configuration option values. If a property (for example, ApplicationName ) is
-// not provided, its value remains unchanged. To clear such properties, specify an
-// empty string. Related Topics
-//   - DescribeConfigurationOptions
+// or configuration option values.
+//
+// If a property (for example, ApplicationName ) is not provided, its value remains
+// unchanged. To clear such properties, specify an empty string.
+//
+// # Related Topics
+//
+// DescribeConfigurationOptions
 func (c *Client) UpdateConfigurationTemplate(ctx context.Context, params *UpdateConfigurationTemplateInput, optFns ...func(*Options)) (*UpdateConfigurationTemplateOutput, error) {
 	if params == nil {
 		params = &UpdateConfigurationTemplateInput{}
@@ -41,15 +40,18 @@ func (c *Client) UpdateConfigurationTemplate(ctx context.Context, params *Update
 type UpdateConfigurationTemplateInput struct {
 
 	// The name of the application associated with the configuration template to
-	// update. If no application is found with this name, UpdateConfigurationTemplate
-	// returns an InvalidParameterValue error.
+	// update.
+	//
+	// If no application is found with this name, UpdateConfigurationTemplate returns
+	// an InvalidParameterValue error.
 	//
 	// This member is required.
 	ApplicationName *string
 
-	// The name of the configuration template to update. If no configuration template
-	// is found with this name, UpdateConfigurationTemplate returns an
-	// InvalidParameterValue error.
+	// The name of the configuration template to update.
+	//
+	// If no configuration template is found with this name,
+	// UpdateConfigurationTemplate returns an InvalidParameterValue error.
 	//
 	// This member is required.
 	TemplateName *string
@@ -62,6 +64,7 @@ type UpdateConfigurationTemplateInput struct {
 	OptionSettings []types.ConfigurationOptionSetting
 
 	// A list of configuration options to remove from the configuration set.
+	//
 	// Constraint: You can remove only UserDefined configuration options.
 	OptionsToRemove []types.OptionSpecification
 
@@ -80,21 +83,25 @@ type UpdateConfigurationTemplateOutput struct {
 	// The date (in UTC time) when this configuration set was last modified.
 	DateUpdated *time.Time
 
-	// If this configuration set is associated with an environment, the
+	//  If this configuration set is associated with an environment, the
 	// DeploymentStatus parameter indicates the deployment status of this configuration
 	// set:
+	//
 	//   - null : This configuration is not associated with a running environment.
+	//
 	//   - pending : This is a draft configuration that is not deployed to the
 	//   associated environment but is in the process of deploying.
+	//
 	//   - deployed : This is the configuration that is currently deployed to the
 	//   associated running environment.
+	//
 	//   - failed : This is a draft configuration that failed to successfully deploy.
 	DeploymentStatus types.ConfigurationDeploymentStatus
 
 	// Describes this configuration set.
 	Description *string
 
-	// If not null , the name of the environment for this configuration set.
+	//  If not null , the name of the environment for this configuration set.
 	EnvironmentName *string
 
 	// A list of the configuration options and their values in this configuration set.
@@ -106,7 +113,8 @@ type UpdateConfigurationTemplateOutput struct {
 	// The name of the solution stack this configuration set uses.
 	SolutionStackName *string
 
-	// If not null , the name of the configuration template for this configuration set.
+	//  If not null , the name of the configuration template for this configuration
+	// set.
 	TemplateName *string
 
 	// Metadata pertaining to the operation's result.
@@ -116,6 +124,9 @@ type UpdateConfigurationTemplateOutput struct {
 }
 
 func (c *Client) addOperationUpdateConfigurationTemplateMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpUpdateConfigurationTemplate{}, middleware.After)
 	if err != nil {
 		return err
@@ -124,34 +135,38 @@ func (c *Client) addOperationUpdateConfigurationTemplateMiddlewares(stack *middl
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateConfigurationTemplate"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -163,7 +178,13 @@ func (c *Client) addOperationUpdateConfigurationTemplateMiddlewares(stack *middl
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateConfigurationTemplateResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateConfigurationTemplateValidationMiddleware(stack); err != nil {
@@ -172,7 +193,7 @@ func (c *Client) addOperationUpdateConfigurationTemplateMiddlewares(stack *middl
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateConfigurationTemplate(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -184,7 +205,19 @@ func (c *Client) addOperationUpdateConfigurationTemplateMiddlewares(stack *middl
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -194,130 +227,6 @@ func newServiceMetadataMiddleware_opUpdateConfigurationTemplate(region string) *
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "elasticbeanstalk",
 		OperationName: "UpdateConfigurationTemplate",
 	}
-}
-
-type opUpdateConfigurationTemplateResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateConfigurationTemplateResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateConfigurationTemplateResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "elasticbeanstalk"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "elasticbeanstalk"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("elasticbeanstalk")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateConfigurationTemplateResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateConfigurationTemplateResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

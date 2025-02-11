@@ -4,24 +4,23 @@ package pinpointsmsvoicev2
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/pinpointsmsvoicev2/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a new text message and sends it to a recipient's phone number. SMS
-// throughput limits are measured in Message Parts per Second (MPS). Your MPS limit
-// depends on the destination country of your messages, as well as the type of
-// phone number (origination number) that you use to send the message. For more
-// information, see Message Parts per Second (MPS) limits (https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-limitations-mps.html)
-// in the Amazon Pinpoint User Guide.
+// Creates a new text message and sends it to a recipient's phone number.
+// SendTextMessage only sends an SMS message to one recipient each time it is
+// invoked.
+//
+// SMS throughput limits are measured in Message Parts per Second (MPS). Your MPS
+// limit depends on the destination country of your messages, as well as the type
+// of phone number (origination number) that you use to send the message. For more
+// information about MPS, see [Message Parts per Second (MPS) limits]in the AWS End User Messaging SMS User Guide.
+//
+// [Message Parts per Second (MPS) limits]: https://docs.aws.amazon.com/sms-voice/latest/userguide/sms-limitations-mps.html
 func (c *Client) SendTextMessage(ctx context.Context, params *SendTextMessageInput, optFns ...func(*Options)) (*SendTextMessageOutput, error) {
 	if params == nil {
 		params = &SendTextMessageInput{}
@@ -54,36 +53,66 @@ type SendTextMessageInput struct {
 
 	// This field is used for any country-specific registration requirements.
 	// Currently, this setting is only used when you send messages to recipients in
-	// India using a sender ID. For more information see Special requirements for
-	// sending SMS messages to recipients in India (https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-senderid-india.html)
-	// .
+	// India using a sender ID. For more information see [Special requirements for sending SMS messages to recipients in India].
+	//
+	//   - IN_ENTITY_ID The entity ID or Principal Entity (PE) ID that you received
+	//   after completing the sender ID registration process.
+	//
+	//   - IN_TEMPLATE_ID The template ID that you received after completing the sender
+	//   ID registration process.
+	//
+	// Make sure that the Template ID that you specify matches your message template
+	//   exactly. If your message doesn't match the template that you provided during the
+	//   registration process, the mobile carriers might reject your message.
+	//
+	// [Special requirements for sending SMS messages to recipients in India]: https://docs.aws.amazon.com/pinpoint/latest/userguide/channels-sms-senderid-india.html
 	DestinationCountryParameters map[string]string
 
 	// When set to true, the message is checked and validated, but isn't sent to the
-	// end recipient.
+	// end recipient. You are not charged for using DryRun .
+	//
+	// The Message Parts per Second (MPS) limit when using DryRun is five. If your
+	// origination identity has a lower MPS limit then the lower MPS limit is used. For
+	// more information about MPS limits, see [Message Parts per Second (MPS) limits]in the AWS End User Messaging SMS User
+	// Guide..
+	//
+	// [Message Parts per Second (MPS) limits]: https://docs.aws.amazon.com/sms-voice/latest/userguide/sms-limitations-mps.html
 	DryRun bool
 
 	// When you register a short code in the US, you must specify a program name. If
 	// you don’t have a US short code, omit this attribute.
 	Keyword *string
 
-	// The maximum amount that you want to spend, in US dollars, per each text message
-	// part. A text message can contain multiple parts.
+	// The maximum amount that you want to spend, in US dollars, per each text
+	// message. If the calculated amount to send the text message is greater than
+	// MaxPrice , the message is not sent and an error is returned.
 	MaxPrice *string
 
 	// The body of the text message.
 	MessageBody *string
 
-	// The type of message. Valid values are TRANSACTIONAL for messages that are
-	// critical or time-sensitive and PROMOTIONAL for messages that aren't critical or
+	// Set to true to enable message feedback for the message. When a user receives
+	// the message you need to update the message status using PutMessageFeedback.
+	MessageFeedbackEnabled *bool
+
+	// The type of message. Valid values are for messages that are critical or
+	// time-sensitive and PROMOTIONAL for messages that aren't critical or
 	// time-sensitive.
 	MessageType types.MessageType
 
 	// The origination identity of the message. This can be either the PhoneNumber,
 	// PhoneNumberId, PhoneNumberArn, SenderId, SenderIdArn, PoolId, or PoolArn.
+	//
+	// If you are using a shared AWS End User Messaging SMS and Voice resource then
+	// you must use the full Amazon Resource Name(ARN).
 	OriginationIdentity *string
 
-	// How long the text message is valid for. By default this is 72 hours.
+	// The unique identifier for the protect configuration.
+	ProtectConfigurationId *string
+
+	// How long the text message is valid for, in seconds. By default this is 72
+	// hours. If the messages isn't handed off before the TTL expires we stop
+	// attempting to hand off the message and return TTL_EXPIRED event.
 	TimeToLive *int32
 
 	noSmithyDocumentSerde
@@ -101,6 +130,9 @@ type SendTextMessageOutput struct {
 }
 
 func (c *Client) addOperationSendTextMessageMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson10_serializeOpSendTextMessage{}, middleware.After)
 	if err != nil {
 		return err
@@ -109,34 +141,38 @@ func (c *Client) addOperationSendTextMessageMiddlewares(stack *middleware.Stack,
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "SendTextMessage"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -148,7 +184,13 @@ func (c *Client) addOperationSendTextMessageMiddlewares(stack *middleware.Stack,
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addSendTextMessageResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSendTextMessageValidationMiddleware(stack); err != nil {
@@ -157,7 +199,7 @@ func (c *Client) addOperationSendTextMessageMiddlewares(stack *middleware.Stack,
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opSendTextMessage(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -169,7 +211,19 @@ func (c *Client) addOperationSendTextMessageMiddlewares(stack *middleware.Stack,
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -179,130 +233,6 @@ func newServiceMetadataMiddleware_opSendTextMessage(region string) *awsmiddlewar
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "sms-voice",
 		OperationName: "SendTextMessage",
 	}
-}
-
-type opSendTextMessageResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opSendTextMessageResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opSendTextMessageResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "sms-voice"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "sms-voice"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("sms-voice")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addSendTextMessageResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opSendTextMessageResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

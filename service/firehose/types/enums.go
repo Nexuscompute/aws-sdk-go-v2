@@ -12,8 +12,9 @@ const (
 
 // Values returns all known values for AmazonOpenSearchServerlessS3BackupMode.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AmazonOpenSearchServerlessS3BackupMode) Values() []AmazonOpenSearchServerlessS3BackupMode {
 	return []AmazonOpenSearchServerlessS3BackupMode{
 		"FailedDocumentsOnly",
@@ -34,8 +35,9 @@ const (
 
 // Values returns all known values for AmazonopensearchserviceIndexRotationPeriod.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AmazonopensearchserviceIndexRotationPeriod) Values() []AmazonopensearchserviceIndexRotationPeriod {
 	return []AmazonopensearchserviceIndexRotationPeriod{
 		"NoRotation",
@@ -56,8 +58,9 @@ const (
 
 // Values returns all known values for AmazonopensearchserviceS3BackupMode. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AmazonopensearchserviceS3BackupMode) Values() []AmazonopensearchserviceS3BackupMode {
 	return []AmazonopensearchserviceS3BackupMode{
 		"FailedDocumentsOnly",
@@ -77,8 +80,9 @@ const (
 )
 
 // Values returns all known values for CompressionFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CompressionFormat) Values() []CompressionFormat {
 	return []CompressionFormat{
 		"UNCOMPRESSED",
@@ -86,6 +90,25 @@ func (CompressionFormat) Values() []CompressionFormat {
 		"ZIP",
 		"Snappy",
 		"HADOOP_SNAPPY",
+	}
+}
+
+type Connectivity string
+
+// Enum values for Connectivity
+const (
+	ConnectivityPublic  Connectivity = "PUBLIC"
+	ConnectivityPrivate Connectivity = "PRIVATE"
+)
+
+// Values returns all known values for Connectivity. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Connectivity) Values() []Connectivity {
+	return []Connectivity{
+		"PUBLIC",
+		"PRIVATE",
 	}
 }
 
@@ -98,12 +121,51 @@ const (
 )
 
 // Values returns all known values for ContentEncoding. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ContentEncoding) Values() []ContentEncoding {
 	return []ContentEncoding{
 		"NONE",
 		"GZIP",
+	}
+}
+
+type DatabaseType string
+
+// Enum values for DatabaseType
+const (
+	DatabaseTypeMySQL      DatabaseType = "MySQL"
+	DatabaseTypePostgreSQL DatabaseType = "PostgreSQL"
+)
+
+// Values returns all known values for DatabaseType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DatabaseType) Values() []DatabaseType {
+	return []DatabaseType{
+		"MySQL",
+		"PostgreSQL",
+	}
+}
+
+type DefaultDocumentIdFormat string
+
+// Enum values for DefaultDocumentIdFormat
+const (
+	DefaultDocumentIdFormatFirehoseDefault DefaultDocumentIdFormat = "FIREHOSE_DEFAULT"
+	DefaultDocumentIdFormatNoDocumentId    DefaultDocumentIdFormat = "NO_DOCUMENT_ID"
+)
+
+// Values returns all known values for DefaultDocumentIdFormat. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DefaultDocumentIdFormat) Values() []DefaultDocumentIdFormat {
+	return []DefaultDocumentIdFormat{
+		"FIREHOSE_DEFAULT",
+		"NO_DOCUMENT_ID",
 	}
 }
 
@@ -121,8 +183,9 @@ const (
 
 // Values returns all known values for DeliveryStreamEncryptionStatus. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeliveryStreamEncryptionStatus) Values() []DeliveryStreamEncryptionStatus {
 	return []DeliveryStreamEncryptionStatus{
 		"ENABLED",
@@ -138,28 +201,33 @@ type DeliveryStreamFailureType string
 
 // Enum values for DeliveryStreamFailureType
 const (
-	DeliveryStreamFailureTypeRetireKmsGrantFailed      DeliveryStreamFailureType = "RETIRE_KMS_GRANT_FAILED"
-	DeliveryStreamFailureTypeCreateKmsGrantFailed      DeliveryStreamFailureType = "CREATE_KMS_GRANT_FAILED"
-	DeliveryStreamFailureTypeKmsAccessDenied           DeliveryStreamFailureType = "KMS_ACCESS_DENIED"
-	DeliveryStreamFailureTypeDisabledKmsKey            DeliveryStreamFailureType = "DISABLED_KMS_KEY"
-	DeliveryStreamFailureTypeInvalidKmsKey             DeliveryStreamFailureType = "INVALID_KMS_KEY"
-	DeliveryStreamFailureTypeKmsKeyNotFound            DeliveryStreamFailureType = "KMS_KEY_NOT_FOUND"
-	DeliveryStreamFailureTypeKmsOptInRequired          DeliveryStreamFailureType = "KMS_OPT_IN_REQUIRED"
-	DeliveryStreamFailureTypeCreateEniFailed           DeliveryStreamFailureType = "CREATE_ENI_FAILED"
-	DeliveryStreamFailureTypeDeleteEniFailed           DeliveryStreamFailureType = "DELETE_ENI_FAILED"
-	DeliveryStreamFailureTypeSubnetNotFound            DeliveryStreamFailureType = "SUBNET_NOT_FOUND"
-	DeliveryStreamFailureTypeSecurityGroupNotFound     DeliveryStreamFailureType = "SECURITY_GROUP_NOT_FOUND"
-	DeliveryStreamFailureTypeEniAccessDenied           DeliveryStreamFailureType = "ENI_ACCESS_DENIED"
-	DeliveryStreamFailureTypeSubnetAccessDenied        DeliveryStreamFailureType = "SUBNET_ACCESS_DENIED"
-	DeliveryStreamFailureTypeSecurityGroupAccessDenied DeliveryStreamFailureType = "SECURITY_GROUP_ACCESS_DENIED"
-	DeliveryStreamFailureTypeUnknownError              DeliveryStreamFailureType = "UNKNOWN_ERROR"
+	DeliveryStreamFailureTypeVpcEndpointServiceNameNotFound          DeliveryStreamFailureType = "VPC_ENDPOINT_SERVICE_NAME_NOT_FOUND"
+	DeliveryStreamFailureTypeVpcInterfaceEndpointServiceAccessDenied DeliveryStreamFailureType = "VPC_INTERFACE_ENDPOINT_SERVICE_ACCESS_DENIED"
+	DeliveryStreamFailureTypeRetireKmsGrantFailed                    DeliveryStreamFailureType = "RETIRE_KMS_GRANT_FAILED"
+	DeliveryStreamFailureTypeCreateKmsGrantFailed                    DeliveryStreamFailureType = "CREATE_KMS_GRANT_FAILED"
+	DeliveryStreamFailureTypeKmsAccessDenied                         DeliveryStreamFailureType = "KMS_ACCESS_DENIED"
+	DeliveryStreamFailureTypeDisabledKmsKey                          DeliveryStreamFailureType = "DISABLED_KMS_KEY"
+	DeliveryStreamFailureTypeInvalidKmsKey                           DeliveryStreamFailureType = "INVALID_KMS_KEY"
+	DeliveryStreamFailureTypeKmsKeyNotFound                          DeliveryStreamFailureType = "KMS_KEY_NOT_FOUND"
+	DeliveryStreamFailureTypeKmsOptInRequired                        DeliveryStreamFailureType = "KMS_OPT_IN_REQUIRED"
+	DeliveryStreamFailureTypeCreateEniFailed                         DeliveryStreamFailureType = "CREATE_ENI_FAILED"
+	DeliveryStreamFailureTypeDeleteEniFailed                         DeliveryStreamFailureType = "DELETE_ENI_FAILED"
+	DeliveryStreamFailureTypeSubnetNotFound                          DeliveryStreamFailureType = "SUBNET_NOT_FOUND"
+	DeliveryStreamFailureTypeSecurityGroupNotFound                   DeliveryStreamFailureType = "SECURITY_GROUP_NOT_FOUND"
+	DeliveryStreamFailureTypeEniAccessDenied                         DeliveryStreamFailureType = "ENI_ACCESS_DENIED"
+	DeliveryStreamFailureTypeSubnetAccessDenied                      DeliveryStreamFailureType = "SUBNET_ACCESS_DENIED"
+	DeliveryStreamFailureTypeSecurityGroupAccessDenied               DeliveryStreamFailureType = "SECURITY_GROUP_ACCESS_DENIED"
+	DeliveryStreamFailureTypeUnknownError                            DeliveryStreamFailureType = "UNKNOWN_ERROR"
 )
 
 // Values returns all known values for DeliveryStreamFailureType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DeliveryStreamFailureType) Values() []DeliveryStreamFailureType {
 	return []DeliveryStreamFailureType{
+		"VPC_ENDPOINT_SERVICE_NAME_NOT_FOUND",
+		"VPC_INTERFACE_ENDPOINT_SERVICE_ACCESS_DENIED",
 		"RETIRE_KMS_GRANT_FAILED",
 		"CREATE_KMS_GRANT_FAILED",
 		"KMS_ACCESS_DENIED",
@@ -190,8 +258,9 @@ const (
 )
 
 // Values returns all known values for DeliveryStreamStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeliveryStreamStatus) Values() []DeliveryStreamStatus {
 	return []DeliveryStreamStatus{
 		"CREATING",
@@ -208,15 +277,20 @@ type DeliveryStreamType string
 const (
 	DeliveryStreamTypeDirectPut             DeliveryStreamType = "DirectPut"
 	DeliveryStreamTypeKinesisStreamAsSource DeliveryStreamType = "KinesisStreamAsSource"
+	DeliveryStreamTypeMSKAsSource           DeliveryStreamType = "MSKAsSource"
+	DeliveryStreamTypeDatabaseAsSource      DeliveryStreamType = "DatabaseAsSource"
 )
 
 // Values returns all known values for DeliveryStreamType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeliveryStreamType) Values() []DeliveryStreamType {
 	return []DeliveryStreamType{
 		"DirectPut",
 		"KinesisStreamAsSource",
+		"MSKAsSource",
+		"DatabaseAsSource",
 	}
 }
 
@@ -233,8 +307,9 @@ const (
 
 // Values returns all known values for ElasticsearchIndexRotationPeriod. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ElasticsearchIndexRotationPeriod) Values() []ElasticsearchIndexRotationPeriod {
 	return []ElasticsearchIndexRotationPeriod{
 		"NoRotation",
@@ -255,6 +330,7 @@ const (
 
 // Values returns all known values for ElasticsearchS3BackupMode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ElasticsearchS3BackupMode) Values() []ElasticsearchS3BackupMode {
 	return []ElasticsearchS3BackupMode{
@@ -272,8 +348,9 @@ const (
 )
 
 // Values returns all known values for HECEndpointType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HECEndpointType) Values() []HECEndpointType {
 	return []HECEndpointType{
 		"Raw",
@@ -291,9 +368,29 @@ const (
 
 // Values returns all known values for HttpEndpointS3BackupMode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (HttpEndpointS3BackupMode) Values() []HttpEndpointS3BackupMode {
 	return []HttpEndpointS3BackupMode{
+		"FailedDataOnly",
+		"AllData",
+	}
+}
+
+type IcebergS3BackupMode string
+
+// Enum values for IcebergS3BackupMode
+const (
+	IcebergS3BackupModeFailedDataOnly IcebergS3BackupMode = "FailedDataOnly"
+	IcebergS3BackupModeAllData        IcebergS3BackupMode = "AllData"
+)
+
+// Values returns all known values for IcebergS3BackupMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IcebergS3BackupMode) Values() []IcebergS3BackupMode {
+	return []IcebergS3BackupMode{
 		"FailedDataOnly",
 		"AllData",
 	}
@@ -308,8 +405,9 @@ const (
 )
 
 // Values returns all known values for KeyType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KeyType) Values() []KeyType {
 	return []KeyType{
 		"AWS_OWNED_CMK",
@@ -325,8 +423,9 @@ const (
 )
 
 // Values returns all known values for NoEncryptionConfig. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NoEncryptionConfig) Values() []NoEncryptionConfig {
 	return []NoEncryptionConfig{
 		"NoEncryption",
@@ -343,8 +442,9 @@ const (
 )
 
 // Values returns all known values for OrcCompression. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OrcCompression) Values() []OrcCompression {
 	return []OrcCompression{
 		"NONE",
@@ -362,8 +462,9 @@ const (
 )
 
 // Values returns all known values for OrcFormatVersion. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OrcFormatVersion) Values() []OrcFormatVersion {
 	return []OrcFormatVersion{
 		"V0_11",
@@ -381,8 +482,9 @@ const (
 )
 
 // Values returns all known values for ParquetCompression. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ParquetCompression) Values() []ParquetCompression {
 	return []ParquetCompression{
 		"UNCOMPRESSED",
@@ -400,8 +502,9 @@ const (
 )
 
 // Values returns all known values for ParquetWriterVersion. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ParquetWriterVersion) Values() []ParquetWriterVersion {
 	return []ParquetWriterVersion{
 		"V1",
@@ -422,11 +525,14 @@ const (
 	ProcessorParameterNameBufferIntervalInSeconds ProcessorParameterName = "BufferIntervalInSeconds"
 	ProcessorParameterNameSubRecordType           ProcessorParameterName = "SubRecordType"
 	ProcessorParameterNameDelimiter               ProcessorParameterName = "Delimiter"
+	ProcessorParameterNameCompressionFormat       ProcessorParameterName = "CompressionFormat"
+	ProcessorParameterNameDataMessageExtraction   ProcessorParameterName = "DataMessageExtraction"
 )
 
 // Values returns all known values for ProcessorParameterName. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProcessorParameterName) Values() []ProcessorParameterName {
 	return []ProcessorParameterName{
 		"LambdaArn",
@@ -438,6 +544,8 @@ func (ProcessorParameterName) Values() []ProcessorParameterName {
 		"BufferIntervalInSeconds",
 		"SubRecordType",
 		"Delimiter",
+		"CompressionFormat",
+		"DataMessageExtraction",
 	}
 }
 
@@ -446,17 +554,22 @@ type ProcessorType string
 // Enum values for ProcessorType
 const (
 	ProcessorTypeRecordDeAggregation     ProcessorType = "RecordDeAggregation"
+	ProcessorTypeDecompression           ProcessorType = "Decompression"
+	ProcessorTypeCloudWatchLogProcessing ProcessorType = "CloudWatchLogProcessing"
 	ProcessorTypeLambda                  ProcessorType = "Lambda"
 	ProcessorTypeMetadataExtraction      ProcessorType = "MetadataExtraction"
 	ProcessorTypeAppendDelimiterToRecord ProcessorType = "AppendDelimiterToRecord"
 )
 
 // Values returns all known values for ProcessorType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProcessorType) Values() []ProcessorType {
 	return []ProcessorType{
 		"RecordDeAggregation",
+		"Decompression",
+		"CloudWatchLogProcessing",
 		"Lambda",
 		"MetadataExtraction",
 		"AppendDelimiterToRecord",
@@ -472,8 +585,9 @@ const (
 )
 
 // Values returns all known values for RedshiftS3BackupMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RedshiftS3BackupMode) Values() []RedshiftS3BackupMode {
 	return []RedshiftS3BackupMode{
 		"Disabled",
@@ -490,12 +604,93 @@ const (
 )
 
 // Values returns all known values for S3BackupMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (S3BackupMode) Values() []S3BackupMode {
 	return []S3BackupMode{
 		"Disabled",
 		"Enabled",
+	}
+}
+
+type SnapshotRequestedBy string
+
+// Enum values for SnapshotRequestedBy
+const (
+	SnapshotRequestedByUser     SnapshotRequestedBy = "USER"
+	SnapshotRequestedByFirehose SnapshotRequestedBy = "FIREHOSE"
+)
+
+// Values returns all known values for SnapshotRequestedBy. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SnapshotRequestedBy) Values() []SnapshotRequestedBy {
+	return []SnapshotRequestedBy{
+		"USER",
+		"FIREHOSE",
+	}
+}
+
+type SnapshotStatus string
+
+// Enum values for SnapshotStatus
+const (
+	SnapshotStatusInProgress SnapshotStatus = "IN_PROGRESS"
+	SnapshotStatusComplete   SnapshotStatus = "COMPLETE"
+	SnapshotStatusSuspended  SnapshotStatus = "SUSPENDED"
+)
+
+// Values returns all known values for SnapshotStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SnapshotStatus) Values() []SnapshotStatus {
+	return []SnapshotStatus{
+		"IN_PROGRESS",
+		"COMPLETE",
+		"SUSPENDED",
+	}
+}
+
+type SnowflakeDataLoadingOption string
+
+// Enum values for SnowflakeDataLoadingOption
+const (
+	SnowflakeDataLoadingOptionJsonMapping                      SnowflakeDataLoadingOption = "JSON_MAPPING"
+	SnowflakeDataLoadingOptionVariantContentMapping            SnowflakeDataLoadingOption = "VARIANT_CONTENT_MAPPING"
+	SnowflakeDataLoadingOptionVariantContentAndMetadataMapping SnowflakeDataLoadingOption = "VARIANT_CONTENT_AND_METADATA_MAPPING"
+)
+
+// Values returns all known values for SnowflakeDataLoadingOption. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SnowflakeDataLoadingOption) Values() []SnowflakeDataLoadingOption {
+	return []SnowflakeDataLoadingOption{
+		"JSON_MAPPING",
+		"VARIANT_CONTENT_MAPPING",
+		"VARIANT_CONTENT_AND_METADATA_MAPPING",
+	}
+}
+
+type SnowflakeS3BackupMode string
+
+// Enum values for SnowflakeS3BackupMode
+const (
+	SnowflakeS3BackupModeFailedDataOnly SnowflakeS3BackupMode = "FailedDataOnly"
+	SnowflakeS3BackupModeAllData        SnowflakeS3BackupMode = "AllData"
+)
+
+// Values returns all known values for SnowflakeS3BackupMode. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SnowflakeS3BackupMode) Values() []SnowflakeS3BackupMode {
+	return []SnowflakeS3BackupMode{
+		"FailedDataOnly",
+		"AllData",
 	}
 }
 
@@ -508,11 +703,31 @@ const (
 )
 
 // Values returns all known values for SplunkS3BackupMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SplunkS3BackupMode) Values() []SplunkS3BackupMode {
 	return []SplunkS3BackupMode{
 		"FailedEventsOnly",
 		"AllEvents",
+	}
+}
+
+type SSLMode string
+
+// Enum values for SSLMode
+const (
+	SSLModeDisabled SSLMode = "Disabled"
+	SSLModeEnabled  SSLMode = "Enabled"
+)
+
+// Values returns all known values for SSLMode. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SSLMode) Values() []SSLMode {
+	return []SSLMode{
+		"Disabled",
+		"Enabled",
 	}
 }

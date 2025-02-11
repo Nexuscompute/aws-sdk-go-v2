@@ -38,8 +38,10 @@ type AbortCriteria struct {
 	MinNumberOfExecutedThings *int32
 
 	// The minimum percentage of job execution failures that must occur to initiate
-	// the job abort. Amazon Web Services IoT Core supports up to two digits after the
-	// decimal (for example, 10.9 and 10.99, but not 10.999).
+	// the job abort.
+	//
+	// Amazon Web Services IoT Core supports up to two digits after the decimal (for
+	// example, 10.9 and 10.99, but not 10.999).
 	//
 	// This member is required.
 	ThresholdPercentage *float64
@@ -67,11 +69,13 @@ type Action struct {
 	// DynamoDB column.
 	DynamoDBv2 *DynamoDBv2Action
 
-	// Write data to an Amazon OpenSearch Service domain. The Elasticsearch action can
-	// only be used by existing rule actions. To create a new rule action or to update
-	// an existing rule action, use the OpenSearch rule action instead. For more
-	// information, see OpenSearchAction (https://docs.aws.amazon.com/iot/latest/apireference/API_OpenSearchAction.html)
-	// .
+	// Write data to an Amazon OpenSearch Service domain.
+	//
+	// The Elasticsearch action can only be used by existing rule actions. To create a
+	// new rule action or to update an existing rule action, use the OpenSearch rule
+	// action instead. For more information, see [OpenSearchAction].
+	//
+	// [OpenSearchAction]: https://docs.aws.amazon.com/iot/latest/apireference/API_OpenSearchAction.html
 	Elasticsearch *ElasticsearchAction
 
 	// Write to an Amazon Kinesis Firehose stream.
@@ -126,8 +130,10 @@ type Action struct {
 	StepFunctions *StepFunctionsAction
 
 	// The Timestream rule action writes attributes (measures) from an MQTT message
-	// into an Amazon Timestream table. For more information, see the Timestream (https://docs.aws.amazon.com/iot/latest/developerguide/timestream-rule-action.html)
-	// topic rule action documentation.
+	// into an Amazon Timestream table. For more information, see the [Timestream]topic rule
+	// action documentation.
+	//
+	// [Timestream]: https://docs.aws.amazon.com/iot/latest/developerguide/timestream-rule-action.html
 	Timestream *TimestreamAction
 
 	noSmithyDocumentSerde
@@ -157,7 +163,7 @@ type ActiveViolation struct {
 	// The description of the verification state of the violation.
 	VerificationStateDescription *string
 
-	// The details of a violation event.
+	//  The details of a violation event.
 	ViolationEventAdditionalInfo *ViolationEventAdditionalInfo
 
 	// The ID of the active violation.
@@ -318,14 +324,17 @@ func (*AssetPropertyVariantMemberStringValue) isAssetPropertyVariant() {}
 // The attribute payload.
 type AttributePayload struct {
 
-	// A JSON string containing up to three key-value pair in JSON format. For
-	// example: {\"attributes\":{\"string1\":\"string2\"}}
+	// A JSON string containing up to three key-value pair in JSON format. For example:
+	//
+	//     {\"attributes\":{\"string1\":\"string2\"}}
 	Attributes map[string]string
 
 	// Specifies whether the list of attributes provided in the AttributePayload is
 	// merged with the attributes stored in the registry, instead of overwriting them.
-	// To remove an attribute, call UpdateThing with an empty attribute value. The
-	// merge attribute is only valid when calling UpdateThing or UpdateThingGroup .
+	//
+	// To remove an attribute, call UpdateThing with an empty attribute value.
+	//
+	// The merge attribute is only valid when calling UpdateThing or UpdateThingGroup .
 	Merge bool
 
 	noSmithyDocumentSerde
@@ -362,8 +371,8 @@ type AuditCheckDetails struct {
 	// The number of resources that were found noncompliant during the check.
 	NonCompliantResourcesCount *int64
 
-	// Describes how many of the non-compliant resources created during the evaluation
-	// of an audit check were marked as suppressed.
+	//  Describes how many of the non-compliant resources created during the
+	// evaluation of an audit check were marked as suppressed.
 	SuppressedNonCompliantResourcesCount *int64
 
 	// The number of resources on which the check was performed.
@@ -385,7 +394,7 @@ type AuditFinding struct {
 	// The time the result (finding) was discovered.
 	FindingTime *time.Time
 
-	// Indicates whether the audit finding was suppressed or not during reporting.
+	//  Indicates whether the audit finding was suppressed or not during reporting.
 	IsSuppressed *bool
 
 	// The resource that was found to be noncompliant with the audit check.
@@ -515,14 +524,14 @@ type AuditSuppression struct {
 	// This member is required.
 	ResourceIdentifier *ResourceIdentifier
 
-	// The description of the audit suppression.
+	//  The description of the audit suppression.
 	Description *string
 
-	// The expiration date (epoch timestamp in seconds) that you want the suppression
+	//  The expiration date (epoch timestamp in seconds) that you want the suppression
 	// to adhere to.
 	ExpirationDate *time.Time
 
-	// Indicates whether a suppression should exist indefinitely or not.
+	//  Indicates whether a suppression should exist indefinitely or not.
 	SuppressIndefinitely *bool
 
 	noSmithyDocumentSerde
@@ -677,8 +686,10 @@ type AwsJobAbortCriteria struct {
 	MinNumberOfExecutedThings *int32
 
 	// The minimum percentage of job execution failures that must occur to initiate
-	// the job abort. Amazon Web Services IoT Core supports up to two digits after the
-	// decimal (for example, 10.9 and 10.99, but not 10.999).
+	// the job abort.
+	//
+	// Amazon Web Services IoT Core supports up to two digits after the decimal (for
+	// example, 10.9 and 10.99, but not 10.999).
 	//
 	// This member is required.
 	ThresholdPercentage *float64
@@ -716,9 +727,10 @@ type AwsJobExponentialRolloutRate struct {
 	// This member is required.
 	IncrementFactor float64
 
-	// The criteria to initiate the increase in rate of rollout for a job. Amazon Web
-	// Services IoT Core supports up to one digit after the decimal (for example, 1.5,
-	// but not 1.55).
+	// The criteria to initiate the increase in rate of rollout for a job.
+	//
+	// Amazon Web Services IoT Core supports up to one digit after the decimal (for
+	// example, 1.5, but not 1.55).
 	//
 	// This member is required.
 	RateIncreaseCriteria *AwsJobRateIncreaseCriteria
@@ -779,7 +791,13 @@ type Behavior struct {
 
 	// The criteria that determine if a device is behaving normally in regard to the
 	// metric .
+	//
+	// In the IoT console, you can choose to be sent an alert through Amazon SNS when
+	// IoT Device Defender detects that a device is behaving anomalously.
 	Criteria *BehaviorCriteria
+
+	// Value indicates exporting metrics related to the behavior when it is true.
+	ExportMetric *bool
 
 	// What is measured by the behavior.
 	Metric *string
@@ -790,7 +808,7 @@ type Behavior struct {
 	// custom metrics.
 	MetricDimension *MetricDimension
 
-	// Suppresses alerts.
+	//  Suppresses alerts.
 	SuppressAlerts *bool
 
 	noSmithyDocumentSerde
@@ -801,9 +819,13 @@ type BehaviorCriteria struct {
 
 	// The operator that relates the thing measured ( metric ) to the criteria
 	// (containing a value or statisticalThreshold ). Valid operators include:
+	//
 	//   - string-list : in-set and not-in-set
+	//
 	//   - number-list : in-set and not-in-set
+	//
 	//   - ip-address-list : in-cidr-set and not-in-cidr-set
+	//
 	//   - number : less-than , less-than-equals , greater-than , and
 	//   greater-than-equals
 	ComparisonOperator ComparisonOperator
@@ -826,7 +848,7 @@ type BehaviorCriteria struct {
 	// list-based metric datatypes.
 	DurationSeconds *int32
 
-	// The configuration of an ML Detect
+	//  The configuration of an ML Detect
 	MlDetectionConfig *MachineLearningDetectionConfig
 
 	// A statistical ranking (percentile)that indicates a threshold value by which a
@@ -842,22 +864,22 @@ type BehaviorCriteria struct {
 // The summary of an ML Detect behavior model.
 type BehaviorModelTrainingSummary struct {
 
-	// The name of the behavior.
+	//  The name of the behavior.
 	BehaviorName *string
 
-	// The percentage of datapoints collected.
+	//  The percentage of datapoints collected.
 	DatapointsCollectionPercentage *float64
 
-	// The date the model was last refreshed.
+	//  The date the model was last refreshed.
 	LastModelRefreshDate *time.Time
 
-	// The status of the behavior model.
+	//  The status of the behavior model.
 	ModelStatus ModelStatus
 
-	// The name of the security profile.
+	//  The name of the security profile.
 	SecurityProfileName *string
 
-	// The date a training model started collecting data.
+	//  The date a training model started collecting data.
 	TrainingDataCollectionStartDate *time.Time
 
 	noSmithyDocumentSerde
@@ -915,8 +937,9 @@ type CACertificate struct {
 	// The date the CA certificate was created.
 	CreationDate *time.Time
 
-	// The status of the CA certificate. The status value REGISTER_INACTIVE is
-	// deprecated and should not be used.
+	// The status of the CA certificate.
+	//
+	// The status value REGISTER_INACTIVE is deprecated and should not be used.
 	Status CACertificateStatus
 
 	noSmithyDocumentSerde
@@ -935,10 +958,13 @@ type CACertificateDescription struct {
 	// The CA certificate ID.
 	CertificateId *string
 
-	// The mode of the CA. All the device certificates that are registered using this
-	// CA will be registered in the same mode as the CA. For more information about
-	// certificate mode for device certificates, see certificate mode (https://docs.aws.amazon.com/iot/latest/apireference/API_CertificateDescription.html#iot-Type-CertificateDescription-certificateMode)
-	// .
+	// The mode of the CA.
+	//
+	// All the device certificates that are registered using this CA will be
+	// registered in the same mode as the CA. For more information about certificate
+	// mode for device certificates, see [certificate mode].
+	//
+	// [certificate mode]: https://docs.aws.amazon.com/iot/latest/apireference/API_CertificateDescription.html#iot-Type-CertificateDescription-certificateMode
 	CertificateMode CertificateMode
 
 	// The CA certificate data, in PEM format.
@@ -978,23 +1004,27 @@ type Certificate struct {
 	// certificate ID.)
 	CertificateId *string
 
-	// The mode of the certificate. DEFAULT : A certificate in DEFAULT mode is either
-	// generated by Amazon Web Services IoT Core or registered with an issuer
-	// certificate authority (CA) in DEFAULT mode. Devices with certificates in DEFAULT
-	// mode aren't required to send the Server Name Indication (SNI) extension when
-	// connecting to Amazon Web Services IoT Core. However, to use features such as
-	// custom domains and VPC endpoints, we recommend that you use the SNI extension
-	// when connecting to Amazon Web Services IoT Core. SNI_ONLY : A certificate in
-	// SNI_ONLY mode is registered without an issuer CA. Devices with certificates in
-	// SNI_ONLY mode must send the SNI extension when connecting to Amazon Web Services
-	// IoT Core.
+	// The mode of the certificate.
+	//
+	// DEFAULT : A certificate in DEFAULT mode is either generated by Amazon Web
+	// Services IoT Core or registered with an issuer certificate authority (CA) in
+	// DEFAULT mode. Devices with certificates in DEFAULT mode aren't required to send
+	// the Server Name Indication (SNI) extension when connecting to Amazon Web
+	// Services IoT Core. However, to use features such as custom domains and VPC
+	// endpoints, we recommend that you use the SNI extension when connecting to Amazon
+	// Web Services IoT Core.
+	//
+	// SNI_ONLY : A certificate in SNI_ONLY mode is registered without an issuer CA.
+	// Devices with certificates in SNI_ONLY mode must send the SNI extension when
+	// connecting to Amazon Web Services IoT Core.
 	CertificateMode CertificateMode
 
 	// The date and time the certificate was created.
 	CreationDate *time.Time
 
-	// The status of the certificate. The status value REGISTER_INACTIVE is deprecated
-	// and should not be used.
+	// The status of the certificate.
+	//
+	// The status value REGISTER_INACTIVE is deprecated and should not be used.
 	Status CertificateStatus
 
 	noSmithyDocumentSerde
@@ -1012,18 +1042,23 @@ type CertificateDescription struct {
 	// The ID of the certificate.
 	CertificateId *string
 
-	// The mode of the certificate. DEFAULT : A certificate in DEFAULT mode is either
-	// generated by Amazon Web Services IoT Core or registered with an issuer
-	// certificate authority (CA) in DEFAULT mode. Devices with certificates in DEFAULT
-	// mode aren't required to send the Server Name Indication (SNI) extension when
-	// connecting to Amazon Web Services IoT Core. However, to use features such as
-	// custom domains and VPC endpoints, we recommend that you use the SNI extension
-	// when connecting to Amazon Web Services IoT Core. SNI_ONLY : A certificate in
-	// SNI_ONLY mode is registered without an issuer CA. Devices with certificates in
-	// SNI_ONLY mode must send the SNI extension when connecting to Amazon Web Services
-	// IoT Core. For more information about the value for SNI extension, see Transport
-	// security in IoT (https://docs.aws.amazon.com/iot/latest/developerguide/transport-security.html)
-	// .
+	// The mode of the certificate.
+	//
+	// DEFAULT : A certificate in DEFAULT mode is either generated by Amazon Web
+	// Services IoT Core or registered with an issuer certificate authority (CA) in
+	// DEFAULT mode. Devices with certificates in DEFAULT mode aren't required to send
+	// the Server Name Indication (SNI) extension when connecting to Amazon Web
+	// Services IoT Core. However, to use features such as custom domains and VPC
+	// endpoints, we recommend that you use the SNI extension when connecting to Amazon
+	// Web Services IoT Core.
+	//
+	// SNI_ONLY : A certificate in SNI_ONLY mode is registered without an issuer CA.
+	// Devices with certificates in SNI_ONLY mode must send the SNI extension when
+	// connecting to Amazon Web Services IoT Core.
+	//
+	// For more information about the value for SNI extension, see [Transport security in IoT].
+	//
+	// [Transport security in IoT]: https://docs.aws.amazon.com/iot/latest/developerguide/transport-security.html
 	CertificateMode CertificateMode
 
 	// The certificate data, in PEM format.
@@ -1060,6 +1095,18 @@ type CertificateDescription struct {
 	noSmithyDocumentSerde
 }
 
+// The certificate provider summary.
+type CertificateProviderSummary struct {
+
+	// The ARN of the certificate provider.
+	CertificateProviderArn *string
+
+	// The name of the certificate provider.
+	CertificateProviderName *string
+
+	noSmithyDocumentSerde
+}
+
 // When the certificate is valid.
 type CertificateValidity struct {
 
@@ -1068,6 +1115,16 @@ type CertificateValidity struct {
 
 	// The certificate is not valid before this date.
 	NotBefore *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// An object that speciﬁes the client certificate conﬁguration for a domain.
+type ClientCertificateConfig struct {
+
+	// The ARN of the Lambda function that IoT invokes after mutual TLS authentication
+	// during the connection.
+	ClientCertificateCallbackArn *string
 
 	noSmithyDocumentSerde
 }
@@ -1132,8 +1189,9 @@ type CloudwatchMetricAction struct {
 	// This member is required.
 	MetricNamespace *string
 
-	// The metric unit (https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_concepts.html#Unit)
-	// supported by CloudWatch.
+	// The [metric unit] supported by CloudWatch.
+	//
+	// [metric unit]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_concepts.html#Unit
 	//
 	// This member is required.
 	MetricUnit *string
@@ -1148,8 +1206,9 @@ type CloudwatchMetricAction struct {
 	// This member is required.
 	RoleArn *string
 
-	// An optional Unix timestamp (https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_concepts.html#about_timestamp)
-	// .
+	// An optional [Unix timestamp].
+	//
+	// [Unix timestamp]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/DeveloperGuide/cloudwatch_concepts.html#about_timestamp
 	MetricTimestamp *string
 
 	noSmithyDocumentSerde
@@ -1187,6 +1246,160 @@ type CodeSigningSignature struct {
 
 	// A base64 encoded binary representation of the code signing signature.
 	InlineDocument []byte
+
+	noSmithyDocumentSerde
+}
+
+// The result value of the command execution. The device can use the result field
+// to share additional details about the execution such as a return value of a
+// remote function call.
+//
+// This field is not applicable if you use the AWS-IoT-FleetWise namespace.
+type CommandExecutionResult struct {
+
+	// An attribute of type Boolean. For example:
+	//
+	//     "BOOL": true
+	B *bool
+
+	// An attribute of type Binary.
+	BIN []byte
+
+	// An attribute of type String. For example:
+	//
+	//     "S": "Hello"
+	S *string
+
+	noSmithyDocumentSerde
+}
+
+// Summary information about a particular command execution.
+type CommandExecutionSummary struct {
+
+	// The Amazon Resource Name (ARN) of the command execution.
+	CommandArn *string
+
+	// The date and time at which the command completed executing on the target device.
+	CompletedAt *time.Time
+
+	// The date and time at which the command execution was created for the target
+	// device.
+	CreatedAt *time.Time
+
+	// The unique identifier of the command execution.
+	ExecutionId *string
+
+	// The date and time at which the command started executing on the target device.
+	StartedAt *time.Time
+
+	// The status of the command executions.
+	Status CommandExecutionStatus
+
+	// The Amazon Resource Name (ARN) of the target device for which the command is
+	// being executed.
+	TargetArn *string
+
+	noSmithyDocumentSerde
+}
+
+// A map of key-value pairs that describe the command.
+type CommandParameter struct {
+
+	// The name of a specific parameter used in a command and command execution.
+	//
+	// This member is required.
+	Name *string
+
+	// The default value used to describe the command. This is the value assumed by
+	// the parameter if no other value is assigned to it.
+	DefaultValue *CommandParameterValue
+
+	// The description of the command parameter.
+	Description *string
+
+	// The value used to describe the command. When you assign a value to a parameter,
+	// it will override any default value that you had already specified.
+	Value *CommandParameterValue
+
+	noSmithyDocumentSerde
+}
+
+// The range of possible values that's used to describe a specific command
+// parameter.
+//
+// The commandParameterValue can only have one of the below fields listed.
+type CommandParameterValue struct {
+
+	// An attribute of type Boolean. For example:
+	//
+	//     "BOOL": true
+	B *bool
+
+	// An attribute of type Binary. For example:
+	//
+	//     "B": "dGhpcyB0ZXh0IGlzIGJhc2U2NC1lbmNvZGVk"
+	BIN []byte
+
+	// An attribute of type Double (Sixty-Four Bits).
+	D *float64
+
+	// An attribute of type Integer (Thirty-Two Bits).
+	I *int32
+
+	// An attribute of type Long.
+	L *int64
+
+	// An attribute of type String. For example:
+	//
+	//     "S": "Hello"
+	S *string
+
+	// An attribute of type unsigned long.
+	UL *string
+
+	noSmithyDocumentSerde
+}
+
+// The command payload object that contains the instructions for the device to
+// process.
+type CommandPayload struct {
+
+	// The static payload file for the command.
+	Content []byte
+
+	// The content type that specifies the format type of the payload file. This field
+	// must use a type/subtype format, such as application/json . For information about
+	// various content types, see [Common MIME types].
+	//
+	// [Common MIME types]: https://developer.mozilla.org/en-US/docs/Web/HTTP/MIME_types/Common_types
+	ContentType *string
+
+	noSmithyDocumentSerde
+}
+
+// Summary information about a particular command resource.
+type CommandSummary struct {
+
+	// The Amazon Resource Name (ARN) of the command.
+	CommandArn *string
+
+	// The unique identifier of the command.
+	CommandId *string
+
+	// The timestamp, when the command was created.
+	CreatedAt *time.Time
+
+	// Indicates whether the command has been deprecated.
+	Deprecated *bool
+
+	// The display name of the command.
+	DisplayName *string
+
+	// The timestamp, when the command was last updated.
+	LastUpdatedAt *time.Time
+
+	// Indicates whether the command is pending deletion.
+	PendingDeletion *bool
 
 	noSmithyDocumentSerde
 }
@@ -1252,31 +1465,31 @@ type Destination struct {
 // Describes which mitigation actions should be executed.
 type DetectMitigationActionExecution struct {
 
-	// The friendly name that uniquely identifies the mitigation action.
+	//  The friendly name that uniquely identifies the mitigation action.
 	ActionName *string
 
-	// The error code of a mitigation action.
+	//  The error code of a mitigation action.
 	ErrorCode *string
 
-	// The date a mitigation action ended.
+	//  The date a mitigation action ended.
 	ExecutionEndDate *time.Time
 
-	// The date a mitigation action was started.
+	//  The date a mitigation action was started.
 	ExecutionStartDate *time.Time
 
-	// The message of a mitigation action.
+	//  The message of a mitigation action.
 	Message *string
 
-	// The status of a mitigation action.
+	//  The status of a mitigation action.
 	Status DetectMitigationActionExecutionStatus
 
-	// The unique identifier of the task.
+	//  The unique identifier of the task.
 	TaskId *string
 
-	// The name of the thing.
+	//  The name of the thing.
 	ThingName *string
 
-	// The unique identifier of the violation.
+	//  The unique identifier of the violation.
 	ViolationId *string
 
 	noSmithyDocumentSerde
@@ -1285,13 +1498,13 @@ type DetectMitigationActionExecution struct {
 // The statistics of a mitigation action task.
 type DetectMitigationActionsTaskStatistics struct {
 
-	// The actions that were performed.
+	//  The actions that were performed.
 	ActionsExecuted *int64
 
-	// The actions that failed.
+	//  The actions that failed.
 	ActionsFailed *int64
 
-	// The actions that were skipped.
+	//  The actions that were skipped.
 	ActionsSkipped *int64
 
 	noSmithyDocumentSerde
@@ -1300,34 +1513,34 @@ type DetectMitigationActionsTaskStatistics struct {
 // The summary of the mitigation action tasks.
 type DetectMitigationActionsTaskSummary struct {
 
-	// The definition of the actions.
+	//  The definition of the actions.
 	ActionsDefinition []MitigationAction
 
-	// Includes only active violations.
+	//  Includes only active violations.
 	OnlyActiveViolationsIncluded bool
 
-	// Includes suppressed alerts.
+	//  Includes suppressed alerts.
 	SuppressedAlertsIncluded bool
 
-	// Specifies the ML Detect findings to which the mitigation actions are applied.
+	//  Specifies the ML Detect findings to which the mitigation actions are applied.
 	Target *DetectMitigationActionsTaskTarget
 
-	// The date the task ended.
+	//  The date the task ended.
 	TaskEndTime *time.Time
 
-	// The unique identifier of the task.
+	//  The unique identifier of the task.
 	TaskId *string
 
-	// The date the task started.
+	//  The date the task started.
 	TaskStartTime *time.Time
 
-	// The statistics of a mitigation action task.
+	//  The statistics of a mitigation action task.
 	TaskStatistics *DetectMitigationActionsTaskStatistics
 
-	// The status of the task.
+	//  The status of the task.
 	TaskStatus DetectMitigationActionsTaskStatus
 
-	// Specifies the time period of which violation events occurred between.
+	//  Specifies the time period of which violation events occurred between.
 	ViolationEventOccurrenceRange *ViolationEventOccurrenceRange
 
 	noSmithyDocumentSerde
@@ -1336,13 +1549,13 @@ type DetectMitigationActionsTaskSummary struct {
 // The target of a mitigation action task.
 type DetectMitigationActionsTaskTarget struct {
 
-	// The name of the behavior.
+	//  The name of the behavior.
 	BehaviorName *string
 
-	// The name of the security profile.
+	//  The name of the security profile.
 	SecurityProfileName *string
 
-	// The unique identifiers of the violations.
+	//  The unique identifiers of the violations.
 	ViolationIds []string
 
 	noSmithyDocumentSerde
@@ -1351,6 +1564,7 @@ type DetectMitigationActionsTaskTarget struct {
 // A map of key-value pairs containing the patterns that need to be replaced in a
 // managed template job document schema. You can use the description of each key as
 // a guidance to specify the inputs during runtime when creating a job.
+//
 // documentParameters can only be used when creating jobs from Amazon Web Services
 // managed templates. This parameter can't be used with custom job templates or to
 // create jobs from them.
@@ -1384,8 +1598,11 @@ type DocumentParameter struct {
 // associated with an Amazon Web Services-managed domain (for example,
 // dbc123defghijk.iot.us-west-2.amazonaws.com), a customer managed domain, or a
 // default endpoint.
+//
 //   - Data
+//
 //   - Jobs
+//
 //   - CredentialProvider
 type DomainConfigurationSummary struct {
 
@@ -1401,15 +1618,24 @@ type DomainConfigurationSummary struct {
 	noSmithyDocumentSerde
 }
 
-// Describes an action to write to a DynamoDB table. The tableName , hashKeyField ,
-// and rangeKeyField values must match the values used when you created the table.
+// Describes an action to write to a DynamoDB table.
+//
+// The tableName , hashKeyField , and rangeKeyField values must match the values
+// used when you created the table.
+//
 // The hashKeyValue and rangeKeyvalue fields use a substitution template syntax.
 // These templates provide data at runtime. The syntax is as follows:
-// ${sql-expression}. You can specify any valid expression in a WHERE or SELECT
-// clause, including JSON properties, comparisons, calculations, and functions. For
-// example, the following field uses the third level of the topic: "hashKeyValue":
-// "${topic(3)}" The following field uses the timestamp: "rangeKeyValue":
-// "${timestamp()}"
+// ${sql-expression}.
+//
+// You can specify any valid expression in a WHERE or SELECT clause, including
+// JSON properties, comparisons, calculations, and functions. For example, the
+// following field uses the third level of the topic:
+//
+//	"hashKeyValue": "${topic(3)}"
+//
+// The following field uses the timestamp:
+//
+//	"rangeKeyValue": "${timestamp()}"
 type DynamoDBAction struct {
 
 	// The hash key name.
@@ -1455,15 +1681,20 @@ type DynamoDBAction struct {
 	noSmithyDocumentSerde
 }
 
-// Describes an action to write to a DynamoDB table. This DynamoDB action writes
-// each attribute in the message payload into it's own column in the DynamoDB
-// table.
+// Describes an action to write to a DynamoDB table.
+//
+// This DynamoDB action writes each attribute in the message payload into it's own
+// column in the DynamoDB table.
 type DynamoDBv2Action struct {
 
 	// Specifies the DynamoDB table to which the message data will be written. For
-	// example: { "dynamoDBv2": { "roleArn": "aws:iam:12341251:my-role" "putItem": {
-	// "tableName": "my-table" } } } Each attribute in the message payload will be
-	// written to a separate column in the DynamoDB database.
+	// example:
+	//
+	//     { "dynamoDBv2": { "roleArn": "aws:iam:12341251:my-role" "putItem": {
+	//     "tableName": "my-table" } } }
+	//
+	// Each attribute in the message payload will be written to a separate column in
+	// the DynamoDB database.
 	//
 	// This member is required.
 	PutItem *PutItemInput
@@ -1492,10 +1723,12 @@ type EffectivePolicy struct {
 }
 
 // Describes an action that writes data to an Amazon OpenSearch Service domain.
+//
 // The Elasticsearch action can only be used by existing rule actions. To create a
 // new rule action or to update an existing rule action, use the OpenSearch rule
-// action instead. For more information, see OpenSearchAction (https://docs.aws.amazon.com/iot/latest/apireference/API_OpenSearchAction.html)
-// .
+// action instead. For more information, see [OpenSearchAction].
+//
+// [OpenSearchAction]: https://docs.aws.amazon.com/iot/latest/apireference/API_OpenSearchAction.html
 type ElasticsearchAction struct {
 
 	// The endpoint of your OpenSearch domain.
@@ -1574,12 +1807,13 @@ type ExponentialRolloutRate struct {
 	// This member is required.
 	BaseRatePerMinute *int32
 
-	// The exponential factor to increase the rate of rollout for a job. Amazon Web
-	// Services IoT Core supports up to one digit after the decimal (for example, 1.5,
-	// but not 1.55).
+	// The exponential factor to increase the rate of rollout for a job.
+	//
+	// Amazon Web Services IoT Core supports up to one digit after the decimal (for
+	// example, 1.5, but not 1.55).
 	//
 	// This member is required.
-	IncrementFactor float64
+	IncrementFactor *float64
 
 	// The criteria to initiate the increase in rate of rollout for a job.
 	//
@@ -1626,12 +1860,14 @@ type FirehoseAction struct {
 	// This member is required.
 	RoleArn *string
 
-	// Whether to deliver the Kinesis Data Firehose stream as a batch by using
-	// PutRecordBatch (https://docs.aws.amazon.com/firehose/latest/APIReference/API_PutRecordBatch.html)
-	// . The default value is false . When batchMode is true and the rule's SQL
-	// statement evaluates to an Array, each Array element forms one record in the
-	// PutRecordBatch (https://docs.aws.amazon.com/firehose/latest/APIReference/API_PutRecordBatch.html)
-	// request. The resulting array can't have more than 500 records.
+	// Whether to deliver the Kinesis Data Firehose stream as a batch by using [PutRecordBatch]
+	// PutRecordBatch . The default value is false .
+	//
+	// When batchMode is true and the rule's SQL statement evaluates to an Array, each
+	// Array element forms one record in the [PutRecordBatch]PutRecordBatch request. The resulting
+	// array can't have more than 500 records.
+	//
+	// [PutRecordBatch]: https://docs.aws.amazon.com/firehose/latest/APIReference/API_PutRecordBatch.html
 	BatchMode *bool
 
 	// A character separator that will be used to separate records written to the
@@ -1650,6 +1886,21 @@ type FleetMetricNameAndArn struct {
 
 	// The fleet metric name.
 	MetricName *string
+
+	noSmithyDocumentSerde
+}
+
+// A geolocation target that you select to index. Each geolocation target contains
+// a name and order key-value pair that specifies the geolocation target fields.
+type GeoLocationTarget struct {
+
+	// The name of the geolocation target field. If the target field is part of a
+	// named shadow, you must select the named shadow using the namedShadow filter.
+	Name *string
+
+	// The order of the geolocation target field. This field is optional. The default
+	// value is LatLon .
+	Order TargetFieldOrder
 
 	noSmithyDocumentSerde
 }
@@ -1712,9 +1963,9 @@ type HttpActionHeader struct {
 // The authorization method used to send messages.
 type HttpAuthorization struct {
 
-	// Use Sig V4 authorization. For more information, see Signature Version 4 Signing
-	// Process (https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html)
-	// .
+	// Use Sig V4 authorization. For more information, see [Signature Version 4 Signing Process].
+	//
+	// [Signature Version 4 Signing Process]: https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html
 	Sigv4 *SigV4Authorization
 
 	noSmithyDocumentSerde
@@ -1775,16 +2026,37 @@ type ImplicitDeny struct {
 	noSmithyDocumentSerde
 }
 
-// Provides additional filters for specific data sources. Named shadow is the only
-// data source that currently supports and requires a filter. To add named shadows
-// to your fleet indexing configuration, set namedShadowIndexingMode to be ON and
-// specify your shadow names in filter .
+// Provides additional selections for named shadows and geolocation data.
+//
+// To add named shadows to your fleet indexing configuration, set
+// namedShadowIndexingMode to be ON and specify your shadow names in
+// namedShadowNames filter.
+//
+// To add geolocation data to your fleet indexing configuration:
+//
+//   - If you store geolocation data in a class/unnamed shadow, set
+//     thingIndexingMode to be REGISTRY_AND_SHADOW and specify your geolocation data
+//     in geoLocations filter.
+//
+//   - If you store geolocation data in a named shadow, set namedShadowIndexingMode
+//     to be ON , add the shadow name in namedShadowNames filter, and specify your
+//     geolocation data in geoLocations filter. For more information, see [Managing fleet indexing].
+//
+// [Managing fleet indexing]: https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html
 type IndexingFilter struct {
 
-	// The shadow names that you select to index. The default maximum number of shadow
-	// names for indexing is 10. To increase the limit, see Amazon Web Services IoT
-	// Device Management Quotas (https://docs.aws.amazon.com/general/latest/gr/iot_device_management.html#fleet-indexing-limits)
+	// The list of geolocation targets that you select to index. The default maximum
+	// number of geolocation targets for indexing is 1 . To increase the limit, see [Amazon Web Services IoT Device Management Quotas]
 	// in the Amazon Web Services General Reference.
+	//
+	// [Amazon Web Services IoT Device Management Quotas]: https://docs.aws.amazon.com/general/latest/gr/iot_device_management.html#fleet-indexing-limits
+	GeoLocations []GeoLocationTarget
+
+	// The shadow names that you select to index. The default maximum number of shadow
+	// names for indexing is 10. To increase the limit, see [Amazon Web Services IoT Device Management Quotas]in the Amazon Web Services
+	// General Reference.
+	//
+	// [Amazon Web Services IoT Device Management Quotas]: https://docs.aws.amazon.com/general/latest/gr/iot_device_management.html#fleet-indexing-limits
 	NamedShadowNames []string
 
 	noSmithyDocumentSerde
@@ -1793,11 +2065,14 @@ type IndexingFilter struct {
 // Sends message data to an IoT Analytics channel.
 type IotAnalyticsAction struct {
 
-	// Whether to process the action as a batch. The default value is false . When
-	// batchMode is true and the rule SQL statement evaluates to an Array, each Array
-	// element is delivered as a separate message when passed by BatchPutMessage (https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_BatchPutMessage.html)
+	// Whether to process the action as a batch. The default value is false .
+	//
+	// When batchMode is true and the rule SQL statement evaluates to an Array, each
+	// Array element is delivered as a separate message when passed by [BatchPutMessage]BatchPutMessage
 	// to the IoT Analytics channel. The resulting array can't have more than 100
 	// messages.
+	//
+	// [BatchPutMessage]: https://docs.aws.amazon.com/iotanalytics/latest/APIReference/API_BatchPutMessage.html
 	BatchMode *bool
 
 	// (deprecated) The ARN of the IoT Analytics channel to which message data will be
@@ -1829,14 +2104,21 @@ type IotEventsAction struct {
 	RoleArn *string
 
 	// Whether to process the event actions as a batch. The default value is false .
-	// When batchMode is true , you can't specify a messageId . When batchMode is true
-	// and the rule SQL statement evaluates to an Array, each Array element is treated
-	// as a separate message when it's sent to IoT Events by calling BatchPutMessage (https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchPutMessage.html)
-	// . The resulting array can't have more than 10 messages.
+	//
+	// When batchMode is true , you can't specify a messageId .
+	//
+	// When batchMode is true and the rule SQL statement evaluates to an Array, each
+	// Array element is treated as a separate message when it's sent to IoT Events by
+	// calling [BatchPutMessage]BatchPutMessage . The resulting array can't have more than 10 messages.
+	//
+	// [BatchPutMessage]: https://docs.aws.amazon.com/iotevents/latest/apireference/API_iotevents-data_BatchPutMessage.html
 	BatchMode *bool
 
-	// The ID of the message. The default messageId is a new UUID value. When batchMode
-	// is true , you can't specify a messageId --a new UUID value will be assigned.
+	// The ID of the message. The default messageId is a new UUID value.
+	//
+	// When batchMode is true , you can't specify a messageId --a new UUID value will
+	// be assigned.
+	//
 	// Assign a value to this property to ensure that only one input (message) with a
 	// given messageId will be processed by an IoT Events detector.
 	MessageId *string
@@ -1897,13 +2179,21 @@ type Job struct {
 	Description *string
 
 	// The package version Amazon Resource Names (ARNs) that are installed on the
-	// device when the job successfully completes. Note:The following Length
-	// Constraints relates to a single string. Up to five strings are allowed.
+	// device when the job successfully completes. The package version must be in
+	// either the Published or Deprecated state when the job deploys. For more
+	// information, see [Package version lifecycle].The package version must be in either the Published or
+	// Deprecated state when the job deploys. For more information, see [Package version lifecycle].
+	//
+	// Note:The following Length Constraints relates to a single ARN. Up to 25 package
+	// version ARNs are allowed.
+	//
+	// [Package version lifecycle]: https://docs.aws.amazon.com/iot/latest/developerguide/preparing-to-use-software-package-catalog.html#package-version-lifecycle
 	DestinationPackageVersions []string
 
 	// A key-value map that pairs the patterns that need to be replaced in a managed
 	// template job document schema. You can use the description of each key as a
 	// guidance to specify the inputs during runtime when creating a job.
+	//
 	// documentParameters can only be used when creating jobs from Amazon Web Services
 	// managed templates. This parameter can't be used with custom job templates or to
 	// create jobs from them.
@@ -1938,11 +2228,18 @@ type Job struct {
 	// The time, in seconds since the epoch, when the job was last updated.
 	LastUpdatedAt *time.Time
 
-	// The namespace used to indicate that a job is a customer-managed job. When you
-	// specify a value for this parameter, Amazon Web Services IoT Core sends jobs
-	// notifications to MQTT topics that contain the value in the following format.
-	// $aws/things/THING_NAME/jobs/JOB_ID/notify-namespace-NAMESPACE_ID/ The
-	// namespaceId feature is in public preview.
+	// The namespace used to indicate that a job is a customer-managed job.
+	//
+	// When you specify a value for this parameter, Amazon Web Services IoT Core sends
+	// jobs notifications to MQTT topics that contain the value in the following
+	// format.
+	//
+	//     $aws/things/THING_NAME/jobs/JOB_ID/notify-namespace-NAMESPACE_ID/
+	//
+	// The namespaceId feature is only supported by IoT Greengrass at this time. For
+	// more information, see [Setting up IoT Greengrass core devices.]
+	//
+	// [Setting up IoT Greengrass core devices.]: https://docs.aws.amazon.com/greengrass/v2/developerguide/setting-up.html
 	NamespaceId *string
 
 	// Configuration for pre-signed S3 URLs.
@@ -1967,10 +2264,11 @@ type Job struct {
 	// (SNAPSHOT). If continuous, the job may also be run on a thing when a change is
 	// detected in a target. For example, a job will run on a device when the thing
 	// representing the device is added to a target group, even after the job was
-	// completed by all things originally in the group. We recommend that you use
-	// continuous jobs instead of snapshot jobs for dynamic thing group targets. By
-	// using continuous jobs, devices that join the group receive the job execution
-	// even after the job has been created.
+	// completed by all things originally in the group.
+	//
+	// We recommend that you use continuous jobs instead of snapshot jobs for dynamic
+	// thing group targets. By using continuous jobs, devices that join the group
+	// receive the job execution even after the job has been created.
 	TargetSelection TargetSelection
 
 	// A list of IoT things and thing groups to which the job should be sent.
@@ -2188,10 +2486,11 @@ type JobSummary struct {
 	// (SNAPSHOT). If continuous, the job may also be run on a thing when a change is
 	// detected in a target. For example, a job will run on a thing when the thing is
 	// added to a target group, even after the job was completed by all things
-	// originally in the group. We recommend that you use continuous jobs instead of
-	// snapshot jobs for dynamic thing group targets. By using continuous jobs, devices
-	// that join the group receive the job execution even after the job has been
-	// created.
+	// originally in the group.
+	//
+	// We recommend that you use continuous jobs instead of snapshot jobs for dynamic
+	// thing group targets. By using continuous jobs, devices that join the group
+	// receive the job execution even after the job has been created.
 	TargetSelection TargetSelection
 
 	// The ID of the thing group.
@@ -2237,11 +2536,36 @@ type KafkaAction struct {
 	// This member is required.
 	Topic *string
 
+	// The list of Kafka headers that you specify.
+	Headers []KafkaActionHeader
+
 	// The Kafka message key.
 	Key *string
 
 	// The Kafka message partition.
 	Partition *string
+
+	noSmithyDocumentSerde
+}
+
+// Specifies a Kafka header using key-value pairs when you create a Rule’s Kafka
+// Action. You can use these headers to route data from IoT clients to downstream
+// Kafka clusters without modifying your message payload.
+//
+// For more information about Rule's Kafka action, see [Apache Kafka].
+//
+// [Apache Kafka]: https://docs.aws.amazon.com/iot/latest/developerguide/apache-kafka-rule-action.html
+type KafkaActionHeader struct {
+
+	// The key of the Kafka header.
+	//
+	// This member is required.
+	Key *string
+
+	// The value of the Kafka header.
+	//
+	// This member is required.
+	Value *string
 
 	noSmithyDocumentSerde
 }
@@ -2337,8 +2661,10 @@ type LocationTimestamp struct {
 	Value *string
 
 	// The precision of the timestamp value that results from the expression described
-	// in value . Valid values: SECONDS | MILLISECONDS | MICROSECONDS | NANOSECONDS .
-	// The default is MILLISECONDS .
+	// in value .
+	//
+	// Valid values: SECONDS | MILLISECONDS | MICROSECONDS | NANOSECONDS . The default
+	// is MILLISECONDS .
 	Unit *string
 
 	noSmithyDocumentSerde
@@ -2387,7 +2713,8 @@ type LogTargetConfiguration struct {
 // The configuration of an ML Detect Security Profile.
 type MachineLearningDetectionConfig struct {
 
-	// The sensitivity of anomalous behavior evaluation. Can be Low , Medium , or High .
+	//  The sensitivity of anomalous behavior evaluation. Can be Low , Medium , or High
+	// .
 	//
 	// This member is required.
 	ConfidenceLevel ConfidenceLevel
@@ -2465,6 +2792,24 @@ type MetricDimension struct {
 	noSmithyDocumentSerde
 }
 
+// Set configurations for metrics export.
+type MetricsExportConfig struct {
+
+	// The MQTT topic that Device Defender Detect should publish messages to for
+	// metrics export.
+	//
+	// This member is required.
+	MqttTopic *string
+
+	// This role ARN has permission to publish MQTT messages, after which Device
+	// Defender Detect can assume the role and publish messages on your behalf.
+	//
+	// This member is required.
+	RoleArn *string
+
+	noSmithyDocumentSerde
+}
+
 // The metric you want to retain. Dimensions are optional.
 type MetricToRetain struct {
 
@@ -2472,6 +2817,10 @@ type MetricToRetain struct {
 	//
 	// This member is required.
 	Metric *string
+
+	// The value indicates exporting metrics related to the MetricToRetain  when it's
+	// true.
+	ExportMetric *bool
 
 	// The dimension of a metric. This can't be used with custom metrics.
 	MetricDimension *MetricDimension
@@ -2490,17 +2839,17 @@ type MetricValue struct {
 	// numeric value to be compared with the metric .
 	Count *int64
 
-	// The numeral value of a metric.
+	//  The numeral value of a metric.
 	Number *float64
 
-	// The numeral values of a metric.
+	//  The numeral values of a metric.
 	Numbers []float64
 
 	// If the comparisonOperator calls for a set of ports, use this to specify that
 	// set to be compared with the metric .
 	Ports []int32
 
-	// The string values of a metric.
+	//  The string values of a metric.
 	Strings []string
 
 	noSmithyDocumentSerde
@@ -2574,6 +2923,16 @@ type MitigationActionParams struct {
 	noSmithyDocumentSerde
 }
 
+// The configuration to add user-defined properties to enrich MQTT 5 messages.
+type Mqtt5Configuration struct {
+
+	// An object that represents the propagating thing attributes and the connection
+	// attributes.
+	PropagatingAttributes []PropagatingAttribute
+
+	noSmithyDocumentSerde
+}
+
 // Specifies the MQTT context to use for the test authorizer request
 type MqttContext struct {
 
@@ -2589,47 +2948,70 @@ type MqttContext struct {
 	noSmithyDocumentSerde
 }
 
-// Specifies MQTT Version 5.0 headers information. For more information, see  MQTT (https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html)
-// from Amazon Web Services IoT Core Developer Guide.
+// Specifies MQTT Version 5.0 headers information. For more information, see [MQTT] from
+// Amazon Web Services IoT Core Developer Guide.
+//
+// [MQTT]: https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html
 type MqttHeaders struct {
 
 	// A UTF-8 encoded string that describes the content of the publishing message.
-	// For more information, see Content Type (https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901118)
-	// from the MQTT Version 5.0 specification. Supports substitution templates (https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html)
-	// .
+	//
+	// For more information, see [Content Type] from the MQTT Version 5.0 specification.
+	//
+	// Supports [substitution templates].
+	//
+	// [substitution templates]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html
+	// [Content Type]: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901118
 	ContentType *string
 
 	// The base64-encoded binary data used by the sender of the request message to
-	// identify which request the response message is for when it's received. For more
-	// information, see Correlation Data (https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901115)
-	// from the MQTT Version 5.0 specification. This binary data must be
-	// based64-encoded. Supports substitution templates (https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html)
-	// .
+	// identify which request the response message is for when it's received.
+	//
+	// For more information, see [Correlation Data] from the MQTT Version 5.0 specification.
+	//
+	// This binary data must be based64-encoded.
+	//
+	// Supports [substitution templates].
+	//
+	// [substitution templates]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html
+	// [Correlation Data]: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901115
 	CorrelationData *string
 
 	// A user-defined integer value that will persist a message at the message broker
 	// for a specified amount of time to ensure that the message will expire if it's no
 	// longer relevant to the subscriber. The value of messageExpiry represents the
 	// number of seconds before it expires. For more information about the limits of
-	// messageExpiry , see Amazon Web Services IoT Core message broker and protocol
-	// limits and quotas  (https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html)
-	// from the Amazon Web Services Reference Guide. Supports substitution templates (https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html)
-	// .
+	// messageExpiry , see [Amazon Web Services IoT Core message broker and protocol limits and quotas] from the Amazon Web Services Reference Guide.
+	//
+	// Supports [substitution templates].
+	//
+	// [substitution templates]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html
+	// [Amazon Web Services IoT Core message broker and protocol limits and quotas]: https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html
 	MessageExpiry *string
 
 	// An Enum string value that indicates whether the payload is formatted as UTF-8.
-	// Valid values are UNSPECIFIED_BYTES and UTF8_DATA . For more information, see
-	// Payload Format Indicator (https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901111)
-	// from the MQTT Version 5.0 specification. Supports substitution templates (https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html)
-	// .
+	//
+	// Valid values are UNSPECIFIED_BYTES and UTF8_DATA .
+	//
+	// For more information, see [Payload Format Indicator] from the MQTT Version 5.0 specification.
+	//
+	// Supports [substitution templates].
+	//
+	// [Payload Format Indicator]: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901111
+	// [substitution templates]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html
 	PayloadFormatIndicator *string
 
 	// A UTF-8 encoded string that's used as the topic name for a response message.
 	// The response topic is used to describe the topic which the receiver should
 	// publish to as part of the request-response flow. The topic must not contain
-	// wildcard characters. For more information, see Response Topic (https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901114)
-	// from the MQTT Version 5.0 specification. Supports substitution templates (https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html)
-	// .
+	// wildcard characters.
+	//
+	// For more information, see [Response Topic] from the MQTT Version 5.0 specification.
+	//
+	// Supports [substitution templates].
+	//
+	// [Response Topic]: https://docs.oasis-open.org/mqtt/mqtt/v5.0/os/mqtt-v5.0-os.html#_Toc3901114
+	// [substitution templates]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html
 	ResponseTopic *string
 
 	// An array of key-value pairs that you define in the MQTT5 header.
@@ -2687,7 +3069,8 @@ type OpenSearchAction struct {
 // Describes a file to be associated with an OTA update.
 type OTAUpdateFile struct {
 
-	// A list of name/attribute pairs.
+	// A list of name-attribute pairs. They won't be sent to devices as a part of the
+	// Job document.
 	Attributes map[string]string
 
 	// The code signing method of the file.
@@ -2822,8 +3205,17 @@ type PackageSummary struct {
 	// The date that the package was last updated.
 	LastModifiedDate *time.Time
 
-	// The name for the target package.
+	// The name for the target software package.
 	PackageName *string
+
+	noSmithyDocumentSerde
+}
+
+// A specific package version artifact associated with a software package version.
+type PackageVersionArtifact struct {
+
+	// The S3 location.
+	S3Location *S3Location
 
 	noSmithyDocumentSerde
 }
@@ -2840,9 +3232,9 @@ type PackageVersionSummary struct {
 	// The name of the associated software package.
 	PackageName *string
 
-	// The status of the package version. For more information, see Package version
-	// lifecycle (https://docs.aws.amazon.com/iot/latest/developerguide/preparing-to-use-software-package-catalog.html#package-version-lifecycle)
-	// .
+	// The status of the package version. For more information, see [Package version lifecycle].
+	//
+	// [Package version lifecycle]: https://docs.aws.amazon.com/iot/latest/developerguide/preparing-to-use-software-package-catalog.html#package-version-lifecycle
 	Status PackageVersionStatus
 
 	// The name of the target package version.
@@ -2912,10 +3304,53 @@ type PresignedUrlConfig struct {
 
 	// The ARN of an IAM role that grants permission to download files from the S3
 	// bucket where the job data/updates are stored. The role must also grant
-	// permission for IoT to download the files. For information about addressing the
-	// confused deputy problem, see cross-service confused deputy prevention (https://docs.aws.amazon.com/iot/latest/developerguide/cross-service-confused-deputy-prevention.html)
-	// in the Amazon Web Services IoT Core developer guide.
+	// permission for IoT to download the files.
+	//
+	// For information about addressing the confused deputy problem, see [cross-service confused deputy prevention] in the
+	// Amazon Web Services IoT Core developer guide.
+	//
+	// [cross-service confused deputy prevention]: https://docs.aws.amazon.com/iot/latest/developerguide/cross-service-confused-deputy-prevention.html
 	RoleArn *string
+
+	noSmithyDocumentSerde
+}
+
+// An object that represents the thing and the type of relation it has with the
+// principal.
+type PrincipalThingObject struct {
+
+	// The name of the thing.
+	//
+	// This member is required.
+	ThingName *string
+
+	// The type of the relation you want to specify when you attach a principal to a
+	// thing. The value defaults to NON_EXCLUSIVE_THING .
+	//
+	//   - EXCLUSIVE_THING - Attaches the specified principal to the specified thing,
+	//   exclusively. The thing will be the only thing that’s attached to the principal.
+	//
+	//   - NON_EXCLUSIVE_THING - Attaches the specified principal to the specified
+	//   thing. Multiple things can be attached to the principal.
+	ThingPrincipalType ThingPrincipalType
+
+	noSmithyDocumentSerde
+}
+
+// An object that represents the connection attribute, thing attribute, and the
+// user property key.
+type PropagatingAttribute struct {
+
+	// The attribute associated with the connection between a device and Amazon Web
+	// Services IoT Core.
+	ConnectionAttribute *string
+
+	// The user-defined thing attribute that is propagating for MQTT 5 message
+	// enrichment.
+	ThingAttribute *string
+
+	// The key of the user property key-value pair.
+	UserPropertyKey *string
 
 	noSmithyDocumentSerde
 }
@@ -2923,14 +3358,16 @@ type PresignedUrlConfig struct {
 // Structure that contains payloadVersion and targetArn .
 type ProvisioningHook struct {
 
-	// The ARN of the target function. Note: Only Lambda functions are currently
-	// supported.
+	// The ARN of the target function.
+	//
+	// Note: Only Lambda functions are currently supported.
 	//
 	// This member is required.
 	TargetArn *string
 
-	// The payload that was sent to the target function. Note: Only Lambda functions
-	// are currently supported.
+	// The payload that was sent to the target function.
+	//
+	// Note: Only Lambda functions are currently supported.
 	PayloadVersion *string
 
 	noSmithyDocumentSerde
@@ -2946,7 +3383,7 @@ type ProvisioningTemplateSummary struct {
 	Description *string
 
 	// True if the fleet provision template is enabled, otherwise false.
-	Enabled bool
+	Enabled *bool
 
 	// The date when the provisioning template summary was last modified.
 	LastModifiedDate *time.Time
@@ -2960,8 +3397,9 @@ type ProvisioningTemplateSummary struct {
 	// The type you define in a provisioning template. You can create a template with
 	// only one type. You can't change the template type after its creation. The
 	// default value is FLEET_PROVISIONING . For more information about provisioning
-	// template, see: Provisioning template (https://docs.aws.amazon.com/iot/latest/developerguide/provision-template.html)
-	// .
+	// template, see: [Provisioning template].
+	//
+	// [Provisioning template]: https://docs.aws.amazon.com/iot/latest/developerguide/provision-template.html
 	Type TemplateType
 
 	noSmithyDocumentSerde
@@ -3109,8 +3547,10 @@ type RepublishAction struct {
 	// This member is required.
 	Topic *string
 
-	// MQTT Version 5.0 headers information. For more information, see  MQTT (https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html)
-	// from the Amazon Web Services IoT Core Developer Guide.
+	// MQTT Version 5.0 headers information. For more information, see [MQTT] from the
+	// Amazon Web Services IoT Core Developer Guide.
+	//
+	// [MQTT]: https://docs.aws.amazon.com/iot/latest/developerguide/mqtt.html
 	Headers *MqttHeaders
 
 	// The Quality of Service (QoS) level to use when republishing messages. The
@@ -3208,9 +3648,9 @@ type S3Action struct {
 	// This member is required.
 	BucketName *string
 
-	// The object key. For more information, see Actions, resources, and condition
-	// keys for Amazon S3 (https://docs.aws.amazon.com/AmazonS3/latest/dev/list_amazons3.html)
-	// .
+	// The object key. For more information, see [Actions, resources, and condition keys for Amazon S3].
+	//
+	// [Actions, resources, and condition keys for Amazon S3]: https://docs.aws.amazon.com/AmazonS3/latest/dev/list_amazons3.html
 	//
 	// This member is required.
 	Key *string
@@ -3221,8 +3661,9 @@ type S3Action struct {
 	RoleArn *string
 
 	// The Amazon S3 canned ACL that controls access to the object identified by the
-	// object key. For more information, see S3 canned ACLs (https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl)
-	// .
+	// object key. For more information, see [S3 canned ACLs].
+	//
+	// [S3 canned ACLs]: https://docs.aws.amazon.com/AmazonS3/latest/dev/acl-overview.html#canned-acl
 	CannedAcl CannedAccessControlList
 
 	noSmithyDocumentSerde
@@ -3270,6 +3711,37 @@ type SalesforceAction struct {
 	//
 	// This member is required.
 	Url *string
+
+	noSmithyDocumentSerde
+}
+
+// A specific software bill of matrerials associated with a software package
+// version.
+type Sbom struct {
+
+	// The S3 location.
+	S3Location *S3Location
+
+	noSmithyDocumentSerde
+}
+
+// A summary of the validation results for a specific software bill of materials
+// (SBOM) attached to a software package version.
+type SbomValidationResultSummary struct {
+
+	// The errorCode representing the validation failure error if the SBOM validation
+	// failed.
+	ErrorCode SbomValidationErrorCode
+
+	// The errorMessage representing the validation failure error if the SBOM
+	// validation failed.
+	ErrorMessage *string
+
+	// The name of the SBOM file.
+	FileName *string
+
+	// The end result of the SBOM validation.
+	ValidationResult SbomValidationResult
 
 	noSmithyDocumentSerde
 }
@@ -3324,6 +3796,11 @@ type SchedulingConfig struct {
 	// minutes. The maximum duration between startTime and endTime is two years. The
 	// date and time format for the endTime is YYYY-MM-DD for the date and HH:MM for
 	// the time.
+	//
+	// For more information on the syntax for endTime when using an API command or the
+	// Command Line Interface, see [Timestamp].
+	//
+	// [Timestamp]: https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-types.html#parameter-type-timestamp
 	EndTime *string
 
 	// An optional configuration within the SchedulingConfig to setup a recurring
@@ -3336,6 +3813,11 @@ type SchedulingConfig struct {
 	// and must be scheduled a minimum of thirty minutes from the current time. The
 	// date and time format for the startTime is YYYY-MM-DD for the date and HH:MM for
 	// the time.
+	//
+	// For more information on the syntax for startTime when using an API command or
+	// the Command Line Interface, see [Timestamp].
+	//
+	// [Timestamp]: https://docs.aws.amazon.com/cli/latest/userguide/cli-usage-parameters-types.html#parameter-type-timestamp
 	StartTime *string
 
 	noSmithyDocumentSerde
@@ -3380,6 +3862,42 @@ type SecurityProfileTargetMapping struct {
 	noSmithyDocumentSerde
 }
 
+// The server certificate configuration.
+type ServerCertificateConfig struct {
+
+	// A Boolean value that indicates whether Online Certificate Status Protocol
+	// (OCSP) server certificate check is enabled or not.
+	//
+	// For more information, see [Server certificate configuration for OCSP stapling] from Amazon Web Services IoT Core Developer Guide.
+	//
+	// [Server certificate configuration for OCSP stapling]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-endpoints-cert-config.html
+	EnableOCSPCheck *bool
+
+	// The Amazon Resource Name (ARN) for an X.509 certificate stored in Amazon Web
+	// Services Certificate Manager (ACM). If provided, Amazon Web Services IoT Core
+	// will use this certificate to validate the signature of the received OCSP
+	// response. The OCSP responder must sign responses using either this authorized
+	// responder certificate or the issuing certificate, depending on whether the ARN
+	// is provided or not. The certificate must be in the same Amazon Web Services
+	// account and region as the domain configuration.
+	OcspAuthorizedResponderArn *string
+
+	// The Amazon Resource Name (ARN) for a Lambda function that acts as a Request for
+	// Comments (RFC) 6960-compliant Online Certificate Status Protocol (OCSP)
+	// responder, supporting basic OCSP responses. The Lambda function accepts a
+	// base64-encoding of the OCSP request in the Distinguished Encoding Rules (DER)
+	// format. The Lambda function's response is also a base64-encoded OCSP response in
+	// the DER format. The response size must not exceed 4 kilobytes (KiB). The Lambda
+	// function must be in the same Amazon Web Services account and region as the
+	// domain configuration. For more information, see [Configuring server certificate OCSP for private endpoints in Amazon Web Services IoT Core]from the Amazon Web Services
+	// IoT Core developer guide.
+	//
+	// [Configuring server certificate OCSP for private endpoints in Amazon Web Services IoT Core]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-custom-endpoints-cert-config.html#iot-custom-endpoints-cert-config-ocsp-private-endpoint.html
+	OcspLambdaArn *string
+
+	noSmithyDocumentSerde
+}
+
 // An object that contains information about a server certificate.
 type ServerCertificateSummary struct {
 
@@ -3410,8 +3928,9 @@ type SigningProfileParameter struct {
 	noSmithyDocumentSerde
 }
 
-// For more information, see Signature Version 4 signing process (https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html)
-// .
+// For more information, see [Signature Version 4 signing process].
+//
+// [Signature Version 4 signing process]: https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html
 type SigV4Authorization struct {
 
 	// The ARN of the signing role.
@@ -3449,9 +3968,9 @@ type SnsAction struct {
 	// "JSON" and "RAW". The default value of the attribute is "RAW". SNS uses this
 	// setting to determine if the payload should be parsed and relevant
 	// platform-specific bits of the payload should be extracted. To read more about
-	// SNS message formats, see
-	// https://docs.aws.amazon.com/sns/latest/dg/json-formats.html (https://docs.aws.amazon.com/sns/latest/dg/json-formats.html)
-	// refer to their official documentation.
+	// SNS message formats, see [https://docs.aws.amazon.com/sns/latest/dg/json-formats.html]refer to their official documentation.
+	//
+	// [https://docs.aws.amazon.com/sns/latest/dg/json-formats.html]: https://docs.aws.amazon.com/sns/latest/dg/json-formats.html
 	MessageFormat MessageFormat
 
 	noSmithyDocumentSerde
@@ -3509,8 +4028,9 @@ type StatisticalThreshold struct {
 }
 
 // A map of key-value pairs for all supported statistics. For issues with missing
-// or unexpected values for this API, consult Fleet indexing troubleshooting guide (https://docs.aws.amazon.com/iot/latest/developerguide/fleet-indexing-troubleshooting.html)
-// .
+// or unexpected values for this API, consult [Fleet indexing troubleshooting guide].
+//
+// [Fleet indexing troubleshooting guide]: https://docs.aws.amazon.com/iot/latest/developerguide/fleet-indexing-troubleshooting.html
 type Statistics struct {
 
 	// The average of the aggregated field values.
@@ -3537,6 +4057,22 @@ type Statistics struct {
 
 	// The variance of the aggregated field values.
 	Variance *float64
+
+	noSmithyDocumentSerde
+}
+
+// Provide additional context about the status of a command execution using a
+// reason code and description.
+type StatusReason struct {
+
+	// A code that provides additional context for the command execution status.
+	//
+	// This member is required.
+	ReasonCode *string
+
+	// A literal string for devices to optionally provide additional information about
+	// the reason code for a command execution status.
+	ReasonDescription *string
 
 	noSmithyDocumentSerde
 }
@@ -3707,7 +4243,7 @@ type TaskStatisticsForAuditCheck struct {
 type TermsAggregation struct {
 
 	// The number of buckets to return in the response. Default to 10.
-	MaxBuckets int32
+	MaxBuckets *int32
 
 	noSmithyDocumentSerde
 }
@@ -3739,7 +4275,7 @@ type ThingConnectivity struct {
 
 	// True if the thing is connected to the Amazon Web Services IoT Core service;
 	// false if it is not connected.
-	Connected bool
+	Connected *bool
 
 	// The reason why the client is disconnected. If the thing has been disconnected
 	// for approximately an hour, the disconnectReason value might be missing.
@@ -3763,16 +4299,21 @@ type ThingDocument struct {
 	// service.
 	Connectivity *ThingConnectivity
 
-	// Contains Device Defender data. For more information about Device Defender, see
-	// Device Defender (https://docs.aws.amazon.com/iot/latest/developerguide/device-defender.html)
-	// .
+	// Contains Device Defender data.
+	//
+	// For more information about Device Defender, see [Device Defender].
+	//
+	// [Device Defender]: https://docs.aws.amazon.com/iot/latest/developerguide/device-defender.html
 	DeviceDefender *string
 
-	// The unnamed shadow and named shadow. For more information about shadows, see
-	// IoT Device Shadow service. (https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html)
+	// The unnamed shadow and named shadow.
+	//
+	// For more information about shadows, see [IoT Device Shadow service.]
+	//
+	// [IoT Device Shadow service.]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html
 	Shadow *string
 
-	// Thing group names.
+	// Thing group and billing group names.
 	ThingGroupNames []string
 
 	// The thing ID.
@@ -3818,13 +4359,17 @@ type ThingGroupIndexingConfiguration struct {
 
 	// A list of thing group fields to index. This list cannot contain any managed
 	// fields. Use the GetIndexingConfiguration API to get a list of managed fields.
+	//
 	// Contains custom field names and their data type.
 	CustomFields []Field
 
 	// Contains fields that are indexed and whose types are already known by the Fleet
-	// Indexing service. This is an optional field. For more information, see Managed
-	// fields (https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html#managed-field)
-	// in the Amazon Web Services IoT Core Developer Guide.
+	// Indexing service. This is an optional field. For more information, see [Managed fields]in the
+	// Amazon Web Services IoT Core Developer Guide.
+	//
+	// You can't modify managed fields by updating fleet indexing configuration.
+	//
+	// [Managed fields]: https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html#managed-field
 	ManagedFields []Field
 
 	noSmithyDocumentSerde
@@ -3857,14 +4402,17 @@ type ThingGroupProperties struct {
 	noSmithyDocumentSerde
 }
 
-// The thing indexing configuration. For more information, see Managing Thing
-// Indexing (https://docs.aws.amazon.com/iot/latest/developerguide/managing-index.html)
-// .
+// The thing indexing configuration. For more information, see [Managing Thing Indexing].
+//
+// [Managing Thing Indexing]: https://docs.aws.amazon.com/iot/latest/developerguide/managing-index.html
 type ThingIndexingConfiguration struct {
 
 	// Thing indexing mode. Valid values are:
+	//
 	//   - REGISTRY – Your thing index contains registry data only.
+	//
 	//   - REGISTRY_AND_SHADOW - Your thing index contains registry and shadow data.
+	//
 	//   - OFF - Thing indexing is disabled.
 	//
 	// This member is required.
@@ -3874,36 +4422,87 @@ type ThingIndexingConfiguration struct {
 	CustomFields []Field
 
 	// Device Defender indexing mode. Valid values are:
+	//
 	//   - VIOLATIONS – Your thing index contains Device Defender violations. To
 	//   enable Device Defender indexing, deviceDefenderIndexingMode must not be set to
 	//   OFF.
+	//
 	//   - OFF - Device Defender indexing is disabled.
-	// For more information about Device Defender violations, see Device Defender
-	// Detect. (https://docs.aws.amazon.com/iot/latest/developerguide/device-defender-detect.html)
+	//
+	// For more information about Device Defender violations, see [Device Defender Detect.]
+	//
+	// [Device Defender Detect.]: https://docs.aws.amazon.com/iot/latest/developerguide/device-defender-detect.html
 	DeviceDefenderIndexingMode DeviceDefenderIndexingMode
 
-	// Provides additional filters for specific data sources. Named shadow is the only
-	// data source that currently supports and requires a filter. To add named shadows
-	// to your fleet indexing configuration, set namedShadowIndexingMode to be ON and
-	// specify your shadow names in filter .
+	// Provides additional selections for named shadows and geolocation data.
+	//
+	// To add named shadows to your fleet indexing configuration, set
+	// namedShadowIndexingMode to be ON and specify your shadow names in
+	// namedShadowNames filter.
+	//
+	// To add geolocation data to your fleet indexing configuration:
+	//
+	//   - If you store geolocation data in a class/unnamed shadow, set
+	//   thingIndexingMode to be REGISTRY_AND_SHADOW and specify your geolocation data
+	//   in geoLocations filter.
+	//
+	//   - If you store geolocation data in a named shadow, set namedShadowIndexingMode
+	//   to be ON , add the shadow name in namedShadowNames filter, and specify your
+	//   geolocation data in geoLocations filter. For more information, see [Managing fleet indexing].
+	//
+	// [Managing fleet indexing]: https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html
 	Filter *IndexingFilter
 
 	// Contains fields that are indexed and whose types are already known by the Fleet
-	// Indexing service.
+	// Indexing service. This is an optional field. For more information, see [Managed fields]in the
+	// Amazon Web Services IoT Core Developer Guide.
+	//
+	// You can't modify managed fields by updating fleet indexing configuration.
+	//
+	// [Managed fields]: https://docs.aws.amazon.com/iot/latest/developerguide/managing-fleet-index.html#managed-field
 	ManagedFields []Field
 
 	// Named shadow indexing mode. Valid values are:
+	//
 	//   - ON – Your thing index contains named shadow. To enable thing named shadow
 	//   indexing, namedShadowIndexingMode must not be set to OFF.
+	//
 	//   - OFF - Named shadow indexing is disabled.
-	// For more information about Shadows, see IoT Device Shadow service. (https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html)
+	//
+	// For more information about Shadows, see [IoT Device Shadow service.]
+	//
+	// [IoT Device Shadow service.]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-device-shadows.html
 	NamedShadowIndexingMode NamedShadowIndexingMode
 
 	// Thing connectivity indexing mode. Valid values are:
+	//
 	//   - STATUS – Your thing index contains connectivity status. To enable thing
 	//   connectivity indexing, thingIndexMode must not be set to OFF.
+	//
 	//   - OFF - Thing connectivity status indexing is disabled.
 	ThingConnectivityIndexingMode ThingConnectivityIndexingMode
+
+	noSmithyDocumentSerde
+}
+
+// An object that represents the principal and the type of relation it has with
+// the thing.
+type ThingPrincipalObject struct {
+
+	// The principal of the thing principal object.
+	//
+	// This member is required.
+	Principal *string
+
+	// The type of the relation you want to specify when you attach a principal to a
+	// thing. The value defaults to NON_EXCLUSIVE_THING .
+	//
+	//   - EXCLUSIVE_THING - Attaches the specified principal to the specified thing,
+	//   exclusively. The thing will be the only thing that’s attached to the principal.
+	//
+	//   - NON_EXCLUSIVE_THING - Attaches the specified principal to the specified
+	//   thing. Multiple things can be attached to the principal.
+	ThingPrincipalType ThingPrincipalType
 
 	noSmithyDocumentSerde
 }
@@ -3950,11 +4549,29 @@ type ThingTypeMetadata struct {
 // thing type description, and a list of searchable thing attribute names.
 type ThingTypeProperties struct {
 
+	// The configuration to add user-defined properties to enrich MQTT 5 messages.
+	Mqtt5Configuration *Mqtt5Configuration
+
 	// A list of searchable thing attribute names.
 	SearchableAttributes []string
 
 	// The description of the thing type.
 	ThingTypeDescription *string
+
+	noSmithyDocumentSerde
+}
+
+// A filter that can be used to list command executions for a device that started
+// or completed before or after a particular date and time.
+type TimeFilter struct {
+
+	// Filter to display command executions that started or completed only after a
+	// particular date and time.
+	After *string
+
+	// Filter to display command executions that started or completed only before a
+	// particular date and time.
+	Before *string
 
 	noSmithyDocumentSerde
 }
@@ -3977,8 +4594,10 @@ type TimeoutConfig struct {
 }
 
 // The Timestream rule action writes attributes (measures) from an MQTT message
-// into an Amazon Timestream table. For more information, see the Timestream (https://docs.aws.amazon.com/iot/latest/developerguide/timestream-rule-action.html)
-// topic rule action documentation.
+// into an Amazon Timestream table. For more information, see the [Timestream]topic rule
+// action documentation.
+//
+// [Timestream]: https://docs.aws.amazon.com/iot/latest/developerguide/timestream-rule-action.html
 type TimestreamAction struct {
 
 	// The name of an Amazon Timestream database.
@@ -4003,11 +4622,14 @@ type TimestreamAction struct {
 	TableName *string
 
 	// Specifies an application-defined value to replace the default value assigned to
-	// the Timestream record's timestamp in the time column. You can use this property
-	// to specify the value and the precision of the Timestream record's timestamp. You
-	// can specify a value from the message payload or a value computed by a
-	// substitution template. If omitted, the topic rule action assigns the timestamp,
-	// in milliseconds, at the time it processed the rule.
+	// the Timestream record's timestamp in the time column.
+	//
+	// You can use this property to specify the value and the precision of the
+	// Timestream record's timestamp. You can specify a value from the message payload
+	// or a value computed by a substitution template.
+	//
+	// If omitted, the topic rule action assigns the timestamp, in milliseconds, at
+	// the time it processed the rule.
 	Timestamp *TimestreamTimestamp
 
 	noSmithyDocumentSerde
@@ -4017,9 +4639,11 @@ type TimestreamAction struct {
 type TimestreamDimension struct {
 
 	// The metadata dimension name. This is the name of the column in the Amazon
-	// Timestream database table record. Dimensions cannot be named: measure_name ,
-	// measure_value , or time . These names are reserved. Dimension names cannot start
-	// with ts_ or measure_value and they cannot contain the colon ( : ) character.
+	// Timestream database table record.
+	//
+	// Dimensions cannot be named: measure_name , measure_value , or time . These names
+	// are reserved. Dimension names cannot start with ts_ or measure_value and they
+	// cannot contain the colon ( : ) character.
 	//
 	// This member is required.
 	Name *string
@@ -4037,8 +4661,10 @@ type TimestreamDimension struct {
 type TimestreamTimestamp struct {
 
 	// The precision of the timestamp value that results from the expression described
-	// in value . Valid values: SECONDS | MILLISECONDS | MICROSECONDS | NANOSECONDS .
-	// The default is MILLISECONDS .
+	// in value .
+	//
+	// Valid values: SECONDS | MILLISECONDS | MICROSECONDS | NANOSECONDS . The default
+	// is MILLISECONDS .
 	//
 	// This member is required.
 	Unit *string
@@ -4054,9 +4680,10 @@ type TimestreamTimestamp struct {
 // An object that specifies the TLS configuration for a domain.
 type TlsConfig struct {
 
-	// The security policy for a domain configuration. For more information, see
-	// Security policies  (https://docs.aws.amazon.com/iot/latest/developerguide/transport-security.html#tls-policy-table)
-	// in the Amazon Web Services IoT Core developer guide.
+	// The security policy for a domain configuration. For more information, see [Security policies] in
+	// the Amazon Web Services IoT Core developer guide.
+	//
+	// [Security policies]: https://docs.aws.amazon.com/iot/latest/developerguide/transport-security.html#tls-policy-table
 	SecurityPolicy *string
 
 	noSmithyDocumentSerde
@@ -4117,19 +4744,24 @@ type TopicRuleDestination struct {
 	// The date and time when the topic rule destination was last updated.
 	LastUpdatedAt *time.Time
 
-	// The status of the topic rule destination. Valid values are: IN_PROGRESS A topic
-	// rule destination was created but has not been confirmed. You can set status to
-	// IN_PROGRESS by calling UpdateTopicRuleDestination . Calling
-	// UpdateTopicRuleDestination causes a new confirmation challenge to be sent to
-	// your confirmation endpoint. ENABLED Confirmation was completed, and traffic to
-	// this destination is allowed. You can set status to DISABLED by calling
-	// UpdateTopicRuleDestination . DISABLED Confirmation was completed, and traffic to
-	// this destination is not allowed. You can set status to ENABLED by calling
-	// UpdateTopicRuleDestination . ERROR Confirmation could not be completed, for
-	// example if the confirmation timed out. You can call GetTopicRuleDestination for
-	// details about the error. You can set status to IN_PROGRESS by calling
-	// UpdateTopicRuleDestination . Calling UpdateTopicRuleDestination causes a new
-	// confirmation challenge to be sent to your confirmation endpoint.
+	// The status of the topic rule destination. Valid values are:
+	//
+	// IN_PROGRESS A topic rule destination was created but has not been confirmed.
+	// You can set status to IN_PROGRESS by calling UpdateTopicRuleDestination .
+	// Calling UpdateTopicRuleDestination causes a new confirmation challenge to be
+	// sent to your confirmation endpoint.
+	//
+	// ENABLED Confirmation was completed, and traffic to this destination is allowed.
+	// You can set status to DISABLED by calling UpdateTopicRuleDestination .
+	//
+	// DISABLED Confirmation was completed, and traffic to this destination is not
+	// allowed. You can set status to ENABLED by calling UpdateTopicRuleDestination .
+	//
+	// ERROR Confirmation could not be completed, for example if the confirmation
+	// timed out. You can call GetTopicRuleDestination for details about the error.
+	// You can set status to IN_PROGRESS by calling UpdateTopicRuleDestination .
+	// Calling UpdateTopicRuleDestination causes a new confirmation challenge to be
+	// sent to your confirmation endpoint.
 	Status TopicRuleDestinationStatus
 
 	// Additional details or reason why the topic rule destination is in the current
@@ -4169,19 +4801,24 @@ type TopicRuleDestinationSummary struct {
 	// The date and time when the topic rule destination was last updated.
 	LastUpdatedAt *time.Time
 
-	// The status of the topic rule destination. Valid values are: IN_PROGRESS A topic
-	// rule destination was created but has not been confirmed. You can set status to
-	// IN_PROGRESS by calling UpdateTopicRuleDestination . Calling
-	// UpdateTopicRuleDestination causes a new confirmation challenge to be sent to
-	// your confirmation endpoint. ENABLED Confirmation was completed, and traffic to
-	// this destination is allowed. You can set status to DISABLED by calling
-	// UpdateTopicRuleDestination . DISABLED Confirmation was completed, and traffic to
-	// this destination is not allowed. You can set status to ENABLED by calling
-	// UpdateTopicRuleDestination . ERROR Confirmation could not be completed, for
-	// example if the confirmation timed out. You can call GetTopicRuleDestination for
-	// details about the error. You can set status to IN_PROGRESS by calling
-	// UpdateTopicRuleDestination . Calling UpdateTopicRuleDestination causes a new
-	// confirmation challenge to be sent to your confirmation endpoint.
+	// The status of the topic rule destination. Valid values are:
+	//
+	// IN_PROGRESS A topic rule destination was created but has not been confirmed.
+	// You can set status to IN_PROGRESS by calling UpdateTopicRuleDestination .
+	// Calling UpdateTopicRuleDestination causes a new confirmation challenge to be
+	// sent to your confirmation endpoint.
+	//
+	// ENABLED Confirmation was completed, and traffic to this destination is allowed.
+	// You can set status to DISABLED by calling UpdateTopicRuleDestination .
+	//
+	// DISABLED Confirmation was completed, and traffic to this destination is not
+	// allowed. You can set status to ENABLED by calling UpdateTopicRuleDestination .
+	//
+	// ERROR Confirmation could not be completed, for example if the confirmation
+	// timed out. You can call GetTopicRuleDestination for details about the error.
+	// You can set status to IN_PROGRESS by calling UpdateTopicRuleDestination .
+	// Calling UpdateTopicRuleDestination causes a new confirmation challenge to be
+	// sent to your confirmation endpoint.
 	Status TopicRuleDestinationStatus
 
 	// The reason the topic rule destination is in the current status.
@@ -4222,9 +4859,10 @@ type TopicRulePayload struct {
 	// This member is required.
 	Actions []Action
 
-	// The SQL statement used to query the topic. For more information, see IoT SQL
-	// Reference (https://docs.aws.amazon.com/iot/latest/developerguide/iot-sql-reference.html)
-	// in the IoT Developer Guide.
+	// The SQL statement used to query the topic. For more information, see [IoT SQL Reference] in the
+	// IoT Developer Guide.
+	//
+	// [IoT SQL Reference]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-sql-reference.html
 	//
 	// This member is required.
 	Sql *string
@@ -4292,8 +4930,9 @@ type UpdateDeviceCertificateParams struct {
 }
 
 // A key-value pair that you define in the header. Both the key and the value are
-// either literal strings or valid substitution templates (https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html)
-// .
+// either literal strings or valid [substitution templates].
+//
+// [substitution templates]: https://docs.aws.amazon.com/iot/latest/developerguide/iot-substitution-templates.html
 type UserProperty struct {
 
 	// A key to be specified in UserProperty .
@@ -4320,9 +4959,10 @@ type ValidationError struct {
 
 // Configuration to manage IoT Job's package version reporting. If configured,
 // Jobs updates the thing's reserved named shadow with the package version
-// information up on successful job completion. Note: For each job, the
-// destinationPackageVersions attribute has to be set with the correct data for
-// Jobs to report to the thing shadow.
+// information up on successful job completion.
+//
+// Note: For each job, the destinationPackageVersions attribute has to be set with
+// the correct data for Jobs to report to the thing shadow.
 type VersionUpdateByJobsConfig struct {
 
 	// Indicates whether the Job is enabled or not.
@@ -4357,7 +4997,7 @@ type ViolationEvent struct {
 	// The description of the verification state of the violation.
 	VerificationStateDescription *string
 
-	// The details of a violation event.
+	//  The details of a violation event.
 	ViolationEventAdditionalInfo *ViolationEventAdditionalInfo
 
 	// The time the violation event occurred.
@@ -4375,7 +5015,8 @@ type ViolationEvent struct {
 // The details of a violation event.
 type ViolationEventAdditionalInfo struct {
 
-	// The sensitivity of anomalous behavior evaluation. Can be Low , Medium , or High .
+	//  The sensitivity of anomalous behavior evaluation. Can be Low , Medium , or High
+	// .
 	ConfidenceLevel ConfidenceLevel
 
 	noSmithyDocumentSerde
@@ -4384,12 +5025,12 @@ type ViolationEventAdditionalInfo struct {
 // Specifies the time period of which violation events occurred between.
 type ViolationEventOccurrenceRange struct {
 
-	// The end date and time of a time period in which violation events occurred.
+	//  The end date and time of a time period in which violation events occurred.
 	//
 	// This member is required.
 	EndTime *time.Time
 
-	// The start date and time of a time period in which violation events occurred.
+	//  The start date and time of a time period in which violation events occurred.
 	//
 	// This member is required.
 	StartTime *time.Time

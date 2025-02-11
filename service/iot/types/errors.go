@@ -87,7 +87,7 @@ func (e *CertificateValidationException) ErrorCode() string {
 }
 func (e *CertificateValidationException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// A resource with the same name already exists.
+// The request conflicts with the current state of the resource.
 type ConflictException struct {
 	Message *string
 
@@ -596,7 +596,7 @@ func (e *ResourceRegistrationFailureException) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
 
-// A limit has been exceeded.
+// Service quota has been exceeded.
 type ServiceQuotaExceededException struct {
 	Message *string
 
@@ -674,7 +674,8 @@ func (e *SqlParseException) ErrorCode() string {
 }
 func (e *SqlParseException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// This exception occurs if you attempt to start a task with the same task-id as
+//	This exception occurs if you attempt to start a task with the same task-id as
+//
 // an existing task but with a different clientRequestToken.
 type TaskAlreadyExistsException struct {
 	Message *string

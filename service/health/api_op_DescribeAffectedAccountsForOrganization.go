@@ -4,26 +4,26 @@ package health
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/health/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Returns a list of accounts in the organization from Organizations that are
 // affected by the provided event. For more information about the different types
-// of Health events, see Event (https://docs.aws.amazon.com/health/latest/APIReference/API_Event.html)
-// . Before you can call this operation, you must first enable Health to work with
-// Organizations. To do this, call the EnableHealthServiceAccessForOrganization (https://docs.aws.amazon.com/health/latest/APIReference/API_EnableHealthServiceAccessForOrganization.html)
-// operation from your organization's management account. This API operation uses
-// pagination. Specify the nextToken parameter in the next request to return more
-// results.
+// of Health events, see [Event].
+//
+// Before you can call this operation, you must first enable Health to work with
+// Organizations. To do this, call the [EnableHealthServiceAccessForOrganization]operation from your organization's
+// management account.
+//
+// This API operation uses pagination. Specify the nextToken parameter in the next
+// request to return more results.
+//
+// [Event]: https://docs.aws.amazon.com/health/latest/APIReference/API_Event.html
+// [EnableHealthServiceAccessForOrganization]: https://docs.aws.amazon.com/health/latest/APIReference/API_EnableHealthServiceAccessForOrganization.html
 func (c *Client) DescribeAffectedAccountsForOrganization(ctx context.Context, params *DescribeAffectedAccountsForOrganizationInput, optFns ...func(*Options)) (*DescribeAffectedAccountsForOrganizationOutput, error) {
 	if params == nil {
 		params = &DescribeAffectedAccountsForOrganizationInput{}
@@ -43,8 +43,11 @@ type DescribeAffectedAccountsForOrganizationInput struct {
 
 	// The unique identifier for the event. The event ARN has the
 	// arn:aws:health:event-region::event/SERVICE/EVENT_TYPE_CODE/EVENT_TYPE_PLUS_ID
-	// format. For example, an event ARN might look like the following:
-	// arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456
+	// format.
+	//
+	// For example, an event ARN might look like the following:
+	//
+	//     arn:aws:health:us-east-1::event/EC2/EC2_INSTANCE_RETIREMENT_SCHEDULED/EC2_INSTANCE_RETIREMENT_SCHEDULED_ABC123-DEF456
 	//
 	// This member is required.
 	EventArn *string
@@ -68,15 +71,18 @@ type DescribeAffectedAccountsForOrganizationOutput struct {
 	// A JSON set of elements of the affected accounts.
 	AffectedAccounts []string
 
-	// This parameter specifies if the Health event is a public Amazon Web Service
-	// event or an account-specific event.
+	// This parameter specifies if the Health event is a public Amazon Web Services
+	// service event or an account-specific event.
+	//
 	//   - If the eventScopeCode value is PUBLIC , then the affectedAccounts value is
 	//   always empty.
+	//
 	//   - If the eventScopeCode value is ACCOUNT_SPECIFIC , then the affectedAccounts
 	//   value lists the affected Amazon Web Services accounts in your organization. For
 	//   example, if an event affects a service such as Amazon Elastic Compute Cloud and
 	//   you have Amazon Web Services accounts that use that service, those account IDs
 	//   appear in the response.
+	//
 	//   - If the eventScopeCode value is NONE , then the eventArn that you specified
 	//   in the request is invalid or doesn't exist.
 	EventScopeCode types.EventScopeCode
@@ -95,6 +101,9 @@ type DescribeAffectedAccountsForOrganizationOutput struct {
 }
 
 func (c *Client) addOperationDescribeAffectedAccountsForOrganizationMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpDescribeAffectedAccountsForOrganization{}, middleware.After)
 	if err != nil {
 		return err
@@ -103,34 +112,38 @@ func (c *Client) addOperationDescribeAffectedAccountsForOrganizationMiddlewares(
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeAffectedAccountsForOrganization"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -142,7 +155,13 @@ func (c *Client) addOperationDescribeAffectedAccountsForOrganizationMiddlewares(
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeAffectedAccountsForOrganizationResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeAffectedAccountsForOrganizationValidationMiddleware(stack); err != nil {
@@ -151,7 +170,7 @@ func (c *Client) addOperationDescribeAffectedAccountsForOrganizationMiddlewares(
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeAffectedAccountsForOrganization(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -163,19 +182,23 @@ func (c *Client) addOperationDescribeAffectedAccountsForOrganizationMiddlewares(
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// DescribeAffectedAccountsForOrganizationAPIClient is a client that implements
-// the DescribeAffectedAccountsForOrganization operation.
-type DescribeAffectedAccountsForOrganizationAPIClient interface {
-	DescribeAffectedAccountsForOrganization(context.Context, *DescribeAffectedAccountsForOrganizationInput, ...func(*Options)) (*DescribeAffectedAccountsForOrganizationOutput, error)
-}
-
-var _ DescribeAffectedAccountsForOrganizationAPIClient = (*Client)(nil)
 
 // DescribeAffectedAccountsForOrganizationPaginatorOptions is the paginator
 // options for DescribeAffectedAccountsForOrganization
@@ -244,6 +267,9 @@ func (p *DescribeAffectedAccountsForOrganizationPaginator) NextPage(ctx context.
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeAffectedAccountsForOrganization(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -263,134 +289,18 @@ func (p *DescribeAffectedAccountsForOrganizationPaginator) NextPage(ctx context.
 	return result, nil
 }
 
+// DescribeAffectedAccountsForOrganizationAPIClient is a client that implements
+// the DescribeAffectedAccountsForOrganization operation.
+type DescribeAffectedAccountsForOrganizationAPIClient interface {
+	DescribeAffectedAccountsForOrganization(context.Context, *DescribeAffectedAccountsForOrganizationInput, ...func(*Options)) (*DescribeAffectedAccountsForOrganizationOutput, error)
+}
+
+var _ DescribeAffectedAccountsForOrganizationAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opDescribeAffectedAccountsForOrganization(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "health",
 		OperationName: "DescribeAffectedAccountsForOrganization",
 	}
-}
-
-type opDescribeAffectedAccountsForOrganizationResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeAffectedAccountsForOrganizationResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeAffectedAccountsForOrganizationResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "health"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "health"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("health")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeAffectedAccountsForOrganizationResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeAffectedAccountsForOrganizationResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

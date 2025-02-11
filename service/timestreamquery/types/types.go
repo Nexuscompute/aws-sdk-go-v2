@@ -7,7 +7,24 @@ import (
 	"time"
 )
 
-// Contains the metadata for query results such as the column names, data types,
+// Configuration settings for notifications related to account settings.
+type AccountSettingsNotificationConfiguration struct {
+
+	// An Amazon Resource Name (ARN) that grants Timestream permission to publish
+	// notifications. This field is only visible if SNS Topic is provided when updating
+	// the account settings.
+	//
+	// This member is required.
+	RoleArn *string
+
+	// Details on SNS that are required to send the notification.
+	SnsConfiguration *SnsConfiguration
+
+	noSmithyDocumentSerde
+}
+
+//	Contains the metadata for query results such as the column names, data types,
+//
 // and other attributes.
 type ColumnInfo struct {
 
@@ -18,7 +35,7 @@ type ColumnInfo struct {
 	// This member is required.
 	Type *Type
 
-	// The name of the result set column. The name of the result set is available for
+	//  The name of the result set column. The name of the result set is available for
 	// columns of all data types except for arrays.
 	Name *string
 
@@ -28,20 +45,20 @@ type ColumnInfo struct {
 // Datum represents a single data point in a query result.
 type Datum struct {
 
-	// Indicates if the data point is an array.
+	//  Indicates if the data point is an array.
 	ArrayValue []Datum
 
-	// Indicates if the data point is null.
+	//  Indicates if the data point is null.
 	NullValue *bool
 
-	// Indicates if the data point is a row.
+	//  Indicates if the data point is a row.
 	RowValue *Row
 
-	// Indicates if the data point is a scalar value such as integer, string, double,
+	//  Indicates if the data point is a scalar value such as integer, string, double,
 	// or Boolean.
 	ScalarValue *string
 
-	// Indicates if the data point is a timeseries data type.
+	//  Indicates if the data point is a timeseries data type.
 	TimeSeriesValue []TimeSeriesDataPoint
 
 	noSmithyDocumentSerde
@@ -108,6 +125,9 @@ type ExecutionStats struct {
 	// Bytes metered for a single scheduled query run.
 	BytesMetered int64
 
+	// Bytes scanned for a single scheduled query run.
+	CumulativeBytesScanned int64
+
 	// Data writes metered for records ingested in a single scheduled query run.
 	DataWrites int64
 
@@ -121,6 +141,24 @@ type ExecutionStats struct {
 
 	// The number of records ingested for a single scheduled query run.
 	RecordsIngested int64
+
+	noSmithyDocumentSerde
+}
+
+// Configuration object that contains the most recent account settings update,
+// visible only if settings have been updated previously.
+type LastUpdate struct {
+
+	// The status of the last update. Can be either PENDING , FAILED , or SUCCEEDED .
+	Status LastUpdateStatus
+
+	// Error message describing the last account settings update status, visible only
+	// if an error occurred.
+	StatusMessage *string
+
+	// The number of TimeStream Compute Units (TCUs) requested in the last account
+	// settings update.
+	TargetQueryTCU *int32
 
 	noSmithyDocumentSerde
 }
@@ -198,7 +236,9 @@ type MultiMeasureMappings struct {
 // deleted.
 type NotificationConfiguration struct {
 
-	// Details on SNS configuration.
+	// Details about the Amazon Simple Notification Service (SNS) configuration. This
+	// field is visible only when SNS Topic is provided when updating the account
+	// settings.
 	//
 	// This member is required.
 	SnsConfiguration *SnsConfiguration
@@ -225,6 +265,213 @@ type ParameterMapping struct {
 	noSmithyDocumentSerde
 }
 
+// A request to update the provisioned capacity settings for querying data.
+type ProvisionedCapacityRequest struct {
+
+	// The target compute capacity for querying data, specified in Timestream Compute
+	// Units (TCUs).
+	//
+	// This member is required.
+	TargetQueryTCU *int32
+
+	// Configuration settings for notifications related to the provisioned capacity
+	// update.
+	NotificationConfiguration *AccountSettingsNotificationConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The response to a request to update the provisioned capacity settings for
+// querying data.
+type ProvisionedCapacityResponse struct {
+
+	// The number of Timestream Compute Units (TCUs) provisioned in the account. This
+	// field is only visible when the compute mode is PROVISIONED .
+	ActiveQueryTCU *int32
+
+	// Information about the last update to the provisioned capacity settings.
+	LastUpdate *LastUpdate
+
+	// An object that contains settings for notifications that are sent whenever the
+	// provisioned capacity settings are modified. This field is only visible when the
+	// compute mode is PROVISIONED .
+	NotificationConfiguration *AccountSettingsNotificationConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// A request to retrieve or update the compute capacity settings for querying data.
+type QueryComputeRequest struct {
+
+	// The mode in which Timestream Compute Units (TCUs) are allocated and utilized
+	// within an account. Note that in the Asia Pacific (Mumbai) region, the API
+	// operation only recognizes the value PROVISIONED .
+	ComputeMode ComputeMode
+
+	// Configuration object that contains settings for provisioned Timestream Compute
+	// Units (TCUs) in your account.
+	ProvisionedCapacity *ProvisionedCapacityRequest
+
+	noSmithyDocumentSerde
+}
+
+// The response to a request to retrieve or update the compute capacity settings
+// for querying data.
+type QueryComputeResponse struct {
+
+	// The mode in which Timestream Compute Units (TCUs) are allocated and utilized
+	// within an account. Note that in the Asia Pacific (Mumbai) region, the API
+	// operation only recognizes the value PROVISIONED .
+	ComputeMode ComputeMode
+
+	// Configuration object that contains settings for provisioned Timestream Compute
+	// Units (TCUs) in your account.
+	ProvisionedCapacity *ProvisionedCapacityResponse
+
+	noSmithyDocumentSerde
+}
+
+// QueryInsights is a performance tuning feature that helps you optimize your
+// queries, reducing costs and improving performance. With QueryInsights , you can
+// assess the pruning efficiency of your queries and identify areas for improvement
+// to enhance query performance. With QueryInsights , you can also analyze the
+// effectiveness of your queries in terms of temporal and spatial pruning, and
+// identify opportunities to improve performance. Specifically, you can evaluate
+// how well your queries use time-based and partition key-based indexing strategies
+// to optimize data retrieval. To optimize query performance, it's essential that
+// you fine-tune both the temporal and spatial parameters that govern query
+// execution.
+//
+// The key metrics provided by QueryInsights are QuerySpatialCoverage and
+// QueryTemporalRange . QuerySpatialCoverage indicates how much of the spatial
+// axis the query scans, with lower values being more efficient. QueryTemporalRange
+// shows the time range scanned, with narrower ranges being more performant.
+//
+// # Benefits of QueryInsights
+//
+// The following are the key benefits of using QueryInsights :
+//
+//   - Identifying inefficient queries – QueryInsights provides information on the
+//     time-based and attribute-based pruning of the tables accessed by the query. This
+//     information helps you identify the tables that are sub-optimally accessed.
+//
+//   - Optimizing your data model and partitioning – You can use the QueryInsights
+//     information to access and fine-tune your data model and partitioning strategy.
+//
+//   - Tuning queries – QueryInsights highlights opportunities to use indexes more
+//     effectively.
+//
+// The maximum number of Query API requests you're allowed to make with
+// QueryInsights enabled is 1 query per second (QPS). If you exceed this query
+// rate, it might result in throttling.
+type QueryInsights struct {
+
+	// Provides the following modes to enable QueryInsights :
+	//
+	//   - ENABLED_WITH_RATE_CONTROL – Enables QueryInsights for the queries being
+	//   processed. This mode also includes a rate control mechanism, which limits the
+	//   QueryInsights feature to 1 query per second (QPS).
+	//
+	//   - DISABLED – Disables QueryInsights .
+	//
+	// This member is required.
+	Mode QueryInsightsMode
+
+	noSmithyDocumentSerde
+}
+
+// Provides various insights and metrics related to the query that you executed.
+type QueryInsightsResponse struct {
+
+	// Indicates the size of query result set in bytes. You can use this data to
+	// validate if the result set has changed as part of the query tuning exercise.
+	OutputBytes *int64
+
+	// Indicates the total number of rows returned as part of the query result set.
+	// You can use this data to validate if the number of rows in the result set have
+	// changed as part of the query tuning exercise.
+	OutputRows *int64
+
+	// Provides insights into the spatial coverage of the query, including the table
+	// with sub-optimal (max) spatial pruning. This information can help you identify
+	// areas for improvement in your partitioning strategy to enhance spatial pruning.
+	QuerySpatialCoverage *QuerySpatialCoverage
+
+	// Indicates the number of tables in the query.
+	QueryTableCount *int64
+
+	// Provides insights into the temporal range of the query, including the table
+	// with the largest (max) time range. Following are some of the potential options
+	// for optimizing time-based pruning:
+	//
+	//   - Add missing time-predicates.
+	//
+	//   - Remove functions around the time predicates.
+	//
+	//   - Add time predicates to all the sub-queries.
+	QueryTemporalRange *QueryTemporalRange
+
+	// Indicates the partitions created by the Unload operation.
+	UnloadPartitionCount *int64
+
+	// Indicates the size, in bytes, written by the Unload operation.
+	UnloadWrittenBytes *int64
+
+	// Indicates the rows written by the Unload query.
+	UnloadWrittenRows *int64
+
+	noSmithyDocumentSerde
+}
+
+// Provides insights into the spatial coverage of the query, including the table
+// with sub-optimal (max) spatial pruning. This information can help you identify
+// areas for improvement in your partitioning strategy to enhance spatial pruning
+//
+// For example, you can do the following with the QuerySpatialCoverage information:
+//
+//   - Add measure_name or use [customer-defined partition key](CDPK) predicates.
+//
+//   - If you've already done the preceding action, remove functions around them
+//     or clauses, such as LIKE .
+//
+// [customer-defined partition key]: https://docs.aws.amazon.com/timestream/latest/developerguide/customer-defined-partition-keys.html
+type QuerySpatialCoverage struct {
+
+	// Provides insights into the spatial coverage of the executed query and the table
+	// with the most inefficient spatial pruning.
+	//
+	//   - Value – The maximum ratio of spatial coverage.
+	//
+	//   - TableArn – The Amazon Resource Name (ARN) of the table with sub-optimal
+	//   spatial pruning.
+	//
+	//   - PartitionKey – The partition key used for partitioning, which can be a
+	//   default measure_name or a CDPK.
+	Max *QuerySpatialCoverageMax
+
+	noSmithyDocumentSerde
+}
+
+// Provides insights into the table with the most sub-optimal spatial range
+// scanned by your query.
+type QuerySpatialCoverageMax struct {
+
+	// The partition key used for partitioning, which can be a default measure_name or
+	// a [customer defined partition key].
+	//
+	// [customer defined partition key]: https://docs.aws.amazon.com/timestream/latest/developerguide/customer-defined-partition-keys.html
+	PartitionKey []string
+
+	// The Amazon Resource Name (ARN) of the table with the most sub-optimal spatial
+	// pruning.
+	TableArn *string
+
+	// The maximum ratio of spatial coverage.
+	Value float64
+
+	noSmithyDocumentSerde
+}
+
 // Information about the status of the query, including progress and bytes scanned.
 type QueryStatus struct {
 
@@ -245,6 +492,37 @@ type QueryStatus struct {
 	noSmithyDocumentSerde
 }
 
+// Provides insights into the temporal range of the query, including the table
+// with the largest (max) time range.
+type QueryTemporalRange struct {
+
+	// Encapsulates the following properties that provide insights into the most
+	// sub-optimal performing table on the temporal axis:
+	//
+	//   - Value – The maximum duration in nanoseconds between the start and end of the
+	//   query.
+	//
+	//   - TableArn – The Amazon Resource Name (ARN) of the table which is queried with
+	//   the largest time range.
+	Max *QueryTemporalRangeMax
+
+	noSmithyDocumentSerde
+}
+
+// Provides insights into the table with the most sub-optimal temporal pruning
+// scanned by your query.
+type QueryTemporalRangeMax struct {
+
+	// The Amazon Resource Name (ARN) of the table which is queried with the largest
+	// time range.
+	TableArn *string
+
+	// The maximum duration in nanoseconds between the start and end of the query.
+	Value int64
+
+	noSmithyDocumentSerde
+}
+
 // Represents a single row in the query results.
 type Row struct {
 
@@ -259,16 +537,16 @@ type Row struct {
 // Details on S3 location for error reports that result from running a query.
 type S3Configuration struct {
 
-	// Name of the S3 bucket under which error reports will be created.
+	//  Name of the S3 bucket under which error reports will be created.
 	//
 	// This member is required.
 	BucketName *string
 
-	// Encryption at rest options for the error reports. If no encryption option is
+	//  Encryption at rest options for the error reports. If no encryption option is
 	// specified, Timestream will choose SSE_S3 as default.
 	EncryptionOption S3EncryptionOption
 
-	// Prefix for the error report key. Timestream by default adds the following
+	//  Prefix for the error report key. Timestream by default adds the following
 	// prefix to the error report path.
 	ObjectKeyPrefix *string
 
@@ -278,7 +556,7 @@ type S3Configuration struct {
 // S3 report location for the scheduled query run.
 type S3ReportLocation struct {
 
-	// S3 bucket name.
+	//  S3 bucket name.
 	BucketName *string
 
 	// S3 key.
@@ -401,6 +679,59 @@ type ScheduledQueryDescription struct {
 	noSmithyDocumentSerde
 }
 
+// Encapsulates settings for enabling QueryInsights on an
+// ExecuteScheduledQueryRequest .
+type ScheduledQueryInsights struct {
+
+	// Provides the following modes to enable ScheduledQueryInsights :
+	//
+	//   - ENABLED_WITH_RATE_CONTROL – Enables ScheduledQueryInsights for the queries
+	//   being processed. This mode also includes a rate control mechanism, which limits
+	//   the QueryInsights feature to 1 query per second (QPS).
+	//
+	//   - DISABLED – Disables ScheduledQueryInsights .
+	//
+	// This member is required.
+	Mode ScheduledQueryInsightsMode
+
+	noSmithyDocumentSerde
+}
+
+// Provides various insights and metrics related to the
+// ExecuteScheduledQueryRequest that was executed.
+type ScheduledQueryInsightsResponse struct {
+
+	// Indicates the size of query result set in bytes. You can use this data to
+	// validate if the result set has changed as part of the query tuning exercise.
+	OutputBytes *int64
+
+	// Indicates the total number of rows returned as part of the query result set.
+	// You can use this data to validate if the number of rows in the result set have
+	// changed as part of the query tuning exercise.
+	OutputRows *int64
+
+	// Provides insights into the spatial coverage of the query, including the table
+	// with sub-optimal (max) spatial pruning. This information can help you identify
+	// areas for improvement in your partitioning strategy to enhance spatial pruning.
+	QuerySpatialCoverage *QuerySpatialCoverage
+
+	// Indicates the number of tables in the query.
+	QueryTableCount *int64
+
+	// Provides insights into the temporal range of the query, including the table
+	// with the largest (max) time range. Following are some of the potential options
+	// for optimizing time-based pruning:
+	//
+	//   - Add missing time-predicates.
+	//
+	//   - Remove functions around the time predicates.
+	//
+	//   - Add time predicates to all the sub-queries.
+	QueryTemporalRange *QueryTemporalRange
+
+	noSmithyDocumentSerde
+}
+
 // Run summary for the scheduled query
 type ScheduledQueryRunSummary struct {
 
@@ -418,6 +749,10 @@ type ScheduledQueryRunSummary struct {
 	// to run. Parameter @scheduled_runtime can be used in the query to get the value.
 	InvocationTime *time.Time
 
+	// Provides various insights and metrics related to the run summary of the
+	// scheduled query.
+	QueryInsightsResponse *ScheduledQueryInsightsResponse
+
 	// The status of a scheduled query run.
 	RunStatus ScheduledQueryRunStatus
 
@@ -433,7 +768,7 @@ type SelectColumn struct {
 	// True, if the column name was aliased by the query. False otherwise.
 	Aliased *bool
 
-	// Database that has this column.
+	//  Database that has this column.
 	DatabaseName *string
 
 	// Name of the column.
@@ -521,7 +856,8 @@ type TimeSeriesDataPoint struct {
 	noSmithyDocumentSerde
 }
 
-// Configuration to write data into Timestream database and table. This
+//	Configuration to write data into Timestream database and table. This
+//
 // configuration allows the user to map the query result select columns into the
 // destination table columns.
 type TimestreamConfiguration struct {
@@ -531,7 +867,7 @@ type TimestreamConfiguration struct {
 	// This member is required.
 	DatabaseName *string
 
-	// This is to allow mapping column(s) from the query result to the dimension in
+	//  This is to allow mapping column(s) from the query result to the dimension in
 	// the destination table.
 	//
 	// This member is required.
@@ -586,7 +922,9 @@ type Type struct {
 	RowColumnInfo []ColumnInfo
 
 	// Indicates if the column is of type string, integer, Boolean, double, timestamp,
-	// date, time.
+	// date, time. For more information, see [Supported data types].
+	//
+	// [Supported data types]: https://docs.aws.amazon.com/timestream/latest/developerguide/supported-data-types.html
 	ScalarType ScalarType
 
 	// Indicates if the column is a timeseries data type.

@@ -7,7 +7,8 @@ import (
 	smithy "github.com/aws/smithy-go"
 )
 
-// This error is returned if you call AssociateDelegationSignerToDomain when the
+//	This error is returned if you call AssociateDelegationSignerToDomain when the
+//
 // specified domain has reached the maximum number of DS records. You can't add any
 // additional DS records unless you delete an existing one first.
 type DnssecLimitExceeded struct {
@@ -66,6 +67,8 @@ type DuplicateRequest struct {
 	Message *string
 
 	ErrorCodeOverride *string
+
+	RequestId *string
 
 	noSmithyDocumentSerde
 }

@@ -4,25 +4,29 @@ package storagegateway
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/storagegateway/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Updates a Network File System (NFS) file share. This operation is only
-// supported in S3 File Gateways. To leave a file share field unchanged, set the
-// corresponding input field to null. Updates the following file share settings:
+// supported in S3 File Gateways.
+//
+// To leave a file share field unchanged, set the corresponding input field to
+// null.
+//
+// Updates the following file share settings:
+//
 //   - Default storage class for your S3 bucket
+//
 //   - Metadata defaults for your S3 bucket
+//
 //   - Allowed NFS clients for your file share
+//
 //   - Squash settings
+//
 //   - Write status of your file share
 func (c *Client) UpdateNFSFileShare(ctx context.Context, params *UpdateNFSFileShareInput, optFns ...func(*Options)) (*UpdateNFSFileShareOutput, error) {
 	if params == nil {
@@ -58,26 +62,61 @@ type UpdateNFSFileShareInput struct {
 	ClientList []string
 
 	// The default storage class for objects put into an Amazon S3 bucket by the S3
-	// File Gateway. The default value is S3_STANDARD . Optional. Valid Values:
-	// S3_STANDARD | S3_INTELLIGENT_TIERING | S3_STANDARD_IA | S3_ONEZONE_IA
+	// File Gateway. The default value is S3_STANDARD . Optional.
+	//
+	// Valid Values: S3_STANDARD | S3_INTELLIGENT_TIERING | S3_STANDARD_IA |
+	// S3_ONEZONE_IA
 	DefaultStorageClass *string
 
-	// The name of the file share. Optional. FileShareName must be set if an S3 prefix
-	// name is set in LocationARN , or if an access point or access point alias is used.
+	// A value that specifies the type of server-side encryption that the file share
+	// will use for the data that it stores in Amazon S3.
+	//
+	// We recommend using EncryptionType instead of KMSEncrypted to set the file share
+	// encryption method. You do not need to provide values for both parameters.
+	//
+	// If values for both parameters exist in the same request, then the specified
+	// encryption methods must not conflict. For example, if EncryptionType is SseS3 ,
+	// then KMSEncrypted must be false . If EncryptionType is SseKms or DsseKms , then
+	// KMSEncrypted must be true .
+	EncryptionType types.EncryptionType
+
+	// The name of the file share. Optional.
+	//
+	// FileShareName must be set if an S3 prefix name is set in LocationARN , or if an
+	// access point or access point alias is used.
+	//
+	// A valid NFS file share name can only contain the following characters: a - z , A
+	// - Z , 0 - 9 , - , . , and _ .
 	FileShareName *string
 
 	// A value that enables guessing of the MIME type for uploaded objects based on
 	// file extensions. Set this value to true to enable MIME type guessing, otherwise
-	// set to false . The default value is true . Valid Values: true | false
+	// set to false . The default value is true .
+	//
+	// Valid Values: true | false
 	GuessMIMETypeEnabled *bool
 
-	// Set to true to use Amazon S3 server-side encryption with your own KMS key, or
-	// false to use a key managed by Amazon S3. Optional. Valid Values: true | false
+	// Optional. Set to true to use Amazon S3 server-side encryption with your own KMS
+	// key (SSE-KMS), or false to use a key managed by Amazon S3 (SSE-S3). To use
+	// dual-layer encryption (DSSE-KMS), set the EncryptionType parameter instead.
+	//
+	// We recommend using EncryptionType instead of KMSEncrypted to set the file share
+	// encryption method. You do not need to provide values for both parameters.
+	//
+	// If values for both parameters exist in the same request, then the specified
+	// encryption methods must not conflict. For example, if EncryptionType is SseS3 ,
+	// then KMSEncrypted must be false . If EncryptionType is SseKms or DsseKms , then
+	// KMSEncrypted must be true .
+	//
+	// Valid Values: true | false
+	//
+	// Deprecated: KMSEncrypted is deprecated, use EncryptionType instead.
 	KMSEncrypted *bool
 
-	// The Amazon Resource Name (ARN) of a symmetric customer master key (CMK) used
-	// for Amazon S3 server-side encryption. Storage Gateway does not support
-	// asymmetric CMKs. This value can only be set when KMSEncrypted is true . Optional.
+	// Optional. The Amazon Resource Name (ARN) of a symmetric customer master key
+	// (CMK) used for Amazon S3 server-side encryption. Storage Gateway does not
+	// support asymmetric CMKs. This value must be set if KMSEncrypted is true , or if
+	// EncryptionType is SseKms or DsseKms .
 	KMSKey *string
 
 	// The default values for the file share. Optional.
@@ -88,11 +127,23 @@ type UpdateNFSFileShareInput struct {
 	// before generating an ObjectUploaded notification. Because clients can make many
 	// small writes to files, it's best to set this parameter for as long as possible
 	// to avoid generating multiple notifications for the same file in a small time
-	// period. SettlingTimeInSeconds has no effect on the timing of the object
-	// uploading to Amazon S3, only the timing of the notification. The following
-	// example sets NotificationPolicy on with SettlingTimeInSeconds set to 60.
-	// {"Upload": {"SettlingTimeInSeconds": 60}} The following example sets
-	// NotificationPolicy off. {}
+	// period.
+	//
+	// SettlingTimeInSeconds has no effect on the timing of the object uploading to
+	// Amazon S3, only the timing of the notification.
+	//
+	// This setting is not meant to specify an exact time at which the notification
+	// will be sent. In some cases, the gateway might require more than the specified
+	// delay time to generate and send notifications.
+	//
+	// The following example sets NotificationPolicy on with SettlingTimeInSeconds set
+	// to 60.
+	//
+	//     {\"Upload\": {\"SettlingTimeInSeconds\": 60}}
+	//
+	// The following example sets NotificationPolicy off.
+	//
+	//     {}
 	NotificationPolicy *string
 
 	// A value that sets the access control list (ACL) permission for objects in the
@@ -101,22 +152,31 @@ type UpdateNFSFileShareInput struct {
 	ObjectACL types.ObjectACL
 
 	// A value that sets the write status of a file share. Set this value to true to
-	// set the write status to read-only, otherwise set to false . Valid Values: true
-	// | false
+	// set the write status to read-only, otherwise set to false .
+	//
+	// Valid Values: true | false
 	ReadOnly *bool
 
 	// A value that sets who pays the cost of the request and the cost associated with
 	// data download from the S3 bucket. If this value is set to true , the requester
 	// pays the costs; otherwise, the S3 bucket owner pays. However, the S3 bucket
-	// owner always pays the cost of storing data. RequesterPays is a configuration
-	// for the S3 bucket that backs the file share, so make sure that the configuration
-	// on the file share is the same as the S3 bucket configuration. Valid Values: true
-	// | false
+	// owner always pays the cost of storing data.
+	//
+	// RequesterPays is a configuration for the S3 bucket that backs the file share,
+	// so make sure that the configuration on the file share is the same as the S3
+	// bucket configuration.
+	//
+	// Valid Values: true | false
 	RequesterPays *bool
 
-	// The user mapped to anonymous user. Valid values are the following:
+	// The user mapped to anonymous user.
+	//
+	// Valid values are the following:
+	//
 	//   - RootSquash : Only root is mapped to anonymous user.
+	//
 	//   - NoSquash : No one is mapped to anonymous user.
+	//
 	//   - AllSquash : Everyone is mapped to anonymous user.
 	Squash *string
 
@@ -136,6 +196,9 @@ type UpdateNFSFileShareOutput struct {
 }
 
 func (c *Client) addOperationUpdateNFSFileShareMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpUpdateNFSFileShare{}, middleware.After)
 	if err != nil {
 		return err
@@ -144,34 +207,38 @@ func (c *Client) addOperationUpdateNFSFileShareMiddlewares(stack *middleware.Sta
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateNFSFileShare"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -183,7 +250,13 @@ func (c *Client) addOperationUpdateNFSFileShareMiddlewares(stack *middleware.Sta
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateNFSFileShareResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateNFSFileShareValidationMiddleware(stack); err != nil {
@@ -192,7 +265,7 @@ func (c *Client) addOperationUpdateNFSFileShareMiddlewares(stack *middleware.Sta
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateNFSFileShare(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -204,7 +277,19 @@ func (c *Client) addOperationUpdateNFSFileShareMiddlewares(stack *middleware.Sta
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -214,130 +299,6 @@ func newServiceMetadataMiddleware_opUpdateNFSFileShare(region string) *awsmiddle
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "storagegateway",
 		OperationName: "UpdateNFSFileShare",
 	}
-}
-
-type opUpdateNFSFileShareResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateNFSFileShareResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateNFSFileShareResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "storagegateway"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "storagegateway"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("storagegateway")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateNFSFileShareResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateNFSFileShareResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

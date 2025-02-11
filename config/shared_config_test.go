@@ -16,7 +16,6 @@ import (
 	"github.com/aws/aws-sdk-go-v2/internal/ini"
 	"github.com/aws/smithy-go/logging"
 	"github.com/aws/smithy-go/ptr"
-	"github.com/google/go-cmp/cmp"
 )
 
 var _ regionProvider = (*SharedConfig)(nil)
@@ -138,9 +137,10 @@ func TestNewSharedConfig(t *testing.T) {
 		"Invalid INI file": {
 			ConfigFilenames: []string{filepath.Join("testdata", "shared_config_invalid_ini")},
 			Profile:         "profile_name",
-			Err: SharedConfigLoadError{
-				Filename: filepath.Join("testdata", "shared_config_invalid_ini"),
-				Err:      fmt.Errorf("invalid state"),
+			Err: SharedConfigProfileNotExistError{
+				Filename: []string{filepath.Join("testdata", "shared_config_invalid_ini")},
+				Profile:  "profile_name",
+				Err:      nil,
 			},
 		},
 		"S3UseARNRegion property on profile": {
@@ -652,6 +652,160 @@ func TestNewSharedConfig(t *testing.T) {
 				AppID:   "12345",
 			},
 		},
+		"endpoint config test": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "endpoint_config",
+			Expected: SharedConfig{
+				Profile:                   "endpoint_config",
+				BaseEndpoint:              "https://example.com",
+				IgnoreConfiguredEndpoints: ptr.Bool(true),
+			},
+		},
+		"imdsv1 disabled = false": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "ec2-metadata-v1-disabled-false",
+			Expected: SharedConfig{
+				Profile:           "ec2-metadata-v1-disabled-false",
+				EC2IMDSv1Disabled: aws.Bool(false),
+			},
+		},
+		"imdsv1 disabled = true": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "ec2-metadata-v1-disabled-true",
+			Expected: SharedConfig{
+				Profile:           "ec2-metadata-v1-disabled-true",
+				EC2IMDSv1Disabled: aws.Bool(true),
+			},
+		},
+		"imdsv1 disabled = invalid": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "ec2-metadata-v1-disabled-invalid",
+			Expected: SharedConfig{
+				Profile:           "ec2-metadata-v1-disabled-invalid",
+				EC2IMDSv1Disabled: aws.Bool(false),
+			},
+		},
+		"profile configuring request compression": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "request_compression",
+			Expected: SharedConfig{
+				Profile:                     "request_compression",
+				DisableRequestCompression:   aws.Bool(true),
+				RequestMinCompressSizeBytes: aws.Int64(12345),
+			},
+		},
+		"profile with invalid disableRequestCompression": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "request_compression_invalid_disable",
+			Err: fmt.Errorf("invalid value for shared config profile field, %s=%s, need true or false",
+				disableRequestCompression, "blabla"),
+		},
+		"profile with non-int requestMinCompressSizeBytes": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "request_compression_non_int_min_request",
+			Err:             fmt.Errorf("invalid value for min request compression size bytes hahaha, need int64"),
+		},
+		"profile with requestMinCompressSizeBytes out of bounds": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "request_compression_min_request_out_of_bounds",
+			Err:             fmt.Errorf("invalid range for min request compression size bytes 10485761, must be within 0 and 10485760 inclusively"),
+		},
+		"services section": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "service_endpoint_url",
+			Expected: SharedConfig{
+				Profile:             "service_endpoint_url",
+				ServicesSectionName: "service_endpoint_url_services",
+				Services: Services{
+					ServiceValues: map[string]map[string]string{
+						"s3": {
+							"endpoint_url": "http://127.0.0.1",
+							"other":        "foo",
+						},
+						"ec2": {
+							"endpoint_url": "http://127.0.0.1:81",
+						},
+					},
+				},
+			},
+		},
+		"profile with aws account ID": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "account_id",
+			Expected: SharedConfig{
+				Profile: "account_id",
+				Credentials: aws.Credentials{
+					AccessKeyID:     "account_id_akid",
+					SecretAccessKey: "account_id_secret",
+					Source:          fmt.Sprintf("SharedConfigCredentials: %s", testConfigFilename),
+					AccountID:       "012345678901",
+				},
+			},
+		},
+		"profile with account ID endpoint mode": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "account_id_endpoint_mode",
+			Expected: SharedConfig{
+				Profile:               "account_id_endpoint_mode",
+				AccountIDEndpointMode: aws.AccountIDEndpointModeDisabled,
+			},
+		},
+		"profile with invalid account ID endpoint mode": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "account_id_endpoint_mode_error",
+			Expected: SharedConfig{
+				Profile: "account_id_endpoint_mode_error",
+			},
+			Err: fmt.Errorf("invalid value for shared config profile field, account_id_endpoint_mode=blabla, must be preferred/required/disabled"),
+		},
+		"profile with request checksum calculation when supported": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "request_checksum_calculation_when_supported",
+			Expected: SharedConfig{
+				Profile:                    "request_checksum_calculation_when_supported",
+				RequestChecksumCalculation: aws.RequestChecksumCalculationWhenSupported,
+			},
+		},
+		"profile with request checksum calculation when required": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "request_checksum_calculation_when_required",
+			Expected: SharedConfig{
+				Profile:                    "request_checksum_calculation_when_required",
+				RequestChecksumCalculation: aws.RequestChecksumCalculationWhenRequired,
+			},
+		},
+		"profile with invalid request checksum calculation": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "request_checksum_calculation_error",
+			Expected: SharedConfig{
+				Profile: "request_checksum_calculation_error",
+			},
+			Err: fmt.Errorf("invalid value for shared config profile field, request_checksum_calculation=blabla, must be when_supported/when_required"),
+		},
+		"profile with response checksum validation when supported": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "response_checksum_validation_when_supported",
+			Expected: SharedConfig{
+				Profile:                    "response_checksum_validation_when_supported",
+				ResponseChecksumValidation: aws.ResponseChecksumValidationWhenSupported,
+			},
+		},
+		"profile with response checksum validation when required": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "response_checksum_validation_when_required",
+			Expected: SharedConfig{
+				Profile:                    "response_checksum_validation_when_required",
+				ResponseChecksumValidation: aws.ResponseChecksumValidationWhenRequired,
+			},
+		},
+		"profile with invalid response checksum validation": {
+			ConfigFilenames: []string{testConfigFilename},
+			Profile:         "response_checksum_validation_error",
+			Expected: SharedConfig{
+				Profile: "response_checksum_validation_error",
+			},
+			Err: fmt.Errorf("invalid value for shared config profile field, response_checksum_validation=blabla, must be when_supported/when_required"),
+		},
 	}
 
 	for name, c := range cases {
@@ -676,7 +830,7 @@ func TestNewSharedConfig(t *testing.T) {
 			if c.Err != nil {
 				t.Errorf("expect error: %v, got none", c.Err)
 			}
-			if diff := cmp.Diff(c.Expected, cfg); len(diff) > 0 {
+			if diff := cmpDiff(c.Expected, cfg); len(diff) > 0 {
 				t.Error(diff)
 			}
 		})
@@ -817,7 +971,7 @@ func TestLoadSharedConfigFromSection(t *testing.T) {
 				t.Fatalf("expect no error, got %v", err)
 			}
 
-			if diff := cmp.Diff(c.Expected, cfg); diff != "" {
+			if diff := cmpDiff(c.Expected, cfg); diff != "" {
 				t.Errorf("expect shared config match\n%s", diff)
 			}
 		})
@@ -1421,7 +1575,7 @@ func TestSharedConfigLoading(t *testing.T) {
 				t.Fatalf("expect no error, got %v", err)
 			}
 
-			if diff := cmp.Diff(c.Expect, cfg); diff != "" {
+			if diff := cmpDiff(c.Expect, cfg); diff != "" {
 				t.Errorf("expect shared config match\n%s", diff)
 			}
 		})

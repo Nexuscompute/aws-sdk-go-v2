@@ -4,14 +4,9 @@ package quicksight
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/quicksight/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -53,11 +48,27 @@ type UpdateUserInput struct {
 
 	// The Amazon QuickSight role of the user. The role can be one of the following
 	// default security cohorts:
+	//
 	//   - READER : A user who has read-only access to dashboards.
+	//
 	//   - AUTHOR : A user who can create data sources, datasets, analyses, and
 	//   dashboards.
+	//
 	//   - ADMIN : A user who is an author, who can also manage Amazon QuickSight
 	//   settings.
+	//
+	//   - READER_PRO : Reader Pro adds Generative BI capabilities to the Reader role.
+	//   Reader Pros have access to Amazon Q in Amazon QuickSight, can build stories with
+	//   Amazon Q, and can generate executive summaries from dashboards.
+	//
+	//   - AUTHOR_PRO : Author Pro adds Generative BI capabilities to the Author role.
+	//   Author Pros can author dashboards with natural language with Amazon Q, build
+	//   stories with Amazon Q, create Topics for Q&A, and generate executive summaries
+	//   from dashboards.
+	//
+	//   - ADMIN_PRO : Admin Pros are Author Pros who can also manage Amazon QuickSight
+	//   administrative settings. Admin Pro users are billed at Author Pro pricing.
+	//
 	// The name of the Amazon QuickSight role is invisible to the user except for the
 	// console screens dealing with permissions.
 	//
@@ -78,35 +89,47 @@ type UpdateUserInput struct {
 	// (Enterprise edition only) The name of the custom permissions profile that you
 	// want to assign to this user. Customized permissions allows you to control a
 	// user's access by restricting access the following operations:
+	//
 	//   - Create and update data sources
+	//
 	//   - Create and update datasets
+	//
 	//   - Create and update email reports
+	//
 	//   - Subscribe to email reports
+	//
 	// A set of custom permissions includes any combination of these restrictions.
 	// Currently, you need to create the profile names for custom permission sets by
 	// using the Amazon QuickSight console. Then, you use the RegisterUser API
 	// operation to assign the named set of permissions to a Amazon QuickSight user.
+	//
 	// Amazon QuickSight custom permissions are applied through IAM policies.
 	// Therefore, they override the permissions typically granted by assigning Amazon
 	// QuickSight users to one of the default security cohorts in Amazon QuickSight
-	// (admin, author, reader). This feature is available only to Amazon QuickSight
-	// Enterprise edition subscriptions.
+	// (admin, author, reader).
+	//
+	// This feature is available only to Amazon QuickSight Enterprise edition
+	// subscriptions.
 	CustomPermissionsName *string
 
 	// The type of supported external login provider that provides identity to let a
 	// user federate into Amazon QuickSight with an associated Identity and Access
 	// Management(IAM) role. The type of supported external login provider can be one
 	// of the following.
+	//
 	//   - COGNITO : Amazon Cognito. The provider URL is
 	//   cognito-identity.amazonaws.com. When choosing the COGNITO provider type, don’t
 	//   use the "CustomFederationProviderUrl" parameter which is only needed when the
 	//   external provider is custom.
+	//
 	//   - CUSTOM_OIDC : Custom OpenID Connect (OIDC) provider. When choosing
 	//   CUSTOM_OIDC type, use the CustomFederationProviderUrl parameter to provide the
 	//   custom OIDC provider URL.
+	//
 	//   - NONE : This clears all the previously saved external login information for a
-	//   user. Use the DescribeUser (https://docs.aws.amazon.com/quicksight/latest/APIReference/API_DescribeUser.html)
-	//   API operation to check the external login information.
+	//   user. Use the [DescribeUser]API operation to check the external login information.
+	//
+	// [DescribeUser]: https://docs.aws.amazon.com/quicksight/latest/APIReference/API_DescribeUser.html
 	ExternalLoginFederationProviderType *string
 
 	// The identity ID for a user in the external login provider.
@@ -139,6 +162,9 @@ type UpdateUserOutput struct {
 }
 
 func (c *Client) addOperationUpdateUserMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpUpdateUser{}, middleware.After)
 	if err != nil {
 		return err
@@ -147,34 +173,38 @@ func (c *Client) addOperationUpdateUserMiddlewares(stack *middleware.Stack, opti
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateUser"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -186,7 +216,13 @@ func (c *Client) addOperationUpdateUserMiddlewares(stack *middleware.Stack, opti
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateUserResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateUserValidationMiddleware(stack); err != nil {
@@ -195,7 +231,7 @@ func (c *Client) addOperationUpdateUserMiddlewares(stack *middleware.Stack, opti
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateUser(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -207,7 +243,19 @@ func (c *Client) addOperationUpdateUserMiddlewares(stack *middleware.Stack, opti
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -217,130 +265,6 @@ func newServiceMetadataMiddleware_opUpdateUser(region string) *awsmiddleware.Reg
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "quicksight",
 		OperationName: "UpdateUser",
 	}
-}
-
-type opUpdateUserResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateUserResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateUserResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "quicksight"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "quicksight"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("quicksight")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateUserResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateUserResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

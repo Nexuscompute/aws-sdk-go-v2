@@ -4,40 +4,46 @@ package swf
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/swf/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Registers a new activity type along with its configuration settings in the
-// specified domain. A TypeAlreadyExists fault is returned if the type already
-// exists in the domain. You cannot change any configuration settings of the type
-// after its registration, and it must be registered as a new version. Access
-// Control You can use IAM policies to control this action's access to Amazon SWF
+// specified domain.
+//
+// A TypeAlreadyExists fault is returned if the type already exists in the domain.
+// You cannot change any configuration settings of the type after its registration,
+// and it must be registered as a new version.
+//
+// # Access Control
+//
+// You can use IAM policies to control this action's access to Amazon SWF
 // resources as follows:
+//
 //   - Use a Resource element with the domain name to limit the action to only
 //     specified domains.
+//
 //   - Use an Action element to allow or deny permission to call this action.
+//
 //   - Constrain the following parameters by using a Condition element with the
 //     appropriate keys.
+//
 //   - defaultTaskList.name : String constraint. The key is
 //     swf:defaultTaskList.name .
+//
 //   - name : String constraint. The key is swf:name .
+//
 //   - version : String constraint. The key is swf:version .
 //
 // If the caller doesn't have sufficient permissions to invoke the action, or the
 // parameter values fall outside the specified constraints, the action fails. The
 // associated event attribute's cause parameter is set to OPERATION_NOT_PERMITTED .
-// For details and example IAM policies, see Using IAM to Manage Access to Amazon
-// SWF Workflows (https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html)
-// in the Amazon SWF Developer Guide.
+// For details and example IAM policies, see [Using IAM to Manage Access to Amazon SWF Workflows]in the Amazon SWF Developer Guide.
+//
+// [Using IAM to Manage Access to Amazon SWF Workflows]: https://docs.aws.amazon.com/amazonswf/latest/developerguide/swf-dev-iam.html
 func (c *Client) RegisterActivityType(ctx context.Context, params *RegisterActivityTypeInput, optFns ...func(*Options)) (*RegisterActivityTypeOutput, error) {
 	if params == nil {
 		params = &RegisterActivityTypeInput{}
@@ -60,65 +66,78 @@ type RegisterActivityTypeInput struct {
 	// This member is required.
 	Domain *string
 
-	// The name of the activity type within the domain. The specified string must not
-	// contain a : (colon), / (slash), | (vertical bar), or any control characters (
-	// \u0000-\u001f | \u007f-\u009f ). Also, it must not be the literal string arn .
+	// The name of the activity type within the domain.
+	//
+	// The specified string must not contain a : (colon), / (slash), | (vertical bar),
+	// or any control characters ( \u0000-\u001f | \u007f-\u009f ). Also, it must not
+	// be the literal string arn .
 	//
 	// This member is required.
 	Name *string
 
-	// The version of the activity type. The activity type consists of the name and
-	// version, the combination of which must be unique within the domain. The
-	// specified string must not contain a : (colon), / (slash), | (vertical bar), or
-	// any control characters ( \u0000-\u001f | \u007f-\u009f ). Also, it must not be
-	// the literal string arn .
+	// The version of the activity type.
+	//
+	// The activity type consists of the name and version, the combination of which
+	// must be unique within the domain.
+	//
+	// The specified string must not contain a : (colon), / (slash), | (vertical bar),
+	// or any control characters ( \u0000-\u001f | \u007f-\u009f ). Also, it must not
+	// be the literal string arn .
 	//
 	// This member is required.
 	Version *string
 
 	// If set, specifies the default maximum time before which a worker processing a
-	// task of this type must report progress by calling RecordActivityTaskHeartbeat .
-	// If the timeout is exceeded, the activity task is automatically timed out. This
-	// default can be overridden when scheduling an activity task using the
-	// ScheduleActivityTask Decision . If the activity worker subsequently attempts to
-	// record a heartbeat or returns a result, the activity worker receives an
-	// UnknownResource fault. In this case, Amazon SWF no longer considers the activity
-	// task to be valid; the activity worker should clean up the activity task. The
-	// duration is specified in seconds, an integer greater than or equal to 0 . You
-	// can use NONE to specify unlimited duration.
+	// task of this type must report progress by calling RecordActivityTaskHeartbeat. If the timeout is exceeded,
+	// the activity task is automatically timed out. This default can be overridden
+	// when scheduling an activity task using the ScheduleActivityTaskDecision . If the
+	// activity worker subsequently attempts to record a heartbeat or returns a result,
+	// the activity worker receives an UnknownResource fault. In this case, Amazon SWF
+	// no longer considers the activity task to be valid; the activity worker should
+	// clean up the activity task.
+	//
+	// The duration is specified in seconds, an integer greater than or equal to 0 .
+	// You can use NONE to specify unlimited duration.
 	DefaultTaskHeartbeatTimeout *string
 
 	// If set, specifies the default task list to use for scheduling tasks of this
 	// activity type. This default task list is used if a task list isn't provided when
-	// a task is scheduled through the ScheduleActivityTask Decision .
+	// a task is scheduled through the ScheduleActivityTaskDecision .
 	DefaultTaskList *types.TaskList
 
 	// The default task priority to assign to the activity type. If not assigned, then
 	// 0 is used. Valid values are integers that range from Java's Integer.MIN_VALUE
 	// (-2147483648) to Integer.MAX_VALUE (2147483647). Higher numbers indicate higher
-	// priority. For more information about setting task priority, see Setting Task
-	// Priority (https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html)
-	// in the in the Amazon SWF Developer Guide..
+	// priority.
+	//
+	// For more information about setting task priority, see [Setting Task Priority] in the in the Amazon SWF
+	// Developer Guide..
+	//
+	// [Setting Task Priority]: https://docs.aws.amazon.com/amazonswf/latest/developerguide/programming-priority.html
 	DefaultTaskPriority *string
 
 	// If set, specifies the default maximum duration for a task of this activity
 	// type. This default can be overridden when scheduling an activity task using the
-	// ScheduleActivityTask Decision . The duration is specified in seconds, an integer
-	// greater than or equal to 0 . You can use NONE to specify unlimited duration.
+	// ScheduleActivityTaskDecision .
+	//
+	// The duration is specified in seconds, an integer greater than or equal to 0 .
+	// You can use NONE to specify unlimited duration.
 	DefaultTaskScheduleToCloseTimeout *string
 
 	// If set, specifies the default maximum duration that a task of this activity
 	// type can wait before being assigned to a worker. This default can be overridden
-	// when scheduling an activity task using the ScheduleActivityTask Decision . The
-	// duration is specified in seconds, an integer greater than or equal to 0 . You
-	// can use NONE to specify unlimited duration.
+	// when scheduling an activity task using the ScheduleActivityTaskDecision .
+	//
+	// The duration is specified in seconds, an integer greater than or equal to 0 .
+	// You can use NONE to specify unlimited duration.
 	DefaultTaskScheduleToStartTimeout *string
 
 	// If set, specifies the default maximum duration that a worker can take to
 	// process tasks of this activity type. This default can be overridden when
-	// scheduling an activity task using the ScheduleActivityTask Decision . The
-	// duration is specified in seconds, an integer greater than or equal to 0 . You
-	// can use NONE to specify unlimited duration.
+	// scheduling an activity task using the ScheduleActivityTaskDecision .
+	//
+	// The duration is specified in seconds, an integer greater than or equal to 0 .
+	// You can use NONE to specify unlimited duration.
 	DefaultTaskStartToCloseTimeout *string
 
 	// A textual description of the activity type.
@@ -135,6 +154,9 @@ type RegisterActivityTypeOutput struct {
 }
 
 func (c *Client) addOperationRegisterActivityTypeMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson10_serializeOpRegisterActivityType{}, middleware.After)
 	if err != nil {
 		return err
@@ -143,34 +165,38 @@ func (c *Client) addOperationRegisterActivityTypeMiddlewares(stack *middleware.S
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "RegisterActivityType"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -182,7 +208,13 @@ func (c *Client) addOperationRegisterActivityTypeMiddlewares(stack *middleware.S
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addRegisterActivityTypeResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRegisterActivityTypeValidationMiddleware(stack); err != nil {
@@ -191,7 +223,7 @@ func (c *Client) addOperationRegisterActivityTypeMiddlewares(stack *middleware.S
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opRegisterActivityType(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -203,7 +235,19 @@ func (c *Client) addOperationRegisterActivityTypeMiddlewares(stack *middleware.S
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -213,130 +257,6 @@ func newServiceMetadataMiddleware_opRegisterActivityType(region string) *awsmidd
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "swf",
 		OperationName: "RegisterActivityType",
 	}
-}
-
-type opRegisterActivityTypeResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opRegisterActivityTypeResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opRegisterActivityTypeResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "swf"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "swf"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("swf")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addRegisterActivityTypeResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opRegisterActivityTypeResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

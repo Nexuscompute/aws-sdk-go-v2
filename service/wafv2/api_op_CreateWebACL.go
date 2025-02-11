@@ -4,29 +4,25 @@ package wafv2
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/wafv2/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates a WebACL per the specifications provided. A web ACL defines a
-// collection of rules to use to inspect and control web requests. Each rule has an
-// action defined (allow, block, or count) for requests that match the statement of
-// the rule. In the web ACL, you assign a default action to take (allow, block) for
-// any request that does not match any of the rules. The rules in a web ACL can be
-// a combination of the types Rule , RuleGroup , and managed rule group. You can
-// associate a web ACL with one or more Amazon Web Services resources to protect.
-// The resources can be an Amazon CloudFront distribution, an Amazon API Gateway
-// REST API, an Application Load Balancer, an AppSync GraphQL API, an Amazon
-// Cognito user pool, an App Runner service, or an Amazon Web Services Verified
-// Access instance.
+// Creates a WebACL per the specifications provided.
+//
+// A web ACL defines a collection of rules to use to inspect and control web
+// requests. Each rule has a statement that defines what to look for in web
+// requests and an action that WAF applies to requests that match the statement. In
+// the web ACL, you assign a default action to take (allow, block) for any request
+// that does not match any of the rules. The rules in a web ACL can be a
+// combination of the types Rule, RuleGroup, and managed rule group. You can associate a web
+// ACL with one or more Amazon Web Services resources to protect. The resources can
+// be an Amazon CloudFront distribution, an Amazon API Gateway REST API, an
+// Application Load Balancer, an AppSync GraphQL API, an Amazon Cognito user pool,
+// an App Runner service, or an Amazon Web Services Verified Access instance.
 func (c *Client) CreateWebACL(ctx context.Context, params *CreateWebACLInput, optFns ...func(*Options)) (*CreateWebACLOutput, error) {
 	if params == nil {
 		params = &CreateWebACLInput{}
@@ -59,26 +55,40 @@ type CreateWebACLInput struct {
 	// regional application. A regional application can be an Application Load Balancer
 	// (ALB), an Amazon API Gateway REST API, an AppSync GraphQL API, an Amazon Cognito
 	// user pool, an App Runner service, or an Amazon Web Services Verified Access
-	// instance. To work with CloudFront, you must also specify the Region US East (N.
-	// Virginia) as follows:
+	// instance.
+	//
+	// To work with CloudFront, you must also specify the Region US East (N. Virginia)
+	// as follows:
+	//
 	//   - CLI - Specify the Region when you use the CloudFront scope:
 	//   --scope=CLOUDFRONT --region=us-east-1 .
+	//
 	//   - API and SDKs - For all calls, use the Region endpoint us-east-1.
 	//
 	// This member is required.
 	Scope types.Scope
 
-	// Defines and enables Amazon CloudWatch metrics and web request sample collection.
+	// Defines and enables Amazon CloudWatch metrics and web request sample
+	// collection.
 	//
 	// This member is required.
 	VisibilityConfig *types.VisibilityConfig
 
 	// Specifies custom configurations for the associations between the web ACL and
-	// protected resources. Use this to customize the maximum size of the request body
-	// that your protected CloudFront distributions forward to WAF for inspection. The
-	// default is 16 KB (16,384 kilobytes). You are charged additional fees when your
-	// protected resources forward body sizes that are larger than the default. For
-	// more information, see WAF Pricing (http://aws.amazon.com/waf/pricing/) .
+	// protected resources.
+	//
+	// Use this to customize the maximum size of the request body that your protected
+	// resources forward to WAF for inspection. You can customize this setting for
+	// CloudFront, API Gateway, Amazon Cognito, App Runner, or Verified Access
+	// resources. The default setting is 16 KB (16,384 bytes).
+	//
+	// You are charged additional fees when your protected resources forward body
+	// sizes that are larger than the default. For more information, see [WAF Pricing].
+	//
+	// For Application Load Balancer and AppSync, the limit is fixed at 8 KB (8,192
+	// bytes).
+	//
+	// [WAF Pricing]: http://aws.amazon.com/waf/pricing/
 	AssociationConfig *types.AssociationConfig
 
 	// Specifies how WAF should handle CAPTCHA evaluations for rules that don't have
@@ -94,19 +104,24 @@ type CreateWebACLInput struct {
 	// A map of custom response keys and content bodies. When you create a rule with a
 	// block action, you can send a custom response to the web request. You define
 	// these for the web ACL, and then use them in the rules and default actions that
-	// you define in the web ACL. For information about customizing web requests and
-	// responses, see Customizing web requests and responses in WAF (https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html)
-	// in the WAF Developer Guide. For information about the limits on count and size
-	// for custom request and response settings, see WAF quotas (https://docs.aws.amazon.com/waf/latest/developerguide/limits.html)
-	// in the WAF Developer Guide.
+	// you define in the web ACL.
+	//
+	// For information about customizing web requests and responses, see [Customizing web requests and responses in WAF] in the WAF
+	// Developer Guide.
+	//
+	// For information about the limits on count and size for custom request and
+	// response settings, see [WAF quotas]in the WAF Developer Guide.
+	//
+	// [WAF quotas]: https://docs.aws.amazon.com/waf/latest/developerguide/limits.html
+	// [Customizing web requests and responses in WAF]: https://docs.aws.amazon.com/waf/latest/developerguide/waf-custom-request-response.html
 	CustomResponseBodies map[string]types.CustomResponseBody
 
 	// A description of the web ACL that helps with identification.
 	Description *string
 
-	// The Rule statements used to identify the web requests that you want to allow,
-	// block, or count. Each rule includes one top-level statement that WAF uses to
-	// identify matching web requests, and parameters that govern how WAF handles them.
+	// The Rule statements used to identify the web requests that you want to manage. Each
+	// rule includes one top-level statement that WAF uses to identify matching web
+	// requests, and parameters that govern how WAF handles them.
 	Rules []types.Rule
 
 	// An array of key:value pairs to associate with the resource.
@@ -118,9 +133,12 @@ type CreateWebACLInput struct {
 	// is protecting. If you don't specify a list of token domains, WAF accepts tokens
 	// only for the domain of the protected resource. With a token domain list, WAF
 	// accepts the resource's host domain plus all domains in the token domain list,
-	// including their prefixed subdomains. Example JSON: "TokenDomains": {
-	// "mywebsite.com", "myotherwebsite.com" } Public suffixes aren't allowed. For
-	// example, you can't use usa.gov or co.uk as token domains.
+	// including their prefixed subdomains.
+	//
+	// Example JSON: "TokenDomains": { "mywebsite.com", "myotherwebsite.com" }
+	//
+	// Public suffixes aren't allowed. For example, you can't use gov.au or co.uk as
+	// token domains.
 	TokenDomains []string
 
 	noSmithyDocumentSerde
@@ -128,10 +146,9 @@ type CreateWebACLInput struct {
 
 type CreateWebACLOutput struct {
 
-	// High-level information about a WebACL , returned by operations like create and
-	// list. This provides information like the ID, that you can use to retrieve and
-	// manage a WebACL , and the ARN, that you provide to operations like
-	// AssociateWebACL .
+	// High-level information about a WebACL, returned by operations like create and list.
+	// This provides information like the ID, that you can use to retrieve and manage a
+	// WebACL , and the ARN, that you provide to operations like AssociateWebACL.
 	Summary *types.WebACLSummary
 
 	// Metadata pertaining to the operation's result.
@@ -141,6 +158,9 @@ type CreateWebACLOutput struct {
 }
 
 func (c *Client) addOperationCreateWebACLMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateWebACL{}, middleware.After)
 	if err != nil {
 		return err
@@ -149,34 +169,38 @@ func (c *Client) addOperationCreateWebACLMiddlewares(stack *middleware.Stack, op
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateWebACL"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -188,7 +212,13 @@ func (c *Client) addOperationCreateWebACLMiddlewares(stack *middleware.Stack, op
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateWebACLResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateWebACLValidationMiddleware(stack); err != nil {
@@ -197,7 +227,7 @@ func (c *Client) addOperationCreateWebACLMiddlewares(stack *middleware.Stack, op
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateWebACL(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -209,7 +239,19 @@ func (c *Client) addOperationCreateWebACLMiddlewares(stack *middleware.Stack, op
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -219,130 +261,6 @@ func newServiceMetadataMiddleware_opCreateWebACL(region string) *awsmiddleware.R
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "wafv2",
 		OperationName: "CreateWebACL",
 	}
-}
-
-type opCreateWebACLResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateWebACLResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateWebACLResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "wafv2"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "wafv2"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("wafv2")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateWebACLResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateWebACLResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

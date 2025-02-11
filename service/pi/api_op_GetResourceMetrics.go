@@ -4,14 +4,9 @@ package pi
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/pi/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -19,9 +14,11 @@ import (
 
 // Retrieve Performance Insights metrics for a set of data sources over a time
 // period. You can provide specific dimension groups and dimensions, and provide
-// aggregation and filtering criteria for each group. Each response element returns
-// a maximum of 500 bytes. For larger elements, such as SQL statements, only the
-// first 500 bytes are returned.
+// filtering criteria for each group. You must specify an aggregate function for
+// each metric.
+//
+// Each response element returns a maximum of 500 bytes. For larger elements, such
+// as SQL statements, only the first 500 bytes are returned.
 func (c *Client) GetResourceMetrics(ctx context.Context, params *GetResourceMetricsInput, optFns ...func(*Options)) (*GetResourceMetricsOutput, error) {
 	if params == nil {
 		params = &GetResourceMetricsInput{}
@@ -41,8 +38,9 @@ type GetResourceMetricsInput struct {
 
 	// The date and time specifying the end of the requested time series query range.
 	// The value specified is exclusive. Thus, the command returns data points less
-	// than (but not equal to) EndTime . The value for EndTime must be later than the
-	// value for StartTime .
+	// than (but not equal to) EndTime .
+	//
+	// The value for EndTime must be later than the value for StartTime .
 	//
 	// This member is required.
 	EndTime *time.Time
@@ -50,23 +48,29 @@ type GetResourceMetricsInput struct {
 	// An immutable identifier for a data source that is unique for an Amazon Web
 	// Services Region. Performance Insights gathers metrics from this data source. In
 	// the console, the identifier is shown as ResourceID. When you call
-	// DescribeDBInstances , the identifier is returned as DbiResourceId . To use a DB
-	// instance as a data source, specify its DbiResourceId value. For example,
-	// specify db-ABCDEFGHIJKLMNOPQRSTU1VW2X .
+	// DescribeDBInstances , the identifier is returned as DbiResourceId .
+	//
+	// To use a DB instance as a data source, specify its DbiResourceId value. For
+	// example, specify db-ABCDEFGHIJKLMNOPQRSTU1VW2X .
 	//
 	// This member is required.
 	Identifier *string
 
 	// An array of one or more queries to perform. Each query must specify a
-	// Performance Insights metric, and can optionally specify aggregation and
-	// filtering criteria.
+	// Performance Insights metric and specify an aggregate function, and you can
+	// provide filtering criteria. You must append the aggregate function to the
+	// metric. For example, to find the average for the metric db.load you must use
+	// db.load.avg . Valid values for aggregate functions include .avg , .min , .max ,
+	// and .sum .
 	//
 	// This member is required.
 	MetricQueries []types.MetricQuery
 
 	// The Amazon Web Services service for which Performance Insights returns metrics.
 	// Valid values are as follows:
+	//
 	//   - RDS
+	//
 	//   - DOCDB
 	//
 	// This member is required.
@@ -76,15 +80,14 @@ type GetResourceMetricsInput struct {
 	// range. You can't specify a StartTime that is earlier than 7 days ago. By
 	// default, Performance Insights has 7 days of retention, but you can extend this
 	// range up to 2 years. The value specified is inclusive. Thus, the command returns
-	// data points equal to or greater than StartTime . The value for StartTime must
-	// be earlier than the value for EndTime .
+	// data points equal to or greater than StartTime .
+	//
+	// The value for StartTime must be earlier than the value for EndTime .
 	//
 	// This member is required.
 	StartTime *time.Time
 
-	// The maximum number of items to return in the response. If more items exist than
-	// the specified MaxRecords value, a pagination token is included in the response
-	// so that the remaining results can be retrieved.
+	// The maximum number of items to return in the response.
 	MaxResults *int32
 
 	// An optional pagination token provided by a previous request. If this parameter
@@ -99,11 +102,17 @@ type GetResourceMetricsInput struct {
 	// The granularity, in seconds, of the data points returned from Performance
 	// Insights. A period can be as short as one second, or as long as one day (86400
 	// seconds). Valid values are:
+	//
 	//   - 1 (one second)
+	//
 	//   - 60 (one minute)
+	//
 	//   - 300 (five minutes)
+	//
 	//   - 3600 (one hour)
+	//
 	//   - 86400 (twenty-four hours)
+	//
 	// If you don't specify PeriodInSeconds , then Performance Insights will choose a
 	// value for you, with a goal of returning roughly 100-200 data points in the
 	// response.
@@ -146,6 +155,9 @@ type GetResourceMetricsOutput struct {
 }
 
 func (c *Client) addOperationGetResourceMetricsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpGetResourceMetrics{}, middleware.After)
 	if err != nil {
 		return err
@@ -154,34 +166,38 @@ func (c *Client) addOperationGetResourceMetricsMiddlewares(stack *middleware.Sta
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GetResourceMetrics"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -193,7 +209,13 @@ func (c *Client) addOperationGetResourceMetricsMiddlewares(stack *middleware.Sta
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGetResourceMetricsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetResourceMetricsValidationMiddleware(stack); err != nil {
@@ -202,7 +224,7 @@ func (c *Client) addOperationGetResourceMetricsMiddlewares(stack *middleware.Sta
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetResourceMetrics(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -214,26 +236,28 @@ func (c *Client) addOperationGetResourceMetricsMiddlewares(stack *middleware.Sta
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
 
-// GetResourceMetricsAPIClient is a client that implements the GetResourceMetrics
-// operation.
-type GetResourceMetricsAPIClient interface {
-	GetResourceMetrics(context.Context, *GetResourceMetricsInput, ...func(*Options)) (*GetResourceMetricsOutput, error)
-}
-
-var _ GetResourceMetricsAPIClient = (*Client)(nil)
-
 // GetResourceMetricsPaginatorOptions is the paginator options for
 // GetResourceMetrics
 type GetResourceMetricsPaginatorOptions struct {
-	// The maximum number of items to return in the response. If more items exist than
-	// the specified MaxRecords value, a pagination token is included in the response
-	// so that the remaining results can be retrieved.
+	// The maximum number of items to return in the response.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token
@@ -294,6 +318,9 @@ func (p *GetResourceMetricsPaginator) NextPage(ctx context.Context, optFns ...fu
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.GetResourceMetrics(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -313,134 +340,18 @@ func (p *GetResourceMetricsPaginator) NextPage(ctx context.Context, optFns ...fu
 	return result, nil
 }
 
+// GetResourceMetricsAPIClient is a client that implements the GetResourceMetrics
+// operation.
+type GetResourceMetricsAPIClient interface {
+	GetResourceMetrics(context.Context, *GetResourceMetricsInput, ...func(*Options)) (*GetResourceMetricsOutput, error)
+}
+
+var _ GetResourceMetricsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opGetResourceMetrics(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "pi",
 		OperationName: "GetResourceMetrics",
 	}
-}
-
-type opGetResourceMetricsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opGetResourceMetricsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGetResourceMetricsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "pi"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "pi"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("pi")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addGetResourceMetricsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGetResourceMetricsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

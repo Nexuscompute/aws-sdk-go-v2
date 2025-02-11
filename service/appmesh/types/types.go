@@ -26,7 +26,9 @@ type AccessLogMemberFile struct {
 func (*AccessLogMemberFile) isAccessLog() {}
 
 // An object that represents the Cloud Map attribute information for your virtual
-// node. Cloud Map is not available in the eu-south-1 Region.
+// node.
+//
+// Cloud Map is not available in the eu-south-1 Region.
 type AwsCloudMapInstanceAttribute struct {
 
 	// The name of an Cloud Map service instance attribute key. Any Cloud Map service
@@ -45,7 +47,9 @@ type AwsCloudMapInstanceAttribute struct {
 }
 
 // An object that represents the Cloud Map service discovery information for your
-// virtual node. Cloud Map is not available in the eu-south-1 Region.
+// virtual node.
+//
+// Cloud Map is not available in the eu-south-1 Region.
 type AwsCloudMapServiceDiscovery struct {
 
 	// The name of the Cloud Map namespace to use.
@@ -143,8 +147,9 @@ type ClientTlsCertificate interface {
 
 // An object that represents a local file certificate. The certificate must meet
 // specific requirements and you must have proxy authorization enabled. For more
-// information, see Transport Layer Security (TLS) (https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html)
-// .
+// information, see [Transport Layer Security (TLS)].
+//
+// [Transport Layer Security (TLS)]: https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html
 type ClientTlsCertificateMemberFile struct {
 	Value ListenerTlsFileCertificate
 
@@ -217,9 +222,10 @@ type FileAccessLog struct {
 	// logs to standard out and configure your Envoy container to use a log driver,
 	// such as awslogs , to export the access logs to a log storage service such as
 	// Amazon CloudWatch Logs. You can also specify a path in the Envoy container's
-	// file system to write the files to disk. The Envoy process must have write
-	// permissions to the path that you specify here. Otherwise, Envoy fails to
-	// bootstrap properly.
+	// file system to write the files to disk.
+	//
+	// The Envoy process must have write permissions to the path that you specify
+	// here. Otherwise, Envoy fails to bootstrap properly.
 	//
 	// This member is required.
 	Path *string
@@ -318,18 +324,18 @@ type GatewayRouteRef struct {
 
 	// The Amazon Web Services IAM account ID of the service mesh owner. If the
 	// account ID is not your own, then it's the ID of the account that shared the mesh
-	// with your account. For more information about mesh sharing, see Working with
-	// shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// with your account. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	MeshOwner *string
 
 	// The Amazon Web Services IAM account ID of the resource owner. If the account ID
 	// is not your own, then it's the ID of the mesh owner or of another account that
-	// the mesh is shared with. For more information about mesh sharing, see Working
-	// with shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// the mesh is shared with. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	ResourceOwner *string
@@ -443,7 +449,7 @@ type GrpcGatewayRouteMatch struct {
 	// The gateway route metadata to be matched on.
 	Metadata []GrpcGatewayRouteMetadata
 
-	// The port number to match from the request.
+	// The gateway route port to be matched on.
 	Port *int32
 
 	// The fully qualified domain name for the service to match from the request.
@@ -543,8 +549,9 @@ func (*GrpcMetadataMatchMethodMemberSuffix) isGrpcMetadataMatchMethod() {}
 // least one of the types of RetryEvents , a value for maxRetries , and a value for
 // perRetryTimeout . Both server-error and gateway-error under httpRetryEvents
 // include the Envoy reset policy. For more information on the reset policy, see
-// the Envoy documentation (https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-on)
-// .
+// the [Envoy documentation].
+//
+// [Envoy documentation]: https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-on
 type GrpcRetryPolicy struct {
 
 	// The maximum number of retry attempts.
@@ -561,10 +568,14 @@ type GrpcRetryPolicy struct {
 	GrpcRetryEvents []GrpcRetryPolicyEvent
 
 	// Specify at least one of the following values.
+	//
 	//   - server-error – HTTP status codes 500, 501, 502, 503, 504, 505, 506, 507,
 	//   508, 510, and 511
+	//
 	//   - gateway-error – HTTP status codes 502, 503, and 504
+	//
 	//   - client-error – HTTP status code 409
+	//
 	//   - stream-error – Retry on refused stream
 	HttpRetryEvents []string
 
@@ -789,7 +800,7 @@ type HealthCheckPolicy struct {
 	// declaring listener healthy.
 	//
 	// This member is required.
-	HealthyThreshold int32
+	HealthyThreshold *int32
 
 	// The time period in milliseconds between each health check execution.
 	//
@@ -797,8 +808,9 @@ type HealthCheckPolicy struct {
 	IntervalMillis *int64
 
 	// The protocol for the health check request. If you specify grpc , then your
-	// service must conform to the GRPC Health Checking Protocol (https://github.com/grpc/grpc/blob/master/doc/health-checking.md)
-	// .
+	// service must conform to the [GRPC Health Checking Protocol].
+	//
+	// [GRPC Health Checking Protocol]: https://github.com/grpc/grpc/blob/master/doc/health-checking.md
 	//
 	// This member is required.
 	Protocol PortProtocol
@@ -813,7 +825,7 @@ type HealthCheckPolicy struct {
 	// a virtual node unhealthy.
 	//
 	// This member is required.
-	UnhealthyThreshold int32
+	UnhealthyThreshold *int32
 
 	// The destination path for the health check request. This value is only used if
 	// the specified protocol is HTTP or HTTP/2. For any other protocol, this value is
@@ -821,8 +833,8 @@ type HealthCheckPolicy struct {
 	Path *string
 
 	// The destination port for the health check request. This port must match the
-	// port defined in the PortMapping for the listener.
-	Port int32
+	// port defined in the PortMappingfor the listener.
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -974,8 +986,9 @@ type HttpQueryParameter struct {
 // least one of the types of RetryEvents , a value for maxRetries , and a value for
 // perRetryTimeout . Both server-error and gateway-error under httpRetryEvents
 // include the Envoy reset policy. For more information on the reset policy, see
-// the Envoy documentation (https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-on)
-// .
+// the [Envoy documentation].
+//
+// [Envoy documentation]: https://www.envoyproxy.io/docs/envoy/latest/configuration/http/http_filters/router_filter#x-envoy-retry-on
 type HttpRetryPolicy struct {
 
 	// The maximum number of retry attempts.
@@ -989,10 +1002,14 @@ type HttpRetryPolicy struct {
 	PerRetryTimeout *Duration
 
 	// Specify at least one of the following values.
+	//
 	//   - server-error – HTTP status codes 500, 501, 502, 503, 504, 505, 506, 507,
 	//   508, 510, and 511
+	//
 	//   - gateway-error – HTTP status codes 502, 503, and 504
+	//
 	//   - client-error – HTTP status code 409
+	//
 	//   - stream-error – Retry on refused stream
 	HttpRetryEvents []string
 
@@ -1209,8 +1226,11 @@ type ListenerTls struct {
 	Certificate ListenerTlsCertificate
 
 	// Specify one of the following modes.
+	//
 	//   - STRICT – Listener only accepts connections with TLS enabled.
+	//
 	//   - PERMISSIVE – Listener accepts connections with or without TLS enabled.
+	//
 	//   - DISABLED – Listener only accepts connections without TLS.
 	//
 	// This member is required.
@@ -1228,8 +1248,9 @@ type ListenerTlsAcmCertificate struct {
 
 	// The Amazon Resource Name (ARN) for the certificate. The certificate must meet
 	// specific requirements and you must have proxy authorization enabled. For more
-	// information, see Transport Layer Security (TLS) (https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites)
-	// .
+	// information, see [Transport Layer Security (TLS)].
+	//
+	// [Transport Layer Security (TLS)]: https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites
 	//
 	// This member is required.
 	CertificateArn *string
@@ -1279,8 +1300,9 @@ func (*ListenerTlsCertificateMemberSds) isListenerTlsCertificate() {}
 
 // An object that represents a local file certificate. The certificate must meet
 // specific requirements and you must have proxy authorization enabled. For more
-// information, see Transport Layer Security (TLS) (https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites)
-// .
+// information, see [Transport Layer Security (TLS)].
+//
+// [Transport Layer Security (TLS)]: https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites
 type ListenerTlsFileCertificate struct {
 
 	// The certificate chain for the certificate.
@@ -1299,8 +1321,9 @@ type ListenerTlsFileCertificate struct {
 
 // An object that represents the listener's Secret Discovery Service certificate.
 // The proxy must be configured with a local SDS provider via a Unix Domain Socket.
-// See App Mesh TLS documentation (https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html)
-// for more info.
+// See App Mesh [TLS documentation]for more info.
+//
+// [TLS documentation]: https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html
 type ListenerTlsSdsCertificate struct {
 
 	// A reference to an object that represents the name of the secret requested from
@@ -1465,18 +1488,18 @@ type MeshRef struct {
 
 	// The Amazon Web Services IAM account ID of the service mesh owner. If the
 	// account ID is not your own, then it's the ID of the account that shared the mesh
-	// with your account. For more information about mesh sharing, see Working with
-	// shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// with your account. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	MeshOwner *string
 
 	// The Amazon Web Services IAM account ID of the resource owner. If the account ID
 	// is not your own, then it's the ID of the mesh owner or of another account that
-	// the mesh is shared with. For more information about mesh sharing, see Working
-	// with shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// the mesh is shared with. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	ResourceOwner *string
@@ -1553,7 +1576,7 @@ type PortMapping struct {
 	// The port used for the port mapping.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	// The protocol used for the port mapping. Specify one protocol.
 	//
@@ -1592,18 +1615,18 @@ type ResourceMetadata struct {
 
 	// The Amazon Web Services IAM account ID of the service mesh owner. If the
 	// account ID is not your own, then it's the ID of the account that shared the mesh
-	// with your account. For more information about mesh sharing, see Working with
-	// shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// with your account. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	MeshOwner *string
 
 	// The Amazon Web Services IAM account ID of the resource owner. If the account ID
 	// is not your own, then it's the ID of the mesh owner or of another account that
-	// the mesh is shared with. For more information about mesh sharing, see Working
-	// with shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// the mesh is shared with. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	ResourceOwner *string
@@ -1683,18 +1706,18 @@ type RouteRef struct {
 
 	// The Amazon Web Services IAM account ID of the service mesh owner. If the
 	// account ID is not your own, then it's the ID of the account that shared the mesh
-	// with your account. For more information about mesh sharing, see Working with
-	// shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// with your account. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	MeshOwner *string
 
 	// The Amazon Web Services IAM account ID of the resource owner. If the account ID
 	// is not your own, then it's the ID of the mesh owner or of another account that
-	// the mesh is shared with. For more information about mesh sharing, see Working
-	// with shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// the mesh is shared with. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	ResourceOwner *string
@@ -1922,8 +1945,9 @@ type TlsValidationContextFileTrust struct {
 
 // An object that represents a Transport Layer Security (TLS) Secret Discovery
 // Service validation context trust. The proxy must be configured with a local SDS
-// provider via a Unix Domain Socket. See App Mesh TLS documentation (https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html)
-// for more info.
+// provider via a Unix Domain Socket. See App Mesh [TLS documentation]for more info.
+//
+// [TLS documentation]: https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html
 type TlsValidationContextSdsTrust struct {
 
 	// A reference to an object that represents the name of the secret for a Transport
@@ -2049,8 +2073,9 @@ type VirtualGatewayClientTlsCertificate interface {
 
 // An object that represents a local file certificate. The certificate must meet
 // specific requirements and you must have proxy authorization enabled. For more
-// information, see Transport Layer Security (TLS)  (https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html)
-// .
+// information, see [Transport Layer Security (TLS)].
+//
+// [Transport Layer Security (TLS)]: https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html
 type VirtualGatewayClientTlsCertificateMemberFile struct {
 	Value VirtualGatewayListenerTlsFileCertificate
 
@@ -2069,10 +2094,12 @@ type VirtualGatewayClientTlsCertificateMemberSds struct {
 
 func (*VirtualGatewayClientTlsCertificateMemberSds) isVirtualGatewayClientTlsCertificate() {}
 
-// An object that represents the type of virtual gateway connection pool. Only one
-// protocol is used at a time and should be the same protocol as the one chosen
-// under port mapping. If not present the default value for maxPendingRequests is
-// 2147483647 .
+// An object that represents the type of virtual gateway connection pool.
+//
+// Only one protocol is used at a time and should be the same protocol as the one
+// chosen under port mapping.
+//
+// If not present the default value for maxPendingRequests is 2147483647 .
 //
 // The following types satisfy this interface:
 //
@@ -2167,7 +2194,7 @@ type VirtualGatewayGrpcConnectionPool struct {
 	// in upstream cluster.
 	//
 	// This member is required.
-	MaxRequests int32
+	MaxRequests *int32
 
 	noSmithyDocumentSerde
 }
@@ -2180,7 +2207,7 @@ type VirtualGatewayHealthCheckPolicy struct {
 	// declaring the listener healthy.
 	//
 	// This member is required.
-	HealthyThreshold int32
+	HealthyThreshold *int32
 
 	// The time period in milliseconds between each health check execution.
 	//
@@ -2188,8 +2215,9 @@ type VirtualGatewayHealthCheckPolicy struct {
 	IntervalMillis *int64
 
 	// The protocol for the health check request. If you specify grpc , then your
-	// service must conform to the GRPC Health Checking Protocol (https://github.com/grpc/grpc/blob/master/doc/health-checking.md)
-	// .
+	// service must conform to the [GRPC Health Checking Protocol].
+	//
+	// [GRPC Health Checking Protocol]: https://github.com/grpc/grpc/blob/master/doc/health-checking.md
 	//
 	// This member is required.
 	Protocol VirtualGatewayPortProtocol
@@ -2204,7 +2232,7 @@ type VirtualGatewayHealthCheckPolicy struct {
 	// a virtual gateway unhealthy.
 	//
 	// This member is required.
-	UnhealthyThreshold int32
+	UnhealthyThreshold *int32
 
 	// The destination path for the health check request. This value is only used if
 	// the specified protocol is HTTP or HTTP/2. For any other protocol, this value is
@@ -2212,8 +2240,8 @@ type VirtualGatewayHealthCheckPolicy struct {
 	Path *string
 
 	// The destination port for the health check request. This port must match the
-	// port defined in the PortMapping for the listener.
-	Port int32
+	// port defined in the PortMappingfor the listener.
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -2225,7 +2253,7 @@ type VirtualGatewayHttp2ConnectionPool struct {
 	// in upstream cluster.
 	//
 	// This member is required.
-	MaxRequests int32
+	MaxRequests *int32
 
 	noSmithyDocumentSerde
 }
@@ -2237,7 +2265,7 @@ type VirtualGatewayHttpConnectionPool struct {
 	// with all hosts in upstream cluster.
 	//
 	// This member is required.
-	MaxConnections int32
+	MaxConnections *int32
 
 	// Number of overflowing requests after max_connections Envoy will queue to
 	// upstream cluster.
@@ -2277,8 +2305,11 @@ type VirtualGatewayListenerTls struct {
 	Certificate VirtualGatewayListenerTlsCertificate
 
 	// Specify one of the following modes.
+	//
 	//   - STRICT – Listener only accepts connections with TLS enabled.
+	//
 	//   - PERMISSIVE – Listener accepts connections with or without TLS enabled.
+	//
 	//   - DISABLED – Listener only accepts connections without TLS.
 	//
 	// This member is required.
@@ -2296,8 +2327,9 @@ type VirtualGatewayListenerTlsAcmCertificate struct {
 
 	// The Amazon Resource Name (ARN) for the certificate. The certificate must meet
 	// specific requirements and you must have proxy authorization enabled. For more
-	// information, see Transport Layer Security (TLS) (https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites)
-	// .
+	// information, see [Transport Layer Security (TLS)].
+	//
+	// [Transport Layer Security (TLS)]: https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites
 	//
 	// This member is required.
 	CertificateArn *string
@@ -2347,8 +2379,9 @@ func (*VirtualGatewayListenerTlsCertificateMemberSds) isVirtualGatewayListenerTl
 
 // An object that represents a local file certificate. The certificate must meet
 // specific requirements and you must have proxy authorization enabled. For more
-// information, see Transport Layer Security (TLS) (https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites)
-// .
+// information, see [Transport Layer Security (TLS)].
+//
+// [Transport Layer Security (TLS)]: https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html#virtual-node-tls-prerequisites
 type VirtualGatewayListenerTlsFileCertificate struct {
 
 	// The certificate chain for the certificate.
@@ -2367,8 +2400,9 @@ type VirtualGatewayListenerTlsFileCertificate struct {
 
 // An object that represents the virtual gateway's listener's Secret Discovery
 // Service certificate.The proxy must be configured with a local SDS provider via a
-// Unix Domain Socket. See App Mesh TLS documentation (https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html)
-// for more info.
+// Unix Domain Socket. See App Mesh[TLS documentation] for more info.
+//
+// [TLS documentation]: https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html
 type VirtualGatewayListenerTlsSdsCertificate struct {
 
 	// A reference to an object that represents the name of the secret secret
@@ -2447,7 +2481,7 @@ type VirtualGatewayPortMapping struct {
 	// The port used for the port mapping. Specify one protocol.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	// The protocol used for the port mapping.
 	//
@@ -2482,18 +2516,18 @@ type VirtualGatewayRef struct {
 
 	// The Amazon Web Services IAM account ID of the service mesh owner. If the
 	// account ID is not your own, then it's the ID of the account that shared the mesh
-	// with your account. For more information about mesh sharing, see Working with
-	// shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// with your account. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	MeshOwner *string
 
 	// The Amazon Web Services IAM account ID of the resource owner. If the account ID
 	// is not your own, then it's the ID of the mesh owner or of another account that
-	// the mesh is shared with. For more information about mesh sharing, see Working
-	// with shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// the mesh is shared with. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	ResourceOwner *string
@@ -2584,9 +2618,10 @@ type VirtualGatewayTlsValidationContextFileTrust struct {
 
 // An object that represents a virtual gateway's listener's Transport Layer
 // Security (TLS) Secret Discovery Service validation context trust. The proxy must
-// be configured with a local SDS provider via a Unix Domain Socket. See App Mesh
-// TLS documentation (https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html)
+// be configured with a local SDS provider via a Unix Domain Socket. See App Mesh [TLS documentation]
 // for more info.
+//
+// [TLS documentation]: https://docs.aws.amazon.com/app-mesh/latest/userguide/tls.html
 type VirtualGatewayTlsValidationContextSdsTrust struct {
 
 	// A reference to an object that represents the name of the secret for a virtual
@@ -2644,10 +2679,12 @@ type VirtualGatewayTlsValidationContextTrustMemberSds struct {
 func (*VirtualGatewayTlsValidationContextTrustMemberSds) isVirtualGatewayTlsValidationContextTrust() {
 }
 
-// An object that represents the type of virtual node connection pool. Only one
-// protocol is used at a time and should be the same protocol as the one chosen
-// under port mapping. If not present the default value for maxPendingRequests is
-// 2147483647 .
+// An object that represents the type of virtual node connection pool.
+//
+// Only one protocol is used at a time and should be the same protocol as the one
+// chosen under port mapping.
+//
+// If not present the default value for maxPendingRequests is 2147483647 .
 //
 // The following types satisfy this interface:
 //
@@ -2733,7 +2770,7 @@ type VirtualNodeGrpcConnectionPool struct {
 	// in upstream cluster.
 	//
 	// This member is required.
-	MaxRequests int32
+	MaxRequests *int32
 
 	noSmithyDocumentSerde
 }
@@ -2745,7 +2782,7 @@ type VirtualNodeHttp2ConnectionPool struct {
 	// in upstream cluster.
 	//
 	// This member is required.
-	MaxRequests int32
+	MaxRequests *int32
 
 	noSmithyDocumentSerde
 }
@@ -2757,7 +2794,7 @@ type VirtualNodeHttpConnectionPool struct {
 	// with all hosts in upstream cluster.
 	//
 	// This member is required.
-	MaxConnections int32
+	MaxConnections *int32
 
 	// Number of overflowing requests after max_connections Envoy will queue to
 	// upstream cluster.
@@ -2791,18 +2828,18 @@ type VirtualNodeRef struct {
 
 	// The Amazon Web Services IAM account ID of the service mesh owner. If the
 	// account ID is not your own, then it's the ID of the account that shared the mesh
-	// with your account. For more information about mesh sharing, see Working with
-	// shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// with your account. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	MeshOwner *string
 
 	// The Amazon Web Services IAM account ID of the resource owner. If the account ID
 	// is not your own, then it's the ID of the mesh owner or of another account that
-	// the mesh is shared with. For more information about mesh sharing, see Working
-	// with shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// the mesh is shared with. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	ResourceOwner *string
@@ -2874,7 +2911,7 @@ type VirtualNodeTcpConnectionPool struct {
 	// with all hosts in upstream cluster.
 	//
 	// This member is required.
-	MaxConnections int32
+	MaxConnections *int32
 
 	noSmithyDocumentSerde
 }
@@ -2946,18 +2983,18 @@ type VirtualRouterRef struct {
 
 	// The Amazon Web Services IAM account ID of the service mesh owner. If the
 	// account ID is not your own, then it's the ID of the account that shared the mesh
-	// with your account. For more information about mesh sharing, see Working with
-	// shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// with your account. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	MeshOwner *string
 
 	// The Amazon Web Services IAM account ID of the resource owner. If the account ID
 	// is not your own, then it's the ID of the mesh owner or of another account that
-	// the mesh is shared with. For more information about mesh sharing, see Working
-	// with shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// the mesh is shared with. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	ResourceOwner *string
@@ -3106,18 +3143,18 @@ type VirtualServiceRef struct {
 
 	// The Amazon Web Services IAM account ID of the service mesh owner. If the
 	// account ID is not your own, then it's the ID of the account that shared the mesh
-	// with your account. For more information about mesh sharing, see Working with
-	// shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// with your account. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	MeshOwner *string
 
 	// The Amazon Web Services IAM account ID of the resource owner. If the account ID
 	// is not your own, then it's the ID of the mesh owner or of another account that
-	// the mesh is shared with. For more information about mesh sharing, see Working
-	// with shared meshes (https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html)
-	// .
+	// the mesh is shared with. For more information about mesh sharing, see [Working with shared meshes].
+	//
+	// [Working with shared meshes]: https://docs.aws.amazon.com/app-mesh/latest/userguide/sharing.html
 	//
 	// This member is required.
 	ResourceOwner *string

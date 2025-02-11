@@ -2,6 +2,64 @@
 
 package types
 
+type RequiredEnum string
+
+// Enum values for RequiredEnum
+const (
+	RequiredEnumFoo RequiredEnum = "FOO"
+	RequiredEnumBar RequiredEnum = "BAR"
+	RequiredEnumBaz RequiredEnum = "BAZ"
+)
+
+// Values returns all known values for RequiredEnum. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RequiredEnum) Values() []RequiredEnum {
+	return []RequiredEnum{
+		"FOO",
+		"BAR",
+		"BAZ",
+	}
+}
+
+type RequiredIntEnum = int32
+
+// Enum values for RequiredIntEnum
+const (
+	RequiredIntEnumOne RequiredIntEnum = 1
+	RequiredIntEnumTwo RequiredIntEnum = 2
+)
+
+type TestEnum string
+
+// Enum values for TestEnum
+const (
+	TestEnumFoo TestEnum = "FOO"
+	TestEnumBar TestEnum = "BAR"
+	TestEnumBaz TestEnum = "BAZ"
+)
+
+// Values returns all known values for TestEnum. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TestEnum) Values() []TestEnum {
+	return []TestEnum{
+		"FOO",
+		"BAR",
+		"BAZ",
+	}
+}
+
+type TestIntEnum = int32
+
+// Enum values for TestIntEnum
+const (
+	TestIntEnumOne TestIntEnum = 1
+	TestIntEnumTwo TestIntEnum = 2
+)
+
 type FooEnum string
 
 // Enum values for FooEnum
@@ -14,8 +72,9 @@ const (
 )
 
 // Values returns all known values for FooEnum. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FooEnum) Values() []FooEnum {
 	return []FooEnum{
 		"Foo",

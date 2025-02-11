@@ -10,13 +10,13 @@ import (
 	"io/ioutil"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
 	"testing"
 	"time"
 
 	"github.com/aws/aws-sdk-go-v2/aws"
 	v4Internal "github.com/aws/aws-sdk-go-v2/aws/signer/internal/v4"
-	"github.com/google/go-cmp/cmp"
 )
 
 var testCredentials = aws.Credentials{AccessKeyID: "AKID", SecretAccessKey: "SECRET", SessionToken: "SESSION"}
@@ -162,6 +162,11 @@ func TestPresignBodyWithArrayRequest(t *testing.T) {
 
 func TestSignRequest(t *testing.T) {
 	req, body := buildRequest("dynamodb", "us-east-1", "{}")
+	// test ignored headers
+	req.Header.Set("User-Agent", "foo")
+	req.Header.Set("X-Amzn-Trace-Id", "bar")
+	req.Header.Set("Expect", "baz")
+	req.Header.Set("Transfer-Encoding", "qux")
 	signer := NewSigner()
 	err := signer.SignHTTP(context.Background(), testCredentials, req, body, "dynamodb", "us-east-1", time.Unix(0, 0))
 	if err != nil {
@@ -329,7 +334,7 @@ func TestSign_buildCanonicalHeaders(t *testing.T) {
 		`fooinnerspace;fooleadingspace;foomultiplespace;foonospace;footabspace;footrailingspace;foowrappedspace;host;x-amz-date`,
 		``,
 	}, "\n")
-	if diff := cmp.Diff(expectCanonicalString, build.CanonicalString); diff != "" {
+	if diff := cmpDiff(expectCanonicalString, build.CanonicalString); diff != "" {
 		t.Errorf("expect match, got\n%s", diff)
 	}
 }
@@ -353,4 +358,11 @@ func BenchmarkSignRequest(b *testing.B) {
 	for i := 0; i < b.N; i++ {
 		signer.SignHTTP(context.Background(), testCredentials, req, bodyHash, "dynamodb", "us-east-1", time.Now())
 	}
+}
+
+func cmpDiff(e, a interface{}) string {
+	if !reflect.DeepEqual(e, a) {
+		return fmt.Sprintf("%v != %v", e, a)
+	}
+	return ""
 }

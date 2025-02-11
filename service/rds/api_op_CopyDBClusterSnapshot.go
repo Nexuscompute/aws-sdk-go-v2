@@ -4,32 +4,35 @@ package rds
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
 	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	presignedurlcust "github.com/aws/aws-sdk-go-v2/service/internal/presigned-url"
 	"github.com/aws/aws-sdk-go-v2/service/rds/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Copies a snapshot of a DB cluster. To copy a DB cluster snapshot from a shared
-// manual DB cluster snapshot, SourceDBClusterSnapshotIdentifier must be the
-// Amazon Resource Name (ARN) of the shared DB cluster snapshot. You can copy an
-// encrypted DB cluster snapshot from another Amazon Web Services Region. In that
-// case, the Amazon Web Services Region where you call the CopyDBClusterSnapshot
-// operation is the destination Amazon Web Services Region for the encrypted DB
-// cluster snapshot to be copied to. To copy an encrypted DB cluster snapshot from
-// another Amazon Web Services Region, you must provide the following values:
+// Copies a snapshot of a DB cluster.
+//
+// To copy a DB cluster snapshot from a shared manual DB cluster snapshot,
+// SourceDBClusterSnapshotIdentifier must be the Amazon Resource Name (ARN) of the
+// shared DB cluster snapshot.
+//
+// You can copy an encrypted DB cluster snapshot from another Amazon Web Services
+// Region. In that case, the Amazon Web Services Region where you call the
+// CopyDBClusterSnapshot operation is the destination Amazon Web Services Region
+// for the encrypted DB cluster snapshot to be copied to. To copy an encrypted DB
+// cluster snapshot from another Amazon Web Services Region, you must provide the
+// following values:
+//
 //   - KmsKeyId - The Amazon Web Services Key Management System (Amazon Web
 //     Services KMS) key identifier for the key to use to encrypt the copy of the DB
 //     cluster snapshot in the destination Amazon Web Services Region.
+//
 //   - TargetDBClusterSnapshotIdentifier - The identifier for the new copy of the
 //     DB cluster snapshot in the destination Amazon Web Services Region.
+//
 //   - SourceDBClusterSnapshotIdentifier - The DB cluster snapshot identifier for
 //     the encrypted DB cluster snapshot to be copied. This identifier must be in the
 //     ARN format for the source Amazon Web Services Region and is the same value as
@@ -37,14 +40,20 @@ import (
 //
 // To cancel the copy operation once it is in progress, delete the target DB
 // cluster snapshot identified by TargetDBClusterSnapshotIdentifier while that DB
-// cluster snapshot is in "copying" status. For more information on copying
-// encrypted Amazon Aurora DB cluster snapshots from one Amazon Web Services Region
-// to another, see Copying a Snapshot (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_CopySnapshot.html)
-// in the Amazon Aurora User Guide. For more information on Amazon Aurora DB
-// clusters, see What is Amazon Aurora? (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html)
-// in the Amazon Aurora User Guide. For more information on Multi-AZ DB clusters,
-// see Multi-AZ DB cluster deployments (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html)
-// in the Amazon RDS User Guide.
+// cluster snapshot is in "copying" status.
+//
+// For more information on copying encrypted Amazon Aurora DB cluster snapshots
+// from one Amazon Web Services Region to another, see [Copying a Snapshot]in the Amazon Aurora User
+// Guide.
+//
+// For more information on Amazon Aurora DB clusters, see [What is Amazon Aurora?] in the Amazon Aurora
+// User Guide.
+//
+// For more information on Multi-AZ DB clusters, see [Multi-AZ DB cluster deployments] in the Amazon RDS User Guide.
+//
+// [Copying a Snapshot]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_CopySnapshot.html
+// [What is Amazon Aurora?]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/CHAP_AuroraOverview.html
+// [Multi-AZ DB cluster deployments]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/multi-az-db-clusters-concepts.html
 func (c *Client) CopyDBClusterSnapshot(ctx context.Context, params *CopyDBClusterSnapshotInput, optFns ...func(*Options)) (*CopyDBClusterSnapshotOutput, error) {
 	if params == nil {
 		params = &CopyDBClusterSnapshotInput{}
@@ -63,50 +72,71 @@ func (c *Client) CopyDBClusterSnapshot(ctx context.Context, params *CopyDBCluste
 type CopyDBClusterSnapshotInput struct {
 
 	// The identifier of the DB cluster snapshot to copy. This parameter isn't
-	// case-sensitive. You can't copy an encrypted, shared DB cluster snapshot from one
-	// Amazon Web Services Region to another. Constraints:
+	// case-sensitive.
+	//
+	// You can't copy an encrypted, shared DB cluster snapshot from one Amazon Web
+	// Services Region to another.
+	//
+	// Constraints:
+	//
 	//   - Must specify a valid system snapshot in the "available" state.
+	//
 	//   - If the source snapshot is in the same Amazon Web Services Region as the
 	//   copy, specify a valid DB snapshot identifier.
+	//
 	//   - If the source snapshot is in a different Amazon Web Services Region than
-	//   the copy, specify a valid DB cluster snapshot ARN. For more information, go to
-	//   Copying Snapshots Across Amazon Web Services Regions (https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_CopySnapshot.html#USER_CopySnapshot.AcrossRegions)
+	//   the copy, specify a valid DB cluster snapshot ARN. For more information, go to [Copying Snapshots Across Amazon Web Services Regions]
 	//   in the Amazon Aurora User Guide.
+	//
 	// Example: my-cluster-snapshot1
+	//
+	// [Copying Snapshots Across Amazon Web Services Regions]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_CopySnapshot.html#USER_CopySnapshot.AcrossRegions
 	//
 	// This member is required.
 	SourceDBClusterSnapshotIdentifier *string
 
 	// The identifier of the new DB cluster snapshot to create from the source DB
-	// cluster snapshot. This parameter isn't case-sensitive. Constraints:
+	// cluster snapshot. This parameter isn't case-sensitive.
+	//
+	// Constraints:
+	//
 	//   - Must contain from 1 to 63 letters, numbers, or hyphens.
+	//
 	//   - First character must be a letter.
+	//
 	//   - Can't end with a hyphen or contain two consecutive hyphens.
+	//
 	// Example: my-cluster-snapshot2
 	//
 	// This member is required.
 	TargetDBClusterSnapshotIdentifier *string
 
-	// A value that indicates whether to copy all tags from the source DB cluster
-	// snapshot to the target DB cluster snapshot. By default, tags are not copied.
+	// Specifies whether to copy all tags from the source DB cluster snapshot to the
+	// target DB cluster snapshot. By default, tags are not copied.
 	CopyTags *bool
 
 	// The Amazon Web Services KMS key identifier for an encrypted DB cluster
 	// snapshot. The Amazon Web Services KMS key identifier is the key ARN, key ID,
-	// alias ARN, or alias name for the Amazon Web Services KMS key. If you copy an
-	// encrypted DB cluster snapshot from your Amazon Web Services account, you can
-	// specify a value for KmsKeyId to encrypt the copy with a new KMS key. If you
-	// don't specify a value for KmsKeyId , then the copy of the DB cluster snapshot is
-	// encrypted with the same KMS key as the source DB cluster snapshot. If you copy
-	// an encrypted DB cluster snapshot that is shared from another Amazon Web Services
-	// account, then you must specify a value for KmsKeyId . To copy an encrypted DB
-	// cluster snapshot to another Amazon Web Services Region, you must set KmsKeyId
-	// to the Amazon Web Services KMS key identifier you want to use to encrypt the
-	// copy of the DB cluster snapshot in the destination Amazon Web Services Region.
-	// KMS keys are specific to the Amazon Web Services Region that they are created
-	// in, and you can't use KMS keys from one Amazon Web Services Region in another
-	// Amazon Web Services Region. If you copy an unencrypted DB cluster snapshot and
-	// specify a value for the KmsKeyId parameter, an error is returned.
+	// alias ARN, or alias name for the Amazon Web Services KMS key.
+	//
+	// If you copy an encrypted DB cluster snapshot from your Amazon Web Services
+	// account, you can specify a value for KmsKeyId to encrypt the copy with a new
+	// KMS key. If you don't specify a value for KmsKeyId , then the copy of the DB
+	// cluster snapshot is encrypted with the same KMS key as the source DB cluster
+	// snapshot.
+	//
+	// If you copy an encrypted DB cluster snapshot that is shared from another Amazon
+	// Web Services account, then you must specify a value for KmsKeyId .
+	//
+	// To copy an encrypted DB cluster snapshot to another Amazon Web Services Region,
+	// you must set KmsKeyId to the Amazon Web Services KMS key identifier you want to
+	// use to encrypt the copy of the DB cluster snapshot in the destination Amazon Web
+	// Services Region. KMS keys are specific to the Amazon Web Services Region that
+	// they are created in, and you can't use KMS keys from one Amazon Web Services
+	// Region in another Amazon Web Services Region.
+	//
+	// If you copy an unencrypted DB cluster snapshot and specify a value for the
+	// KmsKeyId parameter, an error is returned.
 	KmsKeyId *string
 
 	// When you are copying a DB cluster snapshot from one Amazon Web Services
@@ -115,19 +145,25 @@ type CopyDBClusterSnapshotInput struct {
 	// Services Region that contains the source DB cluster snapshot to copy. Use the
 	// PreSignedUrl parameter when copying an encrypted DB cluster snapshot from
 	// another Amazon Web Services Region. Don't specify PreSignedUrl when copying an
-	// encrypted DB cluster snapshot in the same Amazon Web Services Region. This
-	// setting applies only to Amazon Web Services GovCloud (US) Regions. It's ignored
-	// in other Amazon Web Services Regions. The presigned URL must be a valid request
-	// for the CopyDBClusterSnapshot API operation that can run in the source Amazon
-	// Web Services Region that contains the encrypted DB cluster snapshot to copy. The
-	// presigned URL request must contain the following parameter values:
+	// encrypted DB cluster snapshot in the same Amazon Web Services Region.
+	//
+	// This setting applies only to Amazon Web Services GovCloud (US) Regions. It's
+	// ignored in other Amazon Web Services Regions.
+	//
+	// The presigned URL must be a valid request for the CopyDBClusterSnapshot API
+	// operation that can run in the source Amazon Web Services Region that contains
+	// the encrypted DB cluster snapshot to copy. The presigned URL request must
+	// contain the following parameter values:
+	//
 	//   - KmsKeyId - The KMS key identifier for the KMS key to use to encrypt the copy
 	//   of the DB cluster snapshot in the destination Amazon Web Services Region. This
 	//   is the same identifier for both the CopyDBClusterSnapshot operation that is
 	//   called in the destination Amazon Web Services Region, and the operation
 	//   contained in the presigned URL.
+	//
 	//   - DestinationRegion - The name of the Amazon Web Services Region that the DB
 	//   cluster snapshot is to be created in.
+	//
 	//   - SourceDBClusterSnapshotIdentifier - The DB cluster snapshot identifier for
 	//   the encrypted DB cluster snapshot to be copied. This identifier must be in the
 	//   Amazon Resource Name (ARN) format for the source Amazon Web Services Region. For
@@ -136,22 +172,29 @@ type CopyDBClusterSnapshotInput struct {
 	//   like the following example:
 	//   arn:aws:rds:us-west-2:123456789012:cluster-snapshot:aurora-cluster1-snapshot-20161115
 	//   .
-	// To learn how to generate a Signature Version 4 signed request, see
-	// Authenticating Requests: Using Query Parameters (Amazon Web Services Signature
-	// Version 4) (https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html)
-	// and Signature Version 4 Signing Process (https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html)
-	// . If you are using an Amazon Web Services SDK tool or the CLI, you can specify
+	//
+	// To learn how to generate a Signature Version 4 signed request, see [Authenticating Requests: Using Query Parameters (Amazon Web Services Signature Version 4)] and [Signature Version 4 Signing Process].
+	//
+	// If you are using an Amazon Web Services SDK tool or the CLI, you can specify
 	// SourceRegion (or --source-region for the CLI) instead of specifying PreSignedUrl
 	// manually. Specifying SourceRegion autogenerates a presigned URL that is a valid
 	// request for the operation that can run in the source Amazon Web Services Region.
+	//
+	// [Authenticating Requests: Using Query Parameters (Amazon Web Services Signature Version 4)]: https://docs.aws.amazon.com/AmazonS3/latest/API/sigv4-query-string-auth.html
+	// [Signature Version 4 Signing Process]: https://docs.aws.amazon.com/general/latest/gr/signature-version-4.html
 	PreSignedUrl *string
 
 	// The AWS region the resource is in. The presigned URL will be created with this
 	// region, if the PresignURL member is empty set.
 	SourceRegion *string
 
-	// A list of tags. For more information, see Tagging Amazon RDS Resources (https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html)
-	// in the Amazon RDS User Guide.
+	// A list of tags.
+	//
+	// For more information, see [Tagging Amazon RDS resources] in the Amazon RDS User Guide or [Tagging Amazon Aurora and Amazon RDS resources] in the Amazon
+	// Aurora User Guide.
+	//
+	// [Tagging Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/UserGuide/USER_Tagging.html
+	// [Tagging Amazon Aurora and Amazon RDS resources]: https://docs.aws.amazon.com/AmazonRDS/latest/AuroraUserGuide/USER_Tagging.html
 	Tags []types.Tag
 
 	// Used by the SDK's PresignURL autofill customization to specify the region the
@@ -163,8 +206,10 @@ type CopyDBClusterSnapshotInput struct {
 
 type CopyDBClusterSnapshotOutput struct {
 
-	// Contains the details for an Amazon RDS DB cluster snapshot This data type is
-	// used as a response element in the DescribeDBClusterSnapshots action.
+	// Contains the details for an Amazon RDS DB cluster snapshot
+	//
+	// This data type is used as a response element in the DescribeDBClusterSnapshots
+	// action.
 	DBClusterSnapshot *types.DBClusterSnapshot
 
 	// Metadata pertaining to the operation's result.
@@ -174,6 +219,9 @@ type CopyDBClusterSnapshotOutput struct {
 }
 
 func (c *Client) addOperationCopyDBClusterSnapshotMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpCopyDBClusterSnapshot{}, middleware.After)
 	if err != nil {
 		return err
@@ -182,34 +230,38 @@ func (c *Client) addOperationCopyDBClusterSnapshotMiddlewares(stack *middleware.
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CopyDBClusterSnapshot"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -224,7 +276,13 @@ func (c *Client) addOperationCopyDBClusterSnapshotMiddlewares(stack *middleware.
 	if err = addCopyDBClusterSnapshotPresignURLMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addCopyDBClusterSnapshotResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCopyDBClusterSnapshotValidationMiddleware(stack); err != nil {
@@ -233,7 +291,7 @@ func (c *Client) addOperationCopyDBClusterSnapshotMiddlewares(stack *middleware.
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCopyDBClusterSnapshot(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -245,7 +303,19 @@ func (c *Client) addOperationCopyDBClusterSnapshotMiddlewares(stack *middleware.
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -334,7 +404,6 @@ func newServiceMetadataMiddleware_opCopyDBClusterSnapshot(region string) *awsmid
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "rds",
 		OperationName: "CopyDBClusterSnapshot",
 	}
 }
@@ -361,127 +430,4 @@ func (c *PresignClient) PresignCopyDBClusterSnapshot(ctx context.Context, params
 
 	out := result.(*v4.PresignedHTTPRequest)
 	return out, nil
-}
-
-type opCopyDBClusterSnapshotResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCopyDBClusterSnapshotResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCopyDBClusterSnapshotResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "rds"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "rds"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("rds")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCopyDBClusterSnapshotResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCopyDBClusterSnapshotResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -4,14 +4,9 @@ package cloudtrail
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/cloudtrail/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -37,28 +32,36 @@ func (c *Client) CreateTrail(ctx context.Context, params *CreateTrailInput, optF
 type CreateTrailInput struct {
 
 	// Specifies the name of the trail. The name must meet the following requirements:
+	//
 	//   - Contain only ASCII letters (a-z, A-Z), numbers (0-9), periods (.),
 	//   underscores (_), or dashes (-)
+	//
 	//   - Start with a letter or number, and end with a letter or number
+	//
 	//   - Be between 3 and 128 characters
+	//
 	//   - Have no adjacent periods, underscores or dashes. Names like my-_namespace
 	//   and my--namespace are not valid.
+	//
 	//   - Not be in IP address format (for example, 192.168.5.4)
 	//
 	// This member is required.
 	Name *string
 
 	// Specifies the name of the Amazon S3 bucket designated for publishing log files.
-	// See Amazon S3 Bucket Naming Requirements (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/create_trail_naming_policy.html)
-	// .
+	// For information about bucket naming rules, see [Bucket naming rules]in the Amazon Simple Storage
+	// Service User Guide.
+	//
+	// [Bucket naming rules]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/bucketnamingrules.html
 	//
 	// This member is required.
 	S3BucketName *string
 
 	// Specifies a log group name using an Amazon Resource Name (ARN), a unique
 	// identifier that represents the log group to which CloudTrail logs will be
-	// delivered. You must use a log group that exists in your account. Not required
-	// unless you specify CloudWatchLogsRoleArn .
+	// delivered. You must use a log group that exists in your account.
+	//
+	// Not required unless you specify CloudWatchLogsRoleArn .
 	CloudWatchLogsLogGroupArn *string
 
 	// Specifies the role for the CloudWatch Logs endpoint to assume to write to a
@@ -66,8 +69,10 @@ type CreateTrailInput struct {
 	CloudWatchLogsRoleArn *string
 
 	// Specifies whether log file integrity validation is enabled. The default is
-	// false. When you disable log file integrity validation, the chain of digest files
-	// is broken after one hour. CloudTrail does not create digest files for log files
+	// false.
+	//
+	// When you disable log file integrity validation, the chain of digest files is
+	// broken after one hour. CloudTrail does not create digest files for log files
 	// that were delivered during a period in which log file integrity validation was
 	// disabled. For example, if you enable log file integrity validation at noon on
 	// January 1, disable it at noon on January 2, and re-enable it at noon on January
@@ -96,19 +101,28 @@ type CreateTrailInput struct {
 	// Specifies the KMS key ID to use to encrypt the logs delivered by CloudTrail.
 	// The value can be an alias name prefixed by alias/ , a fully specified ARN to an
 	// alias, a fully specified ARN to a key, or a globally unique identifier.
+	//
 	// CloudTrail also supports KMS multi-Region keys. For more information about
-	// multi-Region keys, see Using multi-Region keys (https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html)
-	// in the Key Management Service Developer Guide. Examples:
+	// multi-Region keys, see [Using multi-Region keys]in the Key Management Service Developer Guide.
+	//
+	// Examples:
+	//
 	//   - alias/MyAliasName
+	//
 	//   - arn:aws:kms:us-east-2:123456789012:alias/MyAliasName
+	//
 	//   - arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012
+	//
 	//   - 12345678-1234-1234-1234-123456789012
+	//
+	// [Using multi-Region keys]: https://docs.aws.amazon.com/kms/latest/developerguide/multi-region-keys-overview.html
 	KmsKeyId *string
 
 	// Specifies the Amazon S3 key prefix that comes after the name of the bucket you
-	// have designated for log file delivery. For more information, see Finding Your
-	// CloudTrail Log Files (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-find-log-files.html)
-	// . The maximum length is 200 characters.
+	// have designated for log file delivery. For more information, see [Finding Your CloudTrail Log Files]. The maximum
+	// length is 200 characters.
+	//
+	// [Finding Your CloudTrail Log Files]: https://docs.aws.amazon.com/awscloudtrail/latest/userguide/get-and-view-cloudtrail-log-files.html#cloudtrail-find-log-files
 	S3KeyPrefix *string
 
 	// Specifies the name of the Amazon SNS topic defined for notification of log file
@@ -145,7 +159,8 @@ type CreateTrailOutput struct {
 
 	// Specifies the KMS key ID that encrypts the events delivered by CloudTrail. The
 	// value is a fully specified ARN to a KMS key in the following format.
-	// arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012
+	//
+	//     arn:aws:kms:us-east-2:123456789012:key/12345678-1234-1234-1234-123456789012
 	KmsKeyId *string
 
 	// Specifies whether log file integrity validation is enabled.
@@ -158,14 +173,15 @@ type CreateTrailOutput struct {
 	S3BucketName *string
 
 	// Specifies the Amazon S3 key prefix that comes after the name of the bucket you
-	// have designated for log file delivery. For more information, see Finding Your
-	// CloudTrail Log Files (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/cloudtrail-find-log-files.html)
-	// .
+	// have designated for log file delivery. For more information, see [Finding Your CloudTrail Log Files].
+	//
+	// [Finding Your CloudTrail Log Files]: https://docs.aws.amazon.com/awscloudtrail/latest/userguide/get-and-view-cloudtrail-log-files.html#cloudtrail-find-log-files
 	S3KeyPrefix *string
 
 	// Specifies the ARN of the Amazon SNS topic that CloudTrail uses to send
 	// notifications when log files are delivered. The format of a topic ARN is:
-	// arn:aws:sns:us-east-2:123456789012:MyTopic
+	//
+	//     arn:aws:sns:us-east-2:123456789012:MyTopic
 	SnsTopicARN *string
 
 	// This field is no longer in use. Use SnsTopicARN .
@@ -174,7 +190,8 @@ type CreateTrailOutput struct {
 	SnsTopicName *string
 
 	// Specifies the ARN of the trail that was created. The format of a trail ARN is:
-	// arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail
+	//
+	//     arn:aws:cloudtrail:us-east-2:123456789012:trail/MyTrail
 	TrailARN *string
 
 	// Metadata pertaining to the operation's result.
@@ -184,6 +201,9 @@ type CreateTrailOutput struct {
 }
 
 func (c *Client) addOperationCreateTrailMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateTrail{}, middleware.After)
 	if err != nil {
 		return err
@@ -192,34 +212,38 @@ func (c *Client) addOperationCreateTrailMiddlewares(stack *middleware.Stack, opt
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateTrail"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -231,7 +255,13 @@ func (c *Client) addOperationCreateTrailMiddlewares(stack *middleware.Stack, opt
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateTrailResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateTrailValidationMiddleware(stack); err != nil {
@@ -240,7 +270,7 @@ func (c *Client) addOperationCreateTrailMiddlewares(stack *middleware.Stack, opt
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateTrail(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -252,7 +282,19 @@ func (c *Client) addOperationCreateTrailMiddlewares(stack *middleware.Stack, opt
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -262,130 +304,6 @@ func newServiceMetadataMiddleware_opCreateTrail(region string) *awsmiddleware.Re
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "cloudtrail",
 		OperationName: "CreateTrail",
 	}
-}
-
-type opCreateTrailResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateTrailResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateTrailResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "cloudtrail"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "cloudtrail"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("cloudtrail")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateTrailResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateTrailResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

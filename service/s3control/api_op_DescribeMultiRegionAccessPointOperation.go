@@ -4,31 +4,39 @@ package s3control
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
 	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	s3controlcust "github.com/aws/aws-sdk-go-v2/service/s3control/internal/customizations"
 	"github.com/aws/aws-sdk-go-v2/service/s3control/types"
 	smithy "github.com/aws/smithy-go"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	"github.com/aws/smithy-go/ptr"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"strings"
 )
 
+// This operation is not supported by directory buckets.
+//
 // Retrieves the status of an asynchronous request to manage a Multi-Region Access
 // Point. For more information about managing Multi-Region Access Points and how
-// asynchronous requests work, see Managing Multi-Region Access Points (https://docs.aws.amazon.com/AmazonS3/latest/userguide/ManagingMultiRegionAccessPoints.html)
-// in the Amazon S3 User Guide. The following actions are related to
-// GetMultiRegionAccessPoint :
-//   - CreateMultiRegionAccessPoint (https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_CreateMultiRegionAccessPoint.html)
-//   - DeleteMultiRegionAccessPoint (https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_DeleteMultiRegionAccessPoint.html)
-//   - GetMultiRegionAccessPoint (https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetMultiRegionAccessPoint.html)
-//   - ListMultiRegionAccessPoints (https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_ListMultiRegionAccessPoints.html)
+// asynchronous requests work, see [Using Multi-Region Access Points]in the Amazon S3 User Guide.
+//
+// The following actions are related to GetMultiRegionAccessPoint :
+//
+// [CreateMultiRegionAccessPoint]
+//
+// [DeleteMultiRegionAccessPoint]
+//
+// [GetMultiRegionAccessPoint]
+//
+// [ListMultiRegionAccessPoints]
+//
+// [Using Multi-Region Access Points]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/MrapOperations.html
+// [DeleteMultiRegionAccessPoint]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_DeleteMultiRegionAccessPoint.html
+// [GetMultiRegionAccessPoint]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_GetMultiRegionAccessPoint.html
+// [ListMultiRegionAccessPoints]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_ListMultiRegionAccessPoints.html
+// [CreateMultiRegionAccessPoint]: https://docs.aws.amazon.com/AmazonS3/latest/API/API_control_CreateMultiRegionAccessPoint.html
 func (c *Client) DescribeMultiRegionAccessPointOperation(ctx context.Context, params *DescribeMultiRegionAccessPointOperationInput, optFns ...func(*Options)) (*DescribeMultiRegionAccessPointOperationOutput, error) {
 	if params == nil {
 		params = &DescribeMultiRegionAccessPointOperationInput{}
@@ -63,6 +71,12 @@ type DescribeMultiRegionAccessPointOperationInput struct {
 	noSmithyDocumentSerde
 }
 
+func (in *DescribeMultiRegionAccessPointOperationInput) bindEndpointParams(p *EndpointParameters) {
+
+	p.AccountId = in.AccountId
+	p.RequiresAccountId = ptr.Bool(true)
+}
+
 type DescribeMultiRegionAccessPointOperationOutput struct {
 
 	// A container element containing the details of the asynchronous operation.
@@ -75,6 +89,9 @@ type DescribeMultiRegionAccessPointOperationOutput struct {
 }
 
 func (c *Client) addOperationDescribeMultiRegionAccessPointOperationMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestxml_serializeOpDescribeMultiRegionAccessPointOperation{}, middleware.After)
 	if err != nil {
 		return err
@@ -83,34 +100,38 @@ func (c *Client) addOperationDescribeMultiRegionAccessPointOperationMiddlewares(
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeMultiRegionAccessPointOperation"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -125,13 +146,19 @@ func (c *Client) addOperationDescribeMultiRegionAccessPointOperationMiddlewares(
 	if err = s3controlcust.AddUpdateOutpostARN(stack); err != nil {
 		return err
 	}
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
 	if err = smithyhttp.AddContentChecksumMiddleware(stack); err != nil {
 		return err
 	}
 	if err = addEndpointPrefix_opDescribeMultiRegionAccessPointOperationMiddleware(stack); err != nil {
-		return err
-	}
-	if err = addDescribeMultiRegionAccessPointOperationResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeMultiRegionAccessPointOperationValidationMiddleware(stack); err != nil {
@@ -143,10 +170,13 @@ func (c *Client) addOperationDescribeMultiRegionAccessPointOperationMiddlewares(
 	if err = addMetadataRetrieverMiddleware(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addDescribeMultiRegionAccessPointOperationUpdateEndpoint(stack, options); err != nil {
+		return err
+	}
+	if err = addStashOperationInput(stack); err != nil {
 		return err
 	}
 	if err = addResponseErrorMiddleware(stack); err != nil {
@@ -158,7 +188,22 @@ func (c *Client) addOperationDescribeMultiRegionAccessPointOperationMiddlewares(
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = s3controlcust.AddDisableHostPrefixMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -171,11 +216,11 @@ func (*endpointPrefix_opDescribeMultiRegionAccessPointOperationMiddleware) ID() 
 	return "EndpointHostPrefix"
 }
 
-func (m *endpointPrefix_opDescribeMultiRegionAccessPointOperationMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+func (m *endpointPrefix_opDescribeMultiRegionAccessPointOperationMiddleware) HandleFinalize(ctx context.Context, in middleware.FinalizeInput, next middleware.FinalizeHandler) (
+	out middleware.FinalizeOutput, metadata middleware.Metadata, err error,
 ) {
 	if smithyhttp.GetHostnameImmutable(ctx) || smithyhttp.IsEndpointHostPrefixDisabled(ctx) {
-		return next.HandleSerialize(ctx, in)
+		return next.HandleFinalize(ctx, in)
 	}
 
 	req, ok := in.Request.(*smithyhttp.Request)
@@ -183,9 +228,10 @@ func (m *endpointPrefix_opDescribeMultiRegionAccessPointOperationMiddleware) Han
 		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
 	}
 
-	input, ok := in.Parameters.(*DescribeMultiRegionAccessPointOperationInput)
+	opaqueInput := getOperationInput(ctx)
+	input, ok := opaqueInput.(*DescribeMultiRegionAccessPointOperationInput)
 	if !ok {
-		return out, metadata, fmt.Errorf("unknown input type %T", in.Parameters)
+		return out, metadata, fmt.Errorf("unknown input type %T", opaqueInput)
 	}
 
 	var prefix strings.Builder
@@ -199,17 +245,16 @@ func (m *endpointPrefix_opDescribeMultiRegionAccessPointOperationMiddleware) Han
 	prefix.WriteString(".")
 	req.URL.Host = prefix.String() + req.URL.Host
 
-	return next.HandleSerialize(ctx, in)
+	return next.HandleFinalize(ctx, in)
 }
 func addEndpointPrefix_opDescribeMultiRegionAccessPointOperationMiddleware(stack *middleware.Stack) error {
-	return stack.Serialize.Insert(&endpointPrefix_opDescribeMultiRegionAccessPointOperationMiddleware{}, `OperationSerializer`, middleware.After)
+	return stack.Finalize.Insert(&endpointPrefix_opDescribeMultiRegionAccessPointOperationMiddleware{}, "ResolveEndpointV2", middleware.After)
 }
 
 func newServiceMetadataMiddleware_opDescribeMultiRegionAccessPointOperation(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "s3",
 		OperationName: "DescribeMultiRegionAccessPointOperation",
 	}
 }
@@ -221,6 +266,10 @@ func copyDescribeMultiRegionAccessPointOperationInputForUpdateEndpoint(params in
 	}
 	cpy := *input
 	return &cpy, nil
+}
+func (in *DescribeMultiRegionAccessPointOperationInput) copy() interface{} {
+	v := *in
+	return &v
 }
 func backFillDescribeMultiRegionAccessPointOperationAccountID(input interface{}, v string) error {
 	in := input.(*DescribeMultiRegionAccessPointOperationInput)
@@ -245,139 +294,4 @@ func addDescribeMultiRegionAccessPointOperationUpdateEndpoint(stack *middleware.
 		EndpointResolverOptions: options.EndpointOptions,
 		UseARNRegion:            options.UseARNRegion,
 	})
-}
-
-type opDescribeMultiRegionAccessPointOperationResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeMultiRegionAccessPointOperationResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeMultiRegionAccessPointOperationResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	input, ok := in.Parameters.(*DescribeMultiRegionAccessPointOperationInput)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	params.AccountId = input.AccountId
-
-	params.RequiresAccountId = ptr.Bool(true)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "s3"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "s3"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("s3")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	ctx = smithyhttp.DisableEndpointHostPrefix(ctx, true)
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeMultiRegionAccessPointOperationResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeMultiRegionAccessPointOperationResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			Endpoint:     options.BaseEndpoint,
-			UseArnRegion: options.UseARNRegion,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

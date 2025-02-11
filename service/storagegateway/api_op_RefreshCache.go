@@ -4,13 +4,8 @@ package storagegateway
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -21,32 +16,36 @@ import (
 // results. This operation does not import files into the S3 File Gateway cache
 // storage. It only updates the cached inventory to reflect changes in the
 // inventory of the objects in the S3 bucket. This operation is only supported in
-// the S3 File Gateway types. You can subscribe to be notified through an Amazon
-// CloudWatch event when your RefreshCache operation completes. For more
-// information, see Getting notified about file operations (https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-notification)
-// in the Storage Gateway User Guide. This operation is Only supported for S3 File
-// Gateways. When this API is called, it only initiates the refresh operation. When
-// the API call completes and returns a success code, it doesn't necessarily mean
-// that the file refresh has completed. You should use the refresh-complete
-// notification to determine that the operation has completed before you check for
-// new files on the gateway file share. You can subscribe to be notified through a
-// CloudWatch event when your RefreshCache operation completes. Throttle limit:
-// This API is asynchronous, so the gateway will accept no more than two refreshes
-// at any time. We recommend using the refresh-complete CloudWatch event
-// notification before issuing additional requests. For more information, see
-// Getting notified about file operations (https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-notification)
-// in the Storage Gateway User Guide.
+// the S3 File Gateway types.
+//
+// You can subscribe to be notified through an Amazon CloudWatch event when your
+// RefreshCache operation completes. For more information, see [Getting notified about file operations] in the Amazon S3
+// File Gateway User Guide. This operation is Only supported for S3 File Gateways.
+//
+// When this API is called, it only initiates the refresh operation. When the API
+// call completes and returns a success code, it doesn't necessarily mean that the
+// file refresh has completed. You should use the refresh-complete notification to
+// determine that the operation has completed before you check for new files on the
+// gateway file share. You can subscribe to be notified through a CloudWatch event
+// when your RefreshCache operation completes.
+//
+// Throttle limit: This API is asynchronous, so the gateway will accept no more
+// than two refreshes at any time. We recommend using the refresh-complete
+// CloudWatch event notification before issuing additional requests. For more
+// information, see [Getting notified about file operations]in the Amazon S3 File Gateway User Guide.
+//
 //   - Wait at least 60 seconds between consecutive RefreshCache API requests.
-//   - RefreshCache does not evict cache entries if invoked consecutively within
-//     60 seconds of a previous RefreshCache request.
+//
 //   - If you invoke the RefreshCache API when two requests are already being
 //     processed, any new request will cause an InvalidGatewayRequestException error
 //     because too many requests were sent to the server.
 //
 // The S3 bucket name does not need to be included when entering the list of
-// folders in the FolderList parameter. For more information, see Getting notified
-// about file operations (https://docs.aws.amazon.com/storagegateway/latest/userguide/monitoring-file-gateway.html#get-notification)
-// in the Storage Gateway User Guide.
+// folders in the FolderList parameter.
+//
+// For more information, see [Getting notified about file operations] in the Amazon S3 File Gateway User Guide.
+//
+// [Getting notified about file operations]: https://docs.aws.amazon.com/filegateway/latest/files3/monitoring-file-gateway.html#get-notification
 func (c *Client) RefreshCache(ctx context.Context, params *RefreshCacheInput, optFns ...func(*Options)) (*RefreshCacheOutput, error) {
 	if params == nil {
 		params = &RefreshCacheInput{}
@@ -74,6 +73,9 @@ type RefreshCacheInput struct {
 	// default is [ "/" ]. The default refreshes objects and folders at the root of the
 	// Amazon S3 bucket. If Recursive is set to true , the entire S3 bucket that the
 	// file share has access to is refreshed.
+	//
+	// Do not include / when specifying folder names. For example, you would specify
+	// samplefolder rather than samplefolder/ .
 	FolderList []string
 
 	// A value that specifies whether to recursively refresh folders in the cache. The
@@ -81,8 +83,9 @@ type RefreshCacheInput struct {
 	// the folder's contents. If this value set to true , each folder that is listed in
 	// FolderList is recursively updated. Otherwise, subfolders listed in FolderList
 	// are not refreshed. Only objects that are in folders listed directly under
-	// FolderList are found and used for the update. The default is true . Valid
-	// Values: true | false
+	// FolderList are found and used for the update. The default is true .
+	//
+	// Valid Values: true | false
 	Recursive *bool
 
 	noSmithyDocumentSerde
@@ -105,6 +108,9 @@ type RefreshCacheOutput struct {
 }
 
 func (c *Client) addOperationRefreshCacheMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpRefreshCache{}, middleware.After)
 	if err != nil {
 		return err
@@ -113,34 +119,38 @@ func (c *Client) addOperationRefreshCacheMiddlewares(stack *middleware.Stack, op
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "RefreshCache"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -152,7 +162,13 @@ func (c *Client) addOperationRefreshCacheMiddlewares(stack *middleware.Stack, op
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addRefreshCacheResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpRefreshCacheValidationMiddleware(stack); err != nil {
@@ -161,7 +177,7 @@ func (c *Client) addOperationRefreshCacheMiddlewares(stack *middleware.Stack, op
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opRefreshCache(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -173,7 +189,19 @@ func (c *Client) addOperationRefreshCacheMiddlewares(stack *middleware.Stack, op
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -183,130 +211,6 @@ func newServiceMetadataMiddleware_opRefreshCache(region string) *awsmiddleware.R
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "storagegateway",
 		OperationName: "RefreshCache",
 	}
-}
-
-type opRefreshCacheResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opRefreshCacheResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opRefreshCacheResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "storagegateway"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "storagegateway"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("storagegateway")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addRefreshCacheResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opRefreshCacheResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

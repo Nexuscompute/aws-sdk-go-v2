@@ -4,14 +4,9 @@ package connect
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/connect/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -19,9 +14,18 @@ import (
 // Lists phone numbers claimed to your Amazon Connect instance or traffic
 // distribution group. If the provided TargetArn is a traffic distribution group,
 // you can call this API in both Amazon Web Services Regions associated with
-// traffic distribution group. For more information about phone numbers, see Set
-// Up Phone Numbers for Your Contact Center (https://docs.aws.amazon.com/connect/latest/adminguide/contact-center-phone-number.html)
-// in the Amazon Connect Administrator Guide.
+// traffic distribution group.
+//
+// For more information about phone numbers, see [Set Up Phone Numbers for Your Contact Center] in the Amazon Connect
+// Administrator Guide.
+//
+//   - When given an instance ARN, ListPhoneNumbersV2 returns only the phone
+//     numbers claimed to the instance.
+//
+//   - When given a traffic distribution group ARN ListPhoneNumbersV2 returns only
+//     the phone numbers claimed to the traffic distribution group.
+//
+// [Set Up Phone Numbers for Your Contact Center]: https://docs.aws.amazon.com/connect/latest/adminguide/contact-center-phone-number.html
 func (c *Client) ListPhoneNumbersV2(ctx context.Context, params *ListPhoneNumbersV2Input, optFns ...func(*Options)) (*ListPhoneNumbersV2Output, error) {
 	if params == nil {
 		params = &ListPhoneNumbersV2Input{}
@@ -38,6 +42,15 @@ func (c *Client) ListPhoneNumbersV2(ctx context.Context, params *ListPhoneNumber
 }
 
 type ListPhoneNumbersV2Input struct {
+
+	// The identifier of the Amazon Connect instance that phone numbers are claimed
+	// to. You can [find the instance ID]in the Amazon Resource Name (ARN) of the instance. If both TargetArn
+	// and InstanceId are not provided, this API lists numbers claimed to all the
+	// Amazon Connect instances belonging to your account in the same AWS Region as the
+	// request.
+	//
+	// [find the instance ID]: https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html
+	InstanceId *string
 
 	// The maximum number of results to return per page.
 	MaxResults *int32
@@ -57,9 +70,10 @@ type ListPhoneNumbersV2Input struct {
 	PhoneNumberTypes []types.PhoneNumberType
 
 	// The Amazon Resource Name (ARN) for Amazon Connect instances or traffic
-	// distribution groups that phone numbers are claimed to. If TargetArn input is
-	// not provided, this API lists numbers claimed to all the Amazon Connect instances
-	// belonging to your account in the same Amazon Web Services Region as the request.
+	// distribution groups that phone number inbound traffic is routed through. If both
+	// TargetArn and InstanceId input are not provided, this API lists numbers claimed
+	// to all the Amazon Connect instances belonging to your account in the same Amazon
+	// Web Services Region as the request.
 	TargetArn *string
 
 	noSmithyDocumentSerde
@@ -81,6 +95,9 @@ type ListPhoneNumbersV2Output struct {
 }
 
 func (c *Client) addOperationListPhoneNumbersV2Middlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpListPhoneNumbersV2{}, middleware.After)
 	if err != nil {
 		return err
@@ -89,34 +106,38 @@ func (c *Client) addOperationListPhoneNumbersV2Middlewares(stack *middleware.Sta
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListPhoneNumbersV2"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -128,13 +149,19 @@ func (c *Client) addOperationListPhoneNumbersV2Middlewares(stack *middleware.Sta
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListPhoneNumbersV2ResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListPhoneNumbersV2(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -146,19 +173,23 @@ func (c *Client) addOperationListPhoneNumbersV2Middlewares(stack *middleware.Sta
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// ListPhoneNumbersV2APIClient is a client that implements the ListPhoneNumbersV2
-// operation.
-type ListPhoneNumbersV2APIClient interface {
-	ListPhoneNumbersV2(context.Context, *ListPhoneNumbersV2Input, ...func(*Options)) (*ListPhoneNumbersV2Output, error)
-}
-
-var _ ListPhoneNumbersV2APIClient = (*Client)(nil)
 
 // ListPhoneNumbersV2PaginatorOptions is the paginator options for
 // ListPhoneNumbersV2
@@ -224,6 +255,9 @@ func (p *ListPhoneNumbersV2Paginator) NextPage(ctx context.Context, optFns ...fu
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListPhoneNumbersV2(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -243,134 +277,18 @@ func (p *ListPhoneNumbersV2Paginator) NextPage(ctx context.Context, optFns ...fu
 	return result, nil
 }
 
+// ListPhoneNumbersV2APIClient is a client that implements the ListPhoneNumbersV2
+// operation.
+type ListPhoneNumbersV2APIClient interface {
+	ListPhoneNumbersV2(context.Context, *ListPhoneNumbersV2Input, ...func(*Options)) (*ListPhoneNumbersV2Output, error)
+}
+
+var _ ListPhoneNumbersV2APIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListPhoneNumbersV2(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "connect",
 		OperationName: "ListPhoneNumbersV2",
 	}
-}
-
-type opListPhoneNumbersV2ResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListPhoneNumbersV2ResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListPhoneNumbersV2ResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "connect"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "connect"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("connect")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListPhoneNumbersV2ResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListPhoneNumbersV2ResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

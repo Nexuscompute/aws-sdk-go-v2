@@ -4,40 +4,43 @@ package iam
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/iam/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Uploads a server certificate entity for the Amazon Web Services account. The
 // server certificate entity includes a public key certificate, a private key, and
-// an optional certificate chain, which should all be PEM-encoded. We recommend
-// that you use Certificate Manager (https://docs.aws.amazon.com/acm/) to
-// provision, manage, and deploy your server certificates. With ACM you can request
-// a certificate, deploy it to Amazon Web Services resources, and let ACM handle
-// certificate renewals for you. Certificates provided by ACM are free. For more
-// information about using ACM, see the Certificate Manager User Guide (https://docs.aws.amazon.com/acm/latest/userguide/)
-// . For more information about working with server certificates, see Working with
-// server certificates (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_server-certs.html)
-// in the IAM User Guide. This topic includes a list of Amazon Web Services
-// services that can use the server certificates that you manage with IAM. For
-// information about the number of server certificates you can upload, see IAM and
-// STS quotas (https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html)
-// in the IAM User Guide. Because the body of the public key certificate, private
-// key, and the certificate chain can be large, you should use POST rather than GET
-// when calling UploadServerCertificate . For information about setting up
-// signatures and authorization through the API, see Signing Amazon Web Services
-// API requests (https://docs.aws.amazon.com/general/latest/gr/signing_aws_api_requests.html)
-// in the Amazon Web Services General Reference. For general information about
-// using the Query API with IAM, see Calling the API by making HTTP query requests (https://docs.aws.amazon.com/IAM/latest/UserGuide/programming.html)
-// in the IAM User Guide.
+// an optional certificate chain, which should all be PEM-encoded.
+//
+// We recommend that you use [Certificate Manager] to provision, manage, and deploy your server
+// certificates. With ACM you can request a certificate, deploy it to Amazon Web
+// Services resources, and let ACM handle certificate renewals for you.
+// Certificates provided by ACM are free. For more information about using ACM, see
+// the [Certificate Manager User Guide].
+//
+// For more information about working with server certificates, see [Working with server certificates] in the IAM
+// User Guide. This topic includes a list of Amazon Web Services services that can
+// use the server certificates that you manage with IAM.
+//
+// For information about the number of server certificates you can upload, see [IAM and STS quotas] in
+// the IAM User Guide.
+//
+// Because the body of the public key certificate, private key, and the
+// certificate chain can be large, you should use POST rather than GET when calling
+// UploadServerCertificate . For information about setting up signatures and
+// authorization through the API, see [Signing Amazon Web Services API requests]in the Amazon Web Services General
+// Reference. For general information about using the Query API with IAM, see [Calling the API by making HTTP query requests]in
+// the IAM User Guide.
+//
+// [Certificate Manager]: https://docs.aws.amazon.com/acm/
+// [Certificate Manager User Guide]: https://docs.aws.amazon.com/acm/latest/userguide/
+// [IAM and STS quotas]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_iam-quotas.html
+// [Working with server certificates]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_credentials_server-certs.html
+// [Signing Amazon Web Services API requests]: https://docs.aws.amazon.com/general/latest/gr/signing_aws_api_requests.html
+// [Calling the API by making HTTP query requests]: https://docs.aws.amazon.com/IAM/latest/UserGuide/programming.html
 func (c *Client) UploadServerCertificate(ctx context.Context, params *UploadServerCertificateInput, optFns ...func(*Options)) (*UploadServerCertificateOutput, error) {
 	if params == nil {
 		params = &UploadServerCertificateInput{}
@@ -55,73 +58,101 @@ func (c *Client) UploadServerCertificate(ctx context.Context, params *UploadServ
 
 type UploadServerCertificateInput struct {
 
-	// The contents of the public key certificate in PEM-encoded format. The regex
-	// pattern (http://wikipedia.org/wiki/regex) used to validate this parameter is a
-	// string of characters consisting of the following:
+	// The contents of the public key certificate in PEM-encoded format.
+	//
+	// The [regex pattern] used to validate this parameter is a string of characters consisting of
+	// the following:
+	//
 	//   - Any printable ASCII character ranging from the space character ( \u0020 )
 	//   through the end of the ASCII character range
+	//
 	//   - The printable characters in the Basic Latin and Latin-1 Supplement
 	//   character set (through \u00FF )
+	//
 	//   - The special characters tab ( \u0009 ), line feed ( \u000A ), and carriage
 	//   return ( \u000D )
+	//
+	// [regex pattern]: http://wikipedia.org/wiki/regex
 	//
 	// This member is required.
 	CertificateBody *string
 
-	// The contents of the private key in PEM-encoded format. The regex pattern (http://wikipedia.org/wiki/regex)
-	// used to validate this parameter is a string of characters consisting of the
-	// following:
+	// The contents of the private key in PEM-encoded format.
+	//
+	// The [regex pattern] used to validate this parameter is a string of characters consisting of
+	// the following:
+	//
 	//   - Any printable ASCII character ranging from the space character ( \u0020 )
 	//   through the end of the ASCII character range
+	//
 	//   - The printable characters in the Basic Latin and Latin-1 Supplement
 	//   character set (through \u00FF )
+	//
 	//   - The special characters tab ( \u0009 ), line feed ( \u000A ), and carriage
 	//   return ( \u000D )
+	//
+	// [regex pattern]: http://wikipedia.org/wiki/regex
 	//
 	// This member is required.
 	PrivateKey *string
 
 	// The name for the server certificate. Do not include the path in this value. The
-	// name of the certificate cannot contain any spaces. This parameter allows
-	// (through its regex pattern (http://wikipedia.org/wiki/regex) ) a string of
-	// characters consisting of upper and lowercase alphanumeric characters with no
-	// spaces. You can also include any of the following characters: _+=,.@-
+	// name of the certificate cannot contain any spaces.
+	//
+	// This parameter allows (through its [regex pattern]) a string of characters consisting of upper
+	// and lowercase alphanumeric characters with no spaces. You can also include any
+	// of the following characters: _+=,.@-
+	//
+	// [regex pattern]: http://wikipedia.org/wiki/regex
 	//
 	// This member is required.
 	ServerCertificateName *string
 
 	// The contents of the certificate chain. This is typically a concatenation of the
-	// PEM-encoded public key certificates of the chain. The regex pattern (http://wikipedia.org/wiki/regex)
-	// used to validate this parameter is a string of characters consisting of the
-	// following:
+	// PEM-encoded public key certificates of the chain.
+	//
+	// The [regex pattern] used to validate this parameter is a string of characters consisting of
+	// the following:
+	//
 	//   - Any printable ASCII character ranging from the space character ( \u0020 )
 	//   through the end of the ASCII character range
+	//
 	//   - The printable characters in the Basic Latin and Latin-1 Supplement
 	//   character set (through \u00FF )
+	//
 	//   - The special characters tab ( \u0009 ), line feed ( \u000A ), and carriage
 	//   return ( \u000D )
+	//
+	// [regex pattern]: http://wikipedia.org/wiki/regex
 	CertificateChain *string
 
-	// The path for the server certificate. For more information about paths, see IAM
-	// identifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)
-	// in the IAM User Guide. This parameter is optional. If it is not included, it
-	// defaults to a slash (/). This parameter allows (through its regex pattern (http://wikipedia.org/wiki/regex)
-	// ) a string of characters consisting of either a forward slash (/) by itself or a
-	// string that must begin and end with forward slashes. In addition, it can contain
-	// any ASCII character from the ! ( \u0021 ) through the DEL character ( \u007F ),
-	// including most punctuation characters, digits, and upper and lowercased letters.
+	// The path for the server certificate. For more information about paths, see [IAM identifiers] in
+	// the IAM User Guide.
+	//
+	// This parameter is optional. If it is not included, it defaults to a slash (/).
+	// This parameter allows (through its [regex pattern]) a string of characters consisting of
+	// either a forward slash (/) by itself or a string that must begin and end with
+	// forward slashes. In addition, it can contain any ASCII character from the ! (
+	// \u0021 ) through the DEL character ( \u007F ), including most punctuation
+	// characters, digits, and upper and lowercased letters.
+	//
 	// If you are uploading a server certificate specifically for use with Amazon
 	// CloudFront distributions, you must specify a path using the path parameter. The
 	// path must begin with /cloudfront and must include a trailing slash (for
 	// example, /cloudfront/test/ ).
+	//
+	// [IAM identifiers]: https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html
+	// [regex pattern]: http://wikipedia.org/wiki/regex
 	Path *string
 
 	// A list of tags that you want to attach to the new IAM server certificate
 	// resource. Each tag consists of a key name and an associated value. For more
-	// information about tagging, see Tagging IAM resources (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html)
-	// in the IAM User Guide. If any one of the tags is invalid or if you exceed the
-	// allowed maximum number of tags, then the entire request fails and the resource
-	// is not created.
+	// information about tagging, see [Tagging IAM resources]in the IAM User Guide.
+	//
+	// If any one of the tags is invalid or if you exceed the allowed maximum number
+	// of tags, then the entire request fails and the resource is not created.
+	//
+	// [Tagging IAM resources]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html
 	Tags []types.Tag
 
 	noSmithyDocumentSerde
@@ -136,8 +167,9 @@ type UploadServerCertificateOutput struct {
 
 	// A list of tags that are attached to the new IAM server certificate. The
 	// returned list of tags is sorted by tag key. For more information about tagging,
-	// see Tagging IAM resources (https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html)
-	// in the IAM User Guide.
+	// see [Tagging IAM resources]in the IAM User Guide.
+	//
+	// [Tagging IAM resources]: https://docs.aws.amazon.com/IAM/latest/UserGuide/id_tags.html
 	Tags []types.Tag
 
 	// Metadata pertaining to the operation's result.
@@ -147,6 +179,9 @@ type UploadServerCertificateOutput struct {
 }
 
 func (c *Client) addOperationUploadServerCertificateMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpUploadServerCertificate{}, middleware.After)
 	if err != nil {
 		return err
@@ -155,34 +190,38 @@ func (c *Client) addOperationUploadServerCertificateMiddlewares(stack *middlewar
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UploadServerCertificate"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -194,7 +233,13 @@ func (c *Client) addOperationUploadServerCertificateMiddlewares(stack *middlewar
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUploadServerCertificateResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUploadServerCertificateValidationMiddleware(stack); err != nil {
@@ -203,7 +248,7 @@ func (c *Client) addOperationUploadServerCertificateMiddlewares(stack *middlewar
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUploadServerCertificate(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -215,7 +260,19 @@ func (c *Client) addOperationUploadServerCertificateMiddlewares(stack *middlewar
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -225,130 +282,6 @@ func newServiceMetadataMiddleware_opUploadServerCertificate(region string) *awsm
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "iam",
 		OperationName: "UploadServerCertificate",
 	}
-}
-
-type opUploadServerCertificateResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUploadServerCertificateResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUploadServerCertificateResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "iam"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "iam"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("iam")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUploadServerCertificateResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUploadServerCertificateResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

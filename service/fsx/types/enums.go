@@ -14,6 +14,7 @@ const (
 
 // Values returns all known values for ActiveDirectoryErrorType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ActiveDirectoryErrorType) Values() []ActiveDirectoryErrorType {
 	return []ActiveDirectoryErrorType{
@@ -36,10 +37,18 @@ const (
 	AdministrativeActionTypeSnapshotUpdate                AdministrativeActionType = "SNAPSHOT_UPDATE"
 	AdministrativeActionTypeReleaseNfsV3Locks             AdministrativeActionType = "RELEASE_NFS_V3_LOCKS"
 	AdministrativeActionTypeVolumeRestore                 AdministrativeActionType = "VOLUME_RESTORE"
+	AdministrativeActionTypeThroughputOptimization        AdministrativeActionType = "THROUGHPUT_OPTIMIZATION"
+	AdministrativeActionTypeIopsOptimization              AdministrativeActionType = "IOPS_OPTIMIZATION"
+	AdministrativeActionTypeStorageTypeOptimization       AdministrativeActionType = "STORAGE_TYPE_OPTIMIZATION"
+	AdministrativeActionTypeMisconfiguredStateRecovery    AdministrativeActionType = "MISCONFIGURED_STATE_RECOVERY"
+	AdministrativeActionTypeVolumeUpdateWithSnapshot      AdministrativeActionType = "VOLUME_UPDATE_WITH_SNAPSHOT"
+	AdministrativeActionTypeVolumeInitializeWithSnapshot  AdministrativeActionType = "VOLUME_INITIALIZE_WITH_SNAPSHOT"
+	AdministrativeActionTypeDownloadDataFromBackup        AdministrativeActionType = "DOWNLOAD_DATA_FROM_BACKUP"
 )
 
 // Values returns all known values for AdministrativeActionType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (AdministrativeActionType) Values() []AdministrativeActionType {
 	return []AdministrativeActionType{
@@ -51,6 +60,13 @@ func (AdministrativeActionType) Values() []AdministrativeActionType {
 		"SNAPSHOT_UPDATE",
 		"RELEASE_NFS_V3_LOCKS",
 		"VOLUME_RESTORE",
+		"THROUGHPUT_OPTIMIZATION",
+		"IOPS_OPTIMIZATION",
+		"STORAGE_TYPE_OPTIMIZATION",
+		"MISCONFIGURED_STATE_RECOVERY",
+		"VOLUME_UPDATE_WITH_SNAPSHOT",
+		"VOLUME_INITIALIZE_WITH_SNAPSHOT",
+		"DOWNLOAD_DATA_FROM_BACKUP",
 	}
 }
 
@@ -66,8 +82,9 @@ const (
 )
 
 // Values returns all known values for AliasLifecycle. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AliasLifecycle) Values() []AliasLifecycle {
 	return []AliasLifecycle{
 		"AVAILABLE",
@@ -91,8 +108,9 @@ const (
 )
 
 // Values returns all known values for AutocommitPeriodType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AutocommitPeriodType) Values() []AutocommitPeriodType {
 	return []AutocommitPeriodType{
 		"MINUTES",
@@ -115,8 +133,9 @@ const (
 )
 
 // Values returns all known values for AutoImportPolicyType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AutoImportPolicyType) Values() []AutoImportPolicyType {
 	return []AutoImportPolicyType{
 		"NONE",
@@ -140,8 +159,9 @@ const (
 )
 
 // Values returns all known values for BackupLifecycle. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BackupLifecycle) Values() []BackupLifecycle {
 	return []BackupLifecycle{
 		"AVAILABLE",
@@ -164,8 +184,9 @@ const (
 )
 
 // Values returns all known values for BackupType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BackupType) Values() []BackupType {
 	return []BackupType{
 		"AUTOMATIC",
@@ -183,8 +204,9 @@ const (
 )
 
 // Values returns all known values for DataCompressionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DataCompressionType) Values() []DataCompressionType {
 	return []DataCompressionType{
 		"NONE",
@@ -205,8 +227,9 @@ const (
 )
 
 // Values returns all known values for DataRepositoryLifecycle. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DataRepositoryLifecycle) Values() []DataRepositoryLifecycle {
 	return []DataRepositoryLifecycle{
 		"CREATING",
@@ -230,8 +253,9 @@ const (
 
 // Values returns all known values for DataRepositoryTaskFilterName. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DataRepositoryTaskFilterName) Values() []DataRepositoryTaskFilterName {
 	return []DataRepositoryTaskFilterName{
 		"file-system-id",
@@ -255,6 +279,7 @@ const (
 
 // Values returns all known values for DataRepositoryTaskLifecycle. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DataRepositoryTaskLifecycle) Values() []DataRepositoryTaskLifecycle {
 	return []DataRepositoryTaskLifecycle{
@@ -278,8 +303,9 @@ const (
 )
 
 // Values returns all known values for DataRepositoryTaskType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DataRepositoryTaskType) Values() []DataRepositoryTaskType {
 	return []DataRepositoryTaskType{
 		"EXPORT_TO_REPOSITORY",
@@ -298,8 +324,9 @@ const (
 
 // Values returns all known values for DeleteFileSystemOpenZFSOption. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeleteFileSystemOpenZFSOption) Values() []DeleteFileSystemOpenZFSOption {
 	return []DeleteFileSystemOpenZFSOption{
 		"DELETE_CHILD_VOLUMES_AND_SNAPSHOTS",
@@ -315,6 +342,7 @@ const (
 
 // Values returns all known values for DeleteOpenZFSVolumeOption. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DeleteOpenZFSVolumeOption) Values() []DeleteOpenZFSVolumeOption {
 	return []DeleteOpenZFSVolumeOption{
@@ -332,6 +360,7 @@ const (
 
 // Values returns all known values for DiskIopsConfigurationMode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DiskIopsConfigurationMode) Values() []DiskIopsConfigurationMode {
 	return []DiskIopsConfigurationMode{
@@ -349,8 +378,9 @@ const (
 )
 
 // Values returns all known values for DriveCacheType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DriveCacheType) Values() []DriveCacheType {
 	return []DriveCacheType{
 		"NONE",
@@ -368,8 +398,9 @@ const (
 )
 
 // Values returns all known values for EventType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EventType) Values() []EventType {
 	return []EventType{
 		"NEW",
@@ -390,8 +421,9 @@ const (
 )
 
 // Values returns all known values for FileCacheLifecycle. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FileCacheLifecycle) Values() []FileCacheLifecycle {
 	return []FileCacheLifecycle{
 		"AVAILABLE",
@@ -411,8 +443,9 @@ const (
 
 // Values returns all known values for FileCacheLustreDeploymentType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FileCacheLustreDeploymentType) Values() []FileCacheLustreDeploymentType {
 	return []FileCacheLustreDeploymentType{
 		"CACHE_1",
@@ -427,8 +460,9 @@ const (
 )
 
 // Values returns all known values for FileCacheType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FileCacheType) Values() []FileCacheType {
 	return []FileCacheType{
 		"LUSTRE",
@@ -449,8 +483,9 @@ const (
 )
 
 // Values returns all known values for FileSystemLifecycle. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FileSystemLifecycle) Values() []FileSystemLifecycle {
 	return []FileSystemLifecycle{
 		"AVAILABLE",
@@ -473,8 +508,9 @@ const (
 
 // Values returns all known values for FileSystemMaintenanceOperation. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FileSystemMaintenanceOperation) Values() []FileSystemMaintenanceOperation {
 	return []FileSystemMaintenanceOperation{
 		"PATCHING",
@@ -493,8 +529,9 @@ const (
 )
 
 // Values returns all known values for FileSystemType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FileSystemType) Values() []FileSystemType {
 	return []FileSystemType{
 		"WINDOWS",
@@ -518,8 +555,9 @@ const (
 )
 
 // Values returns all known values for FilterName. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FilterName) Values() []FilterName {
 	return []FilterName{
 		"file-system-id",
@@ -542,8 +580,9 @@ const (
 )
 
 // Values returns all known values for FlexCacheEndpointType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FlexCacheEndpointType) Values() []FlexCacheEndpointType {
 	return []FlexCacheEndpointType{
 		"NONE",
@@ -561,8 +600,9 @@ const (
 )
 
 // Values returns all known values for InputOntapVolumeType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputOntapVolumeType) Values() []InputOntapVolumeType {
 	return []InputOntapVolumeType{
 		"RW",
@@ -582,6 +622,7 @@ const (
 
 // Values returns all known values for LustreAccessAuditLogLevel. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (LustreAccessAuditLogLevel) Values() []LustreAccessAuditLogLevel {
 	return []LustreAccessAuditLogLevel{
@@ -603,14 +644,34 @@ const (
 )
 
 // Values returns all known values for LustreDeploymentType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LustreDeploymentType) Values() []LustreDeploymentType {
 	return []LustreDeploymentType{
 		"SCRATCH_1",
 		"SCRATCH_2",
 		"PERSISTENT_1",
 		"PERSISTENT_2",
+	}
+}
+
+type MetadataConfigurationMode string
+
+// Enum values for MetadataConfigurationMode
+const (
+	MetadataConfigurationModeAutomatic       MetadataConfigurationMode = "AUTOMATIC"
+	MetadataConfigurationModeUserProvisioned MetadataConfigurationMode = "USER_PROVISIONED"
+)
+
+// Values returns all known values for MetadataConfigurationMode. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MetadataConfigurationMode) Values() []MetadataConfigurationMode {
+	return []MetadataConfigurationMode{
+		"AUTOMATIC",
+		"USER_PROVISIONED",
 	}
 }
 
@@ -622,8 +683,9 @@ const (
 )
 
 // Values returns all known values for NfsVersion. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NfsVersion) Values() []NfsVersion {
 	return []NfsVersion{
 		"NFS3",
@@ -636,15 +698,20 @@ type OntapDeploymentType string
 const (
 	OntapDeploymentTypeMultiAz1  OntapDeploymentType = "MULTI_AZ_1"
 	OntapDeploymentTypeSingleAz1 OntapDeploymentType = "SINGLE_AZ_1"
+	OntapDeploymentTypeSingleAz2 OntapDeploymentType = "SINGLE_AZ_2"
+	OntapDeploymentTypeMultiAz2  OntapDeploymentType = "MULTI_AZ_2"
 )
 
 // Values returns all known values for OntapDeploymentType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OntapDeploymentType) Values() []OntapDeploymentType {
 	return []OntapDeploymentType{
 		"MULTI_AZ_1",
 		"SINGLE_AZ_1",
+		"SINGLE_AZ_2",
+		"MULTI_AZ_2",
 	}
 }
 
@@ -658,8 +725,9 @@ const (
 )
 
 // Values returns all known values for OntapVolumeType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OntapVolumeType) Values() []OntapVolumeType {
 	return []OntapVolumeType{
 		"RW",
@@ -672,17 +740,20 @@ type OpenZFSCopyStrategy string
 
 // Enum values for OpenZFSCopyStrategy
 const (
-	OpenZFSCopyStrategyClone    OpenZFSCopyStrategy = "CLONE"
-	OpenZFSCopyStrategyFullCopy OpenZFSCopyStrategy = "FULL_COPY"
+	OpenZFSCopyStrategyClone           OpenZFSCopyStrategy = "CLONE"
+	OpenZFSCopyStrategyFullCopy        OpenZFSCopyStrategy = "FULL_COPY"
+	OpenZFSCopyStrategyIncrementalCopy OpenZFSCopyStrategy = "INCREMENTAL_COPY"
 )
 
 // Values returns all known values for OpenZFSCopyStrategy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OpenZFSCopyStrategy) Values() []OpenZFSCopyStrategy {
 	return []OpenZFSCopyStrategy{
 		"CLONE",
 		"FULL_COPY",
+		"INCREMENTAL_COPY",
 	}
 }
 
@@ -697,6 +768,7 @@ const (
 
 // Values returns all known values for OpenZFSDataCompressionType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (OpenZFSDataCompressionType) Values() []OpenZFSDataCompressionType {
 	return []OpenZFSDataCompressionType{
@@ -710,17 +782,24 @@ type OpenZFSDeploymentType string
 
 // Enum values for OpenZFSDeploymentType
 const (
-	OpenZFSDeploymentTypeSingleAz1 OpenZFSDeploymentType = "SINGLE_AZ_1"
-	OpenZFSDeploymentTypeSingleAz2 OpenZFSDeploymentType = "SINGLE_AZ_2"
+	OpenZFSDeploymentTypeSingleAz1   OpenZFSDeploymentType = "SINGLE_AZ_1"
+	OpenZFSDeploymentTypeSingleAz2   OpenZFSDeploymentType = "SINGLE_AZ_2"
+	OpenZFSDeploymentTypeSingleAzHa1 OpenZFSDeploymentType = "SINGLE_AZ_HA_1"
+	OpenZFSDeploymentTypeSingleAzHa2 OpenZFSDeploymentType = "SINGLE_AZ_HA_2"
+	OpenZFSDeploymentTypeMultiAz1    OpenZFSDeploymentType = "MULTI_AZ_1"
 )
 
 // Values returns all known values for OpenZFSDeploymentType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OpenZFSDeploymentType) Values() []OpenZFSDeploymentType {
 	return []OpenZFSDeploymentType{
 		"SINGLE_AZ_1",
 		"SINGLE_AZ_2",
+		"SINGLE_AZ_HA_1",
+		"SINGLE_AZ_HA_2",
+		"MULTI_AZ_1",
 	}
 }
 
@@ -733,12 +812,34 @@ const (
 )
 
 // Values returns all known values for OpenZFSQuotaType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OpenZFSQuotaType) Values() []OpenZFSQuotaType {
 	return []OpenZFSQuotaType{
 		"USER",
 		"GROUP",
+	}
+}
+
+type OpenZFSReadCacheSizingMode string
+
+// Enum values for OpenZFSReadCacheSizingMode
+const (
+	OpenZFSReadCacheSizingModeNoCache                          OpenZFSReadCacheSizingMode = "NO_CACHE"
+	OpenZFSReadCacheSizingModeUserProvisioned                  OpenZFSReadCacheSizingMode = "USER_PROVISIONED"
+	OpenZFSReadCacheSizingModeProportionalToThroughputCapacity OpenZFSReadCacheSizingMode = "PROPORTIONAL_TO_THROUGHPUT_CAPACITY"
+)
+
+// Values returns all known values for OpenZFSReadCacheSizingMode. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OpenZFSReadCacheSizingMode) Values() []OpenZFSReadCacheSizingMode {
+	return []OpenZFSReadCacheSizingMode{
+		"NO_CACHE",
+		"USER_PROVISIONED",
+		"PROPORTIONAL_TO_THROUGHPUT_CAPACITY",
 	}
 }
 
@@ -752,8 +853,9 @@ const (
 )
 
 // Values returns all known values for PrivilegedDelete. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PrivilegedDelete) Values() []PrivilegedDelete {
 	return []PrivilegedDelete{
 		"DISABLED",
@@ -770,8 +872,9 @@ const (
 )
 
 // Values returns all known values for ReportFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportFormat) Values() []ReportFormat {
 	return []ReportFormat{
 		"REPORT_CSV_20191124",
@@ -786,8 +889,9 @@ const (
 )
 
 // Values returns all known values for ReportScope. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReportScope) Values() []ReportScope {
 	return []ReportScope{
 		"FAILED_FILES_ONLY",
@@ -803,8 +907,9 @@ const (
 )
 
 // Values returns all known values for ResourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceType) Values() []ResourceType {
 	return []ResourceType{
 		"FILE_SYSTEM",
@@ -822,6 +927,7 @@ const (
 
 // Values returns all known values for RestoreOpenZFSVolumeOption. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (RestoreOpenZFSVolumeOption) Values() []RestoreOpenZFSVolumeOption {
 	return []RestoreOpenZFSVolumeOption{
@@ -845,8 +951,9 @@ const (
 )
 
 // Values returns all known values for RetentionPeriodType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RetentionPeriodType) Values() []RetentionPeriodType {
 	return []RetentionPeriodType{
 		"SECONDS",
@@ -870,8 +977,9 @@ const (
 )
 
 // Values returns all known values for SecurityStyle. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SecurityStyle) Values() []SecurityStyle {
 	return []SecurityStyle{
 		"UNIX",
@@ -897,8 +1005,9 @@ const (
 )
 
 // Values returns all known values for ServiceLimit. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ServiceLimit) Values() []ServiceLimit {
 	return []ServiceLimit{
 		"FILE_SYSTEM_COUNT",
@@ -923,8 +1032,9 @@ const (
 )
 
 // Values returns all known values for SnaplockType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SnaplockType) Values() []SnaplockType {
 	return []SnaplockType{
 		"COMPLIANCE",
@@ -941,8 +1051,9 @@ const (
 )
 
 // Values returns all known values for SnapshotFilterName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SnapshotFilterName) Values() []SnapshotFilterName {
 	return []SnapshotFilterName{
 		"file-system-id",
@@ -961,8 +1072,9 @@ const (
 )
 
 // Values returns all known values for SnapshotLifecycle. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SnapshotLifecycle) Values() []SnapshotLifecycle {
 	return []SnapshotLifecycle{
 		"PENDING",
@@ -981,11 +1093,13 @@ const (
 	StatusPending           Status = "PENDING"
 	StatusCompleted         Status = "COMPLETED"
 	StatusUpdatedOptimizing Status = "UPDATED_OPTIMIZING"
+	StatusOptimizing        Status = "OPTIMIZING"
 )
 
 // Values returns all known values for Status. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Status) Values() []Status {
 	return []Status{
 		"FAILED",
@@ -993,6 +1107,7 @@ func (Status) Values() []Status {
 		"PENDING",
 		"COMPLETED",
 		"UPDATED_OPTIMIZING",
+		"OPTIMIZING",
 	}
 }
 
@@ -1000,17 +1115,20 @@ type StorageType string
 
 // Enum values for StorageType
 const (
-	StorageTypeSsd StorageType = "SSD"
-	StorageTypeHdd StorageType = "HDD"
+	StorageTypeSsd                StorageType = "SSD"
+	StorageTypeHdd                StorageType = "HDD"
+	StorageTypeIntelligentTiering StorageType = "INTELLIGENT_TIERING"
 )
 
 // Values returns all known values for StorageType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StorageType) Values() []StorageType {
 	return []StorageType{
 		"SSD",
 		"HDD",
+		"INTELLIGENT_TIERING",
 	}
 }
 
@@ -1023,8 +1141,9 @@ const (
 
 // Values returns all known values for StorageVirtualMachineFilterName. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StorageVirtualMachineFilterName) Values() []StorageVirtualMachineFilterName {
 	return []StorageVirtualMachineFilterName{
 		"file-system-id",
@@ -1045,8 +1164,9 @@ const (
 
 // Values returns all known values for StorageVirtualMachineLifecycle. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StorageVirtualMachineLifecycle) Values() []StorageVirtualMachineLifecycle {
 	return []StorageVirtualMachineLifecycle{
 		"CREATED",
@@ -1069,8 +1189,9 @@ const (
 
 // Values returns all known values for
 // StorageVirtualMachineRootVolumeSecurityStyle. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StorageVirtualMachineRootVolumeSecurityStyle) Values() []StorageVirtualMachineRootVolumeSecurityStyle {
 	return []StorageVirtualMachineRootVolumeSecurityStyle{
 		"UNIX",
@@ -1091,8 +1212,9 @@ const (
 
 // Values returns all known values for StorageVirtualMachineSubtype. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StorageVirtualMachineSubtype) Values() []StorageVirtualMachineSubtype {
 	return []StorageVirtualMachineSubtype{
 		"DEFAULT",
@@ -1113,14 +1235,53 @@ const (
 )
 
 // Values returns all known values for TieringPolicyName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TieringPolicyName) Values() []TieringPolicyName {
 	return []TieringPolicyName{
 		"SNAPSHOT_ONLY",
 		"AUTO",
 		"ALL",
 		"NONE",
+	}
+}
+
+type Unit string
+
+// Enum values for Unit
+const (
+	UnitDays Unit = "DAYS"
+)
+
+// Values returns all known values for Unit. Note that this can be expanded in the
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Unit) Values() []Unit {
+	return []Unit{
+		"DAYS",
+	}
+}
+
+type UpdateOpenZFSVolumeOption string
+
+// Enum values for UpdateOpenZFSVolumeOption
+const (
+	UpdateOpenZFSVolumeOptionDeleteIntermediateSnapshots UpdateOpenZFSVolumeOption = "DELETE_INTERMEDIATE_SNAPSHOTS"
+	UpdateOpenZFSVolumeOptionDeleteClonedVolumes         UpdateOpenZFSVolumeOption = "DELETE_CLONED_VOLUMES"
+	UpdateOpenZFSVolumeOptionDeleteIntermediateData      UpdateOpenZFSVolumeOption = "DELETE_INTERMEDIATE_DATA"
+)
+
+// Values returns all known values for UpdateOpenZFSVolumeOption. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UpdateOpenZFSVolumeOption) Values() []UpdateOpenZFSVolumeOption {
+	return []UpdateOpenZFSVolumeOption{
+		"DELETE_INTERMEDIATE_SNAPSHOTS",
+		"DELETE_CLONED_VOLUMES",
+		"DELETE_INTERMEDIATE_DATA",
 	}
 }
 
@@ -1133,8 +1294,9 @@ const (
 )
 
 // Values returns all known values for VolumeFilterName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VolumeFilterName) Values() []VolumeFilterName {
 	return []VolumeFilterName{
 		"file-system-id",
@@ -1156,8 +1318,9 @@ const (
 )
 
 // Values returns all known values for VolumeLifecycle. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VolumeLifecycle) Values() []VolumeLifecycle {
 	return []VolumeLifecycle{
 		"CREATING",
@@ -1170,6 +1333,25 @@ func (VolumeLifecycle) Values() []VolumeLifecycle {
 	}
 }
 
+type VolumeStyle string
+
+// Enum values for VolumeStyle
+const (
+	VolumeStyleFlexvol   VolumeStyle = "FLEXVOL"
+	VolumeStyleFlexgroup VolumeStyle = "FLEXGROUP"
+)
+
+// Values returns all known values for VolumeStyle. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VolumeStyle) Values() []VolumeStyle {
+	return []VolumeStyle{
+		"FLEXVOL",
+		"FLEXGROUP",
+	}
+}
+
 type VolumeType string
 
 // Enum values for VolumeType
@@ -1179,8 +1361,9 @@ const (
 )
 
 // Values returns all known values for VolumeType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VolumeType) Values() []VolumeType {
 	return []VolumeType{
 		"ONTAP",
@@ -1200,6 +1383,7 @@ const (
 
 // Values returns all known values for WindowsAccessAuditLogLevel. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (WindowsAccessAuditLogLevel) Values() []WindowsAccessAuditLogLevel {
 	return []WindowsAccessAuditLogLevel{
@@ -1220,8 +1404,9 @@ const (
 )
 
 // Values returns all known values for WindowsDeploymentType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WindowsDeploymentType) Values() []WindowsDeploymentType {
 	return []WindowsDeploymentType{
 		"MULTI_AZ_1",

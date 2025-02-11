@@ -26,6 +26,46 @@ type AdditionalAuthenticationProvider struct {
 	noSmithyDocumentSerde
 }
 
+// Describes an AppSync API. You can use Api for an AppSync API with your
+// preferred configuration, such as an Event API that provides real-time message
+// publishing and message subscriptions over WebSockets.
+type Api struct {
+
+	// The Amazon Resource Name (ARN) for the Api .
+	ApiArn *string
+
+	// The Api ID.
+	ApiId *string
+
+	// The date and time that the Api was created.
+	Created *time.Time
+
+	// The DNS records for the API. This will include an HTTP and a real-time endpoint.
+	Dns map[string]string
+
+	// The Event API configuration. This includes the default authorization
+	// configuration for connecting, publishing, and subscribing to an Event API.
+	EventConfig *EventConfig
+
+	// The name of the Api .
+	Name *string
+
+	// The owner contact information for the Api
+	OwnerContact *string
+
+	// A map with keys of TagKey objects and values of TagValue objects.
+	Tags map[string]string
+
+	// The Amazon Resource Name (ARN) of the WAF web access control list (web ACL)
+	// associated with this Api , if one exists.
+	WafWebAclArn *string
+
+	// A flag indicating whether to use X-Ray tracing for this Api .
+	XrayEnabled bool
+
+	noSmithyDocumentSerde
+}
+
 // Describes an ApiAssociation object.
 type ApiAssociation struct {
 
@@ -33,10 +73,13 @@ type ApiAssociation struct {
 	ApiId *string
 
 	// Identifies the status of an association.
+	//
 	//   - PROCESSING: The API association is being created. You cannot modify
 	//   association requests during processing.
+	//
 	//   - SUCCESS: The API association was successful. You can modify associations
 	//   after success.
+	//
 	//   - FAILED: The API association has failed. You can modify associations after
 	//   failure.
 	AssociationStatus AssociationStatus
@@ -54,19 +97,46 @@ type ApiAssociation struct {
 type ApiCache struct {
 
 	// Caching behavior.
-	//   - FULL_REQUEST_CACHING: All requests are fully cached.
+	//
+	//   - FULL_REQUEST_CACHING: All requests from the same user are cached.
+	//   Individual resolvers are automatically cached. All API calls will try to return
+	//   responses from the cache.
+	//
 	//   - PER_RESOLVER_CACHING: Individual resolvers that you specify are cached.
+	//
+	//   - OPERATION_LEVEL_CACHING: Full requests are cached together and returned
+	//   without executing resolvers.
 	ApiCachingBehavior ApiCachingBehavior
 
 	// At-rest encryption flag for cache. You cannot update this setting after
 	// creation.
 	AtRestEncryptionEnabled bool
 
+	// Controls how cache health metrics will be emitted to CloudWatch. Cache health
+	// metrics include:
+	//
+	//   - NetworkBandwidthOutAllowanceExceeded: The network packets dropped because
+	//   the throughput exceeded the aggregated bandwidth limit. This is useful for
+	//   diagnosing bottlenecks in a cache configuration.
+	//
+	//   - EngineCPUUtilization: The CPU utilization (percentage) allocated to the
+	//   Redis process. This is useful for diagnosing bottlenecks in a cache
+	//   configuration.
+	//
+	// Metrics will be recorded by API ID. You can set the value to ENABLED or DISABLED
+	// .
+	HealthMetricsConfig CacheHealthMetricsConfig
+
 	// The cache instance status.
+	//
 	//   - AVAILABLE: The instance is available for use.
+	//
 	//   - CREATING: The instance is currently creating.
+	//
 	//   - DELETING: The instance is currently deleting.
+	//
 	//   - MODIFYING: The instance is currently modifying.
+	//
 	//   - FAILED: The instance has failed creation.
 	Status ApiCacheStatus
 
@@ -74,42 +144,69 @@ type ApiCache struct {
 	// setting after creation.
 	TransitEncryptionEnabled bool
 
-	// TTL in seconds for cache entries. Valid values are 1–3,600 seconds.
+	// TTL in seconds for cache entries.
+	//
+	// Valid values are 1–3,600 seconds.
 	Ttl int64
 
 	// The cache instance type. Valid values are
+	//
 	//   - SMALL
+	//
 	//   - MEDIUM
+	//
 	//   - LARGE
+	//
 	//   - XLARGE
+	//
 	//   - LARGE_2X
+	//
 	//   - LARGE_4X
+	//
 	//   - LARGE_8X (not available in all regions)
+	//
 	//   - LARGE_12X
+	//
 	// Historically, instance types were identified by an EC2-style value. As of July
-	// 2020, this is deprecated, and the generic identifiers above should be used. The
-	// following legacy instance types are available, but their use is discouraged:
+	// 2020, this is deprecated, and the generic identifiers above should be used.
+	//
+	// The following legacy instance types are available, but their use is discouraged:
+	//
 	//   - T2_SMALL: A t2.small instance type.
+	//
 	//   - T2_MEDIUM: A t2.medium instance type.
+	//
 	//   - R4_LARGE: A r4.large instance type.
+	//
 	//   - R4_XLARGE: A r4.xlarge instance type.
+	//
 	//   - R4_2XLARGE: A r4.2xlarge instance type.
+	//
 	//   - R4_4XLARGE: A r4.4xlarge instance type.
+	//
 	//   - R4_8XLARGE: A r4.8xlarge instance type.
 	Type ApiCacheType
 
 	noSmithyDocumentSerde
 }
 
-// Describes an API key. Customers invoke AppSync GraphQL API operations with API
-// keys as an identity mechanism. There are two key versions: da1: We introduced
-// this version at launch in November 2017. These keys always expire after 7 days.
-// Amazon DynamoDB TTL manages key expiration. These keys ceased to be valid after
-// February 21, 2018, and they should no longer be used.
+// Describes an API key.
+//
+// Customers invoke AppSync GraphQL API operations with API keys as an identity
+// mechanism. There are two key versions:
+//
+// da1: We introduced this version at launch in November 2017. These keys always
+// expire after 7 days. Amazon DynamoDB TTL manages key expiration. These keys
+// ceased to be valid after February 21, 2018, and they should no longer be used.
+//
 //   - ListApiKeys returns the expiration time in milliseconds.
+//
 //   - CreateApiKey returns the expiration time in milliseconds.
+//
 //   - UpdateApiKey is not available for this key version.
+//
 //   - DeleteApiKey deletes the item from the table.
+//
 //   - Expiration is stored in DynamoDB as milliseconds. This results in a bug
 //     where keys are not automatically deleted because DynamoDB expects the TTL to be
 //     stored in seconds. As a one-time action, we deleted these keys from the table on
@@ -117,17 +214,23 @@ type ApiCache struct {
 //
 // da2: We introduced this version in February 2018 when AppSync added support to
 // extend key expiration.
+//
 //   - ListApiKeys returns the expiration time and deletion time in seconds.
+//
 //   - CreateApiKey returns the expiration time and deletion time in seconds and
 //     accepts a user-provided expiration time in seconds.
+//
 //   - UpdateApiKey returns the expiration time and and deletion time in seconds
 //     and accepts a user-provided expiration time in seconds. Expired API keys are
 //     kept for 60 days after the expiration time. You can update the key expiration
 //     time as long as the key isn't deleted.
+//
 //   - DeleteApiKey deletes the item from the table.
+//
 //   - Expiration is stored in DynamoDB as seconds. After the expiration time,
 //     using the key to authenticate will fail. However, you can reinstate the key
 //     before deletion.
+//
 //   - Deletion is stored in DynamoDB as seconds. The key is deleted after
 //     deletion time.
 type ApiKey struct {
@@ -168,11 +271,24 @@ type AppSyncRuntime struct {
 	noSmithyDocumentSerde
 }
 
+// Describes an authorization configuration. Use AuthMode to specify the
+// publishing and subscription authorization configuration for an Event API.
+type AuthMode struct {
+
+	// The authorization type.
+	//
+	// This member is required.
+	AuthType AuthenticationType
+
+	noSmithyDocumentSerde
+}
+
 // The authorization configuration in case the HTTP endpoint requires
 // authorization.
 type AuthorizationConfig struct {
 
 	// The authorization type that the HTTP endpoint requires.
+	//
 	//   - AWS_IAM: The authorization type is Signature Version 4 (SigV4).
 	//
 	// This member is required.
@@ -180,6 +296,28 @@ type AuthorizationConfig struct {
 
 	// The Identity and Access Management (IAM) settings.
 	AwsIamConfig *AwsIamConfig
+
+	noSmithyDocumentSerde
+}
+
+// Describes an authorization provider.
+type AuthProvider struct {
+
+	// The authorization type.
+	//
+	// This member is required.
+	AuthType AuthenticationType
+
+	// Describes an Amazon Cognito user pool configuration.
+	CognitoConfig *CognitoConfig
+
+	// A LambdaAuthorizerConfig specifies how to authorize AppSync API access when
+	// using the AWS_LAMBDA authorizer mode. Be aware that an AppSync API can have
+	// only one Lambda authorizer configured at a time.
+	LambdaAuthorizerConfig *LambdaAuthorizerConfig
+
+	// Describes an OpenID Connect (OIDC) configuration.
+	OpenIDConnectConfig *OpenIDConnectConfig
 
 	noSmithyDocumentSerde
 }
@@ -209,16 +347,56 @@ type BadRequestDetail struct {
 // The caching configuration for a resolver that has caching activated.
 type CachingConfig struct {
 
-	// The TTL in seconds for a resolver that has caching activated. Valid values are
-	// 1–3,600 seconds.
+	// The TTL in seconds for a resolver that has caching activated.
+	//
+	// Valid values are 1–3,600 seconds.
 	//
 	// This member is required.
 	Ttl int64
 
-	// The caching keys for a resolver that has caching activated. Valid values are
-	// entries from the $context.arguments , $context.source , and $context.identity
-	// maps.
+	// The caching keys for a resolver that has caching activated.
+	//
+	// Valid values are entries from the $context.arguments , $context.source , and
+	// $context.identity maps.
 	CachingKeys []string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a channel namespace associated with an Api . The ChannelNamespace
+// contains the definitions for code handlers for the Api .
+type ChannelNamespace struct {
+
+	// The Api ID.
+	ApiId *string
+
+	// The Amazon Resource Name (ARN) for the ChannelNamespace .
+	ChannelNamespaceArn *string
+
+	// The event handler functions that run custom business logic to process published
+	// events and subscribe requests.
+	CodeHandlers *string
+
+	// The date and time that the ChannelNamespace was created.
+	Created *time.Time
+
+	// The date and time that the ChannelNamespace was last changed.
+	LastModified *time.Time
+
+	// The name of the channel namespace. This name must be unique within the Api .
+	Name *string
+
+	// The authorization mode to use for publishing messages on the channel namespace.
+	// This configuration overrides the default Api authorization configuration.
+	PublishAuthModes []AuthMode
+
+	// The authorization mode to use for subscribing to messages on the channel
+	// namespace. This configuration overrides the default Api authorization
+	// configuration.
+	SubscribeAuthModes []AuthMode
+
+	// A map with keys of TagKey objects and values of TagValue objects.
+	Tags map[string]string
 
 	noSmithyDocumentSerde
 }
@@ -226,15 +404,18 @@ type CachingConfig struct {
 // Describes an AppSync error.
 type CodeError struct {
 
-	// The type of code error. Examples include, but aren't limited to: LINT_ERROR ,
-	// PARSER_ERROR .
+	// The type of code error.
+	//
+	// Examples include, but aren't limited to: LINT_ERROR , PARSER_ERROR .
 	ErrorType *string
 
 	// The line, column, and span location of the error in the code.
 	Location *CodeErrorLocation
 
-	// A user presentable error. Examples include, but aren't limited to: Parsing
-	// error: Unterminated string literal .
+	// A user presentable error.
+	//
+	// Examples include, but aren't limited to: Parsing error: Unterminated string
+	// literal .
 	Value *string
 
 	noSmithyDocumentSerde
@@ -251,6 +432,26 @@ type CodeErrorLocation struct {
 
 	// The span/length of the error. Defaults to -1 if unknown.
 	Span int32
+
+	noSmithyDocumentSerde
+}
+
+// Describes an Amazon Cognito configuration.
+type CognitoConfig struct {
+
+	// The Amazon Web Services Region in which the user pool was created.
+	//
+	// This member is required.
+	AwsRegion *string
+
+	// The user pool ID.
+	//
+	// This member is required.
+	UserPoolId *string
+
+	// A regular expression for validating the incoming Amazon Cognito user pool app
+	// client ID. If this value isn't set, no filtering is applied.
+	AppIdClientRegex *string
 
 	noSmithyDocumentSerde
 }
@@ -299,6 +500,15 @@ type DataSource struct {
 	// Lambda settings.
 	LambdaConfig *LambdaDataSourceConfig
 
+	// Enables or disables enhanced data source metrics for specified data sources.
+	// Note that metricsConfig won't be used unless the dataSourceLevelMetricsBehavior
+	// value is set to PER_DATA_SOURCE_METRICS . If the dataSourceLevelMetricsBehavior
+	// is set to FULL_REQUEST_DATA_SOURCE_METRICS instead, metricsConfig will be
+	// ignored. However, you can still set its value.
+	//
+	// metricsConfig can be ENABLED or DISABLED .
+	MetricsConfig DataSourceLevelMetricsConfig
+
 	// The name of the data source.
 	Name *string
 
@@ -314,20 +524,131 @@ type DataSource struct {
 	ServiceRoleArn *string
 
 	// The type of the data source.
+	//
 	//   - AWS_LAMBDA: The data source is an Lambda function.
+	//
 	//   - AMAZON_DYNAMODB: The data source is an Amazon DynamoDB table.
+	//
 	//   - AMAZON_ELASTICSEARCH: The data source is an Amazon OpenSearch Service
 	//   domain.
+	//
 	//   - AMAZON_OPENSEARCH_SERVICE: The data source is an Amazon OpenSearch Service
 	//   domain.
+	//
 	//   - AMAZON_EVENTBRIDGE: The data source is an Amazon EventBridge configuration.
+	//
+	//   - AMAZON_BEDROCK_RUNTIME: The data source is the Amazon Bedrock runtime.
+	//
 	//   - NONE: There is no data source. Use this type when you want to invoke a
 	//   GraphQL operation without connecting to a data source, such as when you're
 	//   performing data transformation with resolvers or invoking a subscription from a
 	//   mutation.
+	//
 	//   - HTTP: The data source is an HTTP endpoint.
+	//
 	//   - RELATIONAL_DATABASE: The data source is a relational database.
 	Type DataSourceType
+
+	noSmithyDocumentSerde
+}
+
+// Contains the introspected data that was retrieved from the data source.
+type DataSourceIntrospectionModel struct {
+
+	// The DataSourceIntrospectionModelField object data.
+	Fields []DataSourceIntrospectionModelField
+
+	// The array of DataSourceIntrospectionModelIndex objects.
+	Indexes []DataSourceIntrospectionModelIndex
+
+	// The name of the model. For example, this could be the name of a single table in
+	// a database.
+	Name *string
+
+	// The primary key stored as a DataSourceIntrospectionModelIndex object.
+	PrimaryKey *DataSourceIntrospectionModelIndex
+
+	// Contains the output of the SDL that was generated from the introspected types.
+	// This is controlled by the includeModelsSDL parameter of the
+	// GetDataSourceIntrospection operation.
+	Sdl *string
+
+	noSmithyDocumentSerde
+}
+
+// Represents the fields that were retrieved from the introspected data.
+type DataSourceIntrospectionModelField struct {
+
+	// The length value of the introspected field.
+	Length int64
+
+	// The name of the field that was retrieved from the introspected data.
+	Name *string
+
+	// The DataSourceIntrospectionModelFieldType object data.
+	Type *DataSourceIntrospectionModelFieldType
+
+	noSmithyDocumentSerde
+}
+
+// Represents the type data for each field retrieved from the introspection.
+type DataSourceIntrospectionModelFieldType struct {
+
+	// Specifies the classification of data. For example, this could be set to values
+	// like Scalar or NonNull to indicate a fundamental property of the field.
+	//
+	// Valid values include:
+	//
+	//   - Scalar : Indicates the value is a primitive type (scalar).
+	//
+	//   - NonNull : Indicates the field cannot be null .
+	//
+	//   - List : Indicates the field contains a list.
+	Kind *string
+
+	// The name of the data type that represents the field. For example, String is a
+	// valid name value.
+	Name *string
+
+	// The DataSourceIntrospectionModelFieldType object data. The type is only present
+	// if DataSourceIntrospectionModelFieldType.kind is set to NonNull or List .
+	//
+	// The type typically contains its own kind and name fields to represent the
+	// actual type data. For instance, type could contain a kind value of Scalar with
+	// a name value of String . The values Scalar and String will be collectively
+	// stored in the values field.
+	Type *DataSourceIntrospectionModelFieldType
+
+	// The values of the type field. This field represents the AppSync data type
+	// equivalent of the introspected field.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// The index that was retrieved from the introspected data.
+type DataSourceIntrospectionModelIndex struct {
+
+	// The fields of the index.
+	Fields []string
+
+	// The name of the index.
+	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// Represents the output of a DataSourceIntrospectionResult . This is the populated
+// result of a GetDataSourceIntrospection operation.
+type DataSourceIntrospectionResult struct {
+
+	// The array of DataSourceIntrospectionModel objects.
+	Models []DataSourceIntrospectionModel
+
+	// Determines the number of types to be returned in a single response before
+	// paginating. This value is typically taken from nextToken value from the
+	// previous response.
+	NextToken *string
 
 	noSmithyDocumentSerde
 }
@@ -396,10 +717,11 @@ type DynamodbDataSourceConfig struct {
 	noSmithyDocumentSerde
 }
 
-// Describes an OpenSearch data source configuration. As of September 2021, Amazon
-// Elasticsearch service is Amazon OpenSearch Service. This configuration is
-// deprecated. For new data sources, use OpenSearchServiceDataSourceConfig to
-// specify an OpenSearch data source.
+// Describes an OpenSearch data source configuration.
+//
+// As of September 2021, Amazon Elasticsearch service is Amazon OpenSearch
+// Service. This configuration is deprecated. For new data sources, use OpenSearchServiceDataSourceConfigto specify
+// an OpenSearch data source.
 type ElasticsearchDataSourceConfig struct {
 
 	// The Amazon Web Services Region.
@@ -411,6 +733,137 @@ type ElasticsearchDataSourceConfig struct {
 	//
 	// This member is required.
 	Endpoint *string
+
+	noSmithyDocumentSerde
+}
+
+// Enables and controls the enhanced metrics feature. Enhanced metrics emit
+// granular data on API usage and performance such as AppSync request and error
+// counts, latency, and cache hits/misses. All enhanced metric data is sent to your
+// CloudWatch account, and you can configure the types of data that will be sent.
+//
+// Enhanced metrics can be configured at the resolver, data source, and operation
+// levels. EnhancedMetricsConfig contains three required parameters, each
+// controlling one of these categories:
+//
+//   - resolverLevelMetricsBehavior : Controls how resolver metrics will be emitted
+//     to CloudWatch. Resolver metrics include:
+//
+//   - GraphQL errors: The number of GraphQL errors that occurred.
+//
+//   - Requests: The number of invocations that occurred during a request.
+//
+//   - Latency: The time to complete a resolver invocation.
+//
+//   - Cache hits: The number of cache hits during a request.
+//
+//   - Cache misses: The number of cache misses during a request.
+//
+// These metrics can be emitted to CloudWatch per resolver or for all resolvers in
+//
+//	the request. Metrics will be recorded by API ID and resolver name.
+//	resolverLevelMetricsBehavior accepts one of these values at a time:
+//
+//	- FULL_REQUEST_RESOLVER_METRICS : Records and emits metric data for all
+//	resolvers in the request.
+//
+//	- PER_RESOLVER_METRICS : Records and emits metric data for resolvers that have
+//	the metricsConfig value set to ENABLED .
+//
+//	- dataSourceLevelMetricsBehavior : Controls how data source metrics will be
+//	emitted to CloudWatch. Data source metrics include:
+//
+//	- Requests: The number of invocations that occured during a request.
+//
+//	- Latency: The time to complete a data source invocation.
+//
+//	- Errors: The number of errors that occurred during a data source invocation.
+//
+// These metrics can be emitted to CloudWatch per data source or for all data
+//
+//	sources in the request. Metrics will be recorded by API ID and data source name.
+//	dataSourceLevelMetricsBehavior accepts one of these values at a time:
+//
+//	- FULL_REQUEST_DATA_SOURCE_METRICS : Records and emits metric data for all
+//	data sources in the request.
+//
+//	- PER_DATA_SOURCE_METRICS : Records and emits metric data for data sources
+//	that have the metricsConfig value set to ENABLED .
+//
+//	- operationLevelMetricsConfig : Controls how operation metrics will be emitted
+//	to CloudWatch. Operation metrics include:
+//
+//	- Requests: The number of times a specified GraphQL operation was called.
+//
+//	- GraphQL errors: The number of GraphQL errors that occurred during a
+//	specified GraphQL operation.
+//
+// Metrics will be recorded by API ID and operation name. You can set the value to
+//
+//	ENABLED or DISABLED .
+type EnhancedMetricsConfig struct {
+
+	// Controls how data source metrics will be emitted to CloudWatch. Data source
+	// metrics include:
+	//
+	//   - Requests: The number of invocations that occured during a request.
+	//
+	//   - Latency: The time to complete a data source invocation.
+	//
+	//   - Errors: The number of errors that occurred during a data source invocation.
+	//
+	// These metrics can be emitted to CloudWatch per data source or for all data
+	// sources in the request. Metrics will be recorded by API ID and data source name.
+	// dataSourceLevelMetricsBehavior accepts one of these values at a time:
+	//
+	//   - FULL_REQUEST_DATA_SOURCE_METRICS : Records and emits metric data for all
+	//   data sources in the request.
+	//
+	//   - PER_DATA_SOURCE_METRICS : Records and emits metric data for data sources
+	//   that have the metricsConfig value set to ENABLED .
+	//
+	// This member is required.
+	DataSourceLevelMetricsBehavior DataSourceLevelMetricsBehavior
+
+	//  Controls how operation metrics will be emitted to CloudWatch. Operation
+	// metrics include:
+	//
+	//   - Requests: The number of times a specified GraphQL operation was called.
+	//
+	//   - GraphQL errors: The number of GraphQL errors that occurred during a
+	//   specified GraphQL operation.
+	//
+	// Metrics will be recorded by API ID and operation name. You can set the value to
+	// ENABLED or DISABLED .
+	//
+	// This member is required.
+	OperationLevelMetricsConfig OperationLevelMetricsConfig
+
+	// Controls how resolver metrics will be emitted to CloudWatch. Resolver metrics
+	// include:
+	//
+	//   - GraphQL errors: The number of GraphQL errors that occurred.
+	//
+	//   - Requests: The number of invocations that occurred during a request.
+	//
+	//   - Latency: The time to complete a resolver invocation.
+	//
+	//   - Cache hits: The number of cache hits during a request.
+	//
+	//   - Cache misses: The number of cache misses during a request.
+	//
+	// These metrics can be emitted to CloudWatch per resolver or for all resolvers in
+	// the request. Metrics will be recorded by API ID and resolver name.
+	// resolverLevelMetricsBehavior accepts one of these values at a time:
+	//
+	//   - FULL_REQUEST_RESOLVER_METRICS : Records and emits metric data for all
+	//   resolvers in the request.
+	//
+	//   - PER_RESOLVER_METRICS : Records and emits metric data for resolvers that have
+	//   the metricsConfig value set to ENABLED .
+	//
+	// This member is required.
+	ResolverLevelMetricsBehavior ResolverLevelMetricsBehavior
 
 	noSmithyDocumentSerde
 }
@@ -440,12 +893,59 @@ type EvaluateCodeErrorDetail struct {
 // Describes an Amazon EventBridge bus data source configuration.
 type EventBridgeDataSourceConfig struct {
 
-	// The ARN of the event bus. For more information about event buses, see Amazon
-	// EventBridge event buses (https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus.html)
-	// .
+	// The ARN of the event bus. For more information about event buses, see [Amazon EventBridge event buses].
+	//
+	// [Amazon EventBridge event buses]: https://docs.aws.amazon.com/eventbridge/latest/userguide/eb-event-bus.html
 	//
 	// This member is required.
 	EventBusArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the authorization configuration for connections, message publishing,
+// message subscriptions, and logging for an Event API.
+type EventConfig struct {
+
+	// A list of authorization providers.
+	//
+	// This member is required.
+	AuthProviders []AuthProvider
+
+	// A list of valid authorization modes for the Event API connections.
+	//
+	// This member is required.
+	ConnectionAuthModes []AuthMode
+
+	// A list of valid authorization modes for the Event API publishing.
+	//
+	// This member is required.
+	DefaultPublishAuthModes []AuthMode
+
+	// A list of valid authorization modes for the Event API subscriptions.
+	//
+	// This member is required.
+	DefaultSubscribeAuthModes []AuthMode
+
+	// The CloudWatch Logs configuration for the Event API.
+	LogConfig *EventLogConfig
+
+	noSmithyDocumentSerde
+}
+
+// Describes the CloudWatch Logs configuration for the Event API.
+type EventLogConfig struct {
+
+	// The IAM service role that AppSync assumes to publish CloudWatch Logs in your
+	// account.
+	//
+	// This member is required.
+	CloudWatchLogsRoleArn *string
+
+	// The type of information to log for the Event API.
+	//
+	// This member is required.
+	LogLevel EventLogLevel
 
 	noSmithyDocumentSerde
 }
@@ -493,8 +993,10 @@ type FunctionConfiguration struct {
 	// specified.
 	Runtime *AppSyncRuntime
 
-	// Describes a Sync configuration for a resolver. Specifies which Conflict
-	// Detection strategy and Resolution strategy to use when the resolver is invoked.
+	// Describes a Sync configuration for a resolver.
+	//
+	// Specifies which Conflict Detection strategy and Resolution strategy to use when
+	// the resolver is invoked.
 	SyncConfig *SyncConfig
 
 	noSmithyDocumentSerde
@@ -522,6 +1024,19 @@ type GraphqlApi struct {
 	// The DNS records for the API.
 	Dns map[string]string
 
+	// The enhancedMetricsConfig object.
+	EnhancedMetricsConfig *EnhancedMetricsConfig
+
+	// Sets the value of the GraphQL API to enable ( ENABLED ) or disable ( DISABLED )
+	// introspection. If no value is provided, the introspection configuration will be
+	// set to ENABLED by default. This field will produce an error if the operation
+	// attempts to use the introspection feature while this field is disabled.
+	//
+	// For more information about introspection, see [GraphQL introspection].
+	//
+	// [GraphQL introspection]: https://graphql.org/learn/introspection/
+	IntrospectionConfig GraphQLApiIntrospectionConfig
+
 	// Configuration for Lambda function authorization.
 	LambdaAuthorizerConfig *LambdaAuthorizerConfig
 
@@ -543,9 +1058,27 @@ type GraphqlApi struct {
 	// The account owner of the GraphQL API.
 	Owner *string
 
-	// The owner contact information for an API resource. This field accepts any
-	// string input with a length of 0 - 256 characters.
+	// The owner contact information for an API resource.
+	//
+	// This field accepts any string input with a length of 0 - 256 characters.
 	OwnerContact *string
+
+	// The maximum depth a query can have in a single request. Depth refers to the
+	// amount of nested levels allowed in the body of query. The default value is 0
+	// (or unspecified), which indicates there's no depth limit. If you set a limit, it
+	// can be between 1 and 75 nested levels. This field will produce a limit error if
+	// the operation falls out of bounds.
+	//
+	// Note that fields can still be set to nullable or non-nullable. If a
+	// non-nullable field produces an error, the error will be thrown upwards to the
+	// first nullable field available.
+	QueryDepthLimit int32
+
+	// The maximum number of resolvers that can be invoked in a single request. The
+	// default value is 0 (or unspecified), which will set the limit to 10000 . When
+	// specified, the limit value can be between 1 and 10000 . This field will produce
+	// a limit error if the operation falls out of bounds.
+	ResolverCountLimit int32
 
 	// The tags.
 	Tags map[string]string
@@ -594,12 +1127,15 @@ type LambdaAuthorizerConfig struct {
 
 	// The Amazon Resource Name (ARN) of the Lambda function to be called for
 	// authorization. This can be a standard Lambda ARN, a version ARN ( .../v3 ), or
-	// an alias ARN. Note: This Lambda function must have the following resource-based
-	// policy assigned to it. When configuring Lambda authorizers in the console, this
-	// is done for you. To use the Command Line Interface (CLI), run the following:
-	// aws lambda add-permission --function-name
-	// "arn:aws:lambda:us-east-2:111122223333:function:my-function" --statement-id
-	// "appsync" --principal appsync.amazonaws.com --action lambda:InvokeFunction
+	// an alias ARN.
+	//
+	// Note: This Lambda function must have the following resource-based policy
+	// assigned to it. When configuring Lambda authorizers in the console, this is done
+	// for you. To use the Command Line Interface (CLI), run the following:
+	//
+	//     aws lambda add-permission --function-name
+	//     "arn:aws:lambda:us-east-2:111122223333:function:my-function" --statement-id
+	//     "appsync" --principal appsync.amazonaws.com --action lambda:InvokeFunction
 	//
 	// This member is required.
 	AuthorizerUri *string
@@ -650,15 +1186,21 @@ type LogConfig struct {
 	CloudWatchLogsRoleArn *string
 
 	// The field logging level. Values can be NONE, ERROR, or ALL.
+	//
 	//   - NONE: No field-level logs are captured.
-	//   - ERROR: Logs the following information only for the fields that are in
-	//   error:
+	//
+	//   - ERROR: Logs the following information only for the fields that are in error:
+	//
 	//   - The error section in the server response.
+	//
 	//   - Field-level errors.
-	//   - The generated request/response functions that got resolved for error
-	//   fields.
+	//
+	//   - The generated request/response functions that got resolved for error fields.
+	//
 	//   - ALL: The following information is logged for all fields in the query:
+	//
 	//   - Field-level tracing information.
+	//
 	//   - The generated request/response functions that got resolved for each field.
 	//
 	// This member is required.
@@ -720,6 +1262,31 @@ type PipelineConfig struct {
 	noSmithyDocumentSerde
 }
 
+// Contains the metadata required to introspect the RDS cluster.
+type RdsDataApiConfig struct {
+
+	// The name of the database in the cluster.
+	//
+	// This member is required.
+	DatabaseName *string
+
+	// The resource ARN of the RDS cluster.
+	//
+	// This member is required.
+	ResourceArn *string
+
+	// The secret's ARN that was obtained from Secrets Manager. A secret consists of
+	// secret information, the secret value, plus metadata about the secret. A secret
+	// value can be a string or binary. It typically includes the ARN, secret name and
+	// description, policies, tags, encryption key from the Key Management Service, and
+	// key rotation data.
+	//
+	// This member is required.
+	SecretArn *string
+
+	noSmithyDocumentSerde
+}
+
 // The Amazon Relational Database Service (Amazon RDS) HTTP endpoint configuration.
 type RdsHttpEndpointConfig struct {
 
@@ -749,6 +1316,7 @@ type RelationalDatabaseDataSourceConfig struct {
 	RdsHttpEndpointConfig *RdsHttpEndpointConfig
 
 	// Source type for the relational database.
+	//
 	//   - RDS_HTTP_ENDPOINT: The relational database source type is an Amazon
 	//   Relational Database Service (Amazon RDS) HTTP endpoint.
 	RelationalDatabaseSourceType RelationalDatabaseSourceType
@@ -773,6 +1341,7 @@ type Resolver struct {
 	FieldName *string
 
 	// The resolver type.
+	//
 	//   - UNIT: A UNIT resolver type. A UNIT resolver is the default resolver type.
 	//   You can use a UNIT resolver to run a GraphQL query against a single data source.
 	//
@@ -783,6 +1352,15 @@ type Resolver struct {
 
 	// The maximum batching size for a resolver.
 	MaxBatchSize int32
+
+	// Enables or disables enhanced resolver metrics for specified resolvers. Note
+	// that metricsConfig won't be used unless the resolverLevelMetricsBehavior value
+	// is set to PER_RESOLVER_METRICS . If the resolverLevelMetricsBehavior is set to
+	// FULL_REQUEST_RESOLVER_METRICS instead, metricsConfig will be ignored. However,
+	// you can still set its value.
+	//
+	// metricsConfig can be ENABLED or DISABLED .
+	MetricsConfig ResolverLevelMetricsConfig
 
 	// The PipelineConfig .
 	PipelineConfig *PipelineConfig
@@ -815,11 +1393,14 @@ type Resolver struct {
 // is linked to a merged API. There can be multiple source APIs attached to each
 // merged API. When linked to a merged API, the source API's schema, data sources,
 // and resolvers will be combined with other linked source API data to form a new,
-// singular API. Source APIs can originate from your account or from other accounts
-// via Amazon Web Services Resource Access Manager. For more information about
-// sharing resources from other accounts, see What is Amazon Web Services Resource
-// Access Manager? (https://docs.aws.amazon.com/ram/latest/userguide/what-is.html)
-// in the Amazon Web Services Resource Access Manager guide.
+// singular API.
+//
+// Source APIs can originate from your account or from other accounts via Amazon
+// Web Services Resource Access Manager. For more information about sharing
+// resources from other accounts, see [What is Amazon Web Services Resource Access Manager?]in the Amazon Web Services Resource Access
+// Manager guide.
+//
+// [What is Amazon Web Services Resource Access Manager?]: https://docs.aws.amazon.com/ram/latest/userguide/what-is.html
 type SourceApiAssociation struct {
 
 	// The Amazon Resource Name (ARN) of the source API association.
@@ -863,12 +1444,14 @@ type SourceApiAssociation struct {
 type SourceApiAssociationConfig struct {
 
 	// The property that indicates which merging option is enabled in the source API
-	// association. Valid merge types are MANUAL_MERGE (default) and AUTO_MERGE .
-	// Manual merges are the default behavior and require the user to trigger any
-	// changes from the source APIs to the merged API manually. Auto merges subscribe
-	// the merged API to the changes performed on the source APIs so that any change in
-	// the source APIs are also made to the merged API. Auto merges use
-	// MergedApiExecutionRoleArn to perform merge operations.
+	// association.
+	//
+	// Valid merge types are MANUAL_MERGE (default) and AUTO_MERGE . Manual merges are
+	// the default behavior and require the user to trigger any changes from the source
+	// APIs to the merged API manually. Auto merges subscribe the merged API to the
+	// changes performed on the source APIs so that any change in the source APIs are
+	// also made to the merged API. Auto merges use MergedApiExecutionRoleArn to
+	// perform merge operations.
 	MergeType MergeType
 
 	noSmithyDocumentSerde
@@ -901,20 +1484,27 @@ type SourceApiAssociationSummary struct {
 	noSmithyDocumentSerde
 }
 
-// Describes a Sync configuration for a resolver. Specifies which Conflict
-// Detection strategy and Resolution strategy to use when the resolver is invoked.
+// Describes a Sync configuration for a resolver.
+//
+// Specifies which Conflict Detection strategy and Resolution strategy to use when
+// the resolver is invoked.
 type SyncConfig struct {
 
 	// The Conflict Detection strategy to use.
+	//
 	//   - VERSION: Detect conflicts based on object versions for this resolver.
+	//
 	//   - NONE: Do not detect conflicts when invoking this resolver.
 	ConflictDetection ConflictDetectionType
 
 	// The Conflict Resolution strategy to perform in the event of a conflict.
+	//
 	//   - OPTIMISTIC_CONCURRENCY: Resolve conflicts by rejecting mutations when
 	//   versions don't match the latest version at the server.
+	//
 	//   - AUTOMERGE: Resolve conflicts with the Automerge conflict resolution
 	//   strategy.
+	//
 	//   - LAMBDA: Resolve conflicts with an Lambda function supplied in the
 	//   LambdaConflictHandlerConfig .
 	ConflictHandler ConflictHandlerType

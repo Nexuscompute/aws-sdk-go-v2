@@ -21,8 +21,9 @@ type AccessTokenSummary struct {
 	Name *string
 
 	// The date and time when the personal access token will expire, in coordinated
-	// universal time (UTC) timestamp format as specified in RFC 3339 (https://www.rfc-editor.org/rfc/rfc3339#section-5.6)
-	// .
+	// universal time (UTC) timestamp format as specified in [RFC 3339].
+	//
+	// [RFC 3339]: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
 	ExpiresTime *time.Time
 
 	noSmithyDocumentSerde
@@ -98,7 +99,9 @@ type DevEnvironmentSessionSummary struct {
 	SpaceName *string
 
 	// The date and time the session started, in coordinated universal time (UTC)
-	// timestamp format as specified in RFC 3339 (https://www.rfc-editor.org/rfc/rfc3339#section-5.6)
+	// timestamp format as specified in [RFC 3339]
+	//
+	// [RFC 3339]: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
 	//
 	// This member is required.
 	StartedTime *time.Time
@@ -132,8 +135,9 @@ type DevEnvironmentSummary struct {
 	InstanceType InstanceType
 
 	// The time when the Dev Environment was last updated, in coordinated universal
-	// time (UTC) timestamp format as specified in RFC 3339 (https://www.rfc-editor.org/rfc/rfc3339#section-5.6)
-	// .
+	// time (UTC) timestamp format as specified in [RFC 3339].
+	//
+	// [RFC 3339]: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
 	//
 	// This member is required.
 	LastUpdatedTime *time.Time
@@ -171,6 +175,10 @@ type DevEnvironmentSummary struct {
 	// The reason for the status.
 	StatusReason *string
 
+	// The name of the connection used to connect to Amazon VPC used when the Dev
+	// Environment was created, if any.
+	VpcConnectionName *string
+
 	noSmithyDocumentSerde
 }
 
@@ -205,8 +213,9 @@ type EventLogEntry struct {
 	EventSource *string
 
 	// The time the event took place, in coordinated universal time (UTC) timestamp
-	// format as specified in RFC 3339 (https://www.rfc-editor.org/rfc/rfc3339#section-5.6)
-	// .
+	// format as specified in [RFC 3339].
+	//
+	// [RFC 3339]: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
 	//
 	// This member is required.
 	EventTime *time.Time
@@ -324,7 +333,9 @@ type IdeConfiguration struct {
 	// and VSCode .
 	Name *string
 
-	// A link to the IDE runtime image. This parameter is not required for VSCode .
+	// A link to the IDE runtime image.
+	//
+	// This parameter is not required for VSCode .
 	Runtime *string
 
 	noSmithyDocumentSerde
@@ -334,8 +345,9 @@ type IdeConfiguration struct {
 type ListSourceRepositoriesItem struct {
 
 	// The time the source repository was created, in coordinated universal time (UTC)
-	// timestamp format as specified in RFC 3339 (https://www.rfc-editor.org/rfc/rfc3339#section-5.6)
-	// .
+	// timestamp format as specified in [RFC 3339].
+	//
+	// [RFC 3339]: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
 	//
 	// This member is required.
 	CreatedTime *time.Time
@@ -346,8 +358,9 @@ type ListSourceRepositoriesItem struct {
 	Id *string
 
 	// The time the source repository was last updated, in coordinated universal time
-	// (UTC) timestamp format as specified in RFC 3339 (https://www.rfc-editor.org/rfc/rfc3339#section-5.6)
-	// .
+	// (UTC) timestamp format as specified in [RFC 3339].
+	//
+	// [RFC 3339]: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
 	//
 	// This member is required.
 	LastUpdatedTime *time.Time
@@ -372,8 +385,9 @@ type ListSourceRepositoryBranchesItem struct {
 	HeadCommitId *string
 
 	// The time the branch was last updated, in coordinated universal time (UTC)
-	// timestamp format as specified in RFC 3339 (https://www.rfc-editor.org/rfc/rfc3339#section-5.6)
-	// .
+	// timestamp format as specified in [RFC 3339].
+	//
+	// [RFC 3339]: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
 	LastUpdatedTime *time.Time
 
 	// The name of the branch.
@@ -388,9 +402,10 @@ type ListSourceRepositoryBranchesItem struct {
 // Information about the persistent storage for a Dev Environment.
 type PersistentStorage struct {
 
-	// The size of the persistent storage in gigabytes (specifically GiB). Valid
-	// values for storage are based on memory sizes in 16GB increments. Valid values
-	// are 16, 32, and 64.
+	// The size of the persistent storage in gigabytes (specifically GiB).
+	//
+	// Valid values for storage are based on memory sizes in 16GB increments. Valid
+	// values are 16, 32, and 64.
 	//
 	// This member is required.
 	SizeInGiB *int32
@@ -398,12 +413,14 @@ type PersistentStorage struct {
 	noSmithyDocumentSerde
 }
 
-// Information about the configuration of persistent storage for a Dev Environment.
+// Information about the configuration of persistent storage for a Dev
+// Environment.
 type PersistentStorageConfiguration struct {
 
-	// The size of the persistent storage in gigabytes (specifically GiB). Valid
-	// values for storage are based on memory sizes in 16GB increments. Valid values
-	// are 16, 32, and 64.
+	// The size of the persistent storage in gigabytes (specifically GiB).
+	//
+	// Valid values for storage are based on memory sizes in 16GB increments. Valid
+	// values are 16, 32, and 64.
 	//
 	// This member is required.
 	SizeInGiB *int32
@@ -516,6 +533,154 @@ type UserIdentity struct {
 
 	// The display name of the user in Amazon CodeCatalyst.
 	UserName *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about a workflow definition file.
+type WorkflowDefinition struct {
+
+	// The path to the workflow definition file stored in the source repository for
+	// the project, including the file name.
+	//
+	// This member is required.
+	Path *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about a workflow definition.
+type WorkflowDefinitionSummary struct {
+
+	// The path to the workflow definition file stored in the source repository for
+	// the project, including the file name.
+	//
+	// This member is required.
+	Path *string
+
+	noSmithyDocumentSerde
+}
+
+// Information used to sort workflow runs in the returned list.
+type WorkflowRunSortCriteria struct {
+	noSmithyDocumentSerde
+}
+
+// Information about the status of a workflow run.
+type WorkflowRunStatusReason struct {
+	noSmithyDocumentSerde
+}
+
+// Information about a workflow run.
+type WorkflowRunSummary struct {
+
+	// The system-generated unique ID of the workflow run.
+	//
+	// This member is required.
+	Id *string
+
+	// The date and time the workflow was last updated, in coordinated universal time
+	// (UTC) timestamp format as specified in [RFC 3339]
+	//
+	// [RFC 3339]: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
+	//
+	// This member is required.
+	LastUpdatedTime *time.Time
+
+	// The date and time the workflow run began, in coordinated universal time (UTC)
+	// timestamp format as specified in [RFC 3339].
+	//
+	// [RFC 3339]: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
+	//
+	// This member is required.
+	StartTime *time.Time
+
+	// The status of the workflow run.
+	//
+	// This member is required.
+	Status WorkflowRunStatus
+
+	// The system-generated unique ID of the workflow.
+	//
+	// This member is required.
+	WorkflowId *string
+
+	// The name of the workflow.
+	//
+	// This member is required.
+	WorkflowName *string
+
+	// The date and time the workflow run ended, in coordinated universal time (UTC)
+	// timestamp format as specified in [RFC 3339]
+	//
+	// [RFC 3339]: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
+	EndTime *time.Time
+
+	// The reasons for the workflow run status.
+	StatusReasons []WorkflowRunStatusReason
+
+	noSmithyDocumentSerde
+}
+
+// Information used to sort workflows in the returned list.
+type WorkflowSortCriteria struct {
+	noSmithyDocumentSerde
+}
+
+// Information about a workflow.
+type WorkflowSummary struct {
+
+	// The date and time the workflow was created, in coordinated universal time (UTC)
+	// timestamp format as specified in [RFC 3339]
+	//
+	// [RFC 3339]: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
+	//
+	// This member is required.
+	CreatedTime *time.Time
+
+	// Information about the workflow definition file.
+	//
+	// This member is required.
+	Definition *WorkflowDefinitionSummary
+
+	// The system-generated unique ID of a workflow.
+	//
+	// This member is required.
+	Id *string
+
+	// The date and time the workflow was last updated, in coordinated universal time
+	// (UTC) timestamp format as specified in [RFC 3339]
+	//
+	// [RFC 3339]: https://www.rfc-editor.org/rfc/rfc3339#section-5.6
+	//
+	// This member is required.
+	LastUpdatedTime *time.Time
+
+	// The name of the workflow.
+	//
+	// This member is required.
+	Name *string
+
+	// The run mode of the workflow.
+	//
+	// This member is required.
+	RunMode WorkflowRunMode
+
+	// The name of the branch of the source repository where the workflow definition
+	// file is stored.
+	//
+	// This member is required.
+	SourceBranchName *string
+
+	// The name of the source repository where the workflow definition file is stored.
+	//
+	// This member is required.
+	SourceRepositoryName *string
+
+	// The status of the workflow.
+	//
+	// This member is required.
+	Status WorkflowStatus
 
 	noSmithyDocumentSerde
 }

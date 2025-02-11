@@ -60,9 +60,9 @@ func (e *InvalidArgumentException) ErrorCode() string {
 }
 func (e *InvalidArgumentException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// Kinesis Data Firehose throws this exception when an attempt to put records or
-// to start or stop delivery stream encryption fails. This happens when the KMS
-// service throws one of the following exception types: AccessDeniedException ,
+// Firehose throws this exception when an attempt to put records or to start or
+// stop Firehose stream encryption fails. This happens when the KMS service throws
+// one of the following exception types: AccessDeniedException ,
 // InvalidStateException , DisabledException , or NotFoundException .
 type InvalidKMSResourceException struct {
 	Message *string
@@ -90,6 +90,35 @@ func (e *InvalidKMSResourceException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *InvalidKMSResourceException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// Only requests from CloudWatch Logs are supported when CloudWatch Logs
+// decompression is enabled.
+type InvalidSourceException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	Code *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InvalidSourceException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InvalidSourceException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InvalidSourceException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InvalidSourceException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InvalidSourceException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // You have already reached the limit for a requested resource.
 type LimitExceededException struct {
@@ -170,10 +199,11 @@ func (e *ResourceNotFoundException) ErrorCode() string {
 func (e *ResourceNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The service is unavailable. Back off and retry the operation. If you continue
-// to see the exception, throughput limits for the delivery stream may have been
-// exceeded. For more information about limits and how to request an increase, see
-// Amazon Kinesis Data Firehose Limits (https://docs.aws.amazon.com/firehose/latest/dev/limits.html)
+// to see the exception, throughput limits for the Firehose stream may have been
+// exceeded. For more information about limits and how to request an increase, see [Amazon Firehose Limits]
 // .
+//
+// [Amazon Firehose Limits]: https://docs.aws.amazon.com/firehose/latest/dev/limits.html
 type ServiceUnavailableException struct {
 	Message *string
 

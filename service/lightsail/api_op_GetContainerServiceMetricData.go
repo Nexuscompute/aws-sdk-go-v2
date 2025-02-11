@@ -4,23 +4,20 @@ package lightsail
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/lightsail/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
 )
 
 // Returns the data points of a specific metric of your Amazon Lightsail container
-// service. Metrics report the utilization of your resources. Monitor and collect
-// metric data regularly to maintain the reliability, availability, and performance
-// of your resources.
+// service.
+//
+// Metrics report the utilization of your resources. Monitor and collect metric
+// data regularly to maintain the reliability, availability, and performance of
+// your resources.
 func (c *Client) GetContainerServiceMetricData(ctx context.Context, params *GetContainerServiceMetricDataInput, optFns ...func(*Options)) (*GetContainerServiceMetricDataOutput, error) {
 	if params == nil {
 		params = &GetContainerServiceMetricDataInput{}
@@ -43,28 +40,39 @@ type GetContainerServiceMetricDataInput struct {
 	// This member is required.
 	EndTime *time.Time
 
-	// The metric for which you want to return information. Valid container service
-	// metric names are listed below, along with the most useful statistics to include
-	// in your request, and the published unit value.
+	// The metric for which you want to return information.
+	//
+	// Valid container service metric names are listed below, along with the most
+	// useful statistics to include in your request, and the published unit value.
+	//
 	//   - CPUUtilization - The average percentage of compute units that are currently
 	//   in use across all nodes of the container service. This metric identifies the
 	//   processing power required to run containers on each node of the container
-	//   service. Statistics: The most useful statistics are Maximum and Average .
-	//   Unit: The published unit is Percent .
+	//   service.
+	//
+	// Statistics: The most useful statistics are Maximum and Average .
+	//
+	// Unit: The published unit is Percent .
+	//
 	//   - MemoryUtilization - The average percentage of available memory that is
 	//   currently in use across all nodes of the container service. This metric
 	//   identifies the memory required to run containers on each node of the container
-	//   service. Statistics: The most useful statistics are Maximum and Average .
-	//   Unit: The published unit is Percent .
+	//   service.
+	//
+	// Statistics: The most useful statistics are Maximum and Average .
+	//
+	// Unit: The published unit is Percent .
 	//
 	// This member is required.
 	MetricName types.ContainerServiceMetricName
 
-	// The granularity, in seconds, of the returned data points. All container service
-	// metric data is available in 5-minute (300 seconds) granularity.
+	// The granularity, in seconds, of the returned data points.
+	//
+	// All container service metric data is available in 5-minute (300 seconds)
+	// granularity.
 	//
 	// This member is required.
-	Period int32
+	Period *int32
 
 	// The name of the container service for which to get metric data.
 	//
@@ -76,18 +84,25 @@ type GetContainerServiceMetricDataInput struct {
 	// This member is required.
 	StartTime *time.Time
 
-	// The statistic for the metric. The following statistics are available:
+	// The statistic for the metric.
+	//
+	// The following statistics are available:
+	//
 	//   - Minimum - The lowest value observed during the specified period. Use this
 	//   value to determine low volumes of activity for your application.
+	//
 	//   - Maximum - The highest value observed during the specified period. Use this
 	//   value to determine high volumes of activity for your application.
+	//
 	//   - Sum - All values submitted for the matching metric added together. You can
 	//   use this statistic to determine the total volume of a metric.
+	//
 	//   - Average - The value of Sum / SampleCount during the specified period. By
 	//   comparing this statistic with the Minimum and Maximum values, you can
 	//   determine the full scope of a metric and how close the average use is to the
 	//   Minimum and Maximum values. This comparison helps you to know when to increase
 	//   or decrease your resources.
+	//
 	//   - SampleCount - The count, or number, of data points used for the statistical
 	//   calculation.
 	//
@@ -112,6 +127,9 @@ type GetContainerServiceMetricDataOutput struct {
 }
 
 func (c *Client) addOperationGetContainerServiceMetricDataMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpGetContainerServiceMetricData{}, middleware.After)
 	if err != nil {
 		return err
@@ -120,34 +138,38 @@ func (c *Client) addOperationGetContainerServiceMetricDataMiddlewares(stack *mid
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GetContainerServiceMetricData"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -159,7 +181,13 @@ func (c *Client) addOperationGetContainerServiceMetricDataMiddlewares(stack *mid
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGetContainerServiceMetricDataResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetContainerServiceMetricDataValidationMiddleware(stack); err != nil {
@@ -168,7 +196,7 @@ func (c *Client) addOperationGetContainerServiceMetricDataMiddlewares(stack *mid
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetContainerServiceMetricData(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -180,7 +208,19 @@ func (c *Client) addOperationGetContainerServiceMetricDataMiddlewares(stack *mid
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -190,130 +230,6 @@ func newServiceMetadataMiddleware_opGetContainerServiceMetricData(region string)
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "lightsail",
 		OperationName: "GetContainerServiceMetricData",
 	}
-}
-
-type opGetContainerServiceMetricDataResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opGetContainerServiceMetricDataResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGetContainerServiceMetricDataResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "lightsail"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "lightsail"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("lightsail")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addGetContainerServiceMetricDataResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGetContainerServiceMetricDataResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

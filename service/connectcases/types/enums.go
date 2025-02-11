@@ -2,6 +2,27 @@
 
 package types
 
+type AuditEventType string
+
+// Enum values for AuditEventType
+const (
+	AuditEventTypeCaseCreated        AuditEventType = "Case.Created"
+	AuditEventTypeCaseUpdated        AuditEventType = "Case.Updated"
+	AuditEventTypeRelatedItemCreated AuditEventType = "RelatedItem.Created"
+)
+
+// Values returns all known values for AuditEventType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AuditEventType) Values() []AuditEventType {
+	return []AuditEventType{
+		"Case.Created",
+		"Case.Updated",
+		"RelatedItem.Created",
+	}
+}
+
 type CommentBodyTextType string
 
 // Enum values for CommentBodyTextType
@@ -10,8 +31,9 @@ const (
 )
 
 // Values returns all known values for CommentBodyTextType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CommentBodyTextType) Values() []CommentBodyTextType {
 	return []CommentBodyTextType{
 		"Text/Plain",
@@ -28,8 +50,9 @@ const (
 )
 
 // Values returns all known values for DomainStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DomainStatus) Values() []DomainStatus {
 	return []DomainStatus{
 		"Active",
@@ -47,8 +70,9 @@ const (
 )
 
 // Values returns all known values for FieldNamespace. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FieldNamespace) Values() []FieldNamespace {
 	return []FieldNamespace{
 		"System",
@@ -66,11 +90,13 @@ const (
 	FieldTypeDateTime     FieldType = "DateTime"
 	FieldTypeSingleSelect FieldType = "SingleSelect"
 	FieldTypeUrl          FieldType = "Url"
+	FieldTypeUser         FieldType = "User"
 )
 
 // Values returns all known values for FieldType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FieldType) Values() []FieldType {
 	return []FieldType{
 		"Text",
@@ -79,6 +105,7 @@ func (FieldType) Values() []FieldType {
 		"DateTime",
 		"SingleSelect",
 		"Url",
+		"User",
 	}
 }
 
@@ -91,8 +118,9 @@ const (
 )
 
 // Values returns all known values for Order. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Order) Values() []Order {
 	return []Order{
 		"Asc",
@@ -106,15 +134,35 @@ type RelatedItemType string
 const (
 	RelatedItemTypeContact RelatedItemType = "Contact"
 	RelatedItemTypeComment RelatedItemType = "Comment"
+	RelatedItemTypeFile    RelatedItemType = "File"
 )
 
 // Values returns all known values for RelatedItemType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RelatedItemType) Values() []RelatedItemType {
 	return []RelatedItemType{
 		"Contact",
 		"Comment",
+		"File",
+	}
+}
+
+type RuleType string
+
+// Enum values for RuleType
+const (
+	RuleTypeRequired RuleType = "Required"
+)
+
+// Values returns all known values for RuleType. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RuleType) Values() []RuleType {
+	return []RuleType{
+		"Required",
 	}
 }
 
@@ -127,8 +175,9 @@ const (
 )
 
 // Values returns all known values for TemplateStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TemplateStatus) Values() []TemplateStatus {
 	return []TemplateStatus{
 		"Active",

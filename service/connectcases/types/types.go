@@ -7,6 +7,135 @@ import (
 	"time"
 )
 
+// Represents the content of a particular audit event.
+type AuditEvent struct {
+
+	// Unique identifier of a case audit history event.
+	//
+	// This member is required.
+	EventId *string
+
+	// A list of Case Audit History event fields.
+	//
+	// This member is required.
+	Fields []*AuditEventField
+
+	// Time at which an Audit History event took place.
+	//
+	// This member is required.
+	PerformedTime *time.Time
+
+	// The Type of an audit history event.
+	//
+	// This member is required.
+	Type AuditEventType
+
+	// Information of the user which performed the audit.
+	PerformedBy *AuditEventPerformedBy
+
+	// The Type of the related item.
+	RelatedItemType RelatedItemType
+
+	noSmithyDocumentSerde
+}
+
+// Fields for audit event.
+type AuditEventField struct {
+
+	// Unique identifier of field in an Audit History entry.
+	//
+	// This member is required.
+	EventFieldId *string
+
+	// Union of potential field value types.
+	//
+	// This member is required.
+	NewValue AuditEventFieldValueUnion
+
+	// Union of potential field value types.
+	OldValue AuditEventFieldValueUnion
+
+	noSmithyDocumentSerde
+}
+
+// Object to store union of Field values.
+//
+// The following types satisfy this interface:
+//
+//	AuditEventFieldValueUnionMemberBooleanValue
+//	AuditEventFieldValueUnionMemberDoubleValue
+//	AuditEventFieldValueUnionMemberEmptyValue
+//	AuditEventFieldValueUnionMemberStringValue
+//	AuditEventFieldValueUnionMemberUserArnValue
+type AuditEventFieldValueUnion interface {
+	isAuditEventFieldValueUnion()
+}
+
+// Can be either null, or have a Boolean value type. Only one value can be
+// provided.
+type AuditEventFieldValueUnionMemberBooleanValue struct {
+	Value bool
+
+	noSmithyDocumentSerde
+}
+
+func (*AuditEventFieldValueUnionMemberBooleanValue) isAuditEventFieldValueUnion() {}
+
+// Can be either null, or have a Double value type. Only one value can be provided.
+type AuditEventFieldValueUnionMemberDoubleValue struct {
+	Value float64
+
+	noSmithyDocumentSerde
+}
+
+func (*AuditEventFieldValueUnionMemberDoubleValue) isAuditEventFieldValueUnion() {}
+
+// An empty value. You cannot set EmptyFieldValue on a field that is required on a
+// case template.
+//
+// This structure will never have any data members. It signifies an empty value on
+// a case field.
+type AuditEventFieldValueUnionMemberEmptyValue struct {
+	Value EmptyFieldValue
+
+	noSmithyDocumentSerde
+}
+
+func (*AuditEventFieldValueUnionMemberEmptyValue) isAuditEventFieldValueUnion() {}
+
+// Can be either null, or have a String value type. Only one value can be provided.
+type AuditEventFieldValueUnionMemberStringValue struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*AuditEventFieldValueUnionMemberStringValue) isAuditEventFieldValueUnion() {}
+
+// Can be either null, or have a String value type formatted as an ARN. Only one
+// value can be provided.
+type AuditEventFieldValueUnionMemberUserArnValue struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*AuditEventFieldValueUnionMemberUserArnValue) isAuditEventFieldValueUnion() {}
+
+// Information of the user which performed the audit.
+type AuditEventPerformedBy struct {
+
+	// Unique identifier of an IAM role.
+	//
+	// This member is required.
+	IamPrincipalArn *string
+
+	// Represents the identity of the person who performed the action.
+	User UserUnion
+
+	noSmithyDocumentSerde
+}
+
 // Content specific to BasicLayout type. It configures fields in the top panel and
 // More Info tab of agent application.
 type BasicLayout struct {
@@ -16,6 +145,63 @@ type BasicLayout struct {
 
 	// This represents sections in a panel of the page layout.
 	TopPanel *LayoutSections
+
+	noSmithyDocumentSerde
+}
+
+// Boolean condition for a rule. In the Amazon Connect admin website, case rules
+// are known as case field conditions. For more information about case field
+// conditions, see [Add case field conditions to a case template].
+//
+// The following types satisfy this interface:
+//
+//	BooleanConditionMemberEqualTo
+//	BooleanConditionMemberNotEqualTo
+//
+// [Add case field conditions to a case template]: https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html
+type BooleanCondition interface {
+	isBooleanCondition()
+}
+
+// Tests that operandOne is equal to operandTwo.
+type BooleanConditionMemberEqualTo struct {
+	Value BooleanOperands
+
+	noSmithyDocumentSerde
+}
+
+func (*BooleanConditionMemberEqualTo) isBooleanCondition() {}
+
+// Tests that operandOne is not equal to operandTwo.
+type BooleanConditionMemberNotEqualTo struct {
+	Value BooleanOperands
+
+	noSmithyDocumentSerde
+}
+
+func (*BooleanConditionMemberNotEqualTo) isBooleanCondition() {}
+
+// Boolean operands for a condition. In the Amazon Connect admin website, case
+// rules are known as case field conditions. For more information about case field
+// conditions, see [Add case field conditions to a case template].
+//
+// [Add case field conditions to a case template]: https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html
+type BooleanOperands struct {
+
+	// Represents the left hand operand in the condition.
+	//
+	// This member is required.
+	OperandOne OperandOne
+
+	// Represents the right hand operand in the condition.
+	//
+	// This member is required.
+	OperandTwo OperandTwo
+
+	// The value of the outer rule if the condition evaluates to true.
+	//
+	// This member is required.
+	Result *bool
 
 	noSmithyDocumentSerde
 }
@@ -78,6 +264,95 @@ type CaseFilterMemberOrAll struct {
 }
 
 func (*CaseFilterMemberOrAll) isCaseFilter() {}
+
+// Represents what rule type should take place, under what conditions. In the
+// Amazon Connect admin website, case rules are known as case field conditions. For
+// more information about case field conditions, see [Add case field conditions to a case template].
+//
+// The following types satisfy this interface:
+//
+//	CaseRuleDetailsMemberRequired
+//
+// [Add case field conditions to a case template]: https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html
+type CaseRuleDetails interface {
+	isCaseRuleDetails()
+}
+
+// Required rule type, used to indicate whether a field is required.
+type CaseRuleDetailsMemberRequired struct {
+	Value RequiredCaseRule
+
+	noSmithyDocumentSerde
+}
+
+func (*CaseRuleDetailsMemberRequired) isCaseRuleDetails() {}
+
+// Error for batch describe case rules API failure. In the Amazon Connect admin
+// website, case rules are known as case field conditions. For more information
+// about case field conditions, see [Add case field conditions to a case template].
+//
+// [Add case field conditions to a case template]: https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html
+type CaseRuleError struct {
+
+	// Error code from getting a case rule.
+	//
+	// This member is required.
+	ErrorCode *string
+
+	// The case rule identifier that caused the error.
+	//
+	// This member is required.
+	Id *string
+
+	// Error message from getting a case rule.
+	Message *string
+
+	noSmithyDocumentSerde
+}
+
+// Object containing case rule identifier information.
+type CaseRuleIdentifier struct {
+
+	// Unique identifier of a case rule.
+	//
+	// This member is required.
+	Id *string
+
+	noSmithyDocumentSerde
+}
+
+// Summary information of this case rule. In the Amazon Connect admin website,
+// case rules are known as case field conditions. For more information about case
+// field conditions, see [Add case field conditions to a case template].
+//
+// [Add case field conditions to a case template]: https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html
+type CaseRuleSummary struct {
+
+	// The Amazon Resource Name (ARN) of the case rule.
+	//
+	// This member is required.
+	CaseRuleArn *string
+
+	// Unique identifier of a case rule.
+	//
+	// This member is required.
+	CaseRuleId *string
+
+	// Name of the case rule.
+	//
+	// This member is required.
+	Name *string
+
+	// Possible types for a rule.
+	//
+	// This member is required.
+	RuleType RuleType
+
+	// Description of a case rule.
+	Description *string
+
+	noSmithyDocumentSerde
+}
 
 // Case summary information.
 type CaseSummary struct {
@@ -183,9 +458,20 @@ type DomainSummary struct {
 }
 
 // An empty value. You cannot set EmptyFieldValue on a field that is required on a
-// case template. This structure will never have any data members. It signifies an
-// empty value on a case field.
+// case template.
+//
+// This structure will never have any data members. It signifies an empty value on
+// a case field.
 type EmptyFieldValue struct {
+	noSmithyDocumentSerde
+}
+
+// Represents an empty operand value. In the Amazon Connect admin website, case
+// rules are known as case field conditions. For more information about case field
+// conditions, see [Add case field conditions to a case template].
+//
+// [Add case field conditions to a case template]: https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html
+type EmptyOperandValue struct {
 	noSmithyDocumentSerde
 }
 
@@ -433,12 +719,16 @@ type FieldValue struct {
 
 // Object to store union of Field values.
 //
+// The Summary system field accepts 3000 characters while all other fields accept
+// 500 characters.
+//
 // The following types satisfy this interface:
 //
 //	FieldValueUnionMemberBooleanValue
 //	FieldValueUnionMemberDoubleValue
 //	FieldValueUnionMemberEmptyValue
 //	FieldValueUnionMemberStringValue
+//	FieldValueUnionMemberUserArnValue
 type FieldValueUnion interface {
 	isFieldValueUnion()
 }
@@ -481,6 +771,81 @@ type FieldValueUnionMemberStringValue struct {
 
 func (*FieldValueUnionMemberStringValue) isFieldValueUnion() {}
 
+// Represents the user that performed the audit.
+type FieldValueUnionMemberUserArnValue struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*FieldValueUnionMemberUserArnValue) isFieldValueUnion() {}
+
+// An object that represents a content of an Amazon Connect file object.
+type FileContent struct {
+
+	// The Amazon Resource Name (ARN) of a File in Amazon Connect.
+	//
+	// This member is required.
+	FileArn *string
+
+	noSmithyDocumentSerde
+}
+
+// A filter for related items of type File .
+type FileFilter struct {
+
+	// The Amazon Resource Name (ARN) of the file.
+	FileArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Detailed case rule information. In the Amazon Connect admin website, case rules
+// are known as case field conditions. For more information about case field
+// conditions, see [Add case field conditions to a case template].
+//
+// [Add case field conditions to a case template]: https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html
+type GetCaseRuleResponse struct {
+
+	// The Amazon Resource Name (ARN) of the case rule.
+	//
+	// This member is required.
+	CaseRuleArn *string
+
+	// Unique identifier of a case rule.
+	//
+	// This member is required.
+	CaseRuleId *string
+
+	// Name of the case rule.
+	//
+	// This member is required.
+	Name *string
+
+	// Represents what rule type should take place, under what conditions.
+	//
+	// This member is required.
+	Rule CaseRuleDetails
+
+	// Timestamp when the resource was created.
+	CreatedTime *time.Time
+
+	// Indicates whether the resource has been deleted.
+	Deleted bool
+
+	// Description of a case rule.
+	Description *string
+
+	// Timestamp when the resource was created or last modified.
+	LastModifiedTime *time.Time
+
+	// A map of of key-value pairs that represent tags on a resource. Tags are used to
+	// organize, track, or control access for this resource.
+	Tags map[string]*string
+
+	noSmithyDocumentSerde
+}
+
 // Object to store detailed field information.
 type GetFieldResponse struct {
 
@@ -509,8 +874,17 @@ type GetFieldResponse struct {
 	// This member is required.
 	Type FieldType
 
+	// Timestamp at which the resource was created.
+	CreatedTime *time.Time
+
+	// Denotes whether or not the resource has been deleted.
+	Deleted bool
+
 	// Description of the field.
 	Description *string
+
+	// Timestamp at which the resource was created or last modified.
+	LastModifiedTime *time.Time
 
 	// A map of of key-value pairs that represent tags on a resource. Tags are used to
 	// organize, track, or control access for this resource.
@@ -522,7 +896,7 @@ type GetFieldResponse struct {
 // Object to store configuration of layouts associated to the template.
 type LayoutConfiguration struct {
 
-	// Unique identifier of a layout.
+	//  Unique identifier of a layout.
 	DefaultLayout *string
 
 	noSmithyDocumentSerde
@@ -578,12 +952,87 @@ type LayoutSummary struct {
 	noSmithyDocumentSerde
 }
 
+// Represents the left hand operand in the condition. In the Amazon Connect admin
+// website, case rules are known as case field conditions. For more information
+// about case field conditions, see [Add case field conditions to a case template].
+//
+// The following types satisfy this interface:
+//
+//	OperandOneMemberFieldId
+//
+// [Add case field conditions to a case template]: https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html
+type OperandOne interface {
+	isOperandOne()
+}
+
+// The field ID that this operand should take the value of.
+type OperandOneMemberFieldId struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*OperandOneMemberFieldId) isOperandOne() {}
+
+// Represents the right hand operand in the condition. In the Amazon Connect admin
+// website, case rules are known as case field conditions. For more information
+// about case field conditions, see [Add case field conditions to a case template].
+//
+// The following types satisfy this interface:
+//
+//	OperandTwoMemberBooleanValue
+//	OperandTwoMemberDoubleValue
+//	OperandTwoMemberEmptyValue
+//	OperandTwoMemberStringValue
+//
+// [Add case field conditions to a case template]: https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html
+type OperandTwo interface {
+	isOperandTwo()
+}
+
+// Boolean value type.
+type OperandTwoMemberBooleanValue struct {
+	Value bool
+
+	noSmithyDocumentSerde
+}
+
+func (*OperandTwoMemberBooleanValue) isOperandTwo() {}
+
+// Double value type.
+type OperandTwoMemberDoubleValue struct {
+	Value float64
+
+	noSmithyDocumentSerde
+}
+
+func (*OperandTwoMemberDoubleValue) isOperandTwo() {}
+
+// Empty value type.
+type OperandTwoMemberEmptyValue struct {
+	Value EmptyOperandValue
+
+	noSmithyDocumentSerde
+}
+
+func (*OperandTwoMemberEmptyValue) isOperandTwo() {}
+
+// String value type.
+type OperandTwoMemberStringValue struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*OperandTwoMemberStringValue) isOperandTwo() {}
+
 // Represents the content of a particular type of related item.
 //
 // The following types satisfy this interface:
 //
 //	RelatedItemContentMemberComment
 //	RelatedItemContentMemberContact
+//	RelatedItemContentMemberFile
 type RelatedItemContent interface {
 	isRelatedItemContent()
 }
@@ -606,6 +1055,15 @@ type RelatedItemContentMemberContact struct {
 
 func (*RelatedItemContentMemberContact) isRelatedItemContent() {}
 
+// Represents the content of a File to be returned to agents.
+type RelatedItemContentMemberFile struct {
+	Value FileContent
+
+	noSmithyDocumentSerde
+}
+
+func (*RelatedItemContentMemberFile) isRelatedItemContent() {}
+
 // Details of what related item data is published through the case event stream.
 type RelatedItemEventIncludedData struct {
 
@@ -623,6 +1081,7 @@ type RelatedItemEventIncludedData struct {
 //
 //	RelatedItemInputContentMemberComment
 //	RelatedItemInputContentMemberContact
+//	RelatedItemInputContentMemberFile
 type RelatedItemInputContent interface {
 	isRelatedItemInputContent()
 }
@@ -645,12 +1104,22 @@ type RelatedItemInputContentMemberContact struct {
 
 func (*RelatedItemInputContentMemberContact) isRelatedItemInputContent() {}
 
+// A file of related items.
+type RelatedItemInputContentMemberFile struct {
+	Value FileContent
+
+	noSmithyDocumentSerde
+}
+
+func (*RelatedItemInputContentMemberFile) isRelatedItemInputContent() {}
+
 // The list of types of related items and their parameters to use for filtering.
 //
 // The following types satisfy this interface:
 //
 //	RelatedItemTypeFilterMemberComment
 //	RelatedItemTypeFilterMemberContact
+//	RelatedItemTypeFilterMemberFile
 type RelatedItemTypeFilter interface {
 	isRelatedItemTypeFilter()
 }
@@ -672,6 +1141,37 @@ type RelatedItemTypeFilterMemberContact struct {
 }
 
 func (*RelatedItemTypeFilterMemberContact) isRelatedItemTypeFilter() {}
+
+// A filter for related items of this type of File .
+type RelatedItemTypeFilterMemberFile struct {
+	Value FileFilter
+
+	noSmithyDocumentSerde
+}
+
+func (*RelatedItemTypeFilterMemberFile) isRelatedItemTypeFilter() {}
+
+// Required rule type, used to indicate whether a field is required. In the Amazon
+// Connect admin website, case rules are known as case field conditions. For more
+// information about case field conditions, see [Add case field conditions to a case template].
+//
+// [Add case field conditions to a case template]: https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html
+type RequiredCaseRule struct {
+
+	// List of conditions for the required rule; the first condition to evaluate to
+	// true dictates the value of the rule.
+	//
+	// This member is required.
+	Conditions []BooleanCondition
+
+	// The value of the rule (that is, whether the field is required) should none of
+	// the conditions evaluate to true.
+	//
+	// This member is required.
+	DefaultValue *bool
+
+	noSmithyDocumentSerde
+}
 
 // List of fields that must have a value provided to create a case.
 type RequiredField struct {
@@ -732,6 +1232,9 @@ type SearchRelatedItemsResponseItem struct {
 	// This member is required.
 	Type RelatedItemType
 
+	// Represents the creator of the related item.
+	PerformedBy UserUnion
+
 	// A map of of key-value pairs that represent tags on a resource. Tags are used to
 	// organize, track, or control access for this resource.
 	Tags map[string]*string
@@ -773,6 +1276,26 @@ type Sort struct {
 	noSmithyDocumentSerde
 }
 
+// An association representing a case rule acting upon a field. In the Amazon
+// Connect admin website, case rules are known as case field conditions. For more
+// information about case field conditions, see [Add case field conditions to a case template].
+//
+// [Add case field conditions to a case template]: https://docs.aws.amazon.com/connect/latest/adminguide/case-field-conditions.html
+type TemplateRule struct {
+
+	// Unique identifier of a case rule.
+	//
+	// This member is required.
+	CaseRuleId *string
+
+	// Unique identifier of a field.
+	//
+	// This member is required.
+	FieldId *string
+
+	noSmithyDocumentSerde
+}
+
 // Template summary information.
 type TemplateSummary struct {
 
@@ -799,6 +1322,24 @@ type TemplateSummary struct {
 	noSmithyDocumentSerde
 }
 
+// Represents the identity of the person who performed the action.
+//
+// The following types satisfy this interface:
+//
+//	UserUnionMemberUserArn
+type UserUnion interface {
+	isUserUnion()
+}
+
+// Represents the Amazon Connect ARN of the user.
+type UserUnionMemberUserArn struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*UserUnionMemberUserArn) isUserUnion() {}
+
 type noSmithyDocumentSerde = smithydocument.NoSerde
 
 // UnknownUnionMember is returned when a union member is returned over the wire,
@@ -810,11 +1351,17 @@ type UnknownUnionMember struct {
 	noSmithyDocumentSerde
 }
 
-func (*UnknownUnionMember) isCaseFilter()              {}
-func (*UnknownUnionMember) isFieldFilter()             {}
-func (*UnknownUnionMember) isFieldValueUnion()         {}
-func (*UnknownUnionMember) isLayoutContent()           {}
-func (*UnknownUnionMember) isRelatedItemContent()      {}
-func (*UnknownUnionMember) isRelatedItemInputContent() {}
-func (*UnknownUnionMember) isRelatedItemTypeFilter()   {}
-func (*UnknownUnionMember) isSection()                 {}
+func (*UnknownUnionMember) isAuditEventFieldValueUnion() {}
+func (*UnknownUnionMember) isBooleanCondition()          {}
+func (*UnknownUnionMember) isCaseFilter()                {}
+func (*UnknownUnionMember) isCaseRuleDetails()           {}
+func (*UnknownUnionMember) isFieldFilter()               {}
+func (*UnknownUnionMember) isFieldValueUnion()           {}
+func (*UnknownUnionMember) isLayoutContent()             {}
+func (*UnknownUnionMember) isOperandOne()                {}
+func (*UnknownUnionMember) isOperandTwo()                {}
+func (*UnknownUnionMember) isRelatedItemContent()        {}
+func (*UnknownUnionMember) isRelatedItemInputContent()   {}
+func (*UnknownUnionMember) isRelatedItemTypeFilter()     {}
+func (*UnknownUnionMember) isSection()                   {}
+func (*UnknownUnionMember) isUserUnion()                 {}

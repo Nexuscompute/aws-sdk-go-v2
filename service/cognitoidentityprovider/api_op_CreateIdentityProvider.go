@@ -4,19 +4,32 @@ package cognitoidentityprovider
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates an IdP for a user pool.
+// Adds a configuration and trust relationship between a third-party identity
+// provider (IdP) and a user pool. Amazon Cognito accepts sign-in with third-party
+// identity providers through managed login and OIDC relying-party libraries. For
+// more information, see [Third-party IdP sign-in].
+//
+// Amazon Cognito evaluates Identity and Access Management (IAM) policies in
+// requests for this API operation. For this operation, you must use IAM
+// credentials to authorize requests, and you must grant yourself the corresponding
+// IAM permission in a policy.
+//
+// # Learn more
+//
+// [Signing Amazon Web Services API Requests]
+//
+// [Using the Amazon Cognito user pools API and user pool endpoints]
+//
+// [Using the Amazon Cognito user pools API and user pool endpoints]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html
+// [Third-party IdP sign-in]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-identity-federation.html
+// [Signing Amazon Web Services API Requests]: https://docs.aws.amazon.com/IAM/latest/UserGuide/reference_aws-signing.html
 func (c *Client) CreateIdentityProvider(ctx context.Context, params *CreateIdentityProviderInput, optFns ...func(*Options)) (*CreateIdentityProviderOutput, error) {
 	if params == nil {
 		params = &CreateIdentityProviderInput{}
@@ -34,64 +47,135 @@ func (c *Client) CreateIdentityProvider(ctx context.Context, params *CreateIdent
 
 type CreateIdentityProviderInput struct {
 
-	// The IdP details. The following list describes the provider detail keys for each
-	// IdP type.
-	//   - For Google and Login with Amazon:
-	//   - client_id
-	//   - client_secret
-	//   - authorize_scopes
-	//   - For Facebook:
-	//   - client_id
-	//   - client_secret
-	//   - authorize_scopes
-	//   - api_version
-	//   - For Sign in with Apple:
-	//   - client_id
-	//   - team_id
-	//   - key_id
-	//   - private_key
-	//   - authorize_scopes
-	//   - For OpenID Connect (OIDC) providers:
-	//   - client_id
-	//   - client_secret
-	//   - attributes_request_method
-	//   - oidc_issuer
-	//   - authorize_scopes
-	//   - The following keys are only present if Amazon Cognito didn't discover them
-	//   at the oidc_issuer URL.
-	//   - authorize_url
-	//   - token_url
-	//   - attributes_url
-	//   - jwks_uri
-	//   - Amazon Cognito sets the value of the following keys automatically. They are
-	//   read-only.
-	//   - attributes_url_add_attributes
-	//   - For SAML providers:
-	//   - MetadataFile or MetadataURL
-	//   - IDPSignout optional
+	// The scopes, URLs, and identifiers for your external identity provider. The
+	// following examples describe the provider detail keys for each IdP type. These
+	// values and their schema are subject to change. Social IdP authorize_scopes
+	// values must match the values listed here.
+	//
+	// OpenID Connect (OIDC) Amazon Cognito accepts the following elements when it
+	// can't discover endpoint URLs from oidc_issuer : attributes_url , authorize_url ,
+	// jwks_uri , token_url .
+	//
+	// Create or update request: "ProviderDetails": { "attributes_request_method":
+	// "GET", "attributes_url": "https://auth.example.com/userInfo",
+	// "authorize_scopes": "openid profile email", "authorize_url":
+	// "https://auth.example.com/authorize", "client_id": "1example23456789",
+	// "client_secret": "provider-app-client-secret", "jwks_uri":
+	// "https://auth.example.com/.well-known/jwks.json", "oidc_issuer":
+	// "https://auth.example.com", "token_url": "https://example.com/token" }
+	//
+	// Describe response: "ProviderDetails": { "attributes_request_method": "GET",
+	// "attributes_url": "https://auth.example.com/userInfo",
+	// "attributes_url_add_attributes": "false", "authorize_scopes": "openid profile
+	// email", "authorize_url": "https://auth.example.com/authorize", "client_id":
+	// "1example23456789", "client_secret": "provider-app-client-secret", "jwks_uri":
+	// "https://auth.example.com/.well-known/jwks.json", "oidc_issuer":
+	// "https://auth.example.com", "token_url": "https://example.com/token" }
+	//
+	// SAML Create or update request with Metadata URL: "ProviderDetails": {
+	// "IDPInit": "true", "IDPSignout": "true", "EncryptedResponses" : "true",
+	// "MetadataURL": "https://auth.example.com/sso/saml/metadata",
+	// "RequestSigningAlgorithm": "rsa-sha256" }
+	//
+	// Create or update request with Metadata file: "ProviderDetails": { "IDPInit":
+	// "true", "IDPSignout": "true", "EncryptedResponses" : "true", "MetadataFile":
+	// "[metadata XML]", "RequestSigningAlgorithm": "rsa-sha256" }
+	//
+	// The value of MetadataFile must be the plaintext metadata document with all
+	// quote (") characters escaped by backslashes.
+	//
+	// Describe response: "ProviderDetails": { "IDPInit": "true", "IDPSignout":
+	// "true", "EncryptedResponses" : "true", "ActiveEncryptionCertificate":
+	// "[certificate]", "MetadataURL": "https://auth.example.com/sso/saml/metadata",
+	// "RequestSigningAlgorithm": "rsa-sha256", "SLORedirectBindingURI":
+	// "https://auth.example.com/slo/saml", "SSORedirectBindingURI":
+	// "https://auth.example.com/sso/saml" }
+	//
+	// LoginWithAmazon Create or update request: "ProviderDetails": {
+	// "authorize_scopes": "profile postal_code", "client_id":
+	// "amzn1.application-oa2-client.1example23456789", "client_secret":
+	// "provider-app-client-secret"
+	//
+	// Describe response: "ProviderDetails": { "attributes_url":
+	// "https://api.amazon.com/user/profile", "attributes_url_add_attributes": "false",
+	// "authorize_scopes": "profile postal_code", "authorize_url":
+	// "https://www.amazon.com/ap/oa", "client_id":
+	// "amzn1.application-oa2-client.1example23456789", "client_secret":
+	// "provider-app-client-secret", "token_request_method": "POST", "token_url":
+	// "https://api.amazon.com/auth/o2/token" }
+	//
+	// Google Create or update request: "ProviderDetails": { "authorize_scopes":
+	// "email profile openid", "client_id":
+	// "1example23456789.apps.googleusercontent.com", "client_secret":
+	// "provider-app-client-secret" }
+	//
+	// Describe response: "ProviderDetails": { "attributes_url":
+	// "https://people.googleapis.com/v1/people/me?personFields=",
+	// "attributes_url_add_attributes": "true", "authorize_scopes": "email profile
+	// openid", "authorize_url": "https://accounts.google.com/o/oauth2/v2/auth",
+	// "client_id": "1example23456789.apps.googleusercontent.com", "client_secret":
+	// "provider-app-client-secret", "oidc_issuer": "https://accounts.google.com",
+	// "token_request_method": "POST", "token_url":
+	// "https://www.googleapis.com/oauth2/v4/token" }
+	//
+	// SignInWithApple Create or update request: "ProviderDetails": {
+	// "authorize_scopes": "email name", "client_id": "com.example.cognito",
+	// "private_key": "1EXAMPLE", "key_id": "2EXAMPLE", "team_id": "3EXAMPLE" }
+	//
+	// Describe response: "ProviderDetails": { "attributes_url_add_attributes":
+	// "false", "authorize_scopes": "email name", "authorize_url":
+	// "https://appleid.apple.com/auth/authorize", "client_id": "com.example.cognito",
+	// "key_id": "1EXAMPLE", "oidc_issuer": "https://appleid.apple.com", "team_id":
+	// "2EXAMPLE", "token_request_method": "POST", "token_url":
+	// "https://appleid.apple.com/auth/token" }
+	//
+	// Facebook Create or update request: "ProviderDetails": { "api_version": "v17.0",
+	// "authorize_scopes": "public_profile, email", "client_id": "1example23456789",
+	// "client_secret": "provider-app-client-secret" }
+	//
+	// Describe response: "ProviderDetails": { "api_version": "v17.0",
+	// "attributes_url": "https://graph.facebook.com/v17.0/me?fields=",
+	// "attributes_url_add_attributes": "true", "authorize_scopes": "public_profile,
+	// email", "authorize_url": "https://www.facebook.com/v17.0/dialog/oauth",
+	// "client_id": "1example23456789", "client_secret": "provider-app-client-secret",
+	// "token_request_method": "GET", "token_url":
+	// "https://graph.facebook.com/v17.0/oauth/access_token" }
 	//
 	// This member is required.
 	ProviderDetails map[string]string
 
-	// The IdP name.
+	// The name that you want to assign to the IdP. You can pass the identity provider
+	// name in the identity_provider query parameter of requests to the [Authorize endpoint] to silently
+	// redirect to sign-in with the associated IdP.
+	//
+	// [Authorize endpoint]: https://docs.aws.amazon.com/cognito/latest/developerguide/authorization-endpoint.html
 	//
 	// This member is required.
 	ProviderName *string
 
-	// The IdP type.
+	// The type of IdP that you want to add. Amazon Cognito supports OIDC, SAML 2.0,
+	// Login With Amazon, Sign In With Apple, Google, and Facebook IdPs.
 	//
 	// This member is required.
 	ProviderType types.IdentityProviderTypeType
 
-	// The user pool ID.
+	// The Id of the user pool where you want to create an IdP.
 	//
 	// This member is required.
 	UserPoolId *string
 
 	// A mapping of IdP attributes to standard and custom user pool attributes.
+	// Specify a user pool attribute as the key of the key-value pair, and the IdP
+	// attribute claim name as the value.
 	AttributeMapping map[string]string
 
-	// A list of IdP identifiers.
+	// An array of IdP identifiers, for example "IdPIdentifiers": [ "MyIdP", "MyIdP2" ]
+	// . Identifiers are friendly names that you can pass in the idp_identifier query
+	// parameter of requests to the [Authorize endpoint]to silently redirect to sign-in with the
+	// associated IdP. Identifiers in a domain format also enable the use of [email-address matching with SAML providers].
+	//
+	// [Authorize endpoint]: https://docs.aws.amazon.com/cognito/latest/developerguide/authorization-endpoint.html
+	// [email-address matching with SAML providers]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pools-managing-saml-idp-naming.html
 	IdpIdentifiers []string
 
 	noSmithyDocumentSerde
@@ -99,7 +183,7 @@ type CreateIdentityProviderInput struct {
 
 type CreateIdentityProviderOutput struct {
 
-	// The newly created IdP object.
+	// The details of the new user pool IdP.
 	//
 	// This member is required.
 	IdentityProvider *types.IdentityProviderType
@@ -111,6 +195,9 @@ type CreateIdentityProviderOutput struct {
 }
 
 func (c *Client) addOperationCreateIdentityProviderMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateIdentityProvider{}, middleware.After)
 	if err != nil {
 		return err
@@ -119,34 +206,38 @@ func (c *Client) addOperationCreateIdentityProviderMiddlewares(stack *middleware
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateIdentityProvider"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -158,7 +249,13 @@ func (c *Client) addOperationCreateIdentityProviderMiddlewares(stack *middleware
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateIdentityProviderResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateIdentityProviderValidationMiddleware(stack); err != nil {
@@ -167,7 +264,7 @@ func (c *Client) addOperationCreateIdentityProviderMiddlewares(stack *middleware
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateIdentityProvider(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -179,7 +276,19 @@ func (c *Client) addOperationCreateIdentityProviderMiddlewares(stack *middleware
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -189,130 +298,6 @@ func newServiceMetadataMiddleware_opCreateIdentityProvider(region string) *awsmi
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "cognito-idp",
 		OperationName: "CreateIdentityProvider",
 	}
-}
-
-type opCreateIdentityProviderResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateIdentityProviderResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateIdentityProviderResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "cognito-idp"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "cognito-idp"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("cognito-idp")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateIdentityProviderResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateIdentityProviderResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

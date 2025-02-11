@@ -1,5 +1,5 @@
-//go:build go1.16
-// +build go1.16
+//go:build go1.21
+// +build go1.21
 
 package checksum
 
@@ -16,7 +16,6 @@ import (
 	"github.com/aws/smithy-go/logging"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
-	"github.com/google/go-cmp/cmp"
 )
 
 func TestValidateOutputPayloadChecksum(t *testing.T) {
@@ -50,7 +49,21 @@ func TestValidateOutputPayloadChecksum(t *testing.T) {
 			expectAlgorithmsUsed:     []string{"CRC32"},
 			expectPayload:            []byte("hello world"),
 		},
-		"failure": {
+		"no checksum required": {
+			response: &smithyhttp.Response{
+				Response: &http.Response{
+					StatusCode: 200,
+					Header: func() http.Header {
+						h := http.Header{}
+						h.Set(AlgorithmHTTPHeader(AlgorithmCRC32C), "crUfeA==")
+						return h
+					}(),
+					Body: ioutil.NopCloser(strings.NewReader("Hello world")),
+				},
+			},
+			expectPayload: []byte("Hello world"),
+		},
+		"checksum mismatch failure": {
 			modifyContext: func(ctx context.Context) context.Context {
 				return setContextOutputValidationMode(ctx, "ENABLED")
 			},
@@ -100,19 +113,6 @@ func TestValidateOutputPayloadChecksum(t *testing.T) {
 				},
 			},
 			expectLogged:  "no supported checksum",
-			expectPayload: []byte("hello world"),
-		},
-		"no output validation model": {
-			response: &smithyhttp.Response{
-				Response: &http.Response{
-					StatusCode: 200,
-					Header: func() http.Header {
-						h := http.Header{}
-						return h
-					}(),
-					Body: ioutil.NopCloser(strings.NewReader("hello world")),
-				},
-			},
 			expectPayload: []byte("hello world"),
 		},
 		"unknown output validation model": {
@@ -190,7 +190,7 @@ func TestValidateOutputPayloadChecksum(t *testing.T) {
 
 			validateOutput := validateOutputPayloadChecksum{
 				Algorithms: []Algorithm{
-					AlgorithmSHA1, AlgorithmCRC32, AlgorithmCRC32C,
+					AlgorithmSHA1, AlgorithmCRC32, AlgorithmCRC32C, AlgorithmSHA256,
 				},
 				LogValidationSkipped:          true,
 				LogMultipartValidationSkipped: true,
@@ -243,7 +243,7 @@ func TestValidateOutputPayloadChecksum(t *testing.T) {
 				t.Errorf("expected %q logged in:\n%s", e, a)
 			}
 
-			if diff := cmp.Diff(string(c.expectPayload), string(actualPayload)); diff != "" {
+			if diff := cmpDiff(string(c.expectPayload), string(actualPayload)); diff != "" {
 				t.Errorf("expect payload match:\n%s", diff)
 			}
 
@@ -255,7 +255,7 @@ func TestValidateOutputPayloadChecksum(t *testing.T) {
 			if ok != c.expectHaveAlgorithmsUsed {
 				t.Errorf("expect metadata to contain algorithms used, %t", c.expectHaveAlgorithmsUsed)
 			}
-			if diff := cmp.Diff(c.expectAlgorithmsUsed, values); diff != "" {
+			if diff := cmpDiff(c.expectAlgorithmsUsed, values); diff != "" {
 				t.Errorf("expect algorithms used to match\n%s", diff)
 			}
 		})

@@ -111,6 +111,60 @@ func (e *ConcurrentModificationException) ErrorCode() string {
 }
 func (e *ConcurrentModificationException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The pipeline has reached the limit for concurrent pipeline executions.
+type ConcurrentPipelineExecutionsLimitExceededException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ConcurrentPipelineExecutionsLimitExceededException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ConcurrentPipelineExecutionsLimitExceededException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ConcurrentPipelineExecutionsLimitExceededException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ConcurrentPipelineExecutionsLimitExceededException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ConcurrentPipelineExecutionsLimitExceededException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
+// Unable to override because the condition does not allow overrides.
+type ConditionNotOverridableException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ConditionNotOverridableException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ConditionNotOverridableException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ConditionNotOverridableException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ConditionNotOverridableException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ConditionNotOverridableException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // Your request cannot be handled because the pipeline is busy handling ongoing
 // activities. Try again later.
 type ConflictException struct {
@@ -707,6 +761,35 @@ func (e *PipelineExecutionNotStoppableException) ErrorFault() smithy.ErrorFault 
 	return smithy.FaultClient
 }
 
+// The specified pipeline execution is outdated and cannot be used as a target
+// pipeline execution for rollback.
+type PipelineExecutionOutdatedException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *PipelineExecutionOutdatedException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *PipelineExecutionOutdatedException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *PipelineExecutionOutdatedException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "PipelineExecutionOutdatedException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *PipelineExecutionOutdatedException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
 // The specified pipeline name is already in use.
 type PipelineNameInUseException struct {
 	Message *string
@@ -915,6 +998,34 @@ func (e *TooManyTagsException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *TooManyTagsException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// Unable to roll back the stage. The cause might be if the pipeline version has
+// changed since the target pipeline execution was deployed, the stage is currently
+// running, or an incorrect target pipeline execution ID was provided.
+type UnableToRollbackStageException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *UnableToRollbackStageException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *UnableToRollbackStageException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *UnableToRollbackStageException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "UnableToRollbackStageException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *UnableToRollbackStageException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The validation was specified in an invalid format.
 type ValidationException struct {

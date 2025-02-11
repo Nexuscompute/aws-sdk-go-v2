@@ -110,6 +110,46 @@ func (m *validateOpCreateMediaLiveConnectorPipeline) HandleInitialize(ctx contex
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateMediaPipelineKinesisVideoStreamPool struct {
+}
+
+func (*validateOpCreateMediaPipelineKinesisVideoStreamPool) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateMediaPipelineKinesisVideoStreamPool) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateMediaPipelineKinesisVideoStreamPoolInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateMediaPipelineKinesisVideoStreamPoolInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateMediaStreamPipeline struct {
+}
+
+func (*validateOpCreateMediaStreamPipeline) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateMediaStreamPipeline) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateMediaStreamPipelineInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateMediaStreamPipelineInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteMediaCapturePipeline struct {
 }
 
@@ -165,6 +205,26 @@ func (m *validateOpDeleteMediaPipeline) HandleInitialize(ctx context.Context, in
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeleteMediaPipelineInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteMediaPipelineKinesisVideoStreamPool struct {
+}
+
+func (*validateOpDeleteMediaPipelineKinesisVideoStreamPool) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteMediaPipelineKinesisVideoStreamPool) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteMediaPipelineKinesisVideoStreamPoolInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteMediaPipelineKinesisVideoStreamPoolInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -230,6 +290,66 @@ func (m *validateOpGetMediaPipeline) HandleInitialize(ctx context.Context, in mi
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetMediaPipelineKinesisVideoStreamPool struct {
+}
+
+func (*validateOpGetMediaPipelineKinesisVideoStreamPool) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetMediaPipelineKinesisVideoStreamPool) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetMediaPipelineKinesisVideoStreamPoolInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetMediaPipelineKinesisVideoStreamPoolInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetSpeakerSearchTask struct {
+}
+
+func (*validateOpGetSpeakerSearchTask) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetSpeakerSearchTask) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetSpeakerSearchTaskInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetSpeakerSearchTaskInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetVoiceToneAnalysisTask struct {
+}
+
+func (*validateOpGetVoiceToneAnalysisTask) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetVoiceToneAnalysisTask) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetVoiceToneAnalysisTaskInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetVoiceToneAnalysisTaskInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListTagsForResource struct {
 }
 
@@ -245,6 +365,86 @@ func (m *validateOpListTagsForResource) HandleInitialize(ctx context.Context, in
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListTagsForResourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpStartSpeakerSearchTask struct {
+}
+
+func (*validateOpStartSpeakerSearchTask) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStartSpeakerSearchTask) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StartSpeakerSearchTaskInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStartSpeakerSearchTaskInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpStartVoiceToneAnalysisTask struct {
+}
+
+func (*validateOpStartVoiceToneAnalysisTask) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStartVoiceToneAnalysisTask) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StartVoiceToneAnalysisTaskInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStartVoiceToneAnalysisTaskInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpStopSpeakerSearchTask struct {
+}
+
+func (*validateOpStopSpeakerSearchTask) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStopSpeakerSearchTask) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StopSpeakerSearchTaskInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStopSpeakerSearchTaskInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpStopVoiceToneAnalysisTask struct {
+}
+
+func (*validateOpStopVoiceToneAnalysisTask) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStopVoiceToneAnalysisTask) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StopVoiceToneAnalysisTaskInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStopVoiceToneAnalysisTaskInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -330,6 +530,26 @@ func (m *validateOpUpdateMediaInsightsPipelineStatus) HandleInitialize(ctx conte
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateMediaPipelineKinesisVideoStreamPool struct {
+}
+
+func (*validateOpUpdateMediaPipelineKinesisVideoStreamPool) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateMediaPipelineKinesisVideoStreamPool) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateMediaPipelineKinesisVideoStreamPoolInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateMediaPipelineKinesisVideoStreamPoolInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 func addOpCreateMediaCapturePipelineValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateMediaCapturePipeline{}, middleware.After)
 }
@@ -350,6 +570,14 @@ func addOpCreateMediaLiveConnectorPipelineValidationMiddleware(stack *middleware
 	return stack.Initialize.Add(&validateOpCreateMediaLiveConnectorPipeline{}, middleware.After)
 }
 
+func addOpCreateMediaPipelineKinesisVideoStreamPoolValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateMediaPipelineKinesisVideoStreamPool{}, middleware.After)
+}
+
+func addOpCreateMediaStreamPipelineValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateMediaStreamPipeline{}, middleware.After)
+}
+
 func addOpDeleteMediaCapturePipelineValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteMediaCapturePipeline{}, middleware.After)
 }
@@ -360,6 +588,10 @@ func addOpDeleteMediaInsightsPipelineConfigurationValidationMiddleware(stack *mi
 
 func addOpDeleteMediaPipelineValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteMediaPipeline{}, middleware.After)
+}
+
+func addOpDeleteMediaPipelineKinesisVideoStreamPoolValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteMediaPipelineKinesisVideoStreamPool{}, middleware.After)
 }
 
 func addOpGetMediaCapturePipelineValidationMiddleware(stack *middleware.Stack) error {
@@ -374,8 +606,36 @@ func addOpGetMediaPipelineValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetMediaPipeline{}, middleware.After)
 }
 
+func addOpGetMediaPipelineKinesisVideoStreamPoolValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetMediaPipelineKinesisVideoStreamPool{}, middleware.After)
+}
+
+func addOpGetSpeakerSearchTaskValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetSpeakerSearchTask{}, middleware.After)
+}
+
+func addOpGetVoiceToneAnalysisTaskValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetVoiceToneAnalysisTask{}, middleware.After)
+}
+
 func addOpListTagsForResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListTagsForResource{}, middleware.After)
+}
+
+func addOpStartSpeakerSearchTaskValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStartSpeakerSearchTask{}, middleware.After)
+}
+
+func addOpStartVoiceToneAnalysisTaskValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStartVoiceToneAnalysisTask{}, middleware.After)
+}
+
+func addOpStopSpeakerSearchTaskValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStopSpeakerSearchTask{}, middleware.After)
+}
+
+func addOpStopVoiceToneAnalysisTaskValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStopVoiceToneAnalysisTask{}, middleware.After)
 }
 
 func addOpTagResourceValidationMiddleware(stack *middleware.Stack) error {
@@ -392,6 +652,10 @@ func addOpUpdateMediaInsightsPipelineConfigurationValidationMiddleware(stack *mi
 
 func addOpUpdateMediaInsightsPipelineStatusValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateMediaInsightsPipelineStatus{}, middleware.After)
+}
+
+func addOpUpdateMediaPipelineKinesisVideoStreamPoolValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateMediaPipelineKinesisVideoStreamPool{}, middleware.After)
 }
 
 func validateAmazonTranscribeCallAnalyticsProcessorConfiguration(v *types.AmazonTranscribeCallAnalyticsProcessorConfiguration) error {
@@ -858,6 +1122,21 @@ func validateKeywordMatchConfiguration(v *types.KeywordMatchConfiguration) error
 	}
 }
 
+func validateKinesisVideoStreamConfiguration(v *types.KinesisVideoStreamConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "KinesisVideoStreamConfiguration"}
+	if v.Region == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Region"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateKinesisVideoStreamRecordingSourceRuntimeConfiguration(v *types.KinesisVideoStreamRecordingSourceRuntimeConfiguration) error {
 	if v == nil {
 		return nil
@@ -897,6 +1176,21 @@ func validateKinesisVideoStreamSourceRuntimeConfiguration(v *types.KinesisVideoS
 	}
 	if v.MediaSampleRate == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("MediaSampleRate"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateKinesisVideoStreamSourceTaskConfiguration(v *types.KinesisVideoStreamSourceTaskConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "KinesisVideoStreamSourceTaskConfiguration"}
+	if v.StreamArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StreamArn"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1057,6 +1351,82 @@ func validateMediaInsightsPipelineConfigurationElements(v []types.MediaInsightsP
 	}
 }
 
+func validateMediaStreamSink(v *types.MediaStreamSink) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MediaStreamSink"}
+	if v.SinkArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SinkArn"))
+	}
+	if len(v.SinkType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("SinkType"))
+	}
+	if v.ReservedStreamCapacity == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ReservedStreamCapacity"))
+	}
+	if len(v.MediaStreamType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("MediaStreamType"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMediaStreamSinkList(v []types.MediaStreamSink) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MediaStreamSinkList"}
+	for i := range v {
+		if err := validateMediaStreamSink(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMediaStreamSource(v *types.MediaStreamSource) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MediaStreamSource"}
+	if len(v.SourceType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("SourceType"))
+	}
+	if v.SourceArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SourceArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMediaStreamSourceList(v []types.MediaStreamSource) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MediaStreamSourceList"}
+	for i := range v {
+		if err := validateMediaStreamSource(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateMeetingEventsConcatenationConfiguration(v *types.MeetingEventsConcatenationConfiguration) error {
 	if v == nil {
 		return nil
@@ -1197,6 +1567,24 @@ func validateSentimentConfiguration(v *types.SentimentConfiguration) error {
 	}
 	if len(v.SentimentType) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("SentimentType"))
+	}
+	if v.TimePeriod == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TimePeriod"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateSseAwsKeyManagementParams(v *types.SseAwsKeyManagementParams) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SseAwsKeyManagementParams"}
+	if v.AwsKmsKeyId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AwsKmsKeyId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1384,6 +1772,11 @@ func validateOpCreateMediaCapturePipelineInput(v *CreateMediaCapturePipelineInpu
 			invalidParams.AddNested("ChimeSdkMeetingConfiguration", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.SseAwsKeyManagementParams != nil {
+		if err := validateSseAwsKeyManagementParams(v.SseAwsKeyManagementParams); err != nil {
+			invalidParams.AddNested("SseAwsKeyManagementParams", err.(smithy.InvalidParamsError))
+		}
+	}
 	if v.Tags != nil {
 		if err := validateTagList(v.Tags); err != nil {
 			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
@@ -1528,6 +1921,64 @@ func validateOpCreateMediaLiveConnectorPipelineInput(v *CreateMediaLiveConnector
 	}
 }
 
+func validateOpCreateMediaPipelineKinesisVideoStreamPoolInput(v *CreateMediaPipelineKinesisVideoStreamPoolInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateMediaPipelineKinesisVideoStreamPoolInput"}
+	if v.StreamConfiguration == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StreamConfiguration"))
+	} else if v.StreamConfiguration != nil {
+		if err := validateKinesisVideoStreamConfiguration(v.StreamConfiguration); err != nil {
+			invalidParams.AddNested("StreamConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.PoolName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PoolName"))
+	}
+	if v.Tags != nil {
+		if err := validateTagList(v.Tags); err != nil {
+			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateMediaStreamPipelineInput(v *CreateMediaStreamPipelineInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateMediaStreamPipelineInput"}
+	if v.Sources == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Sources"))
+	} else if v.Sources != nil {
+		if err := validateMediaStreamSourceList(v.Sources); err != nil {
+			invalidParams.AddNested("Sources", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.Sinks == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Sinks"))
+	} else if v.Sinks != nil {
+		if err := validateMediaStreamSinkList(v.Sinks); err != nil {
+			invalidParams.AddNested("Sinks", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.Tags != nil {
+		if err := validateTagList(v.Tags); err != nil {
+			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDeleteMediaCapturePipelineInput(v *DeleteMediaCapturePipelineInput) error {
 	if v == nil {
 		return nil
@@ -1565,6 +2016,21 @@ func validateOpDeleteMediaPipelineInput(v *DeleteMediaPipelineInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "DeleteMediaPipelineInput"}
 	if v.MediaPipelineId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("MediaPipelineId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteMediaPipelineKinesisVideoStreamPoolInput(v *DeleteMediaPipelineKinesisVideoStreamPoolInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteMediaPipelineKinesisVideoStreamPoolInput"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1618,6 +2084,57 @@ func validateOpGetMediaPipelineInput(v *GetMediaPipelineInput) error {
 	}
 }
 
+func validateOpGetMediaPipelineKinesisVideoStreamPoolInput(v *GetMediaPipelineKinesisVideoStreamPoolInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetMediaPipelineKinesisVideoStreamPoolInput"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetSpeakerSearchTaskInput(v *GetSpeakerSearchTaskInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetSpeakerSearchTaskInput"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
+	}
+	if v.SpeakerSearchTaskId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SpeakerSearchTaskId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetVoiceToneAnalysisTaskInput(v *GetVoiceToneAnalysisTaskInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetVoiceToneAnalysisTaskInput"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
+	}
+	if v.VoiceToneAnalysisTaskId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("VoiceToneAnalysisTaskId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListTagsForResourceInput(v *ListTagsForResourceInput) error {
 	if v == nil {
 		return nil
@@ -1625,6 +2142,88 @@ func validateOpListTagsForResourceInput(v *ListTagsForResourceInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ListTagsForResourceInput"}
 	if v.ResourceARN == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ResourceARN"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStartSpeakerSearchTaskInput(v *StartSpeakerSearchTaskInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StartSpeakerSearchTaskInput"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
+	}
+	if v.VoiceProfileDomainArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("VoiceProfileDomainArn"))
+	}
+	if v.KinesisVideoStreamSourceTaskConfiguration != nil {
+		if err := validateKinesisVideoStreamSourceTaskConfiguration(v.KinesisVideoStreamSourceTaskConfiguration); err != nil {
+			invalidParams.AddNested("KinesisVideoStreamSourceTaskConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStartVoiceToneAnalysisTaskInput(v *StartVoiceToneAnalysisTaskInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StartVoiceToneAnalysisTaskInput"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
+	}
+	if len(v.LanguageCode) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("LanguageCode"))
+	}
+	if v.KinesisVideoStreamSourceTaskConfiguration != nil {
+		if err := validateKinesisVideoStreamSourceTaskConfiguration(v.KinesisVideoStreamSourceTaskConfiguration); err != nil {
+			invalidParams.AddNested("KinesisVideoStreamSourceTaskConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStopSpeakerSearchTaskInput(v *StopSpeakerSearchTaskInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StopSpeakerSearchTaskInput"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
+	}
+	if v.SpeakerSearchTaskId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SpeakerSearchTaskId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStopVoiceToneAnalysisTaskInput(v *StopVoiceToneAnalysisTaskInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StopVoiceToneAnalysisTaskInput"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
+	}
+	if v.VoiceToneAnalysisTaskId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("VoiceToneAnalysisTaskId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1713,6 +2312,21 @@ func validateOpUpdateMediaInsightsPipelineStatusInput(v *UpdateMediaInsightsPipe
 	}
 	if len(v.UpdateStatus) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("UpdateStatus"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateMediaPipelineKinesisVideoStreamPoolInput(v *UpdateMediaPipelineKinesisVideoStreamPoolInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateMediaPipelineKinesisVideoStreamPoolInput"}
+	if v.Identifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Identifier"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

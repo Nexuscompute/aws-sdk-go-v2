@@ -7,6 +7,32 @@ import (
 	smithy "github.com/aws/smithy-go"
 )
 
+// Activity already exists. EncryptionConfiguration may not be updated.
+type ActivityAlreadyExists struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ActivityAlreadyExists) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ActivityAlreadyExists) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ActivityAlreadyExists) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ActivityAlreadyExists"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ActivityAlreadyExists) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // The specified activity does not exist.
 type ActivityDoesNotExist struct {
 	Message *string
@@ -88,9 +114,10 @@ func (e *ActivityWorkerLimitExceeded) ErrorCode() string {
 func (e *ActivityWorkerLimitExceeded) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // Updating or deleting a resource can cause an inconsistent state. This error
-// occurs when there're concurrent requests for DeleteStateMachineVersion ,
-// PublishStateMachineVersion , or UpdateStateMachine with the publish parameter
-// set to true . HTTP Status Code: 409
+// occurs when there're concurrent requests for DeleteStateMachineVersion, PublishStateMachineVersion, or UpdateStateMachine with the publish parameter
+// set to true .
+//
+// HTTP Status Code: 409
 type ConflictException struct {
 	Message *string
 
@@ -117,6 +144,7 @@ func (e *ConflictException) ErrorCode() string {
 func (e *ConflictException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The execution has the same name as another execution (but a different input ).
+//
 // Executions with the same name and input are considered idempotent.
 type ExecutionAlreadyExists struct {
 	Message *string
@@ -196,6 +224,33 @@ func (e *ExecutionLimitExceeded) ErrorCode() string {
 }
 func (e *ExecutionLimitExceeded) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The execution Amazon Resource Name (ARN) that you specified for executionArn
+// cannot be redriven.
+type ExecutionNotRedrivable struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ExecutionNotRedrivable) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ExecutionNotRedrivable) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ExecutionNotRedrivable) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ExecutionNotRedrivable"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ExecutionNotRedrivable) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // The provided Amazon Resource Name (ARN) is not valid.
 type InvalidArn struct {
 	Message *string
@@ -248,6 +303,35 @@ func (e *InvalidDefinition) ErrorCode() string {
 }
 func (e *InvalidDefinition) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// Received when encryptionConfiguration is specified but various conditions exist
+// which make the configuration invalid. For example, if type is set to
+// CUSTOMER_MANAGED_KMS_KEY , but kmsKeyId is null, or kmsDataKeyReusePeriodSeconds
+// is not between 60 and 900, or the KMS key is not symmetric or inactive.
+type InvalidEncryptionConfiguration struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InvalidEncryptionConfiguration) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InvalidEncryptionConfiguration) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InvalidEncryptionConfiguration) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InvalidEncryptionConfiguration"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InvalidEncryptionConfiguration) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // The provided JSON input data is not valid.
 type InvalidExecutionInput struct {
 	Message *string
@@ -274,6 +358,7 @@ func (e *InvalidExecutionInput) ErrorCode() string {
 }
 func (e *InvalidExecutionInput) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// Configuration is not valid.
 type InvalidLoggingConfiguration struct {
 	Message *string
 
@@ -404,6 +489,87 @@ func (e *InvalidTracingConfiguration) ErrorCode() string {
 }
 func (e *InvalidTracingConfiguration) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// Either your KMS key policy or API caller does not have the required permissions.
+type KmsAccessDeniedException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *KmsAccessDeniedException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *KmsAccessDeniedException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *KmsAccessDeniedException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "KmsAccessDeniedException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *KmsAccessDeniedException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The KMS key is not in valid state, for example: Disabled or Deleted.
+type KmsInvalidStateException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	KmsKeyState KmsKeyState
+
+	noSmithyDocumentSerde
+}
+
+func (e *KmsInvalidStateException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *KmsInvalidStateException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *KmsInvalidStateException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "KmsInvalidStateException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *KmsInvalidStateException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// Received when KMS returns ThrottlingException for a KMS call that Step
+// Functions makes on behalf of the caller.
+type KmsThrottlingException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *KmsThrottlingException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *KmsThrottlingException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *KmsThrottlingException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "KmsThrottlingException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *KmsThrottlingException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // Request is missing a required parameter. This error occurs if both definition
 // and roleArn are not specified.
 type MissingRequiredParameter struct {
@@ -459,7 +625,9 @@ func (e *ResourceNotFound) ErrorCode() string {
 }
 func (e *ResourceNotFound) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The request would cause a service quota to be exceeded. HTTP Status Code: 402
+// The request would cause a service quota to be exceeded.
+//
+// HTTP Status Code: 402
 type ServiceQuotaExceededException struct {
 	Message *string
 
@@ -591,6 +759,7 @@ func (e *StateMachineLimitExceeded) ErrorCode() string {
 }
 func (e *StateMachineLimitExceeded) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// State machine type is not supported.
 type StateMachineTypeNotSupported struct {
 	Message *string
 
@@ -616,6 +785,7 @@ func (e *StateMachineTypeNotSupported) ErrorCode() string {
 }
 func (e *StateMachineTypeNotSupported) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The activity does not exist.
 type TaskDoesNotExist struct {
 	Message *string
 
@@ -641,6 +811,8 @@ func (e *TaskDoesNotExist) ErrorCode() string {
 }
 func (e *TaskDoesNotExist) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The task token has either expired or the task associated with the token has
+// already been closed.
 type TaskTimedOut struct {
 	Message *string
 
@@ -666,8 +838,10 @@ func (e *TaskTimedOut) ErrorCode() string {
 }
 func (e *TaskTimedOut) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// You've exceeded the number of tags allowed for a resource. See the  Limits Topic (https://docs.aws.amazon.com/step-functions/latest/dg/limits.html)
-// in the Step Functions Developer Guide.
+// You've exceeded the number of tags allowed for a resource. See the [Limits Topic] in the Step
+// Functions Developer Guide.
+//
+// [Limits Topic]: https://docs.aws.amazon.com/step-functions/latest/dg/limits.html
 type TooManyTags struct {
 	Message *string
 

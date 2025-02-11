@@ -11,8 +11,9 @@ const (
 )
 
 // Values returns all known values for AssignPublicIp. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AssignPublicIp) Values() []AssignPublicIp {
 	return []AssignPublicIp{
 		"ENABLED",
@@ -29,8 +30,9 @@ const (
 )
 
 // Values returns all known values for BatchJobDependencyType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BatchJobDependencyType) Values() []BatchJobDependencyType {
 	return []BatchJobDependencyType{
 		"N_TO_N",
@@ -49,13 +51,31 @@ const (
 
 // Values returns all known values for BatchResourceRequirementType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BatchResourceRequirementType) Values() []BatchResourceRequirementType {
 	return []BatchResourceRequirementType{
 		"GPU",
 		"MEMORY",
 		"VCPU",
+	}
+}
+
+type DimensionValueType string
+
+// Enum values for DimensionValueType
+const (
+	DimensionValueTypeVarchar DimensionValueType = "VARCHAR"
+)
+
+// Values returns all known values for DimensionValueType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DimensionValueType) Values() []DimensionValueType {
+	return []DimensionValueType{
+		"VARCHAR",
 	}
 }
 
@@ -69,6 +89,7 @@ const (
 
 // Values returns all known values for DynamoDBStreamStartPosition. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DynamoDBStreamStartPosition) Values() []DynamoDBStreamStartPosition {
 	return []DynamoDBStreamStartPosition{
@@ -85,8 +106,9 @@ const (
 )
 
 // Values returns all known values for EcsEnvironmentFileType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EcsEnvironmentFileType) Values() []EcsEnvironmentFileType {
 	return []EcsEnvironmentFileType{
 		"s3",
@@ -103,11 +125,52 @@ const (
 
 // Values returns all known values for EcsResourceRequirementType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (EcsResourceRequirementType) Values() []EcsResourceRequirementType {
 	return []EcsResourceRequirementType{
 		"GPU",
 		"InferenceAccelerator",
+	}
+}
+
+type EpochTimeUnit string
+
+// Enum values for EpochTimeUnit
+const (
+	EpochTimeUnitMilliseconds EpochTimeUnit = "MILLISECONDS"
+	EpochTimeUnitSeconds      EpochTimeUnit = "SECONDS"
+	EpochTimeUnitMicroseconds EpochTimeUnit = "MICROSECONDS"
+	EpochTimeUnitNanoseconds  EpochTimeUnit = "NANOSECONDS"
+)
+
+// Values returns all known values for EpochTimeUnit. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EpochTimeUnit) Values() []EpochTimeUnit {
+	return []EpochTimeUnit{
+		"MILLISECONDS",
+		"SECONDS",
+		"MICROSECONDS",
+		"NANOSECONDS",
+	}
+}
+
+type IncludeExecutionDataOption string
+
+// Enum values for IncludeExecutionDataOption
+const (
+	IncludeExecutionDataOptionAll IncludeExecutionDataOption = "ALL"
+)
+
+// Values returns all known values for IncludeExecutionDataOption. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IncludeExecutionDataOption) Values() []IncludeExecutionDataOption {
+	return []IncludeExecutionDataOption{
+		"ALL",
 	}
 }
 
@@ -122,6 +185,7 @@ const (
 
 // Values returns all known values for KinesisStreamStartPosition. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (KinesisStreamStartPosition) Values() []KinesisStreamStartPosition {
 	return []KinesisStreamStartPosition{
@@ -141,13 +205,62 @@ const (
 )
 
 // Values returns all known values for LaunchType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LaunchType) Values() []LaunchType {
 	return []LaunchType{
 		"EC2",
 		"FARGATE",
 		"EXTERNAL",
+	}
+}
+
+type LogLevel string
+
+// Enum values for LogLevel
+const (
+	LogLevelOff   LogLevel = "OFF"
+	LogLevelError LogLevel = "ERROR"
+	LogLevelInfo  LogLevel = "INFO"
+	LogLevelTrace LogLevel = "TRACE"
+)
+
+// Values returns all known values for LogLevel. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LogLevel) Values() []LogLevel {
+	return []LogLevel{
+		"OFF",
+		"ERROR",
+		"INFO",
+		"TRACE",
+	}
+}
+
+type MeasureValueType string
+
+// Enum values for MeasureValueType
+const (
+	MeasureValueTypeDouble    MeasureValueType = "DOUBLE"
+	MeasureValueTypeBigint    MeasureValueType = "BIGINT"
+	MeasureValueTypeVarchar   MeasureValueType = "VARCHAR"
+	MeasureValueTypeBoolean   MeasureValueType = "BOOLEAN"
+	MeasureValueTypeTimestamp MeasureValueType = "TIMESTAMP"
+)
+
+// Values returns all known values for MeasureValueType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MeasureValueType) Values() []MeasureValueType {
+	return []MeasureValueType{
+		"DOUBLE",
+		"BIGINT",
+		"VARCHAR",
+		"BOOLEAN",
+		"TIMESTAMP",
 	}
 }
 
@@ -160,8 +273,9 @@ const (
 )
 
 // Values returns all known values for MSKStartPosition. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MSKStartPosition) Values() []MSKStartPosition {
 	return []MSKStartPosition{
 		"TRIM_HORIZON",
@@ -178,8 +292,9 @@ const (
 
 // Values returns all known values for OnPartialBatchItemFailureStreams. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OnPartialBatchItemFailureStreams) Values() []OnPartialBatchItemFailureStreams {
 	return []OnPartialBatchItemFailureStreams{
 		"AUTOMATIC_BISECT",
@@ -190,22 +305,27 @@ type PipeState string
 
 // Enum values for PipeState
 const (
-	PipeStateRunning      PipeState = "RUNNING"
-	PipeStateStopped      PipeState = "STOPPED"
-	PipeStateCreating     PipeState = "CREATING"
-	PipeStateUpdating     PipeState = "UPDATING"
-	PipeStateDeleting     PipeState = "DELETING"
-	PipeStateStarting     PipeState = "STARTING"
-	PipeStateStopping     PipeState = "STOPPING"
-	PipeStateCreateFailed PipeState = "CREATE_FAILED"
-	PipeStateUpdateFailed PipeState = "UPDATE_FAILED"
-	PipeStateStartFailed  PipeState = "START_FAILED"
-	PipeStateStopFailed   PipeState = "STOP_FAILED"
+	PipeStateRunning              PipeState = "RUNNING"
+	PipeStateStopped              PipeState = "STOPPED"
+	PipeStateCreating             PipeState = "CREATING"
+	PipeStateUpdating             PipeState = "UPDATING"
+	PipeStateDeleting             PipeState = "DELETING"
+	PipeStateStarting             PipeState = "STARTING"
+	PipeStateStopping             PipeState = "STOPPING"
+	PipeStateCreateFailed         PipeState = "CREATE_FAILED"
+	PipeStateUpdateFailed         PipeState = "UPDATE_FAILED"
+	PipeStateStartFailed          PipeState = "START_FAILED"
+	PipeStateStopFailed           PipeState = "STOP_FAILED"
+	PipeStateDeleteFailed         PipeState = "DELETE_FAILED"
+	PipeStateCreateRollbackFailed PipeState = "CREATE_ROLLBACK_FAILED"
+	PipeStateDeleteRollbackFailed PipeState = "DELETE_ROLLBACK_FAILED"
+	PipeStateUpdateRollbackFailed PipeState = "UPDATE_ROLLBACK_FAILED"
 )
 
 // Values returns all known values for PipeState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PipeState) Values() []PipeState {
 	return []PipeState{
 		"RUNNING",
@@ -219,6 +339,10 @@ func (PipeState) Values() []PipeState {
 		"UPDATE_FAILED",
 		"START_FAILED",
 		"STOP_FAILED",
+		"DELETE_FAILED",
+		"CREATE_ROLLBACK_FAILED",
+		"DELETE_ROLLBACK_FAILED",
+		"UPDATE_ROLLBACK_FAILED",
 	}
 }
 
@@ -232,6 +356,7 @@ const (
 
 // Values returns all known values for PipeTargetInvocationType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (PipeTargetInvocationType) Values() []PipeTargetInvocationType {
 	return []PipeTargetInvocationType{
@@ -249,8 +374,9 @@ const (
 )
 
 // Values returns all known values for PlacementConstraintType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PlacementConstraintType) Values() []PlacementConstraintType {
 	return []PlacementConstraintType{
 		"distinctInstance",
@@ -268,8 +394,9 @@ const (
 )
 
 // Values returns all known values for PlacementStrategyType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PlacementStrategyType) Values() []PlacementStrategyType {
 	return []PlacementStrategyType{
 		"random",
@@ -286,8 +413,9 @@ const (
 )
 
 // Values returns all known values for PropagateTags. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PropagateTags) Values() []PropagateTags {
 	return []PropagateTags{
 		"TASK_DEFINITION",
@@ -303,8 +431,9 @@ const (
 )
 
 // Values returns all known values for RequestedPipeState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RequestedPipeState) Values() []RequestedPipeState {
 	return []RequestedPipeState{
 		"RUNNING",
@@ -323,13 +452,35 @@ const (
 
 // Values returns all known values for RequestedPipeStateDescribeResponse. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RequestedPipeStateDescribeResponse) Values() []RequestedPipeStateDescribeResponse {
 	return []RequestedPipeStateDescribeResponse{
 		"RUNNING",
 		"STOPPED",
 		"DELETED",
+	}
+}
+
+type S3OutputFormat string
+
+// Enum values for S3OutputFormat
+const (
+	S3OutputFormatJson  S3OutputFormat = "json"
+	S3OutputFormatPlain S3OutputFormat = "plain"
+	S3OutputFormatW3c   S3OutputFormat = "w3c"
+)
+
+// Values returns all known values for S3OutputFormat. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (S3OutputFormat) Values() []S3OutputFormat {
+	return []S3OutputFormat{
+		"json",
+		"plain",
+		"w3c",
 	}
 }
 
@@ -343,11 +494,31 @@ const (
 
 // Values returns all known values for SelfManagedKafkaStartPosition. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SelfManagedKafkaStartPosition) Values() []SelfManagedKafkaStartPosition {
 	return []SelfManagedKafkaStartPosition{
 		"TRIM_HORIZON",
 		"LATEST",
+	}
+}
+
+type TimeFieldType string
+
+// Enum values for TimeFieldType
+const (
+	TimeFieldTypeEpoch           TimeFieldType = "EPOCH"
+	TimeFieldTypeTimestampFormat TimeFieldType = "TIMESTAMP_FORMAT"
+)
+
+// Values returns all known values for TimeFieldType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TimeFieldType) Values() []TimeFieldType {
+	return []TimeFieldType{
+		"EPOCH",
+		"TIMESTAMP_FORMAT",
 	}
 }

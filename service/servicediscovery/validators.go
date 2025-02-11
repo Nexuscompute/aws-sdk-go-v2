@@ -110,6 +110,26 @@ func (m *validateOpDeleteNamespace) HandleInitialize(ctx context.Context, in mid
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeleteServiceAttributes struct {
+}
+
+func (*validateOpDeleteServiceAttributes) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteServiceAttributes) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteServiceAttributesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteServiceAttributesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteService struct {
 }
 
@@ -165,6 +185,26 @@ func (m *validateOpDiscoverInstances) HandleInitialize(ctx context.Context, in m
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDiscoverInstancesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDiscoverInstancesRevision struct {
+}
+
+func (*validateOpDiscoverInstancesRevision) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDiscoverInstancesRevision) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DiscoverInstancesRevisionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDiscoverInstancesRevisionInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -245,6 +285,26 @@ func (m *validateOpGetOperation) HandleInitialize(ctx context.Context, in middle
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetOperationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetServiceAttributes struct {
+}
+
+func (*validateOpGetServiceAttributes) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetServiceAttributes) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetServiceAttributesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetServiceAttributesInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -510,6 +570,26 @@ func (m *validateOpUpdatePublicDnsNamespace) HandleInitialize(ctx context.Contex
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateServiceAttributes struct {
+}
+
+func (*validateOpUpdateServiceAttributes) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateServiceAttributes) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateServiceAttributesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateServiceAttributesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateService struct {
 }
 
@@ -550,6 +630,10 @@ func addOpDeleteNamespaceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteNamespace{}, middleware.After)
 }
 
+func addOpDeleteServiceAttributesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteServiceAttributes{}, middleware.After)
+}
+
 func addOpDeleteServiceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteService{}, middleware.After)
 }
@@ -560,6 +644,10 @@ func addOpDeregisterInstanceValidationMiddleware(stack *middleware.Stack) error 
 
 func addOpDiscoverInstancesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDiscoverInstances{}, middleware.After)
+}
+
+func addOpDiscoverInstancesRevisionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDiscoverInstancesRevision{}, middleware.After)
 }
 
 func addOpGetInstanceValidationMiddleware(stack *middleware.Stack) error {
@@ -576,6 +664,10 @@ func addOpGetNamespaceValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpGetOperationValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetOperation{}, middleware.After)
+}
+
+func addOpGetServiceAttributesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetServiceAttributes{}, middleware.After)
 }
 
 func addOpGetServiceValidationMiddleware(stack *middleware.Stack) error {
@@ -628,6 +720,10 @@ func addOpUpdatePrivateDnsNamespaceValidationMiddleware(stack *middleware.Stack)
 
 func addOpUpdatePublicDnsNamespaceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdatePublicDnsNamespace{}, middleware.After)
+}
+
+func addOpUpdateServiceAttributesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateServiceAttributes{}, middleware.After)
 }
 
 func addOpUpdateServiceValidationMiddleware(stack *middleware.Stack) error {
@@ -1233,6 +1329,24 @@ func validateOpDeleteNamespaceInput(v *DeleteNamespaceInput) error {
 	}
 }
 
+func validateOpDeleteServiceAttributesInput(v *DeleteServiceAttributesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteServiceAttributesInput"}
+	if v.ServiceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ServiceId"))
+	}
+	if v.Attributes == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Attributes"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDeleteServiceInput(v *DeleteServiceInput) error {
 	if v == nil {
 		return nil
@@ -1271,6 +1385,24 @@ func validateOpDiscoverInstancesInput(v *DiscoverInstancesInput) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "DiscoverInstancesInput"}
+	if v.NamespaceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("NamespaceName"))
+	}
+	if v.ServiceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ServiceName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDiscoverInstancesRevisionInput(v *DiscoverInstancesRevisionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DiscoverInstancesRevisionInput"}
 	if v.NamespaceName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("NamespaceName"))
 	}
@@ -1339,6 +1471,21 @@ func validateOpGetOperationInput(v *GetOperationInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "GetOperationInput"}
 	if v.OperationId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("OperationId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetServiceAttributesInput(v *GetServiceAttributesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetServiceAttributesInput"}
+	if v.ServiceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ServiceId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1583,6 +1730,24 @@ func validateOpUpdatePublicDnsNamespaceInput(v *UpdatePublicDnsNamespaceInput) e
 		if err := validatePublicDnsNamespaceChange(v.Namespace); err != nil {
 			invalidParams.AddNested("Namespace", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateServiceAttributesInput(v *UpdateServiceAttributesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateServiceAttributesInput"}
+	if v.ServiceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ServiceId"))
+	}
+	if v.Attributes == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Attributes"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

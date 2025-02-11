@@ -4,33 +4,41 @@ package cognitoidentityprovider
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Resends the confirmation (for confirmation of registration) to a specific user
-// in the user pool. This action might generate an SMS text message. Starting June
-// 1, 2021, US telecom carriers require you to register an origination phone number
-// before you can send SMS messages to US phone numbers. If you use SMS text
-// messages in Amazon Cognito, you must register a phone number with Amazon
-// Pinpoint (https://console.aws.amazon.com/pinpoint/home/) . Amazon Cognito uses
-// the registered number automatically. Otherwise, Amazon Cognito users who must
+// in the user pool.
+//
+// Amazon Cognito doesn't evaluate Identity and Access Management (IAM) policies
+// in requests for this API operation. For this operation, you can't use IAM
+// credentials to authorize requests, and you can't grant IAM permissions in
+// policies. For more information about authorization models in Amazon Cognito, see
+// [Using the Amazon Cognito user pools API and user pool endpoints].
+//
+// This action might generate an SMS text message. Starting June 1, 2021, US
+// telecom carriers require you to register an origination phone number before you
+// can send SMS messages to US phone numbers. If you use SMS text messages in
+// Amazon Cognito, you must register a phone number with [Amazon Pinpoint]. Amazon Cognito uses the
+// registered number automatically. Otherwise, Amazon Cognito users who must
 // receive SMS messages might not be able to sign up, activate their accounts, or
-// sign in. If you have never used SMS text messages with Amazon Cognito or any
-// other Amazon Web Service, Amazon Simple Notification Service might place your
-// account in the SMS sandbox. In sandbox mode (https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html)
-// , you can send messages only to verified phone numbers. After you test your app
-// while in the sandbox environment, you can move out of the sandbox and into
-// production. For more information, see SMS message settings for Amazon Cognito
-// user pools (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html)
-// in the Amazon Cognito Developer Guide.
+// sign in.
+//
+// If you have never used SMS text messages with Amazon Cognito or any other
+// Amazon Web Services service, Amazon Simple Notification Service might place your
+// account in the SMS sandbox. In [sandbox mode], you can send messages only to verified phone
+// numbers. After you test your app while in the sandbox environment, you can move
+// out of the sandbox and into production. For more information, see [SMS message settings for Amazon Cognito user pools]in the Amazon
+// Cognito Developer Guide.
+//
+// [SMS message settings for Amazon Cognito user pools]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html
+// [Using the Amazon Cognito user pools API and user pool endpoints]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pools-API-operations.html
+// [sandbox mode]: https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html
+// [Amazon Pinpoint]: https://console.aws.amazon.com/pinpoint/home/
 func (c *Client) ResendConfirmationCode(ctx context.Context, params *ResendConfirmationCodeInput, optFns ...func(*Options)) (*ResendConfirmationCodeOutput, error) {
 	if params == nil {
 		params = &ResendConfirmationCodeInput{}
@@ -54,8 +62,11 @@ type ResendConfirmationCodeInput struct {
 	// This member is required.
 	ClientId *string
 
-	// The username attribute of the user to whom you want to resend a confirmation
-	// code.
+	// The username of the user that you want to query or modify. The value of this
+	// parameter is typically your user's username, but it can be any of their alias
+	// attributes. If username isn't an alias attribute in your user pool, this value
+	// must be the sub of a local user or the username of a user from a third-party
+	// IdP.
 	//
 	// This member is required.
 	Username *string
@@ -65,35 +76,50 @@ type ResendConfirmationCodeInput struct {
 	AnalyticsMetadata *types.AnalyticsMetadataType
 
 	// A map of custom key-value pairs that you can provide as input for any custom
-	// workflows that this action triggers. You create custom workflows by assigning
-	// Lambda functions to user pool triggers. When you use the ResendConfirmationCode
-	// API action, Amazon Cognito invokes the function that is assigned to the custom
-	// message trigger. When Amazon Cognito invokes this function, it passes a JSON
-	// payload, which the function receives as input. This payload contains a
-	// clientMetadata attribute, which provides the data that you assigned to the
-	// ClientMetadata parameter in your ResendConfirmationCode request. In your
-	// function code in Lambda, you can process the clientMetadata value to enhance
-	// your workflow for your specific needs. For more information, see Customizing
-	// user pool Workflows with Lambda Triggers (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html)
-	// in the Amazon Cognito Developer Guide. When you use the ClientMetadata
-	// parameter, remember that Amazon Cognito won't do the following:
+	// workflows that this action triggers.
+	//
+	// You create custom workflows by assigning Lambda functions to user pool
+	// triggers. When you use the ResendConfirmationCode API action, Amazon Cognito
+	// invokes the function that is assigned to the custom message trigger. When Amazon
+	// Cognito invokes this function, it passes a JSON payload, which the function
+	// receives as input. This payload contains a clientMetadata attribute, which
+	// provides the data that you assigned to the ClientMetadata parameter in your
+	// ResendConfirmationCode request. In your function code in Lambda, you can process
+	// the clientMetadata value to enhance your workflow for your specific needs.
+	//
+	// For more information, see [Customizing user pool Workflows with Lambda Triggers] in the Amazon Cognito Developer Guide.
+	//
+	// When you use the ClientMetadata parameter, note that Amazon Cognito won't do
+	// the following:
+	//
 	//   - Store the ClientMetadata value. This data is available only to Lambda
 	//   triggers that are assigned to a user pool to support custom workflows. If your
 	//   user pool configuration doesn't include triggers, the ClientMetadata parameter
 	//   serves no purpose.
+	//
 	//   - Validate the ClientMetadata value.
-	//   - Encrypt the ClientMetadata value. Don't use Amazon Cognito to provide
-	//   sensitive information.
+	//
+	//   - Encrypt the ClientMetadata value. Don't send sensitive information in this
+	//   parameter.
+	//
+	// [Customizing user pool Workflows with Lambda Triggers]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-working-with-aws-lambda-triggers.html
 	ClientMetadata map[string]string
 
 	// A keyed-hash message authentication code (HMAC) calculated using the secret key
-	// of a user pool client and username plus the client ID in the message.
+	// of a user pool client and username plus the client ID in the message. For more
+	// information about SecretHash , see [Computing secret hash values].
+	//
+	// [Computing secret hash values]: https://docs.aws.amazon.com/cognito/latest/developerguide/signing-up-users-in-your-app.html#cognito-user-pools-computing-secret-hash
 	SecretHash *string
 
 	// Contextual data about your user session, such as the device fingerprint, IP
 	// address, or location. Amazon Cognito advanced security evaluates the risk of an
 	// authentication event based on the context that your app generates and passes to
 	// Amazon Cognito when it makes API requests.
+	//
+	// For more information, see [Collecting data for threat protection in applications].
+	//
+	// [Collecting data for threat protection in applications]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-viewing-threat-protection-app.html
 	UserContextData *types.UserContextDataType
 
 	noSmithyDocumentSerde
@@ -114,6 +140,9 @@ type ResendConfirmationCodeOutput struct {
 }
 
 func (c *Client) addOperationResendConfirmationCodeMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpResendConfirmationCode{}, middleware.After)
 	if err != nil {
 		return err
@@ -122,28 +151,35 @@ func (c *Client) addOperationResendConfirmationCodeMiddlewares(stack *middleware
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ResendConfirmationCode"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
+		return err
+	}
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -155,7 +191,13 @@ func (c *Client) addOperationResendConfirmationCodeMiddlewares(stack *middleware
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addResendConfirmationCodeResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpResendConfirmationCodeValidationMiddleware(stack); err != nil {
@@ -164,7 +206,7 @@ func (c *Client) addOperationResendConfirmationCodeMiddlewares(stack *middleware
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opResendConfirmationCode(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -176,7 +218,19 @@ func (c *Client) addOperationResendConfirmationCodeMiddlewares(stack *middleware
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -188,127 +242,4 @@ func newServiceMetadataMiddleware_opResendConfirmationCode(region string) *awsmi
 		ServiceID:     ServiceID,
 		OperationName: "ResendConfirmationCode",
 	}
-}
-
-type opResendConfirmationCodeResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opResendConfirmationCodeResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opResendConfirmationCodeResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "cognito-idp"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "cognito-idp"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("cognito-idp")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addResendConfirmationCodeResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opResendConfirmationCodeResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

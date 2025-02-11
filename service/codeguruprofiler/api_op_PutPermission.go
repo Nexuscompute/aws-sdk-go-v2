@@ -4,32 +4,33 @@ package codeguruprofiler
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/codeguruprofiler/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Adds permissions to a profiling group's resource-based policy that are provided
-// using an action group. If a profiling group doesn't have a resource-based
-// policy, one is created for it using the permissions in the action group and the
-// roles and users in the principals parameter. The one supported action group
-// that can be added is agentPermission which grants ConfigureAgent and PostAgent
-// permissions. For more information, see Resource-based policies in CodeGuru
-// Profiler (https://docs.aws.amazon.com/codeguru/latest/profiler-ug/resource-based-policies.html)
-// in the Amazon CodeGuru Profiler User Guide, ConfigureAgent (https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ConfigureAgent.html)
-// , and PostAgentProfile (https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_PostAgentProfile.html)
-// . The first time you call PutPermission on a profiling group, do not specify a
+//	Adds permissions to a profiling group's resource-based policy that are
+//
+// provided using an action group. If a profiling group doesn't have a
+// resource-based policy, one is created for it using the permissions in the action
+// group and the roles and users in the principals parameter.
+//
+// The one supported action group that can be added is agentPermission which
+// grants ConfigureAgent and PostAgent permissions. For more information, see [Resource-based policies in CodeGuru Profiler] in
+// the Amazon CodeGuru Profiler User Guide, [ConfigureAgent]ConfigureAgent , and [PostAgentProfile]PostAgentProfile .
+//
+// The first time you call PutPermission on a profiling group, do not specify a
 // revisionId because it doesn't have a resource-based policy. Subsequent calls
 // must provide a revisionId to specify which revision of the resource-based
-// policy to add the permissions to. The response contains the profiling group's
-// JSON-formatted resource policy.
+// policy to add the permissions to.
+//
+// The response contains the profiling group's JSON-formatted resource policy.
+//
+// [ConfigureAgent]: https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_ConfigureAgent.html
+// [Resource-based policies in CodeGuru Profiler]: https://docs.aws.amazon.com/codeguru/latest/profiler-ug/resource-based-policies.html
+// [PostAgentProfile]: https://docs.aws.amazon.com/codeguru/latest/profiler-api/API_PostAgentProfile.html
 func (c *Client) PutPermission(ctx context.Context, params *PutPermissionInput, optFns ...func(*Options)) (*PutPermissionOutput, error) {
 	if params == nil {
 		params = &PutPermissionInput{}
@@ -48,15 +49,15 @@ func (c *Client) PutPermission(ctx context.Context, params *PutPermissionInput, 
 // The structure representing the putPermissionRequest .
 type PutPermissionInput struct {
 
-	// Specifies an action group that contains permissions to add to a profiling group
-	// resource. One action group is supported, agentPermissions , which grants
+	//  Specifies an action group that contains permissions to add to a profiling
+	// group resource. One action group is supported, agentPermissions , which grants
 	// permission to perform actions required by the profiling agent, ConfigureAgent
 	// and PostAgentProfile permissions.
 	//
 	// This member is required.
 	ActionGroup types.ActionGroup
 
-	// A list ARNs for the roles and users you want to grant access to the profiling
+	//  A list ARNs for the roles and users you want to grant access to the profiling
 	// group. Wildcards are not are supported in the ARNs.
 	//
 	// This member is required.
@@ -67,7 +68,7 @@ type PutPermissionInput struct {
 	// This member is required.
 	ProfilingGroupName *string
 
-	// A universally unique identifier (UUID) for the revision of the policy you are
+	//  A universally unique identifier (UUID) for the revision of the policy you are
 	// adding to the profiling group. Do not specify this when you add permissions to a
 	// profiling group for the first time. If a policy already exists on the profiling
 	// group, you must specify the revisionId .
@@ -79,13 +80,13 @@ type PutPermissionInput struct {
 // The structure representing the putPermissionResponse .
 type PutPermissionOutput struct {
 
-	// The JSON-formatted resource-based policy on the profiling group that includes
+	//  The JSON-formatted resource-based policy on the profiling group that includes
 	// the added permissions.
 	//
 	// This member is required.
 	Policy *string
 
-	// A universally unique identifier (UUID) for the revision of the resource-based
+	//  A universally unique identifier (UUID) for the revision of the resource-based
 	// policy that includes the added permissions. The JSON-formatted policy is in the
 	// policy element of the response.
 	//
@@ -99,6 +100,9 @@ type PutPermissionOutput struct {
 }
 
 func (c *Client) addOperationPutPermissionMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpPutPermission{}, middleware.After)
 	if err != nil {
 		return err
@@ -107,34 +111,38 @@ func (c *Client) addOperationPutPermissionMiddlewares(stack *middleware.Stack, o
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "PutPermission"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -146,7 +154,13 @@ func (c *Client) addOperationPutPermissionMiddlewares(stack *middleware.Stack, o
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addPutPermissionResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutPermissionValidationMiddleware(stack); err != nil {
@@ -155,7 +169,7 @@ func (c *Client) addOperationPutPermissionMiddlewares(stack *middleware.Stack, o
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opPutPermission(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -167,7 +181,19 @@ func (c *Client) addOperationPutPermissionMiddlewares(stack *middleware.Stack, o
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -177,130 +203,6 @@ func newServiceMetadataMiddleware_opPutPermission(region string) *awsmiddleware.
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "codeguru-profiler",
 		OperationName: "PutPermission",
 	}
-}
-
-type opPutPermissionResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opPutPermissionResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opPutPermissionResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "codeguru-profiler"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "codeguru-profiler"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("codeguru-profiler")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addPutPermissionResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opPutPermissionResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

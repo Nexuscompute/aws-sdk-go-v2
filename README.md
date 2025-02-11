@@ -4,7 +4,7 @@
 
 `aws-sdk-go-v2` is the v2 AWS SDK for the Go programming language.
 
-The v2 SDK requires a minimum version of `Go 1.15`.
+The v2 SDK requires a minimum version of `Go 1.21`.
 
 Check out the [release notes](https://github.com/aws/aws-sdk-go-v2/blob/main/CHANGELOG.md) for information about the latest bug
 fixes, updates, and features added to the SDK.
@@ -22,6 +22,15 @@ following in the AWS SDKs and Tools Shared Configuration and Credentials Referen
 
 * [AWS SDKs and Tools Maintenance Policy](https://docs.aws.amazon.com/credref/latest/refdocs/maint-policy.html)
 * [AWS SDKs and Tools Version Support Matrix](https://docs.aws.amazon.com/credref/latest/refdocs/version-support-matrix.html)
+
+### Go version support policy
+
+The v2 SDK follows the upstream [release policy](https://go.dev/doc/devel/release#policy)
+with an additional six months of support for the most recently deprecated
+language version.
+
+**AWS reserves the right to drop support for unsupported Go versions earlier to
+address critical security issues.**
 
 ## Getting started
 To get started working with the SDK setup your project for Go modules, and retrieve the SDK dependencies with `go get`.
@@ -57,7 +66,7 @@ import (
 )
 
 func main() {
-    // Using the SDK's default configuration, loading additional config
+    // Using the SDK's default configuration, load additional config
     // and credentials values from the environment variables, shared
     // credentials, and shared configuration files
     cfg, err := config.LoadDefaultConfig(context.TODO(), config.WithRegion("us-west-2"))
@@ -125,10 +134,11 @@ The v2 SDK will use GitHub [Issues] to track feature requests and issues with th
 
 ## Resources
 
-[SDK Developer Guide](https://aws.github.io/aws-sdk-go-v2/docs/) - Use this document to learn how to get started and
+[SDK Developer Guide](https://docs.aws.amazon.com/sdk-for-go/v2/developer-guide/welcome.html) - Use this document to learn how to get started and
 use the AWS SDK for Go V2.
 
-[SDK Migration Guide](https://aws.github.io/aws-sdk-go-v2/docs/migrating/) - Use this document to learn how to migrate to V2 from the AWS SDK for Go.
+
+[SDK Migration Guide](https://docs.aws.amazon.com/sdk-for-go/v2/developer-guide/migrate-gosdk.html) - Use this document to learn how to migrate to V2 from the AWS SDK for Go.
 
 [SDK API Reference Documentation](https://pkg.go.dev/mod/github.com/aws/aws-sdk-go-v2) - Use this
 document to look up all API operation input and output parameters for AWS

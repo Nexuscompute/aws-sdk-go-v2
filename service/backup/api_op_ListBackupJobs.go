@@ -4,22 +4,18 @@ package backup
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/backup/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
 )
 
 // Returns a list of existing backup jobs for an authenticated account for the
-// last 30 days. For a longer period of time, consider using these monitoring tools (https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html)
-// .
+// last 30 days. For a longer period of time, consider using these [monitoring tools].
+//
+// [monitoring tools]: https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html
 func (c *Client) ListBackupJobs(ctx context.Context, params *ListBackupJobsInput, optFns ...func(*Options)) (*ListBackupJobsOutput, error) {
 	if params == nil {
 		params = &ListBackupJobsInput{}
@@ -38,14 +34,15 @@ func (c *Client) ListBackupJobs(ctx context.Context, params *ListBackupJobsInput
 type ListBackupJobsInput struct {
 
 	// The account ID to list the jobs from. Returns only backup jobs associated with
-	// the specified account ID. If used from an Organizations management account,
-	// passing * returns all jobs across the organization.
+	// the specified account ID.
+	//
+	// If used from an Organizations management account, passing * returns all jobs
+	// across the organization.
 	ByAccountId *string
 
 	// Returns only backup jobs that will be stored in the specified backup vault.
 	// Backup vaults are identified by names that are unique to the account used to
-	// create them and the Amazon Web Services Region where they are created. They
-	// consist of lowercase letters, numbers, and hyphens.
+	// create them and the Amazon Web Services Region where they are created.
 	ByBackupVaultName *string
 
 	// Returns only backup jobs completed after a date expressed in Unix format and
@@ -62,6 +59,22 @@ type ListBackupJobsInput struct {
 	// Returns only backup jobs that were created before the specified date.
 	ByCreatedBefore *time.Time
 
+	// This is an optional parameter that can be used to filter out jobs with a
+	// MessageCategory which matches the value you input.
+	//
+	// Example strings may include AccessDenied , SUCCESS , AGGREGATE_ALL , and
+	// InvalidParameters .
+	//
+	// View [Monitoring]
+	//
+	// The wildcard () returns count of all message categories.
+	//
+	// AGGREGATE_ALL aggregates job counts for all message categories and returns the
+	// sum.
+	//
+	// [Monitoring]: https://docs.aws.amazon.com/aws-backup/latest/devguide/monitoring.html
+	ByMessageCategory *string
+
 	// This is a filter to list child (nested) jobs based on parent job ID.
 	ByParentJobId *string
 
@@ -70,28 +83,61 @@ type ListBackupJobsInput struct {
 	ByResourceArn *string
 
 	// Returns only backup jobs for the specified resources:
+	//
 	//   - Aurora for Amazon Aurora
+	//
+	//   - CloudFormation for CloudFormation
+	//
 	//   - DocumentDB for Amazon DocumentDB (with MongoDB compatibility)
+	//
 	//   - DynamoDB for Amazon DynamoDB
+	//
 	//   - EBS for Amazon Elastic Block Store
+	//
 	//   - EC2 for Amazon Elastic Compute Cloud
+	//
 	//   - EFS for Amazon Elastic File System
+	//
 	//   - FSx for Amazon FSx
+	//
 	//   - Neptune for Amazon Neptune
+	//
 	//   - RDS for Amazon Relational Database Service
+	//
+	//   - Redshift for Amazon Redshift
+	//
+	//   - S3 for Amazon Simple Storage Service (Amazon S3)
+	//
+	//   - SAP HANA on Amazon EC2 for SAP HANA databases on Amazon Elastic Compute
+	//   Cloud instances
+	//
 	//   - Storage Gateway for Storage Gateway
-	//   - S3 for Amazon S3
-	//   - VirtualMachine for virtual machines
+	//
+	//   - Timestream for Amazon Timestream
+	//
+	//   - VirtualMachine for VMware virtual machines
 	ByResourceType *string
 
 	// Returns only backup jobs that are in the specified state.
+	//
+	// Completed with issues is a status found only in the Backup console. For API,
+	// this status refers to jobs with a state of COMPLETED and a MessageCategory with
+	// a value other than SUCCESS ; that is, the status is completed but comes with a
+	// status message.
+	//
+	// To obtain the job count for Completed with issues , run two GET requests, and
+	// subtract the second, smaller number:
+	//
+	// GET /backup-jobs/?state=COMPLETED
+	//
+	// GET /backup-jobs/?messageCategory=SUCCESS&state=COMPLETED
 	ByState types.BackupJobState
 
 	// The maximum number of items to be returned.
 	MaxResults *int32
 
 	// The next item following a partial list of returned items. For example, if a
-	// request is made to return maxResults number of items, NextToken allows you to
+	// request is made to return MaxResults number of items, NextToken allows you to
 	// return more items in your list starting at the location pointed to by the next
 	// token.
 	NextToken *string
@@ -106,7 +152,7 @@ type ListBackupJobsOutput struct {
 	BackupJobs []types.BackupJob
 
 	// The next item following a partial list of returned items. For example, if a
-	// request is made to return maxResults number of items, NextToken allows you to
+	// request is made to return MaxResults number of items, NextToken allows you to
 	// return more items in your list starting at the location pointed to by the next
 	// token.
 	NextToken *string
@@ -118,6 +164,9 @@ type ListBackupJobsOutput struct {
 }
 
 func (c *Client) addOperationListBackupJobsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpListBackupJobs{}, middleware.After)
 	if err != nil {
 		return err
@@ -126,34 +175,38 @@ func (c *Client) addOperationListBackupJobsMiddlewares(stack *middleware.Stack, 
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListBackupJobs"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -165,13 +218,19 @@ func (c *Client) addOperationListBackupJobsMiddlewares(stack *middleware.Stack, 
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListBackupJobsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListBackupJobs(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -183,19 +242,23 @@ func (c *Client) addOperationListBackupJobsMiddlewares(stack *middleware.Stack, 
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// ListBackupJobsAPIClient is a client that implements the ListBackupJobs
-// operation.
-type ListBackupJobsAPIClient interface {
-	ListBackupJobs(context.Context, *ListBackupJobsInput, ...func(*Options)) (*ListBackupJobsOutput, error)
-}
-
-var _ ListBackupJobsAPIClient = (*Client)(nil)
 
 // ListBackupJobsPaginatorOptions is the paginator options for ListBackupJobs
 type ListBackupJobsPaginatorOptions struct {
@@ -260,6 +323,9 @@ func (p *ListBackupJobsPaginator) NextPage(ctx context.Context, optFns ...func(*
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListBackupJobs(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -279,134 +345,18 @@ func (p *ListBackupJobsPaginator) NextPage(ctx context.Context, optFns ...func(*
 	return result, nil
 }
 
+// ListBackupJobsAPIClient is a client that implements the ListBackupJobs
+// operation.
+type ListBackupJobsAPIClient interface {
+	ListBackupJobs(context.Context, *ListBackupJobsInput, ...func(*Options)) (*ListBackupJobsOutput, error)
+}
+
+var _ ListBackupJobsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListBackupJobs(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "backup",
 		OperationName: "ListBackupJobs",
 	}
-}
-
-type opListBackupJobsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListBackupJobsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListBackupJobsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "backup"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "backup"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("backup")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListBackupJobsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListBackupJobsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -8,6 +8,7 @@ type ActionPoint string
 const (
 	ActionPointPreCreateHostedConfigurationVersion ActionPoint = "PRE_CREATE_HOSTED_CONFIGURATION_VERSION"
 	ActionPointPreStartDeployment                  ActionPoint = "PRE_START_DEPLOYMENT"
+	ActionPointAtDeploymentTick                    ActionPoint = "AT_DEPLOYMENT_TICK"
 	ActionPointOnDeploymentStart                   ActionPoint = "ON_DEPLOYMENT_START"
 	ActionPointOnDeploymentStep                    ActionPoint = "ON_DEPLOYMENT_STEP"
 	ActionPointOnDeploymentBaking                  ActionPoint = "ON_DEPLOYMENT_BAKING"
@@ -16,12 +17,14 @@ const (
 )
 
 // Values returns all known values for ActionPoint. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ActionPoint) Values() []ActionPoint {
 	return []ActionPoint{
 		"PRE_CREATE_HOSTED_CONFIGURATION_VERSION",
 		"PRE_START_DEPLOYMENT",
+		"AT_DEPLOYMENT_TICK",
 		"ON_DEPLOYMENT_START",
 		"ON_DEPLOYMENT_STEP",
 		"ON_DEPLOYMENT_BAKING",
@@ -38,8 +41,9 @@ const (
 )
 
 // Values returns all known values for BadRequestReason. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BadRequestReason) Values() []BadRequestReason {
 	return []BadRequestReason{
 		"InvalidConfiguration",
@@ -54,11 +58,33 @@ const (
 )
 
 // Values returns all known values for BytesMeasure. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BytesMeasure) Values() []BytesMeasure {
 	return []BytesMeasure{
 		"KILOBYTES",
+	}
+}
+
+type DeletionProtectionCheck string
+
+// Enum values for DeletionProtectionCheck
+const (
+	DeletionProtectionCheckAccountDefault DeletionProtectionCheck = "ACCOUNT_DEFAULT"
+	DeletionProtectionCheckApply          DeletionProtectionCheck = "APPLY"
+	DeletionProtectionCheckBypass         DeletionProtectionCheck = "BYPASS"
+)
+
+// Values returns all known values for DeletionProtectionCheck. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DeletionProtectionCheck) Values() []DeletionProtectionCheck {
+	return []DeletionProtectionCheck{
+		"ACCOUNT_DEFAULT",
+		"APPLY",
+		"BYPASS",
 	}
 }
 
@@ -72,11 +98,13 @@ const (
 	DeploymentEventTypeBakeTimeStarted     DeploymentEventType = "BAKE_TIME_STARTED"
 	DeploymentEventTypeDeploymentStarted   DeploymentEventType = "DEPLOYMENT_STARTED"
 	DeploymentEventTypeDeploymentCompleted DeploymentEventType = "DEPLOYMENT_COMPLETED"
+	DeploymentEventTypeRevertCompleted     DeploymentEventType = "REVERT_COMPLETED"
 )
 
 // Values returns all known values for DeploymentEventType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeploymentEventType) Values() []DeploymentEventType {
 	return []DeploymentEventType{
 		"PERCENTAGE_UPDATED",
@@ -85,6 +113,7 @@ func (DeploymentEventType) Values() []DeploymentEventType {
 		"BAKE_TIME_STARTED",
 		"DEPLOYMENT_STARTED",
 		"DEPLOYMENT_COMPLETED",
+		"REVERT_COMPLETED",
 	}
 }
 
@@ -98,11 +127,13 @@ const (
 	DeploymentStateComplete    DeploymentState = "COMPLETE"
 	DeploymentStateRollingBack DeploymentState = "ROLLING_BACK"
 	DeploymentStateRolledBack  DeploymentState = "ROLLED_BACK"
+	DeploymentStateReverted    DeploymentState = "REVERTED"
 )
 
 // Values returns all known values for DeploymentState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeploymentState) Values() []DeploymentState {
 	return []DeploymentState{
 		"BAKING",
@@ -111,6 +142,7 @@ func (DeploymentState) Values() []DeploymentState {
 		"COMPLETE",
 		"ROLLING_BACK",
 		"ROLLED_BACK",
+		"REVERTED",
 	}
 }
 
@@ -122,17 +154,20 @@ const (
 	EnvironmentStateDeploying          EnvironmentState = "DEPLOYING"
 	EnvironmentStateRollingBack        EnvironmentState = "ROLLING_BACK"
 	EnvironmentStateRolledBack         EnvironmentState = "ROLLED_BACK"
+	EnvironmentStateReverted           EnvironmentState = "REVERTED"
 )
 
 // Values returns all known values for EnvironmentState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EnvironmentState) Values() []EnvironmentState {
 	return []EnvironmentState{
 		"READY_FOR_DEPLOYMENT",
 		"DEPLOYING",
 		"ROLLING_BACK",
 		"ROLLED_BACK",
+		"REVERTED",
 	}
 }
 
@@ -145,8 +180,9 @@ const (
 )
 
 // Values returns all known values for GrowthType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (GrowthType) Values() []GrowthType {
 	return []GrowthType{
 		"LINEAR",
@@ -163,8 +199,9 @@ const (
 )
 
 // Values returns all known values for ReplicateTo. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReplicateTo) Values() []ReplicateTo {
 	return []ReplicateTo{
 		"NONE",
@@ -183,8 +220,9 @@ const (
 )
 
 // Values returns all known values for TriggeredBy. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TriggeredBy) Values() []TriggeredBy {
 	return []TriggeredBy{
 		"USER",
@@ -203,8 +241,9 @@ const (
 )
 
 // Values returns all known values for ValidatorType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ValidatorType) Values() []ValidatorType {
 	return []ValidatorType{
 		"JSON_SCHEMA",

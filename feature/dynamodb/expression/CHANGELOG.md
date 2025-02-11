@@ -1,3 +1,407 @@
+# v1.7.70 (2025-02-11)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.69 (2025-02-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.68 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.67 (2025-02-04)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.66 (2025-01-31)
+
+* **Dependency Update**: Switch to code-generated waiter matchers, removing the dependency on go-jmespath.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.65 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.64 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.7.63 (2025-01-17)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.62 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.61 (2025-01-14)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.60 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.59 (2025-01-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.58 (2025-01-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.57 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.56 (2024-12-11)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.55 (2024-12-03.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.54 (2024-12-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.53 (2024-12-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.52 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.51 (2024-11-13)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.50 (2024-11-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.49 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.48 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.47 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.46 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.45 (2024-10-04)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.44 (2024-10-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.43 (2024-09-27)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.42 (2024-09-25)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.41 (2024-09-23)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.40 (2024-09-20)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.39 (2024-09-17)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.38 (2024-09-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.37 (2024-09-04)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.36 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.35 (2024-08-26)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.34 (2024-08-22)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.33 (2024-08-15)
+
+* **Dependency Update**: Bump minimum Go version to 1.21.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.32 (2024-07-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.31 (2024-07-10.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.30 (2024-07-10)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.29 (2024-06-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.28 (2024-06-26)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.27 (2024-06-20)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.26 (2024-06-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.25 (2024-06-18)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.24 (2024-06-17)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.23 (2024-06-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.22 (2024-06-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.21 (2024-06-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.20 (2024-05-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.19 (2024-05-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.18 (2024-05-23)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.17 (2024-05-16)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.16 (2024-05-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.15 (2024-05-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.14 (2024-05-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.13 (2024-03-29)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.12 (2024-03-25)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.11 (2024-03-20)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.10 (2024-03-18)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.9 (2024-03-07)
+
+* **Bug Fix**: Remove dependency on go-cmp.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.8 (2024-03-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.7 (2024-03-04)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.6 (2024-02-23)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.5 (2024-02-22)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.4 (2024-02-21)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.3 (2024-02-20)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.2 (2024-02-16)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.1 (2024-02-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.7.0 (2024-02-13)
+
+* **Feature**: Bump minimum Go version to 1.20 per our language support policy.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.17 (2024-02-02)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.16 (2024-01-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.15 (2024-01-17)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.14 (2024-01-04)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.13 (2023-12-20)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.12 (2023-12-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.11 (2023-12-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.10 (2023-12-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.9 (2023-12-01)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.8 (2023-11-30.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.7 (2023-11-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.6 (2023-11-29)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.5 (2023-11-28.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.4 (2023-11-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.3 (2023-11-20)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.2 (2023-11-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.1 (2023-11-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.6.0 (2023-11-01)
+
+* **Feature**: Adds support for configured endpoints via environment variables and the AWS shared configuration file.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.5.0 (2023-10-31)
+
+* **Feature**: **BREAKING CHANGE**: Bump minimum go version to 1.19 per the revised [go version support policy](https://aws.amazon.com/blogs/developer/aws-sdk-for-go-aligns-with-go-release-policy-on-supported-runtimes/).
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.4.71 (2023-10-20)
+
+* No change notes available for this release.
+
+# v1.4.70 (2023-10-18)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.4.69 (2023-10-12)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.4.68 (2023-10-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.4.67 (2023-09-26)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.4.66 (2023-08-21)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.4.65 (2023-08-18)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.4.64 (2023-08-17)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.4.63 (2023-08-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.4.62 (2023-08-01)
 
 * **Dependency Update**: Updated to the latest SDK module versions

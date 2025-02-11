@@ -4,14 +4,9 @@ package amplify
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/amplify/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -35,7 +30,7 @@ func (c *Client) CreateBranch(ctx context.Context, params *CreateBranchInput, op
 // The request structure for the create branch request.
 type CreateBranchInput struct {
 
-	// The unique ID for an Amplify app.
+	//  The unique ID for an Amplify app.
 	//
 	// This member is required.
 	AppId *string
@@ -45,57 +40,69 @@ type CreateBranchInput struct {
 	// This member is required.
 	BranchName *string
 
-	// The Amazon Resource Name (ARN) for a backend environment that is part of an
-	// Amplify app.
+	// The backend for a Branch of an Amplify app. Use for a backend created from an
+	// CloudFormation stack.
+	//
+	// This field is available to Amplify Gen 2 apps only. When you deploy an
+	// application with Amplify Gen 2, you provision the app's backend infrastructure
+	// using Typescript code.
+	Backend *types.Backend
+
+	// The Amazon Resource Name (ARN) for a backend environment that is part of a Gen
+	// 1 Amplify app.
+	//
+	// This field is available to Amplify Gen 1 apps only where the backend is created
+	// using Amplify Studio or the Amplify command line interface (CLI).
 	BackendEnvironmentArn *string
 
-	// The basic authorization credentials for the branch. You must base64-encode the
+	//  The basic authorization credentials for the branch. You must base64-encode the
 	// authorization credentials and provide them in the format user:password .
 	BasicAuthCredentials *string
 
-	// The build specification (build spec) for the branch.
+	//  The build specification (build spec) for the branch.
 	BuildSpec *string
 
 	// The description for the branch.
 	Description *string
 
-	// The display name for a branch. This is used as the default domain prefix.
+	//  The display name for a branch. This is used as the default domain prefix.
 	DisplayName *string
 
-	// Enables auto building for the branch.
+	//  Enables auto building for the branch.
 	EnableAutoBuild *bool
 
-	// Enables basic authorization for the branch.
+	//  Enables basic authorization for the branch.
 	EnableBasicAuth *bool
 
-	// Enables notifications for the branch.
+	//  Enables notifications for the branch.
 	EnableNotification *bool
 
-	// Enables performance mode for the branch. Performance mode optimizes for faster
-	// hosting performance by keeping content cached at the edge for a longer interval.
-	// When performance mode is enabled, hosting configuration or code changes can take
-	// up to 10 minutes to roll out.
+	// Enables performance mode for the branch.
+	//
+	// Performance mode optimizes for faster hosting performance by keeping content
+	// cached at the edge for a longer interval. When performance mode is enabled,
+	// hosting configuration or code changes can take up to 10 minutes to roll out.
 	EnablePerformanceMode *bool
 
-	// Enables pull request previews for this branch.
+	//  Enables pull request previews for this branch.
 	EnablePullRequestPreview *bool
 
-	// The environment variables for the branch.
+	//  The environment variables for the branch.
 	EnvironmentVariables map[string]string
 
-	// The framework for the branch.
+	//  The framework for the branch.
 	Framework *string
 
-	// The Amplify environment name for the pull request.
+	//  The Amplify environment name for the pull request.
 	PullRequestEnvironmentName *string
 
 	// Describes the current stage for the branch.
 	Stage types.Stage
 
-	// The tag for the branch.
+	//  The tag for the branch.
 	Tags map[string]string
 
-	// The content Time To Live (TTL) for the website in seconds.
+	//  The content Time To Live (TTL) for the website in seconds.
 	Ttl *string
 
 	noSmithyDocumentSerde
@@ -104,8 +111,8 @@ type CreateBranchInput struct {
 // The result structure for create branch request.
 type CreateBranchOutput struct {
 
-	// Describes the branch for an Amplify app, which maps to a third-party repository
-	// branch.
+	//  Describes the branch for an Amplify app, which maps to a third-party
+	// repository branch.
 	//
 	// This member is required.
 	Branch *types.Branch
@@ -117,6 +124,9 @@ type CreateBranchOutput struct {
 }
 
 func (c *Client) addOperationCreateBranchMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateBranch{}, middleware.After)
 	if err != nil {
 		return err
@@ -125,34 +135,38 @@ func (c *Client) addOperationCreateBranchMiddlewares(stack *middleware.Stack, op
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateBranch"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -164,7 +178,13 @@ func (c *Client) addOperationCreateBranchMiddlewares(stack *middleware.Stack, op
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateBranchResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateBranchValidationMiddleware(stack); err != nil {
@@ -173,7 +193,7 @@ func (c *Client) addOperationCreateBranchMiddlewares(stack *middleware.Stack, op
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateBranch(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -185,7 +205,19 @@ func (c *Client) addOperationCreateBranchMiddlewares(stack *middleware.Stack, op
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -195,130 +227,6 @@ func newServiceMetadataMiddleware_opCreateBranch(region string) *awsmiddleware.R
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "amplify",
 		OperationName: "CreateBranch",
 	}
-}
-
-type opCreateBranchResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateBranchResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateBranchResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "amplify"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "amplify"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("amplify")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateBranchResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateBranchResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

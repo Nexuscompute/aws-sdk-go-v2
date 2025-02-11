@@ -4,14 +4,9 @@ package greengrassv2
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/greengrassv2/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -20,30 +15,42 @@ import (
 // Creates a component. Components are software that run on Greengrass core
 // devices. After you develop and test a component on your core device, you can use
 // this operation to upload your component to IoT Greengrass. Then, you can deploy
-// the component to other core devices. You can use this operation to do the
-// following:
-//   - Create components from recipes Create a component from a recipe, which is a
-//     file that defines the component's metadata, parameters, dependencies, lifecycle,
-//     artifacts, and platform capability. For more information, see IoT Greengrass
-//     component recipe reference (https://docs.aws.amazon.com/greengrass/v2/developerguide/component-recipe-reference.html)
-//     in the IoT Greengrass V2 Developer Guide. To create a component from a recipe,
-//     specify inlineRecipe when you call this operation.
-//   - Create components from Lambda functions Create a component from an Lambda
-//     function that runs on IoT Greengrass. This creates a recipe and artifacts from
-//     the Lambda function's deployment package. You can use this operation to migrate
-//     Lambda functions from IoT Greengrass V1 to IoT Greengrass V2. This function only
-//     accepts Lambda functions that use the following runtimes:
-//   - Python 2.7 – python2.7
-//   - Python 3.7 – python3.7
-//   - Python 3.8 – python3.8
-//   - Python 3.9 – python3.9
-//   - Java 8 – java8
-//   - Java 11 – java11
-//   - Node.js 10 – nodejs10.x
-//   - Node.js 12 – nodejs12.x
-//   - Node.js 14 – nodejs14.x To create a component from a Lambda function,
-//     specify lambdaFunction when you call this operation. IoT Greengrass currently
-//     supports Lambda functions on only Linux core devices.
+// the component to other core devices.
+//
+// You can use this operation to do the following:
+//
+//   - Create components from recipes
+//
+// Create a component from a recipe, which is a file that defines the component's
+//
+//	metadata, parameters, dependencies, lifecycle, artifacts, and platform
+//	capability. For more information, see [IoT Greengrass component recipe reference]in the IoT Greengrass V2 Developer
+//	Guide.
+//
+// To create a component from a recipe, specify inlineRecipe when you call this
+//
+//	operation.
+//
+//	- Create components from Lambda functions
+//
+// Create a component from an Lambda function that runs on IoT Greengrass. This
+//
+//	creates a recipe and artifacts from the Lambda function's deployment package.
+//	You can use this operation to migrate Lambda functions from IoT Greengrass V1 to
+//	IoT Greengrass V2.
+//
+// This function accepts Lambda functions in all supported versions of Python,
+//
+//	Node.js, and Java runtimes. IoT Greengrass doesn't apply any additional
+//	restrictions on deprecated Lambda runtime versions.
+//
+// To create a component from a Lambda function, specify lambdaFunction when you
+//
+//	call this operation.
+//
+// IoT Greengrass currently supports Lambda functions on only Linux core devices.
+//
+// [IoT Greengrass component recipe reference]: https://docs.aws.amazon.com/greengrass/v2/developerguide/component-recipe-reference.html
 func (c *Client) CreateComponentVersion(ctx context.Context, params *CreateComponentVersionInput, optFns ...func(*Options)) (*CreateComponentVersionOutput, error) {
 	if params == nil {
 		params = &CreateComponentVersionInput{}
@@ -72,16 +79,20 @@ type CreateComponentVersionInput struct {
 
 	// The recipe to use to create the component. The recipe defines the component's
 	// metadata, parameters, dependencies, lifecycle, artifacts, and platform
-	// compatibility. You must specify either inlineRecipe or lambdaFunction .
+	// compatibility.
+	//
+	// You must specify either inlineRecipe or lambdaFunction .
 	InlineRecipe []byte
 
-	// The parameters to create a component from a Lambda function. You must specify
-	// either inlineRecipe or lambdaFunction .
+	// The parameters to create a component from a Lambda function.
+	//
+	// You must specify either inlineRecipe or lambdaFunction .
 	LambdaFunction *types.LambdaFunctionRecipeSource
 
 	// A list of key-value pairs that contain metadata for the resource. For more
-	// information, see Tag your resources (https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html)
-	// in the IoT Greengrass V2 Developer Guide.
+	// information, see [Tag your resources]in the IoT Greengrass V2 Developer Guide.
+	//
+	// [Tag your resources]: https://docs.aws.amazon.com/greengrass/v2/developerguide/tag-resources.html
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -110,8 +121,9 @@ type CreateComponentVersionOutput struct {
 	// This member is required.
 	Status *types.CloudComponentStatus
 
-	// The ARN (https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html)
-	// of the component version.
+	// The [ARN] of the component version.
+	//
+	// [ARN]: https://docs.aws.amazon.com/general/latest/gr/aws-arns-and-namespaces.html
 	Arn *string
 
 	// Metadata pertaining to the operation's result.
@@ -121,6 +133,9 @@ type CreateComponentVersionOutput struct {
 }
 
 func (c *Client) addOperationCreateComponentVersionMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateComponentVersion{}, middleware.After)
 	if err != nil {
 		return err
@@ -129,34 +144,38 @@ func (c *Client) addOperationCreateComponentVersionMiddlewares(stack *middleware
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateComponentVersion"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -168,7 +187,13 @@ func (c *Client) addOperationCreateComponentVersionMiddlewares(stack *middleware
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateComponentVersionResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateComponentVersionMiddleware(stack, options); err != nil {
@@ -180,7 +205,7 @@ func (c *Client) addOperationCreateComponentVersionMiddlewares(stack *middleware
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateComponentVersion(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -192,7 +217,19 @@ func (c *Client) addOperationCreateComponentVersionMiddlewares(stack *middleware
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -235,130 +272,6 @@ func newServiceMetadataMiddleware_opCreateComponentVersion(region string) *awsmi
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "greengrass",
 		OperationName: "CreateComponentVersion",
 	}
-}
-
-type opCreateComponentVersionResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateComponentVersionResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateComponentVersionResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "greengrass"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "greengrass"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("greengrass")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateComponentVersionResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateComponentVersionResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

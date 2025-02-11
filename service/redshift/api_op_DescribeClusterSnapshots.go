@@ -4,34 +4,31 @@ package redshift
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/redshift/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithytime "github.com/aws/smithy-go/time"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	smithywaiter "github.com/aws/smithy-go/waiter"
-	"github.com/jmespath/go-jmespath"
 	"time"
 )
 
 // Returns one or more snapshot objects, which contain metadata about your cluster
 // snapshots. By default, this operation returns information about all snapshots of
 // all clusters that are owned by your Amazon Web Services account. No information
-// is returned for snapshots owned by inactive Amazon Web Services accounts. If you
-// specify both tag keys and tag values in the same request, Amazon Redshift
-// returns all snapshots that match any combination of the specified keys and
-// values. For example, if you have owner and environment for tag keys, and admin
-// and test for tag values, all snapshots that have any combination of those
+// is returned for snapshots owned by inactive Amazon Web Services accounts.
+//
+// If you specify both tag keys and tag values in the same request, Amazon
+// Redshift returns all snapshots that match any combination of the specified keys
+// and values. For example, if you have owner and environment for tag keys, and
+// admin and test for tag values, all snapshots that have any combination of those
 // values are returned. Only snapshots that you own are returned in the response;
 // shared snapshots are not returned with the tag key and tag value request
-// parameters. If both tag keys and values are omitted from the request, snapshots
-// are returned regardless of whether they have tag keys or values associated with
+// parameters.
+//
+// If both tag keys and values are omitted from the request, snapshots are
+// returned regardless of whether they have tag keys or values associated with
 // them.
 func (c *Client) DescribeClusterSnapshots(ctx context.Context, params *DescribeClusterSnapshotsInput, optFns ...func(*Options)) (*DescribeClusterSnapshotsOutput, error) {
 	if params == nil {
@@ -54,11 +51,15 @@ type DescribeClusterSnapshotsInput struct {
 	// cluster. You can perform table-level restore only by using a snapshot of an
 	// existing cluster, that is, a cluster that has not been deleted. Values for this
 	// parameter work as follows:
+	//
 	//   - If ClusterExists is set to true , ClusterIdentifier is required.
+	//
 	//   - If ClusterExists is set to false and ClusterIdentifier isn't specified, all
 	//   snapshots associated with deleted clusters (orphaned snapshots) are returned.
+	//
 	//   - If ClusterExists is set to false and ClusterIdentifier is specified for a
 	//   deleted cluster, snapshots associated with that cluster are returned.
+	//
 	//   - If ClusterExists is set to false and ClusterIdentifier is specified for an
 	//   existing cluster, no snapshots are returned.
 	ClusterExists *bool
@@ -68,22 +69,27 @@ type DescribeClusterSnapshotsInput struct {
 
 	// A time value that requests only snapshots created at or before the specified
 	// time. The time value is specified in ISO 8601 format. For more information about
-	// ISO 8601, go to the ISO8601 Wikipedia page. (http://en.wikipedia.org/wiki/ISO_8601)
+	// ISO 8601, go to the [ISO8601 Wikipedia page.]
+	//
 	// Example: 2012-07-16T18:00:00Z
+	//
+	// [ISO8601 Wikipedia page.]: http://en.wikipedia.org/wiki/ISO_8601
 	EndTime *time.Time
 
 	// An optional parameter that specifies the starting point to return a set of
-	// response records. When the results of a DescribeClusterSnapshots request exceed
-	// the value specified in MaxRecords , Amazon Web Services returns a value in the
-	// Marker field of the response. You can retrieve the next set of response records
-	// by providing the returned marker value in the Marker parameter and retrying the
-	// request.
+	// response records. When the results of a DescribeClusterSnapshotsrequest exceed the value specified in
+	// MaxRecords , Amazon Web Services returns a value in the Marker field of the
+	// response. You can retrieve the next set of response records by providing the
+	// returned marker value in the Marker parameter and retrying the request.
 	Marker *string
 
 	// The maximum number of response records to return in each call. If the number of
 	// remaining response records exceeds the specified MaxRecords value, a value is
 	// returned in a marker field of the response. You can retrieve the next set of
-	// records by retrying the command with the returned marker value. Default: 100
+	// records by retrying the command with the returned marker value.
+	//
+	// Default: 100
+	//
 	// Constraints: minimum 20, maximum 100.
 	MaxRecords *int32
 
@@ -101,7 +107,9 @@ type DescribeClusterSnapshotsInput struct {
 	SnapshotIdentifier *string
 
 	// The type of snapshots for which you are requesting information. By default,
-	// snapshots of all types are returned. Valid Values: automated | manual
+	// snapshots of all types are returned.
+	//
+	// Valid Values: automated | manual
 	SnapshotType *string
 
 	//
@@ -109,8 +117,11 @@ type DescribeClusterSnapshotsInput struct {
 
 	// A value that requests only snapshots created at or after the specified time.
 	// The time value is specified in ISO 8601 format. For more information about ISO
-	// 8601, go to the ISO8601 Wikipedia page. (http://en.wikipedia.org/wiki/ISO_8601)
+	// 8601, go to the [ISO8601 Wikipedia page.]
+	//
 	// Example: 2012-07-16T18:00:00Z
+	//
+	// [ISO8601 Wikipedia page.]: http://en.wikipedia.org/wiki/ISO_8601
 	StartTime *time.Time
 
 	// A tag key or keys for which you want to return all matching cluster snapshots
@@ -152,6 +163,9 @@ type DescribeClusterSnapshotsOutput struct {
 }
 
 func (c *Client) addOperationDescribeClusterSnapshotsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsquery_serializeOpDescribeClusterSnapshots{}, middleware.After)
 	if err != nil {
 		return err
@@ -160,34 +174,38 @@ func (c *Client) addOperationDescribeClusterSnapshotsMiddlewares(stack *middlewa
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeClusterSnapshots"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -199,7 +217,13 @@ func (c *Client) addOperationDescribeClusterSnapshotsMiddlewares(stack *middlewa
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeClusterSnapshotsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeClusterSnapshotsValidationMiddleware(stack); err != nil {
@@ -208,7 +232,7 @@ func (c *Client) addOperationDescribeClusterSnapshotsMiddlewares(stack *middlewa
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeClusterSnapshots(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -220,106 +244,22 @@ func (c *Client) addOperationDescribeClusterSnapshotsMiddlewares(stack *middlewa
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
-}
-
-// DescribeClusterSnapshotsAPIClient is a client that implements the
-// DescribeClusterSnapshots operation.
-type DescribeClusterSnapshotsAPIClient interface {
-	DescribeClusterSnapshots(context.Context, *DescribeClusterSnapshotsInput, ...func(*Options)) (*DescribeClusterSnapshotsOutput, error)
-}
-
-var _ DescribeClusterSnapshotsAPIClient = (*Client)(nil)
-
-// DescribeClusterSnapshotsPaginatorOptions is the paginator options for
-// DescribeClusterSnapshots
-type DescribeClusterSnapshotsPaginatorOptions struct {
-	// The maximum number of response records to return in each call. If the number of
-	// remaining response records exceeds the specified MaxRecords value, a value is
-	// returned in a marker field of the response. You can retrieve the next set of
-	// records by retrying the command with the returned marker value. Default: 100
-	// Constraints: minimum 20, maximum 100.
-	Limit int32
-
-	// Set to true if pagination should stop if the service returns a pagination token
-	// that matches the most recent token provided to the service.
-	StopOnDuplicateToken bool
-}
-
-// DescribeClusterSnapshotsPaginator is a paginator for DescribeClusterSnapshots
-type DescribeClusterSnapshotsPaginator struct {
-	options   DescribeClusterSnapshotsPaginatorOptions
-	client    DescribeClusterSnapshotsAPIClient
-	params    *DescribeClusterSnapshotsInput
-	nextToken *string
-	firstPage bool
-}
-
-// NewDescribeClusterSnapshotsPaginator returns a new
-// DescribeClusterSnapshotsPaginator
-func NewDescribeClusterSnapshotsPaginator(client DescribeClusterSnapshotsAPIClient, params *DescribeClusterSnapshotsInput, optFns ...func(*DescribeClusterSnapshotsPaginatorOptions)) *DescribeClusterSnapshotsPaginator {
-	if params == nil {
-		params = &DescribeClusterSnapshotsInput{}
-	}
-
-	options := DescribeClusterSnapshotsPaginatorOptions{}
-	if params.MaxRecords != nil {
-		options.Limit = *params.MaxRecords
-	}
-
-	for _, fn := range optFns {
-		fn(&options)
-	}
-
-	return &DescribeClusterSnapshotsPaginator{
-		options:   options,
-		client:    client,
-		params:    params,
-		firstPage: true,
-		nextToken: params.Marker,
-	}
-}
-
-// HasMorePages returns a boolean indicating whether more pages are available
-func (p *DescribeClusterSnapshotsPaginator) HasMorePages() bool {
-	return p.firstPage || (p.nextToken != nil && len(*p.nextToken) != 0)
-}
-
-// NextPage retrieves the next DescribeClusterSnapshots page.
-func (p *DescribeClusterSnapshotsPaginator) NextPage(ctx context.Context, optFns ...func(*Options)) (*DescribeClusterSnapshotsOutput, error) {
-	if !p.HasMorePages() {
-		return nil, fmt.Errorf("no more pages available")
-	}
-
-	params := *p.params
-	params.Marker = p.nextToken
-
-	var limit *int32
-	if p.options.Limit > 0 {
-		limit = &p.options.Limit
-	}
-	params.MaxRecords = limit
-
-	result, err := p.client.DescribeClusterSnapshots(ctx, &params, optFns...)
-	if err != nil {
-		return nil, err
-	}
-	p.firstPage = false
-
-	prevToken := p.nextToken
-	p.nextToken = result.Marker
-
-	if p.options.StopOnDuplicateToken &&
-		prevToken != nil &&
-		p.nextToken != nil &&
-		*prevToken == *p.nextToken {
-		p.nextToken = nil
-	}
-
-	return result, nil
 }
 
 // SnapshotAvailableWaiterOptions are waiter options for SnapshotAvailableWaiter
@@ -328,7 +268,16 @@ type SnapshotAvailableWaiterOptions struct {
 	// Set of options to modify how an operation is invoked. These apply to all
 	// operations invoked for this client. Use functional options on operation call to
 	// modify this list for per operation behavior.
+	//
+	// Passing options here is functionally equivalent to passing values to this
+	// config's ClientOptions field that extend the inner client's APIOptions directly.
 	APIOptions []func(*middleware.Stack) error
+
+	// Functional options to be passed to all operations invoked by this client.
+	//
+	// Function values that modify the inner APIOptions are applied after the waiter
+	// config's own APIOptions modifiers.
+	ClientOptions []func(*Options)
 
 	// MinDelay is the minimum amount of time to delay between retries. If unset,
 	// SnapshotAvailableWaiter will use default minimum delay of 15 seconds. Note that
@@ -345,12 +294,13 @@ type SnapshotAvailableWaiterOptions struct {
 
 	// Retryable is function that can be used to override the service defined
 	// waiter-behavior based on operation output, or returned error. This function is
-	// used by the waiter to decide if a state is retryable or a terminal state. By
-	// default service-modeled logic will populate this option. This option can thus be
-	// used to define a custom waiter state with fall-back to service-modeled waiter
-	// state mutators.The function returns an error in case of a failure state. In case
-	// of retry state, this function returns a bool value of true and nil error, while
-	// in case of success it returns a bool value of false and nil error.
+	// used by the waiter to decide if a state is retryable or a terminal state.
+	//
+	// By default service-modeled logic will populate this option. This option can
+	// thus be used to define a custom waiter state with fall-back to service-modeled
+	// waiter state mutators.The function returns an error in case of a failure state.
+	// In case of retry state, this function returns a bool value of true and nil
+	// error, while in case of success it returns a bool value of false and nil error.
 	Retryable func(context.Context, *DescribeClusterSnapshotsInput, *DescribeClusterSnapshotsOutput, error) (bool, error)
 }
 
@@ -427,7 +377,16 @@ func (w *SnapshotAvailableWaiter) WaitForOutput(ctx context.Context, params *Des
 		}
 
 		out, err := w.client.DescribeClusterSnapshots(ctx, params, func(o *Options) {
+			baseOpts := []func(*Options){
+				addIsWaiterUserAgent,
+			}
 			o.APIOptions = append(o.APIOptions, apiOptions...)
+			for _, opt := range baseOpts {
+				opt(o)
+			}
+			for _, opt := range options.ClientOptions {
+				opt(o)
+			}
 		})
 
 		retryable, err := options.Retryable(ctx, params, out, err)
@@ -463,29 +422,20 @@ func (w *SnapshotAvailableWaiter) WaitForOutput(ctx context.Context, params *Des
 func snapshotAvailableStateRetryable(ctx context.Context, input *DescribeClusterSnapshotsInput, output *DescribeClusterSnapshotsOutput, err error) (bool, error) {
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Snapshots[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
-		}
-
-		expectedValue := "available"
-		var match = true
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
-		}
-
-		if len(listOfValues) == 0 {
-			match = false
-		}
-		for _, v := range listOfValues {
-			value, ok := v.(*string)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected *string value, got %T", pathValue)
+		v1 := output.Snapshots
+		var v2 []string
+		for _, v := range v1 {
+			v3 := v.Status
+			if v3 != nil {
+				v2 = append(v2, *v3)
 			}
-
-			if string(*value) != expectedValue {
+		}
+		expectedValue := "available"
+		match := len(v2) > 0
+		for _, v := range v2 {
+			if string(v) != expectedValue {
 				match = false
+				break
 			}
 		}
 
@@ -495,184 +445,163 @@ func snapshotAvailableStateRetryable(ctx context.Context, input *DescribeCluster
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Snapshots[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Snapshots
+		var v2 []string
+		for _, v := range v1 {
+			v3 := v.Status
+			if v3 != nil {
+				v2 = append(v2, *v3)
+			}
 		}
-
 		expectedValue := "failed"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(*string)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected *string value, got %T", pathValue)
-			}
-
-			if string(*value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
 	if err == nil {
-		pathValue, err := jmespath.Search("Snapshots[].Status", output)
-		if err != nil {
-			return false, fmt.Errorf("error evaluating waiter state: %w", err)
+		v1 := output.Snapshots
+		var v2 []string
+		for _, v := range v1 {
+			v3 := v.Status
+			if v3 != nil {
+				v2 = append(v2, *v3)
+			}
 		}
-
 		expectedValue := "deleted"
-		listOfValues, ok := pathValue.([]interface{})
-		if !ok {
-			return false, fmt.Errorf("waiter comparator expected list got %T", pathValue)
+		var match bool
+		for _, v := range v2 {
+			if string(v) == expectedValue {
+				match = true
+				break
+			}
 		}
 
-		for _, v := range listOfValues {
-			value, ok := v.(*string)
-			if !ok {
-				return false, fmt.Errorf("waiter comparator expected *string value, got %T", pathValue)
-			}
-
-			if string(*value) == expectedValue {
-				return false, fmt.Errorf("waiter state transitioned to Failure")
-			}
+		if match {
+			return false, fmt.Errorf("waiter state transitioned to Failure")
 		}
 	}
 
+	if err != nil {
+		return false, err
+	}
 	return true, nil
 }
+
+// DescribeClusterSnapshotsPaginatorOptions is the paginator options for
+// DescribeClusterSnapshots
+type DescribeClusterSnapshotsPaginatorOptions struct {
+	// The maximum number of response records to return in each call. If the number of
+	// remaining response records exceeds the specified MaxRecords value, a value is
+	// returned in a marker field of the response. You can retrieve the next set of
+	// records by retrying the command with the returned marker value.
+	//
+	// Default: 100
+	//
+	// Constraints: minimum 20, maximum 100.
+	Limit int32
+
+	// Set to true if pagination should stop if the service returns a pagination token
+	// that matches the most recent token provided to the service.
+	StopOnDuplicateToken bool
+}
+
+// DescribeClusterSnapshotsPaginator is a paginator for DescribeClusterSnapshots
+type DescribeClusterSnapshotsPaginator struct {
+	options   DescribeClusterSnapshotsPaginatorOptions
+	client    DescribeClusterSnapshotsAPIClient
+	params    *DescribeClusterSnapshotsInput
+	nextToken *string
+	firstPage bool
+}
+
+// NewDescribeClusterSnapshotsPaginator returns a new
+// DescribeClusterSnapshotsPaginator
+func NewDescribeClusterSnapshotsPaginator(client DescribeClusterSnapshotsAPIClient, params *DescribeClusterSnapshotsInput, optFns ...func(*DescribeClusterSnapshotsPaginatorOptions)) *DescribeClusterSnapshotsPaginator {
+	if params == nil {
+		params = &DescribeClusterSnapshotsInput{}
+	}
+
+	options := DescribeClusterSnapshotsPaginatorOptions{}
+	if params.MaxRecords != nil {
+		options.Limit = *params.MaxRecords
+	}
+
+	for _, fn := range optFns {
+		fn(&options)
+	}
+
+	return &DescribeClusterSnapshotsPaginator{
+		options:   options,
+		client:    client,
+		params:    params,
+		firstPage: true,
+		nextToken: params.Marker,
+	}
+}
+
+// HasMorePages returns a boolean indicating whether more pages are available
+func (p *DescribeClusterSnapshotsPaginator) HasMorePages() bool {
+	return p.firstPage || (p.nextToken != nil && len(*p.nextToken) != 0)
+}
+
+// NextPage retrieves the next DescribeClusterSnapshots page.
+func (p *DescribeClusterSnapshotsPaginator) NextPage(ctx context.Context, optFns ...func(*Options)) (*DescribeClusterSnapshotsOutput, error) {
+	if !p.HasMorePages() {
+		return nil, fmt.Errorf("no more pages available")
+	}
+
+	params := *p.params
+	params.Marker = p.nextToken
+
+	var limit *int32
+	if p.options.Limit > 0 {
+		limit = &p.options.Limit
+	}
+	params.MaxRecords = limit
+
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
+	result, err := p.client.DescribeClusterSnapshots(ctx, &params, optFns...)
+	if err != nil {
+		return nil, err
+	}
+	p.firstPage = false
+
+	prevToken := p.nextToken
+	p.nextToken = result.Marker
+
+	if p.options.StopOnDuplicateToken &&
+		prevToken != nil &&
+		p.nextToken != nil &&
+		*prevToken == *p.nextToken {
+		p.nextToken = nil
+	}
+
+	return result, nil
+}
+
+// DescribeClusterSnapshotsAPIClient is a client that implements the
+// DescribeClusterSnapshots operation.
+type DescribeClusterSnapshotsAPIClient interface {
+	DescribeClusterSnapshots(context.Context, *DescribeClusterSnapshotsInput, ...func(*Options)) (*DescribeClusterSnapshotsOutput, error)
+}
+
+var _ DescribeClusterSnapshotsAPIClient = (*Client)(nil)
 
 func newServiceMetadataMiddleware_opDescribeClusterSnapshots(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "redshift",
 		OperationName: "DescribeClusterSnapshots",
 	}
-}
-
-type opDescribeClusterSnapshotsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeClusterSnapshotsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeClusterSnapshotsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "redshift"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "redshift"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("redshift")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeClusterSnapshotsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeClusterSnapshotsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

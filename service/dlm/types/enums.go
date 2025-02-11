@@ -2,6 +2,46 @@
 
 package types
 
+type DefaultPoliciesTypeValues string
+
+// Enum values for DefaultPoliciesTypeValues
+const (
+	DefaultPoliciesTypeValuesVolume   DefaultPoliciesTypeValues = "VOLUME"
+	DefaultPoliciesTypeValuesInstance DefaultPoliciesTypeValues = "INSTANCE"
+	DefaultPoliciesTypeValuesAll      DefaultPoliciesTypeValues = "ALL"
+)
+
+// Values returns all known values for DefaultPoliciesTypeValues. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DefaultPoliciesTypeValues) Values() []DefaultPoliciesTypeValues {
+	return []DefaultPoliciesTypeValues{
+		"VOLUME",
+		"INSTANCE",
+		"ALL",
+	}
+}
+
+type DefaultPolicyTypeValues string
+
+// Enum values for DefaultPolicyTypeValues
+const (
+	DefaultPolicyTypeValuesVolume   DefaultPolicyTypeValues = "VOLUME"
+	DefaultPolicyTypeValuesInstance DefaultPolicyTypeValues = "INSTANCE"
+)
+
+// Values returns all known values for DefaultPolicyTypeValues. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DefaultPolicyTypeValues) Values() []DefaultPolicyTypeValues {
+	return []DefaultPolicyTypeValues{
+		"VOLUME",
+		"INSTANCE",
+	}
+}
+
 type EventSourceValues string
 
 // Enum values for EventSourceValues
@@ -10,8 +50,9 @@ const (
 )
 
 // Values returns all known values for EventSourceValues. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EventSourceValues) Values() []EventSourceValues {
 	return []EventSourceValues{
 		"MANAGED_CWE",
@@ -26,11 +67,30 @@ const (
 )
 
 // Values returns all known values for EventTypeValues. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EventTypeValues) Values() []EventTypeValues {
 	return []EventTypeValues{
 		"shareSnapshot",
+	}
+}
+
+type ExecutionHandlerServiceValues string
+
+// Enum values for ExecutionHandlerServiceValues
+const (
+	ExecutionHandlerServiceValuesAwsSystemsManager ExecutionHandlerServiceValues = "AWS_SYSTEMS_MANAGER"
+)
+
+// Values returns all known values for ExecutionHandlerServiceValues. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ExecutionHandlerServiceValues) Values() []ExecutionHandlerServiceValues {
+	return []ExecutionHandlerServiceValues{
+		"AWS_SYSTEMS_MANAGER",
 	}
 }
 
@@ -45,6 +105,7 @@ const (
 
 // Values returns all known values for GettablePolicyStateValues. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (GettablePolicyStateValues) Values() []GettablePolicyStateValues {
 	return []GettablePolicyStateValues{
@@ -62,8 +123,9 @@ const (
 )
 
 // Values returns all known values for IntervalUnitValues. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (IntervalUnitValues) Values() []IntervalUnitValues {
 	return []IntervalUnitValues{
 		"HOURS",
@@ -76,15 +138,37 @@ type LocationValues string
 const (
 	LocationValuesCloud        LocationValues = "CLOUD"
 	LocationValuesOutpostLocal LocationValues = "OUTPOST_LOCAL"
+	LocationValuesLocalZone    LocationValues = "LOCAL_ZONE"
 )
 
 // Values returns all known values for LocationValues. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LocationValues) Values() []LocationValues {
 	return []LocationValues{
 		"CLOUD",
 		"OUTPOST_LOCAL",
+		"LOCAL_ZONE",
+	}
+}
+
+type PolicyLanguageValues string
+
+// Enum values for PolicyLanguageValues
+const (
+	PolicyLanguageValuesSimplified PolicyLanguageValues = "SIMPLIFIED"
+	PolicyLanguageValuesStandard   PolicyLanguageValues = "STANDARD"
+)
+
+// Values returns all known values for PolicyLanguageValues. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PolicyLanguageValues) Values() []PolicyLanguageValues {
+	return []PolicyLanguageValues{
+		"SIMPLIFIED",
+		"STANDARD",
 	}
 }
 
@@ -98,8 +182,9 @@ const (
 )
 
 // Values returns all known values for PolicyTypeValues. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PolicyTypeValues) Values() []PolicyTypeValues {
 	return []PolicyTypeValues{
 		"EBS_SNAPSHOT_MANAGEMENT",
@@ -112,17 +197,20 @@ type ResourceLocationValues string
 
 // Enum values for ResourceLocationValues
 const (
-	ResourceLocationValuesCloud   ResourceLocationValues = "CLOUD"
-	ResourceLocationValuesOutpost ResourceLocationValues = "OUTPOST"
+	ResourceLocationValuesCloud     ResourceLocationValues = "CLOUD"
+	ResourceLocationValuesOutpost   ResourceLocationValues = "OUTPOST"
+	ResourceLocationValuesLocalZone ResourceLocationValues = "LOCAL_ZONE"
 )
 
 // Values returns all known values for ResourceLocationValues. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceLocationValues) Values() []ResourceLocationValues {
 	return []ResourceLocationValues{
 		"CLOUD",
 		"OUTPOST",
+		"LOCAL_ZONE",
 	}
 }
 
@@ -135,8 +223,9 @@ const (
 )
 
 // Values returns all known values for ResourceTypeValues. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceTypeValues) Values() []ResourceTypeValues {
 	return []ResourceTypeValues{
 		"VOLUME",
@@ -156,6 +245,7 @@ const (
 
 // Values returns all known values for RetentionIntervalUnitValues. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (RetentionIntervalUnitValues) Values() []RetentionIntervalUnitValues {
 	return []RetentionIntervalUnitValues{
@@ -176,10 +266,30 @@ const (
 
 // Values returns all known values for SettablePolicyStateValues. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (SettablePolicyStateValues) Values() []SettablePolicyStateValues {
 	return []SettablePolicyStateValues{
 		"ENABLED",
 		"DISABLED",
+	}
+}
+
+type StageValues string
+
+// Enum values for StageValues
+const (
+	StageValuesPre  StageValues = "PRE"
+	StageValuesPost StageValues = "POST"
+)
+
+// Values returns all known values for StageValues. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (StageValues) Values() []StageValues {
+	return []StageValues{
+		"PRE",
+		"POST",
 	}
 }

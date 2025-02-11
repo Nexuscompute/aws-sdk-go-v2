@@ -4,25 +4,22 @@ package batch
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/batch/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Creates an Batch job queue. When you create a job queue, you associate one or
 // more compute environments to the queue and assign an order of preference for the
-// compute environments. You also set a priority to the job queue that determines
-// the order that the Batch scheduler places jobs onto its associated compute
-// environments. For example, if a compute environment is associated with more than
-// one job queue, the job queue with a higher priority is given preference for
-// scheduling jobs to that compute environment.
+// compute environments.
+//
+// You also set a priority to the job queue that determines the order that the
+// Batch scheduler places jobs onto its associated compute environments. For
+// example, if a compute environment is associated with more than one job queue,
+// the job queue with a higher priority is given preference for scheduling jobs to
+// that compute environment.
 func (c *Client) CreateJobQueue(ctx context.Context, params *CreateJobQueueInput, optFns ...func(*Options)) (*CreateJobQueueOutput, error) {
 	if params == nil {
 		params = &CreateJobQueueInput{}
@@ -47,9 +44,11 @@ type CreateJobQueueInput struct {
 	// state before you can associate them with a job queue. You can associate up to
 	// three compute environments with a job queue. All of the compute environments
 	// must be either EC2 ( EC2 or SPOT ) or Fargate ( FARGATE or FARGATE_SPOT ); EC2
-	// and Fargate compute environments can't be mixed. All compute environments that
-	// are associated with a job queue must share the same architecture. Batch doesn't
-	// support mixing compute environment architecture types in a single job queue.
+	// and Fargate compute environments can't be mixed.
+	//
+	// All compute environments that are associated with a job queue must share the
+	// same architecture. Batch doesn't support mixing compute environment architecture
+	// types in a single job queue.
 	//
 	// This member is required.
 	ComputeEnvironmentOrder []types.ComputeEnvironmentOrder
@@ -71,13 +70,26 @@ type CreateJobQueueInput struct {
 	// This member is required.
 	Priority *int32
 
-	// The Amazon Resource Name (ARN) of the fair share scheduling policy. If this
-	// parameter is specified, the job queue uses a fair share scheduling policy. If
-	// this parameter isn't specified, the job queue uses a first in, first out (FIFO)
-	// scheduling policy. After a job queue is created, you can replace but can't
-	// remove the fair share scheduling policy. The format is
-	// aws:Partition:batch:Region:Account:scheduling-policy/Name . An example is
+	// The set of actions that Batch performs on jobs that remain at the head of the
+	// job queue in the specified state longer than specified times. Batch will perform
+	// each action after maxTimeSeconds has passed. (Note: The minimum value for
+	// maxTimeSeconds is 600 (10 minutes) and its maximum value is 86,400 (24 hours).)
+	JobStateTimeLimitActions []types.JobStateTimeLimitAction
+
+	// The Amazon Resource Name (ARN) of the fair share scheduling policy. Job queues
+	// that don't have a scheduling policy are scheduled in a first-in, first-out
+	// (FIFO) model. After a job queue has a scheduling policy, it can be replaced but
+	// can't be removed.
+	//
+	// The format is aws:Partition:batch:Region:Account:scheduling-policy/Name .
+	//
+	// An example is
 	// aws:aws:batch:us-west-2:123456789012:scheduling-policy/MySchedulingPolicy .
+	//
+	// A job queue without a scheduling policy is scheduled as a FIFO job queue and
+	// can't have a scheduling policy added. Jobs queues with a scheduling policy can
+	// have a maximum of 500 active fair share identifiers. When the limit has been
+	// reached, submissions of any jobs that add a new fair share identifier fail.
 	SchedulingPolicyArn *string
 
 	// The state of the job queue. If the job queue state is ENABLED , it is able to
@@ -87,8 +99,9 @@ type CreateJobQueueInput struct {
 
 	// The tags that you apply to the job queue to help you categorize and organize
 	// your resources. Each tag consists of a key and an optional value. For more
-	// information, see Tagging your Batch resources (https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html)
-	// in Batch User Guide.
+	// information, see [Tagging your Batch resources]in Batch User Guide.
+	//
+	// [Tagging your Batch resources]: https://docs.aws.amazon.com/batch/latest/userguide/using-tags.html
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -113,6 +126,9 @@ type CreateJobQueueOutput struct {
 }
 
 func (c *Client) addOperationCreateJobQueueMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateJobQueue{}, middleware.After)
 	if err != nil {
 		return err
@@ -121,34 +137,38 @@ func (c *Client) addOperationCreateJobQueueMiddlewares(stack *middleware.Stack, 
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateJobQueue"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -160,7 +180,13 @@ func (c *Client) addOperationCreateJobQueueMiddlewares(stack *middleware.Stack, 
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateJobQueueResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateJobQueueValidationMiddleware(stack); err != nil {
@@ -169,7 +195,7 @@ func (c *Client) addOperationCreateJobQueueMiddlewares(stack *middleware.Stack, 
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateJobQueue(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -181,7 +207,19 @@ func (c *Client) addOperationCreateJobQueueMiddlewares(stack *middleware.Stack, 
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -191,130 +229,6 @@ func newServiceMetadataMiddleware_opCreateJobQueue(region string) *awsmiddleware
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "batch",
 		OperationName: "CreateJobQueue",
 	}
-}
-
-type opCreateJobQueueResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateJobQueueResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateJobQueueResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "batch"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "batch"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("batch")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateJobQueueResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateJobQueueResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -4,15 +4,10 @@ package transcribestreaming
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
 	"github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream/eventstreamapi"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/transcribestreaming/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithysync "github.com/aws/smithy-go/sync"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
@@ -22,14 +17,19 @@ import (
 
 // Starts a bidirectional HTTP/2 or WebSocket stream where audio is streamed to
 // Amazon Transcribe and the transcription results are streamed to your
-// application. The following parameters are required:
-//   - language-code or identify-language
+// application.
+//
+// The following parameters are required:
+//
+//   - language-code or identify-language or identify-multiple-language
+//
 //   - media-encoding
+//
 //   - sample-rate
 //
-// For more information on streaming with Amazon Transcribe, see Transcribing
-// streaming audio (https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html)
-// .
+// For more information on streaming with Amazon Transcribe, see [Transcribing streaming audio].
+//
+// [Transcribing streaming audio]: https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html
 func (c *Client) StartStreamTranscription(ctx context.Context, params *StartStreamTranscriptionInput, optFns ...func(*Options)) (*StartStreamTranscriptionOutput, error) {
 	if params == nil {
 		params = &StartStreamTranscriptionInput{}
@@ -48,12 +48,17 @@ func (c *Client) StartStreamTranscription(ctx context.Context, params *StartStre
 type StartStreamTranscriptionInput struct {
 
 	// Specify the encoding of your input audio. Supported formats are:
+	//
 	//   - FLAC
+	//
 	//   - OPUS-encoded audio in an Ogg container
+	//
 	//   - PCM (only signed 16-bit little-endian audio formats, which does not include
 	//   WAV)
-	// For more information, see Media formats (https://docs.aws.amazon.com/transcribe/latest/dg/how-input.html#how-input-audio)
-	// .
+	//
+	// For more information, see [Media formats].
+	//
+	// [Media formats]: https://docs.aws.amazon.com/transcribe/latest/dg/how-input.html#how-input-audio
 	//
 	// This member is required.
 	MediaEncoding types.MediaEncoding
@@ -67,166 +72,267 @@ type StartStreamTranscriptionInput struct {
 	MediaSampleRateHertz *int32
 
 	// Labels all personally identifiable information (PII) identified in your
-	// transcript. Content identification is performed at the segment level; PII
-	// specified in PiiEntityTypes is flagged upon complete transcription of an audio
-	// segment. You can’t set ContentIdentificationType and ContentRedactionType in
-	// the same request. If you set both, your request returns a BadRequestException .
-	// For more information, see Redacting or identifying personally identifiable
-	// information (https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html)
-	// .
+	// transcript.
+	//
+	// Content identification is performed at the segment level; PII specified in
+	// PiiEntityTypes is flagged upon complete transcription of an audio segment. If
+	// you don't include PiiEntityTypes in your request, all PII is identified.
+	//
+	// You can’t set ContentIdentificationType and ContentRedactionType in the same
+	// request. If you set both, your request returns a BadRequestException .
+	//
+	// For more information, see [Redacting or identifying personally identifiable information].
+	//
+	// [Redacting or identifying personally identifiable information]: https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html
 	ContentIdentificationType types.ContentIdentificationType
 
 	// Redacts all personally identifiable information (PII) identified in your
-	// transcript. Content redaction is performed at the segment level; PII specified
-	// in PiiEntityTypes is redacted upon complete transcription of an audio segment.
+	// transcript.
+	//
+	// Content redaction is performed at the segment level; PII specified in
+	// PiiEntityTypes is redacted upon complete transcription of an audio segment. If
+	// you don't include PiiEntityTypes in your request, all PII is redacted.
+	//
 	// You can’t set ContentRedactionType and ContentIdentificationType in the same
-	// request. If you set both, your request returns a BadRequestException . For more
-	// information, see Redacting or identifying personally identifiable information (https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html)
-	// .
+	// request. If you set both, your request returns a BadRequestException .
+	//
+	// For more information, see [Redacting or identifying personally identifiable information].
+	//
+	// [Redacting or identifying personally identifiable information]: https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html
 	ContentRedactionType types.ContentRedactionType
 
-	// Enables channel identification in multi-channel audio. Channel identification
-	// transcribes the audio on each channel independently, then appends the output for
-	// each channel into one transcript. If you have multi-channel audio and do not
-	// enable channel identification, your audio is transcribed in a continuous manner
-	// and your transcript is not separated by channel. For more information, see
-	// Transcribing multi-channel audio (https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html)
-	// .
+	// Enables channel identification in multi-channel audio.
+	//
+	// Channel identification transcribes the audio on each channel independently,
+	// then appends the output for each channel into one transcript.
+	//
+	// If you have multi-channel audio and do not enable channel identification, your
+	// audio is transcribed in a continuous manner and your transcript is not separated
+	// by channel.
+	//
+	// If you include EnableChannelIdentification in your request, you must also
+	// include NumberOfChannels .
+	//
+	// For more information, see [Transcribing multi-channel audio].
+	//
+	// [Transcribing multi-channel audio]: https://docs.aws.amazon.com/transcribe/latest/dg/channel-id.html
 	EnableChannelIdentification bool
 
 	// Enables partial result stabilization for your transcription. Partial result
 	// stabilization can reduce latency in your output, but may impact accuracy. For
-	// more information, see Partial-result stabilization (https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization)
-	// .
+	// more information, see [Partial-result stabilization].
+	//
+	// [Partial-result stabilization]: https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization
 	EnablePartialResultsStabilization bool
 
-	// Enables automatic language identification for your transcription. If you
-	// include IdentifyLanguage , you can optionally include a list of language codes,
+	// Enables automatic language identification for your transcription.
+	//
+	// If you include IdentifyLanguage , you must include a list of language codes,
 	// using LanguageOptions , that you think may be present in your audio stream.
-	// Including language options can improve transcription accuracy. You can also
-	// include a preferred language using PreferredLanguage . Adding a preferred
-	// language can help Amazon Transcribe identify the language faster than if you
-	// omit this parameter. If you have multi-channel audio that contains different
-	// languages on each channel, and you've enabled channel identification, automatic
-	// language identification identifies the dominant language on each audio channel.
-	// Note that you must include either LanguageCode or IdentifyLanguage in your
-	// request. If you include both parameters, your request fails. Streaming language
-	// identification can't be combined with custom language models or redaction.
+	//
+	// You can also include a preferred language using PreferredLanguage . Adding a
+	// preferred language can help Amazon Transcribe identify the language faster than
+	// if you omit this parameter.
+	//
+	// If you have multi-channel audio that contains different languages on each
+	// channel, and you've enabled channel identification, automatic language
+	// identification identifies the dominant language on each audio channel.
+	//
+	// Note that you must include either LanguageCode or IdentifyLanguage or
+	// IdentifyMultipleLanguages in your request. If you include more than one of these
+	// parameters, your transcription job fails.
+	//
+	// Streaming language identification can't be combined with custom language models
+	// or redaction.
 	IdentifyLanguage bool
 
-	// Specify the language code that represents the language spoken in your audio. If
-	// you're unsure of the language spoken in your audio, consider using
-	// IdentifyLanguage to enable automatic language identification. For a list of
-	// languages supported with Amazon Transcribe streaming, refer to the Supported
-	// languages (https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html)
-	// table.
+	// Enables automatic multi-language identification in your transcription job
+	// request. Use this parameter if your stream contains more than one language. If
+	// your stream contains only one language, use IdentifyLanguage instead.
+	//
+	// If you include IdentifyMultipleLanguages , you must include a list of language
+	// codes, using LanguageOptions , that you think may be present in your stream.
+	//
+	// If you want to apply a custom vocabulary or a custom vocabulary filter to your
+	// automatic multiple language identification request, include VocabularyNames or
+	// VocabularyFilterNames .
+	//
+	// Note that you must include one of LanguageCode , IdentifyLanguage , or
+	// IdentifyMultipleLanguages in your request. If you include more than one of these
+	// parameters, your transcription job fails.
+	IdentifyMultipleLanguages bool
+
+	// Specify the language code that represents the language spoken in your audio.
+	//
+	// If you're unsure of the language spoken in your audio, consider using
+	// IdentifyLanguage to enable automatic language identification.
+	//
+	// For a list of languages supported with Amazon Transcribe streaming, refer to
+	// the [Supported languages]table.
+	//
+	// [Supported languages]: https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html
 	LanguageCode types.LanguageCode
 
 	// Specify the name of the custom language model that you want to use when
 	// processing your transcription. Note that language model names are case
-	// sensitive. The language of the specified language model must match the language
-	// code you specify in your transcription request. If the languages don't match,
-	// the custom language model isn't applied. There are no errors or warnings
-	// associated with a language mismatch. For more information, see Custom language
-	// models (https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html)
-	// .
+	// sensitive.
+	//
+	// The language of the specified language model must match the language code you
+	// specify in your transcription request. If the languages don't match, the custom
+	// language model isn't applied. There are no errors or warnings associated with a
+	// language mismatch.
+	//
+	// For more information, see [Custom language models].
+	//
+	// [Custom language models]: https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html
 	LanguageModelName *string
 
 	// Specify two or more language codes that represent the languages you think may
-	// be present in your media; including more than five is not recommended. If you're
-	// unsure what languages are present, do not include this parameter. Including
-	// language options can improve the accuracy of language identification. If you
-	// include LanguageOptions in your request, you must also include IdentifyLanguage
-	// . For a list of languages supported with Amazon Transcribe streaming, refer to
-	// the Supported languages (https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html)
-	// table. You can only include one language dialect per language per stream. For
-	// example, you cannot include en-US and en-AU in the same request.
+	// be present in your media; including more than five is not recommended.
+	//
+	// Including language options can improve the accuracy of language identification.
+	//
+	// If you include LanguageOptions in your request, you must also include
+	// IdentifyLanguage or IdentifyMultipleLanguages .
+	//
+	// For a list of languages supported with Amazon Transcribe streaming, refer to
+	// the [Supported languages]table.
+	//
+	// You can only include one language dialect per language per stream. For example,
+	// you cannot include en-US and en-AU in the same request.
+	//
+	// [Supported languages]: https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html
 	LanguageOptions *string
 
-	// Specify the number of channels in your audio stream. Up to two channels are
-	// supported.
+	// Specify the number of channels in your audio stream. This value must be 2 , as
+	// only two channels are supported. If your audio doesn't contain multiple
+	// channels, do not include this parameter in your request.
+	//
+	// If you include NumberOfChannels in your request, you must also include
+	// EnableChannelIdentification .
 	NumberOfChannels *int32
 
 	// Specify the level of stability to use when you enable partial results
-	// stabilization ( EnablePartialResultsStabilization ). Low stability provides the
-	// highest accuracy. High stability transcribes faster, but with slightly lower
-	// accuracy. For more information, see Partial-result stabilization (https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization)
-	// .
+	// stabilization ( EnablePartialResultsStabilization ).
+	//
+	// Low stability provides the highest accuracy. High stability transcribes faster,
+	// but with slightly lower accuracy.
+	//
+	// For more information, see [Partial-result stabilization].
+	//
+	// [Partial-result stabilization]: https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization
 	PartialResultsStability types.PartialResultsStability
 
 	// Specify which types of personally identifiable information (PII) you want to
 	// redact in your transcript. You can include as many types as you'd like, or you
-	// can select ALL . To include PiiEntityTypes in your request, you must also
-	// include either ContentIdentificationType or ContentRedactionType . Values must
-	// be comma-separated and can include: BANK_ACCOUNT_NUMBER , BANK_ROUTING ,
-	// CREDIT_DEBIT_NUMBER , CREDIT_DEBIT_CVV , CREDIT_DEBIT_EXPIRY , PIN , EMAIL ,
-	// ADDRESS , NAME , PHONE , SSN , or ALL .
+	// can select ALL .
+	//
+	// Values must be comma-separated and can include: ADDRESS , BANK_ACCOUNT_NUMBER ,
+	// BANK_ROUTING , CREDIT_DEBIT_CVV , CREDIT_DEBIT_EXPIRY , CREDIT_DEBIT_NUMBER ,
+	// EMAIL , NAME , PHONE , PIN , SSN , or ALL .
+	//
+	// Note that if you include PiiEntityTypes in your request, you must also include
+	// ContentIdentificationType or ContentRedactionType .
+	//
+	// If you include ContentRedactionType or ContentIdentificationType in your
+	// request, but do not include PiiEntityTypes , all PII is redacted or identified.
 	PiiEntityTypes *string
 
 	// Specify a preferred language from the subset of languages codes you specified
-	// in LanguageOptions . You can only use this parameter if you've included
-	// IdentifyLanguage and LanguageOptions in your request.
+	// in LanguageOptions .
+	//
+	// You can only use this parameter if you've included IdentifyLanguage and
+	// LanguageOptions in your request.
 	PreferredLanguage types.LanguageCode
 
 	// Specify a name for your transcription session. If you don't include this
 	// parameter in your request, Amazon Transcribe generates an ID and returns it in
-	// the response. You can use a session ID to retry a streaming session.
+	// the response.
 	SessionId *string
 
 	// Enables speaker partitioning (diarization) in your transcription output.
 	// Speaker partitioning labels the speech from individual speakers in your media
-	// file. For more information, see Partitioning speakers (diarization) (https://docs.aws.amazon.com/transcribe/latest/dg/diarization.html)
-	// .
+	// file.
+	//
+	// For more information, see [Partitioning speakers (diarization)].
+	//
+	// [Partitioning speakers (diarization)]: https://docs.aws.amazon.com/transcribe/latest/dg/diarization.html
 	ShowSpeakerLabel bool
 
-	// Specify how you want your vocabulary filter applied to your transcript. To
-	// replace words with *** , choose mask . To delete words, choose remove . To flag
-	// words without changing them, choose tag .
+	// Specify how you want your vocabulary filter applied to your transcript.
+	//
+	// To replace words with *** , choose mask .
+	//
+	// To delete words, choose remove .
+	//
+	// To flag words without changing them, choose tag .
 	VocabularyFilterMethod types.VocabularyFilterMethod
 
 	// Specify the name of the custom vocabulary filter that you want to use when
 	// processing your transcription. Note that vocabulary filter names are case
-	// sensitive. If the language of the specified custom vocabulary filter doesn't
-	// match the language identified in your media, the vocabulary filter is not
-	// applied to your transcription. This parameter is not intended for use with the
-	// IdentifyLanguage parameter. If you're including IdentifyLanguage in your
-	// request and want to use one or more vocabulary filters with your transcription,
-	// use the VocabularyFilterNames parameter instead. For more information, see
-	// Using vocabulary filtering with unwanted words (https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html)
-	// .
+	// sensitive.
+	//
+	// If the language of the specified custom vocabulary filter doesn't match the
+	// language identified in your media, the vocabulary filter is not applied to your
+	// transcription.
+	//
+	// This parameter is not intended for use with the IdentifyLanguage parameter. If
+	// you're including IdentifyLanguage in your request and want to use one or more
+	// vocabulary filters with your transcription, use the VocabularyFilterNames
+	// parameter instead.
+	//
+	// For more information, see [Using vocabulary filtering with unwanted words].
+	//
+	// [Using vocabulary filtering with unwanted words]: https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html
 	VocabularyFilterName *string
 
 	// Specify the names of the custom vocabulary filters that you want to use when
 	// processing your transcription. Note that vocabulary filter names are case
-	// sensitive. If none of the languages of the specified custom vocabulary filters
-	// match the language identified in your media, your job fails. This parameter is
-	// only intended for use with the IdentifyLanguage parameter. If you're not
-	// including IdentifyLanguage in your request and want to use a custom vocabulary
-	// filter with your transcription, use the VocabularyFilterName parameter instead.
-	// For more information, see Using vocabulary filtering with unwanted words (https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html)
-	// .
+	// sensitive.
+	//
+	// If none of the languages of the specified custom vocabulary filters match the
+	// language identified in your media, your job fails.
+	//
+	// This parameter is only intended for use with the IdentifyLanguage parameter. If
+	// you're not including IdentifyLanguage in your request and want to use a custom
+	// vocabulary filter with your transcription, use the VocabularyFilterName
+	// parameter instead.
+	//
+	// For more information, see [Using vocabulary filtering with unwanted words].
+	//
+	// [Using vocabulary filtering with unwanted words]: https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html
 	VocabularyFilterNames *string
 
 	// Specify the name of the custom vocabulary that you want to use when processing
-	// your transcription. Note that vocabulary names are case sensitive. If the
-	// language of the specified custom vocabulary doesn't match the language
+	// your transcription. Note that vocabulary names are case sensitive.
+	//
+	// If the language of the specified custom vocabulary doesn't match the language
 	// identified in your media, the custom vocabulary is not applied to your
-	// transcription. This parameter is not intended for use with the IdentifyLanguage
-	// parameter. If you're including IdentifyLanguage in your request and want to use
-	// one or more custom vocabularies with your transcription, use the VocabularyNames
-	// parameter instead. For more information, see Custom vocabularies (https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html)
-	// .
+	// transcription.
+	//
+	// This parameter is not intended for use with the IdentifyLanguage parameter. If
+	// you're including IdentifyLanguage in your request and want to use one or more
+	// custom vocabularies with your transcription, use the VocabularyNames parameter
+	// instead.
+	//
+	// For more information, see [Custom vocabularies].
+	//
+	// [Custom vocabularies]: https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html
 	VocabularyName *string
 
 	// Specify the names of the custom vocabularies that you want to use when
-	// processing your transcription. Note that vocabulary names are case sensitive. If
-	// none of the languages of the specified custom vocabularies match the language
-	// identified in your media, your job fails. This parameter is only intended for
-	// use with the IdentifyLanguage parameter. If you're not including
-	// IdentifyLanguage in your request and want to use a custom vocabulary with your
-	// transcription, use the VocabularyName parameter instead. For more information,
-	// see Custom vocabularies (https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html)
-	// .
+	// processing your transcription. Note that vocabulary names are case sensitive.
+	//
+	// If none of the languages of the specified custom vocabularies match the
+	// language identified in your media, your job fails.
+	//
+	// This parameter is only intended for use with the IdentifyLanguage parameter. If
+	// you're not including IdentifyLanguage in your request and want to use a custom
+	// vocabulary with your transcription, use the VocabularyName parameter instead.
+	//
+	// For more information, see [Custom vocabularies].
+	//
+	// [Custom vocabularies]: https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html
 	VocabularyNames *string
 
 	noSmithyDocumentSerde
@@ -249,6 +355,10 @@ type StartStreamTranscriptionOutput struct {
 	// Shows whether automatic language identification was enabled for your
 	// transcription.
 	IdentifyLanguage bool
+
+	// Shows whether automatic multi-language identification was enabled for your
+	// transcription.
+	IdentifyMultipleLanguages bool
 
 	// Provides the language code that you specified in your request.
 	LanguageCode types.LanguageCode
@@ -319,6 +429,9 @@ func (o *StartStreamTranscriptionOutput) GetStream() *StartStreamTranscriptionEv
 }
 
 func (c *Client) addOperationStartStreamTranscriptionMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpStartStreamTranscription{}, middleware.After)
 	if err != nil {
 		return err
@@ -327,6 +440,10 @@ func (c *Client) addOperationStartStreamTranscriptionMiddlewares(stack *middlewa
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "StartStreamTranscription"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
@@ -339,28 +456,28 @@ func (c *Client) addOperationStartStreamTranscriptionMiddlewares(stack *middlewa
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddStreamingEventsPayload(stack); err != nil {
+	if err = addStreamingEventsPayload(stack); err != nil {
 		return err
 	}
-	if err = v4.AddContentSHA256HeaderMiddleware(stack); err != nil {
+	if err = addContentSHA256Header(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -369,7 +486,13 @@ func (c *Client) addOperationStartStreamTranscriptionMiddlewares(stack *middlewa
 	if err = eventstreamapi.AddInitializeStreamWriter(stack); err != nil {
 		return err
 	}
-	if err = addStartStreamTranscriptionResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartStreamTranscriptionValidationMiddleware(stack); err != nil {
@@ -378,7 +501,7 @@ func (c *Client) addOperationStartStreamTranscriptionMiddlewares(stack *middlewa
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opStartStreamTranscription(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -390,7 +513,19 @@ func (c *Client) addOperationStartStreamTranscriptionMiddlewares(stack *middlewa
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -400,7 +535,6 @@ func newServiceMetadataMiddleware_opStartStreamTranscription(region string) *aws
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "transcribe",
 		OperationName: "StartStreamTranscription",
 	}
 }
@@ -545,127 +679,4 @@ func (es *StartStreamTranscriptionEventStream) waitStreamClose() {
 		es.Close()
 
 	}
-}
-
-type opStartStreamTranscriptionResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opStartStreamTranscriptionResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opStartStreamTranscriptionResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "transcribe"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "transcribe"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("transcribe")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addStartStreamTranscriptionResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opStartStreamTranscriptionResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

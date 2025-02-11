@@ -17,6 +17,7 @@ const (
 
 // Values returns all known values for ApiDestinationHttpMethod. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ApiDestinationHttpMethod) Values() []ApiDestinationHttpMethod {
 	return []ApiDestinationHttpMethod{
@@ -39,8 +40,9 @@ const (
 )
 
 // Values returns all known values for ApiDestinationState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ApiDestinationState) Values() []ApiDestinationState {
 	return []ApiDestinationState{
 		"ACTIVE",
@@ -61,8 +63,9 @@ const (
 )
 
 // Values returns all known values for ArchiveState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ArchiveState) Values() []ArchiveState {
 	return []ArchiveState{
 		"ENABLED",
@@ -83,8 +86,9 @@ const (
 )
 
 // Values returns all known values for AssignPublicIp. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AssignPublicIp) Values() []AssignPublicIp {
 	return []AssignPublicIp{
 		"ENABLED",
@@ -103,6 +107,7 @@ const (
 
 // Values returns all known values for ConnectionAuthorizationType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ConnectionAuthorizationType) Values() []ConnectionAuthorizationType {
 	return []ConnectionAuthorizationType{
@@ -123,6 +128,7 @@ const (
 
 // Values returns all known values for ConnectionOAuthHttpMethod. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ConnectionOAuthHttpMethod) Values() []ConnectionOAuthHttpMethod {
 	return []ConnectionOAuthHttpMethod{
@@ -136,18 +142,21 @@ type ConnectionState string
 
 // Enum values for ConnectionState
 const (
-	ConnectionStateCreating      ConnectionState = "CREATING"
-	ConnectionStateUpdating      ConnectionState = "UPDATING"
-	ConnectionStateDeleting      ConnectionState = "DELETING"
-	ConnectionStateAuthorized    ConnectionState = "AUTHORIZED"
-	ConnectionStateDeauthorized  ConnectionState = "DEAUTHORIZED"
-	ConnectionStateAuthorizing   ConnectionState = "AUTHORIZING"
-	ConnectionStateDeauthorizing ConnectionState = "DEAUTHORIZING"
+	ConnectionStateCreating           ConnectionState = "CREATING"
+	ConnectionStateUpdating           ConnectionState = "UPDATING"
+	ConnectionStateDeleting           ConnectionState = "DELETING"
+	ConnectionStateAuthorized         ConnectionState = "AUTHORIZED"
+	ConnectionStateDeauthorized       ConnectionState = "DEAUTHORIZED"
+	ConnectionStateAuthorizing        ConnectionState = "AUTHORIZING"
+	ConnectionStateDeauthorizing      ConnectionState = "DEAUTHORIZING"
+	ConnectionStateActive             ConnectionState = "ACTIVE"
+	ConnectionStateFailedConnectivity ConnectionState = "FAILED_CONNECTIVITY"
 )
 
 // Values returns all known values for ConnectionState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConnectionState) Values() []ConnectionState {
 	return []ConnectionState{
 		"CREATING",
@@ -157,6 +166,8 @@ func (ConnectionState) Values() []ConnectionState {
 		"DEAUTHORIZED",
 		"AUTHORIZING",
 		"DEAUTHORIZING",
+		"ACTIVE",
+		"FAILED_CONNECTIVITY",
 	}
 }
 
@@ -174,8 +185,9 @@ const (
 )
 
 // Values returns all known values for EndpointState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EndpointState) Values() []EndpointState {
 	return []EndpointState{
 		"ACTIVE",
@@ -198,8 +210,9 @@ const (
 )
 
 // Values returns all known values for EventSourceState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EventSourceState) Values() []EventSourceState {
 	return []EventSourceState{
 		"PENDING",
@@ -218,8 +231,9 @@ const (
 )
 
 // Values returns all known values for LaunchType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LaunchType) Values() []LaunchType {
 	return []LaunchType{
 		"EC2",
@@ -237,8 +251,9 @@ const (
 )
 
 // Values returns all known values for PlacementConstraintType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PlacementConstraintType) Values() []PlacementConstraintType {
 	return []PlacementConstraintType{
 		"distinctInstance",
@@ -256,8 +271,9 @@ const (
 )
 
 // Values returns all known values for PlacementStrategyType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PlacementStrategyType) Values() []PlacementStrategyType {
 	return []PlacementStrategyType{
 		"random",
@@ -274,8 +290,9 @@ const (
 )
 
 // Values returns all known values for PropagateTags. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PropagateTags) Values() []PropagateTags {
 	return []PropagateTags{
 		"TASK_DEFINITION",
@@ -295,8 +312,9 @@ const (
 )
 
 // Values returns all known values for ReplayState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReplayState) Values() []ReplayState {
 	return []ReplayState{
 		"STARTING",
@@ -317,8 +335,9 @@ const (
 )
 
 // Values returns all known values for ReplicationState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReplicationState) Values() []ReplicationState {
 	return []ReplicationState{
 		"ENABLED",
@@ -330,16 +349,19 @@ type RuleState string
 
 // Enum values for RuleState
 const (
-	RuleStateEnabled  RuleState = "ENABLED"
-	RuleStateDisabled RuleState = "DISABLED"
+	RuleStateEnabled                                  RuleState = "ENABLED"
+	RuleStateDisabled                                 RuleState = "DISABLED"
+	RuleStateEnabledWithAllCloudtrailManagementEvents RuleState = "ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS"
 )
 
 // Values returns all known values for RuleState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RuleState) Values() []RuleState {
 	return []RuleState{
 		"ENABLED",
 		"DISABLED",
+		"ENABLED_WITH_ALL_CLOUDTRAIL_MANAGEMENT_EVENTS",
 	}
 }

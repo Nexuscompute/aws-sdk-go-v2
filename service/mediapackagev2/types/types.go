@@ -73,6 +73,82 @@ type ChannelListConfiguration struct {
 	// identification purposes.
 	Description *string
 
+	// The input type will be an immutable field which will be used to define whether
+	// the channel will allow CMAF ingest or HLS ingest. If unprovided, it will default
+	// to HLS to preserve current behavior.
+	//
+	// The allowed values are:
+	//
+	//   - HLS - The HLS streaming specification (which defines M3U8 manifests and TS
+	//   segments).
+	//
+	//   - CMAF - The DASH-IF CMAF Ingest specification (which defines CMAF segments
+	//   with optional DASH manifests).
+	InputType InputType
+
+	noSmithyDocumentSerde
+}
+
+// Create a DASH manifest configuration.
+type CreateDashManifestConfiguration struct {
+
+	// A short string that's appended to the endpoint URL. The child manifest name
+	// creates a unique path to this endpoint.
+	//
+	// This member is required.
+	ManifestName *string
+
+	// Determines how the DASH manifest signals the DRM content.
+	DrmSignaling DashDrmSignaling
+
+	// Filter configuration includes settings for manifest filtering, start and end
+	// times, and time delay that apply to all of your egress requests for this
+	// manifest.
+	FilterConfiguration *FilterConfiguration
+
+	// The total duration (in seconds) of the manifest's content.
+	ManifestWindowSeconds *int32
+
+	// Minimum amount of content (in seconds) that a player must keep available in the
+	// buffer.
+	MinBufferTimeSeconds *int32
+
+	// Minimum amount of time (in seconds) that the player should wait before
+	// requesting updates to the manifest.
+	MinUpdatePeriodSeconds *int32
+
+	// A list of triggers that controls when AWS Elemental MediaPackage separates the
+	// MPEG-DASH manifest into multiple periods. Type ADS to indicate that AWS
+	// Elemental MediaPackage must create periods in the output manifest that
+	// correspond to SCTE-35 ad markers in the input source. Leave this value empty to
+	// indicate that the manifest is contained all in one period. For more information
+	// about periods in the DASH manifest, see [Multi-period DASH in AWS Elemental MediaPackage].
+	//
+	// [Multi-period DASH in AWS Elemental MediaPackage]: https://docs.aws.amazon.com/mediapackage/latest/userguide/multi-period.html
+	PeriodTriggers []DashPeriodTrigger
+
+	// The SCTE configuration.
+	ScteDash *ScteDash
+
+	// Determines the type of variable used in the media URL of the SegmentTemplate
+	// tag in the manifest. Also specifies if segment timeline information is included
+	// in SegmentTimeline or SegmentTemplate .
+	//
+	// Value description:
+	//
+	//   - NUMBER_WITH_TIMELINE - The $Number$ variable is used in the media URL. The
+	//   value of this variable is the sequential number of the segment. A full
+	//   SegmentTimeline object is presented in each SegmentTemplate .
+	SegmentTemplateFormat DashSegmentTemplateFormat
+
+	// The amount of time (in seconds) that the player should be from the end of the
+	// manifest.
+	SuggestedPresentationDelaySeconds *int32
+
+	// Determines the type of UTC timing included in the DASH Media Presentation
+	// Description (MPD).
+	UtcTiming *DashUtcTiming
+
 	noSmithyDocumentSerde
 }
 
@@ -96,6 +172,11 @@ type CreateHlsManifestConfiguration struct {
 	// manifestName you provided on the originEndpoint object.
 	ChildManifestName *string
 
+	// Filter configuration includes settings for manifest filtering, start and end
+	// times, and time delay that apply to all of your egress requests for this
+	// manifest.
+	FilterConfiguration *FilterConfiguration
+
 	// The total duration (in seconds) of the manifest's content.
 	ManifestWindowSeconds *int32
 
@@ -103,13 +184,18 @@ type CreateHlsManifestConfiguration struct {
 	// that you specify. If you don't enter an interval, EXT-X-PROGRAM-DATE-TIME tags
 	// aren't included in the manifest. The tags sync the stream to the wall clock so
 	// that viewers can seek to a specific time in the playback timeline on the player.
-	// ID3Timed metadata messages generate every 5 seconds whenever the content is
-	// ingested. Irrespective of this parameter, if any ID3Timed metadata is in the HLS
-	// input, it is passed through to the HLS output.
+	//
+	// Irrespective of this parameter, if any ID3Timed metadata is in the HLS input,
+	// it is passed through to the HLS output.
 	ProgramDateTimeIntervalSeconds *int32
 
 	// The SCTE configuration.
 	ScteHls *ScteHls
+
+	// To insert an EXT-X-START tag in your HLS playlist, specify a StartTag
+	// configuration object with a valid TimeOffset. When you do, you can also
+	// optionally specify whether to include a PRECISE value in the EXT-X-START tag.
+	StartTag *StartTag
 
 	noSmithyDocumentSerde
 }
@@ -134,6 +220,11 @@ type CreateLowLatencyHlsManifestConfiguration struct {
 	// manifestName you provided on the originEndpoint object.
 	ChildManifestName *string
 
+	// Filter configuration includes settings for manifest filtering, start and end
+	// times, and time delay that apply to all of your egress requests for this
+	// manifest.
+	FilterConfiguration *FilterConfiguration
+
 	// The total duration (in seconds) of the manifest's content.
 	ManifestWindowSeconds *int32
 
@@ -141,13 +232,45 @@ type CreateLowLatencyHlsManifestConfiguration struct {
 	// that you specify. If you don't enter an interval, EXT-X-PROGRAM-DATE-TIME tags
 	// aren't included in the manifest. The tags sync the stream to the wall clock so
 	// that viewers can seek to a specific time in the playback timeline on the player.
-	// ID3Timed metadata messages generate every 5 seconds whenever the content is
-	// ingested. Irrespective of this parameter, if any ID3Timed metadata is in the HLS
-	// input, it is passed through to the HLS output.
+	//
+	// Irrespective of this parameter, if any ID3Timed metadata is in the HLS input,
+	// it is passed through to the HLS output.
 	ProgramDateTimeIntervalSeconds *int32
 
 	// The SCTE configuration.
 	ScteHls *ScteHls
+
+	// To insert an EXT-X-START tag in your HLS playlist, specify a StartTag
+	// configuration object with a valid TimeOffset. When you do, you can also
+	// optionally specify whether to include a PRECISE value in the EXT-X-START tag.
+	StartTag *StartTag
+
+	noSmithyDocumentSerde
+}
+
+// Determines the type of UTC timing included in the DASH Media Presentation
+// Description (MPD).
+type DashUtcTiming struct {
+
+	// The UTC timing mode.
+	TimingMode DashUtcTimingMode
+
+	// The the method that the player uses to synchronize to coordinated universal
+	// time (UTC) wall clock time.
+	TimingSource *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for the destination where the harvested content will be
+// exported.
+type Destination struct {
+
+	// The configuration for exporting harvested content to an S3 bucket. This
+	// includes details such as the bucket name and destination path within the bucket.
+	//
+	// This member is required.
+	S3Destination *S3DestinationConfig
 
 	noSmithyDocumentSerde
 }
@@ -175,8 +298,10 @@ type Encryption struct {
 	// content begins streaming, and then retrieves them as needed over the lifetime of
 	// the workflow. By default, key rotation is set to 300 seconds (5 minutes), the
 	// minimum rotation interval, which is equivalent to setting it to 300. If you
-	// don't enter an interval, content keys aren't rotated. The following example
-	// setting causes the service to rotate keys every thirty minutes: 1800
+	// don't enter an interval, content keys aren't rotated.
+	//
+	// The following example setting causes the service to rotate keys every thirty
+	// minutes: 1800
 	KeyRotationIntervalSeconds *int32
 
 	noSmithyDocumentSerde
@@ -188,48 +313,67 @@ type Encryption struct {
 // contract, specify which audio and video encryption presets to use.
 type EncryptionContractConfiguration struct {
 
-	// A collection of audio encryption presets. Value description:
+	// A collection of audio encryption presets.
+	//
+	// Value description:
+	//
 	//   - PRESET-AUDIO-1 - Use one content key to encrypt all of the audio tracks in
 	//   your stream.
+	//
 	//   - PRESET-AUDIO-2 - Use one content key to encrypt all of the stereo audio
 	//   tracks and one content key to encrypt all of the multichannel audio tracks.
+	//
 	//   - PRESET-AUDIO-3 - Use one content key to encrypt all of the stereo audio
 	//   tracks, one content key to encrypt all of the multichannel audio tracks with 3
 	//   to 6 channels, and one content key to encrypt all of the multichannel audio
 	//   tracks with more than 6 channels.
+	//
 	//   - SHARED - Use the same content key for all of the audio and video tracks in
 	//   your stream.
+	//
 	//   - UNENCRYPTED - Don't encrypt any of the audio tracks in your stream.
 	//
 	// This member is required.
 	PresetSpeke20Audio PresetSpeke20Audio
 
-	// A collection of video encryption presets. Value description:
+	// A collection of video encryption presets.
+	//
+	// Value description:
+	//
 	//   - PRESET-VIDEO-1 - Use one content key to encrypt all of the video tracks in
 	//   your stream.
+	//
 	//   - PRESET-VIDEO-2 - Use one content key to encrypt all of the SD video tracks
 	//   and one content key for all HD and higher resolutions video tracks.
+	//
 	//   - PRESET-VIDEO-3 - Use one content key to encrypt all of the SD video tracks,
 	//   one content key for HD video tracks and one content key for all UHD video
 	//   tracks.
+	//
 	//   - PRESET-VIDEO-4 - Use one content key to encrypt all of the SD video tracks,
 	//   one content key for HD video tracks, one content key for all UHD1 video tracks
 	//   and one content key for all UHD2 video tracks.
+	//
 	//   - PRESET-VIDEO-5 - Use one content key to encrypt all of the SD video tracks,
 	//   one content key for HD1 video tracks, one content key for HD2 video tracks, one
 	//   content key for all UHD1 video tracks and one content key for all UHD2 video
 	//   tracks.
+	//
 	//   - PRESET-VIDEO-6 - Use one content key to encrypt all of the SD video tracks,
 	//   one content key for HD1 video tracks, one content key for HD2 video tracks and
 	//   one content key for all UHD video tracks.
+	//
 	//   - PRESET-VIDEO-7 - Use one content key to encrypt all of the SD+HD1 video
 	//   tracks, one content key for HD2 video tracks and one content key for all UHD
 	//   video tracks.
+	//
 	//   - PRESET-VIDEO-8 - Use one content key to encrypt all of the SD+HD1 video
 	//   tracks, one content key for HD2 video tracks, one content key for all UHD1 video
 	//   tracks and one content key for all UHD2 video tracks.
+	//
 	//   - SHARED - Use the same content key for all of the video and audio tracks in
 	//   your stream.
+	//
 	//   - UNENCRYPTED - Don't encrypt any of the video tracks in your stream.
 	//
 	// This member is required.
@@ -246,6 +390,126 @@ type EncryptionMethod struct {
 
 	// The encryption method to use.
 	TsEncryptionMethod TsEncryptionMethod
+
+	noSmithyDocumentSerde
+}
+
+// Filter configuration includes settings for manifest filtering, start and end
+// times, and time delay that apply to all of your egress requests for this
+// manifest.
+type FilterConfiguration struct {
+
+	// Optionally specify the clip start time for all of your manifest egress
+	// requests. When you include clip start time, note that you cannot use clip start
+	// time query parameters for this manifest's endpoint URL.
+	ClipStartTime *time.Time
+
+	// Optionally specify the end time for all of your manifest egress requests. When
+	// you include end time, note that you cannot use end time query parameters for
+	// this manifest's endpoint URL.
+	End *time.Time
+
+	// Optionally specify one or more manifest filters for all of your manifest egress
+	// requests. When you include a manifest filter, note that you cannot use an
+	// identical manifest filter query parameter for this manifest's endpoint URL.
+	ManifestFilter *string
+
+	// Optionally specify the start time for all of your manifest egress requests.
+	// When you include start time, note that you cannot use start time query
+	// parameters for this manifest's endpoint URL.
+	Start *time.Time
+
+	// Optionally specify the time delay for all of your manifest egress requests.
+	// Enter a value that is smaller than your endpoint's startover window. When you
+	// include time delay, note that you cannot use time delay query parameters for
+	// this manifest's endpoint URL.
+	TimeDelaySeconds *int32
+
+	noSmithyDocumentSerde
+}
+
+// The failover settings for the endpoint.
+type ForceEndpointErrorConfiguration struct {
+
+	// The failover conditions for the endpoint. The options are:
+	//
+	//   - STALE_MANIFEST - The manifest stalled and there are no new segments or parts.
+	//
+	//   - INCOMPLETE_MANIFEST - There is a gap in the manifest.
+	//
+	//   - MISSING_DRM_KEY - Key rotation is enabled but we're unable to fetch the key
+	//   for the current key period.
+	//
+	//   - SLATE_INPUT - The segments which contain slate content are considered to be
+	//   missing content.
+	EndpointErrorConditions []EndpointErrorCondition
+
+	noSmithyDocumentSerde
+}
+
+// Retrieve the DASH manifest configuration.
+type GetDashManifestConfiguration struct {
+
+	// A short string that's appended to the endpoint URL. The manifest name creates a
+	// unique path to this endpoint. If you don't enter a value, MediaPackage uses the
+	// default manifest name, index.
+	//
+	// This member is required.
+	ManifestName *string
+
+	// The egress domain URL for stream delivery from MediaPackage.
+	//
+	// This member is required.
+	Url *string
+
+	// Determines how the DASH manifest signals the DRM content.
+	DrmSignaling DashDrmSignaling
+
+	// Filter configuration includes settings for manifest filtering, start and end
+	// times, and time delay that apply to all of your egress requests for this
+	// manifest.
+	FilterConfiguration *FilterConfiguration
+
+	// The total duration (in seconds) of the manifest's content.
+	ManifestWindowSeconds *int32
+
+	// Minimum amount of content (in seconds) that a player must keep available in the
+	// buffer.
+	MinBufferTimeSeconds *int32
+
+	// Minimum amount of time (in seconds) that the player should wait before
+	// requesting updates to the manifest.
+	MinUpdatePeriodSeconds *int32
+
+	// A list of triggers that controls when AWS Elemental MediaPackage separates the
+	// MPEG-DASH manifest into multiple periods. Leave this value empty to indicate
+	// that the manifest is contained all in one period. For more information about
+	// periods in the DASH manifest, see [Multi-period DASH in AWS Elemental MediaPackage].
+	//
+	// [Multi-period DASH in AWS Elemental MediaPackage]: https://docs.aws.amazon.com/mediapackage/latest/userguide/multi-period.html
+	PeriodTriggers []DashPeriodTrigger
+
+	// The SCTE configuration.
+	ScteDash *ScteDash
+
+	// Determines the type of variable used in the media URL of the SegmentTemplate
+	// tag in the manifest. Also specifies if segment timeline information is included
+	// in SegmentTimeline or SegmentTemplate .
+	//
+	// Value description:
+	//
+	//   - NUMBER_WITH_TIMELINE - The $Number$ variable is used in the media URL. The
+	//   value of this variable is the sequential number of the segment. A full
+	//   SegmentTimeline object is presented in each SegmentTemplate .
+	SegmentTemplateFormat DashSegmentTemplateFormat
+
+	// The amount of time (in seconds) that the player should be from the end of the
+	// manifest.
+	SuggestedPresentationDelaySeconds *int32
+
+	// Determines the type of UTC timing included in the DASH Media Presentation
+	// Description (MPD).
+	UtcTiming *DashUtcTiming
 
 	noSmithyDocumentSerde
 }
@@ -275,6 +539,11 @@ type GetHlsManifestConfiguration struct {
 	// object.
 	ChildManifestName *string
 
+	// Filter configuration includes settings for manifest filtering, start and end
+	// times, and time delay that apply to all of your egress requests for this
+	// manifest.
+	FilterConfiguration *FilterConfiguration
+
 	// The total duration (in seconds) of the manifest's content.
 	ManifestWindowSeconds *int32
 
@@ -282,13 +551,18 @@ type GetHlsManifestConfiguration struct {
 	// that you specify. If you don't enter an interval, EXT-X-PROGRAM-DATE-TIME tags
 	// aren't included in the manifest. The tags sync the stream to the wall clock so
 	// that viewers can seek to a specific time in the playback timeline on the player.
-	// ID3Timed metadata messages generate every 5 seconds whenever the content is
-	// ingested. Irrespective of this parameter, if any ID3Timed metadata is in the HLS
-	// input, it is passed through to the HLS output.
+	//
+	// Irrespective of this parameter, if any ID3Timed metadata is in the HLS input,
+	// it is passed through to the HLS output.
 	ProgramDateTimeIntervalSeconds *int32
 
 	// The SCTE configuration.
 	ScteHls *ScteHls
+
+	// To insert an EXT-X-START tag in your HLS playlist, specify a StartTag
+	// configuration object with a valid TimeOffset. When you do, you can also
+	// optionally specify whether to include a PRECISE value in the EXT-X-START tag.
+	StartTag *StartTag
 
 	noSmithyDocumentSerde
 }
@@ -318,6 +592,11 @@ type GetLowLatencyHlsManifestConfiguration struct {
 	// object.
 	ChildManifestName *string
 
+	// Filter configuration includes settings for manifest filtering, start and end
+	// times, and time delay that apply to all of your egress requests for this
+	// manifest.
+	FilterConfiguration *FilterConfiguration
+
 	// The total duration (in seconds) of the manifest's content.
 	ManifestWindowSeconds *int32
 
@@ -325,13 +604,155 @@ type GetLowLatencyHlsManifestConfiguration struct {
 	// that you specify. If you don't enter an interval, EXT-X-PROGRAM-DATE-TIME tags
 	// aren't included in the manifest. The tags sync the stream to the wall clock so
 	// that viewers can seek to a specific time in the playback timeline on the player.
-	// ID3Timed metadata messages generate every 5 seconds whenever the content is
-	// ingested. Irrespective of this parameter, if any ID3Timed metadata is in the HLS
-	// input, it is passed through to the HLS output.
+	//
+	// Irrespective of this parameter, if any ID3Timed metadata is in the HLS input,
+	// it is passed through to the HLS output.
 	ProgramDateTimeIntervalSeconds *int32
 
 	// The SCTE configuration.
 	ScteHls *ScteHls
+
+	// To insert an EXT-X-START tag in your HLS playlist, specify a StartTag
+	// configuration object with a valid TimeOffset. When you do, you can also
+	// optionally specify whether to include a PRECISE value in the EXT-X-START tag.
+	StartTag *StartTag
+
+	noSmithyDocumentSerde
+}
+
+// Information about a harvested DASH manifest.
+type HarvestedDashManifest struct {
+
+	// The name of the harvested DASH manifest.
+	//
+	// This member is required.
+	ManifestName *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about a harvested HLS manifest.
+type HarvestedHlsManifest struct {
+
+	// The name of the harvested HLS manifest.
+	//
+	// This member is required.
+	ManifestName *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about a harvested Low-Latency HLS manifest.
+type HarvestedLowLatencyHlsManifest struct {
+
+	// The name of the harvested Low-Latency HLS manifest.
+	//
+	// This member is required.
+	ManifestName *string
+
+	noSmithyDocumentSerde
+}
+
+// A collection of harvested manifests of different types.
+type HarvestedManifests struct {
+
+	// A list of harvested DASH manifests.
+	DashManifests []HarvestedDashManifest
+
+	// A list of harvested HLS manifests.
+	HlsManifests []HarvestedHlsManifest
+
+	// A list of harvested Low-Latency HLS manifests.
+	LowLatencyHlsManifests []HarvestedLowLatencyHlsManifest
+
+	noSmithyDocumentSerde
+}
+
+// Defines the schedule configuration for a harvest job.
+type HarvesterScheduleConfiguration struct {
+
+	// The end time for the harvest job.
+	//
+	// This member is required.
+	EndTime *time.Time
+
+	// The start time for the harvest job.
+	//
+	// This member is required.
+	StartTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// Represents a harvest job resource in MediaPackage v2, which is used to export
+// content from an origin endpoint to an S3 bucket.
+type HarvestJob struct {
+
+	// The Amazon Resource Name (ARN) of the harvest job.
+	//
+	// This member is required.
+	Arn *string
+
+	// The name of the channel group containing the channel associated with this
+	// harvest job.
+	//
+	// This member is required.
+	ChannelGroupName *string
+
+	// The name of the channel associated with this harvest job.
+	//
+	// This member is required.
+	ChannelName *string
+
+	// The date and time when the harvest job was created.
+	//
+	// This member is required.
+	CreatedAt *time.Time
+
+	// The S3 destination where the harvested content will be placed.
+	//
+	// This member is required.
+	Destination *Destination
+
+	// The name of the harvest job.
+	//
+	// This member is required.
+	HarvestJobName *string
+
+	// A list of manifests that are being or have been harvested.
+	//
+	// This member is required.
+	HarvestedManifests *HarvestedManifests
+
+	// The date and time when the harvest job was last modified.
+	//
+	// This member is required.
+	ModifiedAt *time.Time
+
+	// The name of the origin endpoint associated with this harvest job.
+	//
+	// This member is required.
+	OriginEndpointName *string
+
+	// The configuration for when the harvest job is scheduled to run.
+	//
+	// This member is required.
+	ScheduleConfiguration *HarvesterScheduleConfiguration
+
+	// The current status of the harvest job (e.g., QUEUED, IN_PROGRESS, CANCELLED,
+	// COMPLETED, FAILED).
+	//
+	// This member is required.
+	Status HarvestJobStatus
+
+	// An optional description of the harvest job.
+	Description *string
+
+	// The current version of the harvest job. Used for concurrency control.
+	ETag *string
+
+	// An error message if the harvest job encountered any issues.
+	ErrorMessage *string
 
 	noSmithyDocumentSerde
 }
@@ -343,6 +764,33 @@ type IngestEndpoint struct {
 	Id *string
 
 	// The ingest domain URL where the source stream should be sent.
+	Url *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for input switching based on the media quality confidence
+// score (MQCS) as provided from AWS Elemental MediaLive.
+type InputSwitchConfiguration struct {
+
+	// When true, AWS Elemental MediaPackage performs input switching based on the
+	// MQCS. Default is true. This setting is valid only when InputType is CMAF .
+	MQCSInputSwitching *bool
+
+	noSmithyDocumentSerde
+}
+
+// List the DASH manifest configuration.
+type ListDashManifestConfiguration struct {
+
+	// A short string that's appended to the endpoint URL. The manifest name creates a
+	// unique path to this endpoint. If you don't enter a value, MediaPackage uses the
+	// default manifest name, index.
+	//
+	// This member is required.
+	ManifestName *string
+
+	// The egress domain URL for stream delivery from MediaPackage.
 	Url *string
 
 	noSmithyDocumentSerde
@@ -438,9 +886,15 @@ type OriginEndpointListConfiguration struct {
 	// The date and time the origin endpoint was created.
 	CreatedAt *time.Time
 
+	// A DASH manifest configuration.
+	DashManifests []ListDashManifestConfiguration
+
 	// Any descriptive information that you want to add to the origin endpoint for
 	// future identification purposes.
 	Description *string
+
+	// The failover settings for the endpoint.
+	ForceEndpointErrorConfiguration *ForceEndpointErrorConfiguration
 
 	// An HTTP live streaming (HLS) manifest configuration.
 	HlsManifests []ListHlsManifestConfiguration
@@ -450,6 +904,35 @@ type OriginEndpointListConfiguration struct {
 
 	// The date and time the origin endpoint was modified.
 	ModifiedAt *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// The settings for what common media server data (CMSD) headers AWS Elemental
+// MediaPackage includes in responses to the CDN.
+type OutputHeaderConfiguration struct {
+
+	// When true, AWS Elemental MediaPackage includes the MQCS in responses to the
+	// CDN. This setting is valid only when InputType is CMAF .
+	PublishMQCS *bool
+
+	noSmithyDocumentSerde
+}
+
+// Configuration parameters for where in an S3 bucket to place the harvested
+// content.
+type S3DestinationConfig struct {
+
+	// The name of an S3 bucket within which harvested content will be exported.
+	//
+	// This member is required.
+	BucketName *string
+
+	// The path within the specified S3 bucket where the harvested content will be
+	// placed.
+	//
+	// This member is required.
+	DestinationPath *string
 
 	noSmithyDocumentSerde
 }
@@ -465,17 +948,39 @@ type Scte struct {
 }
 
 // The SCTE configuration.
+type ScteDash struct {
+
+	// Choose how ad markers are included in the packaged content. If you include ad
+	// markers in the content stream in your upstream encoders, then you need to inform
+	// MediaPackage what to do with the ad markers in the output.
+	//
+	// Value description:
+	//
+	//   - Binary - The SCTE-35 marker is expressed as a hex-string (Base64 string)
+	//   rather than full XML.
+	//
+	//   - XML - The SCTE marker is expressed fully in XML.
+	AdMarkerDash AdMarkerDash
+
+	noSmithyDocumentSerde
+}
+
+// The SCTE configuration.
 type ScteHls struct {
 
 	// Ad markers indicate when ads should be inserted during playback. If you include
 	// ad markers in the content stream in your upstream encoders, then you need to
 	// inform MediaPackage what to do with the ad markers in the output. Choose what
-	// you want MediaPackage to do with the ad markers. Value description:
+	// you want MediaPackage to do with the ad markers.
+	//
+	// Value description:
+	//
 	//   - DATERANGE - Insert EXT-X-DATERANGE tags to signal ad and program transition
 	//   events in TS and CMAF manifests. If you use DATERANGE, you must set a
 	//   programDateTimeIntervalSeconds value of 1 or higher. To learn more about
-	//   DATERANGE, see SCTE-35 Ad Marker EXT-X-DATERANGE (http://docs.aws.amazon.com/mediapackage/latest/ug/scte-35-ad-marker-ext-x-daterange.html)
-	//   .
+	//   DATERANGE, see [SCTE-35 Ad Marker EXT-X-DATERANGE].
+	//
+	// [SCTE-35 Ad Marker EXT-X-DATERANGE]: http://docs.aws.amazon.com/mediapackage/latest/ug/scte-35-ad-marker-ext-x-daterange.html
 	AdMarkerHls AdMarkerHls
 
 	noSmithyDocumentSerde
@@ -543,8 +1048,9 @@ type SpekeKeyProvider struct {
 	// to identify the current endpoint. How unique you make this depends on how
 	// fine-grained you want access controls to be. The service does not permit you to
 	// use the same ID for two simultaneous encryption processes. The resource ID is
-	// also known as the content ID. The following example shows a resource ID:
-	// MovieNight20171126093045
+	// also known as the content ID.
+	//
+	// The following example shows a resource ID: MovieNight20171126093045
 	//
 	// This member is required.
 	ResourceId *string
@@ -553,19 +1059,45 @@ type SpekeKeyProvider struct {
 	// the key provider API. This role must have a trust policy that allows
 	// MediaPackage to assume the role, and it must have a sufficient permissions
 	// policy to allow access to the specific key retrieval URL. Get this from your DRM
-	// solution provider. Valid format: arn:aws:iam::{accountID}:role/{name} . The
-	// following example shows a role ARN: arn:aws:iam::444455556666:role/SpekeAccess
+	// solution provider.
+	//
+	// Valid format: arn:aws:iam::{accountID}:role/{name} . The following example shows
+	// a role ARN: arn:aws:iam::444455556666:role/SpekeAccess
 	//
 	// This member is required.
 	RoleArn *string
 
 	// The URL of the API Gateway proxy that you set up to talk to your key server.
 	// The API Gateway proxy must reside in the same AWS Region as MediaPackage and
-	// must start with https://. The following example shows a URL:
+	// must start with https://.
+	//
+	// The following example shows a URL:
 	// https://1wm2dx1f33.execute-api.us-west-2.amazonaws.com/SpekeSample/copyProtection
 	//
 	// This member is required.
 	Url *string
+
+	noSmithyDocumentSerde
+}
+
+// To insert an EXT-X-START tag in your HLS playlist, specify a StartTag
+// configuration object with a valid TimeOffset. When you do, you can also
+// optionally specify whether to include a PRECISE value in the EXT-X-START tag.
+type StartTag struct {
+
+	// Specify the value for TIME-OFFSET within your EXT-X-START tag. Enter a signed
+	// floating point value which, if positive, must be less than the configured
+	// manifest duration minus three times the configured segment target duration. If
+	// negative, the absolute value must be larger than three times the configured
+	// segment target duration, and the absolute value must be smaller than the
+	// configured manifest duration.
+	//
+	// This member is required.
+	TimeOffset *float32
+
+	// Specify the value for PRECISE within your EXT-X-START tag. Leave blank, or
+	// choose false, to use the default value NO. Choose yes to use the value YES.
+	Precise *bool
 
 	noSmithyDocumentSerde
 }

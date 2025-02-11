@@ -9,8 +9,8 @@ import (
 
 // One or more arguments to the StartStreamTranscription ,
 // StartMedicalStreamTranscription , or StartCallAnalyticsStreamTranscription
-// operation was not valid. For example, MediaEncoding or LanguageCode used not
-// valid values. Check the specified parameters and try your request again.
+// operation was not valid. For example, MediaEncoding or LanguageCode used
+// unsupported values. Check the specified parameters and try your request again.
 type BadRequestException struct {
 	Message *string
 
@@ -117,6 +117,32 @@ func (e *LimitExceededException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *LimitExceededException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The request references a resource which doesn't exist.
+type ResourceNotFoundException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ResourceNotFoundException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ResourceNotFoundException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ResourceNotFoundException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ResourceNotFoundException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ResourceNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The service is currently unavailable. Try your request later.
 type ServiceUnavailableException struct {

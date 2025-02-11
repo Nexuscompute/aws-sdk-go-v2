@@ -4,27 +4,29 @@ package verifiedpermissions
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/verifiedpermissions/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Makes an authorization decision about a service request described in the
-// parameters. The principal in this request comes from an external identity
-// source. The information in the parameters can also define additional context
-// that Verified Permissions can include in the evaluation. The request is
-// evaluated against all matching policies in the specified policy store. The
-// result of the decision is either Allow or Deny , along with a list of the
-// policies that resulted in the decision. If you delete a Amazon Cognito user pool
-// or user, tokens from that deleted pool or that deleted user continue to be
-// usable until they expire.
+// parameters. The principal in this request comes from an external identity source
+// in the form of an identity token formatted as a [JSON web token (JWT)]. The information in the
+// parameters can also define additional context that Verified Permissions can
+// include in the evaluation. The request is evaluated against all matching
+// policies in the specified policy store. The result of the decision is either
+// Allow or Deny , along with a list of the policies that resulted in the decision.
+//
+// Verified Permissions validates each token that is specified in a request by
+// checking its expiration date and its signature.
+//
+// Tokens from an identity source user continue to be usable until they expire.
+// Token revocation and resource deletion have no effect on the validity of a token
+// in your policy store
+//
+// [JSON web token (JWT)]: https://wikipedia.org/wiki/JSON_Web_Token
 func (c *Client) IsAuthorizedWithToken(ctx context.Context, params *IsAuthorizedWithTokenInput, optFns ...func(*Options)) (*IsAuthorizedWithTokenOutput, error) {
 	if params == nil {
 		params = &IsAuthorizedWithTokenInput{}
@@ -50,8 +52,11 @@ type IsAuthorizedWithTokenInput struct {
 
 	// Specifies an access token for the principal to be authorized. This token is
 	// provided to you by the identity provider (IdP) associated with the specified
-	// identity source. You must specify either an AccessToken or an IdentityToken ,
-	// but not both.
+	// identity source. You must specify either an accessToken , an identityToken , or
+	// both.
+	//
+	// Must be an access token. Verified Permissions returns an error if the token_use
+	// claim in the submitted token isn't access .
 	AccessToken *string
 
 	// Specifies the requested action to be authorized. Is the specified principal
@@ -62,16 +67,26 @@ type IsAuthorizedWithTokenInput struct {
 	// authorization decisions.
 	Context types.ContextDefinition
 
-	// Specifies the list of resources and principals and their associated attributes
-	// that Verified Permissions can examine when evaluating the policies. You can
-	// include only principal and resource entities in this parameter; you can't
-	// include actions. You must specify actions in the schema.
+	// Specifies the list of resources and their associated attributes that Verified
+	// Permissions can examine when evaluating the policies.
+	//
+	// You can't include principals in this parameter, only resource and action
+	// entities. This parameter can't include any entities of a type that matches the
+	// user or group entity types that you defined in your identity source.
+	//
+	//   - The IsAuthorizedWithToken operation takes principal attributes from only the
+	//   identityToken or accessToken passed to the operation.
+	//
+	//   - For action entities, you can include only their Identifier and EntityType .
 	Entities types.EntitiesDefinition
 
 	// Specifies an identity token for the principal to be authorized. This token is
 	// provided to you by the identity provider (IdP) associated with the specified
-	// identity source. You must specify either an AccessToken or an IdentityToken ,
-	// but not both.
+	// identity source. You must specify either an accessToken , an identityToken , or
+	// both.
+	//
+	// Must be an ID token. Verified Permissions returns an error if the token_use
+	// claim in the submitted token isn't id .
 	IdentityToken *string
 
 	// Specifies the resource for which the authorization decision is made. For
@@ -106,6 +121,9 @@ type IsAuthorizedWithTokenOutput struct {
 	// This member is required.
 	Errors []types.EvaluationErrorItem
 
+	// The identifier of the principal in the ID or access token.
+	Principal *types.EntityIdentifier
+
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
 
@@ -113,6 +131,9 @@ type IsAuthorizedWithTokenOutput struct {
 }
 
 func (c *Client) addOperationIsAuthorizedWithTokenMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson10_serializeOpIsAuthorizedWithToken{}, middleware.After)
 	if err != nil {
 		return err
@@ -121,34 +142,38 @@ func (c *Client) addOperationIsAuthorizedWithTokenMiddlewares(stack *middleware.
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "IsAuthorizedWithToken"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -160,7 +185,13 @@ func (c *Client) addOperationIsAuthorizedWithTokenMiddlewares(stack *middleware.
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addIsAuthorizedWithTokenResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpIsAuthorizedWithTokenValidationMiddleware(stack); err != nil {
@@ -169,7 +200,7 @@ func (c *Client) addOperationIsAuthorizedWithTokenMiddlewares(stack *middleware.
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opIsAuthorizedWithToken(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -181,7 +212,19 @@ func (c *Client) addOperationIsAuthorizedWithTokenMiddlewares(stack *middleware.
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -191,130 +234,6 @@ func newServiceMetadataMiddleware_opIsAuthorizedWithToken(region string) *awsmid
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "verifiedpermissions",
 		OperationName: "IsAuthorizedWithToken",
 	}
-}
-
-type opIsAuthorizedWithTokenResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opIsAuthorizedWithTokenResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opIsAuthorizedWithTokenResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "verifiedpermissions"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "verifiedpermissions"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("verifiedpermissions")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addIsAuthorizedWithTokenResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opIsAuthorizedWithTokenResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

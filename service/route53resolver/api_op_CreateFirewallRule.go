@@ -4,14 +4,9 @@ package route53resolver
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/route53resolver/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -36,9 +31,14 @@ func (c *Client) CreateFirewallRule(ctx context.Context, params *CreateFirewallR
 type CreateFirewallRuleInput struct {
 
 	// The action that DNS Firewall should take on a DNS query when it matches one of
-	// the domains in the rule's domain list:
-	//   - ALLOW - Permit the request to go through.
+	// the domains in the rule's domain list, or a threat in a DNS Firewall Advanced
+	// rule:
+	//
+	//   - ALLOW - Permit the request to go through. Not available for DNS Firewall
+	//   Advanced rules.
+	//
 	//   - ALERT - Permit the request and send metrics and logs to Cloud Watch.
+	//
 	//   - BLOCK - Disallow the request. This option requires additional details in the
 	//   rule's BlockResponse .
 	//
@@ -51,11 +51,6 @@ type CreateFirewallRuleInput struct {
 	//
 	// This member is required.
 	CreatorRequestId *string
-
-	// The ID of the domain list that you want to use in the rule.
-	//
-	// This member is required.
-	FirewallDomainListId *string
 
 	// The unique identifier of the firewall rule group where you want to create the
 	// rule.
@@ -70,41 +65,117 @@ type CreateFirewallRuleInput struct {
 
 	// The setting that determines the processing order of the rule in the rule group.
 	// DNS Firewall processes the rules in a rule group by order of priority, starting
-	// from the lowest setting. You must specify a unique priority for each rule in a
-	// rule group. To make it easier to insert rules later, leave space between the
-	// numbers, for example, use 100, 200, and so on. You can change the priority
-	// setting for the rules in a rule group at any time.
+	// from the lowest setting.
+	//
+	// You must specify a unique priority for each rule in a rule group. To make it
+	// easier to insert rules later, leave space between the numbers, for example, use
+	// 100, 200, and so on. You can change the priority setting for the rules in a rule
+	// group at any time.
 	//
 	// This member is required.
 	Priority *int32
 
 	// The DNS record's type. This determines the format of the record value that you
 	// provided in BlockOverrideDomain . Used for the rule action BLOCK with a
-	// BlockResponse setting of OVERRIDE . This setting is required if the
-	// BlockResponse setting is OVERRIDE .
+	// BlockResponse setting of OVERRIDE .
+	//
+	// This setting is required if the BlockResponse setting is OVERRIDE .
 	BlockOverrideDnsType types.BlockOverrideDnsType
 
 	// The custom DNS record to send back in response to the query. Used for the rule
-	// action BLOCK with a BlockResponse setting of OVERRIDE . This setting is required
-	// if the BlockResponse setting is OVERRIDE .
+	// action BLOCK with a BlockResponse setting of OVERRIDE .
+	//
+	// This setting is required if the BlockResponse setting is OVERRIDE .
 	BlockOverrideDomain *string
 
 	// The recommended amount of time, in seconds, for the DNS resolver or web browser
 	// to cache the provided override record. Used for the rule action BLOCK with a
-	// BlockResponse setting of OVERRIDE . This setting is required if the
-	// BlockResponse setting is OVERRIDE .
+	// BlockResponse setting of OVERRIDE .
+	//
+	// This setting is required if the BlockResponse setting is OVERRIDE .
 	BlockOverrideTtl *int32
 
 	// The way that you want DNS Firewall to block the request, used with the rule
 	// action setting BLOCK .
+	//
 	//   - NODATA - Respond indicating that the query was successful, but no response
 	//   is available for it.
+	//
 	//   - NXDOMAIN - Respond indicating that the domain name that's in the query
 	//   doesn't exist.
+	//
 	//   - OVERRIDE - Provide a custom override in the response. This option requires
 	//   custom handling details in the rule's BlockOverride* settings.
+	//
 	// This setting is required if the rule action setting is BLOCK .
 	BlockResponse types.BlockResponse
+
+	//  The confidence threshold for DNS Firewall Advanced. You must provide this
+	// value when you create a DNS Firewall Advanced rule. The confidence level values
+	// mean:
+	//
+	//   - LOW : Provides the highest detection rate for threats, but also increases
+	//   false positives.
+	//
+	//   - MEDIUM : Provides a balance between detecting threats and false positives.
+	//
+	//   - HIGH : Detects only the most well corroborated threats with a low rate of
+	//   false positives.
+	ConfidenceThreshold types.ConfidenceThreshold
+
+	//  Use to create a DNS Firewall Advanced rule.
+	DnsThreatProtection types.DnsThreatProtection
+
+	// The ID of the domain list that you want to use in the rule. Can't be used
+	// together with DnsThreatProtecton .
+	FirewallDomainListId *string
+
+	//  How you want the the rule to evaluate DNS redirection in the DNS redirection
+	// chain, such as CNAME or DNAME.
+	//
+	// INSPECT_REDIRECTION_DOMAIN : (Default) inspects all domains in the redirection
+	// chain. The individual domains in the redirection chain must be added to the
+	// domain list.
+	//
+	// TRUST_REDIRECTION_DOMAIN : Inspects only the first domain in the redirection
+	// chain. You don't need to add the subsequent domains in the domain in the
+	// redirection list to the domain list.
+	FirewallDomainRedirectionAction types.FirewallDomainRedirectionAction
+
+	//  The DNS query type you want the rule to evaluate. Allowed values are;
+	//
+	//   - A: Returns an IPv4 address.
+	//
+	//   - AAAA: Returns an Ipv6 address.
+	//
+	//   - CAA: Restricts CAs that can create SSL/TLS certifications for the domain.
+	//
+	//   - CNAME: Returns another domain name.
+	//
+	//   - DS: Record that identifies the DNSSEC signing key of a delegated zone.
+	//
+	//   - MX: Specifies mail servers.
+	//
+	//   - NAPTR: Regular-expression-based rewriting of domain names.
+	//
+	//   - NS: Authoritative name servers.
+	//
+	//   - PTR: Maps an IP address to a domain name.
+	//
+	//   - SOA: Start of authority record for the zone.
+	//
+	//   - SPF: Lists the servers authorized to send emails from a domain.
+	//
+	//   - SRV: Application specific values that identify servers.
+	//
+	//   - TXT: Verifies email senders and application-specific values.
+	//
+	//   - A query type you define by using the DNS type ID, for example 28 for AAAA.
+	//   The values must be defined as TYPENUMBER, where the NUMBER can be 1-65334, for
+	//   example, TYPE28. For more information, see [List of DNS record types].
+	//
+	// [List of DNS record types]: https://en.wikipedia.org/wiki/List_of_DNS_record_types
+	Qtype *string
 
 	noSmithyDocumentSerde
 }
@@ -121,6 +192,9 @@ type CreateFirewallRuleOutput struct {
 }
 
 func (c *Client) addOperationCreateFirewallRuleMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateFirewallRule{}, middleware.After)
 	if err != nil {
 		return err
@@ -129,34 +203,38 @@ func (c *Client) addOperationCreateFirewallRuleMiddlewares(stack *middleware.Sta
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateFirewallRule"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -168,7 +246,13 @@ func (c *Client) addOperationCreateFirewallRuleMiddlewares(stack *middleware.Sta
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateFirewallRuleResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opCreateFirewallRuleMiddleware(stack, options); err != nil {
@@ -180,7 +264,7 @@ func (c *Client) addOperationCreateFirewallRuleMiddlewares(stack *middleware.Sta
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateFirewallRule(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -192,7 +276,19 @@ func (c *Client) addOperationCreateFirewallRuleMiddlewares(stack *middleware.Sta
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -235,130 +331,6 @@ func newServiceMetadataMiddleware_opCreateFirewallRule(region string) *awsmiddle
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "route53resolver",
 		OperationName: "CreateFirewallRule",
 	}
-}
-
-type opCreateFirewallRuleResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateFirewallRuleResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateFirewallRuleResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "route53resolver"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "route53resolver"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("route53resolver")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateFirewallRuleResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateFirewallRuleResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

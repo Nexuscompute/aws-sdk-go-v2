@@ -4,25 +4,23 @@ package lightsail
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/lightsail/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Allows the update of one or more attributes of a database in Amazon Lightsail.
+//
 // Updates are applied immediately, or in cases where the updates could result in
-// an outage, are applied during the database's predefined maintenance window. The
-// update relational database operation supports tag-based access control via
+// an outage, are applied during the database's predefined maintenance window.
+//
+// The update relational database operation supports tag-based access control via
 // resource tags applied to the resource identified by relationalDatabaseName. For
-// more information, see the Amazon Lightsail Developer Guide (https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags)
-// .
+// more information, see the [Amazon Lightsail Developer Guide].
+//
+// [Amazon Lightsail Developer Guide]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-controlling-access-using-tags
 func (c *Client) UpdateRelationalDatabase(ctx context.Context, params *UpdateRelationalDatabaseInput, optFns ...func(*Options)) (*UpdateRelationalDatabaseOutput, error) {
 	if params == nil {
 		params = &UpdateRelationalDatabaseInput{}
@@ -46,44 +44,74 @@ type UpdateRelationalDatabaseInput struct {
 	RelationalDatabaseName *string
 
 	// When true , applies changes immediately. When false , applies changes during the
-	// preferred maintenance window. Some changes may cause an outage. Default: false
+	// preferred maintenance window. Some changes may cause an outage.
+	//
+	// Default: false
 	ApplyImmediately *bool
 
 	// Indicates the certificate that needs to be associated with the database.
 	CaCertificateIdentifier *string
 
-	// When true , disables automated backup retention for your database. Disabling
-	// backup retention deletes all automated database backups. Before disabling this,
-	// you may want to create a snapshot of your database using the create relational
-	// database snapshot operation. Updates are applied during the next maintenance
-	// window because this can result in an outage.
+	// When true , disables automated backup retention for your database.
+	//
+	// Disabling backup retention deletes all automated database backups. Before
+	// disabling this, you may want to create a snapshot of your database using the
+	// create relational database snapshot operation.
+	//
+	// Updates are applied during the next maintenance window because this can result
+	// in an outage.
 	DisableBackupRetention *bool
 
-	// When true , enables automated backup retention for your database. Updates are
-	// applied during the next maintenance window because this can result in an outage.
+	// When true , enables automated backup retention for your database.
+	//
+	// Updates are applied during the next maintenance window because this can result
+	// in an outage.
 	EnableBackupRetention *bool
 
 	// The password for the master user. The password can include any printable ASCII
-	// character except "/", """, or "@". MySQL Constraints: Must contain from 8 to 41
-	// characters. PostgreSQL Constraints: Must contain from 8 to 128 characters.
+	// character except "/", """, or "@".
+	//
+	// MySQL
+	//
+	// Constraints: Must contain from 8 to 41 characters.
+	//
+	// PostgreSQL
+	//
+	// Constraints: Must contain from 8 to 128 characters.
 	MasterUserPassword *string
 
 	// The daily time range during which automated backups are created for your
-	// database if automated backups are enabled. Constraints:
-	//   - Must be in the hh24:mi-hh24:mi format. Example: 16:00-16:30
+	// database if automated backups are enabled.
+	//
+	// Constraints:
+	//
+	//   - Must be in the hh24:mi-hh24:mi format.
+	//
+	// Example: 16:00-16:30
+	//
 	//   - Specified in Coordinated Universal Time (UTC).
+	//
 	//   - Must not conflict with the preferred maintenance window.
+	//
 	//   - Must be at least 30 minutes.
 	PreferredBackupWindow *string
 
 	// The weekly time range during which system maintenance can occur on your
-	// database. The default is a 30-minute window selected at random from an 8-hour
-	// block of time for each Amazon Web Services Region, occurring on a random day of
-	// the week. Constraints:
+	// database.
+	//
+	// The default is a 30-minute window selected at random from an 8-hour block of
+	// time for each Amazon Web Services Region, occurring on a random day of the week.
+	//
+	// Constraints:
+	//
 	//   - Must be in the ddd:hh24:mi-ddd:hh24:mi format.
+	//
 	//   - Valid days: Mon, Tue, Wed, Thu, Fri, Sat, Sun.
+	//
 	//   - Must be at least 30 minutes.
+	//
 	//   - Specified in Coordinated Universal Time (UTC).
+	//
 	//   - Example: Tue:17:00-Tue:17:30
 	PreferredMaintenanceWindow *string
 
@@ -93,9 +121,19 @@ type UpdateRelationalDatabaseInput struct {
 	// Lightsail resources in the same region as your database.
 	PubliclyAccessible *bool
 
+	// This parameter is used to update the major version of the database. Enter the
+	// blueprintId for the major version that you want to update to.
+	//
+	// Use the [GetRelationalDatabaseBlueprints] action to get a list of available blueprint IDs.
+	//
+	// [GetRelationalDatabaseBlueprints]: https://docs.aws.amazon.com/lightsail/2016-11-28/api-reference/API_GetRelationalDatabaseBlueprints.html
+	RelationalDatabaseBlueprintId *string
+
 	// When true , the master user password is changed to a new strong password
-	// generated by Lightsail. Use the get relational database master user password
-	// operation to get the new password.
+	// generated by Lightsail.
+	//
+	// Use the get relational database master user password operation to get the new
+	// password.
 	RotateMasterUserPassword *bool
 
 	noSmithyDocumentSerde
@@ -115,6 +153,9 @@ type UpdateRelationalDatabaseOutput struct {
 }
 
 func (c *Client) addOperationUpdateRelationalDatabaseMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpUpdateRelationalDatabase{}, middleware.After)
 	if err != nil {
 		return err
@@ -123,34 +164,38 @@ func (c *Client) addOperationUpdateRelationalDatabaseMiddlewares(stack *middlewa
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateRelationalDatabase"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -162,7 +207,13 @@ func (c *Client) addOperationUpdateRelationalDatabaseMiddlewares(stack *middlewa
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateRelationalDatabaseResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateRelationalDatabaseValidationMiddleware(stack); err != nil {
@@ -171,7 +222,7 @@ func (c *Client) addOperationUpdateRelationalDatabaseMiddlewares(stack *middlewa
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateRelationalDatabase(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -183,7 +234,19 @@ func (c *Client) addOperationUpdateRelationalDatabaseMiddlewares(stack *middlewa
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -193,130 +256,6 @@ func newServiceMetadataMiddleware_opUpdateRelationalDatabase(region string) *aws
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "lightsail",
 		OperationName: "UpdateRelationalDatabase",
 	}
-}
-
-type opUpdateRelationalDatabaseResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateRelationalDatabaseResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateRelationalDatabaseResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "lightsail"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "lightsail"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("lightsail")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateRelationalDatabaseResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateRelationalDatabaseResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

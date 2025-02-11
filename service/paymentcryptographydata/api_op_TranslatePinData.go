@@ -4,43 +4,70 @@ package paymentcryptographydata
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/paymentcryptographydata/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Translates encrypted PIN block from and to ISO 9564 formats 0,1,3,4. For more
-// information, see Translate PIN data (https://docs.aws.amazon.com/payment-cryptography/latest/userguide/translate-pin-data.html)
-// in the Amazon Web Services Payment Cryptography User Guide. PIN block
-// translation involves changing the encrytion of PIN block from one encryption key
-// to another encryption key and changing PIN block format from one to another
-// without PIN block data leaving Amazon Web Services Payment Cryptography. The
-// encryption key transformation can be from PEK (Pin Encryption Key) to BDK (Base
-// Derivation Key) for DUKPT or from BDK for DUKPT to PEK. Amazon Web Services
-// Payment Cryptography supports TDES and AES key derivation type for DUKPT
-// tranlations. You can use this operation for P2PE (Point to Point Encryption) use
-// cases where the encryption keys should change but the processing system either
-// does not need to, or is not permitted to, decrypt the data. The allowed
-// combinations of PIN block format translations are guided by PCI. It is important
-// to note that not all encrypted PIN block formats (example, format 1) require PAN
-// (Primary Account Number) as input. And as such, PIN block format that requires
-// PAN (example, formats 0,3,4) cannot be translated to a format (format 1) that
-// does not require a PAN for generation. For information about valid keys for this
-// operation, see Understanding key attributes (https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html)
-// and Key types for specific data operations (https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html)
-// in the Amazon Web Services Payment Cryptography User Guide. At this time, Amazon
-// Web Services Payment Cryptography does not support translations to PIN format 4.
+// information, see [Translate PIN data]in the Amazon Web Services Payment Cryptography User Guide.
+//
+// PIN block translation involves changing a PIN block from one encryption key to
+// another and optionally change its format. PIN block translation occurs entirely
+// within the HSM boundary and PIN data never enters or leaves Amazon Web Services
+// Payment Cryptography in clear text. The encryption key transformation can be
+// from PEK (Pin Encryption Key) to BDK (Base Derivation Key) for DUKPT or from BDK
+// for DUKPT to PEK.
+//
+// Amazon Web Services Payment Cryptography also supports use of dynamic keys and
+// ECDH (Elliptic Curve Diffie-Hellman) based key exchange for this operation.
+//
+// Dynamic keys allow you to pass a PEK as a TR-31 WrappedKeyBlock. They can be
+// used when key material is frequently rotated, such as during every card
+// transaction, and there is need to avoid importing short-lived keys into Amazon
+// Web Services Payment Cryptography. To translate PIN block using dynamic keys,
+// the keyARN is the Key Encryption Key (KEK) of the TR-31 wrapped PEK. The
+// incoming wrapped key shall have a key purpose of P0 with a mode of use of B or
+// D. For more information, see [Using Dynamic Keys]in the Amazon Web Services Payment Cryptography
+// User Guide.
+//
+// Using ECDH key exchange, you can receive cardholder selectable PINs into Amazon
+// Web Services Payment Cryptography. The ECDH derived key protects the incoming
+// PIN block, which is translated to a PEK encrypted PIN block for use within the
+// service. You can also use ECDH for reveal PIN, wherein the service translates
+// the PIN block from PEK to a ECDH derived encryption key. For more information on
+// establishing ECDH derived keys, see the [Generating keys]in the Amazon Web Services Payment
+// Cryptography User Guide.
+//
+// The allowed combinations of PIN block format translations are guided by PCI. It
+// is important to note that not all encrypted PIN block formats (example, format
+// 1) require PAN (Primary Account Number) as input. And as such, PIN block format
+// that requires PAN (example, formats 0,3,4) cannot be translated to a format
+// (format 1) that does not require a PAN for generation.
+//
+// For information about valid keys for this operation, see [Understanding key attributes] and [Key types for specific data operations] in the Amazon
+// Web Services Payment Cryptography User Guide.
+//
+// Amazon Web Services Payment Cryptography currently supports ISO PIN block 4
+// translation for PIN block built using legacy PAN length. That is, PAN is the
+// right most 12 digits excluding the check digits.
+//
 // Cross-account use: This operation can't be used across different Amazon Web
-// Services accounts. Related operations:
-//   - GeneratePinData
-//   - VerifyPinData
+// Services accounts.
+//
+// Related operations:
+//
+// # GeneratePinData
+//
+// # VerifyPinData
+//
+// [Using Dynamic Keys]: https://docs.aws.amazon.com/payment-cryptography/latest/userguide/use-cases-acquirers-dynamickeys.html
+// [Translate PIN data]: https://docs.aws.amazon.com/payment-cryptography/latest/userguide/translate-pin-data.html
+// [Key types for specific data operations]: https://docs.aws.amazon.com/payment-cryptography/latest/userguide/crypto-ops-validkeys-ops.html
+// [Understanding key attributes]: https://docs.aws.amazon.com/payment-cryptography/latest/userguide/keys-validattributes.html
+// [Generating keys]: https://docs.aws.amazon.com/payment-cryptography/latest/userguide/create-keys.html
 func (c *Client) TranslatePinData(ctx context.Context, params *TranslatePinDataInput, optFns ...func(*Options)) (*TranslatePinDataOutput, error) {
 	if params == nil {
 		params = &TranslatePinDataInput{}
@@ -67,10 +94,13 @@ type TranslatePinDataInput struct {
 	// The keyARN of the encryption key under which incoming PIN block data is
 	// encrypted. This key type can be PEK or BDK.
 	//
+	// For dynamic keys, it is the keyARN of KEK of the TR-31 wrapped PEK. For ECDH,
+	// it is the keyARN of the asymmetric ECC key.
+	//
 	// This member is required.
 	IncomingKeyIdentifier *string
 
-	// The format of the incoming PIN block data for tranlation within Amazon Web
+	// The format of the incoming PIN block data for translation within Amazon Web
 	// Services Payment Cryptography.
 	//
 	// This member is required.
@@ -79,22 +109,32 @@ type TranslatePinDataInput struct {
 	// The keyARN of the encryption key for encrypting outgoing PIN block data. This
 	// key type can be PEK or BDK.
 	//
+	// For ECDH, it is the keyARN of the asymmetric ECC key.
+	//
 	// This member is required.
 	OutgoingKeyIdentifier *string
 
-	// The format of the outgoing PIN block data after tranlation by Amazon Web
+	// The format of the outgoing PIN block data after translation by Amazon Web
 	// Services Payment Cryptography.
 	//
 	// This member is required.
 	OutgoingTranslationAttributes types.TranslationIsoFormats
 
 	// The attributes and values to use for incoming DUKPT encryption key for PIN
-	// block tranlation.
+	// block translation.
 	IncomingDukptAttributes *types.DukptDerivationAttributes
+
+	// The WrappedKeyBlock containing the encryption key under which incoming PIN
+	// block data is encrypted.
+	IncomingWrappedKey *types.WrappedKey
 
 	// The attributes and values to use for outgoing DUKPT encryption key after PIN
 	// block translation.
 	OutgoingDukptAttributes *types.DukptDerivationAttributes
+
+	// The WrappedKeyBlock containing the encryption key for encrypting outgoing PIN
+	// block data.
+	OutgoingWrappedKey *types.WrappedKey
 
 	noSmithyDocumentSerde
 }
@@ -109,15 +149,15 @@ type TranslatePinDataOutput struct {
 
 	// The key check value (KCV) of the encryption key. The KCV is used to check if
 	// all parties holding a given key have the same key or to detect that a key has
-	// changed. Amazon Web Services Payment Cryptography calculates the KCV by using
-	// standard algorithms, typically by encrypting 8 or 16 bytes or "00" or "01" and
-	// then truncating the result to the first 3 bytes, or 6 hex digits, of the
-	// resulting cryptogram.
+	// changed.
+	//
+	// Amazon Web Services Payment Cryptography computes the KCV according to the CMAC
+	// specification.
 	//
 	// This member is required.
 	KeyCheckValue *string
 
-	// The ougoing encrypted PIN block data after tranlation.
+	// The outgoing encrypted PIN block data after translation.
 	//
 	// This member is required.
 	PinBlock *string
@@ -129,6 +169,9 @@ type TranslatePinDataOutput struct {
 }
 
 func (c *Client) addOperationTranslatePinDataMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpTranslatePinData{}, middleware.After)
 	if err != nil {
 		return err
@@ -137,34 +180,38 @@ func (c *Client) addOperationTranslatePinDataMiddlewares(stack *middleware.Stack
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "TranslatePinData"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -176,7 +223,13 @@ func (c *Client) addOperationTranslatePinDataMiddlewares(stack *middleware.Stack
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addTranslatePinDataResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpTranslatePinDataValidationMiddleware(stack); err != nil {
@@ -185,7 +238,7 @@ func (c *Client) addOperationTranslatePinDataMiddlewares(stack *middleware.Stack
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opTranslatePinData(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -197,7 +250,19 @@ func (c *Client) addOperationTranslatePinDataMiddlewares(stack *middleware.Stack
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -207,130 +272,6 @@ func newServiceMetadataMiddleware_opTranslatePinData(region string) *awsmiddlewa
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "payment-cryptography",
 		OperationName: "TranslatePinData",
 	}
-}
-
-type opTranslatePinDataResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opTranslatePinDataResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opTranslatePinDataResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "payment-cryptography"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "payment-cryptography"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("payment-cryptography")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addTranslatePinDataResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opTranslatePinDataResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

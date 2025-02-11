@@ -12,8 +12,9 @@ const (
 )
 
 // Values returns all known values for AdjustmentType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AdjustmentType) Values() []AdjustmentType {
 	return []AdjustmentType{
 		"ChangeInCapacity",
@@ -32,8 +33,9 @@ const (
 )
 
 // Values returns all known values for MetricAggregationType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MetricAggregationType) Values() []MetricAggregationType {
 	return []MetricAggregationType{
 		"Average",
@@ -54,8 +56,9 @@ const (
 )
 
 // Values returns all known values for MetricStatistic. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MetricStatistic) Values() []MetricStatistic {
 	return []MetricStatistic{
 		"Average",
@@ -70,34 +73,39 @@ type MetricType string
 
 // Enum values for MetricType
 const (
-	MetricTypeDynamoDBReadCapacityUtilization                           MetricType = "DynamoDBReadCapacityUtilization"
-	MetricTypeDynamoDBWriteCapacityUtilization                          MetricType = "DynamoDBWriteCapacityUtilization"
-	MetricTypeALBRequestCountPerTarget                                  MetricType = "ALBRequestCountPerTarget"
-	MetricTypeRDSReaderAverageCPUUtilization                            MetricType = "RDSReaderAverageCPUUtilization"
-	MetricTypeRDSReaderAverageDatabaseConnections                       MetricType = "RDSReaderAverageDatabaseConnections"
-	MetricTypeEC2SpotFleetRequestAverageCPUUtilization                  MetricType = "EC2SpotFleetRequestAverageCPUUtilization"
-	MetricTypeEC2SpotFleetRequestAverageNetworkIn                       MetricType = "EC2SpotFleetRequestAverageNetworkIn"
-	MetricTypeEC2SpotFleetRequestAverageNetworkOut                      MetricType = "EC2SpotFleetRequestAverageNetworkOut"
-	MetricTypeSageMakerVariantInvocationsPerInstance                    MetricType = "SageMakerVariantInvocationsPerInstance"
-	MetricTypeECSServiceAverageCPUUtilization                           MetricType = "ECSServiceAverageCPUUtilization"
-	MetricTypeECSServiceAverageMemoryUtilization                        MetricType = "ECSServiceAverageMemoryUtilization"
-	MetricTypeAppStreamAverageCapacityUtilization                       MetricType = "AppStreamAverageCapacityUtilization"
-	MetricTypeComprehendInferenceUtilization                            MetricType = "ComprehendInferenceUtilization"
-	MetricTypeLambdaProvisionedConcurrencyUtilization                   MetricType = "LambdaProvisionedConcurrencyUtilization"
-	MetricTypeCassandraReadCapacityUtilization                          MetricType = "CassandraReadCapacityUtilization"
-	MetricTypeCassandraWriteCapacityUtilization                         MetricType = "CassandraWriteCapacityUtilization"
-	MetricTypeKafkaBrokerStorageUtilization                             MetricType = "KafkaBrokerStorageUtilization"
-	MetricTypeElastiCachePrimaryEngineCPUUtilization                    MetricType = "ElastiCachePrimaryEngineCPUUtilization"
-	MetricTypeElastiCacheReplicaEngineCPUUtilization                    MetricType = "ElastiCacheReplicaEngineCPUUtilization"
-	MetricTypeElastiCacheDatabaseMemoryUsageCountedForEvictPercentage   MetricType = "ElastiCacheDatabaseMemoryUsageCountedForEvictPercentage"
-	MetricTypeNeptuneReaderAverageCPUUtilization                        MetricType = "NeptuneReaderAverageCPUUtilization"
-	MetricTypeSageMakerVariantProvisionedConcurrencyUtilization         MetricType = "SageMakerVariantProvisionedConcurrencyUtilization"
-	MetricTypeElastiCacheDatabaseCapacityUsageCountedForEvictPercentage MetricType = "ElastiCacheDatabaseCapacityUsageCountedForEvictPercentage"
+	MetricTypeDynamoDBReadCapacityUtilization                                    MetricType = "DynamoDBReadCapacityUtilization"
+	MetricTypeDynamoDBWriteCapacityUtilization                                   MetricType = "DynamoDBWriteCapacityUtilization"
+	MetricTypeALBRequestCountPerTarget                                           MetricType = "ALBRequestCountPerTarget"
+	MetricTypeRDSReaderAverageCPUUtilization                                     MetricType = "RDSReaderAverageCPUUtilization"
+	MetricTypeRDSReaderAverageDatabaseConnections                                MetricType = "RDSReaderAverageDatabaseConnections"
+	MetricTypeEC2SpotFleetRequestAverageCPUUtilization                           MetricType = "EC2SpotFleetRequestAverageCPUUtilization"
+	MetricTypeEC2SpotFleetRequestAverageNetworkIn                                MetricType = "EC2SpotFleetRequestAverageNetworkIn"
+	MetricTypeEC2SpotFleetRequestAverageNetworkOut                               MetricType = "EC2SpotFleetRequestAverageNetworkOut"
+	MetricTypeSageMakerVariantInvocationsPerInstance                             MetricType = "SageMakerVariantInvocationsPerInstance"
+	MetricTypeECSServiceAverageCPUUtilization                                    MetricType = "ECSServiceAverageCPUUtilization"
+	MetricTypeECSServiceAverageMemoryUtilization                                 MetricType = "ECSServiceAverageMemoryUtilization"
+	MetricTypeAppStreamAverageCapacityUtilization                                MetricType = "AppStreamAverageCapacityUtilization"
+	MetricTypeComprehendInferenceUtilization                                     MetricType = "ComprehendInferenceUtilization"
+	MetricTypeLambdaProvisionedConcurrencyUtilization                            MetricType = "LambdaProvisionedConcurrencyUtilization"
+	MetricTypeCassandraReadCapacityUtilization                                   MetricType = "CassandraReadCapacityUtilization"
+	MetricTypeCassandraWriteCapacityUtilization                                  MetricType = "CassandraWriteCapacityUtilization"
+	MetricTypeKafkaBrokerStorageUtilization                                      MetricType = "KafkaBrokerStorageUtilization"
+	MetricTypeElastiCachePrimaryEngineCPUUtilization                             MetricType = "ElastiCachePrimaryEngineCPUUtilization"
+	MetricTypeElastiCacheReplicaEngineCPUUtilization                             MetricType = "ElastiCacheReplicaEngineCPUUtilization"
+	MetricTypeElastiCacheDatabaseMemoryUsageCountedForEvictPercentage            MetricType = "ElastiCacheDatabaseMemoryUsageCountedForEvictPercentage"
+	MetricTypeNeptuneReaderAverageCPUUtilization                                 MetricType = "NeptuneReaderAverageCPUUtilization"
+	MetricTypeSageMakerVariantProvisionedConcurrencyUtilization                  MetricType = "SageMakerVariantProvisionedConcurrencyUtilization"
+	MetricTypeElastiCacheDatabaseCapacityUsageCountedForEvictPercentage          MetricType = "ElastiCacheDatabaseCapacityUsageCountedForEvictPercentage"
+	MetricTypeSageMakerInferenceComponentInvocationsPerCopy                      MetricType = "SageMakerInferenceComponentInvocationsPerCopy"
+	MetricTypeWorkSpacesAverageUserSessionsCapacityUtilization                   MetricType = "WorkSpacesAverageUserSessionsCapacityUtilization"
+	MetricTypeSageMakerInferenceComponentConcurrentRequestsPerCopyHighResolution MetricType = "SageMakerInferenceComponentConcurrentRequestsPerCopyHighResolution"
+	MetricTypeSageMakerVariantConcurrentRequestsPerModelHighResolution           MetricType = "SageMakerVariantConcurrentRequestsPerModelHighResolution"
 )
 
 // Values returns all known values for MetricType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MetricType) Values() []MetricType {
 	return []MetricType{
 		"DynamoDBReadCapacityUtilization",
@@ -123,6 +131,10 @@ func (MetricType) Values() []MetricType {
 		"NeptuneReaderAverageCPUUtilization",
 		"SageMakerVariantProvisionedConcurrencyUtilization",
 		"ElastiCacheDatabaseCapacityUsageCountedForEvictPercentage",
+		"SageMakerInferenceComponentInvocationsPerCopy",
+		"WorkSpacesAverageUserSessionsCapacityUtilization",
+		"SageMakerInferenceComponentConcurrentRequestsPerCopyHighResolution",
+		"SageMakerVariantConcurrentRequestsPerModelHighResolution",
 	}
 }
 
@@ -132,15 +144,57 @@ type PolicyType string
 const (
 	PolicyTypeStepScaling           PolicyType = "StepScaling"
 	PolicyTypeTargetTrackingScaling PolicyType = "TargetTrackingScaling"
+	PolicyTypePredictiveScaling     PolicyType = "PredictiveScaling"
 )
 
 // Values returns all known values for PolicyType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PolicyType) Values() []PolicyType {
 	return []PolicyType{
 		"StepScaling",
 		"TargetTrackingScaling",
+		"PredictiveScaling",
+	}
+}
+
+type PredictiveScalingMaxCapacityBreachBehavior string
+
+// Enum values for PredictiveScalingMaxCapacityBreachBehavior
+const (
+	PredictiveScalingMaxCapacityBreachBehaviorHonorMaxCapacity    PredictiveScalingMaxCapacityBreachBehavior = "HonorMaxCapacity"
+	PredictiveScalingMaxCapacityBreachBehaviorIncreaseMaxCapacity PredictiveScalingMaxCapacityBreachBehavior = "IncreaseMaxCapacity"
+)
+
+// Values returns all known values for PredictiveScalingMaxCapacityBreachBehavior.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PredictiveScalingMaxCapacityBreachBehavior) Values() []PredictiveScalingMaxCapacityBreachBehavior {
+	return []PredictiveScalingMaxCapacityBreachBehavior{
+		"HonorMaxCapacity",
+		"IncreaseMaxCapacity",
+	}
+}
+
+type PredictiveScalingMode string
+
+// Enum values for PredictiveScalingMode
+const (
+	PredictiveScalingModeForecastOnly     PredictiveScalingMode = "ForecastOnly"
+	PredictiveScalingModeForecastAndScale PredictiveScalingMode = "ForecastAndScale"
+)
+
+// Values returns all known values for PredictiveScalingMode. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PredictiveScalingMode) Values() []PredictiveScalingMode {
+	return []PredictiveScalingMode{
+		"ForecastOnly",
+		"ForecastAndScale",
 	}
 }
 
@@ -169,11 +223,14 @@ const (
 	ScalableDimensionElastiCacheReplicationGroupReplicas              ScalableDimension = "elasticache:replication-group:Replicas"
 	ScalableDimensionNeptuneClusterReadReplicaCount                   ScalableDimension = "neptune:cluster:ReadReplicaCount"
 	ScalableDimensionSageMakerVariantDesiredProvisionedConcurrency    ScalableDimension = "sagemaker:variant:DesiredProvisionedConcurrency"
+	ScalableDimensionSageMakerInferenceComponentDesiredCopyCount      ScalableDimension = "sagemaker:inference-component:DesiredCopyCount"
+	ScalableDimensionWorkSpacesWorkSpacesPoolDesiredUserSessions      ScalableDimension = "workspaces:workspacespool:DesiredUserSessions"
 )
 
 // Values returns all known values for ScalableDimension. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScalableDimension) Values() []ScalableDimension {
 	return []ScalableDimension{
 		"ecs:service:DesiredCount",
@@ -197,6 +254,8 @@ func (ScalableDimension) Values() []ScalableDimension {
 		"elasticache:replication-group:Replicas",
 		"neptune:cluster:ReadReplicaCount",
 		"sagemaker:variant:DesiredProvisionedConcurrency",
+		"sagemaker:inference-component:DesiredCopyCount",
+		"workspaces:workspacespool:DesiredUserSessions",
 	}
 }
 
@@ -214,6 +273,7 @@ const (
 
 // Values returns all known values for ScalingActivityStatusCode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ScalingActivityStatusCode) Values() []ScalingActivityStatusCode {
 	return []ScalingActivityStatusCode{
@@ -244,11 +304,13 @@ const (
 	ServiceNamespaceKafka          ServiceNamespace = "kafka"
 	ServiceNamespaceElasticache    ServiceNamespace = "elasticache"
 	ServiceNamespaceNeptune        ServiceNamespace = "neptune"
+	ServiceNamespaceWorkspaces     ServiceNamespace = "workspaces"
 )
 
 // Values returns all known values for ServiceNamespace. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ServiceNamespace) Values() []ServiceNamespace {
 	return []ServiceNamespace{
 		"ecs",
@@ -265,5 +327,6 @@ func (ServiceNamespace) Values() []ServiceNamespace {
 		"kafka",
 		"elasticache",
 		"neptune",
+		"workspaces",
 	}
 }

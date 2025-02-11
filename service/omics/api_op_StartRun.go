@@ -4,20 +4,31 @@ package omics
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/omics/document"
 	"github.com/aws/aws-sdk-go-v2/service/omics/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Starts a run.
+// Starts a workflow run. To duplicate a run, specify the run's ID and a role ARN.
+// The remaining parameters are copied from the previous run.
+//
+// StartRun will not support re-run for a workflow that is shared with you.
+//
+// HealthOmics stores a fixed number of runs that are available to the console and
+// API. By default, HealthOmics doesn't any remove any runs. If HealthOmics reaches
+// the maximum number of runs, you must manually remove runs. To have older runs
+// removed automatically, set the retention mode to REMOVE .
+//
+// By default, the run uses STATIC storage. For STATIC storage, set the
+// storageCapacity field. You can set the storage type to DYNAMIC. You do not set
+// storageCapacity , because HealthOmics dynamically scales the storage up or down
+// as required. For more information about static and dynamic storage, see [Running workflows]in the
+// AWS HealthOmics User Guide.
+//
+// [Running workflows]: https://docs.aws.amazon.com/omics/latest/dev/Using-workflows.html
 func (c *Client) StartRun(ctx context.Context, params *StartRunInput, optFns ...func(*Options)) (*StartRunOutput, error) {
 	if params == nil {
 		params = &StartRunInput{}
@@ -46,6 +57,17 @@ type StartRunInput struct {
 	// This member is required.
 	RoleArn *string
 
+	// The cache behavior for the run. You specify this value if you want to override
+	// the default behavior for the cache. You had set the default value when you
+	// created the cache. For more information, see [Run cache behavior]in the AWS HealthOmics User Guide.
+	//
+	// [Run cache behavior]: https://docs.aws.amazon.com/omics/latest/dev/how-run-cache.html#run-cache-behavior
+	CacheBehavior types.CacheBehavior
+
+	// Identifier of the cache associated with this run. If you don't specify a cache
+	// ID, no task outputs are cached for this run.
+	CacheId *string
+
 	// A log level for the run.
 	LogLevel types.RunLogLevel
 
@@ -61,14 +83,37 @@ type StartRunInput struct {
 	// A priority for the run.
 	Priority *int32
 
+	// The retention mode for the run. The default value is RETAIN.
+	//
+	// HealthOmics stores a fixed number of runs that are available to the console and
+	// API. In the default mode (RETAIN), you need to remove runs manually when the
+	// number of run exceeds the maximum. If you set the retention mode to REMOVE ,
+	// HealthOmics automatically removes runs (that have mode set to REMOVE) when the
+	// number of run exceeds the maximum. All run logs are available in CloudWatch
+	// logs, if you need information about a run that is no longer available to the
+	// API.
+	//
+	// For more information about retention mode, see [Specifying run retention mode] in the AWS HealthOmics User
+	// Guide.
+	//
+	// [Specifying run retention mode]: https://docs.aws.amazon.com/omics/latest/dev/starting-a-run.html
+	RetentionMode types.RunRetentionMode
+
 	// The run's group ID.
 	RunGroupId *string
 
-	// The run's ID.
+	// The ID of a run to duplicate.
 	RunId *string
 
-	// A storage capacity for the run in gigabytes.
+	// A storage capacity for the run in gibibytes. This field is not required if the
+	// storage type is dynamic (the system ignores any value that you enter).
 	StorageCapacity *int32
+
+	// The run's storage type. By default, the run uses STATIC storage type, which
+	// allocates a fixed amount of storage. If you set the storage type to DYNAMIC,
+	// HealthOmics dynamically scales the storage up or down, based on file system
+	// utilization.
+	StorageType types.StorageType
 
 	// Tags for the run.
 	Tags map[string]string
@@ -76,7 +121,10 @@ type StartRunInput struct {
 	// The run's workflow ID.
 	WorkflowId *string
 
-	// The run's workflows type.
+	// The ID of the workflow owner.
+	WorkflowOwnerId *string
+
+	// The run's workflow type.
 	WorkflowType types.WorkflowType
 
 	noSmithyDocumentSerde
@@ -84,17 +132,23 @@ type StartRunInput struct {
 
 type StartRunOutput struct {
 
-	// The run's ARN.
+	// Unique resource identifier for the run.
 	Arn *string
 
 	// The run's ID.
 	Id *string
+
+	// The destination for workflow outputs.
+	RunOutputUri *string
 
 	// The run's status.
 	Status types.RunStatus
 
 	// The run's tags.
 	Tags map[string]string
+
+	// The universally unique identifier for a run.
+	Uuid *string
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -103,6 +157,9 @@ type StartRunOutput struct {
 }
 
 func (c *Client) addOperationStartRunMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpStartRun{}, middleware.After)
 	if err != nil {
 		return err
@@ -111,34 +168,38 @@ func (c *Client) addOperationStartRunMiddlewares(stack *middleware.Stack, option
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "StartRun"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -150,10 +211,16 @@ func (c *Client) addOperationStartRunMiddlewares(stack *middleware.Stack, option
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addEndpointPrefix_opStartRunMiddleware(stack); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addStartRunResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addEndpointPrefix_opStartRunMiddleware(stack); err != nil {
 		return err
 	}
 	if err = addIdempotencyToken_opStartRunMiddleware(stack, options); err != nil {
@@ -165,7 +232,7 @@ func (c *Client) addOperationStartRunMiddlewares(stack *middleware.Stack, option
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opStartRun(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -177,7 +244,19 @@ func (c *Client) addOperationStartRunMiddlewares(stack *middleware.Stack, option
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -190,11 +269,11 @@ func (*endpointPrefix_opStartRunMiddleware) ID() string {
 	return "EndpointHostPrefix"
 }
 
-func (m *endpointPrefix_opStartRunMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+func (m *endpointPrefix_opStartRunMiddleware) HandleFinalize(ctx context.Context, in middleware.FinalizeInput, next middleware.FinalizeHandler) (
+	out middleware.FinalizeOutput, metadata middleware.Metadata, err error,
 ) {
 	if smithyhttp.GetHostnameImmutable(ctx) || smithyhttp.IsEndpointHostPrefixDisabled(ctx) {
-		return next.HandleSerialize(ctx, in)
+		return next.HandleFinalize(ctx, in)
 	}
 
 	req, ok := in.Request.(*smithyhttp.Request)
@@ -204,10 +283,10 @@ func (m *endpointPrefix_opStartRunMiddleware) HandleSerialize(ctx context.Contex
 
 	req.URL.Host = "workflows-" + req.URL.Host
 
-	return next.HandleSerialize(ctx, in)
+	return next.HandleFinalize(ctx, in)
 }
 func addEndpointPrefix_opStartRunMiddleware(stack *middleware.Stack) error {
-	return stack.Serialize.Insert(&endpointPrefix_opStartRunMiddleware{}, `OperationSerializer`, middleware.After)
+	return stack.Finalize.Insert(&endpointPrefix_opStartRunMiddleware{}, "ResolveEndpointV2", middleware.After)
 }
 
 type idempotencyToken_initializeOpStartRun struct {
@@ -247,130 +326,6 @@ func newServiceMetadataMiddleware_opStartRun(region string) *awsmiddleware.Regis
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "omics",
 		OperationName: "StartRun",
 	}
-}
-
-type opStartRunResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opStartRunResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opStartRunResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "omics"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "omics"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("omics")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addStartRunResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opStartRunResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

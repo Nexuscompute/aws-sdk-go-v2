@@ -570,6 +570,26 @@ func (m *validateOpChangePassword) HandleInitialize(ctx context.Context, in midd
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCompleteWebAuthnRegistration struct {
+}
+
+func (*validateOpCompleteWebAuthnRegistration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCompleteWebAuthnRegistration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CompleteWebAuthnRegistrationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCompleteWebAuthnRegistrationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpConfirmDevice struct {
 }
 
@@ -665,6 +685,26 @@ func (m *validateOpCreateIdentityProvider) HandleInitialize(ctx context.Context,
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpCreateIdentityProviderInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateManagedLoginBranding struct {
+}
+
+func (*validateOpCreateManagedLoginBranding) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateManagedLoginBranding) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateManagedLoginBrandingInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateManagedLoginBrandingInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -810,6 +850,26 @@ func (m *validateOpDeleteIdentityProvider) HandleInitialize(ctx context.Context,
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeleteManagedLoginBranding struct {
+}
+
+func (*validateOpDeleteManagedLoginBranding) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteManagedLoginBranding) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteManagedLoginBrandingInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteManagedLoginBrandingInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteResourceServer struct {
 }
 
@@ -930,6 +990,26 @@ func (m *validateOpDeleteUserPool) HandleInitialize(ctx context.Context, in midd
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeleteWebAuthnCredential struct {
+}
+
+func (*validateOpDeleteWebAuthnCredential) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteWebAuthnCredential) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteWebAuthnCredentialInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteWebAuthnCredentialInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDescribeIdentityProvider struct {
 }
 
@@ -945,6 +1025,46 @@ func (m *validateOpDescribeIdentityProvider) HandleInitialize(ctx context.Contex
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDescribeIdentityProviderInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeManagedLoginBrandingByClient struct {
+}
+
+func (*validateOpDescribeManagedLoginBrandingByClient) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeManagedLoginBrandingByClient) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeManagedLoginBrandingByClientInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeManagedLoginBrandingByClientInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeManagedLoginBranding struct {
+}
+
+func (*validateOpDescribeManagedLoginBranding) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeManagedLoginBranding) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeManagedLoginBrandingInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeManagedLoginBrandingInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1190,6 +1310,26 @@ func (m *validateOpGetIdentityProviderByIdentifier) HandleInitialize(ctx context
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetLogDeliveryConfiguration struct {
+}
+
+func (*validateOpGetLogDeliveryConfiguration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetLogDeliveryConfiguration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetLogDeliveryConfigurationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetLogDeliveryConfigurationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetSigningCertificate struct {
 }
 
@@ -1245,6 +1385,26 @@ func (m *validateOpGetUserAttributeVerificationCode) HandleInitialize(ctx contex
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetUserAttributeVerificationCodeInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetUserAuthFactors struct {
+}
+
+func (*validateOpGetUserAuthFactors) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetUserAuthFactors) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetUserAuthFactorsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetUserAuthFactorsInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1530,6 +1690,26 @@ func (m *validateOpListUsers) HandleInitialize(ctx context.Context, in middlewar
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpListWebAuthnCredentials struct {
+}
+
+func (*validateOpListWebAuthnCredentials) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListWebAuthnCredentials) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListWebAuthnCredentialsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListWebAuthnCredentialsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpResendConfirmationCode struct {
 }
 
@@ -1585,6 +1765,26 @@ func (m *validateOpRevokeToken) HandleInitialize(ctx context.Context, in middlew
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpRevokeTokenInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpSetLogDeliveryConfiguration struct {
+}
+
+func (*validateOpSetLogDeliveryConfiguration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpSetLogDeliveryConfiguration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*SetLogDeliveryConfigurationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpSetLogDeliveryConfigurationInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1730,6 +1930,26 @@ func (m *validateOpStartUserImportJob) HandleInitialize(ctx context.Context, in 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpStartWebAuthnRegistration struct {
+}
+
+func (*validateOpStartWebAuthnRegistration) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStartWebAuthnRegistration) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StartWebAuthnRegistrationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStartWebAuthnRegistrationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpStopUserImportJob struct {
 }
 
@@ -1865,6 +2085,26 @@ func (m *validateOpUpdateIdentityProvider) HandleInitialize(ctx context.Context,
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpUpdateIdentityProviderInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateManagedLoginBranding struct {
+}
+
+func (*validateOpUpdateManagedLoginBranding) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateManagedLoginBranding) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateManagedLoginBrandingInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateManagedLoginBrandingInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -2122,6 +2362,10 @@ func addOpChangePasswordValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpChangePassword{}, middleware.After)
 }
 
+func addOpCompleteWebAuthnRegistrationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCompleteWebAuthnRegistration{}, middleware.After)
+}
+
 func addOpConfirmDeviceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpConfirmDevice{}, middleware.After)
 }
@@ -2140,6 +2384,10 @@ func addOpCreateGroupValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpCreateIdentityProviderValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateIdentityProvider{}, middleware.After)
+}
+
+func addOpCreateManagedLoginBrandingValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateManagedLoginBranding{}, middleware.After)
 }
 
 func addOpCreateResourceServerValidationMiddleware(stack *middleware.Stack) error {
@@ -2170,6 +2418,10 @@ func addOpDeleteIdentityProviderValidationMiddleware(stack *middleware.Stack) er
 	return stack.Initialize.Add(&validateOpDeleteIdentityProvider{}, middleware.After)
 }
 
+func addOpDeleteManagedLoginBrandingValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteManagedLoginBranding{}, middleware.After)
+}
+
 func addOpDeleteResourceServerValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteResourceServer{}, middleware.After)
 }
@@ -2194,8 +2446,20 @@ func addOpDeleteUserPoolValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteUserPool{}, middleware.After)
 }
 
+func addOpDeleteWebAuthnCredentialValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteWebAuthnCredential{}, middleware.After)
+}
+
 func addOpDescribeIdentityProviderValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeIdentityProvider{}, middleware.After)
+}
+
+func addOpDescribeManagedLoginBrandingByClientValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeManagedLoginBrandingByClient{}, middleware.After)
+}
+
+func addOpDescribeManagedLoginBrandingValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeManagedLoginBranding{}, middleware.After)
 }
 
 func addOpDescribeResourceServerValidationMiddleware(stack *middleware.Stack) error {
@@ -2246,6 +2510,10 @@ func addOpGetIdentityProviderByIdentifierValidationMiddleware(stack *middleware.
 	return stack.Initialize.Add(&validateOpGetIdentityProviderByIdentifier{}, middleware.After)
 }
 
+func addOpGetLogDeliveryConfigurationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetLogDeliveryConfiguration{}, middleware.After)
+}
+
 func addOpGetSigningCertificateValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetSigningCertificate{}, middleware.After)
 }
@@ -2256,6 +2524,10 @@ func addOpGetUICustomizationValidationMiddleware(stack *middleware.Stack) error 
 
 func addOpGetUserAttributeVerificationCodeValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetUserAttributeVerificationCode{}, middleware.After)
+}
+
+func addOpGetUserAuthFactorsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetUserAuthFactors{}, middleware.After)
 }
 
 func addOpGetUserValidationMiddleware(stack *middleware.Stack) error {
@@ -2314,6 +2586,10 @@ func addOpListUsersValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListUsers{}, middleware.After)
 }
 
+func addOpListWebAuthnCredentialsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListWebAuthnCredentials{}, middleware.After)
+}
+
 func addOpResendConfirmationCodeValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpResendConfirmationCode{}, middleware.After)
 }
@@ -2324,6 +2600,10 @@ func addOpRespondToAuthChallengeValidationMiddleware(stack *middleware.Stack) er
 
 func addOpRevokeTokenValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpRevokeToken{}, middleware.After)
+}
+
+func addOpSetLogDeliveryConfigurationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpSetLogDeliveryConfiguration{}, middleware.After)
 }
 
 func addOpSetRiskConfigurationValidationMiddleware(stack *middleware.Stack) error {
@@ -2354,6 +2634,10 @@ func addOpStartUserImportJobValidationMiddleware(stack *middleware.Stack) error 
 	return stack.Initialize.Add(&validateOpStartUserImportJob{}, middleware.After)
 }
 
+func addOpStartWebAuthnRegistrationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStartWebAuthnRegistration{}, middleware.After)
+}
+
 func addOpStopUserImportJobValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpStopUserImportJob{}, middleware.After)
 }
@@ -2380,6 +2664,10 @@ func addOpUpdateGroupValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpUpdateIdentityProviderValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateIdentityProvider{}, middleware.After)
+}
+
+func addOpUpdateManagedLoginBrandingValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateManagedLoginBranding{}, middleware.After)
 }
 
 func addOpUpdateResourceServerValidationMiddleware(stack *middleware.Stack) error {
@@ -2485,6 +2773,44 @@ func validateAccountTakeoverRiskConfigurationType(v *types.AccountTakeoverRiskCo
 		if err := validateAccountTakeoverActionsType(v.Actions); err != nil {
 			invalidParams.AddNested("Actions", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateAssetListType(v []types.AssetType) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AssetListType"}
+	for i := range v {
+		if err := validateAssetType(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateAssetType(v *types.AssetType) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AssetType"}
+	if len(v.Category) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Category"))
+	}
+	if len(v.ColorMode) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("ColorMode"))
+	}
+	if len(v.Extension) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Extension"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2639,6 +2965,11 @@ func validateLambdaConfigType(v *types.LambdaConfigType) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "LambdaConfigType"}
+	if v.PreTokenGenerationConfig != nil {
+		if err := validatePreTokenGenerationVersionConfigType(v.PreTokenGenerationConfig); err != nil {
+			invalidParams.AddNested("PreTokenGenerationConfig", err.(smithy.InvalidParamsError))
+		}
+	}
 	if v.CustomSMSSender != nil {
 		if err := validateCustomSMSLambdaVersionConfigType(v.CustomSMSSender); err != nil {
 			invalidParams.AddNested("CustomSMSSender", err.(smithy.InvalidParamsError))
@@ -2648,6 +2979,41 @@ func validateLambdaConfigType(v *types.LambdaConfigType) error {
 		if err := validateCustomEmailLambdaVersionConfigType(v.CustomEmailSender); err != nil {
 			invalidParams.AddNested("CustomEmailSender", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateLogConfigurationListType(v []types.LogConfigurationType) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "LogConfigurationListType"}
+	for i := range v {
+		if err := validateLogConfigurationType(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateLogConfigurationType(v *types.LogConfigurationType) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "LogConfigurationType"}
+	if len(v.LogLevel) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("LogLevel"))
+	}
+	if len(v.EventSource) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("EventSource"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2701,6 +3067,24 @@ func validateNotifyEmailType(v *types.NotifyEmailType) error {
 	}
 }
 
+func validatePreTokenGenerationVersionConfigType(v *types.PreTokenGenerationVersionConfigType) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PreTokenGenerationVersionConfigType"}
+	if len(v.LambdaVersion) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("LambdaVersion"))
+	}
+	if v.LambdaArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LambdaArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateRecoveryMechanismsType(v []types.RecoveryOptionType) error {
 	if v == nil {
 		return nil
@@ -2723,6 +3107,9 @@ func validateRecoveryOptionType(v *types.RecoveryOptionType) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "RecoveryOptionType"}
+	if v.Priority == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Priority"))
+	}
 	if len(v.Name) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Name"))
 	}
@@ -3387,14 +3774,29 @@ func validateOpChangePasswordInput(v *ChangePasswordInput) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "ChangePasswordInput"}
-	if v.PreviousPassword == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("PreviousPassword"))
-	}
 	if v.ProposedPassword == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ProposedPassword"))
 	}
 	if v.AccessToken == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("AccessToken"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCompleteWebAuthnRegistrationInput(v *CompleteWebAuthnRegistrationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CompleteWebAuthnRegistrationInput"}
+	if v.AccessToken == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AccessToken"))
+	}
+	if v.Credential == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Credential"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -3500,6 +3902,29 @@ func validateOpCreateIdentityProviderInput(v *CreateIdentityProviderInput) error
 	}
 	if v.ProviderDetails == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ProviderDetails"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateManagedLoginBrandingInput(v *CreateManagedLoginBrandingInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateManagedLoginBrandingInput"}
+	if v.UserPoolId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("UserPoolId"))
+	}
+	if v.ClientId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ClientId"))
+	}
+	if v.Assets != nil {
+		if err := validateAssetListType(v.Assets); err != nil {
+			invalidParams.AddNested("Assets", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -3672,6 +4097,24 @@ func validateOpDeleteIdentityProviderInput(v *DeleteIdentityProviderInput) error
 	}
 }
 
+func validateOpDeleteManagedLoginBrandingInput(v *DeleteManagedLoginBrandingInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteManagedLoginBrandingInput"}
+	if v.ManagedLoginBrandingId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ManagedLoginBrandingId"))
+	}
+	if v.UserPoolId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("UserPoolId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDeleteResourceServerInput(v *DeleteResourceServerInput) error {
 	if v == nil {
 		return nil
@@ -3774,6 +4217,24 @@ func validateOpDeleteUserPoolInput(v *DeleteUserPoolInput) error {
 	}
 }
 
+func validateOpDeleteWebAuthnCredentialInput(v *DeleteWebAuthnCredentialInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteWebAuthnCredentialInput"}
+	if v.AccessToken == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AccessToken"))
+	}
+	if v.CredentialId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("CredentialId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDescribeIdentityProviderInput(v *DescribeIdentityProviderInput) error {
 	if v == nil {
 		return nil
@@ -3784,6 +4245,42 @@ func validateOpDescribeIdentityProviderInput(v *DescribeIdentityProviderInput) e
 	}
 	if v.ProviderName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ProviderName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeManagedLoginBrandingByClientInput(v *DescribeManagedLoginBrandingByClientInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeManagedLoginBrandingByClientInput"}
+	if v.UserPoolId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("UserPoolId"))
+	}
+	if v.ClientId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ClientId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeManagedLoginBrandingInput(v *DescribeManagedLoginBrandingInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeManagedLoginBrandingInput"}
+	if v.UserPoolId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("UserPoolId"))
+	}
+	if v.ManagedLoginBrandingId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ManagedLoginBrandingId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -3990,6 +4487,21 @@ func validateOpGetIdentityProviderByIdentifierInput(v *GetIdentityProviderByIden
 	}
 }
 
+func validateOpGetLogDeliveryConfigurationInput(v *GetLogDeliveryConfigurationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetLogDeliveryConfigurationInput"}
+	if v.UserPoolId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("UserPoolId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetSigningCertificateInput(v *GetSigningCertificateInput) error {
 	if v == nil {
 		return nil
@@ -4030,6 +4542,21 @@ func validateOpGetUserAttributeVerificationCodeInput(v *GetUserAttributeVerifica
 	}
 	if v.AttributeName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("AttributeName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetUserAuthFactorsInput(v *GetUserAuthFactorsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetUserAuthFactorsInput"}
+	if v.AccessToken == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AccessToken"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -4184,6 +4711,9 @@ func validateOpListUserImportJobsInput(v *ListUserImportJobsInput) error {
 	if v.UserPoolId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("UserPoolId"))
 	}
+	if v.MaxResults == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaxResults"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -4211,6 +4741,9 @@ func validateOpListUserPoolsInput(v *ListUserPoolsInput) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "ListUserPoolsInput"}
+	if v.MaxResults == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaxResults"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -4243,6 +4776,21 @@ func validateOpListUsersInput(v *ListUsersInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ListUsersInput"}
 	if v.UserPoolId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("UserPoolId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListWebAuthnCredentialsInput(v *ListWebAuthnCredentialsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListWebAuthnCredentialsInput"}
+	if v.AccessToken == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AccessToken"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -4297,6 +4845,28 @@ func validateOpRevokeTokenInput(v *RevokeTokenInput) error {
 	}
 	if v.ClientId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ClientId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpSetLogDeliveryConfigurationInput(v *SetLogDeliveryConfigurationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SetLogDeliveryConfigurationInput"}
+	if v.UserPoolId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("UserPoolId"))
+	}
+	if v.LogConfigurations == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LogConfigurations"))
+	} else if v.LogConfigurations != nil {
+		if err := validateLogConfigurationListType(v.LogConfigurations); err != nil {
+			invalidParams.AddNested("LogConfigurations", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -4409,9 +4979,6 @@ func validateOpSignUpInput(v *SignUpInput) error {
 	if v.Username == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Username"))
 	}
-	if v.Password == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Password"))
-	}
 	if v.UserAttributes != nil {
 		if err := validateAttributeListType(v.UserAttributes); err != nil {
 			invalidParams.AddNested("UserAttributes", err.(smithy.InvalidParamsError))
@@ -4439,6 +5006,21 @@ func validateOpStartUserImportJobInput(v *StartUserImportJobInput) error {
 	}
 	if v.JobId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("JobId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStartWebAuthnRegistrationInput(v *StartWebAuthnRegistrationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StartWebAuthnRegistrationInput"}
+	if v.AccessToken == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AccessToken"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -4582,6 +5164,23 @@ func validateOpUpdateIdentityProviderInput(v *UpdateIdentityProviderInput) error
 	}
 }
 
+func validateOpUpdateManagedLoginBrandingInput(v *UpdateManagedLoginBrandingInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateManagedLoginBrandingInput"}
+	if v.Assets != nil {
+		if err := validateAssetListType(v.Assets); err != nil {
+			invalidParams.AddNested("Assets", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpUpdateResourceServerInput(v *UpdateResourceServerInput) error {
 	if v == nil {
 		return nil
@@ -4659,9 +5258,7 @@ func validateOpUpdateUserPoolDomainInput(v *UpdateUserPoolDomainInput) error {
 	if v.UserPoolId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("UserPoolId"))
 	}
-	if v.CustomDomainConfig == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("CustomDomainConfig"))
-	} else if v.CustomDomainConfig != nil {
+	if v.CustomDomainConfig != nil {
 		if err := validateCustomDomainConfigType(v.CustomDomainConfig); err != nil {
 			invalidParams.AddNested("CustomDomainConfig", err.(smithy.InvalidParamsError))
 		}

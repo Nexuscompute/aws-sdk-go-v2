@@ -4,40 +4,45 @@ package sagemaker
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/sagemaker/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Starts a model compilation job. After the model has been compiled, Amazon
-// SageMaker saves the resulting model artifacts to an Amazon Simple Storage
-// Service (Amazon S3) bucket that you specify. If you choose to host your model
-// using Amazon SageMaker hosting services, you can use the resulting model
-// artifacts as part of the model. You can also use the artifacts with Amazon Web
-// Services IoT Greengrass. In that case, deploy them as an ML resource. In the
-// request body, you provide the following:
+// SageMaker AI saves the resulting model artifacts to an Amazon Simple Storage
+// Service (Amazon S3) bucket that you specify.
+//
+// If you choose to host your model using Amazon SageMaker AI hosting services,
+// you can use the resulting model artifacts as part of the model. You can also use
+// the artifacts with Amazon Web Services IoT Greengrass. In that case, deploy them
+// as an ML resource.
+//
+// In the request body, you provide the following:
+//
 //   - A name for the compilation job
+//
 //   - Information about the input model artifacts
+//
 //   - The output location for the compiled model and the device (target) that the
 //     model runs on
-//   - The Amazon Resource Name (ARN) of the IAM role that Amazon SageMaker
+//
+//   - The Amazon Resource Name (ARN) of the IAM role that Amazon SageMaker AI
 //     assumes to perform the model compilation job.
 //
 // You can also provide a Tag to track the model compilation job's resource use
 // and costs. The response body contains the CompilationJobArn for the compiled
-// job. To stop a model compilation job, use StopCompilationJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_StopCompilationJob.html)
-// . To get information about a particular model compilation job, use
-// DescribeCompilationJob (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeCompilationJob.html)
-// . To get information about multiple model compilation jobs, use
-// ListCompilationJobs (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ListCompilationJobs.html)
-// .
+// job.
+//
+// To stop a model compilation job, use [StopCompilationJob]. To get information about a particular
+// model compilation job, use [DescribeCompilationJob]. To get information about multiple model
+// compilation jobs, use [ListCompilationJobs].
+//
+// [StopCompilationJob]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_StopCompilationJob.html
+// [DescribeCompilationJob]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeCompilationJob.html
+// [ListCompilationJobs]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ListCompilationJobs.html
 func (c *Client) CreateCompilationJob(ctx context.Context, params *CreateCompilationJobInput, optFns ...func(*Options)) (*CreateCompilationJobOutput, error) {
 	if params == nil {
 		params = &CreateCompilationJobInput{}
@@ -67,23 +72,31 @@ type CreateCompilationJobInput struct {
 	// This member is required.
 	OutputConfig *types.OutputConfig
 
-	// The Amazon Resource Name (ARN) of an IAM role that enables Amazon SageMaker to
-	// perform tasks on your behalf. During model compilation, Amazon SageMaker needs
-	// your permission to:
+	// The Amazon Resource Name (ARN) of an IAM role that enables Amazon SageMaker AI
+	// to perform tasks on your behalf.
+	//
+	// During model compilation, Amazon SageMaker AI needs your permission to:
+	//
 	//   - Read input data from an S3 bucket
+	//
 	//   - Write model artifacts to an S3 bucket
+	//
 	//   - Write logs to Amazon CloudWatch Logs
+	//
 	//   - Publish metrics to Amazon CloudWatch
+	//
 	// You grant permissions for all of these tasks to an IAM role. To pass this role
-	// to Amazon SageMaker, the caller of this API must have the iam:PassRole
-	// permission. For more information, see Amazon SageMaker Roles. (https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html)
+	// to Amazon SageMaker AI, the caller of this API must have the iam:PassRole
+	// permission. For more information, see [Amazon SageMaker AI Roles.]
+	//
+	// [Amazon SageMaker AI Roles.]: https://docs.aws.amazon.com/sagemaker/latest/dg/sagemaker-roles.html
 	//
 	// This member is required.
 	RoleArn *string
 
 	// Specifies a limit to how long a model compilation job can run. When the job
-	// reaches the time limit, Amazon SageMaker ends the compilation job. Use this API
-	// to cap model training costs.
+	// reaches the time limit, Amazon SageMaker AI ends the compilation job. Use this
+	// API to cap model training costs.
 	//
 	// This member is required.
 	StoppingCondition *types.StoppingCondition
@@ -101,15 +114,17 @@ type CreateCompilationJobInput struct {
 
 	// An array of key-value pairs. You can use tags to categorize your Amazon Web
 	// Services resources in different ways, for example, by purpose, owner, or
-	// environment. For more information, see Tagging Amazon Web Services Resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)
-	// .
+	// environment. For more information, see [Tagging Amazon Web Services Resources].
+	//
+	// [Tagging Amazon Web Services Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
 	Tags []types.Tag
 
-	// A VpcConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html)
-	// object that specifies the VPC that you want your compilation job to connect to.
-	// Control access to your models by configuring the VPC. For more information, see
-	// Protect Compilation Jobs by Using an Amazon Virtual Private Cloud (https://docs.aws.amazon.com/sagemaker/latest/dg/neo-vpc.html)
-	// .
+	// A [VpcConfig] object that specifies the VPC that you want your compilation job to connect
+	// to. Control access to your models by configuring the VPC. For more information,
+	// see [Protect Compilation Jobs by Using an Amazon Virtual Private Cloud].
+	//
+	// [VpcConfig]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_VpcConfig.html
+	// [Protect Compilation Jobs by Using an Amazon Virtual Private Cloud]: https://docs.aws.amazon.com/sagemaker/latest/dg/neo-vpc.html
 	VpcConfig *types.NeoVpcConfig
 
 	noSmithyDocumentSerde
@@ -118,7 +133,8 @@ type CreateCompilationJobInput struct {
 type CreateCompilationJobOutput struct {
 
 	// If the action is successful, the service sends back an HTTP 200 response.
-	// Amazon SageMaker returns the following data in JSON format:
+	// Amazon SageMaker AI returns the following data in JSON format:
+	//
 	//   - CompilationJobArn : The Amazon Resource Name (ARN) of the compiled job.
 	//
 	// This member is required.
@@ -131,6 +147,9 @@ type CreateCompilationJobOutput struct {
 }
 
 func (c *Client) addOperationCreateCompilationJobMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateCompilationJob{}, middleware.After)
 	if err != nil {
 		return err
@@ -139,34 +158,38 @@ func (c *Client) addOperationCreateCompilationJobMiddlewares(stack *middleware.S
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateCompilationJob"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -178,7 +201,13 @@ func (c *Client) addOperationCreateCompilationJobMiddlewares(stack *middleware.S
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateCompilationJobResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateCompilationJobValidationMiddleware(stack); err != nil {
@@ -187,7 +216,7 @@ func (c *Client) addOperationCreateCompilationJobMiddlewares(stack *middleware.S
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateCompilationJob(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -199,7 +228,19 @@ func (c *Client) addOperationCreateCompilationJobMiddlewares(stack *middleware.S
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -209,130 +250,6 @@ func newServiceMetadataMiddleware_opCreateCompilationJob(region string) *awsmidd
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "sagemaker",
 		OperationName: "CreateCompilationJob",
 	}
-}
-
-type opCreateCompilationJobResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateCompilationJobResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateCompilationJobResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "sagemaker"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "sagemaker"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("sagemaker")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateCompilationJobResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateCompilationJobResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

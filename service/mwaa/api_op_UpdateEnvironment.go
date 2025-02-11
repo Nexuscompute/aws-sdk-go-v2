@@ -4,14 +4,9 @@ package mwaa
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/mwaa/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -40,39 +35,59 @@ type UpdateEnvironmentInput struct {
 	Name *string
 
 	// A list of key-value pairs containing the Apache Airflow configuration options
-	// you want to attach to your environment. For more information, see Apache
-	// Airflow configuration options (https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-env-variables.html)
-	// .
+	// you want to attach to your environment. For more information, see [Apache Airflow configuration options].
+	//
+	// [Apache Airflow configuration options]: https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-env-variables.html
 	AirflowConfigurationOptions map[string]string
 
 	// The Apache Airflow version for your environment. To upgrade your environment,
-	// specify a newer version of Apache Airflow supported by Amazon MWAA. Before you
-	// upgrade an environment, make sure your requirements, DAGs, plugins, and other
-	// resources used in your workflows are compatible with the new Apache Airflow
-	// version. For more information about updating your resources, see Upgrading an
-	// Amazon MWAA environment (https://docs.aws.amazon.com/mwaa/latest/userguide/upgrading-environment.html)
-	// . Valid values: 1.10.12 , 2.0.2 , 2.2.2 , 2.4.3 , and 2.5.1 .
+	// specify a newer version of Apache Airflow supported by Amazon MWAA.
+	//
+	// Before you upgrade an environment, make sure your requirements, DAGs, plugins,
+	// and other resources used in your workflows are compatible with the new Apache
+	// Airflow version. For more information about updating your resources, see [Upgrading an Amazon MWAA environment].
+	//
+	// Valid values: 1.10.12 , 2.0.2 , 2.2.2 , 2.4.3 , 2.5.1 , 2.6.3 , 2.7.2 , 2.8.1 ,
+	// 2.9.2 , 2.10.1 , and 2.10.3 .
+	//
+	// [Upgrading an Amazon MWAA environment]: https://docs.aws.amazon.com/mwaa/latest/userguide/upgrading-environment.html
 	AirflowVersion *string
 
 	// The relative path to the DAGs folder on your Amazon S3 bucket. For example, dags
-	// . For more information, see Adding or updating DAGs (https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-dag-folder.html)
-	// .
+	// . For more information, see [Adding or updating DAGs].
+	//
+	// [Adding or updating DAGs]: https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-dag-folder.html
 	DagS3Path *string
 
-	// The environment class type. Valid values: mw1.small , mw1.medium , mw1.large .
-	// For more information, see Amazon MWAA environment class (https://docs.aws.amazon.com/mwaa/latest/userguide/environment-class.html)
-	// .
+	// The environment class type. Valid values: mw1.micro , mw1.small , mw1.medium ,
+	// mw1.large , mw1.xlarge , and mw1.2xlarge . For more information, see [Amazon MWAA environment class].
+	//
+	// [Amazon MWAA environment class]: https://docs.aws.amazon.com/mwaa/latest/userguide/environment-class.html
 	EnvironmentClass *string
 
 	// The Amazon Resource Name (ARN) of the execution role in IAM that allows MWAA to
 	// access Amazon Web Services resources in your environment. For example,
-	// arn:aws:iam::123456789:role/my-execution-role . For more information, see
-	// Amazon MWAA Execution role (https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-create-role.html)
-	// .
+	// arn:aws:iam::123456789:role/my-execution-role . For more information, see [Amazon MWAA Execution role].
+	//
+	// [Amazon MWAA Execution role]: https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-create-role.html
 	ExecutionRoleArn *string
 
 	// The Apache Airflow log types to send to CloudWatch Logs.
 	LoggingConfiguration *types.LoggingConfigurationInput
+
+	//  The maximum number of web servers that you want to run in your environment.
+	// Amazon MWAA scales the number of Apache Airflow web servers up to the number you
+	// specify for MaxWebservers when you interact with your Apache Airflow
+	// environment using Apache Airflow REST API, or the Apache Airflow CLI. For
+	// example, in scenarios where your workload requires network calls to the Apache
+	// Airflow REST API with a high transaction-per-second (TPS) rate, Amazon MWAA will
+	// increase the number of web servers up to the number set in MaxWebserers . As TPS
+	// rates decrease Amazon MWAA disposes of the additional web servers, and scales
+	// down to the number set in MinxWebserers .
+	//
+	// Valid values: For environments larger than mw1.micro, accepts values from 2 to 5
+	// . Defaults to 2 for all environment sizes except mw1.micro, which defaults to 1 .
+	MaxWebservers *int32
 
 	// The maximum number of workers that you want to run in your environment. MWAA
 	// scales the number of Apache Airflow workers up to the number you specify in the
@@ -80,6 +95,18 @@ type UpdateEnvironmentInput struct {
 	// more in the queue, MWAA disposes of the extra workers leaving the one worker
 	// that is included with your environment, or the number you specify in MinWorkers .
 	MaxWorkers *int32
+
+	//  The minimum number of web servers that you want to run in your environment.
+	// Amazon MWAA scales the number of Apache Airflow web servers up to the number you
+	// specify for MaxWebservers when you interact with your Apache Airflow
+	// environment using Apache Airflow REST API, or the Apache Airflow CLI. As the
+	// transaction-per-second rate, and the network load, decrease, Amazon MWAA
+	// disposes of the additional web servers, and scales down to the number set in
+	// MinxWebserers .
+	//
+	// Valid values: For environments larger than mw1.micro, accepts values from 2 to 5
+	// . Defaults to 2 for all environment sizes except mw1.micro, which defaults to 1 .
+	MinWebservers *int32
 
 	// The minimum number of workers that you want to run in your environment. MWAA
 	// scales the number of Apache Airflow workers up to the number you specify in the
@@ -90,32 +117,36 @@ type UpdateEnvironmentInput struct {
 
 	// The VPC networking components used to secure and enable network traffic between
 	// the Amazon Web Services resources for your environment. For more information,
-	// see About networking on Amazon MWAA (https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html)
-	// .
+	// see [About networking on Amazon MWAA].
+	//
+	// [About networking on Amazon MWAA]: https://docs.aws.amazon.com/mwaa/latest/userguide/networking-about.html
 	NetworkConfiguration *types.UpdateNetworkConfigurationInput
 
 	// The version of the plugins.zip file on your Amazon S3 bucket. You must specify
-	// a version each time a plugins.zip file is updated. For more information, see
-	// How S3 Versioning works (https://docs.aws.amazon.com/AmazonS3/latest/userguide/versioning-workflows.html)
-	// .
+	// a version each time a plugins.zip file is updated. For more information, see [How S3 Versioning works].
+	//
+	// [How S3 Versioning works]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/versioning-workflows.html
 	PluginsS3ObjectVersion *string
 
 	// The relative path to the plugins.zip file on your Amazon S3 bucket. For
 	// example, plugins.zip . If specified, then the plugins.zip version is required.
-	// For more information, see Installing custom plugins (https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-dag-import-plugins.html)
-	// .
+	// For more information, see [Installing custom plugins].
+	//
+	// [Installing custom plugins]: https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-dag-import-plugins.html
 	PluginsS3Path *string
 
 	// The version of the requirements.txt file on your Amazon S3 bucket. You must
 	// specify a version each time a requirements.txt file is updated. For more
-	// information, see How S3 Versioning works (https://docs.aws.amazon.com/AmazonS3/latest/userguide/versioning-workflows.html)
-	// .
+	// information, see [How S3 Versioning works].
+	//
+	// [How S3 Versioning works]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/versioning-workflows.html
 	RequirementsS3ObjectVersion *string
 
 	// The relative path to the requirements.txt file on your Amazon S3 bucket. For
 	// example, requirements.txt . If specified, then a file version is required. For
-	// more information, see Installing Python dependencies (https://docs.aws.amazon.com/mwaa/latest/userguide/working-dags-dependencies.html)
-	// .
+	// more information, see [Installing Python dependencies].
+	//
+	// [Installing Python dependencies]: https://docs.aws.amazon.com/mwaa/latest/userguide/working-dags-dependencies.html
 	RequirementsS3Path *string
 
 	// The number of Apache Airflow schedulers to run in your Amazon MWAA environment.
@@ -123,33 +154,40 @@ type UpdateEnvironmentInput struct {
 
 	// The Amazon Resource Name (ARN) of the Amazon S3 bucket where your DAG code and
 	// supporting files are stored. For example,
-	// arn:aws:s3:::my-airflow-bucket-unique-name . For more information, see Create
-	// an Amazon S3 bucket for Amazon MWAA (https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-s3-bucket.html)
-	// .
+	// arn:aws:s3:::my-airflow-bucket-unique-name . For more information, see [Create an Amazon S3 bucket for Amazon MWAA].
+	//
+	// [Create an Amazon S3 bucket for Amazon MWAA]: https://docs.aws.amazon.com/mwaa/latest/userguide/mwaa-s3-bucket.html
 	SourceBucketArn *string
 
-	// The version of the startup shell script in your Amazon S3 bucket. You must
-	// specify the version ID (https://docs.aws.amazon.com/AmazonS3/latest/userguide/versioning-workflows.html)
-	// that Amazon S3 assigns to the file every time you update the script. Version IDs
-	// are Unicode, UTF-8 encoded, URL-ready, opaque strings that are no more than
-	// 1,024 bytes long. The following is an example:
-	// 3sL4kqtJlcpXroDTDmJ+rmSpXd3dIbrHY+MTRCxf3vjVBH40Nr8X8gdRQBpUMLUo For more
-	// information, see Using a startup script (https://docs.aws.amazon.com/mwaa/latest/userguide/using-startup-script.html)
-	// .
+	//  The version of the startup shell script in your Amazon S3 bucket. You must
+	// specify the [version ID]that Amazon S3 assigns to the file every time you update the
+	// script.
+	//
+	// Version IDs are Unicode, UTF-8 encoded, URL-ready, opaque strings that are no
+	// more than 1,024 bytes long. The following is an example:
+	//
+	//     3sL4kqtJlcpXroDTDmJ+rmSpXd3dIbrHY+MTRCxf3vjVBH40Nr8X8gdRQBpUMLUo
+	//
+	// For more information, see [Using a startup script].
+	//
+	// [Using a startup script]: https://docs.aws.amazon.com/mwaa/latest/userguide/using-startup-script.html
+	// [version ID]: https://docs.aws.amazon.com/AmazonS3/latest/userguide/versioning-workflows.html
 	StartupScriptS3ObjectVersion *string
 
 	// The relative path to the startup shell script in your Amazon S3 bucket. For
-	// example, s3://mwaa-environment/startup.sh . Amazon MWAA runs the script as your
-	// environment starts, and before running the Apache Airflow process. You can use
-	// this script to install dependencies, modify Apache Airflow configuration
-	// options, and set environment variables. For more information, see Using a
-	// startup script (https://docs.aws.amazon.com/mwaa/latest/userguide/using-startup-script.html)
-	// .
+	// example, s3://mwaa-environment/startup.sh .
+	//
+	// Amazon MWAA runs the script as your environment starts, and before running the
+	// Apache Airflow process. You can use this script to install dependencies, modify
+	// Apache Airflow configuration options, and set environment variables. For more
+	// information, see [Using a startup script].
+	//
+	// [Using a startup script]: https://docs.aws.amazon.com/mwaa/latest/userguide/using-startup-script.html
 	StartupScriptS3Path *string
 
-	// The Apache Airflow Web server access mode. For more information, see Apache
-	// Airflow access modes (https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-networking.html)
-	// .
+	// The Apache Airflow Web server access mode. For more information, see [Apache Airflow access modes].
+	//
+	// [Apache Airflow access modes]: https://docs.aws.amazon.com/mwaa/latest/userguide/configuring-networking.html
 	WebserverAccessMode types.WebserverAccessMode
 
 	// The day and time of the week in Coordinated Universal Time (UTC) 24-hour
@@ -174,6 +212,9 @@ type UpdateEnvironmentOutput struct {
 }
 
 func (c *Client) addOperationUpdateEnvironmentMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpUpdateEnvironment{}, middleware.After)
 	if err != nil {
 		return err
@@ -182,34 +223,38 @@ func (c *Client) addOperationUpdateEnvironmentMiddlewares(stack *middleware.Stac
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateEnvironment"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -221,10 +266,16 @@ func (c *Client) addOperationUpdateEnvironmentMiddlewares(stack *middleware.Stac
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addEndpointPrefix_opUpdateEnvironmentMiddleware(stack); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateEnvironmentResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
+		return err
+	}
+	if err = addEndpointPrefix_opUpdateEnvironmentMiddleware(stack); err != nil {
 		return err
 	}
 	if err = addOpUpdateEnvironmentValidationMiddleware(stack); err != nil {
@@ -233,7 +284,7 @@ func (c *Client) addOperationUpdateEnvironmentMiddlewares(stack *middleware.Stac
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateEnvironment(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -245,7 +296,19 @@ func (c *Client) addOperationUpdateEnvironmentMiddlewares(stack *middleware.Stac
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -258,11 +321,11 @@ func (*endpointPrefix_opUpdateEnvironmentMiddleware) ID() string {
 	return "EndpointHostPrefix"
 }
 
-func (m *endpointPrefix_opUpdateEnvironmentMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+func (m *endpointPrefix_opUpdateEnvironmentMiddleware) HandleFinalize(ctx context.Context, in middleware.FinalizeInput, next middleware.FinalizeHandler) (
+	out middleware.FinalizeOutput, metadata middleware.Metadata, err error,
 ) {
 	if smithyhttp.GetHostnameImmutable(ctx) || smithyhttp.IsEndpointHostPrefixDisabled(ctx) {
-		return next.HandleSerialize(ctx, in)
+		return next.HandleFinalize(ctx, in)
 	}
 
 	req, ok := in.Request.(*smithyhttp.Request)
@@ -272,140 +335,16 @@ func (m *endpointPrefix_opUpdateEnvironmentMiddleware) HandleSerialize(ctx conte
 
 	req.URL.Host = "api." + req.URL.Host
 
-	return next.HandleSerialize(ctx, in)
+	return next.HandleFinalize(ctx, in)
 }
 func addEndpointPrefix_opUpdateEnvironmentMiddleware(stack *middleware.Stack) error {
-	return stack.Serialize.Insert(&endpointPrefix_opUpdateEnvironmentMiddleware{}, `OperationSerializer`, middleware.After)
+	return stack.Finalize.Insert(&endpointPrefix_opUpdateEnvironmentMiddleware{}, "ResolveEndpointV2", middleware.After)
 }
 
 func newServiceMetadataMiddleware_opUpdateEnvironment(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "airflow",
 		OperationName: "UpdateEnvironment",
 	}
-}
-
-type opUpdateEnvironmentResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateEnvironmentResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateEnvironmentResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "airflow"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "airflow"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("airflow")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateEnvironmentResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateEnvironmentResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -444,9 +444,10 @@ func (e *ClusterParameterGroupNotFoundFault) ErrorFault() smithy.ErrorFault {
 }
 
 // The request would result in the user exceeding the allowed number of cluster
-// parameter groups. For information about increasing your quota, go to Limits in
-// Amazon Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html)
-// in the Amazon Redshift Cluster Management Guide.
+// parameter groups. For information about increasing your quota, go to [Limits in Amazon Redshift]in the
+// Amazon Redshift Cluster Management Guide.
+//
+// [Limits in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html
 type ClusterParameterGroupQuotaExceededFault struct {
 	Message *string
 
@@ -475,9 +476,12 @@ func (e *ClusterParameterGroupQuotaExceededFault) ErrorFault() smithy.ErrorFault
 }
 
 // The request would exceed the allowed number of cluster instances for this
-// account. For information about increasing your quota, go to Limits in Amazon
-// Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html)
-// in the Amazon Redshift Cluster Management Guide.
+// account.
+//
+// For information about increasing your quota, go to [Limits in Amazon Redshift] in the Amazon Redshift
+// Cluster Management Guide.
+//
+// [Limits in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html
 type ClusterQuotaExceededFault struct {
 	Message *string
 
@@ -559,9 +563,10 @@ func (e *ClusterSecurityGroupNotFoundFault) ErrorCode() string {
 func (e *ClusterSecurityGroupNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The request would result in the user exceeding the allowed number of cluster
-// security groups. For information about increasing your quota, go to Limits in
-// Amazon Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html)
-// in the Amazon Redshift Cluster Management Guide.
+// security groups. For information about increasing your quota, go to [Limits in Amazon Redshift]in the
+// Amazon Redshift Cluster Management Guide.
+//
+// [Limits in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html
 type ClusterSecurityGroupQuotaExceededFault struct {
 	Message *string
 
@@ -725,9 +730,10 @@ func (e *ClusterSubnetGroupNotFoundFault) ErrorCode() string {
 func (e *ClusterSubnetGroupNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The request would result in user exceeding the allowed number of cluster subnet
-// groups. For information about increasing your quota, go to Limits in Amazon
-// Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html)
-// in the Amazon Redshift Cluster Management Guide.
+// groups. For information about increasing your quota, go to [Limits in Amazon Redshift]in the Amazon
+// Redshift Cluster Management Guide.
+//
+// [Limits in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html
 type ClusterSubnetGroupQuotaExceededFault struct {
 	Message *string
 
@@ -756,9 +762,10 @@ func (e *ClusterSubnetGroupQuotaExceededFault) ErrorFault() smithy.ErrorFault {
 }
 
 // The request would result in user exceeding the allowed number of subnets in a
-// cluster subnet groups. For information about increasing your quota, go to
-// Limits in Amazon Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html)
-// in the Amazon Redshift Cluster Management Guide.
+// cluster subnet groups. For information about increasing your quota, go to [Limits in Amazon Redshift]in
+// the Amazon Redshift Cluster Management Guide.
+//
+// [Limits in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html
 type ClusterSubnetQuotaExceededFault struct {
 	Message *string
 
@@ -783,6 +790,32 @@ func (e *ClusterSubnetQuotaExceededFault) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *ClusterSubnetQuotaExceededFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// There is a conflict while updating the resource policy.
+type ConflictPolicyUpdateFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *ConflictPolicyUpdateFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *ConflictPolicyUpdateFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *ConflictPolicyUpdateFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "ConflictPolicyUpdateFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *ConflictPolicyUpdateFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // Cross-region snapshot copy was temporarily disabled. Try your request again.
 type CopyToRegionDisabledFault struct {
@@ -864,6 +897,32 @@ func (e *CustomDomainAssociationNotFoundFault) ErrorCode() string {
 func (e *CustomDomainAssociationNotFoundFault) ErrorFault() smithy.ErrorFault {
 	return smithy.FaultClient
 }
+
+// A dependent service denied access for the integration.
+type DependentServiceAccessDeniedFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *DependentServiceAccessDeniedFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *DependentServiceAccessDeniedFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *DependentServiceAccessDeniedFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "DependentServiceAccessDenied"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *DependentServiceAccessDeniedFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The request cannot be completed because a dependent service is throttling
 // requests made by Amazon Redshift on your behalf. Wait and retry the request.
@@ -1116,9 +1175,10 @@ func (e *EndpointsPerClusterLimitExceededFault) ErrorFault() smithy.ErrorFault {
 }
 
 // The request would exceed the allowed number of event subscriptions for this
-// account. For information about increasing your quota, go to Limits in Amazon
-// Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html)
-// in the Amazon Redshift Cluster Management Guide.
+// account. For information about increasing your quota, go to [Limits in Amazon Redshift]in the Amazon
+// Redshift Cluster Management Guide.
+//
+// [Limits in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html
 type EventSubscriptionQuotaExceededFault struct {
 	Message *string
 
@@ -1203,8 +1263,9 @@ func (e *HsmClientCertificateNotFoundFault) ErrorCode() string {
 func (e *HsmClientCertificateNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The quota for HSM client certificates has been reached. For information about
-// increasing your quota, go to Limits in Amazon Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html)
-// in the Amazon Redshift Cluster Management Guide.
+// increasing your quota, go to [Limits in Amazon Redshift]in the Amazon Redshift Cluster Management Guide.
+//
+// [Limits in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html
 type HsmClientCertificateQuotaExceededFault struct {
 	Message *string
 
@@ -1288,8 +1349,9 @@ func (e *HsmConfigurationNotFoundFault) ErrorCode() string {
 func (e *HsmConfigurationNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The quota for HSM configurations has been reached. For information about
-// increasing your quota, go to Limits in Amazon Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html)
-// in the Amazon Redshift Cluster Management Guide.
+// increasing your quota, go to [Limits in Amazon Redshift]in the Amazon Redshift Cluster Management Guide.
+//
+// [Limits in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html
 type HsmConfigurationQuotaExceededFault struct {
 	Message *string
 
@@ -1424,6 +1486,192 @@ func (e *InsufficientS3BucketPolicyFault) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *InsufficientS3BucketPolicyFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The integration you are trying to create already exists.
+type IntegrationAlreadyExistsFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationAlreadyExistsFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationAlreadyExistsFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationAlreadyExistsFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationAlreadyExistsFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationAlreadyExistsFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// A conflicting conditional operation is currently in progress against this
+// resource. This typically occurs when there are multiple requests being made to
+// the same resource at the same time, and these requests conflict with each other.
+type IntegrationConflictOperationFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationConflictOperationFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationConflictOperationFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationConflictOperationFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationConflictOperationFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationConflictOperationFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The integration is in an invalid state and can't perform the requested
+// operation.
+type IntegrationConflictStateFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationConflictStateFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationConflictStateFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationConflictStateFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationConflictStateFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationConflictStateFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The integration can't be found.
+type IntegrationNotFoundFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationNotFoundFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationNotFoundFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationNotFoundFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationNotFoundFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// You can't create any more zero-ETL or S3 event integrations because the quota
+// has been reached.
+type IntegrationQuotaExceededFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationQuotaExceededFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationQuotaExceededFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationQuotaExceededFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationQuotaExceededFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationQuotaExceededFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified integration source can't be found.
+type IntegrationSourceNotFoundFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationSourceNotFoundFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationSourceNotFoundFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationSourceNotFoundFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationSourceNotFoundFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationSourceNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The specified integration target can't be found.
+type IntegrationTargetNotFoundFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *IntegrationTargetNotFoundFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *IntegrationTargetNotFoundFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *IntegrationTargetNotFoundFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "IntegrationTargetNotFoundFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *IntegrationTargetNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The authentication profile request is not valid. The profile name can't be null
 // or empty. The authentication profile API operation must be available in the
@@ -1861,6 +2109,32 @@ func (e *InvalidNamespaceFault) ErrorCode() string {
 }
 func (e *InvalidNamespaceFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The resource policy isn't valid.
+type InvalidPolicyFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InvalidPolicyFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InvalidPolicyFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InvalidPolicyFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InvalidPolicyFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InvalidPolicyFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // Indicates that the Reserved Node being exchanged is not in an active state.
 type InvalidReservedNodeStateFault struct {
 	Message *string
@@ -1914,6 +2188,7 @@ func (e *InvalidRestoreFault) ErrorCode() string {
 func (e *InvalidRestoreFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // The retention period specified is either in the past or is not a valid value.
+//
 // The value must be either -1 or an integer between 1 and 3,653.
 type InvalidRetentionPeriodFault struct {
 	Message *string
@@ -1940,9 +2215,10 @@ func (e *InvalidRetentionPeriodFault) ErrorCode() string {
 }
 func (e *InvalidRetentionPeriodFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// The S3 bucket name is invalid. For more information about naming rules, go to
-// Bucket Restrictions and Limitations (https://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html)
+// The S3 bucket name is invalid. For more information about naming rules, go to [Bucket Restrictions and Limitations]
 // in the Amazon Simple Storage Service (S3) Developer Guide.
+//
+// [Bucket Restrictions and Limitations]: https://docs.aws.amazon.com/AmazonS3/latest/dev/BucketRestrictions.html
 type InvalidS3BucketNameFault struct {
 	Message *string
 
@@ -2236,6 +2512,33 @@ func (e *InvalidVPCNetworkStateFault) ErrorCode() string {
 }
 func (e *InvalidVPCNetworkStateFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// There are no subnets in your VPC with associated IPv6 CIDR blocks. To use
+// dual-stack mode, associate an IPv6 CIDR block with each subnet in your VPC.
+type Ipv6CidrBlockNotFoundFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *Ipv6CidrBlockNotFoundFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *Ipv6CidrBlockNotFoundFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *Ipv6CidrBlockNotFoundFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "Ipv6CidrBlockNotFoundFault"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *Ipv6CidrBlockNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // The encryption key has exceeded its grant limit in Amazon Web Services KMS.
 type LimitExceededFault struct {
 	Message *string
@@ -2290,9 +2593,12 @@ func (e *NumberOfNodesPerClusterLimitExceededFault) ErrorFault() smithy.ErrorFau
 	return smithy.FaultClient
 }
 
-// The operation would exceed the number of nodes allotted to the account. For
-// information about increasing your quota, go to Limits in Amazon Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html)
-// in the Amazon Redshift Cluster Management Guide.
+// The operation would exceed the number of nodes allotted to the account.
+//
+// For information about increasing your quota, go to [Limits in Amazon Redshift] in the Amazon Redshift
+// Cluster Management Guide.
+//
+// [Limits in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html
 type NumberOfNodesQuotaExceededFault struct {
 	Message *string
 
@@ -2343,6 +2649,90 @@ func (e *PartnerNotFoundFault) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *PartnerNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+// The application you attempted to add already exists.
+type RedshiftIdcApplicationAlreadyExistsFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *RedshiftIdcApplicationAlreadyExistsFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *RedshiftIdcApplicationAlreadyExistsFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *RedshiftIdcApplicationAlreadyExistsFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "RedshiftIdcApplicationAlreadyExists"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *RedshiftIdcApplicationAlreadyExistsFault) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
+// The application you attempted to find doesn't exist.
+type RedshiftIdcApplicationNotExistsFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *RedshiftIdcApplicationNotExistsFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *RedshiftIdcApplicationNotExistsFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *RedshiftIdcApplicationNotExistsFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "RedshiftIdcApplicationNotExists"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *RedshiftIdcApplicationNotExistsFault) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
+// The maximum number of Redshift IAM Identity Center applications was exceeded.
+type RedshiftIdcApplicationQuotaExceededFault struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *RedshiftIdcApplicationQuotaExceededFault) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *RedshiftIdcApplicationQuotaExceededFault) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *RedshiftIdcApplicationQuotaExceededFault) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "RedshiftIdcApplicationQuotaExceeded"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *RedshiftIdcApplicationQuotaExceededFault) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
 
 // User already has a reservation with the given identifier.
 type ReservedNodeAlreadyExistsFault struct {
@@ -2475,8 +2865,9 @@ func (e *ReservedNodeOfferingNotFoundFault) ErrorCode() string {
 func (e *ReservedNodeOfferingNotFoundFault) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
 // Request would exceed the user's compute node quota. For information about
-// increasing your quota, go to Limits in Amazon Redshift (https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html)
-// in the Amazon Redshift Cluster Management Guide.
+// increasing your quota, go to [Limits in Amazon Redshift]in the Amazon Redshift Cluster Management Guide.
+//
+// [Limits in Amazon Redshift]: https://docs.aws.amazon.com/redshift/latest/mgmt/amazon-redshift-limits.html
 type ReservedNodeQuotaExceededFault struct {
 	Message *string
 

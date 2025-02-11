@@ -2,6 +2,25 @@
 
 package types
 
+type ResultFormatString string
+
+// Enum values for ResultFormatString
+const (
+	ResultFormatStringJson ResultFormatString = "JSON"
+	ResultFormatStringCsv  ResultFormatString = "CSV"
+)
+
+// Values returns all known values for ResultFormatString. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResultFormatString) Values() []ResultFormatString {
+	return []ResultFormatString{
+		"JSON",
+		"CSV",
+	}
+}
+
 type StatementStatusString string
 
 // Enum values for StatementStatusString
@@ -15,8 +34,9 @@ const (
 )
 
 // Values returns all known values for StatementStatusString. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StatementStatusString) Values() []StatementStatusString {
 	return []StatementStatusString{
 		"SUBMITTED",
@@ -42,8 +62,9 @@ const (
 )
 
 // Values returns all known values for StatusString. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StatusString) Values() []StatusString {
 	return []StatusString{
 		"SUBMITTED",

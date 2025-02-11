@@ -4,23 +4,20 @@ package opsworks
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/opsworks/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Updates a specified stack. Required Permissions: To use this action, an IAM
-// user must have a Manage permissions level for the stack, or an attached policy
-// that explicitly grants permissions. For more information on user permissions,
-// see Managing User Permissions (https://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-users.html)
-// .
+// Updates a specified stack.
+//
+// Required Permissions: To use this action, an IAM user must have a Manage
+// permissions level for the stack, or an attached policy that explicitly grants
+// permissions. For more information on user permissions, see [Managing User Permissions].
+//
+// [Managing User Permissions]: https://docs.aws.amazon.com/opsworks/latest/userguide/opsworks-security-users.html
 func (c *Client) UpdateStack(ctx context.Context, params *UpdateStackInput, optFns ...func(*Options)) (*UpdateStackOutput, error) {
 	if params == nil {
 		params = &UpdateStackInput{}
@@ -43,29 +40,32 @@ type UpdateStackInput struct {
 	// This member is required.
 	StackId *string
 
-	// The default AWS OpsWorks Stacks agent version. You have the following options:
-	//   - Auto-update - Set this parameter to LATEST . AWS OpsWorks Stacks
-	//   automatically installs new agent versions on the stack's instances as soon as
-	//   they are available.
+	// The default OpsWorks Stacks agent version. You have the following options:
+	//
+	//   - Auto-update - Set this parameter to LATEST . OpsWorks Stacks automatically
+	//   installs new agent versions on the stack's instances as soon as they are
+	//   available.
+	//
 	//   - Fixed version - Set this parameter to your preferred agent version. To
 	//   update the agent version, you must edit the stack configuration and specify a
-	//   new version. AWS OpsWorks Stacks then automatically installs that version on the
-	//   stack's instances.
+	//   new version. OpsWorks Stacks installs that version on the stack's instances.
+	//
 	// The default setting is LATEST . To specify an agent version, you must use the
 	// complete version number, not the abbreviated number shown on the console. For a
-	// list of available agent version numbers, call DescribeAgentVersions .
-	// AgentVersion cannot be set to Chef 12.2. You can also specify an agent version
-	// when you create or update an instance, which overrides the stack's default
-	// setting.
+	// list of available agent version numbers, call DescribeAgentVersions. AgentVersion cannot be set to
+	// Chef 12.2.
+	//
+	// You can also specify an agent version when you create or update an instance,
+	// which overrides the stack's default setting.
 	AgentVersion *string
 
 	// One or more user-defined key-value pairs to be added to the stack attributes.
 	Attributes map[string]string
 
 	// A ChefConfiguration object that specifies whether to enable Berkshelf and the
-	// Berkshelf version on Chef 11.10 stacks. For more information, see Create a New
-	// Stack (https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html)
-	// .
+	// Berkshelf version on Chef 11.10 stacks. For more information, see [Create a New Stack].
+	//
+	// [Create a New Stack]: https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html
 	ChefConfiguration *types.ChefConfiguration
 
 	// The configuration manager. When you update a stack, we recommend that you use
@@ -75,67 +75,83 @@ type UpdateStackInput struct {
 	ConfigurationManager *types.StackConfigurationManager
 
 	// Contains the information required to retrieve an app or cookbook from a
-	// repository. For more information, see Adding Apps (https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html)
-	// or Cookbooks and Recipes (https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html)
-	// .
+	// repository. For more information, see [Adding Apps]or [Cookbooks and Recipes].
+	//
+	// [Cookbooks and Recipes]: https://docs.aws.amazon.com/opsworks/latest/userguide/workingcookbook.html
+	// [Adding Apps]: https://docs.aws.amazon.com/opsworks/latest/userguide/workingapps-creating.html
 	CustomCookbooksSource *types.Source
 
 	// A string that contains user-defined, custom JSON. It can be used to override
 	// the corresponding default stack configuration JSON values or to pass data to
-	// recipes. The string should be in the following format: "{\"key1\": \"value1\",
-	// \"key2\": \"value2\",...}" For more information about custom JSON, see Use
-	// Custom JSON to Modify the Stack Configuration Attributes (https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html)
-	// .
+	// recipes. The string should be in the following format:
+	//
+	//     "{\"key1\": \"value1\", \"key2\": \"value2\",...}"
+	//
+	// For more information about custom JSON, see [Use Custom JSON to Modify the Stack Configuration Attributes].
+	//
+	// [Use Custom JSON to Modify the Stack Configuration Attributes]: https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-json.html
 	CustomJson *string
 
 	// The stack's default Availability Zone, which must be in the stack's region. For
-	// more information, see Regions and Endpoints (https://docs.aws.amazon.com/general/latest/gr/rande.html)
-	// . If you also specify a value for DefaultSubnetId , the subnet must be in the
-	// same zone. For more information, see CreateStack .
+	// more information, see [Regions and Endpoints]. If you also specify a value for DefaultSubnetId , the
+	// subnet must be in the same zone. For more information, see CreateStack.
+	//
+	// [Regions and Endpoints]: https://docs.aws.amazon.com/general/latest/gr/rande.html
 	DefaultAvailabilityZone *string
 
 	// The ARN of an IAM profile that is the default profile for all of the stack's
-	// EC2 instances. For more information about IAM ARNs, see Using Identifiers (https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html)
-	// .
+	// EC2 instances. For more information about IAM ARNs, see [Using Identifiers].
+	//
+	// [Using Identifiers]: https://docs.aws.amazon.com/IAM/latest/UserGuide/Using_Identifiers.html
 	DefaultInstanceProfileArn *string
 
 	// The stack's operating system, which must be set to one of the following:
+	//
 	//   - A supported Linux operating system: An Amazon Linux version, such as Amazon
-	//   Linux 2018.03 , Amazon Linux 2017.09 , Amazon Linux 2017.03 , Amazon Linux
-	//   2016.09 , Amazon Linux 2016.03 , Amazon Linux 2015.09 , or Amazon Linux
-	//   2015.03 .
-	//   - A supported Ubuntu operating system, such as Ubuntu 16.04 LTS , Ubuntu
-	//   14.04 LTS , or Ubuntu 12.04 LTS .
+	//   Linux 2 , Amazon Linux 2018.03 , Amazon Linux 2017.09 , Amazon Linux 2017.03 ,
+	//   Amazon Linux 2016.09 , Amazon Linux 2016.03 , Amazon Linux 2015.09 , or
+	//   Amazon Linux 2015.03 .
+	//
+	//   - A supported Ubuntu operating system, such as Ubuntu 18.04 LTS , Ubuntu
+	//   16.04 LTS , Ubuntu 14.04 LTS , or Ubuntu 12.04 LTS .
+	//
 	//   - CentOS Linux 7
+	//
 	//   - Red Hat Enterprise Linux 7
+	//
 	//   - A supported Windows operating system, such as Microsoft Windows Server 2012
 	//   R2 Base , Microsoft Windows Server 2012 R2 with SQL Server Express ,
 	//   Microsoft Windows Server 2012 R2 with SQL Server Standard , or Microsoft
 	//   Windows Server 2012 R2 with SQL Server Web .
+	//
 	//   - A custom AMI: Custom . You specify the custom AMI you want to use when you
 	//   create instances. For more information about how to use custom AMIs with
-	//   OpsWorks, see Using Custom AMIs (https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html)
-	//   .
-	// The default option is the stack's current operating system. For more
-	// information about supported operating systems, see AWS OpsWorks Stacks
-	// Operating Systems (https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html)
-	// .
+	//   OpsWorks, see [Using Custom AMIs].
+	//
+	// The default option is the stack's current operating system. Not all operating
+	// systems are supported with all versions of Chef. For more information about
+	// supported operating systems, see [OpsWorks Stacks Operating Systems].
+	//
+	// [Using Custom AMIs]: https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-custom-ami.html
+	// [OpsWorks Stacks Operating Systems]: https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-os.html
 	DefaultOs *string
 
 	// The default root device type. This value is used by default for all instances
 	// in the stack, but you can override it when you create an instance. For more
-	// information, see Storage for the Root Device (https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device)
-	// .
+	// information, see [Storage for the Root Device].
+	//
+	// [Storage for the Root Device]: https://docs.aws.amazon.com/AWSEC2/latest/UserGuide/ComponentsAMIs.html#storage-for-the-root-device
 	DefaultRootDeviceType types.RootDeviceType
 
 	// A default Amazon EC2 key-pair name. The default value is none . If you specify a
-	// key-pair name, AWS OpsWorks Stacks installs the public key on the instance and
-	// you can use the private key with an SSH client to log in to the instance. For
-	// more information, see Using SSH to Communicate with an Instance (https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-ssh.html)
-	// and Managing SSH Access (https://docs.aws.amazon.com/opsworks/latest/userguide/security-ssh-access.html)
-	// . You can override this setting by specifying a different key pair, or no key
-	// pair, when you create an instance (https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-add.html)
-	// .
+	// key-pair name, OpsWorks Stacks installs the public key on the instance and you
+	// can use the private key with an SSH client to log in to the instance. For more
+	// information, see [Using SSH to Communicate with an Instance]and [Managing SSH Access]. You can override this setting by specifying a different
+	// key pair, or no key pair, when you [create an instance].
+	//
+	// [Using SSH to Communicate with an Instance]: https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-ssh.html
+	// [Managing SSH Access]: https://docs.aws.amazon.com/opsworks/latest/userguide/security-ssh-access.html
+	// [create an instance]: https://docs.aws.amazon.com/opsworks/latest/userguide/workinginstances-add.html
 	DefaultSshKeyName *string
 
 	// The stack's default VPC subnet ID. This parameter is required if you specify a
@@ -150,22 +166,34 @@ type UpdateStackInput struct {
 	// is used to generate host names for the stack's instances. By default,
 	// HostnameTheme is set to Layer_Dependent , which creates host names by appending
 	// integers to the layer's short name. The other themes are:
+	//
 	//   - Baked_Goods
+	//
 	//   - Clouds
+	//
 	//   - Europe_Cities
+	//
 	//   - Fruits
+	//
 	//   - Greek_Deities_and_Titans
+	//
 	//   - Legendary_creatures_from_Japan
+	//
 	//   - Planets_and_Moons
+	//
 	//   - Roman_Deities
+	//
 	//   - Scottish_Islands
+	//
 	//   - US_Cities
+	//
 	//   - Wild_Cats
+	//
 	// To obtain a generated host name, call GetHostNameSuggestion , which returns a
 	// host name based on the current theme.
 	HostnameTheme *string
 
-	// The stack's new name.
+	// The stack's new name. Stack names can be a maximum of 64 characters.
 	Name *string
 
 	// Do not use this parameter. You cannot update a stack's service role.
@@ -174,23 +202,29 @@ type UpdateStackInput struct {
 	// Whether the stack uses custom cookbooks.
 	UseCustomCookbooks *bool
 
-	// Whether to associate the AWS OpsWorks Stacks built-in security groups with the
-	// stack's layers. AWS OpsWorks Stacks provides a standard set of built-in security
-	// groups, one for each layer, which are associated with layers by default.
+	// Whether to associate the OpsWorks Stacks built-in security groups with the
+	// stack's layers.
+	//
+	// OpsWorks Stacks provides a standard set of built-in security groups, one for
+	// each layer, which are associated with layers by default.
 	// UseOpsworksSecurityGroups allows you to provide your own custom security groups
 	// instead of using the built-in groups. UseOpsworksSecurityGroups has the
 	// following settings:
-	//   - True - AWS OpsWorks Stacks automatically associates the appropriate
-	//   built-in security group with each layer (default setting). You can associate
-	//   additional security groups with a layer after you create it, but you cannot
-	//   delete the built-in security group.
-	//   - False - AWS OpsWorks Stacks does not associate built-in security groups
-	//   with layers. You must create appropriate EC2 security groups and associate a
-	//   security group with each layer that you create. However, you can still manually
-	//   associate a built-in security group with a layer on. Custom security groups are
-	//   required only for those layers that need custom settings.
-	// For more information, see Create a New Stack (https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html)
-	// .
+	//
+	//   - True - OpsWorks Stacks automatically associates the appropriate built-in
+	//   security group with each layer (default setting). You can associate additional
+	//   security groups with a layer after you create it, but you cannot delete the
+	//   built-in security group.
+	//
+	//   - False - OpsWorks Stacks does not associate built-in security groups with
+	//   layers. You must create appropriate EC2 security groups and associate a security
+	//   group with each layer that you create. However, you can still manually associate
+	//   a built-in security group with a layer on. Custom security groups are required
+	//   only for those layers that need custom settings.
+	//
+	// For more information, see [Create a New Stack].
+	//
+	// [Create a New Stack]: https://docs.aws.amazon.com/opsworks/latest/userguide/workingstacks-creating.html
 	UseOpsworksSecurityGroups *bool
 
 	noSmithyDocumentSerde
@@ -204,6 +238,9 @@ type UpdateStackOutput struct {
 }
 
 func (c *Client) addOperationUpdateStackMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpUpdateStack{}, middleware.After)
 	if err != nil {
 		return err
@@ -212,34 +249,38 @@ func (c *Client) addOperationUpdateStackMiddlewares(stack *middleware.Stack, opt
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateStack"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -251,7 +292,13 @@ func (c *Client) addOperationUpdateStackMiddlewares(stack *middleware.Stack, opt
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateStackResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateStackValidationMiddleware(stack); err != nil {
@@ -260,7 +307,7 @@ func (c *Client) addOperationUpdateStackMiddlewares(stack *middleware.Stack, opt
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateStack(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -272,7 +319,19 @@ func (c *Client) addOperationUpdateStackMiddlewares(stack *middleware.Stack, opt
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -282,130 +341,6 @@ func newServiceMetadataMiddleware_opUpdateStack(region string) *awsmiddleware.Re
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "opsworks",
 		OperationName: "UpdateStack",
 	}
-}
-
-type opUpdateStackResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateStackResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateStackResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "opsworks"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "opsworks"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("opsworks")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateStackResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateStackResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

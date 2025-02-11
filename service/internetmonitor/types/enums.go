@@ -13,8 +13,9 @@ const (
 )
 
 // Values returns all known values for HealthEventImpactType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HealthEventImpactType) Values() []HealthEventImpactType {
 	return []HealthEventImpactType{
 		"AVAILABILITY",
@@ -33,12 +34,51 @@ const (
 )
 
 // Values returns all known values for HealthEventStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HealthEventStatus) Values() []HealthEventStatus {
 	return []HealthEventStatus{
 		"ACTIVE",
 		"RESOLVED",
+	}
+}
+
+type InternetEventStatus string
+
+// Enum values for InternetEventStatus
+const (
+	InternetEventStatusActive   InternetEventStatus = "ACTIVE"
+	InternetEventStatusResolved InternetEventStatus = "RESOLVED"
+)
+
+// Values returns all known values for InternetEventStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InternetEventStatus) Values() []InternetEventStatus {
+	return []InternetEventStatus{
+		"ACTIVE",
+		"RESOLVED",
+	}
+}
+
+type InternetEventType string
+
+// Enum values for InternetEventType
+const (
+	InternetEventTypeAvailability InternetEventType = "AVAILABILITY"
+	InternetEventTypePerformance  InternetEventType = "PERFORMANCE"
+)
+
+// Values returns all known values for InternetEventType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InternetEventType) Values() []InternetEventType {
+	return []InternetEventType{
+		"AVAILABILITY",
+		"PERFORMANCE",
 	}
 }
 
@@ -52,8 +92,9 @@ const (
 
 // Values returns all known values for LocalHealthEventsConfigStatus. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LocalHealthEventsConfigStatus) Values() []LocalHealthEventsConfigStatus {
 	return []LocalHealthEventsConfigStatus{
 		"ENABLED",
@@ -70,8 +111,9 @@ const (
 )
 
 // Values returns all known values for LogDeliveryStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogDeliveryStatus) Values() []LogDeliveryStatus {
 	return []LogDeliveryStatus{
 		"ENABLED",
@@ -90,8 +132,9 @@ const (
 )
 
 // Values returns all known values for MonitorConfigState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MonitorConfigState) Values() []MonitorConfigState {
 	return []MonitorConfigState{
 		"PENDING",
@@ -115,6 +158,7 @@ const (
 
 // Values returns all known values for MonitorProcessingStatusCode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (MonitorProcessingStatusCode) Values() []MonitorProcessingStatusCode {
 	return []MonitorProcessingStatusCode{
@@ -127,6 +171,77 @@ func (MonitorProcessingStatusCode) Values() []MonitorProcessingStatusCode {
 	}
 }
 
+type Operator string
+
+// Enum values for Operator
+const (
+	OperatorEquals    Operator = "EQUALS"
+	OperatorNotEquals Operator = "NOT_EQUALS"
+)
+
+// Values returns all known values for Operator. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Operator) Values() []Operator {
+	return []Operator{
+		"EQUALS",
+		"NOT_EQUALS",
+	}
+}
+
+type QueryStatus string
+
+// Enum values for QueryStatus
+const (
+	QueryStatusQueued    QueryStatus = "QUEUED"
+	QueryStatusRunning   QueryStatus = "RUNNING"
+	QueryStatusSucceeded QueryStatus = "SUCCEEDED"
+	QueryStatusFailed    QueryStatus = "FAILED"
+	QueryStatusCanceled  QueryStatus = "CANCELED"
+)
+
+// Values returns all known values for QueryStatus. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QueryStatus) Values() []QueryStatus {
+	return []QueryStatus{
+		"QUEUED",
+		"RUNNING",
+		"SUCCEEDED",
+		"FAILED",
+		"CANCELED",
+	}
+}
+
+type QueryType string
+
+// Enum values for QueryType
+const (
+	QueryTypeMeasurements                     QueryType = "MEASUREMENTS"
+	QueryTypeTopLocations                     QueryType = "TOP_LOCATIONS"
+	QueryTypeTopLocationDetails               QueryType = "TOP_LOCATION_DETAILS"
+	QueryTypeOverallTrafficSuggestions        QueryType = "OVERALL_TRAFFIC_SUGGESTIONS"
+	QueryTypeOverallTrafficSuggestionsDetails QueryType = "OVERALL_TRAFFIC_SUGGESTIONS_DETAILS"
+	QueryTypeRoutingSuggestions               QueryType = "ROUTING_SUGGESTIONS"
+)
+
+// Values returns all known values for QueryType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QueryType) Values() []QueryType {
+	return []QueryType{
+		"MEASUREMENTS",
+		"TOP_LOCATIONS",
+		"TOP_LOCATION_DETAILS",
+		"OVERALL_TRAFFIC_SUGGESTIONS",
+		"OVERALL_TRAFFIC_SUGGESTIONS_DETAILS",
+		"ROUTING_SUGGESTIONS",
+	}
+}
+
 type TriangulationEventType string
 
 // Enum values for TriangulationEventType
@@ -136,8 +251,9 @@ const (
 )
 
 // Values returns all known values for TriangulationEventType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TriangulationEventType) Values() []TriangulationEventType {
 	return []TriangulationEventType{
 		"AWS",

@@ -10,6 +10,26 @@ import (
 	"github.com/aws/smithy-go/middleware"
 )
 
+type validateOpBatchDescribeEntities struct {
+}
+
+func (*validateOpBatchDescribeEntities) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpBatchDescribeEntities) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*BatchDescribeEntitiesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpBatchDescribeEntitiesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCancelChangeSet struct {
 }
 
@@ -250,6 +270,10 @@ func (m *validateOpUntagResource) HandleInitialize(ctx context.Context, in middl
 	return next.HandleInitialize(ctx, in)
 }
 
+func addOpBatchDescribeEntitiesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpBatchDescribeEntities{}, middleware.After)
+}
+
 func addOpCancelChangeSetValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCancelChangeSet{}, middleware.After)
 }
@@ -318,9 +342,6 @@ func validateChange(v *types.Change) error {
 			invalidParams.AddNested("EntityTags", err.(smithy.InvalidParamsError))
 		}
 	}
-	if v.Details == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("Details"))
-	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -335,6 +356,41 @@ func validateEntity(v *types.Entity) error {
 	invalidParams := smithy.InvalidParamsError{Context: "Entity"}
 	if v.Type == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Type"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateEntityRequest(v *types.EntityRequest) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "EntityRequest"}
+	if v.Catalog == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Catalog"))
+	}
+	if v.EntityId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EntityId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateEntityRequestList(v []types.EntityRequest) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "EntityRequestList"}
+	for i := range v {
+		if err := validateEntityRequest(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -386,6 +442,25 @@ func validateTagList(v []types.Tag) error {
 	for i := range v {
 		if err := validateTag(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpBatchDescribeEntitiesInput(v *BatchDescribeEntitiesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BatchDescribeEntitiesInput"}
+	if v.EntityRequestList == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EntityRequestList"))
+	} else if v.EntityRequestList != nil {
+		if err := validateEntityRequestList(v.EntityRequestList); err != nil {
+			invalidParams.AddNested("EntityRequestList", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {

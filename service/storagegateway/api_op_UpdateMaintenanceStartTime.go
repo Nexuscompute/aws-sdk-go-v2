@@ -4,20 +4,27 @@ package storagegateway
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
+	"github.com/aws/aws-sdk-go-v2/service/storagegateway/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Updates a gateway's weekly maintenance start time information, including day
-// and time of the week. The maintenance time is the time in your gateway's time
-// zone.
+// Updates a gateway's maintenance window schedule, with settings for monthly or
+// weekly cadence, specific day and time to begin maintenance, and which types of
+// updates to apply. Time configuration uses the gateway's time zone. You can pass
+// values for a complete maintenance schedule, or update policy, or both. Previous
+// values will persist for whichever setting you choose not to modify. If an
+// incomplete or invalid maintenance schedule is passed, the entire request will be
+// rejected with an error and no changes will occur.
+//
+// A complete maintenance schedule must include values for both MinuteOfHour and
+// HourOfDay , and either DayOfMonth or DayOfWeek .
+//
+// We recommend keeping maintenance updates turned on, except in specific use
+// cases where the brief disruptions caused by updating the gateway could
+// critically impact your deployment.
 func (c *Client) UpdateMaintenanceStartTime(ctx context.Context, params *UpdateMaintenanceStartTimeInput, optFns ...func(*Options)) (*UpdateMaintenanceStartTimeOutput, error) {
 	if params == nil {
 		params = &UpdateMaintenanceStartTimeInput{}
@@ -34,39 +41,55 @@ func (c *Client) UpdateMaintenanceStartTime(ctx context.Context, params *UpdateM
 }
 
 // A JSON object containing the following fields:
-//   - UpdateMaintenanceStartTimeInput$DayOfMonth
-//   - UpdateMaintenanceStartTimeInput$DayOfWeek
-//   - UpdateMaintenanceStartTimeInput$HourOfDay
-//   - UpdateMaintenanceStartTimeInput$MinuteOfHour
+//
+// # UpdateMaintenanceStartTimeInput$SoftwareUpdatePreferences
+//
+// # UpdateMaintenanceStartTimeInput$DayOfMonth
+//
+// # UpdateMaintenanceStartTimeInput$DayOfWeek
+//
+// # UpdateMaintenanceStartTimeInput$HourOfDay
+//
+// UpdateMaintenanceStartTimeInput$MinuteOfHour
 type UpdateMaintenanceStartTimeInput struct {
 
-	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation
-	// to return a list of gateways for your account and Amazon Web Services Region.
+	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation to return a
+	// list of gateways for your account and Amazon Web Services Region.
 	//
 	// This member is required.
 	GatewayARN *string
 
+	// The day of the month component of the maintenance start time represented as an
+	// ordinal number from 1 to 28, where 1 represents the first day of the month. It
+	// is not possible to set the maintenance schedule to start on days 29 through 31.
+	DayOfMonth *int32
+
+	// The day of the week component of the maintenance start time week represented as
+	// an ordinal number from 0 to 6, where 0 represents Sunday and 6 represents
+	// Saturday.
+	DayOfWeek *int32
+
 	// The hour component of the maintenance start time represented as hh, where hh is
 	// the hour (00 to 23). The hour of the day is in the time zone of the gateway.
-	//
-	// This member is required.
 	HourOfDay *int32
 
 	// The minute component of the maintenance start time represented as mm, where mm
 	// is the minute (00 to 59). The minute of the hour is in the time zone of the
 	// gateway.
-	//
-	// This member is required.
 	MinuteOfHour *int32
 
-	// The day of the month component of the maintenance start time represented as an
-	// ordinal number from 1 to 28, where 1 represents the first day of the month and
-	// 28 represents the last day of the month.
-	DayOfMonth *int32
-
-	// The day of the week component of the maintenance start time week represented as
-	// an ordinal number from 0 to 6, where 0 represents Sunday and 6 Saturday.
-	DayOfWeek *int32
+	// A set of variables indicating the software update preferences for the gateway.
+	//
+	// Includes AutomaticUpdatePolicy field with the following inputs:
+	//
+	// ALL_VERSIONS - Enables regular gateway maintenance updates.
+	//
+	// EMERGENCY_VERSIONS_ONLY - Disables regular gateway maintenance updates. The
+	// gateway will still receive emergency version updates on rare occasions if
+	// necessary to remedy highly critical security or durability issues. You will be
+	// notified before an emergency version update is applied. These updates are
+	// applied during your gateway's scheduled maintenance window.
+	SoftwareUpdatePreferences *types.SoftwareUpdatePreferences
 
 	noSmithyDocumentSerde
 }
@@ -75,8 +98,8 @@ type UpdateMaintenanceStartTimeInput struct {
 // maintenance start time is updated.
 type UpdateMaintenanceStartTimeOutput struct {
 
-	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation
-	// to return a list of gateways for your account and Amazon Web Services Region.
+	// The Amazon Resource Name (ARN) of the gateway. Use the ListGateways operation to return a
+	// list of gateways for your account and Amazon Web Services Region.
 	GatewayARN *string
 
 	// Metadata pertaining to the operation's result.
@@ -86,6 +109,9 @@ type UpdateMaintenanceStartTimeOutput struct {
 }
 
 func (c *Client) addOperationUpdateMaintenanceStartTimeMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpUpdateMaintenanceStartTime{}, middleware.After)
 	if err != nil {
 		return err
@@ -94,34 +120,38 @@ func (c *Client) addOperationUpdateMaintenanceStartTimeMiddlewares(stack *middle
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateMaintenanceStartTime"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -133,7 +163,13 @@ func (c *Client) addOperationUpdateMaintenanceStartTimeMiddlewares(stack *middle
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateMaintenanceStartTimeResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateMaintenanceStartTimeValidationMiddleware(stack); err != nil {
@@ -142,7 +178,7 @@ func (c *Client) addOperationUpdateMaintenanceStartTimeMiddlewares(stack *middle
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateMaintenanceStartTime(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -154,7 +190,19 @@ func (c *Client) addOperationUpdateMaintenanceStartTimeMiddlewares(stack *middle
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -164,130 +212,6 @@ func newServiceMetadataMiddleware_opUpdateMaintenanceStartTime(region string) *a
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "storagegateway",
 		OperationName: "UpdateMaintenanceStartTime",
 	}
-}
-
-type opUpdateMaintenanceStartTimeResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateMaintenanceStartTimeResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateMaintenanceStartTimeResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "storagegateway"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "storagegateway"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("storagegateway")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateMaintenanceStartTimeResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateMaintenanceStartTimeResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

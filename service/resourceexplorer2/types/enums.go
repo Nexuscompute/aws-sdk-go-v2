@@ -2,6 +2,25 @@
 
 package types
 
+type AWSServiceAccessStatus string
+
+// Enum values for AWSServiceAccessStatus
+const (
+	AWSServiceAccessStatusEnabled  AWSServiceAccessStatus = "ENABLED"
+	AWSServiceAccessStatusDisabled AWSServiceAccessStatus = "DISABLED"
+)
+
+// Values returns all known values for AWSServiceAccessStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AWSServiceAccessStatus) Values() []AWSServiceAccessStatus {
+	return []AWSServiceAccessStatus{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type IndexState string
 
 // Enum values for IndexState
@@ -19,8 +38,9 @@ const (
 )
 
 // Values returns all known values for IndexState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (IndexState) Values() []IndexState {
 	return []IndexState{
 		"CREATING",
@@ -42,8 +62,9 @@ const (
 )
 
 // Values returns all known values for IndexType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (IndexType) Values() []IndexType {
 	return []IndexType{
 		"LOCAL",

@@ -1,3 +1,478 @@
+# v1.124.5 (2025-02-10)
+
+* **Documentation**: Updated the CreateContact API documentation to indicate that it only applies to EMAIL contacts.
+
+# v1.124.4 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.124.3 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.124.2 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.124.1 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.124.0 (2025-01-21)
+
+* **Feature**: Added DeleteContactFlowVersion API and the CAMPAIGN flow type
+
+# v1.123.4 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.123.3 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.123.2 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.123.1 (2025-01-02)
+
+* No change notes available for this release.
+
+# v1.123.0 (2024-12-20)
+
+* **Feature**: This release supports adding NotAttributeCondition and Range to the RoutingCriteria object.
+
+# v1.122.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.122.0 (2024-12-18)
+
+* **Feature**: This release adds support for the UpdateParticipantAuthentication API used for customer authentication within Amazon Connect chats.
+
+# v1.121.0 (2024-12-12)
+
+* **Feature**: Configure holidays and other overrides to hours of operation in advance. During contact handling, Amazon Connect automatically checks for overrides and provides customers with an appropriate flow path. After an override period passes call center automatically reverts to standard hours of operation.
+
+# v1.120.0 (2024-12-10)
+
+* **Feature**: Add support for Push Notifications for Amazon Connect chat. With Push Notifications enabled an alert could be sent to customers about new messages even when they aren't actively using the mobile application.
+
+# v1.119.0 (2024-12-02)
+
+* **Feature**: Adds support for WhatsApp Business messaging, IVR call recording, enabling Contact Lens for existing on-premise contact centers and telephony platforms, and enabling telephony and IVR migration to Amazon Connect independent of their contact center agents.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.118.0 (2024-11-26)
+
+* **Feature**: Enables access to ValueMap and ValueInteger types for SegmentAttributes and fixes deserialization bug for DescribeContactFlow in AmazonConnect Public API
+
+# v1.117.0 (2024-11-22)
+
+* **Feature**: Amazon Connect Service Feature: Add APIs for Amazon Connect Email Channel
+
+# v1.116.0 (2024-11-18)
+
+* **Feature**: Adds CreateContactFlowVersion and ListContactFlowVersions APIs to create and view the versions of a contact flow.
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.115.2 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.115.1 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.115.0 (2024-10-30)
+
+* **Feature**: Updated the public documentation for the UserIdentityInfo object to accurately reflect the character limits for the FirstName and LastName fields, which were previously listed as 1-100 characters.
+
+# v1.114.1 (2024-10-28)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.114.0 (2024-10-23)
+
+* **Feature**: Amazon Connect Service Feature: Add support to start screen sharing for a web calling contact.
+
+# v1.113.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.113.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.113.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.112.0 (2024-10-03)
+
+* **Feature**: Public GetMetricDataV2 Grouping increase from 3 to 4
+
+# v1.111.0 (2024-09-30)
+
+* **Feature**: Amazon Connect introduces StartOutboundChatContact API allowing customers to initiate outbound chat contacts
+
+# v1.110.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.110.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.110.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.110.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.109.1 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.109.0 (2024-09-05)
+
+* **Feature**: Amazon Connect Custom Vocabulary now supports Catalan (Spain), Danish (Denmark), Dutch (Netherlands), Finnish (Finland), Indonesian (Indonesia), Malay (Malaysia), Norwegian Bokmal (Norway), Polish (Poland), Swedish (Sweden), and Tagalog/Filipino (Philippines).
+
+# v1.108.1 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.108.0 (2024-09-03)
+
+* **Feature**: Release ReplicaConfiguration as part of DescribeInstance
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.107.1 (2024-08-15)
+
+* **Dependency Update**: Bump minimum Go version to 1.21.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.107.0 (2024-08-09)
+
+* **Feature**: This release supports adding RoutingCriteria via UpdateContactRoutingData public API.
+
+# v1.106.0 (2024-07-23)
+
+* **Feature**: Added PostContactSummary segment type on ListRealTimeContactAnalysisSegmentsV2 API
+
+# v1.105.0 (2024-07-18)
+
+* **Feature**: Amazon Connect expands search API coverage for additional resources.  Search for hierarchy groups by name, ID, tag, or other criteria (new endpoint). Search for agent statuses by name, ID, tag, or other criteria (new endpoint). Search for users by their assigned proficiencies (enhanced endpoint)
+
+# v1.104.2 (2024-07-10.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.104.1 (2024-07-10)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.104.0 (2024-07-01)
+
+* **Feature**: Authentication profiles are Amazon Connect resources (in gated preview) that allow you to configure authentication settings for users in your contact center. This release adds support for new ListAuthenticationProfiles, DescribeAuthenticationProfile and UpdateAuthenticationProfile APIs.
+
+# v1.103.0 (2024-06-28)
+
+* **Feature**: This release supports showing PreferredAgentRouting step via DescribeContact API.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.102.0 (2024-06-26)
+
+* **Feature**: Support list-of-string endpoint parameter.
+
+# v1.101.1 (2024-06-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.101.0 (2024-06-18)
+
+* **Feature**: Track usage of various AWS SDK features in user-agent string.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.100.3 (2024-06-17)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.100.2 (2024-06-07)
+
+* **Bug Fix**: Add clock skew correction on all service clients
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.100.1 (2024-06-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.100.0 (2024-05-30)
+
+* **Feature**: Adding associatedQueueIds as a SearchCriteria and response field to the SearchRoutingProfiles API
+
+# v1.99.0 (2024-05-29)
+
+* **Feature**: This release includes changes to DescribeContact API's response by including ConnectedToSystemTimestamp, RoutingCriteria, Customer, Campaign, AnsweringMachineDetectionStatus, CustomerVoiceActivity, QualityMetrics, DisconnectDetails, and SegmentAttributes information from a contact in Amazon Connect.
+
+# v1.98.3 (2024-05-23)
+
+* No change notes available for this release.
+
+# v1.98.2 (2024-05-16)
+
+* **Documentation**: Adding Contact Flow metrics to the GetMetricDataV2 API
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.98.1 (2024-05-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.98.0 (2024-05-14)
+
+* **Feature**: Amazon Connect provides enhanced search capabilities for flows & flow modules on the Connect admin website and programmatically using APIs. You can search for flows and flow modules by name, description, type, status, and tags, to filter and identify a specific flow in your Connect instances.
+
+# v1.97.1 (2024-05-08)
+
+* **Bug Fix**: GoDoc improvement
+
+# v1.97.0 (2024-05-03)
+
+* **Feature**: This release adds 5 new APIs for managing attachments: StartAttachedFileUpload, CompleteAttachedFileUpload, GetAttachedFile, BatchGetAttachedFileMetadata, DeleteAttachedFile. These APIs can be used to programmatically upload and download attachments to Connect resources, like cases.
+
+# v1.96.0 (2024-04-10)
+
+* **Feature**: This release adds new Submit Auto Evaluation Action for Amazon Connect Rules.
+
+# v1.95.1 (2024-03-29)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.95.0 (2024-03-20)
+
+* **Feature**: This release updates the *InstanceStorageConfig APIs to support a new ResourceType: REAL_TIME_CONTACT_ANALYSIS_CHAT_SEGMENTS. Use this resource type to enable streaming for real-time analysis of chat contacts and to associate a Kinesis stream where real-time analysis chat segments will be published.
+
+# v1.94.1 (2024-03-18)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.94.0 (2024-03-15)
+
+* **Feature**: This release adds Hierarchy based Access Control fields to Security Profile public APIs and adds support for UserAttributeFilter to SearchUsers API.
+
+# v1.93.0 (2024-03-12)
+
+* **Feature**: This release increases MaxResults limit to 500 in request for SearchUsers, SearchQueues and SearchRoutingProfiles APIs of Amazon Connect.
+
+# v1.92.2 (2024-03-07)
+
+* **Bug Fix**: Remove dependency on go-cmp.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.92.1 (2024-02-23)
+
+* **Bug Fix**: Move all common, SDK-side middleware stack ops into the service client module to prevent cross-module compatibility issues in the future.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.92.0 (2024-02-22)
+
+* **Feature**: Add middleware stack snapshot tests.
+
+# v1.91.2 (2024-02-21)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.91.1 (2024-02-20)
+
+* **Bug Fix**: When sourcing values for a service's `EndpointParameters`, the lack of a configured region (i.e. `options.Region == ""`) will now translate to a `nil` value for `EndpointParameters.Region` instead of a pointer to the empty string `""`. This will result in a much more explicit error when calling an operation instead of an obscure hostname lookup failure.
+
+# v1.91.0 (2024-02-13)
+
+* **Feature**: Bump minimum Go version to 1.20 per our language support policy.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.90.0 (2024-01-18)
+
+* **Feature**: GetMetricDataV2 now supports 3 groupings
+
+# v1.89.0 (2024-01-12)
+
+* **Feature**: Supervisor Barge for Chat is now supported through the MonitorContact API.
+
+# v1.88.1 (2024-01-04)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.88.0 (2024-01-03)
+
+* **Feature**: Amazon Connect, Contact Lens Evaluation API increase evaluation notes max length to 3072.
+
+# v1.87.0 (2023-12-21)
+
+* **Feature**: Adds APIs to manage User Proficiencies and Predefined Attributes. Enhances StartOutboundVoiceContact API input. Introduces SearchContacts API. Enhances DescribeContact API. Adds an API to update Routing Attributes in QueuePriority and QueueTimeAdjustmentSeconds.
+
+# v1.86.0 (2023-12-15)
+
+* **Feature**: Adds relatedContactId field to StartOutboundVoiceContact API input. Introduces PauseContact API and ResumeContact API for Task contacts. Adds pause duration, number of pauses, timestamps for last paused and resumed events to DescribeContact API response. Adds new Rule type and new Rule action.
+
+# v1.85.0 (2023-12-14)
+
+* **Feature**: This release adds support for more granular billing using tags (key:value pairs)
+
+# v1.84.2 (2023-12-08)
+
+* **Bug Fix**: Reinstate presence of default Retryer in functional options, but still respect max attempts set therein.
+
+# v1.84.1 (2023-12-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.84.0 (2023-12-06)
+
+* **Feature**: Releasing Tagging Support for Instance Management APIS
+* **Bug Fix**: Restore pre-refactor auth behavior where all operations could technically be performed anonymously.
+
+# v1.83.2 (2023-12-01)
+
+* **Bug Fix**: Correct wrapping of errors in authentication workflow.
+* **Bug Fix**: Correctly recognize cache-wrapped instances of AnonymousCredentials at client construction.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.83.1 (2023-11-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.83.0 (2023-11-29)
+
+* **Feature**: Expose Options() accessor on service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.82.0 (2023-11-28.2)
+
+* **Feature**: Added support for following capabilities: Amazon Connect's in-app, web, and video calling. Two-way SMS integrations. Contact Lens real-time chat analytics feature. Amazon Connect Analytics Datalake capability. Capability to configure real time chat rules.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.81.2 (2023-11-28)
+
+* **Bug Fix**: Respect setting RetryMaxAttempts in functional options at client construction.
+
+# v1.81.1 (2023-11-20)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.81.0 (2023-11-17)
+
+* **Feature**: This release adds WISDOM_QUICK_RESPONSES as new IntegrationType of Connect IntegrationAssociation resource and bug fixes.
+
+# v1.80.1 (2023-11-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.80.0 (2023-11-14)
+
+* **Feature**: Introducing SegmentAttributes parameter for StartChatContact API
+
+# v1.79.0 (2023-11-09.2)
+
+* **Feature**: This release adds the ability to integrate customer lambda functions with Connect attachments for scanning and updates the ListIntegrationAssociations API to support filtering on IntegrationArn.
+
+# v1.78.1 (2023-11-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.78.0 (2023-11-08)
+
+* **Feature**: This release clarifies in our public documentation that InstanceId is a requirement for SearchUsers API requests.
+
+# v1.77.0 (2023-11-06)
+
+* **Feature**: Added new API that allows Amazon Connect Outbound Campaigns to create contacts in Amazon Connect when ingesting your dial requests.
+
+# v1.76.0 (2023-11-03)
+
+* **Feature**: Amazon Connect Chat introduces Create Persistent Contact Association API, allowing customers to choose when to resume previous conversations from previous chats, eliminating the need to repeat themselves and allowing agents to provide personalized service with access to entire conversation history.
+
+# v1.75.0 (2023-11-02)
+
+* **Feature**: GetMetricDataV2 API: Update to include new metrics PERCENT_NON_TALK_TIME, PERCENT_TALK_TIME, PERCENT_TALK_TIME_AGENT, PERCENT_TALK_TIME_CUSTOMER
+
+# v1.74.0 (2023-11-01)
+
+* **Feature**: Adds support for configured endpoints via environment variables and the AWS shared configuration file.
+* **Feature**: Adds the BatchGetFlowAssociation API which returns flow associations (flow-resource) corresponding to the list of resourceArns supplied in the request. This release also adds IsDefault, LastModifiedRegion and LastModifiedTime fields to the responses of several Describe and List APIs.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.73.0 (2023-10-31)
+
+* **Feature**: **BREAKING CHANGE**: Bump minimum go version to 1.19 per the revised [go version support policy](https://aws.amazon.com/blogs/developer/aws-sdk-for-go-aligns-with-go-release-policy-on-supported-runtimes/).
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.72.0 (2023-10-30)
+
+* **Feature**: This release adds InstanceId field for phone number APIs.
+
+# v1.71.0 (2023-10-24)
+
+* **Feature**: **BREAKFIX**: Correct nullability and default value representation of various input fields across a large number of services. Calling code that references one or more of the affected fields will need to update usage accordingly. See [2162](https://github.com/aws/aws-sdk-go-v2/issues/2162).
+
+# v1.70.0 (2023-10-20)
+
+* **Feature**: This release adds support for updating phone number metadata, such as phone number description.
+
+# v1.69.2 (2023-10-12)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.69.1 (2023-10-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.69.0 (2023-10-03)
+
+* **Feature**: GetMetricDataV2 API: Update to include new metrics CONTACTS_RESOLVED_IN_X , AVG_HOLD_TIME_ALL_CONTACTS , AVG_RESOLUTION_TIME , ABANDONMENT_RATE , AGENT_NON_RESPONSE_WITHOUT_CUSTOMER_ABANDONS with added features: Interval Period, TimeZone, Negate MetricFilters, Extended date time range.
+
+# v1.68.0 (2023-09-26)
+
+* **Feature**: This release updates a set of Amazon Connect APIs that provides the ability to integrate third party applications in the Amazon Connect agent workspace.
+
+# v1.67.0 (2023-09-15)
+
+* **Feature**: New rule type (OnMetricDataUpdate) has been added
+
+# v1.66.0 (2023-09-01)
+
+* **Feature**: Amazon Connect adds the ability to read, create, update, delete, and list view resources, and adds the ability to read, create, delete, and list view versions.
+
+# v1.65.3 (2023-08-21)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.65.2 (2023-08-18)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.65.1 (2023-08-17)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.65.0 (2023-08-10)
+
+* **Feature**: This release adds APIs to provision agents that are global / available in multiple AWS regions and distribute them across these regions by percentage.
+
+# v1.64.1 (2023-08-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.64.0 (2023-08-04)
+
+* **Feature**: Added a new API UpdateRoutingProfileAgentAvailabilityTimer to update agent availability timer of a routing profile.
+
 # v1.63.1 (2023-08-01)
 
 * No change notes available for this release.

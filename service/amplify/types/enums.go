@@ -2,29 +2,72 @@
 
 package types
 
+type CacheConfigType string
+
+// Enum values for CacheConfigType
+const (
+	CacheConfigTypeAmplifyManaged          CacheConfigType = "AMPLIFY_MANAGED"
+	CacheConfigTypeAmplifyManagedNoCookies CacheConfigType = "AMPLIFY_MANAGED_NO_COOKIES"
+)
+
+// Values returns all known values for CacheConfigType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CacheConfigType) Values() []CacheConfigType {
+	return []CacheConfigType{
+		"AMPLIFY_MANAGED",
+		"AMPLIFY_MANAGED_NO_COOKIES",
+	}
+}
+
+type CertificateType string
+
+// Enum values for CertificateType
+const (
+	CertificateTypeAmplifyManaged CertificateType = "AMPLIFY_MANAGED"
+	CertificateTypeCustom         CertificateType = "CUSTOM"
+)
+
+// Values returns all known values for CertificateType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CertificateType) Values() []CertificateType {
+	return []CertificateType{
+		"AMPLIFY_MANAGED",
+		"CUSTOM",
+	}
+}
+
 type DomainStatus string
 
 // Enum values for DomainStatus
 const (
-	DomainStatusPendingVerification   DomainStatus = "PENDING_VERIFICATION"
-	DomainStatusInProgress            DomainStatus = "IN_PROGRESS"
-	DomainStatusAvailable             DomainStatus = "AVAILABLE"
-	DomainStatusPendingDeployment     DomainStatus = "PENDING_DEPLOYMENT"
-	DomainStatusFailed                DomainStatus = "FAILED"
-	DomainStatusCreating              DomainStatus = "CREATING"
-	DomainStatusRequestingCertificate DomainStatus = "REQUESTING_CERTIFICATE"
-	DomainStatusUpdating              DomainStatus = "UPDATING"
+	DomainStatusPendingVerification        DomainStatus = "PENDING_VERIFICATION"
+	DomainStatusInProgress                 DomainStatus = "IN_PROGRESS"
+	DomainStatusAvailable                  DomainStatus = "AVAILABLE"
+	DomainStatusImportingCustomCertificate DomainStatus = "IMPORTING_CUSTOM_CERTIFICATE"
+	DomainStatusPendingDeployment          DomainStatus = "PENDING_DEPLOYMENT"
+	DomainStatusAwaitingAppCname           DomainStatus = "AWAITING_APP_CNAME"
+	DomainStatusFailed                     DomainStatus = "FAILED"
+	DomainStatusCreating                   DomainStatus = "CREATING"
+	DomainStatusRequestingCertificate      DomainStatus = "REQUESTING_CERTIFICATE"
+	DomainStatusUpdating                   DomainStatus = "UPDATING"
 )
 
 // Values returns all known values for DomainStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DomainStatus) Values() []DomainStatus {
 	return []DomainStatus{
 		"PENDING_VERIFICATION",
 		"IN_PROGRESS",
 		"AVAILABLE",
+		"IMPORTING_CUSTOM_CERTIFICATE",
 		"PENDING_DEPLOYMENT",
+		"AWAITING_APP_CNAME",
 		"FAILED",
 		"CREATING",
 		"REQUESTING_CERTIFICATE",
@@ -36,6 +79,7 @@ type JobStatus string
 
 // Enum values for JobStatus
 const (
+	JobStatusCreated      JobStatus = "CREATED"
 	JobStatusPending      JobStatus = "PENDING"
 	JobStatusProvisioning JobStatus = "PROVISIONING"
 	JobStatusRunning      JobStatus = "RUNNING"
@@ -46,10 +90,12 @@ const (
 )
 
 // Values returns all known values for JobStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobStatus) Values() []JobStatus {
 	return []JobStatus{
+		"CREATED",
 		"PENDING",
 		"PROVISIONING",
 		"RUNNING",
@@ -71,8 +117,9 @@ const (
 )
 
 // Values returns all known values for JobType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobType) Values() []JobType {
 	return []JobType{
 		"RELEASE",
@@ -92,8 +139,9 @@ const (
 )
 
 // Values returns all known values for Platform. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Platform) Values() []Platform {
 	return []Platform{
 		"WEB",
@@ -112,13 +160,33 @@ const (
 )
 
 // Values returns all known values for RepositoryCloneMethod. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RepositoryCloneMethod) Values() []RepositoryCloneMethod {
 	return []RepositoryCloneMethod{
 		"SSH",
 		"TOKEN",
 		"SIGV4",
+	}
+}
+
+type SourceUrlType string
+
+// Enum values for SourceUrlType
+const (
+	SourceUrlTypeZip          SourceUrlType = "ZIP"
+	SourceUrlTypeBucketPrefix SourceUrlType = "BUCKET_PREFIX"
+)
+
+// Values returns all known values for SourceUrlType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SourceUrlType) Values() []SourceUrlType {
+	return []SourceUrlType{
+		"ZIP",
+		"BUCKET_PREFIX",
 	}
 }
 
@@ -134,8 +202,9 @@ const (
 )
 
 // Values returns all known values for Stage. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Stage) Values() []Stage {
 	return []Stage{
 		"PRODUCTION",
@@ -143,5 +212,59 @@ func (Stage) Values() []Stage {
 		"DEVELOPMENT",
 		"EXPERIMENTAL",
 		"PULL_REQUEST",
+	}
+}
+
+type UpdateStatus string
+
+// Enum values for UpdateStatus
+const (
+	UpdateStatusRequestingCertificate      UpdateStatus = "REQUESTING_CERTIFICATE"
+	UpdateStatusPendingVerification        UpdateStatus = "PENDING_VERIFICATION"
+	UpdateStatusImportingCustomCertificate UpdateStatus = "IMPORTING_CUSTOM_CERTIFICATE"
+	UpdateStatusPendingDeployment          UpdateStatus = "PENDING_DEPLOYMENT"
+	UpdateStatusAwaitingAppCname           UpdateStatus = "AWAITING_APP_CNAME"
+	UpdateStatusUpdateComplete             UpdateStatus = "UPDATE_COMPLETE"
+	UpdateStatusUpdateFailed               UpdateStatus = "UPDATE_FAILED"
+)
+
+// Values returns all known values for UpdateStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UpdateStatus) Values() []UpdateStatus {
+	return []UpdateStatus{
+		"REQUESTING_CERTIFICATE",
+		"PENDING_VERIFICATION",
+		"IMPORTING_CUSTOM_CERTIFICATE",
+		"PENDING_DEPLOYMENT",
+		"AWAITING_APP_CNAME",
+		"UPDATE_COMPLETE",
+		"UPDATE_FAILED",
+	}
+}
+
+type WafStatus string
+
+// Enum values for WafStatus
+const (
+	WafStatusAssociating          WafStatus = "ASSOCIATING"
+	WafStatusAssociationFailed    WafStatus = "ASSOCIATION_FAILED"
+	WafStatusAssociationSuccess   WafStatus = "ASSOCIATION_SUCCESS"
+	WafStatusDisassociating       WafStatus = "DISASSOCIATING"
+	WafStatusDisassociationFailed WafStatus = "DISASSOCIATION_FAILED"
+)
+
+// Values returns all known values for WafStatus. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WafStatus) Values() []WafStatus {
+	return []WafStatus{
+		"ASSOCIATING",
+		"ASSOCIATION_FAILED",
+		"ASSOCIATION_SUCCESS",
+		"DISASSOCIATING",
+		"DISASSOCIATION_FAILED",
 	}
 }

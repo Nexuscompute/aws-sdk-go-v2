@@ -4,33 +4,33 @@ package cognitoidentityprovider
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/cognitoidentityprovider/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Sets the user pool multi-factor authentication (MFA) configuration. This action
-// might generate an SMS text message. Starting June 1, 2021, US telecom carriers
-// require you to register an origination phone number before you can send SMS
-// messages to US phone numbers. If you use SMS text messages in Amazon Cognito,
-// you must register a phone number with Amazon Pinpoint (https://console.aws.amazon.com/pinpoint/home/)
-// . Amazon Cognito uses the registered number automatically. Otherwise, Amazon
-// Cognito users who must receive SMS messages might not be able to sign up,
-// activate their accounts, or sign in. If you have never used SMS text messages
-// with Amazon Cognito or any other Amazon Web Service, Amazon Simple Notification
-// Service might place your account in the SMS sandbox. In sandbox mode (https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html)
-// , you can send messages only to verified phone numbers. After you test your app
-// while in the sandbox environment, you can move out of the sandbox and into
-// production. For more information, see SMS message settings for Amazon Cognito
-// user pools (https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-identity-pools-sms-userpool-settings.html)
-// in the Amazon Cognito Developer Guide.
+// Sets the user pool multi-factor authentication (MFA) and passkey configuration.
+//
+// This action might generate an SMS text message. Starting June 1, 2021, US
+// telecom carriers require you to register an origination phone number before you
+// can send SMS messages to US phone numbers. If you use SMS text messages in
+// Amazon Cognito, you must register a phone number with [Amazon Pinpoint]. Amazon Cognito uses the
+// registered number automatically. Otherwise, Amazon Cognito users who must
+// receive SMS messages might not be able to sign up, activate their accounts, or
+// sign in.
+//
+// If you have never used SMS text messages with Amazon Cognito or any other
+// Amazon Web Services service, Amazon Simple Notification Service might place your
+// account in the SMS sandbox. In [sandbox mode], you can send messages only to verified phone
+// numbers. After you test your app while in the sandbox environment, you can move
+// out of the sandbox and into production. For more information, see [SMS message settings for Amazon Cognito user pools]in the Amazon
+// Cognito Developer Guide.
+//
+// [SMS message settings for Amazon Cognito user pools]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-sms-settings.html
+// [sandbox mode]: https://docs.aws.amazon.com/sns/latest/dg/sns-sms-sandbox.html
+// [Amazon Pinpoint]: https://console.aws.amazon.com/pinpoint/home/
 func (c *Client) SetUserPoolMfaConfig(ctx context.Context, params *SetUserPoolMfaConfigInput, optFns ...func(*Options)) (*SetUserPoolMfaConfigOutput, error) {
 	if params == nil {
 		params = &SetUserPoolMfaConfigInput{}
@@ -53,39 +53,73 @@ type SetUserPoolMfaConfigInput struct {
 	// This member is required.
 	UserPoolId *string
 
+	// Configures user pool email messages for MFA. Sets the subject and body of the
+	// email message template for MFA messages. To activate this setting, [advanced security features]must be
+	// active in your user pool.
+	//
+	// [advanced security features]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html
+	EmailMfaConfiguration *types.EmailMfaConfigType
+
 	// The MFA configuration. If you set the MfaConfiguration value to ‘ON’, only
-	// users who have set up an MFA factor can sign in. To learn more, see Adding
-	// Multi-Factor Authentication (MFA) to a user pool (https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-mfa.html)
-	// . Valid values include:
+	// users who have set up an MFA factor can sign in. To learn more, see [Adding Multi-Factor Authentication (MFA) to a user pool]. Valid
+	// values include:
+	//
 	//   - OFF MFA won't be used for any users.
+	//
 	//   - ON MFA is required for all users to sign in.
+	//
 	//   - OPTIONAL MFA will be required only for individual users who have an MFA
 	//   factor activated.
+	//
+	// [Adding Multi-Factor Authentication (MFA) to a user pool]: https://docs.aws.amazon.com/cognito/latest/developerguide/user-pool-settings-mfa.html
 	MfaConfiguration types.UserPoolMfaType
 
-	// The SMS text message MFA configuration.
+	// Configures user pool SMS messages for MFA. Sets the message template and the
+	// SMS message sending configuration for Amazon SNS.
 	SmsMfaConfiguration *types.SmsMfaConfigType
 
-	// The software token MFA configuration.
+	// Configures a user pool for time-based one-time password (TOTP) MFA. Enables or
+	// disables TOTP.
 	SoftwareTokenMfaConfiguration *types.SoftwareTokenMfaConfigType
+
+	// The configuration of your user pool for passkey, or webauthN, authentication
+	// and registration. You can set this configuration independent of the MFA
+	// configuration options in this operation.
+	WebAuthnConfiguration *types.WebAuthnConfigurationType
 
 	noSmithyDocumentSerde
 }
 
 type SetUserPoolMfaConfigOutput struct {
 
+	// Shows user pool email message configuration for MFA. Includes the subject and
+	// body of the email message template for MFA messages. To activate this setting, [advanced security features]
+	// must be active in your user pool.
+	//
+	// [advanced security features]: https://docs.aws.amazon.com/cognito/latest/developerguide/cognito-user-pool-settings-advanced-security.html
+	EmailMfaConfiguration *types.EmailMfaConfigType
+
 	// The MFA configuration. Valid values include:
+	//
 	//   - OFF MFA won't be used for any users.
+	//
 	//   - ON MFA is required for all users to sign in.
+	//
 	//   - OPTIONAL MFA will be required only for individual users who have an MFA
 	//   factor enabled.
 	MfaConfiguration types.UserPoolMfaType
 
-	// The SMS text message MFA configuration.
+	// Shows user pool SMS message configuration for MFA. Includes the message
+	// template and the SMS message sending configuration for Amazon SNS.
 	SmsMfaConfiguration *types.SmsMfaConfigType
 
-	// The software token MFA configuration.
+	// Shows user pool configuration for time-based one-time password (TOTP) MFA.
+	// Includes TOTP enabled or disabled state.
 	SoftwareTokenMfaConfiguration *types.SoftwareTokenMfaConfigType
+
+	// The configuration of your user pool for passkey, or webauthN, biometric and
+	// security-key devices.
+	WebAuthnConfiguration *types.WebAuthnConfigurationType
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -94,6 +128,9 @@ type SetUserPoolMfaConfigOutput struct {
 }
 
 func (c *Client) addOperationSetUserPoolMfaConfigMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpSetUserPoolMfaConfig{}, middleware.After)
 	if err != nil {
 		return err
@@ -102,34 +139,38 @@ func (c *Client) addOperationSetUserPoolMfaConfigMiddlewares(stack *middleware.S
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "SetUserPoolMfaConfig"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -141,7 +182,13 @@ func (c *Client) addOperationSetUserPoolMfaConfigMiddlewares(stack *middleware.S
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addSetUserPoolMfaConfigResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpSetUserPoolMfaConfigValidationMiddleware(stack); err != nil {
@@ -150,7 +197,7 @@ func (c *Client) addOperationSetUserPoolMfaConfigMiddlewares(stack *middleware.S
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opSetUserPoolMfaConfig(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -162,7 +209,19 @@ func (c *Client) addOperationSetUserPoolMfaConfigMiddlewares(stack *middleware.S
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -172,130 +231,6 @@ func newServiceMetadataMiddleware_opSetUserPoolMfaConfig(region string) *awsmidd
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "cognito-idp",
 		OperationName: "SetUserPoolMfaConfig",
 	}
-}
-
-type opSetUserPoolMfaConfigResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opSetUserPoolMfaConfigResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opSetUserPoolMfaConfigResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "cognito-idp"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "cognito-idp"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("cognito-idp")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addSetUserPoolMfaConfigResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opSetUserPoolMfaConfigResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

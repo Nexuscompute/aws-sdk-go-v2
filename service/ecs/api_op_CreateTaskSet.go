@@ -4,22 +4,26 @@ package ecs
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/ecs/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Create a task set in the specified cluster and service. This is used when a
-// service uses the EXTERNAL deployment controller type. For more information, see
-// Amazon ECS deployment types (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html)
+// service uses the EXTERNAL deployment controller type. For more information, see [Amazon ECS deployment types]
 // in the Amazon Elastic Container Service Developer Guide.
+//
+// On March 21, 2024, a change was made to resolve the task definition revision
+// before authorization. When a task definition revision is not specified,
+// authorization will occur using the latest revision of a task definition.
+//
+// For information about the maximum number of task sets and other quotas, see [Amazon ECS service quotas] in
+// the Amazon Elastic Container Service Developer Guide.
+//
+// [Amazon ECS deployment types]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/deployment-types.html
+// [Amazon ECS service quotas]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-quotas.html
 func (c *Client) CreateTaskSet(ctx context.Context, params *CreateTaskSetInput, optFns ...func(*Options)) (*CreateTaskSetOutput, error) {
 	if params == nil {
 		params = &CreateTaskSetInput{}
@@ -49,33 +53,42 @@ type CreateTaskSetInput struct {
 	// This member is required.
 	Service *string
 
-	// The task definition for the tasks in the task set to use.
+	// The task definition for the tasks in the task set to use. If a revision isn't
+	// specified, the latest ACTIVE revision is used.
 	//
 	// This member is required.
 	TaskDefinition *string
 
-	// The capacity provider strategy to use for the task set. A capacity provider
-	// strategy consists of one or more capacity providers along with the base and
-	// weight to assign to them. A capacity provider must be associated with the
-	// cluster to be used in a capacity provider strategy. The
-	// PutClusterCapacityProviders API is used to associate a capacity provider with a
-	// cluster. Only capacity providers with an ACTIVE or UPDATING status can be used.
+	// The capacity provider strategy to use for the task set.
+	//
+	// A capacity provider strategy consists of one or more capacity providers along
+	// with the base and weight to assign to them. A capacity provider must be
+	// associated with the cluster to be used in a capacity provider strategy. The [PutClusterCapacityProviders]API
+	// is used to associate a capacity provider with a cluster. Only capacity providers
+	// with an ACTIVE or UPDATING status can be used.
+	//
 	// If a capacityProviderStrategy is specified, the launchType parameter must be
 	// omitted. If no capacityProviderStrategy or launchType is specified, the
-	// defaultCapacityProviderStrategy for the cluster is used. If specifying a
-	// capacity provider that uses an Auto Scaling group, the capacity provider must
-	// already be created. New capacity providers can be created with the
-	// CreateCapacityProvider API operation. To use a Fargate capacity provider,
-	// specify either the FARGATE or FARGATE_SPOT capacity providers. The Fargate
-	// capacity providers are available to all accounts and only need to be associated
-	// with a cluster to be used. The PutClusterCapacityProviders API operation is
-	// used to update the list of available capacity providers for a cluster after the
-	// cluster is created.
+	// defaultCapacityProviderStrategy for the cluster is used.
+	//
+	// If specifying a capacity provider that uses an Auto Scaling group, the capacity
+	// provider must already be created. New capacity providers can be created with the
+	// [CreateCapacityProviderProvider]API operation.
+	//
+	// To use a Fargate capacity provider, specify either the FARGATE or FARGATE_SPOT
+	// capacity providers. The Fargate capacity providers are available to all accounts
+	// and only need to be associated with a cluster to be used.
+	//
+	// The [PutClusterCapacityProviders] API operation is used to update the list of available capacity providers
+	// for a cluster after the cluster is created.
+	//
+	// [PutClusterCapacityProviders]: https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_PutClusterCapacityProviders.html
+	// [CreateCapacityProviderProvider]: https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_CreateCapacityProviderProvider.html
 	CapacityProviderStrategy []types.CapacityProviderStrategyItem
 
-	// The identifier that you provide to ensure the idempotency of the request. It's
-	// case sensitive and must be unique. It can be up to 32 ASCII characters are
-	// allowed.
+	// An identifier that you provide to ensure the idempotency of the request. It
+	// must be unique and is case sensitive. Up to 36 ASCII characters in the range of
+	// 33-126 (inclusive) are allowed.
 	ClientToken *string
 
 	// An optional non-unique tag that identifies this task set in external systems.
@@ -84,10 +97,13 @@ type CreateTaskSetInput struct {
 	// the provided value.
 	ExternalId *string
 
-	// The launch type that new tasks in the task set uses. For more information, see
-	// Amazon ECS launch types (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_types.html)
-	// in the Amazon Elastic Container Service Developer Guide. If a launchType is
-	// specified, the capacityProviderStrategy parameter must be omitted.
+	// The launch type that new tasks in the task set uses. For more information, see [Amazon ECS launch types]
+	// in the Amazon Elastic Container Service Developer Guide.
+	//
+	// If a launchType is specified, the capacityProviderStrategy parameter must be
+	// omitted.
+	//
+	// [Amazon ECS launch types]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/launch_types.html
 	LaunchType types.LaunchType
 
 	// A load balancer object representing the load balancer to use with the task set.
@@ -108,24 +124,33 @@ type CreateTaskSetInput struct {
 	Scale *types.Scale
 
 	// The details of the service discovery registries to assign to this task set. For
-	// more information, see Service discovery (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-discovery.html)
-	// .
+	// more information, see [Service discovery].
+	//
+	// [Service discovery]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/service-discovery.html
 	ServiceRegistries []types.ServiceRegistry
 
 	// The metadata that you apply to the task set to help you categorize and organize
 	// them. Each tag consists of a key and an optional value. You define both. When a
-	// service is deleted, the tags are deleted. The following basic restrictions apply
-	// to tags:
+	// service is deleted, the tags are deleted.
+	//
+	// The following basic restrictions apply to tags:
+	//
 	//   - Maximum number of tags per resource - 50
+	//
 	//   - For each resource, each tag key must be unique, and each tag key can have
 	//   only one value.
+	//
 	//   - Maximum key length - 128 Unicode characters in UTF-8
+	//
 	//   - Maximum value length - 256 Unicode characters in UTF-8
+	//
 	//   - If your tagging schema is used across multiple services and resources,
 	//   remember that other services may have restrictions on allowed characters.
 	//   Generally allowed characters are: letters, numbers, and spaces representable in
 	//   UTF-8, and the following characters: + - = . _ : / @.
+	//
 	//   - Tag keys and values are case-sensitive.
+	//
 	//   - Do not use aws: , AWS: , or any upper or lowercase combination of such as a
 	//   prefix for either keys or values as it is reserved for Amazon Web Services use.
 	//   You cannot edit or delete tag keys or values with this prefix. Tags with this
@@ -150,6 +175,9 @@ type CreateTaskSetOutput struct {
 }
 
 func (c *Client) addOperationCreateTaskSetMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateTaskSet{}, middleware.After)
 	if err != nil {
 		return err
@@ -158,34 +186,38 @@ func (c *Client) addOperationCreateTaskSetMiddlewares(stack *middleware.Stack, o
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateTaskSet"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -197,7 +229,13 @@ func (c *Client) addOperationCreateTaskSetMiddlewares(stack *middleware.Stack, o
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateTaskSetResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateTaskSetValidationMiddleware(stack); err != nil {
@@ -206,7 +244,7 @@ func (c *Client) addOperationCreateTaskSetMiddlewares(stack *middleware.Stack, o
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateTaskSet(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -218,7 +256,19 @@ func (c *Client) addOperationCreateTaskSetMiddlewares(stack *middleware.Stack, o
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -228,130 +278,6 @@ func newServiceMetadataMiddleware_opCreateTaskSet(region string) *awsmiddleware.
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "ecs",
 		OperationName: "CreateTaskSet",
 	}
-}
-
-type opCreateTaskSetResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateTaskSetResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateTaskSetResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "ecs"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "ecs"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("ecs")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateTaskSetResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateTaskSetResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

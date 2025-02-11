@@ -4,14 +4,9 @@ package devopsguru
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/devopsguru/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -36,7 +31,7 @@ func (c *Client) DescribeOrganizationResourceCollectionHealth(ctx context.Contex
 
 type DescribeOrganizationResourceCollectionHealthInput struct {
 
-	// An Amazon Web Services resource collection type. This type specifies how
+	//  An Amazon Web Services resource collection type. This type specifies how
 	// analyzed Amazon Web Services resources are defined. The two types of Amazon Web
 	// Services resource collections supported are Amazon Web Services CloudFormation
 	// stacks and Amazon Web Services resources that contain the same Amazon Web
@@ -86,23 +81,30 @@ type DescribeOrganizationResourceCollectionHealthOutput struct {
 	// resources from different services to indicate that the resources are related.
 	// For example, you can assign the same tag to an Amazon DynamoDB table resource
 	// that you assign to an Lambda function. For more information about using tags,
-	// see the Tagging best practices (https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html)
-	// whitepaper. Each Amazon Web Services tag has two parts.
+	// see the [Tagging best practices]whitepaper.
+	//
+	// Each Amazon Web Services tag has two parts.
+	//
 	//   - A tag key (for example, CostCenter , Environment , Project , or Secret ).
 	//   Tag keys are case-sensitive.
+	//
 	//   - An optional field known as a tag value (for example, 111122223333 ,
 	//   Production , or a team name). Omitting the tag value is the same as using an
 	//   empty string. Like tag keys, tag values are case-sensitive.
-	// Together these are known as key-value pairs. The string used for a key in a tag
-	// that you use to define your resource coverage must begin with the prefix
-	// Devops-guru- . The tag key might be DevOps-Guru-deployment-application or
-	// devops-guru-rds-application . When you create a key, the case of characters in
-	// the key can be whatever you choose. After you create a key, it is
-	// case-sensitive. For example, DevOps Guru works with a key named devops-guru-rds
-	// and a key named DevOps-Guru-RDS , and these act as two different keys. Possible
-	// key/value pairs in your application might be
+	//
+	// Together these are known as key-value pairs.
+	//
+	// The string used for a key in a tag that you use to define your resource
+	// coverage must begin with the prefix Devops-guru- . The tag key might be
+	// DevOps-Guru-deployment-application or devops-guru-rds-application . When you
+	// create a key, the case of characters in the key can be whatever you choose.
+	// After you create a key, it is case-sensitive. For example, DevOps Guru works
+	// with a key named devops-guru-rds and a key named DevOps-Guru-RDS , and these act
+	// as two different keys. Possible key/value pairs in your application might be
 	// Devops-Guru-production-application/RDS or
 	// Devops-Guru-production-application/containers .
+	//
+	// [Tagging best practices]: https://docs.aws.amazon.com/whitepapers/latest/tagging-best-practices/tagging-best-practices.html
 	Tags []types.TagHealth
 
 	// Metadata pertaining to the operation's result.
@@ -112,6 +114,9 @@ type DescribeOrganizationResourceCollectionHealthOutput struct {
 }
 
 func (c *Client) addOperationDescribeOrganizationResourceCollectionHealthMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpDescribeOrganizationResourceCollectionHealth{}, middleware.After)
 	if err != nil {
 		return err
@@ -120,34 +125,38 @@ func (c *Client) addOperationDescribeOrganizationResourceCollectionHealthMiddlew
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeOrganizationResourceCollectionHealth"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -159,7 +168,13 @@ func (c *Client) addOperationDescribeOrganizationResourceCollectionHealthMiddlew
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeOrganizationResourceCollectionHealthResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeOrganizationResourceCollectionHealthValidationMiddleware(stack); err != nil {
@@ -168,7 +183,7 @@ func (c *Client) addOperationDescribeOrganizationResourceCollectionHealthMiddlew
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeOrganizationResourceCollectionHealth(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -180,19 +195,23 @@ func (c *Client) addOperationDescribeOrganizationResourceCollectionHealthMiddlew
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// DescribeOrganizationResourceCollectionHealthAPIClient is a client that
-// implements the DescribeOrganizationResourceCollectionHealth operation.
-type DescribeOrganizationResourceCollectionHealthAPIClient interface {
-	DescribeOrganizationResourceCollectionHealth(context.Context, *DescribeOrganizationResourceCollectionHealthInput, ...func(*Options)) (*DescribeOrganizationResourceCollectionHealthOutput, error)
-}
-
-var _ DescribeOrganizationResourceCollectionHealthAPIClient = (*Client)(nil)
 
 // DescribeOrganizationResourceCollectionHealthPaginatorOptions is the paginator
 // options for DescribeOrganizationResourceCollectionHealth
@@ -248,6 +267,9 @@ func (p *DescribeOrganizationResourceCollectionHealthPaginator) NextPage(ctx con
 	params := *p.params
 	params.NextToken = p.nextToken
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeOrganizationResourceCollectionHealth(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -267,134 +289,18 @@ func (p *DescribeOrganizationResourceCollectionHealthPaginator) NextPage(ctx con
 	return result, nil
 }
 
+// DescribeOrganizationResourceCollectionHealthAPIClient is a client that
+// implements the DescribeOrganizationResourceCollectionHealth operation.
+type DescribeOrganizationResourceCollectionHealthAPIClient interface {
+	DescribeOrganizationResourceCollectionHealth(context.Context, *DescribeOrganizationResourceCollectionHealthInput, ...func(*Options)) (*DescribeOrganizationResourceCollectionHealthOutput, error)
+}
+
+var _ DescribeOrganizationResourceCollectionHealthAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opDescribeOrganizationResourceCollectionHealth(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "devops-guru",
 		OperationName: "DescribeOrganizationResourceCollectionHealth",
 	}
-}
-
-type opDescribeOrganizationResourceCollectionHealthResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeOrganizationResourceCollectionHealthResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeOrganizationResourceCollectionHealthResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "devops-guru"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "devops-guru"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("devops-guru")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeOrganizationResourceCollectionHealthResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeOrganizationResourceCollectionHealthResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

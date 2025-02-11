@@ -4,24 +4,23 @@ package computeoptimizer
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/computeoptimizer/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Exports optimization recommendations for Amazon ECS services on Fargate.
+//	Exports optimization recommendations for Amazon ECS services on Fargate.
+//
 // Recommendations are exported in a CSV file, and its metadata in a JSON file, to
 // an existing Amazon Simple Storage Service (Amazon S3) bucket that you specify.
-// For more information, see Exporting Recommendations (https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html)
-// in the Compute Optimizer User Guide. You can only have one Amazon ECS service
-// export job in progress per Amazon Web Services Region.
+// For more information, see [Exporting Recommendations]in the Compute Optimizer User Guide.
+//
+// You can only have one Amazon ECS service export job in progress per Amazon Web
+// Services Region.
+//
+// [Exporting Recommendations]: https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html
 func (c *Client) ExportECSServiceRecommendations(ctx context.Context, params *ExportECSServiceRecommendationsInput, optFns ...func(*Options)) (*ExportECSServiceRecommendationsOutput, error) {
 	if params == nil {
 		params = &ExportECSServiceRecommendationsInput{}
@@ -40,52 +39,67 @@ func (c *Client) ExportECSServiceRecommendations(ctx context.Context, params *Ex
 type ExportECSServiceRecommendationsInput struct {
 
 	// Describes the destination Amazon Simple Storage Service (Amazon S3) bucket name
-	// and key prefix for a recommendations export job. You must create the destination
-	// Amazon S3 bucket for your recommendations export before you create the export
-	// job. Compute Optimizer does not create the S3 bucket for you. After you create
-	// the S3 bucket, ensure that it has the required permission policy to allow
-	// Compute Optimizer to write the export file to it. If you plan to specify an
-	// object prefix when you create the export job, you must include the object prefix
-	// in the policy that you add to the S3 bucket. For more information, see Amazon
-	// S3 Bucket Policy for Compute Optimizer (https://docs.aws.amazon.com/compute-optimizer/latest/ug/create-s3-bucket-policy-for-compute-optimizer.html)
-	// in the Compute Optimizer User Guide.
+	// and key prefix for a recommendations export job.
+	//
+	// You must create the destination Amazon S3 bucket for your recommendations
+	// export before you create the export job. Compute Optimizer does not create the
+	// S3 bucket for you. After you create the S3 bucket, ensure that it has the
+	// required permission policy to allow Compute Optimizer to write the export file
+	// to it. If you plan to specify an object prefix when you create the export job,
+	// you must include the object prefix in the policy that you add to the S3 bucket.
+	// For more information, see [Amazon S3 Bucket Policy for Compute Optimizer]in the Compute Optimizer User Guide.
+	//
+	// [Amazon S3 Bucket Policy for Compute Optimizer]: https://docs.aws.amazon.com/compute-optimizer/latest/ug/create-s3-bucket-policy-for-compute-optimizer.html
 	//
 	// This member is required.
 	S3DestinationConfig *types.S3DestinationConfig
 
-	// The Amazon Web Services account IDs for the export Amazon ECS service
-	// recommendations. If your account is the management account or the delegated
-	// administrator of an organization, use this parameter to specify the member
-	// account you want to export recommendations to. This parameter can't be specified
-	// together with the include member accounts parameter. The parameters are mutually
-	// exclusive. If this parameter or the include member accounts parameter is
-	// omitted, the recommendations for member accounts aren't included in the export.
+	//  The Amazon Web Services account IDs for the export Amazon ECS service
+	// recommendations.
+	//
+	// If your account is the management account or the delegated administrator of an
+	// organization, use this parameter to specify the member account you want to
+	// export recommendations to.
+	//
+	// This parameter can't be specified together with the include member accounts
+	// parameter. The parameters are mutually exclusive.
+	//
+	// If this parameter or the include member accounts parameter is omitted, the
+	// recommendations for member accounts aren't included in the export.
+	//
 	// You can specify multiple account IDs per request.
 	AccountIds []string
 
 	// The recommendations data to include in the export file. For more information
-	// about the fields that can be exported, see Exported files (https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files)
-	// in the Compute Optimizer User Guide.
+	// about the fields that can be exported, see [Exported files]in the Compute Optimizer User Guide.
+	//
+	// [Exported files]: https://docs.aws.amazon.com/compute-optimizer/latest/ug/exporting-recommendations.html#exported-files
 	FieldsToExport []types.ExportableECSServiceField
 
-	// The format of the export file. The CSV file is the only export file format
-	// currently supported.
+	//  The format of the export file.
+	//
+	// The CSV file is the only export file format currently supported.
 	FileFormat types.FileFormat
 
-	// An array of objects to specify a filter that exports a more specific set of
+	//  An array of objects to specify a filter that exports a more specific set of
 	// Amazon ECS service recommendations.
 	Filters []types.ECSServiceRecommendationFilter
 
 	// If your account is the management account or the delegated administrator of an
 	// organization, this parameter indicates whether to include recommendations for
-	// resources in all member accounts of the organization. The member accounts must
-	// also be opted in to Compute Optimizer, and trusted access for Compute Optimizer
-	// must be enabled in the organization account. For more information, see Compute
-	// Optimizer and Amazon Web Services Organizations trusted access (https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access)
-	// in the Compute Optimizer User Guide. If this parameter is omitted,
-	// recommendations for member accounts of the organization aren't included in the
-	// export file. If this parameter or the account ID parameter is omitted,
-	// recommendations for member accounts aren't included in the export.
+	// resources in all member accounts of the organization.
+	//
+	// The member accounts must also be opted in to Compute Optimizer, and trusted
+	// access for Compute Optimizer must be enabled in the organization account. For
+	// more information, see [Compute Optimizer and Amazon Web Services Organizations trusted access]in the Compute Optimizer User Guide.
+	//
+	// If this parameter is omitted, recommendations for member accounts of the
+	// organization aren't included in the export file.
+	//
+	// If this parameter or the account ID parameter is omitted, recommendations for
+	// member accounts aren't included in the export.
+	//
+	// [Compute Optimizer and Amazon Web Services Organizations trusted access]: https://docs.aws.amazon.com/compute-optimizer/latest/ug/security-iam.html#trusted-service-access
 	IncludeMemberAccounts bool
 
 	noSmithyDocumentSerde
@@ -93,8 +107,9 @@ type ExportECSServiceRecommendationsInput struct {
 
 type ExportECSServiceRecommendationsOutput struct {
 
-	// The identification number of the export job. To view the status of an export
-	// job, use the DescribeRecommendationExportJobs action and specify the job ID.
+	//  The identification number of the export job.
+	//
+	// To view the status of an export job, use the DescribeRecommendationExportJobs action and specify the job ID.
 	JobId *string
 
 	// Describes the destination Amazon Simple Storage Service (Amazon S3) bucket name
@@ -109,6 +124,9 @@ type ExportECSServiceRecommendationsOutput struct {
 }
 
 func (c *Client) addOperationExportECSServiceRecommendationsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson10_serializeOpExportECSServiceRecommendations{}, middleware.After)
 	if err != nil {
 		return err
@@ -117,34 +135,38 @@ func (c *Client) addOperationExportECSServiceRecommendationsMiddlewares(stack *m
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ExportECSServiceRecommendations"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -156,7 +178,13 @@ func (c *Client) addOperationExportECSServiceRecommendationsMiddlewares(stack *m
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addExportECSServiceRecommendationsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpExportECSServiceRecommendationsValidationMiddleware(stack); err != nil {
@@ -165,7 +193,7 @@ func (c *Client) addOperationExportECSServiceRecommendationsMiddlewares(stack *m
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opExportECSServiceRecommendations(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -177,7 +205,19 @@ func (c *Client) addOperationExportECSServiceRecommendationsMiddlewares(stack *m
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -187,130 +227,6 @@ func newServiceMetadataMiddleware_opExportECSServiceRecommendations(region strin
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "compute-optimizer",
 		OperationName: "ExportECSServiceRecommendations",
 	}
-}
-
-type opExportECSServiceRecommendationsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opExportECSServiceRecommendationsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opExportECSServiceRecommendationsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "compute-optimizer"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "compute-optimizer"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("compute-optimizer")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addExportECSServiceRecommendationsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opExportECSServiceRecommendationsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

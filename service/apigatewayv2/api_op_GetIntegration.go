@@ -4,14 +4,9 @@ package apigatewayv2
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/apigatewayv2/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -52,7 +47,7 @@ type GetIntegrationOutput struct {
 	// Specifies whether an integration is managed by API Gateway. If you created an
 	// API using using quick create, the resulting integration is managed by API
 	// Gateway. You can update a managed integration, but you can't delete it.
-	ApiGatewayManaged bool
+	ApiGatewayManaged *bool
 
 	// The ID of the VPC link for a private integration. Supported only for HTTP APIs.
 	ConnectionId *string
@@ -65,12 +60,17 @@ type GetIntegrationOutput struct {
 
 	// Supported only for WebSocket APIs. Specifies how to handle response payload
 	// content type conversions. Supported values are CONVERT_TO_BINARY and
-	// CONVERT_TO_TEXT, with the following behaviors: CONVERT_TO_BINARY: Converts a
-	// response payload from a Base64-encoded string to the corresponding binary blob.
+	// CONVERT_TO_TEXT, with the following behaviors:
+	//
+	// CONVERT_TO_BINARY: Converts a response payload from a Base64-encoded string to
+	// the corresponding binary blob.
+	//
 	// CONVERT_TO_TEXT: Converts a response payload from a binary blob to a
-	// Base64-encoded string. If this property is not defined, the response payload
-	// will be passed through from the integration response to the route response or
-	// method response without modification.
+	// Base64-encoded string.
+	//
+	// If this property is not defined, the response payload will be passed through
+	// from the integration response to the route response or method response without
+	// modification.
 	ContentHandlingStrategy types.ContentHandlingStrategy
 
 	// Specifies the credentials required for the integration, if any. For AWS
@@ -91,48 +91,68 @@ type GetIntegrationOutput struct {
 	IntegrationMethod *string
 
 	// The integration response selection expression for the integration. Supported
-	// only for WebSocket APIs. See Integration Response Selection Expressions (https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-integration-response-selection-expressions)
-	// .
+	// only for WebSocket APIs. See [Integration Response Selection Expressions].
+	//
+	// [Integration Response Selection Expressions]: https://docs.aws.amazon.com/apigateway/latest/developerguide/apigateway-websocket-api-selection-expressions.html#apigateway-websocket-api-integration-response-selection-expressions
 	IntegrationResponseSelectionExpression *string
 
 	// Supported only for HTTP API AWS_PROXY integrations. Specifies the AWS service
-	// action to invoke. To learn more, see Integration subtype reference (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html)
-	// .
+	// action to invoke. To learn more, see [Integration subtype reference].
+	//
+	// [Integration subtype reference]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services-reference.html
 	IntegrationSubtype *string
 
-	// The integration type of an integration. One of the following: AWS: for
-	// integrating the route or method request with an AWS service action, including
-	// the Lambda function-invoking action. With the Lambda function-invoking action,
-	// this is referred to as the Lambda custom integration. With any other AWS service
-	// action, this is known as AWS integration. Supported only for WebSocket APIs.
-	// AWS_PROXY: for integrating the route or method request with a Lambda function or
-	// other AWS service action. This integration is also referred to as a Lambda proxy
-	// integration. HTTP: for integrating the route or method request with an HTTP
-	// endpoint. This integration is also referred to as the HTTP custom integration.
-	// Supported only for WebSocket APIs. HTTP_PROXY: for integrating the route or
-	// method request with an HTTP endpoint, with the client request passed through
-	// as-is. This is also referred to as HTTP proxy integration. MOCK: for integrating
-	// the route or method request with API Gateway as a "loopback" endpoint without
-	// invoking any backend. Supported only for WebSocket APIs.
+	// The integration type of an integration. One of the following:
+	//
+	// AWS: for integrating the route or method request with an AWS service action,
+	// including the Lambda function-invoking action. With the Lambda function-invoking
+	// action, this is referred to as the Lambda custom integration. With any other AWS
+	// service action, this is known as AWS integration. Supported only for WebSocket
+	// APIs.
+	//
+	// AWS_PROXY: for integrating the route or method request with a Lambda function
+	// or other AWS service action. This integration is also referred to as a Lambda
+	// proxy integration.
+	//
+	// HTTP: for integrating the route or method request with an HTTP endpoint. This
+	// integration is also referred to as the HTTP custom integration. Supported only
+	// for WebSocket APIs.
+	//
+	// HTTP_PROXY: for integrating the route or method request with an HTTP endpoint,
+	// with the client request passed through as-is. This is also referred to as HTTP
+	// proxy integration.
+	//
+	// MOCK: for integrating the route or method request with API Gateway as a
+	// "loopback" endpoint without invoking any backend. Supported only for WebSocket
+	// APIs.
 	IntegrationType types.IntegrationType
 
-	// For a Lambda integration, specify the URI of a Lambda function. For an HTTP
-	// integration, specify a fully-qualified URL. For an HTTP API private integration,
-	// specify the ARN of an Application Load Balancer listener, Network Load Balancer
-	// listener, or AWS Cloud Map service. If you specify the ARN of an AWS Cloud Map
-	// service, API Gateway uses DiscoverInstances to identify resources. You can use
-	// query parameters to target specific resources. To learn more, see
-	// DiscoverInstances (https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html)
-	// . For private integrations, all resources must be owned by the same AWS account.
+	// For a Lambda integration, specify the URI of a Lambda function.
+	//
+	// For an HTTP integration, specify a fully-qualified URL.
+	//
+	// For an HTTP API private integration, specify the ARN of an Application Load
+	// Balancer listener, Network Load Balancer listener, or AWS Cloud Map service. If
+	// you specify the ARN of an AWS Cloud Map service, API Gateway uses
+	// DiscoverInstances to identify resources. You can use query parameters to target
+	// specific resources. To learn more, see [DiscoverInstances]. For private integrations, all
+	// resources must be owned by the same AWS account.
+	//
+	// [DiscoverInstances]: https://docs.aws.amazon.com/cloud-map/latest/api/API_DiscoverInstances.html
 	IntegrationUri *string
 
 	// Specifies the pass-through behavior for incoming requests based on the
 	// Content-Type header in the request, and the available mapping templates
 	// specified as the requestTemplates property on the Integration resource. There
 	// are three valid values: WHEN_NO_MATCH, WHEN_NO_TEMPLATES, and NEVER. Supported
-	// only for WebSocket APIs. WHEN_NO_MATCH passes the request body for unmapped
-	// content types through to the integration backend without transformation. NEVER
-	// rejects unmapped content types with an HTTP 415 Unsupported Media Type response.
+	// only for WebSocket APIs.
+	//
+	// WHEN_NO_MATCH passes the request body for unmapped content types through to the
+	// integration backend without transformation.
+	//
+	// NEVER rejects unmapped content types with an HTTP 415 Unsupported Media Type
+	// response.
+	//
 	// WHEN_NO_TEMPLATES allows pass-through when the integration has no content types
 	// mapped to templates. However, if there is at least one content type defined,
 	// unmapped content types will be rejected with the same HTTP 415 Unsupported Media
@@ -140,7 +160,10 @@ type GetIntegrationOutput struct {
 	PassthroughBehavior types.PassthroughBehavior
 
 	// Specifies the format of the payload sent to an integration. Required for HTTP
-	// APIs.
+	// APIs. Supported values for Lambda proxy integrations are 1.0 and 2.0. For all
+	// other integrations, 1.0 is the only supported value. To learn more, see [Working with AWS Lambda proxy integrations for HTTP APIs].
+	//
+	// [Working with AWS Lambda proxy integrations for HTTP APIs]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-lambda.html
 	PayloadFormatVersion *string
 
 	// For WebSocket APIs, a key-value map specifying request parameters that are
@@ -150,19 +173,24 @@ type GetIntegrationOutput struct {
 	// required by the backend. The method request parameter value must match the
 	// pattern of method.request.{location}.{name} , where {location} is querystring,
 	// path, or header; and {name} must be a valid and unique method request parameter
-	// name. For HTTP API integrations with a specified integrationSubtype, request
+	// name.
+	//
+	// For HTTP API integrations with a specified integrationSubtype, request
 	// parameters are a key-value map specifying parameters that are passed to
 	// AWS_PROXY integrations. You can provide static values, or map request data,
 	// stage variables, or context variables that are evaluated at runtime. To learn
-	// more, see Working with AWS service integrations for HTTP APIs (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html)
-	// . For HTTP API integrations, without a specified integrationSubtype request
+	// more, see [Working with AWS service integrations for HTTP APIs].
+	//
+	// For HTTP API integrations, without a specified integrationSubtype request
 	// parameters are a key-value map specifying how to transform HTTP requests before
 	// sending them to backend integrations. The key should follow the pattern
 	// <action>:<header|querystring|path>.<location>. The action can be append,
 	// overwrite or remove. For values, you can provide static values, or map request
 	// data, stage variables, or context variables that are evaluated at runtime. To
-	// learn more, see Transforming API requests and responses (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html)
-	// .
+	// learn more, see [Transforming API requests and responses].
+	//
+	// [Working with AWS service integrations for HTTP APIs]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-develop-integrations-aws-services.html
+	// [Transforming API requests and responses]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html
 	RequestParameters map[string]string
 
 	// Represents a map of Velocity templates that are applied on the request payload
@@ -179,8 +207,9 @@ type GetIntegrationOutput struct {
 	// <action>:<header>.<location> or overwrite.statuscode. The action can be append,
 	// overwrite or remove. The value can be a static value, or map to response data,
 	// stage variables, or context variables that are evaluated at runtime. To learn
-	// more, see Transforming API requests and responses (https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html)
-	// .
+	// more, see [Transforming API requests and responses].
+	//
+	// [Transforming API requests and responses]: https://docs.aws.amazon.com/apigateway/latest/developerguide/http-api-parameter-mapping.html
 	ResponseParameters map[string]map[string]string
 
 	// The template selection expression for the integration. Supported only for
@@ -190,7 +219,7 @@ type GetIntegrationOutput struct {
 	// Custom timeout between 50 and 29,000 milliseconds for WebSocket APIs and
 	// between 50 and 30,000 milliseconds for HTTP APIs. The default timeout is 29
 	// seconds for WebSocket APIs and 30 seconds for HTTP APIs.
-	TimeoutInMillis int32
+	TimeoutInMillis *int32
 
 	// The TLS configuration for a private integration. If you specify a TLS
 	// configuration, private integration traffic uses the HTTPS protocol. Supported
@@ -204,6 +233,9 @@ type GetIntegrationOutput struct {
 }
 
 func (c *Client) addOperationGetIntegrationMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpGetIntegration{}, middleware.After)
 	if err != nil {
 		return err
@@ -212,34 +244,38 @@ func (c *Client) addOperationGetIntegrationMiddlewares(stack *middleware.Stack, 
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GetIntegration"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -251,7 +287,13 @@ func (c *Client) addOperationGetIntegrationMiddlewares(stack *middleware.Stack, 
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGetIntegrationResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetIntegrationValidationMiddleware(stack); err != nil {
@@ -260,7 +302,7 @@ func (c *Client) addOperationGetIntegrationMiddlewares(stack *middleware.Stack, 
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetIntegration(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -272,7 +314,19 @@ func (c *Client) addOperationGetIntegrationMiddlewares(stack *middleware.Stack, 
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -282,130 +336,6 @@ func newServiceMetadataMiddleware_opGetIntegration(region string) *awsmiddleware
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "apigateway",
 		OperationName: "GetIntegration",
 	}
-}
-
-type opGetIntegrationResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opGetIntegrationResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGetIntegrationResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "apigateway"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "apigateway"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("apigateway")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addGetIntegrationResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGetIntegrationResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

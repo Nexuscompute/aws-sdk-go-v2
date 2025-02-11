@@ -21,11 +21,16 @@ type AccountCustomization struct {
 }
 
 // A structure that contains the following account information elements:
+//
 //   - Your Amazon QuickSight account name.
+//
 //   - The edition of Amazon QuickSight that your account is using.
+//
 //   - The notification email address that is associated with the Amazon
 //     QuickSight account.
+//
 //   - The authentication type of the Amazon QuickSight account.
+//
 //   - The status of the Amazon QuickSight account's subscription.
 type AccountInfo struct {
 
@@ -43,6 +48,9 @@ type AccountInfo struct {
 
 	// The edition of your Amazon QuickSight account.
 	Edition Edition
+
+	// The Amazon Resource Name (ARN) for the IAM Identity Center instance.
+	IAMIdentityCenterInstanceArn *string
 
 	// The email address that will be used for Amazon QuickSight to send notifications
 	// regarding your Amazon Web Services account or Amazon QuickSight subscription.
@@ -72,8 +80,9 @@ type AccountSettings struct {
 
 	// A Boolean value that indicates whether public sharing is turned on for an
 	// Amazon QuickSight account. For more information about turning on public sharing,
-	// see UpdatePublicSharingSettings (https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdatePublicSharingSettings.html)
-	// .
+	// see [UpdatePublicSharingSettings].
+	//
+	// [UpdatePublicSharingSettings]: https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdatePublicSharingSettings.html
 	PublicSharingEnabled bool
 
 	// A boolean value that determines whether or not an Amazon QuickSight account can
@@ -106,8 +115,27 @@ type AdHocFilteringOption struct {
 	noSmithyDocumentSerde
 }
 
-// An aggregation function aggregates values from a dimension or measure. This is
-// a union type structure. For this structure to be valid, only one of the
+// The definition of an Agg function.
+type AggFunction struct {
+
+	// The aggregation of an Agg function.
+	Aggregation AggType
+
+	// The aggregation parameters for an Agg function.
+	AggregationFunctionParameters map[string]string
+
+	// The period of an Agg function.
+	Period TopicTimeGranularity
+
+	// The period field for an Agg function.
+	PeriodField *string
+
+	noSmithyDocumentSerde
+}
+
+// An aggregation function aggregates values from a dimension or measure.
+//
+// This is a union type structure. For this structure to be valid, only one of the
 // attributes can be defined.
 type AggregationFunction struct {
 
@@ -115,19 +143,37 @@ type AggregationFunction struct {
 	AttributeAggregationFunction *AttributeAggregationFunction
 
 	// Aggregation for categorical values.
+	//
 	//   - COUNT : Aggregate by the total number of values, including duplicates.
+	//
 	//   - DISTINCT_COUNT : Aggregate by the total number of distinct values.
 	CategoricalAggregationFunction CategoricalAggregationFunction
 
 	// Aggregation for date values.
+	//
 	//   - COUNT : Aggregate by the total number of values, including duplicates.
+	//
 	//   - DISTINCT_COUNT : Aggregate by the total number of distinct values.
+	//
 	//   - MIN : Select the smallest date value.
+	//
 	//   - MAX : Select the largest date value.
 	DateAggregationFunction DateAggregationFunction
 
 	// Aggregation for numerical values.
 	NumericalAggregationFunction *NumericalAggregationFunction
+
+	noSmithyDocumentSerde
+}
+
+// The definition of an AggregationPartitionBy .
+type AggregationPartitionBy struct {
+
+	// The field Name for an AggregationPartitionBy .
+	FieldName *string
+
+	// The TimeGranularity for an AggregationPartitionBy .
+	TimeGranularity TimeGranularity
 
 	noSmithyDocumentSerde
 }
@@ -141,7 +187,9 @@ type AggregationSortConfiguration struct {
 	Column *ColumnIdentifier
 
 	// The sort direction of values.
+	//
 	//   - ASC : Sort in ascending order.
+	//
 	//   - DESC : Sort in descending order.
 	//
 	// This member is required.
@@ -150,6 +198,16 @@ type AggregationSortConfiguration struct {
 	// The function that aggregates the values in Column .
 	AggregationFunction *AggregationFunction
 
+	noSmithyDocumentSerde
+}
+
+// An empty object that represents that the AllSheets option is the chosen value
+// for the FilterScopeConfiguration parameter. This structure applies the filter
+// to all visuals on all sheets of an Analysis, Dashboard, or Template.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
+type AllSheetsFilterScopeConfiguration struct {
 	noSmithyDocumentSerde
 }
 
@@ -238,24 +296,39 @@ type AnalysisDefinition struct {
 	// An array of calculated field definitions for the analysis.
 	CalculatedFields []CalculatedField
 
-	// An array of analysis-level column configurations. Column configurations can be
+	//  An array of analysis-level column configurations. Column configurations can be
 	// used to set default formatting for a column to be used throughout an analysis.
 	ColumnConfigurations []ColumnConfiguration
 
-	// Filter definitions for an analysis. For more information, see Filtering Data in
-	// Amazon QuickSight (https://docs.aws.amazon.com/quicksight/latest/user/adding-a-filter.html)
-	// in the Amazon QuickSight User Guide.
+	// Filter definitions for an analysis.
+	//
+	// For more information, see [Filtering Data in Amazon QuickSight] in the Amazon QuickSight User Guide.
+	//
+	// [Filtering Data in Amazon QuickSight]: https://docs.aws.amazon.com/quicksight/latest/user/adding-a-filter.html
 	FilterGroups []FilterGroup
 
-	// An array of parameter declarations for an analysis. Parameters are named
-	// variables that can transfer a value for use by an action or an object. For more
-	// information, see Parameters in Amazon QuickSight (https://docs.aws.amazon.com/quicksight/latest/user/parameters-in-quicksight.html)
-	// in the Amazon QuickSight User Guide.
+	// An array of option definitions for an analysis.
+	Options *AssetOptions
+
+	// An array of parameter declarations for an analysis.
+	//
+	// Parameters are named variables that can transfer a value for use by an action
+	// or an object.
+	//
+	// For more information, see [Parameters in Amazon QuickSight] in the Amazon QuickSight User Guide.
+	//
+	// [Parameters in Amazon QuickSight]: https://docs.aws.amazon.com/quicksight/latest/user/parameters-in-quicksight.html
 	ParameterDeclarations []ParameterDeclaration
+
+	// A structure that describes the query execution options.
+	QueryExecutionOptions *QueryExecutionOptions
 
 	// An array of sheet definitions for an analysis. Each SheetDefinition provides
 	// detailed information about a sheet within this analysis.
 	Sheets []SheetDefinition
+
+	// The static files for the definition.
+	StaticFiles []StaticFile
 
 	noSmithyDocumentSerde
 }
@@ -279,37 +352,48 @@ type AnalysisError struct {
 type AnalysisSearchFilter struct {
 
 	// The name of the value that you want to use as a filter, for example "Name":
-	// "QUICKSIGHT_OWNER" . Valid values are defined as follows:
+	// "QUICKSIGHT_OWNER" .
+	//
+	// Valid values are defined as follows:
+	//
 	//   - QUICKSIGHT_VIEWER_OR_OWNER : Provide an ARN of a user or group, and any
 	//   analyses with that ARN listed as one of the analysis' owners or viewers are
 	//   returned. Implicit permissions from folders or groups are considered.
+	//
 	//   - QUICKSIGHT_OWNER : Provide an ARN of a user or group, and any analyses with
 	//   that ARN listed as one of the owners of the analyses are returned. Implicit
 	//   permissions from folders or groups are considered.
+	//
 	//   - DIRECT_QUICKSIGHT_SOLE_OWNER : Provide an ARN of a user or group, and any
 	//   analyses with that ARN listed as the only owner of the analysis are returned.
 	//   Implicit permissions from folders or groups are not considered.
+	//
 	//   - DIRECT_QUICKSIGHT_OWNER : Provide an ARN of a user or group, and any
 	//   analyses with that ARN listed as one of the owners of the analyses are returned.
 	//   Implicit permissions from folders or groups are not considered.
+	//
 	//   - DIRECT_QUICKSIGHT_VIEWER_OR_OWNER : Provide an ARN of a user or group, and
 	//   any analyses with that ARN listed as one of the owners or viewers of the
 	//   analyses are returned. Implicit permissions from folders or groups are not
 	//   considered.
+	//
 	//   - ANALYSIS_NAME : Any analyses whose names have a substring match to this
 	//   value will be returned.
 	Name AnalysisFilterAttribute
 
 	// The comparison operator that you want to use as a filter, for example
 	// "Operator": "StringEquals" . Valid values are "StringEquals" and "StringLike" .
+	//
 	// If you set the operator value to "StringEquals" , you need to provide an
 	// ownership related filter in the "NAME" field and the arn of the user or group
 	// whose folders you want to search in the "Value" field. For example,
 	// "Name":"DIRECT_QUICKSIGHT_OWNER", "Operator": "StringEquals", "Value":
-	// "arn:aws:quicksight:us-east-1:1:user/default/UserName1" . If you set the value
-	// to "StringLike" , you need to provide the name of the folders you are searching
-	// for. For example, "Name":"ANALYSIS_NAME", "Operator": "StringLike", "Value":
-	// "Test" . The "StringLike" operator only supports the NAME value ANALYSIS_NAME .
+	// "arn:aws:quicksight:us-east-1:1:user/default/UserName1" .
+	//
+	// If you set the value to "StringLike" , you need to provide the name of the
+	// folders you are searching for. For example, "Name":"ANALYSIS_NAME", "Operator":
+	// "StringLike", "Value": "Test" . The "StringLike" operator only supports the NAME
+	// value ANALYSIS_NAME .
 	Operator FilterOperator
 
 	// The value of the named item, in this case QUICKSIGHT_USER , that you want to use
@@ -370,10 +454,26 @@ type AnalysisSummary struct {
 	noSmithyDocumentSerde
 }
 
+// The definition of the Anchor.
+type Anchor struct {
+
+	// The AnchorType for the Anchor.
+	AnchorType AnchorType
+
+	// The offset of the Anchor.
+	Offset int32
+
+	// The TimeGranularity of the Anchor.
+	TimeGranularity TimeGranularity
+
+	noSmithyDocumentSerde
+}
+
 // The date configuration of the filter.
 type AnchorDateConfiguration struct {
 
 	// The options for the date configuration. Choose one of the options below:
+	//
 	//   - NOW
 	AnchorOption AnchorOption
 
@@ -388,12 +488,32 @@ type AnonymousUserDashboardEmbeddingConfiguration struct {
 
 	// The dashboard ID for the dashboard that you want the user to see first. This ID
 	// is included in the output URL. When the URL in response is accessed, Amazon
-	// QuickSight renders this dashboard. The Amazon Resource Name (ARN) of this
-	// dashboard must be included in the AuthorizedResourceArns parameter. Otherwise,
-	// the request will fail with InvalidParameterValueException .
+	// QuickSight renders this dashboard.
+	//
+	// The Amazon Resource Name (ARN) of this dashboard must be included in the
+	// AuthorizedResourceArns parameter. Otherwise, the request will fail with
+	// InvalidParameterValueException .
 	//
 	// This member is required.
 	InitialDashboardId *string
+
+	// A list of all disabled features of a specified anonymous dashboard.
+	DisabledFeatures []AnonymousUserDashboardEmbeddingConfigurationDisabledFeature
+
+	// A list of all enabled features of a specified anonymous dashboard.
+	EnabledFeatures []AnonymousUserDashboardEmbeddingConfigurationEnabledFeature
+
+	// The feature configuration for an embedded dashboard.
+	FeatureConfigurations *AnonymousUserDashboardFeatureConfigurations
+
+	noSmithyDocumentSerde
+}
+
+// The feature configuration for an embedded dashboard.
+type AnonymousUserDashboardFeatureConfigurations struct {
+
+	// The shared view settings of an embedded dashboard.
+	SharedView *SharedViewConfigurations
 
 	noSmithyDocumentSerde
 }
@@ -404,9 +524,11 @@ type AnonymousUserDashboardVisualEmbeddingConfiguration struct {
 
 	// The visual ID for the visual that you want the user to see. This ID is included
 	// in the output URL. When the URL in response is accessed, Amazon QuickSight
-	// renders this visual. The Amazon Resource Name (ARN) of the dashboard that the
-	// visual belongs to must be included in the AuthorizedResourceArns parameter.
-	// Otherwise, the request will fail with InvalidParameterValueException .
+	// renders this visual.
+	//
+	// The Amazon Resource Name (ARN) of the dashboard that the visual belongs to must
+	// be included in the AuthorizedResourceArns parameter. Otherwise, the request
+	// will fail with InvalidParameterValueException .
 	//
 	// This member is required.
 	InitialDashboardVisualId *DashboardVisualId
@@ -424,8 +546,29 @@ type AnonymousUserEmbeddingExperienceConfiguration struct {
 	// The type of embedding experience. In this case, Amazon QuickSight visuals.
 	DashboardVisual *AnonymousUserDashboardVisualEmbeddingConfiguration
 
+	// The Generative Q&A experience that you want to use for anonymous user embedding.
+	GenerativeQnA *AnonymousUserGenerativeQnAEmbeddingConfiguration
+
 	// The Q search bar that you want to use for anonymous user embedding.
 	QSearchBar *AnonymousUserQSearchBarEmbeddingConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The settings that you want to use for the Generative Q&A experience.
+type AnonymousUserGenerativeQnAEmbeddingConfiguration struct {
+
+	// The Amazon QuickSight Q topic ID of the new reader experience topic that you
+	// want the anonymous user to see first. This ID is included in the output URL.
+	// When the URL in response is accessed, Amazon QuickSight renders the Generative
+	// Q&A experience with this new reader experience topic pre selected.
+	//
+	// The Amazon Resource Name (ARN) of this Q new reader experience topic must be
+	// included in the AuthorizedResourceArns parameter. Otherwise, the request fails
+	// with an InvalidParameterValueException error.
+	//
+	// This member is required.
+	InitialTopicId *string
 
 	noSmithyDocumentSerde
 }
@@ -433,12 +576,14 @@ type AnonymousUserEmbeddingExperienceConfiguration struct {
 // The settings that you want to use with the Q search bar.
 type AnonymousUserQSearchBarEmbeddingConfiguration struct {
 
-	// The QuickSight Q topic ID of the topic that you want the anonymous user to see
-	// first. This ID is included in the output URL. When the URL in response is
-	// accessed, Amazon QuickSight renders the Q search bar with this topic
-	// pre-selected. The Amazon Resource Name (ARN) of this Q topic must be included in
-	// the AuthorizedResourceArns parameter. Otherwise, the request will fail with
-	// InvalidParameterValueException .
+	// The Amazon QuickSight Q topic ID of the legacy topic that you want the
+	// anonymous user to see first. This ID is included in the output URL. When the URL
+	// in response is accessed, Amazon QuickSight renders the Q search bar with this
+	// legacy topic pre-selected.
+	//
+	// The Amazon Resource Name (ARN) of this Q legacy topic must be included in the
+	// AuthorizedResourceArns parameter. Otherwise, the request fails with an
+	// InvalidParameterValueException error.
 	//
 	// This member is required.
 	InitialTopicId *string
@@ -456,6 +601,18 @@ type AnonymousUserSnapshotJobResult struct {
 	// are stored. If the job fails, the objects contain information about the error
 	// that caused the job to fail.
 	FileGroups []SnapshotJobResultFileGroup
+
+	noSmithyDocumentSerde
+}
+
+// The application theme.
+type ApplicationTheme struct {
+
+	// The color palette.
+	BrandColorPalette *BrandColorPalette
+
+	// The element style.
+	BrandElementStyle *BrandElementStyle
 
 	noSmithyDocumentSerde
 }
@@ -525,6 +682,10 @@ type AssetBundleCloudFormationOverridePropertyConfiguration struct {
 	// parameterized in the returned CloudFormation template.
 	DataSources []AssetBundleExportJobDataSourceOverrideProperties
 
+	// An optional list of structures that controls how Folder resources are
+	// parameterized in the returned CloudFormation template.
+	Folders []AssetBundleExportJobFolderOverrideProperties
+
 	// An optional list of structures that control how RefreshSchedule resources are
 	// parameterized in the returned CloudFormation template.
 	RefreshSchedules []AssetBundleExportJobRefreshScheduleOverrideProperties
@@ -548,15 +709,17 @@ type AssetBundleCloudFormationOverridePropertyConfiguration struct {
 // CloudFormation template.
 type AssetBundleExportJobAnalysisOverrideProperties struct {
 
+	// The ARN of the specific Analysis resource whose override properties are
+	// configured in this structure.
+	//
+	// This member is required.
+	Arn *string
+
 	// A list of Analysis resource properties to generate variables for in the
 	// returned CloudFormation template.
 	//
 	// This member is required.
 	Properties []AssetBundleExportJobAnalysisPropertyToOverride
-
-	// The ARN of the specific Analysis resource whose override properties are
-	// configured in this structure.
-	Arn *string
 
 	noSmithyDocumentSerde
 }
@@ -565,15 +728,17 @@ type AssetBundleExportJobAnalysisOverrideProperties struct {
 // CloudFormation template.
 type AssetBundleExportJobDashboardOverrideProperties struct {
 
+	// The ARN of the specific Dashboard resource whose override properties are
+	// configured in this structure.
+	//
+	// This member is required.
+	Arn *string
+
 	// A list of Dashboard resource properties to generate variables for in the
 	// returned CloudFormation template.
 	//
 	// This member is required.
 	Properties []AssetBundleExportJobDashboardPropertyToOverride
-
-	// The ARN of the specific Dashboard resource whose override properties are
-	// configured in this structure.
-	Arn *string
 
 	noSmithyDocumentSerde
 }
@@ -582,15 +747,17 @@ type AssetBundleExportJobDashboardOverrideProperties struct {
 // CloudFormation template.
 type AssetBundleExportJobDataSetOverrideProperties struct {
 
+	// The ARN of the specific DataSet resource whose override properties are
+	// configured in this structure.
+	//
+	// This member is required.
+	Arn *string
+
 	// A list of DataSet resource properties to generate variables for in the returned
 	// CloudFormation template.
 	//
 	// This member is required.
 	Properties []AssetBundleExportJobDataSetPropertyToOverride
-
-	// The ARN of the specific DataSet resource whose override properties are
-	// configured in this structure.
-	Arn *string
 
 	noSmithyDocumentSerde
 }
@@ -599,15 +766,17 @@ type AssetBundleExportJobDataSetOverrideProperties struct {
 // CloudFormation template.
 type AssetBundleExportJobDataSourceOverrideProperties struct {
 
+	// The ARN of the specific DataSource resource whose override properties are
+	// configured in this structure.
+	//
+	// This member is required.
+	Arn *string
+
 	// A list of DataSource resource properties to generate variables for in the
 	// returned CloudFormation template.
 	//
 	// This member is required.
 	Properties []AssetBundleExportJobDataSourcePropertyToOverride
-
-	// The ARN of the specific DataSource resource whose override properties are
-	// configured in this structure.
-	Arn *string
 
 	noSmithyDocumentSerde
 }
@@ -627,19 +796,40 @@ type AssetBundleExportJobError struct {
 	noSmithyDocumentSerde
 }
 
+// Controls how a specific Folder resource is parameterized in the returned
+// CloudFormation template.
+type AssetBundleExportJobFolderOverrideProperties struct {
+
+	// The ARN of the specific Folder resource whose override properties are
+	// configured in this structure.
+	//
+	// This member is required.
+	Arn *string
+
+	// A list of Folder resource properties to generate variables for in the returned
+	// CloudFormation template.
+	//
+	// This member is required.
+	Properties []AssetBundleExportJobFolderPropertyToOverride
+
+	noSmithyDocumentSerde
+}
+
 // Controls how a specific RefreshSchedule resource is parameterized in the
 // returned CloudFormation template.
 type AssetBundleExportJobRefreshScheduleOverrideProperties struct {
+
+	// The ARN of the specific RefreshSchedule resource whose override properties are
+	// configured in this structure.
+	//
+	// This member is required.
+	Arn *string
 
 	// A list of RefreshSchedule resource properties to generate variables for in the
 	// returned CloudFormation template.
 	//
 	// This member is required.
 	Properties []AssetBundleExportJobRefreshSchedulePropertyToOverride
-
-	// The ARN of the specific RefreshSchedule resource whose override properties are
-	// configured in this structure.
-	Arn *string
 
 	noSmithyDocumentSerde
 }
@@ -675,6 +865,14 @@ type AssetBundleExportJobSummary struct {
 	// asset bundle.
 	IncludeAllDependencies bool
 
+	// The flag that determines the inclusion of permissions associated with each
+	// resource ARN.
+	IncludePermissions bool
+
+	// The flag that determines the inclusion of tags associated with each resource
+	// ARN.
+	IncludeTags bool
+
 	// The current status of the export job.
 	JobStatus AssetBundleExportJobStatus
 
@@ -685,15 +883,29 @@ type AssetBundleExportJobSummary struct {
 // CloudFormation template.
 type AssetBundleExportJobThemeOverrideProperties struct {
 
+	// The ARN of the specific Theme resource whose override properties are configured
+	// in this structure.
+	//
+	// This member is required.
+	Arn *string
+
 	// A list of Theme resource properties to generate variables for in the returned
 	// CloudFormation template.
 	//
 	// This member is required.
 	Properties []AssetBundleExportJobThemePropertyToOverride
 
-	// The ARN of the specific Theme resource whose override properties are configured
-	// in this structure.
-	Arn *string
+	noSmithyDocumentSerde
+}
+
+// The option to relax the validation that is required to export each asset. When
+// StrictModeForAllResource is set to false , validation is skipped for specific UI
+// errors.
+type AssetBundleExportJobValidationStrategy struct {
+
+	// A Boolean value that indicates whether to export resources under strict or
+	// lenient mode.
+	StrictModeForAllResources bool
 
 	noSmithyDocumentSerde
 }
@@ -702,15 +914,29 @@ type AssetBundleExportJobThemeOverrideProperties struct {
 // outputted CloudFormation template.
 type AssetBundleExportJobVPCConnectionOverrideProperties struct {
 
+	// The ARN of the specific VPCConnection resource whose override properties are
+	// configured in this structure.
+	//
+	// This member is required.
+	Arn *string
+
 	// A list of VPCConnection resource properties to generate variables for in the
 	// returned CloudFormation template.
 	//
 	// This member is required.
 	Properties []AssetBundleExportJobVPCConnectionPropertyToOverride
 
-	// The ARN of the specific VPCConnection resource whose override properties are
-	// configured in this structure.
+	noSmithyDocumentSerde
+}
+
+// Describes a warning that occurred during an Asset Bundle export job.
+type AssetBundleExportJobWarning struct {
+
+	// The ARN of the resource whose processing caused a warning.
 	Arn *string
+
+	// A description of the warning.
+	Message *string
 
 	noSmithyDocumentSerde
 }
@@ -729,6 +955,41 @@ type AssetBundleImportJobAnalysisOverrideParameters struct {
 	noSmithyDocumentSerde
 }
 
+// An object that contains a list of permissions to be applied to a list of
+// analysis IDs.
+type AssetBundleImportJobAnalysisOverridePermissions struct {
+
+	// A list of analysis IDs that you want to apply overrides to. You can use * to
+	// override all analyses in this asset bundle.
+	//
+	// This member is required.
+	AnalysisIds []string
+
+	// A list of permissions for the analyses that you want to apply overrides to.
+	//
+	// This member is required.
+	Permissions *AssetBundleResourcePermissions
+
+	noSmithyDocumentSerde
+}
+
+// An object that contains a list of tags to be assigned to a list of analysis IDs.
+type AssetBundleImportJobAnalysisOverrideTags struct {
+
+	// A list of analysis IDs that you want to apply overrides to. You can use * to
+	// override all analyses in this asset bundle.
+	//
+	// This member is required.
+	AnalysisIds []string
+
+	// A list of tags for the analyses that you want to apply overrides to.
+	//
+	// This member is required.
+	Tags []Tag
+
+	noSmithyDocumentSerde
+}
+
 // The override parameters for a single dashboard that is being imported.
 type AssetBundleImportJobDashboardOverrideParameters struct {
 
@@ -743,6 +1004,44 @@ type AssetBundleImportJobDashboardOverrideParameters struct {
 	noSmithyDocumentSerde
 }
 
+// An object that contains a list of permissions to be applied to a list of
+// dashboard IDs.
+type AssetBundleImportJobDashboardOverridePermissions struct {
+
+	// A list of dashboard IDs that you want to apply overrides to. You can use * to
+	// override all dashboards in this asset bundle.
+	//
+	// This member is required.
+	DashboardIds []string
+
+	// A structure that contains the link sharing configurations that you want to
+	// apply overrides to.
+	LinkSharingConfiguration *AssetBundleResourceLinkSharingConfiguration
+
+	// A list of permissions for the dashboards that you want to apply overrides to.
+	Permissions *AssetBundleResourcePermissions
+
+	noSmithyDocumentSerde
+}
+
+// An object that contains a list of tags to be assigned to a list of dashboard
+// IDs.
+type AssetBundleImportJobDashboardOverrideTags struct {
+
+	// A list of dashboard IDs that you want to apply overrides to. You can use * to
+	// override all dashboards in this asset bundle.
+	//
+	// This member is required.
+	DashboardIds []string
+
+	// A list of tags for the dashboards that you want to apply overrides to.
+	//
+	// This member is required.
+	Tags []Tag
+
+	noSmithyDocumentSerde
+}
+
 // The override parameters for a single dataset that is being imported.
 type AssetBundleImportJobDataSetOverrideParameters struct {
 
@@ -753,6 +1052,41 @@ type AssetBundleImportJobDataSetOverrideParameters struct {
 
 	// A new name for the dataset.
 	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// An object that contains a list of permissions to be applied to a list of
+// dataset IDs.
+type AssetBundleImportJobDataSetOverridePermissions struct {
+
+	// A list of dataset IDs that you want to apply overrides to. You can use * to
+	// override all datasets in this asset bundle.
+	//
+	// This member is required.
+	DataSetIds []string
+
+	// A list of permissions for the datasets that you want to apply overrides to.
+	//
+	// This member is required.
+	Permissions *AssetBundleResourcePermissions
+
+	noSmithyDocumentSerde
+}
+
+// An object that contains a list of tags to be assigned to a list of dataset IDs.
+type AssetBundleImportJobDataSetOverrideTags struct {
+
+	// A list of dataset IDs that you want to apply overrides to. You can use * to
+	// override all datasets in this asset bundle.
+	//
+	// This member is required.
+	DataSetIds []string
+
+	// A list of tags for the datasets that you want to apply overrides to.
+	//
+	// This member is required.
+	Tags []Tag
 
 	noSmithyDocumentSerde
 }
@@ -819,6 +1153,42 @@ type AssetBundleImportJobDataSourceOverrideParameters struct {
 	noSmithyDocumentSerde
 }
 
+// An object that contains a list of permissions to be applied to a list of data
+// source IDs.
+type AssetBundleImportJobDataSourceOverridePermissions struct {
+
+	// A list of data source IDs that you want to apply overrides to. You can use * to
+	// override all data sources in this asset bundle.
+	//
+	// This member is required.
+	DataSourceIds []string
+
+	// A list of permissions for the data source that you want to apply overrides to.
+	//
+	// This member is required.
+	Permissions *AssetBundleResourcePermissions
+
+	noSmithyDocumentSerde
+}
+
+// An object that contains a list of tags to be assigned to a list of data source
+// IDs.
+type AssetBundleImportJobDataSourceOverrideTags struct {
+
+	// A list of data source IDs that you want to apply overrides to. You can use * to
+	// override all data sources in this asset bundle.
+	//
+	// This member is required.
+	DataSourceIds []string
+
+	// A list of tags for the data source that you want to apply overrides to.
+	//
+	// This member is required.
+	Tags []Tag
+
+	noSmithyDocumentSerde
+}
+
 // Describes an error that occurred within an Asset Bundle import execution.
 type AssetBundleImportJobError struct {
 
@@ -830,6 +1200,58 @@ type AssetBundleImportJobError struct {
 
 	// The specific error type or the error that occurred.
 	Type *string
+
+	noSmithyDocumentSerde
+}
+
+// The override parameters for a single folder that is being imported.
+type AssetBundleImportJobFolderOverrideParameters struct {
+
+	// The ID of the folder that you want to apply overrides to.
+	//
+	// This member is required.
+	FolderId *string
+
+	// A new name for the folder.
+	Name *string
+
+	// A new parent folder arn. This change can only be applied if the import creates
+	// a brand new folder. Existing folders cannot be moved.
+	ParentFolderArn *string
+
+	noSmithyDocumentSerde
+}
+
+// An object that contains a list of permissions to be applied to a list of folder
+// IDs.
+type AssetBundleImportJobFolderOverridePermissions struct {
+
+	// A list of folder IDs that you want to apply overrides to. You can use * to
+	// override all folders in this asset bundle.
+	//
+	// This member is required.
+	FolderIds []string
+
+	// A structure that contains the permissions for the resource that you want to
+	// override in an asset bundle import job.
+	Permissions *AssetBundleResourcePermissions
+
+	noSmithyDocumentSerde
+}
+
+// An object that contains a list of tags to be assigned to a list of folder IDs.
+type AssetBundleImportJobFolderOverrideTags struct {
+
+	// A list of folder IDs that you want to apply overrides to. You can use * to
+	// override all folders in this asset bundle.
+	//
+	// This member is required.
+	FolderIds []string
+
+	// A list of tags for the folders that you want to apply overrides to.
+	//
+	// This member is required.
+	Tags []Tag
 
 	noSmithyDocumentSerde
 }
@@ -850,9 +1272,13 @@ type AssetBundleImportJobOverrideParameters struct {
 	// bundle that is imported.
 	DataSets []AssetBundleImportJobDataSetOverrideParameters
 
-	// A list of overrides for any DataSource resources that are present in the asset
+	//  A list of overrides for any DataSource resources that are present in the asset
 	// bundle that is imported.
 	DataSources []AssetBundleImportJobDataSourceOverrideParameters
+
+	// A list of overrides for any Folder resources that are present in the asset
+	// bundle that is imported.
+	Folders []AssetBundleImportJobFolderOverrideParameters
 
 	// A list of overrides for any RefreshSchedule resources that are present in the
 	// asset bundle that is imported.
@@ -869,6 +1295,82 @@ type AssetBundleImportJobOverrideParameters struct {
 	// A list of overrides for any VPCConnection resources that are present in the
 	// asset bundle that is imported.
 	VPCConnections []AssetBundleImportJobVPCConnectionOverrideParameters
+
+	noSmithyDocumentSerde
+}
+
+// A structure that contains the override permission configurations that modify
+// the permissions for specified resources before the resource is imported.
+type AssetBundleImportJobOverridePermissions struct {
+
+	// A list of permissions overrides for any Analysis resources that are present in
+	// the asset bundle that is imported.
+	Analyses []AssetBundleImportJobAnalysisOverridePermissions
+
+	// A list of permissions overrides for any Dashboard resources that are present in
+	// the asset bundle that is imported.
+	Dashboards []AssetBundleImportJobDashboardOverridePermissions
+
+	// A list of permissions overrides for any DataSet resources that are present in
+	// the asset bundle that is imported.
+	DataSets []AssetBundleImportJobDataSetOverridePermissions
+
+	// A list of permissions overrides for any DataSource resources that are present
+	// in the asset bundle that is imported.
+	DataSources []AssetBundleImportJobDataSourceOverridePermissions
+
+	// A list of permissions for the folders that you want to apply overrides to.
+	Folders []AssetBundleImportJobFolderOverridePermissions
+
+	// A list of permissions overrides for any Theme resources that are present in the
+	// asset bundle that is imported.
+	Themes []AssetBundleImportJobThemeOverridePermissions
+
+	noSmithyDocumentSerde
+}
+
+// A structure that contains the override tag configuration that modify the tags
+// that are assigned to specified resources before the resource is imported.
+type AssetBundleImportJobOverrideTags struct {
+
+	// A list of tag overrides for any Analysis resources that are present in the
+	// asset bundle that is imported.
+	Analyses []AssetBundleImportJobAnalysisOverrideTags
+
+	// A list of tag overrides for any Dashboard resources that are present in the
+	// asset bundle that is imported.
+	Dashboards []AssetBundleImportJobDashboardOverrideTags
+
+	// A list of tag overrides for any DataSet resources that are present in the asset
+	// bundle that is imported.
+	DataSets []AssetBundleImportJobDataSetOverrideTags
+
+	// A list of tag overrides for any DataSource resources that are present in the
+	// asset bundle that is imported.
+	DataSources []AssetBundleImportJobDataSourceOverrideTags
+
+	// A list of tag overrides for any Folder resources that are present in the asset
+	// bundle that is imported.
+	Folders []AssetBundleImportJobFolderOverrideTags
+
+	// A list of tag overrides for any Theme resources that are present in the asset
+	// bundle that is imported.
+	Themes []AssetBundleImportJobThemeOverrideTags
+
+	// A list of tag overrides for any VPCConnection resources that are present in the
+	// asset bundle that is imported.
+	VPCConnections []AssetBundleImportJobVPCConnectionOverrideTags
+
+	noSmithyDocumentSerde
+}
+
+// An optional parameter that overrides the validation strategy for all analyses
+// and dashboards before the resource is imported.
+type AssetBundleImportJobOverrideValidationStrategy struct {
+
+	// A Boolean value that indicates whether to import all analyses and dashboards
+	// under strict or lenient mode.
+	StrictModeForAllResources bool
 
 	noSmithyDocumentSerde
 }
@@ -944,6 +1446,41 @@ type AssetBundleImportJobThemeOverrideParameters struct {
 	noSmithyDocumentSerde
 }
 
+// An object that contains a list of permissions to be applied to a list of theme
+// IDs.
+type AssetBundleImportJobThemeOverridePermissions struct {
+
+	// A list of permissions for the themes that you want to apply overrides to.
+	//
+	// This member is required.
+	Permissions *AssetBundleResourcePermissions
+
+	// A list of theme IDs that you want to apply overrides to. You can use * to
+	// override all themes in this asset bundle.
+	//
+	// This member is required.
+	ThemeIds []string
+
+	noSmithyDocumentSerde
+}
+
+// An object that contains a list of tags to be assigned to a list of theme IDs.
+type AssetBundleImportJobThemeOverrideTags struct {
+
+	// A list of tags for the themes that you want to apply overrides to.
+	//
+	// This member is required.
+	Tags []Tag
+
+	// A list of theme IDs that you want to apply overrides to. You can use * to
+	// override all themes in this asset bundle.
+	//
+	// This member is required.
+	ThemeIds []string
+
+	noSmithyDocumentSerde
+}
+
 // The override parameters for a single VPC connection that is imported.
 type AssetBundleImportJobVPCConnectionOverrideParameters struct {
 
@@ -974,21 +1511,54 @@ type AssetBundleImportJobVPCConnectionOverrideParameters struct {
 	noSmithyDocumentSerde
 }
 
+// An object that contains a list of tags to be assigned to a list of VPC
+// connection IDs.
+type AssetBundleImportJobVPCConnectionOverrideTags struct {
+
+	// A list of tags for the VPC connections that you want to apply overrides to.
+	//
+	// This member is required.
+	Tags []Tag
+
+	// A list of VPC connection IDs that you want to apply overrides to. You can use *
+	// to override all VPC connections in this asset bundle.
+	//
+	// This member is required.
+	VPCConnectionIds []string
+
+	noSmithyDocumentSerde
+}
+
+// Describes a warning that occurred during an Asset Bundle import job.
+type AssetBundleImportJobWarning struct {
+
+	// The ARN of the resource that the warning occurred for.
+	Arn *string
+
+	// A description of the warning that occurred during an Asset Bundle import job.
+	Message *string
+
+	noSmithyDocumentSerde
+}
+
 // The source of the asset bundle zip file that contains the data that you want to
 // import. The file must be in QUICKSIGHT_JSON format.
 type AssetBundleImportSource struct {
 
 	// The bytes of the base64 encoded asset bundle import zip file. This file can't
-	// exceed 20 MB. If you are calling the API operations from the Amazon Web Services
-	// SDK for Java, JavaScript, Python, or PHP, the SDK encodes base64 automatically
-	// to allow the direct setting of the zip file's bytes. If you are using an SDK for
-	// a different language or receiving related errors, try to base64 encode your
-	// data.
+	// exceed 20 MB. If the size of the file that you want to upload is more than 20
+	// MB, add the file to your Amazon S3 bucket and use S3Uri of the file for this
+	// operation.
+	//
+	// If you are calling the API operations from the Amazon Web Services SDK for
+	// Java, JavaScript, Python, or PHP, the SDK encodes base64 automatically to allow
+	// the direct setting of the zip file's bytes. If you are using an SDK for a
+	// different language or receiving related errors, try to base64 encode your data.
 	Body []byte
 
 	// The Amazon S3 URI for an asset bundle import file that exists in an Amazon S3
 	// bucket that the caller has read access to. The file must be a zip format file
-	// and can't exceed 20 MB.
+	// and can't exceed 1 GB.
 	S3Uri *string
 
 	noSmithyDocumentSerde
@@ -1007,6 +1577,46 @@ type AssetBundleImportSourceDescription struct {
 
 	// The Amazon S3 URI that you provided at the start of the import job.
 	S3Uri *string
+
+	noSmithyDocumentSerde
+}
+
+// A structure that contains the configuration of a shared link to an Amazon
+// QuickSight dashboard.
+type AssetBundleResourceLinkSharingConfiguration struct {
+
+	// A list of link sharing permissions for the dashboards that you want to apply
+	// overrides to.
+	Permissions *AssetBundleResourcePermissions
+
+	noSmithyDocumentSerde
+}
+
+// A structure that contains the permissions for the resource that you want to
+// override in an asset bundle import job.
+type AssetBundleResourcePermissions struct {
+
+	// A list of IAM actions to grant permissions on.
+	//
+	// This member is required.
+	Actions []string
+
+	// A list of principals to grant permissions on.
+	//
+	// This member is required.
+	Principals []string
+
+	noSmithyDocumentSerde
+}
+
+// An array of analysis level configurations.
+type AssetOptions struct {
+
+	// Determines the timezone for the analysis.
+	Timezone *string
+
+	// Determines the week start day for an analysis.
+	WeekStart DayOfTheWeek
 
 	noSmithyDocumentSerde
 }
@@ -1032,6 +1642,7 @@ type AthenaParameters struct {
 type AttributeAggregationFunction struct {
 
 	// The built-in aggregation functions for attributes.
+	//
 	//   - UNIQUE_VALUE : Returns the unique value for a field, aggregated by the
 	//   dimension fields.
 	SimpleAttributeAggregation SimpleAttributeAggregationFunction
@@ -1060,7 +1671,7 @@ type AuroraParameters struct {
 	// Port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -1081,7 +1692,20 @@ type AuroraPostgreSqlParameters struct {
 	// The port that Amazon Aurora PostgreSQL is listening on.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
+
+	noSmithyDocumentSerde
+}
+
+// The authorized targets that are associated with a service.
+type AuthorizedTargetsByService struct {
+
+	// Aist of authorized targets that are represented by IAM Identity Center
+	// application ARNs.
+	AuthorizedTargets []string
+
+	// The name of the Amazon Web Services service.
+	Service ServiceType
 
 	noSmithyDocumentSerde
 }
@@ -1097,8 +1721,10 @@ type AwsIotAnalyticsParameters struct {
 	noSmithyDocumentSerde
 }
 
-// The data options for an axis. This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The data options for an axis.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type AxisDataOptions struct {
 
 	// The options for an axis with a date field.
@@ -1152,9 +1778,10 @@ type AxisDisplayOptions struct {
 	noSmithyDocumentSerde
 }
 
-// The range setup of a numeric axis display range. This is a union type
-// structure. For this structure to be valid, only one of the attributes can be
-// defined.
+// The range setup of a numeric axis display range.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type AxisDisplayRange struct {
 
 	// The data-driven setup of an axis display range.
@@ -1198,8 +1825,10 @@ type AxisLabelReferenceOptions struct {
 	noSmithyDocumentSerde
 }
 
-// The liner axis scale setup. This is a union type structure. For this structure
-// to be valid, only one of the attributes can be defined.
+// The liner axis scale setup.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type AxisLinearScale struct {
 
 	// The step count setup of a linear axis.
@@ -1220,9 +1849,10 @@ type AxisLogarithmicScale struct {
 	noSmithyDocumentSerde
 }
 
-// The scale setup options for a numeric axis display. This is a union type
-// structure. For this structure to be valid, only one of the attributes can be
-// defined.
+// The scale setup options for a numeric axis display.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type AxisScale struct {
 
 	// The linear axis scale setup.
@@ -1292,14 +1922,19 @@ type BarChartConfiguration struct {
 	// The field wells of the visual.
 	FieldWells *BarChartFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The legend display setup of the visual.
 	Legend *LegendOptions
 
 	// The orientation of the bars in a bar chart visual. There are two valid values
 	// in this structure:
+	//
 	//   - HORIZONTAL : Used for charts that have horizontal bars. Visuals that use
 	//   this value are horizontal bar charts, horizontal stacked bar charts, and
 	//   horizontal stacked 100% bar charts.
+	//
 	//   - VERTICAL : Used for charts that have vertical bars. Visuals that use this
 	//   value are vertical bar charts, vertical stacked bar charts, and vertical stacked
 	//   100% bar charts.
@@ -1331,8 +1966,10 @@ type BarChartConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The field wells of a BarChartVisual . This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The field wells of a BarChartVisual .
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type BarChartFieldWells struct {
 
 	// The aggregated field wells of a bar chart.
@@ -1365,18 +2002,26 @@ type BarChartSortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A bar chart. The BarChartVisual structure describes a visual that is a member
-// of the bar chart family. The following charts can be described using this
-// structure:
+// A bar chart.
+//
+// The BarChartVisual structure describes a visual that is a member of the bar
+// chart family. The following charts can be described using this structure:
+//
 //   - Horizontal bar chart
+//
 //   - Vertical bar chart
+//
 //   - Horizontal stacked bar chart
+//
 //   - Vertical stacked bar chart
+//
 //   - Horizontal stacked 100% bar chart
+//
 //   - Vertical stacked 100% bar chart
 //
-// For more information, see Using bar charts (https://docs.aws.amazon.com/quicksight/latest/user/bar-charts.html)
-// in the Amazon QuickSight User Guide.
+// For more information, see [Using bar charts] in the Amazon QuickSight User Guide.
+//
+// [Using bar charts]: https://docs.aws.amazon.com/quicksight/latest/user/bar-charts.html
 type BarChartVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -1400,6 +2045,23 @@ type BarChartVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
+
+	noSmithyDocumentSerde
+}
+
+// The parameters that are required to connect to a Google BigQuery data source.
+type BigQueryParameters struct {
+
+	// The Google Cloud Platform project ID where your datasource was created.
+	//
+	// This member is required.
+	ProjectId *string
+
+	// The storage location where you create a Google BigQuery data source.
+	DataSetRegion *string
 
 	noSmithyDocumentSerde
 }
@@ -1441,6 +2103,10 @@ type BodySectionConfiguration struct {
 	// The configuration of a page break for a section.
 	PageBreakConfiguration *SectionPageBreakConfiguration
 
+	// Describes the configurations that are required to declare a section as
+	// repeating.
+	RepeatConfiguration *BodySectionRepeatConfiguration
+
 	// The style options of a body section.
 	Style *SectionStyle
 
@@ -1452,6 +2118,87 @@ type BodySectionContent struct {
 
 	// The layout configuration of a body section.
 	Layout *SectionLayoutConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Describes the Category dataset column and constraints for the dynamic values
+// used to repeat the contents of a section.
+type BodySectionDynamicCategoryDimensionConfiguration struct {
+
+	// A column of a data set.
+	//
+	// This member is required.
+	Column *ColumnIdentifier
+
+	// Number of values to use from the column for repetition.
+	Limit *int32
+
+	// Sort criteria on the column values that you use for repetition.
+	SortByMetrics []ColumnSort
+
+	noSmithyDocumentSerde
+}
+
+// Describes the Numeric dataset column and constraints for the dynamic values
+// used to repeat the contents of a section.
+type BodySectionDynamicNumericDimensionConfiguration struct {
+
+	// A column of a data set.
+	//
+	// This member is required.
+	Column *ColumnIdentifier
+
+	// Number of values to use from the column for repetition.
+	Limit *int32
+
+	// Sort criteria on the column values that you use for repetition.
+	SortByMetrics []ColumnSort
+
+	noSmithyDocumentSerde
+}
+
+// Describes the configurations that are required to declare a section as
+// repeating.
+type BodySectionRepeatConfiguration struct {
+
+	// List of BodySectionRepeatDimensionConfiguration values that describe the
+	// dataset column and constraints for the column used to repeat the contents of a
+	// section.
+	DimensionConfigurations []BodySectionRepeatDimensionConfiguration
+
+	// List of visuals to exclude from repetition in repeating sections. The visuals
+	// will render identically, and ignore the repeating configurations in all
+	// repeating instances.
+	NonRepeatingVisuals []string
+
+	// Page break configuration to apply for each repeating instance.
+	PageBreakConfiguration *BodySectionRepeatPageBreakConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Describes the dataset column and constraints for the dynamic values used to
+// repeat the contents of a section. The dataset column is either Category or
+// Numeric column configuration
+type BodySectionRepeatDimensionConfiguration struct {
+
+	// Describes the Category dataset column and constraints around the dynamic values
+	// that will be used in repeating the section contents.
+	DynamicCategoryDimensionConfiguration *BodySectionDynamicCategoryDimensionConfiguration
+
+	// Describes the Numeric dataset column and constraints around the dynamic values
+	// used to repeat the contents of a section.
+	DynamicNumericDimensionConfiguration *BodySectionDynamicNumericDimensionConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The page break configuration to apply for each repeating instance.
+type BodySectionRepeatPageBreakConfiguration struct {
+
+	// The configuration of a page break after a section.
+	After *SectionAfterPageBreak
 
 	noSmithyDocumentSerde
 }
@@ -1508,6 +2255,9 @@ type BoxPlotChartConfiguration struct {
 	// The field wells of the visual.
 	FieldWells *BoxPlotFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The options for the legend setup of a visual.
 	Legend *LegendOptions
 
@@ -1534,8 +2284,10 @@ type BoxPlotChartConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The field wells of a BoxPlotVisual . This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The field wells of a BoxPlotVisual .
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type BoxPlotFieldWells struct {
 
 	// The aggregated field wells of a box plot.
@@ -1580,8 +2332,11 @@ type BoxPlotStyleOptions struct {
 	noSmithyDocumentSerde
 }
 
-// A box plot. For more information, see Using box plots (https://docs.aws.amazon.com/quicksight/latest/user/box-plots.html)
-// in the Amazon QuickSight User Guide.
+// A box plot.
+//
+// For more information, see [Using box plots] in the Amazon QuickSight User Guide.
+//
+// [Using box plots]: https://docs.aws.amazon.com/quicksight/latest/user/box-plots.html
 type BoxPlotVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -1605,6 +2360,133 @@ type BoxPlotVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
+
+	noSmithyDocumentSerde
+}
+
+// The color palette.
+type BrandColorPalette struct {
+
+	// The color that is used for accent elements.
+	Accent *Palette
+
+	// The color that is used for danger elements.
+	Danger *Palette
+
+	// The color that is used for dimension elements.
+	Dimension *Palette
+
+	// The color that is used for info elements.
+	Info *Palette
+
+	// The color that is used for measure elements.
+	Measure *Palette
+
+	// The primary color.
+	Primary *Palette
+
+	// The secondary color.
+	Secondary *Palette
+
+	// The color that is used for success elements.
+	Success *Palette
+
+	// The color that is used for warning elements.
+	Warning *Palette
+
+	noSmithyDocumentSerde
+}
+
+// The definition of the brand.
+type BrandDefinition struct {
+
+	// The name of the brand.
+	//
+	// This member is required.
+	BrandName *string
+
+	// The application theme of the brand.
+	ApplicationTheme *ApplicationTheme
+
+	// The description of the brand.
+	Description *string
+
+	// The logo configuration of the brand.
+	LogoConfiguration *LogoConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The details of the brand.
+type BrandDetail struct {
+
+	// The ID of the Amazon QuickSight brand.
+	//
+	// This member is required.
+	BrandId *string
+
+	// The Amazon Resource Name (ARN) of the brand.
+	Arn *string
+
+	// The status of the brand.
+	BrandStatus BrandStatus
+
+	// The time that the brand was created.
+	CreatedTime *time.Time
+
+	// A list of errors that occurred during the most recent brand operation.
+	Errors []string
+
+	// The last time the brand was updated.
+	LastUpdatedTime *time.Time
+
+	// The logo details.
+	Logo *Logo
+
+	// The ID of the version.
+	VersionId *string
+
+	// The status of the version.
+	VersionStatus BrandVersionStatus
+
+	noSmithyDocumentSerde
+}
+
+// The element style.
+type BrandElementStyle struct {
+
+	// The navigation bar style.
+	NavbarStyle *NavbarStyle
+
+	noSmithyDocumentSerde
+}
+
+// A summary of the brand.
+type BrandSummary struct {
+
+	// The Amazon Resource Name (ARN) of the brand.
+	Arn *string
+
+	// The ID of the Amazon QuickSight brand.
+	BrandId *string
+
+	// The name of the brand.
+	BrandName *string
+
+	// The status of the brand.
+	BrandStatus BrandStatus
+
+	// The time that the brand was created.
+	CreatedTime *time.Time
+
+	// The description of the brand.
+	Description *string
+
+	// The time when the brand was last updated.
+	LastUpdatedTime *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -1669,6 +2551,63 @@ type CalculatedMeasureField struct {
 	noSmithyDocumentSerde
 }
 
+// A set of actions that correspond to Amazon QuickSight permissions.
+type Capabilities struct {
+
+	// The ability to add or run anomaly detection.
+	AddOrRunAnomalyDetectionForAnalyses CapabilityState
+
+	// The ability to create and update email reports.
+	CreateAndUpdateDashboardEmailReports CapabilityState
+
+	// The ability to create and update data sources.
+	CreateAndUpdateDataSources CapabilityState
+
+	// The ability to create and update datasets.
+	CreateAndUpdateDatasets CapabilityState
+
+	// The ability to export to Create and Update themes.
+	CreateAndUpdateThemes CapabilityState
+
+	// The ability to create and update threshold alerts.
+	CreateAndUpdateThresholdAlerts CapabilityState
+
+	// The ability to create a SPICE dataset.
+	CreateSPICEDataset CapabilityState
+
+	// The ability to create shared folders.
+	CreateSharedFolders CapabilityState
+
+	// The ability to export to CSV files.
+	ExportToCsv CapabilityState
+
+	// The ability to export to Excel files.
+	ExportToExcel CapabilityState
+
+	// The ability to rename shared folders.
+	RenameSharedFolders CapabilityState
+
+	// The ability to share analyses.
+	ShareAnalyses CapabilityState
+
+	// The ability to share dashboards.
+	ShareDashboards CapabilityState
+
+	// The ability to share data sources.
+	ShareDataSources CapabilityState
+
+	// The ability to share datasets.
+	ShareDatasets CapabilityState
+
+	// The ability to subscribe to email reports.
+	SubscribeDashboardEmailReports CapabilityState
+
+	// The ability to view account SPICE capacity.
+	ViewAccountSPICECapacity CapabilityState
+
+	noSmithyDocumentSerde
+}
+
 // The values that are displayed in a control can be configured to only show
 // values that are valid based on what's selected in other controls.
 type CascadingControlConfiguration struct {
@@ -1709,6 +2648,10 @@ type CastColumnTypeOperation struct {
 	// When casting a column from string to datetime type, you can supply a string in
 	// a format supported by Amazon QuickSight to denote the source data format.
 	Format *string
+
+	// The sub data type of the new column. Sub types are only available for decimal
+	// columns that are part of a SPICE dataset.
+	SubType ColumnDataSubType
 
 	noSmithyDocumentSerde
 }
@@ -1757,7 +2700,7 @@ type CategoricalMeasureField struct {
 	noSmithyDocumentSerde
 }
 
-// The numeric equality type drill down filter.
+// The category drill down filter.
 type CategoryDrillDownFilter struct {
 
 	// A list of the string inputs that are the values of the category drill down
@@ -1774,9 +2717,11 @@ type CategoryDrillDownFilter struct {
 	noSmithyDocumentSerde
 }
 
-// A CategoryFilter filters text values. For more information, see Adding text
-// filters (https://docs.aws.amazon.com/quicksight/latest/user/add-a-text-filter-data-prep.html)
-// in the Amazon QuickSight User Guide.
+// A CategoryFilter filters text values.
+//
+// For more information, see [Adding text filters] in the Amazon QuickSight User Guide.
+//
+// [Adding text filters]: https://docs.aws.amazon.com/quicksight/latest/user/add-a-text-filter-data-prep.html
 type CategoryFilter struct {
 
 	// The column that the filter is applied to.
@@ -1795,11 +2740,17 @@ type CategoryFilter struct {
 	// This member is required.
 	FilterId *string
 
+	// The default configurations for the associated controls. This applies only for
+	// filters that are scoped to multiple sheets.
+	DefaultFilterControlConfiguration *DefaultFilterControlConfiguration
+
 	noSmithyDocumentSerde
 }
 
-// The configuration for a CategoryFilter . This is a union type structure. For
-// this structure to be valid, only one of the attributes can be defined.
+// The configuration for a CategoryFilter .
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type CategoryFilterConfiguration struct {
 
 	// A custom filter that filters based on a single value. This filter can be
@@ -1813,6 +2764,28 @@ type CategoryFilterConfiguration struct {
 	// A list of filter configurations. In the Amazon QuickSight console, this filter
 	// type is called a filter list.
 	FilterListConfiguration *FilterListConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// A CategoryInnerFilter filters text values for the NestedFilter .
+type CategoryInnerFilter struct {
+
+	// A column of a data set.
+	//
+	// This member is required.
+	Column *ColumnIdentifier
+
+	// The configuration for a CategoryFilter .
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
+	// attributes can be defined.
+	//
+	// This member is required.
+	Configuration *CategoryFilterConfiguration
+
+	// The default configuration for all dependent controls of the filter.
+	DefaultFilterControlConfiguration *DefaultFilterControlConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -1838,9 +2811,10 @@ type ChartAxisLabelOptions struct {
 	// The visibility configuration of the sort icon on a chart's axis label.
 	SortIconVisibility Visibility
 
-	// The visibility of an axis label on a chart. Choose one of the following
-	// options:
+	// The visibility of an axis label on a chart. Choose one of the following options:
+	//
 	//   - VISIBLE : Shows the axis.
+	//
 	//   - HIDDEN : Hides the axis.
 	Visibility Visibility
 
@@ -1870,6 +2844,18 @@ type CollectiveConstant struct {
 
 	// A list of values for the collective constant.
 	ValueList []string
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a CollectiveConstantEntry .
+type CollectiveConstantEntry struct {
+
+	// The ConstantType of a CollectiveConstantEntry .
+	ConstantType ConstantType
+
+	// The value of a CollectiveConstantEntry .
+	Value *string
 
 	noSmithyDocumentSerde
 }
@@ -2047,9 +3033,10 @@ type ColumnSort struct {
 	noSmithyDocumentSerde
 }
 
-// A tag for a column in a TagColumnOperation (https://docs.aws.amazon.com/quicksight/latest/APIReference/API_TagColumnOperation.html)
-// structure. This is a variant type structure. For this structure to be valid,
-// only one of the attributes can be non-null.
+// A tag for a column in a [TagColumnOperation] structure. This is a variant type structure. For this
+// structure to be valid, only one of the attributes can be non-null.
+//
+// [TagColumnOperation]: https://docs.aws.amazon.com/quicksight/latest/APIReference/API_TagColumnOperation.html
 type ColumnTag struct {
 
 	// A description for a column.
@@ -2074,6 +3061,9 @@ type ColumnTooltipItem struct {
 
 	// The label of the tooltip item.
 	Label *string
+
+	// Determines the target of the column tooltip item in a combo chart visual.
+	TooltipTarget TooltipTarget
 
 	// The visibility of the tooltip item.
 	Visibility Visibility
@@ -2102,14 +3092,18 @@ type ComboChartAggregatedFieldWells struct {
 // The configuration of a ComboChartVisual .
 type ComboChartConfiguration struct {
 
-	// The options that determine if visual data labels are displayed. The data label
-	// options for a bar in a combo chart.
+	// The options that determine if visual data labels are displayed.
+	//
+	// The data label options for a bar in a combo chart.
 	BarDataLabels *DataLabelOptions
 
 	// Determines the bar arrangement in a combo chart. The following are valid values
 	// in this structure:
+	//
 	//   - CLUSTERED : For clustered bar combo charts.
+	//
 	//   - STACKED : For stacked bar combo charts.
+	//
 	//   - STACKED_PERCENT : Do not use. If you use this value, the operation returns a
 	//   validation error.
 	BarsArrangement BarsArrangement
@@ -2128,11 +3122,15 @@ type ComboChartConfiguration struct {
 	// The field wells of the visual.
 	FieldWells *ComboChartFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The legend display setup of the visual.
 	Legend *LegendOptions
 
-	// The options that determine if visual data labels are displayed. The data label
-	// options for a line in a combo chart.
+	// The options that determine if visual data labels are displayed.
+	//
+	// The data label options for a line in a combo chart.
 	LineDataLabels *DataLabelOptions
 
 	// The label display options (grid line, range, scale, and axis step) of a combo
@@ -2154,6 +3152,9 @@ type ComboChartConfiguration struct {
 	// combo chart's secondary y-axis(line) field well.
 	SecondaryYAxisLabelOptions *ChartAxisLabelOptions
 
+	// The settings of a chart's single axis configuration.
+	SingleAxisOptions *SingleAxisOptions
+
 	// The sort configuration of a ComboChartVisual .
 	SortConfiguration *ComboChartSortConfiguration
 
@@ -2166,8 +3167,10 @@ type ComboChartConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The field wells of the visual. This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The field wells of the visual.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type ComboChartFieldWells struct {
 
 	// The aggregated field wells of a combo chart. Combo charts only have aggregated
@@ -2195,9 +3198,14 @@ type ComboChartSortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A combo chart. The ComboChartVisual includes stacked bar combo charts and
-// clustered bar combo charts For more information, see Using combo charts (https://docs.aws.amazon.com/quicksight/latest/user/combo-charts.html)
-// in the Amazon QuickSight User Guide.
+// A combo chart.
+//
+// The ComboChartVisual includes stacked bar combo charts and clustered bar combo
+// charts
+//
+// For more information, see [Using combo charts] in the Amazon QuickSight User Guide.
+//
+// [Using combo charts]: https://docs.aws.amazon.com/quicksight/latest/user/combo-charts.html
 type ComboChartVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -2221,6 +3229,9 @@ type ComboChartVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -2249,16 +3260,21 @@ type ComparisonConfiguration struct {
 	ComparisonFormat *ComparisonFormatConfiguration
 
 	// The method of the comparison. Choose from the following options:
+	//
 	//   - DIFFERENCE
+	//
 	//   - PERCENT_DIFFERENCE
+	//
 	//   - PERCENT
 	ComparisonMethod ComparisonMethod
 
 	noSmithyDocumentSerde
 }
 
-// The format of the comparison. This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The format of the comparison.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type ComparisonFormatConfiguration struct {
 
 	// The number display format.
@@ -2270,9 +3286,10 @@ type ComparisonFormatConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The computation union that is used in an insight visual. This is a union type
-// structure. For this structure to be valid, only one of the attributes can be
-// defined.
+// The computation union that is used in an insight visual.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type Computation struct {
 
 	// The forecast computation configuration.
@@ -2419,6 +3436,17 @@ type ConditionalFormattingSolidColor struct {
 	noSmithyDocumentSerde
 }
 
+// The context menu options for a visual's interactions.
+type ContextMenuOption struct {
+
+	// The availability status of the context menu options. If the value of this
+	// property is set to ENABLED , dashboard readers can interact with the context
+	// menu.
+	AvailabilityStatus DashboardBehavior
+
+	noSmithyDocumentSerde
+}
+
 // The contribution analysis visual display for a line, pie, or bar chart.
 type ContributionAnalysisDefault struct {
 
@@ -2436,6 +3464,27 @@ type ContributionAnalysisDefault struct {
 	noSmithyDocumentSerde
 }
 
+// The definition for the ContributionAnalysisFactor .
+type ContributionAnalysisFactor struct {
+
+	// The field name of the ContributionAnalysisFactor .
+	FieldName *string
+
+	noSmithyDocumentSerde
+}
+
+// The definition for the ContributionAnalysisTimeRanges .
+type ContributionAnalysisTimeRanges struct {
+
+	// The end range for the ContributionAnalysisTimeRanges .
+	EndRange *TopicIRFilterOption
+
+	// The start range for the ContributionAnalysisTimeRanges .
+	StartRange *TopicIRFilterOption
+
+	noSmithyDocumentSerde
+}
+
 // A transform operation that creates calculated columns. Columns created in one
 // such operation form a lexical closure.
 type CreateColumnsOperation struct {
@@ -2444,6 +3493,36 @@ type CreateColumnsOperation struct {
 	//
 	// This member is required.
 	Columns []CalculatedColumn
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a CreateTopicReviewedAnswer .
+type CreateTopicReviewedAnswer struct {
+
+	// The answer ID for the CreateTopicReviewedAnswer .
+	//
+	// This member is required.
+	AnswerId *string
+
+	// The Dataset arn for the CreateTopicReviewedAnswer .
+	//
+	// This member is required.
+	DatasetArn *string
+
+	// The Question to be created.
+	//
+	// This member is required.
+	Question *string
+
+	// The Mir for the CreateTopicReviewedAnswer .
+	Mir *TopicIR
+
+	// The PrimaryVisual for the CreateTopicReviewedAnswer .
+	PrimaryVisual *TopicVisual
+
+	// The template for the CreateTopicReviewedAnswer .
+	Template *TopicTemplate
 
 	noSmithyDocumentSerde
 }
@@ -2523,8 +3602,10 @@ type CustomActionFilterOperation struct {
 }
 
 // The navigation operation that navigates between different sheets in the same
-// analysis. This is a union type structure. For this structure to be valid, only
-// one of the attributes can be defined.
+// analysis.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type CustomActionNavigationOperation struct {
 
 	// The configuration that chooses the navigation target.
@@ -2547,10 +3628,14 @@ type CustomActionSetParametersOperation struct {
 // The URL operation that opens a link to another webpage.
 type CustomActionURLOperation struct {
 
-	// The target of the CustomActionURLOperation . Valid values are defined as
-	// follows:
+	// The target of the CustomActionURLOperation .
+	//
+	// Valid values are defined as follows:
+	//
 	//   - NEW_TAB : Opens the target URL in a new browser tab.
+	//
 	//   - NEW_WINDOW : Opens the target URL in a new browser window.
+	//
 	//   - SAME_TAB : Opens the target URL in the same browser tab.
 	//
 	// This member is required.
@@ -2596,12 +3681,17 @@ type CustomContentConfiguration struct {
 	// required when the ContentType of the visual is 'IMAGE' .
 	ImageScaling CustomContentImageScalingConfiguration
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	noSmithyDocumentSerde
 }
 
-// A visual that contains custom content. For more information, see Using custom
-// visual content (https://docs.aws.amazon.com/quicksight/latest/user/custom-visual-content.html)
-// in the Amazon QuickSight User Guide.
+// A visual that contains custom content.
+//
+// For more information, see [Using custom visual content] in the Amazon QuickSight User Guide.
+//
+// [Using custom visual content]: https://docs.aws.amazon.com/quicksight/latest/user/custom-visual-content.html
 type CustomContentVisual struct {
 
 	// The dataset that is used to create the custom content visual. You can't create
@@ -2629,6 +3719,9 @@ type CustomContentVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -2642,22 +3735,28 @@ type CustomFilterConfiguration struct {
 	MatchOperator CategoryFilterMatchOperator
 
 	// This option determines how null values should be treated when filtering data.
+	//
 	//   - ALL_VALUES : Include null values in filtered results.
+	//
 	//   - NULLS_ONLY : Only include null values in filtered results.
+	//
 	//   - NON_NULLS_ONLY : Exclude null values from filtered results.
 	//
 	// This member is required.
 	NullOption FilterNullOption
 
-	// The category value for the filter. This field is mutually exclusive to
-	// ParameterName .
+	// The category value for the filter.
+	//
+	// This field is mutually exclusive to ParameterName .
 	CategoryValue *string
 
-	// The parameter whose value should be used for the filter value. This field is
-	// mutually exclusive to CategoryValue .
+	// The parameter whose value should be used for the filter value.
+	//
+	// This field is mutually exclusive to CategoryValue .
 	ParameterName *string
 
 	// Select all of the values. Null is not the assigned value of select all.
+	//
 	//   - FILTER_ALL_VALUES
 	SelectAllOptions CategoryFilterSelectAllOptions
 
@@ -2673,8 +3772,11 @@ type CustomFilterListConfiguration struct {
 	MatchOperator CategoryFilterMatchOperator
 
 	// This option determines how null values should be treated when filtering data.
+	//
 	//   - ALL_VALUES : Include null values in filtered results.
+	//
 	//   - NULLS_ONLY : Only include null values in filtered results.
+	//
 	//   - NON_NULLS_ONLY : Exclude null values from filtered results.
 	//
 	// This member is required.
@@ -2684,6 +3786,7 @@ type CustomFilterListConfiguration struct {
 	CategoryValues []string
 
 	// Select all of the values. Null is not the assigned value of select all.
+	//
 	//   - FILTER_ALL_VALUES
 	SelectAllOptions CategoryFilterSelectAllOptions
 
@@ -2701,8 +3804,10 @@ type CustomNarrativeOptions struct {
 	noSmithyDocumentSerde
 }
 
-// The customized parameter values. This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The customized parameter values.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type CustomParameterValues struct {
 
 	// A list of datetime-type parameter values.
@@ -2716,6 +3821,21 @@ type CustomParameterValues struct {
 
 	// A list of string-type parameter values.
 	StringValues []string
+
+	noSmithyDocumentSerde
+}
+
+// The custom permissions profile.
+type CustomPermissions struct {
+
+	// The Amazon Resource Name (ARN) of the custom permissions profile.
+	Arn *string
+
+	// A set of actions in the custom permissions profile.
+	Capabilities *Capabilities
+
+	// The name of the custom permissions profile.
+	CustomPermissionsName *string
 
 	noSmithyDocumentSerde
 }
@@ -2748,8 +3868,10 @@ type CustomSql struct {
 // DestinationParameterValueConfiguration .
 type CustomValuesConfiguration struct {
 
-	// The customized parameter values. This is a union type structure. For this
-	// structure to be valid, only one of the attributes can be defined.
+	// The customized parameter values.
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
+	// attributes can be defined.
 	//
 	// This member is required.
 	CustomValues *CustomParameterValues
@@ -2777,6 +3899,9 @@ type Dashboard struct {
 
 	// The last time that this dashboard was updated.
 	LastUpdatedTime *time.Time
+
+	// A list of analysis Amazon Resource Names (ARNs) to be linked to the dashboard.
+	LinkEntities []string
 
 	// A display name for the dashboard.
 	Name *string
@@ -2849,36 +3974,47 @@ type DashboardSearchFilter struct {
 
 	// The comparison operator that you want to use as a filter, for example
 	// "Operator": "StringEquals" . Valid values are "StringEquals" and "StringLike" .
+	//
 	// If you set the operator value to "StringEquals" , you need to provide an
 	// ownership related filter in the "NAME" field and the arn of the user or group
 	// whose folders you want to search in the "Value" field. For example,
 	// "Name":"DIRECT_QUICKSIGHT_OWNER", "Operator": "StringEquals", "Value":
-	// "arn:aws:quicksight:us-east-1:1:user/default/UserName1" . If you set the value
-	// to "StringLike" , you need to provide the name of the folders you are searching
-	// for. For example, "Name":"DASHBOARD_NAME", "Operator": "StringLike", "Value":
-	// "Test" . The "StringLike" operator only supports the NAME value DASHBOARD_NAME .
+	// "arn:aws:quicksight:us-east-1:1:user/default/UserName1" .
+	//
+	// If you set the value to "StringLike" , you need to provide the name of the
+	// folders you are searching for. For example, "Name":"DASHBOARD_NAME",
+	// "Operator": "StringLike", "Value": "Test" . The "StringLike" operator only
+	// supports the NAME value DASHBOARD_NAME .
 	//
 	// This member is required.
 	Operator FilterOperator
 
 	// The name of the value that you want to use as a filter, for example, "Name":
-	// "QUICKSIGHT_OWNER" . Valid values are defined as follows:
+	// "QUICKSIGHT_OWNER" .
+	//
+	// Valid values are defined as follows:
+	//
 	//   - QUICKSIGHT_VIEWER_OR_OWNER : Provide an ARN of a user or group, and any
 	//   dashboards with that ARN listed as one of the dashboards's owners or viewers are
 	//   returned. Implicit permissions from folders or groups are considered.
+	//
 	//   - QUICKSIGHT_OWNER : Provide an ARN of a user or group, and any dashboards
 	//   with that ARN listed as one of the owners of the dashboards are returned.
 	//   Implicit permissions from folders or groups are considered.
+	//
 	//   - DIRECT_QUICKSIGHT_SOLE_OWNER : Provide an ARN of a user or group, and any
 	//   dashboards with that ARN listed as the only owner of the dashboard are returned.
 	//   Implicit permissions from folders or groups are not considered.
+	//
 	//   - DIRECT_QUICKSIGHT_OWNER : Provide an ARN of a user or group, and any
 	//   dashboards with that ARN listed as one of the owners of the dashboards are
 	//   returned. Implicit permissions from folders or groups are not considered.
+	//
 	//   - DIRECT_QUICKSIGHT_VIEWER_OR_OWNER : Provide an ARN of a user or group, and
 	//   any dashboards with that ARN listed as one of the owners or viewers of the
 	//   dashboards are returned. Implicit permissions from folders or groups are not
 	//   considered.
+	//
 	//   - DASHBOARD_NAME : Any dashboards whose names have a substring match to this
 	//   value will be returned.
 	Name DashboardFilterAttribute
@@ -3002,19 +4138,29 @@ type DashboardVersionDefinition struct {
 	// dashboard.
 	ColumnConfigurations []ColumnConfiguration
 
-	// The filter definitions for a dashboard. For more information, see Filtering
-	// Data in Amazon QuickSight (https://docs.aws.amazon.com/quicksight/latest/user/adding-a-filter.html)
-	// in the Amazon QuickSight User Guide.
+	// The filter definitions for a dashboard.
+	//
+	// For more information, see [Filtering Data in Amazon QuickSight] in the Amazon QuickSight User Guide.
+	//
+	// [Filtering Data in Amazon QuickSight]: https://docs.aws.amazon.com/quicksight/latest/user/adding-a-filter.html
 	FilterGroups []FilterGroup
 
+	// An array of option definitions for a dashboard.
+	Options *AssetOptions
+
 	// The parameter declarations for a dashboard. Parameters are named variables that
-	// can transfer a value for use by an action or an object. For more information,
-	// see Parameters in Amazon QuickSight (https://docs.aws.amazon.com/quicksight/latest/user/parameters-in-quicksight.html)
-	// in the Amazon QuickSight User Guide.
+	// can transfer a value for use by an action or an object.
+	//
+	// For more information, see [Parameters in Amazon QuickSight] in the Amazon QuickSight User Guide.
+	//
+	// [Parameters in Amazon QuickSight]: https://docs.aws.amazon.com/quicksight/latest/user/parameters-in-quicksight.html
 	ParameterDeclarations []ParameterDeclaration
 
 	// An array of sheet definitions for a dashboard.
 	Sheets []SheetDefinition
+
+	// The static files for the definition.
+	StaticFiles []StaticFile
 
 	noSmithyDocumentSerde
 }
@@ -3044,8 +4190,11 @@ type DashboardVersionSummary struct {
 }
 
 // A structure that contains the following elements:
+//
 //   - The DashboardId of the dashboard that has the visual that you want to embed.
+//
 //   - The SheetId of the sheet that has the visual that you want to embed.
+//
 //   - The VisualId of the visual that you want to embed.
 //
 // The DashboardId , SheetId , and VisualId can be found in the IDs for developers
@@ -3088,6 +4237,36 @@ type DashboardVisualPublishOptions struct {
 	noSmithyDocumentSerde
 }
 
+// The QA result that is made from dashboard visual.
+type DashboardVisualResult struct {
+
+	// The ID of the dashboard.
+	DashboardId *string
+
+	// The name of the dashboard.
+	DashboardName *string
+
+	// The URL of the dashboard.
+	DashboardUrl *string
+
+	// The ID of the sheet.
+	SheetId *string
+
+	// The name of the sheet.
+	SheetName *string
+
+	// The ID of the visual.
+	VisualId *string
+
+	// The subtitle of the visual.
+	VisualSubtitle *string
+
+	// The title of the visual.
+	VisualTitle *string
+
+	noSmithyDocumentSerde
+}
+
 // A structure that represents a data aggregation.
 type DataAggregation struct {
 
@@ -3117,7 +4296,7 @@ type DataBarsOptions struct {
 	noSmithyDocumentSerde
 }
 
-// The required parameters that are needed to connect to a Databricks data source.
+// The parameters that are required to connect to a Databricks data source.
 type DatabricksParameters struct {
 
 	// The host name of the Databricks data source.
@@ -3128,7 +4307,7 @@ type DatabricksParameters struct {
 	// The port for the Databricks data source.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	// The HTTP path of the Databricks data source.
 	//
@@ -3227,8 +4406,10 @@ type DataLabelOptions struct {
 	noSmithyDocumentSerde
 }
 
-// The option that determines the data label type. This is a union type structure.
-// For this structure to be valid, only one of the attributes can be defined.
+// The option that determines the data label type.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type DataLabelType struct {
 
 	// The option that specifies individual data values for labels.
@@ -3299,17 +4480,39 @@ type DataPathSort struct {
 	noSmithyDocumentSerde
 }
 
+// The type of the data path value.
+type DataPathType struct {
+
+	// The type of data path value utilized in a pivot table. Choose one of the
+	// following options:
+	//
+	//   - HIERARCHY_ROWS_LAYOUT_COLUMN - The type of data path for the rows layout
+	//   column, when RowsLayout is set to HIERARCHY .
+	//
+	//   - MULTIPLE_ROW_METRICS_COLUMN - The type of data path for the metric column
+	//   when the row is set to Metric Placement.
+	//
+	//   - EMPTY_COLUMN_HEADER - The type of data path for the column with empty column
+	//   header, when there is no field in ColumnsFieldWell and the row is set to
+	//   Metric Placement.
+	//
+	//   - COUNT_METRIC_COLUMN - The type of data path for the column with COUNT as the
+	//   metric, when there is no field in the ValuesFieldWell .
+	PivotTableDataPathType PivotTableDataPathType
+
+	noSmithyDocumentSerde
+}
+
 // The data path that needs to be sorted.
 type DataPathValue struct {
 
+	// The type configuration of the field.
+	DataPathType *DataPathType
+
 	// The field ID of the field that needs to be sorted.
-	//
-	// This member is required.
 	FieldId *string
 
 	// The actual value of the field that needs to be sorted.
-	//
-	// This member is required.
 	FieldValue *string
 
 	noSmithyDocumentSerde
@@ -3352,8 +4555,9 @@ type DataSet struct {
 	// Currently, only geospatial hierarchy is supported.
 	ColumnGroups []ColumnGroup
 
-	// A set of one or more definitions of a ColumnLevelPermissionRule (https://docs.aws.amazon.com/quicksight/latest/APIReference/API_ColumnLevelPermissionRule.html)
-	// .
+	// A set of one or more definitions of a [ColumnLevelPermissionRule].
+	//
+	// [ColumnLevelPermissionRule]: https://docs.aws.amazon.com/quicksight/latest/APIReference/API_ColumnLevelPermissionRule.html
 	ColumnLevelPermissionRules []ColumnLevelPermissionRule
 
 	// The amount of SPICE capacity used by this dataset. This is 0 if the dataset
@@ -3392,6 +4596,9 @@ type DataSet struct {
 	// The list of columns after all transforms. These columns are available in
 	// templates, analyses, and dashboards.
 	OutputColumns []OutputColumn
+
+	// The performance optimization configuration of a dataset.
+	PerformanceConfiguration *PerformanceConfiguration
 
 	// Declares the physical tables that are available in the underlying data sources.
 	PhysicalTableMap map[string]PhysicalTable
@@ -3468,7 +4675,8 @@ type DatasetMetadata struct {
 	noSmithyDocumentSerde
 }
 
-// A dataset parameter.
+// A parameter that is created in a dataset. The parameter can be a string,
+// integer, decimal, or datetime data type.
 type DatasetParameter struct {
 
 	// A date time parameter that is created in the dataset.
@@ -3526,22 +4734,30 @@ type DataSetSchema struct {
 type DataSetSearchFilter struct {
 
 	// The name of the value that you want to use as a filter, for example, "Name":
-	// "QUICKSIGHT_OWNER" . Valid values are defined as follows:
+	// "QUICKSIGHT_OWNER" .
+	//
+	// Valid values are defined as follows:
+	//
 	//   - QUICKSIGHT_VIEWER_OR_OWNER : Provide an ARN of a user or group, and any
 	//   datasets with that ARN listed as one of the dataset owners or viewers are
 	//   returned. Implicit permissions from folders or groups are considered.
+	//
 	//   - QUICKSIGHT_OWNER : Provide an ARN of a user or group, and any datasets with
 	//   that ARN listed as one of the owners of the dataset are returned. Implicit
 	//   permissions from folders or groups are considered.
+	//
 	//   - DIRECT_QUICKSIGHT_SOLE_OWNER : Provide an ARN of a user or group, and any
 	//   datasets with that ARN listed as the only owner of the dataset are returned.
 	//   Implicit permissions from folders or groups are not considered.
+	//
 	//   - DIRECT_QUICKSIGHT_OWNER : Provide an ARN of a user or group, and any
 	//   datasets with that ARN listed as one of the owners if the dataset are returned.
 	//   Implicit permissions from folders or groups are not considered.
+	//
 	//   - DIRECT_QUICKSIGHT_VIEWER_OR_OWNER : Provide an ARN of a user or group, and
 	//   any datasets with that ARN listed as one of the owners or viewers of the dataset
 	//   are returned. Implicit permissions from folders or groups are not considered.
+	//
 	//   - DATASET_NAME : Any datasets whose names have a substring match to this value
 	//   will be returned.
 	//
@@ -3550,14 +4766,17 @@ type DataSetSearchFilter struct {
 
 	// The comparison operator that you want to use as a filter, for example
 	// "Operator": "StringEquals" . Valid values are "StringEquals" and "StringLike" .
+	//
 	// If you set the operator value to "StringEquals" , you need to provide an
 	// ownership related filter in the "NAME" field and the arn of the user or group
 	// whose datasets you want to search in the "Value" field. For example,
 	// "Name":"QUICKSIGHT_OWNER", "Operator": "StringEquals", "Value":
-	// "arn:aws:quicksight:us-east- 1:1:user/default/UserName1" . If you set the value
-	// to "StringLike" , you need to provide the name of the datasets you are searching
-	// for. For example, "Name":"DATASET_NAME", "Operator": "StringLike", "Value":
-	// "Test" . The "StringLike" operator only supports the NAME value DATASET_NAME .
+	// "arn:aws:quicksight:us-east- 1:1:user/default/UserName1" .
+	//
+	// If you set the value to "StringLike" , you need to provide the name of the
+	// datasets you are searching for. For example, "Name":"DATASET_NAME", "Operator":
+	// "StringLike", "Value": "Test" . The "StringLike" operator only supports the NAME
+	// value DATASET_NAME .
 	//
 	// This member is required.
 	Operator FilterOperator
@@ -3691,8 +4910,9 @@ type DataSourceCredentials struct {
 	// DataSourceCredentials structure.
 	CopySourceArn *string
 
-	// Credential pair. For more information, see CredentialPair (https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CredentialPair.html)
-	// .
+	// Credential pair. For more information, see [CredentialPair].
+	//
+	// [CredentialPair]: https://docs.aws.amazon.com/quicksight/latest/APIReference/API_CredentialPair.html
 	CredentialPair *CredentialPair
 
 	// The Amazon Resource Name (ARN) of the secret associated with the data source in
@@ -3726,6 +4946,7 @@ type DataSourceErrorInfo struct {
 //	DataSourceParametersMemberAuroraParameters
 //	DataSourceParametersMemberAuroraPostgreSqlParameters
 //	DataSourceParametersMemberAwsIotAnalyticsParameters
+//	DataSourceParametersMemberBigQueryParameters
 //	DataSourceParametersMemberDatabricksParameters
 //	DataSourceParametersMemberExasolParameters
 //	DataSourceParametersMemberJiraParameters
@@ -3741,7 +4962,9 @@ type DataSourceErrorInfo struct {
 //	DataSourceParametersMemberSnowflakeParameters
 //	DataSourceParametersMemberSparkParameters
 //	DataSourceParametersMemberSqlServerParameters
+//	DataSourceParametersMemberStarburstParameters
 //	DataSourceParametersMemberTeradataParameters
+//	DataSourceParametersMemberTrinoParameters
 //	DataSourceParametersMemberTwitterParameters
 type DataSourceParameters interface {
 	isDataSourceParameters()
@@ -3801,7 +5024,16 @@ type DataSourceParametersMemberAwsIotAnalyticsParameters struct {
 
 func (*DataSourceParametersMemberAwsIotAnalyticsParameters) isDataSourceParameters() {}
 
-// The required parameters that are needed to connect to a Databricks data source.
+// The parameters that are required to connect to a Google BigQuery data source.
+type DataSourceParametersMemberBigQueryParameters struct {
+	Value BigQueryParameters
+
+	noSmithyDocumentSerde
+}
+
+func (*DataSourceParametersMemberBigQueryParameters) isDataSourceParameters() {}
+
+// The parameters that are required to connect to a Databricks data source.
 type DataSourceParametersMemberDatabricksParameters struct {
 	Value DatabricksParameters
 
@@ -3936,6 +5168,15 @@ type DataSourceParametersMemberSqlServerParameters struct {
 
 func (*DataSourceParametersMemberSqlServerParameters) isDataSourceParameters() {}
 
+// The parameters that are required to connect to a Starburst data source.
+type DataSourceParametersMemberStarburstParameters struct {
+	Value StarburstParameters
+
+	noSmithyDocumentSerde
+}
+
+func (*DataSourceParametersMemberStarburstParameters) isDataSourceParameters() {}
+
 // The parameters for Teradata.
 type DataSourceParametersMemberTeradataParameters struct {
 	Value TeradataParameters
@@ -3944,6 +5185,15 @@ type DataSourceParametersMemberTeradataParameters struct {
 }
 
 func (*DataSourceParametersMemberTeradataParameters) isDataSourceParameters() {}
+
+// The parameters that are required to connect to a Trino data source.
+type DataSourceParametersMemberTrinoParameters struct {
+	Value TrinoParameters
+
+	noSmithyDocumentSerde
+}
+
+func (*DataSourceParametersMemberTrinoParameters) isDataSourceParameters() {}
 
 // The parameters for Twitter.
 type DataSourceParametersMemberTwitterParameters struct {
@@ -3958,17 +5208,23 @@ func (*DataSourceParametersMemberTwitterParameters) isDataSourceParameters() {}
 type DataSourceSearchFilter struct {
 
 	// The name of the value that you want to use as a filter, for example, "Name":
-	// "DIRECT_QUICKSIGHT_OWNER" . Valid values are defined as follows:
+	// "DIRECT_QUICKSIGHT_OWNER" .
+	//
+	// Valid values are defined as follows:
+	//
 	//   - DIRECT_QUICKSIGHT_VIEWER_OR_OWNER : Provide an ARN of a user or group, and
 	//   any data sources with that ARN listed as one of the owners or viewers of the
 	//   data sources are returned. Implicit permissions from folders or groups are not
 	//   considered.
+	//
 	//   - DIRECT_QUICKSIGHT_OWNER : Provide an ARN of a user or group, and any data
 	//   sources with that ARN listed as one of the owners if the data source are
 	//   returned. Implicit permissions from folders or groups are not considered.
+	//
 	//   - DIRECT_QUICKSIGHT_SOLE_OWNER : Provide an ARN of a user or group, and any
 	//   data sources with that ARN listed as the only owner of the data source are
 	//   returned. Implicit permissions from folders or groups are not considered.
+	//
 	//   - DATASOURCE_NAME : Any data sources whose names have a substring match to the
 	//   provided value are returned.
 	//
@@ -3977,15 +5233,17 @@ type DataSourceSearchFilter struct {
 
 	// The comparison operator that you want to use as a filter, for example
 	// "Operator": "StringEquals" . Valid values are "StringEquals" and "StringLike" .
+	//
 	// If you set the operator value to "StringEquals" , you need to provide an
 	// ownership related filter in the "NAME" field and the arn of the user or group
 	// whose data sources you want to search in the "Value" field. For example,
 	// "Name":"DIRECT_QUICKSIGHT_OWNER", "Operator": "StringEquals", "Value":
-	// "arn:aws:quicksight:us-east-1:1:user/default/UserName1" . If you set the value
-	// to "StringLike" , you need to provide the name of the data sources you are
-	// searching for. For example, "Name":"DATASOURCE_NAME", "Operator": "StringLike",
-	// "Value": "Test" . The "StringLike" operator only supports the NAME value
-	// DATASOURCE_NAME .
+	// "arn:aws:quicksight:us-east-1:1:user/default/UserName1" .
+	//
+	// If you set the value to "StringLike" , you need to provide the name of the data
+	// sources you are searching for. For example, "Name":"DATASOURCE_NAME",
+	// "Operator": "StringLike", "Value": "Test" . The "StringLike" operator only
+	// supports the NAME value DATASOURCE_NAME .
 	//
 	// This member is required.
 	Operator FilterOperator
@@ -4050,14 +5308,23 @@ type DateDimensionField struct {
 
 	// The date granularity of the DateDimensionField . Choose one of the following
 	// options:
+	//
 	//   - YEAR
+	//
 	//   - QUARTER
+	//
 	//   - MONTH
+	//
 	//   - WEEK
+	//
 	//   - DAY
+	//
 	//   - HOUR
+	//
 	//   - MINUTE
+	//
 	//   - SECOND
+	//
 	//   - MILLISECOND
 	DateGranularity TimeGranularity
 
@@ -4220,8 +5487,14 @@ type DateTimeParameterDeclaration struct {
 // The display options of a control.
 type DateTimePickerControlDisplayOptions struct {
 
+	// The date icon visibility of the DateTimePickerControlDisplayOptions .
+	DateIconVisibility Visibility
+
 	// Customize how dates are formatted in controls.
 	DateTimeFormat *string
+
+	// The helper text visibility of the DateTimePickerControlDisplayOptions .
+	HelperTextVisibility Visibility
 
 	// The configuration of info icon label options.
 	InfoIconLabelOptions *SheetControlInfoIconLabelOptions
@@ -4240,7 +5513,9 @@ type DateTimeValueWhenUnsetConfiguration struct {
 	CustomValue *time.Time
 
 	// The built-in options for default values. The value can be one of the following:
+	//
 	//   - RECOMMENDED : The recommended value.
+	//
 	//   - NULL : The NULL value.
 	ValueWhenUnsetOption ValueWhenUnsetOption
 
@@ -4358,9 +5633,119 @@ type DecimalValueWhenUnsetConfiguration struct {
 	CustomValue *float64
 
 	// The built-in options for default values. The value can be one of the following:
+	//
 	//   - RECOMMENDED : The recommended value.
+	//
 	//   - NULL : The NULL value.
 	ValueWhenUnsetOption ValueWhenUnsetOption
+
+	noSmithyDocumentSerde
+}
+
+// The default options that correspond to the filter control type of a
+// DateTimePicker .
+type DefaultDateTimePickerControlOptions struct {
+
+	// The visibility configuration of the Apply button on a DateTimePickerControl .
+	CommitMode CommitMode
+
+	// The display options of a control.
+	DisplayOptions *DateTimePickerControlDisplayOptions
+
+	// The date time picker type of the DefaultDateTimePickerControlOptions . Choose
+	// one of the following options:
+	//
+	//   - SINGLE_VALUED : The filter condition is a fixed date.
+	//
+	//   - DATE_RANGE : The filter condition is a date time range.
+	Type SheetControlDateTimePickerType
+
+	noSmithyDocumentSerde
+}
+
+// The default configuration for all dependent controls of the filter.
+type DefaultFilterControlConfiguration struct {
+
+	// The control option for the DefaultFilterControlConfiguration .
+	//
+	// This member is required.
+	ControlOptions *DefaultFilterControlOptions
+
+	// The title of the DefaultFilterControlConfiguration . This title is shared by all
+	// controls that are tied to this filter.
+	//
+	// This member is required.
+	Title *string
+
+	noSmithyDocumentSerde
+}
+
+// The option that corresponds to the control type of the filter.
+type DefaultFilterControlOptions struct {
+
+	// The default options that correspond to the filter control type of a
+	// DateTimePicker .
+	DefaultDateTimePickerOptions *DefaultDateTimePickerControlOptions
+
+	// The default options that correspond to the Dropdown filter control type.
+	DefaultDropdownOptions *DefaultFilterDropDownControlOptions
+
+	// The default options that correspond to the List filter control type.
+	DefaultListOptions *DefaultFilterListControlOptions
+
+	// The default options that correspond to the RelativeDateTime filter control type.
+	DefaultRelativeDateTimeOptions *DefaultRelativeDateTimeControlOptions
+
+	// The default options that correspond to the Slider filter control type.
+	DefaultSliderOptions *DefaultSliderControlOptions
+
+	// The default options that correspond to the TextArea filter control type.
+	DefaultTextAreaOptions *DefaultTextAreaControlOptions
+
+	// The default options that correspond to the TextField filter control type.
+	DefaultTextFieldOptions *DefaultTextFieldControlOptions
+
+	noSmithyDocumentSerde
+}
+
+// The default options that correspond to the Dropdown filter control type.
+type DefaultFilterDropDownControlOptions struct {
+
+	// The visibility configuration of the Apply button on a FilterDropDownControl .
+	CommitMode CommitMode
+
+	// The display options of a control.
+	DisplayOptions *DropDownControlDisplayOptions
+
+	// A list of selectable values that are used in a control.
+	SelectableValues *FilterSelectableValues
+
+	// The type of the FilterDropDownControl . Choose one of the following options:
+	//
+	//   - MULTI_SELECT : The user can select multiple entries from a dropdown menu.
+	//
+	//   - SINGLE_SELECT : The user can select a single entry from a dropdown menu.
+	Type SheetControlListType
+
+	noSmithyDocumentSerde
+}
+
+// The default options that correspond to the List filter control type.
+type DefaultFilterListControlOptions struct {
+
+	// The display options of a control.
+	DisplayOptions *ListControlDisplayOptions
+
+	// A list of selectable values that are used in a control.
+	SelectableValues *FilterSelectableValues
+
+	// The type of the DefaultFilterListControlOptions . Choose one of the following
+	// options:
+	//
+	//   - MULTI_SELECT : The user can select multiple entries from the list.
+	//
+	//   - SINGLE_SELECT : The user can select a single entry from the list.
+	Type SheetControlListType
 
 	noSmithyDocumentSerde
 }
@@ -4443,6 +5828,18 @@ type DefaultPaginatedLayoutConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// The default options that correspond to the RelativeDateTime filter control type.
+type DefaultRelativeDateTimeControlOptions struct {
+
+	// The visibility configuration of the Apply button on a RelativeDateTimeControl .
+	CommitMode CommitMode
+
+	// The display options of a control.
+	DisplayOptions *RelativeDateTimeControlDisplayOptions
+
+	noSmithyDocumentSerde
+}
+
 // The options that determine the default settings for a section-based layout
 // configuration.
 type DefaultSectionBasedLayoutConfiguration struct {
@@ -4455,9 +5852,63 @@ type DefaultSectionBasedLayoutConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The configuration of destination parameter values. This is a union type
-// structure. For this structure to be valid, only one of the attributes can be
-// defined.
+// The default options that correspond to the Slider filter control type.
+type DefaultSliderControlOptions struct {
+
+	// The larger value that is displayed at the right of the slider.
+	//
+	// This member is required.
+	MaximumValue float64
+
+	// The smaller value that is displayed at the left of the slider.
+	//
+	// This member is required.
+	MinimumValue float64
+
+	// The number of increments that the slider bar is divided into.
+	//
+	// This member is required.
+	StepSize float64
+
+	// The display options of a control.
+	DisplayOptions *SliderControlDisplayOptions
+
+	// The type of the DefaultSliderControlOptions . Choose one of the following
+	// options:
+	//
+	//   - SINGLE_POINT : Filter against(equals) a single data point.
+	//
+	//   - RANGE : Filter data that is in a specified range.
+	Type SheetControlSliderType
+
+	noSmithyDocumentSerde
+}
+
+// The default options that correspond to the TextArea filter control type.
+type DefaultTextAreaControlOptions struct {
+
+	// The delimiter that is used to separate the lines in text.
+	Delimiter *string
+
+	// The display options of a control.
+	DisplayOptions *TextAreaControlDisplayOptions
+
+	noSmithyDocumentSerde
+}
+
+// The default options that correspond to the TextField filter control type.
+type DefaultTextFieldControlOptions struct {
+
+	// The display options of a control.
+	DisplayOptions *TextFieldControlDisplayOptions
+
+	noSmithyDocumentSerde
+}
+
+// The configuration of destination parameter values.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type DestinationParameterValueConfiguration struct {
 
 	// The configuration of custom values for destination parameter in
@@ -4552,9 +6003,13 @@ type DonutCenterOptions struct {
 type DonutOptions struct {
 
 	// The option for define the arc of the chart shape. Valid values are as follows:
+	//
 	//   - WHOLE - A pie chart
+	//
 	//   - SMALL - A small-sized donut chart
+	//
 	//   - MEDIUM - A medium-sized donut chart
+	//
 	//   - LARGE - A large-sized donut chart
 	ArcOptions *ArcOptions
 
@@ -4565,9 +6020,10 @@ type DonutOptions struct {
 	noSmithyDocumentSerde
 }
 
-// The drill down filter for the column hierarchies. This is a union type
-// structure. For this structure to be valid, only one of the attributes can be
-// defined.
+// The drill down filter for the column hierarchies.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type DrillDownFilter struct {
 
 	// The category type drill down filter. This filter is used for string type
@@ -4616,9 +6072,11 @@ type DynamicDefaultValue struct {
 	noSmithyDocumentSerde
 }
 
-// An empty visual. Empty visuals are used in layouts but have not been configured
-// to show any data. A new visual created in the Amazon QuickSight console is
-// considered an EmptyVisual until a visual type is selected.
+// An empty visual.
+//
+// Empty visuals are used in layouts but have not been configured to show any
+// data. A new visual created in the Amazon QuickSight console is considered an
+// EmptyVisual until a visual type is selected.
 type EmptyVisual struct {
 
 	// The data set that is used in the empty visual. Every visual requires a dataset
@@ -4673,7 +6131,7 @@ type ExasolParameters struct {
 	// The port for the Exasol data source.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -4692,7 +6150,9 @@ type ExcludePeriodConfiguration struct {
 	Granularity TimeGranularity
 
 	// The status of the exclude period. Choose from the following options:
+	//
 	//   - ENABLED
+	//
 	//   - DISABLED
 	Status WidgetStatus
 
@@ -4746,6 +6206,35 @@ type ExportWithHiddenFieldsOption struct {
 	noSmithyDocumentSerde
 }
 
+// An entry that appears when a KeyRegistration update to Amazon QuickSight fails.
+type FailedKeyRegistrationEntry struct {
+
+	// A message that provides information about why a FailedKeyRegistrationEntry
+	// error occurred.
+	//
+	// This member is required.
+	Message *string
+
+	// A boolean that indicates whether a FailedKeyRegistrationEntry resulted from
+	// user error. If the value of this property is True , the error was caused by user
+	// error. If the value of this property is False , the error occurred on the
+	// backend. If your job continues fail and with a False SenderFault value, contact
+	// Amazon Web Services Support.
+	//
+	// This member is required.
+	SenderFault bool
+
+	// The HTTP status of a FailedKeyRegistrationEntry error.
+	//
+	// This member is required.
+	StatusCode int32
+
+	// The ARN of the KMS key that failed to update.
+	KeyArn *string
+
+	noSmithyDocumentSerde
+}
+
 // The setup for the detailed tooltip.
 type FieldBasedTooltip struct {
 
@@ -4756,7 +6245,9 @@ type FieldBasedTooltip struct {
 	TooltipFields []TooltipItem
 
 	// The type for the >tooltip title. Choose one of the following options:
+	//
 	//   - NONE : Doesn't use the primary value as the title.
+	//
 	//   - PRIMARY_VALUE : Uses primary value as the title.
 	TooltipTitleType TooltipTitleType
 
@@ -4811,7 +6302,9 @@ type FieldSeriesItem struct {
 type FieldSort struct {
 
 	// The sort direction. Choose one of the following options:
+	//
 	//   - ASC : Ascending
+	//
 	//   - DESC : Descending
 	//
 	// This member is required.
@@ -4847,6 +6340,9 @@ type FieldTooltipItem struct {
 
 	// The label of the tooltip item.
 	Label *string
+
+	// Determines the target of the field tooltip item in a combo chart visual.
+	TooltipTarget TooltipTarget
 
 	// The visibility of the tooltip item.
 	Visibility Visibility
@@ -4896,6 +6392,9 @@ type FilledMapConfiguration struct {
 	// The field wells of the visual.
 	FieldWells *FilledMapFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The legend display setup of the visual.
 	Legend *LegendOptions
 
@@ -4914,8 +6413,10 @@ type FilledMapConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The field wells of a FilledMapVisual . This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The field wells of a FilledMapVisual .
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type FilledMapFieldWells struct {
 
 	// The aggregated field well of the filled map.
@@ -4948,8 +6449,11 @@ type FilledMapSortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A filled map. For more information, see Creating filled maps (https://docs.aws.amazon.com/quicksight/latest/user/filled-maps.html)
-// in the Amazon QuickSight User Guide.
+// A filled map.
+//
+// For more information, see [Creating filled maps] in the Amazon QuickSight User Guide.
+//
+// [Creating filled maps]: https://docs.aws.amazon.com/quicksight/latest/user/filled-maps.html
 type FilledMapVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -4977,18 +6481,28 @@ type FilledMapVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
-// With a Filter , you can remove portions of data from a particular visual or
-// view. This is a union type structure. For this structure to be valid, only one
-// of the attributes can be defined.
+// With a Filter , you can remove portions of data from a particular visual or view.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type Filter struct {
 
-	// A CategoryFilter filters text values. For more information, see Adding text
-	// filters (https://docs.aws.amazon.com/quicksight/latest/user/add-a-text-filter-data-prep.html)
-	// in the Amazon QuickSight User Guide.
+	// A CategoryFilter filters text values.
+	//
+	// For more information, see [Adding text filters] in the Amazon QuickSight User Guide.
+	//
+	// [Adding text filters]: https://docs.aws.amazon.com/quicksight/latest/user/add-a-text-filter-data-prep.html
 	CategoryFilter *CategoryFilter
+
+	// A NestedFilter filters data with a subset of data that is defined by the nested
+	// inner filter.
+	NestedFilter *NestedFilter
 
 	// A NumericEqualityFilter filters numeric values that equal or do not equal a
 	// given numeric value.
@@ -5015,10 +6529,31 @@ type Filter struct {
 	noSmithyDocumentSerde
 }
 
+// The definition for the FilterAggMetrics .
+type FilterAggMetrics struct {
+
+	// The function for the FilterAggMetrics .
+	Function AggType
+
+	// The metric operand of the FilterAggMetrics .
+	MetricOperand *Identifier
+
+	// The sort direction for FilterAggMetrics .
+	SortDirection TopicSortDirection
+
+	noSmithyDocumentSerde
+}
+
 // The control of a filter that is used to interact with a dashboard or an
-// analysis. This is a union type structure. For this structure to be valid, only
-// one of the attributes can be defined.
+// analysis.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type FilterControl struct {
+
+	// A control from a filter that is scoped across more than one sheet. This
+	// represents your filter control on a sheet
+	CrossSheet *FilterCrossSheetControl
 
 	// A control from a date filter that is used to specify date and time.
 	DateTimePicker *FilterDateTimePickerControl
@@ -5047,6 +6582,27 @@ type FilterControl struct {
 	noSmithyDocumentSerde
 }
 
+// A control from a filter that is scoped across more than one sheet. This
+// represents your filter control on a sheet
+type FilterCrossSheetControl struct {
+
+	// The ID of the FilterCrossSheetControl .
+	//
+	// This member is required.
+	FilterControlId *string
+
+	// The source filter ID of the FilterCrossSheetControl .
+	//
+	// This member is required.
+	SourceFilterId *string
+
+	// The values that are displayed in a control can be configured to only show
+	// values that are valid based on what's selected in other controls.
+	CascadingControlConfiguration *CascadingControlConfiguration
+
+	noSmithyDocumentSerde
+}
+
 // A control from a date filter that is used to specify date and time.
 type FilterDateTimePickerControl struct {
 
@@ -5065,13 +6621,17 @@ type FilterDateTimePickerControl struct {
 	// This member is required.
 	Title *string
 
+	// The visibility configurationof the Apply button on a DateTimePickerControl .
+	CommitMode CommitMode
+
 	// The display options of a control.
 	DisplayOptions *DateTimePickerControlDisplayOptions
 
-	// The date time picker type of a FilterDateTimePickerControl . Choose one of the
-	// following options:
-	//   - SINGLE_VALUED : The filter condition is a fixed date.
-	//   - DATE_RANGE : The filter condition is a date time range.
+	// The type of the FilterDropDownControl . Choose one of the following options:
+	//
+	//   - MULTI_SELECT : The user can select multiple entries from a dropdown menu.
+	//
+	//   - SINGLE_SELECT : The user can select a single entry from a dropdown menu.
 	Type SheetControlDateTimePickerType
 
 	noSmithyDocumentSerde
@@ -5100,6 +6660,9 @@ type FilterDropDownControl struct {
 	// values that are valid based on what's selected in other controls.
 	CascadingControlConfiguration *CascadingControlConfiguration
 
+	// The visibility configuration of the Apply button on a FilterDropDownControl .
+	CommitMode CommitMode
+
 	// The display options of the FilterDropDownControl .
 	DisplayOptions *DropDownControlDisplayOptions
 
@@ -5107,7 +6670,9 @@ type FilterDropDownControl struct {
 	SelectableValues *FilterSelectableValues
 
 	// The type of the FilterDropDownControl . Choose one of the following options:
+	//
 	//   - MULTI_SELECT : The user can select multiple entries from a dropdown menu.
+	//
 	//   - SINGLE_SELECT : The user can select a single entry from a dropdown menu.
 	Type SheetControlListType
 
@@ -5115,14 +6680,18 @@ type FilterDropDownControl struct {
 }
 
 // A grouping of individual filters. Filter groups are applied to the same group
-// of visuals. For more information, see Adding filter conditions (group filters)
-// with AND and OR operators (https://docs.aws.amazon.com/quicksight/latest/user/add-a-compound-filter.html)
-// in the Amazon QuickSight User Guide.
+// of visuals.
+//
+// For more information, see [Adding filter conditions (group filters) with AND and OR operators] in the Amazon QuickSight User Guide.
+//
+// [Adding filter conditions (group filters) with AND and OR operators]: https://docs.aws.amazon.com/quicksight/latest/user/add-a-compound-filter.html
 type FilterGroup struct {
 
 	// The filter new feature which can apply filter group to all data sets. Choose
 	// one of the following options:
+	//
 	//   - ALL_DATASETS
+	//
 	//   - SINGLE_DATASET
 	//
 	// This member is required.
@@ -5139,8 +6708,9 @@ type FilterGroup struct {
 	// This member is required.
 	Filters []Filter
 
-	// The configuration that specifies what scope to apply to a FilterGroup . This is
-	// a union type structure. For this structure to be valid, only one of the
+	// The configuration that specifies what scope to apply to a FilterGroup .
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
 	// attributes can be defined.
 	//
 	// This member is required.
@@ -5163,7 +6733,17 @@ type FilterListConfiguration struct {
 	// The list of category values for the filter.
 	CategoryValues []string
 
+	// This option determines how null values should be treated when filtering data.
+	//
+	//   - ALL_VALUES : Include null values in filtered results.
+	//
+	//   - NULLS_ONLY : Only include null values in filtered results.
+	//
+	//   - NON_NULLS_ONLY : Exclude null values from filtered results.
+	NullOption FilterNullOption
+
 	// Select all of the values. Null is not the assigned value of select all.
+	//
 	//   - FILTER_ALL_VALUES
 	SelectAllOptions CategoryFilterSelectAllOptions
 
@@ -5199,8 +6779,10 @@ type FilterListControl struct {
 	// A list of selectable values that are used in a control.
 	SelectableValues *FilterSelectableValues
 
-	// The type of FilterListControl . Choose one of the following options:
+	// The type of the FilterListControl . Choose one of the following options:
+	//
 	//   - MULTI_SELECT : The user can select multiple entries from the list.
+	//
 	//   - SINGLE_SELECT : The user can select a single entry from the list.
 	Type SheetControlListType
 
@@ -5219,8 +6801,9 @@ type FilterOperation struct {
 	noSmithyDocumentSerde
 }
 
-// The configuration of selected fields in the CustomActionFilterOperation . This
-// is a union type structure. For this structure to be valid, only one of the
+// The configuration of selected fields in the CustomActionFilterOperation .
+//
+// This is a union type structure. For this structure to be valid, only one of the
 // attributes can be defined.
 type FilterOperationSelectedFieldsConfiguration struct {
 
@@ -5228,7 +6811,10 @@ type FilterOperationSelectedFieldsConfiguration struct {
 	SelectedColumns []ColumnIdentifier
 
 	// A structure that contains the options that choose which fields are filtered in
-	// the CustomActionFilterOperation . Valid values are defined as follows:
+	// the CustomActionFilterOperation .
+	//
+	// Valid values are defined as follows:
+	//
 	//   - ALL_FIELDS : Applies the filter operation to all fields.
 	SelectedFieldOptions SelectedFieldOptions
 
@@ -5238,9 +6824,10 @@ type FilterOperationSelectedFieldsConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The configuration of target visuals that you want to be filtered. This is a
-// union type structure. For this structure to be valid, only one of the attributes
-// can be defined.
+// The configuration of target visuals that you want to be filtered.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type FilterOperationTargetVisualsConfiguration struct {
 
 	// The configuration of the same-sheet target visuals that you want to be filtered.
@@ -5267,15 +6854,27 @@ type FilterRelativeDateTimeControl struct {
 	// This member is required.
 	Title *string
 
+	// The visibility configuration of the Apply button on a
+	// FilterRelativeDateTimeControl .
+	CommitMode CommitMode
+
 	// The display options of a control.
 	DisplayOptions *RelativeDateTimeControlDisplayOptions
 
 	noSmithyDocumentSerde
 }
 
-// The scope configuration for a FilterGroup . This is a union type structure. For
-// this structure to be valid, only one of the attributes can be defined.
+// The scope configuration for a FilterGroup .
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type FilterScopeConfiguration struct {
+
+	// The configuration that applies a filter to all sheets. When you choose AllSheets
+	// as the value for a FilterScopeConfiguration , this filter is applied to all
+	// visuals of all sheets in an Analysis, Dashboard, or Template. The
+	// AllSheetsFilterScopeConfiguration is chosen.
+	AllSheets *AllSheetsFilterScopeConfiguration
 
 	// The configuration for applying a filter to specific sheets.
 	SelectedSheets *SelectedSheetsFilterScopeConfiguration
@@ -5301,12 +6900,12 @@ type FilterSliderControl struct {
 	// This member is required.
 	FilterControlId *string
 
-	// The smaller value that is displayed at the left of the slider.
+	// The larger value that is displayed at the right of the slider.
 	//
 	// This member is required.
 	MaximumValue float64
 
-	// The larger value that is displayed at the right of the slider.
+	// The smaller value that is displayed at the left of the slider.
 	//
 	// This member is required.
 	MinimumValue float64
@@ -5329,8 +6928,10 @@ type FilterSliderControl struct {
 	// The display options of a control.
 	DisplayOptions *SliderControlDisplayOptions
 
-	// The type of FilterSliderControl . Choose one of the following options:
+	// The type of the FilterSliderControl . Choose one of the following options:
+	//
 	//   - SINGLE_POINT : Filter against(equals) a single data point.
+	//
 	//   - RANGE : Filter data that is in a specified range.
 	Type SheetControlSliderType
 
@@ -5412,6 +7013,9 @@ type Folder struct {
 	// A display name for the folder.
 	Name *string
 
+	// The sharing scope of the folder.
+	SharingModel SharingModel
+
 	noSmithyDocumentSerde
 }
 
@@ -5432,24 +7036,33 @@ type FolderMember struct {
 type FolderSearchFilter struct {
 
 	// The name of a value that you want to use in the filter. For example, "Name":
-	// "QUICKSIGHT_OWNER" . Valid values are defined as follows:
+	// "QUICKSIGHT_OWNER" .
+	//
+	// Valid values are defined as follows:
+	//
 	//   - QUICKSIGHT_VIEWER_OR_OWNER : Provide an ARN of a user or group, and any
 	//   folders with that ARN listed as one of the folder's owners or viewers are
 	//   returned. Implicit permissions from folders or groups are considered.
+	//
 	//   - QUICKSIGHT_OWNER : Provide an ARN of a user or group, and any folders with
 	//   that ARN listed as one of the owners of the folders are returned. Implicit
 	//   permissions from folders or groups are considered.
+	//
 	//   - DIRECT_QUICKSIGHT_SOLE_OWNER : Provide an ARN of a user or group, and any
 	//   folders with that ARN listed as the only owner of the folder are returned.
 	//   Implicit permissions from folders or groups are not considered.
+	//
 	//   - DIRECT_QUICKSIGHT_OWNER : Provide an ARN of a user or group, and any folders
 	//   with that ARN listed as one of the owners of the folders are returned. Implicit
 	//   permissions from folders or groups are not considered.
+	//
 	//   - DIRECT_QUICKSIGHT_VIEWER_OR_OWNER : Provide an ARN of a user or group, and
 	//   any folders with that ARN listed as one of the owners or viewers of the folders
 	//   are returned. Implicit permissions from folders or groups are not considered.
+	//
 	//   - FOLDER_NAME : Any folders whose names have a substring match to this value
 	//   will be returned.
+	//
 	//   - PARENT_FOLDER_ARN : Provide an ARN of a folder, and any folders that are
 	//   directly under that parent folder are returned. If you choose to use this option
 	//   and leave the value blank, all root-level folders in the account are returned.
@@ -5457,14 +7070,17 @@ type FolderSearchFilter struct {
 
 	// The comparison operator that you want to use as a filter, for example
 	// "Operator": "StringEquals" . Valid values are "StringEquals" and "StringLike" .
+	//
 	// If you set the operator value to "StringEquals" , you need to provide an
 	// ownership related filter in the "NAME" field and the arn of the user or group
 	// whose folders you want to search in the "Value" field. For example,
 	// "Name":"DIRECT_QUICKSIGHT_OWNER", "Operator": "StringEquals", "Value":
-	// "arn:aws:quicksight:us-east-1:1:user/default/UserName1" . If you set the value
-	// to "StringLike" , you need to provide the name of the folders you are searching
-	// for. For example, "Name":"FOLDER_NAME", "Operator": "StringLike", "Value":
-	// "Test" . The "StringLike" operator only supports the NAME value FOLDER_NAME .
+	// "arn:aws:quicksight:us-east-1:1:user/default/UserName1" .
+	//
+	// If you set the value to "StringLike" , you need to provide the name of the
+	// folders you are searching for. For example, "Name":"FOLDER_NAME", "Operator":
+	// "StringLike", "Value": "Test" . The "StringLike" operator only supports the NAME
+	// value FOLDER_NAME .
 	Operator FilterOperator
 
 	// The value of the named item (in this example, PARENT_FOLDER_ARN ), that you want
@@ -5496,6 +7112,9 @@ type FolderSummary struct {
 	// The display name of the folder.
 	Name *string
 
+	// The sharing scope of the folder.
+	SharingModel SharingModel
+
 	noSmithyDocumentSerde
 }
 
@@ -5517,6 +7136,9 @@ type FontConfiguration struct {
 	// Determines the appearance of decorative lines on the text.
 	FontDecoration FontDecoration
 
+	// The font family that you want to use.
+	FontFamily *string
+
 	// The option that determines the text display size.
 	FontSize *FontSize
 
@@ -5531,6 +7153,9 @@ type FontConfiguration struct {
 
 // The option that determines the text display size.
 type FontSize struct {
+
+	// The font size that you want to use in px.
+	Absolute *string
 
 	// The lexical name for the text size, proportional to its surrounding context.
 	Relative RelativeFontSize
@@ -5555,11 +7180,6 @@ type ForecastComputation struct {
 	// This member is required.
 	ComputationId *string
 
-	// The time field that is used in a computation.
-	//
-	// This member is required.
-	Time *DimensionField
-
 	// The custom seasonality value setup of a forecast computation.
 	CustomSeasonalityValue *int32
 
@@ -5580,9 +7200,14 @@ type ForecastComputation struct {
 
 	// The seasonality setup of a forecast computation. Choose one of the following
 	// options:
+	//
 	//   - AUTOMATIC
+	//
 	//   - CUSTOM : Checks the custom seasonality value.
 	Seasonality ForecastComputationSeasonality
+
+	// The time field that is used in a computation.
+	Time *DimensionField
 
 	// The upper boundary setup of a forecast computation.
 	UpperBoundary *float64
@@ -5783,6 +7408,9 @@ type FunnelChartConfiguration struct {
 	// The field well configuration of a FunnelChartVisual .
 	FieldWells *FunnelChartFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The sort configuration of a FunnelChartVisual .
 	SortConfiguration *FunnelChartSortConfiguration
 
@@ -5807,8 +7435,9 @@ type FunnelChartDataLabelOptions struct {
 	// The color of the data label text.
 	LabelColor *string
 
-	// The font configuration for the data labels. Only the FontSize attribute of the
-	// font configuration is used for data labels.
+	// The font configuration for the data labels.
+	//
+	// Only the FontSize attribute of the font configuration is used for data labels.
 	LabelFontConfiguration *FontConfiguration
 
 	// Determines the style of the metric labels.
@@ -5827,9 +7456,10 @@ type FunnelChartDataLabelOptions struct {
 	noSmithyDocumentSerde
 }
 
-// The field well configuration of a FunnelChartVisual . This is a union type
-// structure. For this structure to be valid, only one of the attributes can be
-// defined.
+// The field well configuration of a FunnelChartVisual .
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type FunnelChartFieldWells struct {
 
 	// The field well configuration of a FunnelChartVisual .
@@ -5850,8 +7480,11 @@ type FunnelChartSortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A funnel chart. For more information, see Using funnel charts (https://docs.aws.amazon.com/quicksight/latest/user/funnel-visual-content.html)
-// in the Amazon QuickSight User Guide.
+// A funnel chart.
+//
+// For more information, see [Using funnel charts] in the Amazon QuickSight User Guide.
+//
+// [Using funnel charts]: https://docs.aws.amazon.com/quicksight/latest/user/funnel-visual-content.html
 type FunnelChartVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -5876,6 +7509,9 @@ type FunnelChartVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -5884,6 +7520,18 @@ type GaugeChartArcConditionalFormatting struct {
 
 	// The conditional formatting of the arc foreground color.
 	ForegroundColor *ConditionalFormattingColor
+
+	noSmithyDocumentSerde
+}
+
+// The color configuration of a GaugeChartVisual .
+type GaugeChartColorConfiguration struct {
+
+	// The background color configuration of a GaugeChartVisual .
+	BackgroundColor *string
+
+	// The foreground color configuration of a GaugeChartVisual .
+	ForegroundColor *string
 
 	noSmithyDocumentSerde
 }
@@ -5912,6 +7560,9 @@ type GaugeChartConditionalFormattingOption struct {
 // The configuration of a GaugeChartVisual .
 type GaugeChartConfiguration struct {
 
+	// The color configuration of a GaugeChartVisual .
+	ColorConfiguration *GaugeChartColorConfiguration
+
 	// The data label configuration of a GaugeChartVisual .
 	DataLabels *DataLabelOptions
 
@@ -5920,6 +7571,9 @@ type GaugeChartConfiguration struct {
 
 	// The options that determine the presentation of the GaugeChartVisual .
 	GaugeChartOptions *GaugeChartOptions
+
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
 
 	// The tooltip configuration of a GaugeChartVisual .
 	TooltipOptions *TooltipOptions
@@ -5975,8 +7629,11 @@ type GaugeChartPrimaryValueConditionalFormatting struct {
 	noSmithyDocumentSerde
 }
 
-// A gauge chart. For more information, see Using gauge charts (https://docs.aws.amazon.com/quicksight/latest/user/gauge-chart.html)
-// in the Amazon QuickSight User Guide.
+// A gauge chart.
+//
+// For more information, see [Using gauge charts] in the Amazon QuickSight User Guide.
+//
+// [Using gauge charts]: https://docs.aws.amazon.com/quicksight/latest/user/gauge-chart.html
 type GaugeChartVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -6000,6 +7657,117 @@ type GaugeChartVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
+
+	noSmithyDocumentSerde
+}
+
+// The QA result that is made from generated answer.
+type GeneratedAnswerResult struct {
+
+	// The ID of the answer.
+	AnswerId *string
+
+	// The answer status of the generated answer.
+	AnswerStatus GeneratedAnswerStatus
+
+	// The ID of the question.
+	QuestionId *string
+
+	// The question text.
+	QuestionText *string
+
+	// The URL of the question.
+	QuestionUrl *string
+
+	// The restatement for the answer.
+	Restatement *string
+
+	// The ID of the topic.
+	TopicId *string
+
+	// The name of the topic.
+	TopicName *string
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a categorical color.
+type GeospatialCategoricalColor struct {
+
+	// A list of categorical data colors for each category.
+	//
+	// This member is required.
+	CategoryDataColors []GeospatialCategoricalDataColor
+
+	// The default opacity of a categorical color.
+	DefaultOpacity *float64
+
+	// The null data visualization settings.
+	NullDataSettings *GeospatialNullDataSettings
+
+	// The state of visibility for null data.
+	NullDataVisibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// The categorical data color for a single category.
+type GeospatialCategoricalDataColor struct {
+
+	// The color and opacity values for the category data color.
+	//
+	// This member is required.
+	Color *string
+
+	// The data value for the category data color.
+	//
+	// This member is required.
+	DataValue *string
+
+	noSmithyDocumentSerde
+}
+
+// The geospatial radius for a circle.
+type GeospatialCircleRadius struct {
+
+	// The positive value for the radius of a circle.
+	Radius *float64
+
+	noSmithyDocumentSerde
+}
+
+// The properties for a circle symbol style.
+type GeospatialCircleSymbolStyle struct {
+
+	// The radius of the circle.
+	CircleRadius *GeospatialCircleRadius
+
+	// The color and opacity values for the fill color.
+	FillColor *GeospatialColor
+
+	// The color and opacity values for the stroke color.
+	StrokeColor *GeospatialColor
+
+	// The width of the stroke (border).
+	StrokeWidth *GeospatialLineWidth
+
+	noSmithyDocumentSerde
+}
+
+// The visualization properties for solid, gradient, and categorical colors.
+type GeospatialColor struct {
+
+	// The visualization properties for the categorical color.
+	Categorical *GeospatialCategoricalColor
+
+	// The visualization properties for the gradient color.
+	Gradient *GeospatialGradientColor
+
+	// The visualization properties for the solid color.
+	Solid *GeospatialSolidColor
 
 	noSmithyDocumentSerde
 }
@@ -6049,6 +7817,51 @@ type GeospatialCoordinateBounds struct {
 	noSmithyDocumentSerde
 }
 
+// The data source properties for the geospatial data.
+type GeospatialDataSourceItem struct {
+
+	// The static file data source properties for the geospatial data.
+	StaticFileDataSource *GeospatialStaticFileSource
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a gradient color.
+type GeospatialGradientColor struct {
+
+	// A list of gradient step colors for the gradient.
+	//
+	// This member is required.
+	StepColors []GeospatialGradientStepColor
+
+	// The default opacity for the gradient color.
+	DefaultOpacity *float64
+
+	// The null data visualization settings.
+	NullDataSettings *GeospatialNullDataSettings
+
+	// The state of visibility for null data.
+	NullDataVisibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// The gradient step color for a single step.
+type GeospatialGradientStepColor struct {
+
+	// The color and opacity values for the gradient step color.
+	//
+	// This member is required.
+	Color *string
+
+	// The data value for the gradient step color.
+	//
+	// This member is required.
+	DataValue float64
+
+	noSmithyDocumentSerde
+}
+
 // The color scale specification for the heatmap point style.
 type GeospatialHeatmapColorScale struct {
 
@@ -6078,6 +7891,145 @@ type GeospatialHeatmapDataColor struct {
 	noSmithyDocumentSerde
 }
 
+// The color field that defines a gradient or categorical style.
+type GeospatialLayerColorField struct {
+
+	// A list of color dimension fields.
+	ColorDimensionsFields []DimensionField
+
+	// A list of color measure fields.
+	ColorValuesFields []MeasureField
+
+	noSmithyDocumentSerde
+}
+
+// The definition properties for a geospatial layer.
+type GeospatialLayerDefinition struct {
+
+	// The definition for a line layer.
+	LineLayer *GeospatialLineLayer
+
+	// The definition for a point layer.
+	PointLayer *GeospatialPointLayer
+
+	// The definition for a polygon layer.
+	PolygonLayer *GeospatialPolygonLayer
+
+	noSmithyDocumentSerde
+}
+
+// The properties for a single geospatial layer.
+type GeospatialLayerItem struct {
+
+	// The ID of the layer.
+	//
+	// This member is required.
+	LayerId *string
+
+	// A list of custom actions for a layer.
+	Actions []LayerCustomAction
+
+	// The data source for the layer.
+	DataSource *GeospatialDataSourceItem
+
+	// The join definition properties for a layer.
+	JoinDefinition *GeospatialLayerJoinDefinition
+
+	// The label that is displayed for the layer.
+	Label *string
+
+	// The definition properties for a layer.
+	LayerDefinition *GeospatialLayerDefinition
+
+	// The layer type.
+	LayerType GeospatialLayerType
+
+	// The display options for the visual tooltip.
+	Tooltip *TooltipOptions
+
+	// The state of visibility for the layer.
+	Visibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// The custom actions for a layer.
+type GeospatialLayerJoinDefinition struct {
+
+	// The geospatial color field for the join definition.
+	ColorField *GeospatialLayerColorField
+
+	// The unaggregated field for a table.
+	DatasetKeyField *UnaggregatedField
+
+	// The name of the field or property in the geospatial data source.
+	ShapeKeyField *string
+
+	noSmithyDocumentSerde
+}
+
+// The map definition that defines map state, map style, and geospatial layers.
+type GeospatialLayerMapConfiguration struct {
+
+	// The general visual interactions setup for visual publish options
+	Interactions *VisualInteractionOptions
+
+	// The options for the legend setup of a visual.
+	Legend *LegendOptions
+
+	// The geospatial layers to visualize on the map.
+	MapLayers []GeospatialLayerItem
+
+	// The map state properties for the map.
+	MapState *GeospatialMapState
+
+	// The map style properties for the map.
+	MapStyle *GeospatialMapStyle
+
+	noSmithyDocumentSerde
+}
+
+// The geospatial Line layer.
+type GeospatialLineLayer struct {
+
+	// The visualization style for a line layer.
+	//
+	// This member is required.
+	Style *GeospatialLineStyle
+
+	noSmithyDocumentSerde
+}
+
+// The visualization style for a line layer.
+type GeospatialLineStyle struct {
+
+	// The symbol style for a line style.
+	LineSymbolStyle *GeospatialLineSymbolStyle
+
+	noSmithyDocumentSerde
+}
+
+// The symbol style for a line layer.
+type GeospatialLineSymbolStyle struct {
+
+	// The color and opacity values for the fill color.
+	FillColor *GeospatialColor
+
+	// The width value for a line.
+	LineWidth *GeospatialLineWidth
+
+	noSmithyDocumentSerde
+}
+
+// The width properties for a line.
+type GeospatialLineWidth struct {
+
+	// The positive value for the width of a line.
+	LineWidth *float64
+
+	noSmithyDocumentSerde
+}
+
 // The aggregated field wells for a geospatial map.
 type GeospatialMapAggregatedFieldWells struct {
 
@@ -6101,6 +8053,9 @@ type GeospatialMapConfiguration struct {
 	// The field wells of the visual.
 	FieldWells *GeospatialMapFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The legend display setup of the visual.
 	Legend *LegendOptions
 
@@ -6122,12 +8077,41 @@ type GeospatialMapConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The field wells of a GeospatialMapVisual . This is a union type structure. For
-// this structure to be valid, only one of the attributes can be defined.
+// The field wells of a GeospatialMapVisual .
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type GeospatialMapFieldWells struct {
 
 	// The aggregated field well for a geospatial map.
 	GeospatialMapAggregatedFieldWells *GeospatialMapAggregatedFieldWells
+
+	noSmithyDocumentSerde
+}
+
+// The map state properties for a map.
+type GeospatialMapState struct {
+
+	// The bound options (north, south, west, east) of the geospatial window options.
+	Bounds *GeospatialCoordinateBounds
+
+	// Enables or disables map navigation for a map.
+	MapNavigation GeospatialMapNavigation
+
+	noSmithyDocumentSerde
+}
+
+// The map style properties for a map.
+type GeospatialMapStyle struct {
+
+	// The background color and opacity values for a map.
+	BackgroundColor *string
+
+	// The selected base map style.
+	BaseMapStyle BaseMapStyleType
+
+	// The state of visibility for the base map.
+	BaseMapVisibility Visibility
 
 	noSmithyDocumentSerde
 }
@@ -6141,9 +8125,11 @@ type GeospatialMapStyleOptions struct {
 	noSmithyDocumentSerde
 }
 
-// A geospatial map or a points on map visual. For more information, see Creating
-// point maps (https://docs.aws.amazon.com/quicksight/latest/user/point-maps.html)
-// in the Amazon QuickSight User Guide.
+// A geospatial map or a points on map visual.
+//
+// For more information, see [Creating point maps] in the Amazon QuickSight User Guide.
+//
+// [Creating point maps]: https://docs.aws.amazon.com/quicksight/latest/user/point-maps.html
 type GeospatialMapVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -6168,6 +8154,55 @@ type GeospatialMapVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
+	noSmithyDocumentSerde
+}
+
+// The properties for the visualization of null data.
+type GeospatialNullDataSettings struct {
+
+	// The symbol style for null data.
+	//
+	// This member is required.
+	SymbolStyle *GeospatialNullSymbolStyle
+
+	noSmithyDocumentSerde
+}
+
+// The symbol style for null data.
+type GeospatialNullSymbolStyle struct {
+
+	// The color and opacity values for the fill color.
+	FillColor *string
+
+	// The color and opacity values for the stroke color.
+	StrokeColor *string
+
+	// The width of the border stroke.
+	StrokeWidth *float64
+
+	noSmithyDocumentSerde
+}
+
+// The geospatial Point layer.
+type GeospatialPointLayer struct {
+
+	// The visualization style for a point layer.
+	//
+	// This member is required.
+	Style *GeospatialPointStyle
+
+	noSmithyDocumentSerde
+}
+
+// The point style for a point layer.
+type GeospatialPointStyle struct {
+
+	// The circle symbol style for a point layer.
+	CircleSymbolStyle *GeospatialCircleSymbolStyle
+
 	noSmithyDocumentSerde
 }
 
@@ -6182,6 +8217,66 @@ type GeospatialPointStyleOptions struct {
 
 	// The selected point styles (point, cluster) of the geospatial map.
 	SelectedPointStyle GeospatialSelectedPointStyle
+
+	noSmithyDocumentSerde
+}
+
+// The geospatial polygon layer.
+type GeospatialPolygonLayer struct {
+
+	// The visualization style for a polygon layer.
+	//
+	// This member is required.
+	Style *GeospatialPolygonStyle
+
+	noSmithyDocumentSerde
+}
+
+// The polygon style for a polygon layer.
+type GeospatialPolygonStyle struct {
+
+	// The polygon symbol style for a polygon layer.
+	PolygonSymbolStyle *GeospatialPolygonSymbolStyle
+
+	noSmithyDocumentSerde
+}
+
+// The polygon symbol style for a polygon layer.
+type GeospatialPolygonSymbolStyle struct {
+
+	// The color and opacity values for the fill color.
+	FillColor *GeospatialColor
+
+	// The color and opacity values for the stroke color.
+	StrokeColor *GeospatialColor
+
+	// The width of the border stroke.
+	StrokeWidth *GeospatialLineWidth
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a solid color.
+type GeospatialSolidColor struct {
+
+	// The color and opacity values for the color.
+	//
+	// This member is required.
+	Color *string
+
+	// Enables and disables the view state of the color.
+	State GeospatialColorState
+
+	noSmithyDocumentSerde
+}
+
+// The source properties for a geospatial static file.
+type GeospatialStaticFileSource struct {
+
+	// The ID of the static file.
+	//
+	// This member is required.
+	StaticFileId *string
 
 	noSmithyDocumentSerde
 }
@@ -6245,9 +8340,10 @@ type GridLayoutCanvasSizeOptions struct {
 	noSmithyDocumentSerde
 }
 
-// The configuration for a grid layout. Also called a tiled layout. Visuals snap
-// to a grid with standard spacing and alignment. Dashboards are displayed as
-// designed, with options to fit to screen or view at actual size.
+// The configuration for a grid layout. Also called a tiled layout.
+//
+// Visuals snap to a grid with standard spacing and alignment. Dashboards are
+// displayed as designed, with options to fit to screen or view at actual size.
 type GridLayoutConfiguration struct {
 
 	// The elements that are included in a grid layout.
@@ -6297,8 +8393,10 @@ type GridLayoutElement struct {
 type GridLayoutScreenCanvasSizeOptions struct {
 
 	// This value determines the layout behavior when the viewport is resized.
+	//
 	//   - FIXED : A fixed width will be used when optimizing the layout. In the Amazon
 	//   QuickSight console, this option is called Classic .
+	//
 	//   - RESPONSIVE : The width of the canvas will be responsive and optimized to the
 	//   view port. In the Amazon QuickSight console, this option is called Tiled .
 	//
@@ -6375,16 +8473,14 @@ type GrowthRateComputation struct {
 	// This member is required.
 	ComputationId *string
 
-	// The time field that is used in a computation.
-	//
-	// This member is required.
-	Time *DimensionField
-
 	// The name of a computation.
 	Name *string
 
 	// The period size setup of a growth rate computation.
-	PeriodSize int32
+	PeriodSize *int32
+
+	// The time field that is used in a computation.
+	Time *DimensionField
 
 	// The value field that is used in a computation.
 	Value *MeasureField
@@ -6451,6 +8547,9 @@ type HeatMapConfiguration struct {
 	// The field wells of the visual.
 	FieldWells *HeatMapFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The legend display setup of the visual.
 	Legend *LegendOptions
 
@@ -6466,8 +8565,10 @@ type HeatMapConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The field well configuration of a heat map. This is a union type structure. For
-// this structure to be valid, only one of the attributes can be defined.
+// The field well configuration of a heat map.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type HeatMapFieldWells struct {
 
 	// The aggregated field wells of a heat map.
@@ -6495,8 +8596,11 @@ type HeatMapSortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A heat map. For more information, see Using heat maps (https://docs.aws.amazon.com/quicksight/latest/user/heat-map.html)
-// in the Amazon QuickSight User Guide.
+// A heat map.
+//
+// For more information, see [Using heat maps] in the Amazon QuickSight User Guide.
+//
+// [Using heat maps]: https://docs.aws.amazon.com/quicksight/latest/user/heat-map.html
 type HeatMapVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -6520,6 +8624,9 @@ type HeatMapVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -6564,6 +8671,9 @@ type HistogramConfiguration struct {
 	// The field well configuration of a histogram.
 	FieldWells *HistogramFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The tooltip configuration of a histogram.
 	Tooltip *TooltipOptions
 
@@ -6591,8 +8701,11 @@ type HistogramFieldWells struct {
 	noSmithyDocumentSerde
 }
 
-// A histogram. For more information, see Using histograms (https://docs.aws.amazon.com/quicksight/latest/user/histogram-charts.html)
-// in the Amazon QuickSight User Guide.
+// A histogram.
+//
+// For more information, see [Using histograms] in the Amazon QuickSight User Guide.
+//
+// [Using histograms]: https://docs.aws.amazon.com/quicksight/latest/user/histogram-charts.html
 type HistogramVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -6613,6 +8726,9 @@ type HistogramVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -6649,6 +8765,197 @@ type IAMPolicyAssignmentSummary struct {
 
 	// Assignment status.
 	AssignmentStatus AssignmentStatus
+
+	noSmithyDocumentSerde
+}
+
+// The definition for the identifier.
+type Identifier struct {
+
+	// The identity of the identifier.
+	//
+	// This member is required.
+	Identity *string
+
+	noSmithyDocumentSerde
+}
+
+// The parameters for an IAM Identity Center configuration.
+type IdentityCenterConfiguration struct {
+
+	// A Boolean option that controls whether Trusted Identity Propagation should be
+	// used.
+	EnableIdentityPropagation *bool
+
+	noSmithyDocumentSerde
+}
+
+// The logo image.
+type Image struct {
+
+	// The URL that points to the generated logo image.
+	GeneratedImageUrl *string
+
+	// The source of the logo image.
+	Source ImageSource
+
+	noSmithyDocumentSerde
+}
+
+// The logo image configuration.
+type ImageConfiguration struct {
+
+	// The source of the image.
+	Source ImageSource
+
+	noSmithyDocumentSerde
+}
+
+// A custom action defined on an image.
+type ImageCustomAction struct {
+
+	// A list of ImageCustomActionOperations .
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
+	// attributes can be defined.
+	//
+	// This member is required.
+	ActionOperations []ImageCustomActionOperation
+
+	// The ID of the custom action.
+	//
+	// This member is required.
+	CustomActionId *string
+
+	// The name of the custom action.
+	//
+	// This member is required.
+	Name *string
+
+	// The trigger of the VisualCustomAction .
+	//
+	// Valid values are defined as follows:
+	//
+	//   - CLICK : Initiates a custom action by a left pointer click on a data point.
+	//
+	//   - MENU : Initiates a custom action by right pointer click from the menu.
+	//
+	// This member is required.
+	Trigger ImageCustomActionTrigger
+
+	// The status of the custom action.
+	Status WidgetStatus
+
+	noSmithyDocumentSerde
+}
+
+// The operation that is defined by the custom action.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
+type ImageCustomActionOperation struct {
+
+	// The navigation operation that navigates between different sheets in the same
+	// analysis.
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
+	// attributes can be defined.
+	NavigationOperation *CustomActionNavigationOperation
+
+	// The set parameter operation that sets parameters in custom action.
+	SetParametersOperation *CustomActionSetParametersOperation
+
+	// The URL operation that opens a link to another webpage.
+	URLOperation *CustomActionURLOperation
+
+	noSmithyDocumentSerde
+}
+
+// The general image interactions setup for image publish options.
+type ImageInteractionOptions struct {
+
+	// The menu options for the image.
+	ImageMenuOption *ImageMenuOption
+
+	noSmithyDocumentSerde
+}
+
+// The menu options for the interactions of an image.
+type ImageMenuOption struct {
+
+	// The availability status of the image menu. If the value of this property is set
+	// to ENABLED , dashboard readers can interact with the image menu.
+	AvailabilityStatus DashboardBehavior
+
+	noSmithyDocumentSerde
+}
+
+// The image set.
+type ImageSet struct {
+
+	// The original image.
+	//
+	// This member is required.
+	Original *Image
+
+	// The image with the height set to 32 pixels.
+	Height32 *Image
+
+	// The image with the height set to 64 pixels.
+	Height64 *Image
+
+	noSmithyDocumentSerde
+}
+
+// The image set configuration.
+type ImageSetConfiguration struct {
+
+	// The original image.
+	//
+	// This member is required.
+	Original *ImageConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The source of the image.
+//
+// The following types satisfy this interface:
+//
+//	ImageSourceMemberPublicUrl
+//	ImageSourceMemberS3Uri
+type ImageSource interface {
+	isImageSource()
+}
+
+// The public URL that points to the source image.
+type ImageSourceMemberPublicUrl struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*ImageSourceMemberPublicUrl) isImageSource() {}
+
+// The Amazon S3 URI that points to the source image.
+type ImageSourceMemberS3Uri struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*ImageSourceMemberS3Uri) isImageSource() {}
+
+// A static file that contains an image.
+type ImageStaticFile struct {
+
+	// The ID of the static file that contains an image.
+	//
+	// This member is required.
+	StaticFileId *string
+
+	// The source of the image static file.
+	Source *StaticFileSource
 
 	noSmithyDocumentSerde
 }
@@ -6709,6 +9016,15 @@ type Ingestion struct {
 	noSmithyDocumentSerde
 }
 
+// The InnerFilter defines the subset of data to be used with the NestedFilter .
+type InnerFilter struct {
+
+	// A CategoryInnerFilter filters text values for the NestedFilter .
+	CategoryInnerFilter *CategoryInnerFilter
+
+	noSmithyDocumentSerde
+}
+
 // Metadata for a column that is used as the input of a transform operation.
 type InputColumn struct {
 
@@ -6722,6 +9038,10 @@ type InputColumn struct {
 	// This member is required.
 	Type InputColumnDataType
 
+	// The sub data type of the column. Sub types are only available for decimal
+	// columns that are part of a SPICE dataset.
+	SubType ColumnDataSubType
+
 	noSmithyDocumentSerde
 }
 
@@ -6734,11 +9054,17 @@ type InsightConfiguration struct {
 	// The custom narrative of the insight visual.
 	CustomNarrative *CustomNarrativeOptions
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	noSmithyDocumentSerde
 }
 
-// An insight visual. For more information, see Working with insights (https://docs.aws.amazon.com/quicksight/latest/user/computational-insights.html)
-// in the Amazon QuickSight User Guide.
+// An insight visual.
+//
+// For more information, see [Working with insights] in the Amazon QuickSight User Guide.
+//
+// [Working with insights]: https://docs.aws.amazon.com/quicksight/latest/user/computational-insights.html
 type InsightVisual struct {
 
 	// The dataset that is used in the insight visual.
@@ -6764,6 +9090,9 @@ type InsightVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -6859,18 +9188,33 @@ type IntegerParameterDeclaration struct {
 	noSmithyDocumentSerde
 }
 
-// A parameter declaration for the Integer data type. This is a union type
-// structure. For this structure to be valid, only one of the attributes can be
-// defined.
+// A parameter declaration for the Integer data type.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type IntegerValueWhenUnsetConfiguration struct {
 
 	// A custom value that's used when the value of a parameter isn't set.
 	CustomValue *int64
 
 	// The built-in options for default values. The value can be one of the following:
+	//
 	//   - RECOMMENDED : The recommended value.
+	//
 	//   - NULL : The NULL value.
 	ValueWhenUnsetOption ValueWhenUnsetOption
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a InvalidTopicReviewedAnswer .
+type InvalidTopicReviewedAnswer struct {
+
+	// The answer ID for the InvalidTopicReviewedAnswer .
+	AnswerId *string
+
+	// The error that is returned for the InvalidTopicReviewedAnswer .
+	Error ReviewedAnswerErrorCode
 
 	noSmithyDocumentSerde
 }
@@ -6883,7 +9227,9 @@ type ItemsLimitConfiguration struct {
 	ItemsLimit *int64
 
 	// The Show other of an axis in the chart. Choose one of the following options:
+	//
 	//   - INCLUDE
+	//
 	//   - EXCLUDE
 	OtherCategories OtherCategories
 
@@ -6944,6 +9290,30 @@ type JoinKeyProperties struct {
 	noSmithyDocumentSerde
 }
 
+// The conditional formatting for the actual value of a KPI visual.
+type KPIActualValueConditionalFormatting struct {
+
+	// The conditional formatting of the actual value's icon.
+	Icon *ConditionalFormattingIcon
+
+	// The conditional formatting of the actual value's text color.
+	TextColor *ConditionalFormattingColor
+
+	noSmithyDocumentSerde
+}
+
+// The conditional formatting for the comparison value of a KPI visual.
+type KPIComparisonValueConditionalFormatting struct {
+
+	// The conditional formatting of the comparison value's icon.
+	Icon *ConditionalFormattingIcon
+
+	// The conditional formatting of the comparison value's text color.
+	TextColor *ConditionalFormattingColor
+
+	noSmithyDocumentSerde
+}
+
 // The conditional formatting of a KPI visual.
 type KPIConditionalFormatting struct {
 
@@ -6955,6 +9325,12 @@ type KPIConditionalFormatting struct {
 
 // The conditional formatting options of a KPI visual.
 type KPIConditionalFormattingOption struct {
+
+	// The conditional formatting for the actual value of a KPI visual.
+	ActualValue *KPIActualValueConditionalFormatting
+
+	// The conditional formatting for the comparison value of a KPI visual.
+	ComparisonValue *KPIComparisonValueConditionalFormatting
 
 	// The conditional formatting for the primary value of a KPI visual.
 	PrimaryValue *KPIPrimaryValueConditionalFormatting
@@ -6970,6 +9346,9 @@ type KPIConfiguration struct {
 
 	// The field well configuration of a KPI visual.
 	FieldWells *KPIFieldWells
+
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
 
 	// The options that determine the presentation of a KPI visual.
 	KPIOptions *KPIOptions
@@ -7017,8 +9396,15 @@ type KPIOptions struct {
 	// The options that determine the secondary value font configuration.
 	SecondaryValueFontConfiguration *FontConfiguration
 
+	// The options that determine the visibility, color, type, and tooltip visibility
+	// of the sparkline of a KPI visual.
+	Sparkline *KPISparklineOptions
+
 	// The options that determine the presentation of trend arrows in a KPI visual.
 	TrendArrows *TrendArrowOptions
+
+	// The options that determine the layout a KPI visual.
+	VisualLayoutOptions *KPIVisualLayoutOptions
 
 	noSmithyDocumentSerde
 }
@@ -7053,8 +9439,32 @@ type KPISortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A key performance indicator (KPI). For more information, see Using KPIs (https://docs.aws.amazon.com/quicksight/latest/user/kpi.html)
-// in the Amazon QuickSight User Guide.
+// The options that determine the visibility, color, type, and tooltip visibility
+// of the sparkline of a KPI visual.
+type KPISparklineOptions struct {
+
+	// The type of the sparkline.
+	//
+	// This member is required.
+	Type KPISparklineType
+
+	// The color of the sparkline.
+	Color *string
+
+	// The tooltip visibility of the sparkline.
+	TooltipVisibility Visibility
+
+	// The visibility of the sparkline.
+	Visibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// A key performance indicator (KPI).
+//
+// For more information, see [Using KPIs] in the Amazon QuickSight User Guide.
+//
+// [Using KPIs]: https://docs.aws.amazon.com/quicksight/latest/user/kpi.html
 type KPIVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -7082,6 +9492,29 @@ type KPIVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
+	noSmithyDocumentSerde
+}
+
+// The options that determine the layout a KPI visual.
+type KPIVisualLayoutOptions struct {
+
+	// The standard layout of the KPI visual.
+	StandardLayout *KPIVisualStandardLayout
+
+	noSmithyDocumentSerde
+}
+
+// The standard layout of the KPI visual.
+type KPIVisualStandardLayout struct {
+
+	// The standard layout type.
+	//
+	// This member is required.
+	Type KPIVisualStandardLayoutType
+
 	noSmithyDocumentSerde
 }
 
@@ -7100,10 +9533,109 @@ type LabelOptions struct {
 	noSmithyDocumentSerde
 }
 
-// A Layout defines the placement of elements within a sheet. For more
-// information, see Types of layout (https://docs.aws.amazon.com/quicksight/latest/user/types-of-layout.html)
-// in the Amazon QuickSight User Guide. This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// A layer custom action.
+type LayerCustomAction struct {
+
+	// A list of LayerCustomActionOperations .
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
+	// attributes can be defined.
+	//
+	// This member is required.
+	ActionOperations []LayerCustomActionOperation
+
+	// The ID of the custom action.
+	//
+	// This member is required.
+	CustomActionId *string
+
+	// The name of the custom action.
+	//
+	// This member is required.
+	Name *string
+
+	// The trigger of the LayerCustomAction .
+	//
+	// Valid values are defined as follows:
+	//
+	//   - DATA_POINT_CLICK : Initiates a custom action by a left pointer click on a
+	//   data point.
+	//
+	//   - DATA_POINT_MENU : Initiates a custom action by right pointer click from the
+	//   menu.
+	//
+	// This member is required.
+	Trigger LayerCustomActionTrigger
+
+	// The status of the LayerCustomAction .
+	Status WidgetStatus
+
+	noSmithyDocumentSerde
+}
+
+// The operation that is defined by the custom action.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
+type LayerCustomActionOperation struct {
+
+	// The filter operation that filters data included in a visual or in an entire
+	// sheet.
+	FilterOperation *CustomActionFilterOperation
+
+	// The navigation operation that navigates between different sheets in the same
+	// analysis.
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
+	// attributes can be defined.
+	NavigationOperation *CustomActionNavigationOperation
+
+	// The set parameter operation that sets parameters in custom action.
+	SetParametersOperation *CustomActionSetParametersOperation
+
+	// The URL operation that opens a link to another webpage.
+	URLOperation *CustomActionURLOperation
+
+	noSmithyDocumentSerde
+}
+
+// A layer map visual.
+type LayerMapVisual struct {
+
+	// The dataset that is used to create the layer map visual. You can't create a
+	// visual without a dataset.
+	//
+	// This member is required.
+	DataSetIdentifier *string
+
+	// The ID of the visual.
+	//
+	// This member is required.
+	VisualId *string
+
+	// The configuration settings of the visual.
+	ChartConfiguration *GeospatialLayerMapConfiguration
+
+	// The subtitle label options for a visual.
+	Subtitle *VisualSubtitleLabelOptions
+
+	// The title label options for a visual.
+	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
+
+	noSmithyDocumentSerde
+}
+
+// A Layout defines the placement of elements within a sheet.
+//
+// For more information, see [Types of layout] in the Amazon QuickSight User Guide.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
+//
+// [Types of layout]: https://docs.aws.amazon.com/quicksight/latest/user/types-of-layout.html
 type Layout struct {
 
 	// The configuration that determines what the type of layout for a sheet.
@@ -7115,8 +9647,10 @@ type Layout struct {
 }
 
 // The configuration that determines what the type of layout will be used on a
-// sheet. This is a union type structure. For this structure to be valid, only one
-// of the attributes can be defined.
+// sheet.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type LayoutConfiguration struct {
 
 	// A free-form is optimized for a fixed width and has more control over the exact
@@ -7145,14 +9679,21 @@ type LegendOptions struct {
 	Height *string
 
 	// The positions for the legend. Choose one of the following options:
+	//
 	//   - AUTO
+	//
 	//   - RIGHT
+	//
 	//   - BOTTOM
+	//
 	//   - LEFT
 	Position LegendPosition
 
 	// The custom title for the legend.
 	Title *LabelOptions
+
+	// Configures the display properties of the given text.
+	ValueFontConfiguration *FontConfiguration
 
 	// Determines whether or not the legend is visible.
 	Visibility Visibility
@@ -7202,6 +9743,9 @@ type LineChartConfiguration struct {
 	// The forecast configuration of a line chart.
 	ForecastConfigurations []ForecastConfiguration
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The legend configuration of a line chart.
 	Legend *LegendOptions
 
@@ -7222,6 +9766,9 @@ type LineChartConfiguration struct {
 
 	// The series item configuration of a line chart.
 	Series []SeriesItem
+
+	// The settings of a chart's single axis configuration.
+	SingleAxisOptions *SingleAxisOptions
 
 	// The small multiples setup for the visual.
 	SmallMultiplesOptions *SmallMultiplesOptions
@@ -7276,14 +9823,20 @@ type LineChartFieldWells struct {
 type LineChartLineStyleSettings struct {
 
 	// Interpolation style for line series.
+	//
 	//   - LINEAR : Show as default, linear style.
+	//
 	//   - SMOOTH : Show as a smooth curve.
+	//
 	//   - STEPPED : Show steps in line.
 	LineInterpolation LineInterpolation
 
 	// Line style for line series.
+	//
 	//   - SOLID : Show as a solid line.
+	//
 	//   - DOTTED : Show as a dotted line.
+	//
 	//   - DASHED : Show as a dashed line.
 	LineStyle LineChartLineStyle
 
@@ -7303,10 +9856,15 @@ type LineChartMarkerStyleSettings struct {
 	MarkerColor *string
 
 	// Shape option for markers in the series.
+	//
 	//   - CIRCLE : Show marker as a circle.
+	//
 	//   - TRIANGLE : Show marker as a triangle.
+	//
 	//   - SQUARE : Show marker as a square.
+	//
 	//   - DIAMOND : Show marker as a diamond.
+	//
 	//   - ROUNDED_SQUARE : Show marker as a rounded square.
 	MarkerShape LineChartMarkerShape
 
@@ -7352,8 +9910,11 @@ type LineChartSortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A line chart. For more information, see Using line charts (https://docs.aws.amazon.com/quicksight/latest/user/line-charts.html)
-// in the Amazon QuickSight User Guide.
+// A line chart.
+//
+// For more information, see [Using line charts] in the Amazon QuickSight User Guide.
+//
+// [Using line charts]: https://docs.aws.amazon.com/quicksight/latest/user/line-charts.html
 type LineChartVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -7377,6 +9938,9 @@ type LineChartVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -7500,8 +10064,70 @@ type LogicalTableSource struct {
 	noSmithyDocumentSerde
 }
 
-// The text format for a subtitle. This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The logo configuration.
+type Logo struct {
+
+	// The alt text for the logo.
+	//
+	// This member is required.
+	AltText *string
+
+	// A set of configured logos.
+	//
+	// This member is required.
+	LogoSet *LogoSet
+
+	noSmithyDocumentSerde
+}
+
+// The logo configuration.
+type LogoConfiguration struct {
+
+	// The alt text for the logo.
+	//
+	// This member is required.
+	AltText *string
+
+	// A set of configured logos.
+	//
+	// This member is required.
+	LogoSet *LogoSetConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// A set of logos.
+type LogoSet struct {
+
+	// The primary logo.
+	//
+	// This member is required.
+	Primary *ImageSet
+
+	// The favicon logo.
+	Favicon *ImageSet
+
+	noSmithyDocumentSerde
+}
+
+// The logo set configuration.
+type LogoSetConfiguration struct {
+
+	// The primary logo.
+	//
+	// This member is required.
+	Primary *ImageSetConfiguration
+
+	// The favicon logo.
+	Favicon *ImageSetConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The text format for a subtitle.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type LongFormatText struct {
 
 	// Plain text format.
@@ -7524,7 +10150,7 @@ type LookbackWindow struct {
 	// The lookback window column size.
 	//
 	// This member is required.
-	Size int64
+	Size *int64
 
 	// The size unit that is used for the lookback window column. Valid values for
 	// this structure are HOUR , DAY , and WEEK .
@@ -7592,7 +10218,7 @@ type MariaDbParameters struct {
 	// Port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -7614,13 +10240,10 @@ type MaximumMinimumComputation struct {
 	// This member is required.
 	ComputationId *string
 
-	// The time field that is used in a computation.
-	//
-	// This member is required.
-	Time *DimensionField
-
 	// The type of computation. Choose one of the following options:
+	//
 	//   - MAXIMUM: A maximum computation.
+	//
 	//   - MINIMUM: A minimum computation.
 	//
 	// This member is required.
@@ -7628,6 +10251,9 @@ type MaximumMinimumComputation struct {
 
 	// The name of a computation.
 	Name *string
+
+	// The time field that is used in a computation.
+	Time *DimensionField
 
 	// The value field that is used in a computation.
 	Value *MeasureField
@@ -7674,22 +10300,16 @@ type MetricComparisonComputation struct {
 	ComputationId *string
 
 	// The field that is used in a metric comparison from value setup.
-	//
-	// This member is required.
 	FromValue *MeasureField
-
-	// The field that is used in a metric comparison to value setup.
-	//
-	// This member is required.
-	TargetValue *MeasureField
-
-	// The time field that is used in a computation.
-	//
-	// This member is required.
-	Time *DimensionField
 
 	// The name of a computation.
 	Name *string
+
+	// The field that is used in a metric comparison to value setup.
+	TargetValue *MeasureField
+
+	// The time field that is used in a computation.
+	Time *DimensionField
 
 	noSmithyDocumentSerde
 }
@@ -7709,9 +10329,12 @@ type MissingDataConfiguration struct {
 
 	// The treatment option that determines how missing data should be rendered.
 	// Choose from the following options:
+	//
 	//   - INTERPOLATE : Interpolate missing values between the prior and the next
 	//   known value.
+	//
 	//   - SHOW_AS_ZERO : Show missing values as the value 0 .
+	//
 	//   - SHOW_AS_BLANK : Display a blank space when rendering missing data.
 	TreatmentOption MissingDataTreatmentOption
 
@@ -7734,7 +10357,7 @@ type MySqlParameters struct {
 	// Port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -7775,6 +10398,15 @@ type NamedEntityDefinitionMetric struct {
 	noSmithyDocumentSerde
 }
 
+// The definition for a NamedEntityRef .
+type NamedEntityRef struct {
+
+	// The NamedEntityName for the NamedEntityRef .
+	NamedEntityName *string
+
+	noSmithyDocumentSerde
+}
+
 // Errors that occur during namespace creation.
 type NamespaceError struct {
 
@@ -7799,6 +10431,12 @@ type NamespaceInfoV2 struct {
 	// The creation status of a namespace that is not yet completely created.
 	CreationStatus NamespaceStatus
 
+	// The Amazon Resource Name (ARN) for the IAM Identity Center application.
+	IamIdentityCenterApplicationArn *string
+
+	// The Amazon Resource Name (ARN) for the IAM Identity Center instance.
+	IamIdentityCenterInstanceArn *string
+
 	// The identity store used for the namespace.
 	IdentityStore IdentityStore
 
@@ -7807,6 +10445,18 @@ type NamespaceInfoV2 struct {
 
 	// An error that occurred when the namespace was created.
 	NamespaceError *NamespaceError
+
+	noSmithyDocumentSerde
+}
+
+// The navigation bar style.
+type NavbarStyle struct {
+
+	// The contextual navigation bar style.
+	ContextualNavbar *Palette
+
+	// The global navigation bar style.
+	GlobalNavbar *Palette
 
 	noSmithyDocumentSerde
 }
@@ -7830,6 +10480,35 @@ type NegativeValueConfiguration struct {
 	//
 	// This member is required.
 	DisplayMode NegativeValueDisplayMode
+
+	noSmithyDocumentSerde
+}
+
+// A NestedFilter filters data with a subset of data that is defined by the nested
+// inner filter.
+type NestedFilter struct {
+
+	// The column that the filter is applied to.
+	//
+	// This member is required.
+	Column *ColumnIdentifier
+
+	// An identifier that uniquely identifies a filter within a dashboard, analysis,
+	// or template.
+	//
+	// This member is required.
+	FilterId *string
+
+	// A boolean condition to include or exclude the subset that is defined by the
+	// values of the nested inner filter.
+	//
+	// This member is required.
+	IncludeInnerSet bool
+
+	// The InnerFilter defines the subset of data to be used with the NestedFilter .
+	//
+	// This member is required.
+	InnerFilter *InnerFilter
 
 	noSmithyDocumentSerde
 }
@@ -7928,16 +10607,27 @@ type NumericalAggregationFunction struct {
 	PercentileAggregation *PercentileAggregation
 
 	// Built-in aggregation functions for numerical values.
+	//
 	//   - SUM : The sum of a dimension or measure.
+	//
 	//   - AVERAGE : The average of a dimension or measure.
+	//
 	//   - MIN : The minimum value of a dimension or measure.
+	//
 	//   - MAX : The maximum value of a dimension or measure.
+	//
 	//   - COUNT : The count of a dimension or measure.
+	//
 	//   - DISTINCT_COUNT : The count of distinct values in a dimension or measure.
+	//
 	//   - VAR : The variance of a dimension or measure.
+	//
 	//   - VARP : The partitioned variance of a dimension or measure.
+	//
 	//   - STDEV : The standard deviation of a dimension or measure.
+	//
 	//   - STDEVP : The partitioned standard deviation of a dimension or measure.
+	//
 	//   - MEDIAN : The median value of a dimension or measure.
 	SimpleNumericalAggregation SimpleNumericalAggregationFunction
 
@@ -8000,7 +10690,7 @@ type NumericAxisOptions struct {
 	noSmithyDocumentSerde
 }
 
-// The category drill down filter.
+// The numeric equality type drill down filter.
 type NumericEqualityDrillDownFilter struct {
 
 	// The column that the filter is applied to.
@@ -8036,8 +10726,11 @@ type NumericEqualityFilter struct {
 	MatchOperator NumericEqualityMatchOperator
 
 	// This option determines how null values should be treated when filtering data.
+	//
 	//   - ALL_VALUES : Include null values in filtered results.
+	//
 	//   - NULLS_ONLY : Only include null values in filtered results.
+	//
 	//   - NON_NULLS_ONLY : Exclude null values from filtered results.
 	//
 	// This member is required.
@@ -8046,10 +10739,15 @@ type NumericEqualityFilter struct {
 	// The aggregation function of the filter.
 	AggregationFunction *AggregationFunction
 
+	// The default configurations for the associated controls. This applies only for
+	// filters that are scoped to multiple sheets.
+	DefaultFilterControlConfiguration *DefaultFilterControlConfiguration
+
 	// The parameter whose value should be used for the filter value.
 	ParameterName *string
 
 	// Select all of the values. Null is not the assigned value of select all.
+	//
 	//   - FILTER_ALL_VALUES
 	SelectAllOptions NumericFilterSelectAllOptions
 
@@ -8059,9 +10757,10 @@ type NumericEqualityFilter struct {
 	noSmithyDocumentSerde
 }
 
-// The options that determine the numeric format configuration. This is a union
-// type structure. For this structure to be valid, only one of the attributes can
-// be defined.
+// The options that determine the numeric format configuration.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type NumericFormatConfiguration struct {
 
 	// The options that determine the currency display format configuration.
@@ -8091,8 +10790,11 @@ type NumericRangeFilter struct {
 	FilterId *string
 
 	// This option determines how null values should be treated when filtering data.
+	//
 	//   - ALL_VALUES : Include null values in filtered results.
+	//
 	//   - NULLS_ONLY : Only include null values in filtered results.
+	//
 	//   - NON_NULLS_ONLY : Exclude null values from filtered results.
 	//
 	// This member is required.
@@ -8100,6 +10802,10 @@ type NumericRangeFilter struct {
 
 	// The aggregation function of the filter.
 	AggregationFunction *AggregationFunction
+
+	// The default configurations for the associated controls. This applies only for
+	// filters that are scoped to multiple sheets.
+	DefaultFilterControlConfiguration *DefaultFilterControlConfiguration
 
 	// Determines whether the maximum value in the filter value range should be
 	// included in the filtered results.
@@ -8116,6 +10822,7 @@ type NumericRangeFilter struct {
 	RangeMinimum *NumericRangeFilterValue
 
 	// Select all of the values. Null is not the assigned value of select all.
+	//
 	//   - FILTER_ALL_VALUES
 	SelectAllOptions NumericFilterSelectAllOptions
 
@@ -8146,6 +10853,28 @@ type NumericSeparatorConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// An object that contains information needed to create a data source connection
+// that uses OAuth client credentials. This option is available for data source
+// connections that are made with Snowflake and Starburst.
+type OAuthParameters struct {
+
+	// The token endpoint URL of the identity provider.
+	//
+	// This member is required.
+	TokenProviderUrl *string
+
+	// The resource uri of the identity provider.
+	IdentityProviderResourceUri *string
+
+	// VPC connection properties.
+	IdentityProviderVpcConnectionProperties *VpcConnectionProperties
+
+	// The OAuth scope.
+	OAuthScope *string
+
+	noSmithyDocumentSerde
+}
+
 // The parameters for Oracle.
 type OracleParameters struct {
 
@@ -8162,7 +10891,7 @@ type OracleParameters struct {
 	// The port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -8173,10 +10902,13 @@ type OutputColumn struct {
 	// A description for a column.
 	Description *string
 
-	// A display name for the dataset.
+	// The display name of the column..
 	Name *string
 
-	// The type.
+	// The sub data type of the column.
+	SubType ColumnDataSubType
+
+	// The data type of the column.
 	Type ColumnDataType
 
 	noSmithyDocumentSerde
@@ -8212,6 +10944,18 @@ type PaginationConfiguration struct {
 	//
 	// This member is required.
 	PageSize *int64
+
+	noSmithyDocumentSerde
+}
+
+// The color palette.
+type Palette struct {
+
+	// The background color.
+	Background *string
+
+	// The foreground color.
+	Foreground *string
 
 	noSmithyDocumentSerde
 }
@@ -8267,8 +11011,10 @@ type PanelTitleOptions struct {
 }
 
 // The control of a parameter that users can interact with in a dashboard or an
-// analysis. This is a union type structure. For this structure to be valid, only
-// one of the attributes can be defined.
+// analysis.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type ParameterControl struct {
 
 	// A control from a date parameter that specifies date and time.
@@ -8319,10 +11065,14 @@ type ParameterDateTimePickerControl struct {
 	noSmithyDocumentSerde
 }
 
-// The declaration definition of a parameter. For more information, see Parameters
-// in Amazon QuickSight (https://docs.aws.amazon.com/quicksight/latest/user/parameters-in-quicksight.html)
-// in the Amazon QuickSight User Guide. This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The declaration definition of a parameter.
+//
+// For more information, see [Parameters in Amazon QuickSight] in the Amazon QuickSight User Guide.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
+//
+// [Parameters in Amazon QuickSight]: https://docs.aws.amazon.com/quicksight/latest/user/parameters-in-quicksight.html
 type ParameterDeclaration struct {
 
 	// A parameter declaration for the DateTime data type.
@@ -8362,6 +11112,9 @@ type ParameterDropDownControl struct {
 	// The values that are displayed in a control can be configured to only show
 	// values that are valid based on what's selected in other controls.
 	CascadingControlConfiguration *CascadingControlConfiguration
+
+	// The visibility configuration of the Apply button on a ParameterDropDownControl .
+	CommitMode CommitMode
 
 	// The display options of a control.
 	DisplayOptions *DropDownControlDisplayOptions
@@ -8444,12 +11197,12 @@ type ParameterSelectableValues struct {
 // sliding the toggle.
 type ParameterSliderControl struct {
 
-	// The smaller value that is displayed at the left of the slider.
+	// The larger value that is displayed at the right of the slider.
 	//
 	// This member is required.
 	MaximumValue float64
 
-	// The larger value that is displayed at the right of the slider.
+	// The smaller value that is displayed at the left of the slider.
 	//
 	// This member is required.
 	MinimumValue float64
@@ -8577,6 +11330,16 @@ type PercentVisibleRange struct {
 	noSmithyDocumentSerde
 }
 
+// The configuration for the performance optimization of the dataset that contains
+// a UniqueKey configuration.
+type PerformanceConfiguration struct {
+
+	// A UniqueKey configuration.
+	UniqueKeys []UniqueKey
+
+	noSmithyDocumentSerde
+}
+
 // The period over period computation configuration.
 type PeriodOverPeriodComputation struct {
 
@@ -8585,13 +11348,11 @@ type PeriodOverPeriodComputation struct {
 	// This member is required.
 	ComputationId *string
 
-	// The time field that is used in a computation.
-	//
-	// This member is required.
-	Time *DimensionField
-
 	// The name of a computation.
 	Name *string
+
+	// The time field that is used in a computation.
+	Time *DimensionField
 
 	// The value field that is used in a computation.
 	Value *MeasureField
@@ -8607,19 +11368,19 @@ type PeriodToDateComputation struct {
 	// This member is required.
 	ComputationId *string
 
-	// The time field that is used in a computation.
-	//
-	// This member is required.
-	Time *DimensionField
-
 	// The name of a computation.
 	Name *string
 
 	// The time granularity setup of period to date computation. Choose from the
 	// following options:
+	//
 	//   - YEAR: Year to date.
+	//
 	//   - MONTH: Month to date.
 	PeriodTimeGranularity TimeGranularity
+
+	// The time field that is used in a computation.
+	Time *DimensionField
 
 	// The value field that is used in a computation.
 	Value *MeasureField
@@ -8701,6 +11462,9 @@ type PieChartConfiguration struct {
 	// The field wells of the visual.
 	FieldWells *PieChartFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The legend display setup of the visual.
 	Legend *LegendOptions
 
@@ -8722,8 +11486,10 @@ type PieChartConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The field well configuration of a pie chart. This is a union type structure.
-// For this structure to be valid, only one of the attributes can be defined.
+// The field well configuration of a pie chart.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type PieChartFieldWells struct {
 
 	// The field well configuration of a pie chart.
@@ -8750,16 +11516,23 @@ type PieChartSortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A pie or donut chart. The PieChartVisual structure describes a visual that is a
-// member of the pie chart family. The following charts can be described by using
-// this structure:
+// A pie or donut chart.
+//
+// The PieChartVisual structure describes a visual that is a member of the pie
+// chart family.
+//
+// The following charts can be described by using this structure:
+//
 //   - Pie charts
+//
 //   - Donut charts
 //
-// For more information, see Using pie charts (https://docs.aws.amazon.com/quicksight/latest/user/pie-chart.html)
-// in the Amazon QuickSight User Guide. For more information, see Using donut
-// charts (https://docs.aws.amazon.com/quicksight/latest/user/donut-chart.html) in
-// the Amazon QuickSight User Guide.
+// For more information, see [Using pie charts] in the Amazon QuickSight User Guide.
+//
+// For more information, see [Using donut charts] in the Amazon QuickSight User Guide.
+//
+// [Using pie charts]: https://docs.aws.amazon.com/quicksight/latest/user/pie-chart.html
+// [Using donut charts]: https://docs.aws.amazon.com/quicksight/latest/user/donut-chart.html
 type PieChartVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -8783,6 +11556,9 @@ type PieChartVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -8876,6 +11652,9 @@ type PivotTableConfiguration struct {
 	// The field wells of the visual.
 	FieldWells *PivotTableFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The paginated report options for a pivot table visual.
 	PaginatedReportOptions *PivotTablePaginatedReportOptions
 
@@ -8915,7 +11694,9 @@ type PivotTableFieldCollapseStateOption struct {
 
 	// The state of the field target of a pivot table. Choose one of the following
 	// options:
+	//
 	//   - COLLAPSED
+	//
 	//   - EXPANDED
 	State PivotTableFieldCollapseState
 
@@ -8975,8 +11756,10 @@ type PivotTableFieldSubtotalOptions struct {
 	noSmithyDocumentSerde
 }
 
-// The field wells for a pivot table visual. This is a union type structure. For
-// this structure to be valid, only one of the attributes can be defined.
+// The field wells for a pivot table visual.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type PivotTableFieldWells struct {
 
 	// The aggregated field well for the pivot table.
@@ -9002,6 +11785,9 @@ type PivotTableOptions struct {
 	// The visibility of the column names.
 	ColumnNamesVisibility Visibility
 
+	// The default cell width of the pivot table.
+	DefaultCellWidth *string
+
 	// The metric placement (row, column) options.
 	MetricPlacement PivotTableMetricPlacement
 
@@ -9013,6 +11799,19 @@ type PivotTableOptions struct {
 
 	// The table cell style of the row headers.
 	RowHeaderStyle *TableCellStyle
+
+	// The options for the label that is located above the row headers. This option is
+	// only applicable when RowsLayout is set to HIERARCHY .
+	RowsLabelOptions *PivotTableRowsLabelOptions
+
+	// The layout for the row dimension headers of a pivot table. Choose one of the
+	// following options.
+	//
+	//   - TABULAR : (Default) Each row field is displayed in a separate column.
+	//
+	//   - HIERARCHY : All row fields are displayed in a single column. Indentation is
+	//   used to differentiate row headers of different fields.
+	RowsLayout PivotTableRowsLayout
 
 	// The visibility of the single metric options.
 	SingleMetricVisibility Visibility
@@ -9031,6 +11830,19 @@ type PivotTablePaginatedReportOptions struct {
 
 	// The visibility of the printing table overflow across pages.
 	VerticalOverflowVisibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// The options for the label thta is located above the row headers. This option is
+// only applicable when RowsLayout is set to HIERARCHY .
+type PivotTableRowsLabelOptions struct {
+
+	// The custom label string for the rows label.
+	CustomLabel *string
+
+	// The visibility of the rows label.
+	Visibility Visibility
 
 	noSmithyDocumentSerde
 }
@@ -9078,8 +11890,11 @@ type PivotTableTotalOptions struct {
 	noSmithyDocumentSerde
 }
 
-// A pivot table. For more information, see Using pivot tables (https://docs.aws.amazon.com/quicksight/latest/user/pivot-table.html)
-// in the Amazon QuickSight User Guide.
+// A pivot table.
+//
+// For more information, see [Using pivot tables] in the Amazon QuickSight User Guide.
+//
+// [Using pivot tables]: https://docs.aws.amazon.com/quicksight/latest/user/pivot-table.html
 type PivotTableVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -9104,6 +11919,9 @@ type PivotTableVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -9122,6 +11940,9 @@ type PivotTotalOptions struct {
 	// The scroll status (pinned, scrolled) for the total cells.
 	ScrollStatus TableTotalsScrollStatus
 
+	// The total aggregation options for each value field.
+	TotalAggregationOptions []TotalAggregationOption
+
 	// The cell styling options for the total cells.
 	TotalCellStyle *TableCellStyle
 
@@ -9130,6 +11951,120 @@ type PivotTotalOptions struct {
 
 	// The cell styling options for the totals of value cells.
 	ValueCellStyle *TableCellStyle
+
+	noSmithyDocumentSerde
+}
+
+// A flexible visualization type that allows engineers to create new custom charts
+// in Amazon QuickSight.
+type PluginVisual struct {
+
+	// The Amazon Resource Name (ARN) that reflects the plugin and version.
+	//
+	// This member is required.
+	PluginArn *string
+
+	// The ID of the visual that you want to use.
+	//
+	// This member is required.
+	VisualId *string
+
+	//  A description of the plugin field wells and their persisted properties.
+	ChartConfiguration *PluginVisualConfiguration
+
+	// The subtitle label options for a visual.
+	Subtitle *VisualSubtitleLabelOptions
+
+	// The title label options for a visual.
+	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
+
+	noSmithyDocumentSerde
+}
+
+// The plugin visual configuration. This includes the field wells, sorting
+// options, and persisted options of the plugin visual.
+type PluginVisualConfiguration struct {
+
+	// The field wells configuration of the plugin visual.
+	FieldWells []PluginVisualFieldWell
+
+	// The sort configuration of the plugin visual.
+	SortConfiguration *PluginVisualSortConfiguration
+
+	// The persisted properties of the plugin visual.
+	VisualOptions *PluginVisualOptions
+
+	noSmithyDocumentSerde
+}
+
+// A collection of field wells for a plugin visual.
+type PluginVisualFieldWell struct {
+
+	// The semantic axis name for the field well.
+	AxisName PluginVisualAxisName
+
+	// A list of dimensions for the field well.
+	Dimensions []DimensionField
+
+	// A list of measures that exist in the field well.
+	Measures []MeasureField
+
+	// A list of unaggregated fields that exist in the field well.
+	Unaggregated []UnaggregatedField
+
+	noSmithyDocumentSerde
+}
+
+// A query limits configuration.
+type PluginVisualItemsLimitConfiguration struct {
+
+	// Determines how many values are be fetched at once.
+	ItemsLimit *int64
+
+	noSmithyDocumentSerde
+}
+
+// The options and persisted properties for the plugin visual.
+type PluginVisualOptions struct {
+
+	// The persisted properties and their values.
+	VisualProperties []PluginVisualProperty
+
+	noSmithyDocumentSerde
+}
+
+// The key value pair of the persisted property.
+type PluginVisualProperty struct {
+
+	// The name of the plugin visual property.
+	Name *string
+
+	// The value of the plugin visual property.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// Determines how the plugin visual sorts the data during query.
+type PluginVisualSortConfiguration struct {
+
+	// The table query sorting options for the plugin visual.
+	PluginVisualTableQuerySort *PluginVisualTableQuerySort
+
+	noSmithyDocumentSerde
+}
+
+// The table query sorting options for the plugin visual.
+type PluginVisualTableQuerySort struct {
+
+	// The maximum amount of data to be returned by a query.
+	ItemsLimitConfiguration *PluginVisualItemsLimitConfiguration
+
+	// Determines how data is sorted in the response.
+	RowSort []FieldSortOptions
 
 	noSmithyDocumentSerde
 }
@@ -9150,7 +12085,7 @@ type PostgreSqlParameters struct {
 	// Port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -9192,7 +12127,7 @@ type PrestoParameters struct {
 	// Port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -9214,6 +12149,30 @@ type ProjectOperation struct {
 	//
 	// This member is required.
 	ProjectedColumns []string
+
+	noSmithyDocumentSerde
+}
+
+// The QA result that is made from the DashboardVisual or GeneratedAnswer .
+type QAResult struct {
+
+	// The representation of a dashboard visual result.
+	DashboardVisual *DashboardVisualResult
+
+	// The representation of a generated answer result.
+	GeneratedAnswer *GeneratedAnswerResult
+
+	// The type of QA result.
+	ResultType QAResultType
+
+	noSmithyDocumentSerde
+}
+
+// A structure that describes the query execution options.
+type QueryExecutionOptions struct {
+
+	// A structure that describes the query execution mode.
+	QueryExecutionMode QueryExecutionMode
 
 	noSmithyDocumentSerde
 }
@@ -9291,6 +12250,9 @@ type RadarChartConfiguration struct {
 
 	// The field well configuration of a RadarChartVisual .
 	FieldWells *RadarChartFieldWells
+
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
 
 	// The legend display setup of the visual.
 	Legend *LegendOptions
@@ -9371,6 +12333,9 @@ type RadarChartVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -9411,6 +12376,44 @@ type RdsParameters struct {
 	noSmithyDocumentSerde
 }
 
+// A structure that grants Amazon QuickSight access to your cluster and make a
+// call to the redshift:GetClusterCredentials API. For more information on the
+// redshift:GetClusterCredentials API, see [GetClusterCredentials]GetClusterCredentials .
+//
+// [GetClusterCredentials]: https://docs.aws.amazon.com/redshift/latest/APIReference/API_GetClusterCredentials.html
+type RedshiftIAMParameters struct {
+
+	// Use the RoleArn structure to allow Amazon QuickSight to call
+	// redshift:GetClusterCredentials on your cluster. The calling principal must have
+	// iam:PassRole access to pass the role to Amazon QuickSight. The role's trust
+	// policy must allow the Amazon QuickSight service principal to assume the role.
+	//
+	// This member is required.
+	RoleArn *string
+
+	// Automatically creates a database user. If your database doesn't have a
+	// DatabaseUser , set this parameter to True . If there is no DatabaseUser , Amazon
+	// QuickSight can't connect to your cluster. The RoleArn that you use for this
+	// operation must grant access to redshift:CreateClusterUser to successfully
+	// create the user.
+	AutoCreateDatabaseUser bool
+
+	// A list of groups whose permissions will be granted to Amazon QuickSight to
+	// access the cluster. These permissions are combined with the permissions granted
+	// to Amazon QuickSight by the DatabaseUser . If you choose to include this
+	// parameter, the RoleArn must grant access to redshift:JoinGroup .
+	DatabaseGroups []string
+
+	// The user whose permissions and group memberships will be used by Amazon
+	// QuickSight to access the cluster. If this user already exists in your database,
+	// Amazon QuickSight is granted the same permissions that the user has. If the user
+	// doesn't exist, set the value of AutoCreateDatabaseUser to True to create a new
+	// user with PUBLIC permissions.
+	DatabaseUser *string
+
+	noSmithyDocumentSerde
+}
+
 // The parameters for Amazon Redshift. The ClusterId field can be blank if Host
 // and Port are both set. The Host and Port fields can be blank if the ClusterId
 // field is set.
@@ -9426,6 +12429,19 @@ type RedshiftParameters struct {
 
 	// Host. This field can be blank if ClusterId is provided.
 	Host *string
+
+	// An optional parameter that uses IAM authentication to grant Amazon QuickSight
+	// access to your cluster. This parameter can be used instead of [DataSourceCredentials].
+	//
+	// [DataSourceCredentials]: https://docs.aws.amazon.com/quicksight/latest/APIReference/API_DataSourceCredentials.html
+	IAMParameters *RedshiftIAMParameters
+
+	// An optional parameter that configures IAM Identity Center authentication to
+	// grant Amazon QuickSight access to your cluster.
+	//
+	// This parameter can only be specified if your Amazon QuickSight account is
+	// configured with IAM Identity Center.
+	IdentityCenterConfiguration *IdentityCenterConfiguration
 
 	// Port. This field can be blank if the ClusterId is provided.
 	Port int32
@@ -9445,7 +12461,9 @@ type ReferenceLine struct {
 	LabelConfiguration *ReferenceLineLabelConfiguration
 
 	// The status of the reference line. Choose one of the following options:
+	//
 	//   - ENABLE
+	//
 	//   - DISABLE
 	Status WidgetStatus
 
@@ -9471,12 +12489,22 @@ type ReferenceLineDataConfiguration struct {
 
 	// The axis binding type of the reference line. Choose one of the following
 	// options:
+	//
 	//   - PrimaryY
+	//
 	//   - SecondaryY
 	AxisBinding AxisBinding
 
 	// The dynamic configuration of the reference line data configuration.
 	DynamicConfiguration *ReferenceLineDynamicDataConfiguration
+
+	// The series type of the reference line data configuration. Choose one of the
+	// following options:
+	//
+	//   - BAR
+	//
+	//   - LINE
+	SeriesType ReferenceLineSeriesType
 
 	// The static data configuration of the reference line data configuration.
 	StaticConfiguration *ReferenceLineStaticDataConfiguration
@@ -9517,8 +12545,11 @@ type ReferenceLineLabelConfiguration struct {
 
 	// The horizontal position configuration of the label in a reference line. Choose
 	// one of the following options:
+	//
 	//   - LEFT
+	//
 	//   - CENTER
+	//
 	//   - RIGHT
 	HorizontalPosition ReferenceLineLabelHorizontalPosition
 
@@ -9527,7 +12558,9 @@ type ReferenceLineLabelConfiguration struct {
 
 	// The vertical position configuration of the label in a reference line. Choose
 	// one of the following options:
+	//
 	//   - ABOVE
+	//
 	//   - BELOW
 	VerticalPosition ReferenceLineLabelVerticalPosition
 
@@ -9552,8 +12585,11 @@ type ReferenceLineStyleConfiguration struct {
 	Color *string
 
 	// The pattern type of the line style. Choose one of the following options:
+	//
 	//   - SOLID
+	//
 	//   - DASHED
+	//
 	//   - DOTTED
 	Pattern ReferenceLinePatternType
 
@@ -9567,7 +12603,9 @@ type ReferenceLineValueLabelConfiguration struct {
 	FormatConfiguration *NumericFormatConfiguration
 
 	// The relative position of the value label. Choose one of the following options:
+	//
 	//   - BEFORE_CUSTOM_LABEL
+	//
 	//   - AFTER_CUSTOM_LABEL
 	RelativePosition ReferenceLineValueLabelRelativePosition
 
@@ -9589,16 +12627,22 @@ type RefreshConfiguration struct {
 type RefreshFrequency struct {
 
 	// The interval between scheduled refreshes. Valid values are as follows:
+	//
 	//   - MINUTE15 : The dataset refreshes every 15 minutes. This value is only
 	//   supported for incremental refreshes. This interval can only be used for one
 	//   schedule per dataset.
+	//
 	//   - MINUTE30 :The dataset refreshes every 30 minutes. This value is only
 	//   supported for incremental refreshes. This interval can only be used for one
 	//   schedule per dataset.
+	//
 	//   - HOURLY : The dataset refreshes every hour. This interval can only be used
 	//   for one schedule per dataset.
+	//
 	//   - DAILY : The dataset refreshes every day.
+	//
 	//   - WEEKLY : The dataset refreshes every week.
+	//
 	//   - MONTHLY : The dataset refreshes every month.
 	//
 	// This member is required.
@@ -9623,12 +12667,16 @@ type RefreshFrequency struct {
 type RefreshSchedule struct {
 
 	// The type of refresh that a datset undergoes. Valid values are as follows:
+	//
 	//   - FULL_REFRESH : A complete refresh of a dataset.
+	//
 	//   - INCREMENTAL_REFRESH : A partial refresh of some rows of a dataset, based on
 	//   the time window specified.
-	// For more information on full and incremental refreshes, see Refreshing SPICE
-	// data (https://docs.aws.amazon.com/quicksight/latest/user/refreshing-imported-data.html)
-	// in the Amazon QuickSight User Guide.
+	//
+	// For more information on full and incremental refreshes, see [Refreshing SPICE data] in the Amazon
+	// QuickSight User Guide.
+	//
+	// [Refreshing SPICE data]: https://docs.aws.amazon.com/quicksight/latest/user/refreshing-imported-data.html
 	//
 	// This member is required.
 	RefreshType IngestionType
@@ -9653,8 +12701,31 @@ type RefreshSchedule struct {
 	noSmithyDocumentSerde
 }
 
+// A customer managed key structure that contains the information listed below:
+//
+//   - KeyArn - The ARN of a KMS key that is registered to a Amazon QuickSight
+//     account for encryption and decryption use.
+//
+//   - DefaultKey - Indicates whether the current key is set as the default key for
+//     encryption and decryption use.
+type RegisteredCustomerManagedKey struct {
+
+	// Indicates whether a RegisteredCustomerManagedKey is set as the default key for
+	// encryption and decryption use.
+	DefaultKey bool
+
+	// The ARN of the KMS key that is registered to a Amazon QuickSight account for
+	// encryption and decryption use.
+	KeyArn *string
+
+	noSmithyDocumentSerde
+}
+
 // The feature configurations of an embedded Amazon QuickSight console.
 type RegisteredUserConsoleFeatureConfigurations struct {
+
+	// The shared view settings of an embedded dashboard.
+	SharedView *SharedViewConfigurations
 
 	// The state persistence configurations of an embedded Amazon QuickSight console.
 	StatePersistence *StatePersistenceConfigurations
@@ -9667,9 +12738,10 @@ type RegisteredUserDashboardEmbeddingConfiguration struct {
 
 	// The dashboard ID for the dashboard that you want the user to see first. This ID
 	// is included in the output URL. When the URL in response is accessed, Amazon
-	// QuickSight renders this dashboard if the user has permissions to view it. If the
-	// user does not have permission to view this dashboard, they see a permissions
-	// error message.
+	// QuickSight renders this dashboard if the user has permissions to view it.
+	//
+	// If the user does not have permission to view this dashboard, they see a
+	// permissions error message.
 	//
 	// This member is required.
 	InitialDashboardId *string
@@ -9686,6 +12758,9 @@ type RegisteredUserDashboardFeatureConfigurations struct {
 	// The bookmarks configuration for an embedded dashboard in Amazon QuickSight.
 	Bookmarks *BookmarksConfigurations
 
+	// The shared view settings of an embedded dashboard.
+	SharedView *SharedViewConfigurations
+
 	// The state persistence settings of an embedded dashboard.
 	StatePersistence *StatePersistenceConfigurations
 
@@ -9698,9 +12773,11 @@ type RegisteredUserDashboardVisualEmbeddingConfiguration struct {
 
 	// The visual ID for the visual that you want the user to embed. This ID is
 	// included in the output URL. When the URL in response is accessed, Amazon
-	// QuickSight renders this visual. The Amazon Resource Name (ARN) of the dashboard
-	// that the visual belongs to must be included in the AuthorizedResourceArns
-	// parameter. Otherwise, the request will fail with InvalidParameterValueException .
+	// QuickSight renders this visual.
+	//
+	// The Amazon Resource Name (ARN) of the dashboard that the visual belongs to must
+	// be included in the AuthorizedResourceArns parameter. Otherwise, the request
+	// will fail with InvalidParameterValueException .
 	//
 	// This member is required.
 	InitialDashboardVisualId *DashboardVisualId
@@ -9709,9 +12786,11 @@ type RegisteredUserDashboardVisualEmbeddingConfiguration struct {
 }
 
 // The type of experience you want to embed. For registered users, you can embed
-// Amazon QuickSight dashboards or the Amazon QuickSight console. Exactly one of
-// the experience configurations is required. You can choose Dashboard or
-// QuickSightConsole . You cannot choose more than one experience configuration.
+// Amazon QuickSight dashboards or the Amazon QuickSight console.
+//
+// Exactly one of the experience configurations is required. You can choose
+// Dashboard or QuickSightConsole . You cannot choose more than one experience
+// configuration.
 type RegisteredUserEmbeddingExperienceConfiguration struct {
 
 	// The configuration details for providing a dashboard embedding experience.
@@ -9720,33 +12799,69 @@ type RegisteredUserEmbeddingExperienceConfiguration struct {
 	// The type of embedding experience. In this case, Amazon QuickSight visuals.
 	DashboardVisual *RegisteredUserDashboardVisualEmbeddingConfiguration
 
-	// The configuration details for embedding the Q search bar. For more information
-	// about embedding the Q search bar, see Embedding Overview (https://docs.aws.amazon.com/quicksight/latest/user/embedding-overview.html)
-	// in the Amazon QuickSight User Guide.
+	// The configuration details for embedding the Generative Q&A experience.
+	//
+	// For more information about embedding the Generative Q&A experience, see [Embedding Overview] in the
+	// Amazon QuickSight User Guide.
+	//
+	// [Embedding Overview]: https://docs.aws.amazon.com/quicksight/latest/user/embedding-overview.html
+	GenerativeQnA *RegisteredUserGenerativeQnAEmbeddingConfiguration
+
+	// The configuration details for embedding the Q search bar.
+	//
+	// For more information about embedding the Q search bar, see [Embedding Overview] in the Amazon
+	// QuickSight User Guide.
+	//
+	// [Embedding Overview]: https://docs.aws.amazon.com/quicksight/latest/user/embedding-overview.html
 	QSearchBar *RegisteredUserQSearchBarEmbeddingConfiguration
 
 	// The configuration details for providing each Amazon QuickSight console
 	// embedding experience. This can be used along with custom permissions to restrict
-	// access to certain features. For more information, see Customizing Access to the
-	// Amazon QuickSight Console (https://docs.aws.amazon.com/quicksight/latest/user/customizing-permissions-to-the-quicksight-console.html)
-	// in the Amazon QuickSight User Guide. Use GenerateEmbedUrlForRegisteredUser (https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GenerateEmbedUrlForRegisteredUser.html)
-	// where you want to provide an authoring portal that allows users to create data
-	// sources, datasets, analyses, and dashboards. The users who accesses an embedded
-	// Amazon QuickSight console needs to belong to the author or admin security
-	// cohort. If you want to restrict permissions to some of these features, add a
-	// custom permissions profile to the user with the UpdateUser (https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdateUser.html)
-	// API operation. Use the RegisterUser (https://docs.aws.amazon.com/quicksight/latest/APIReference/API_RegisterUser.html)
+	// access to certain features. For more information, see [Customizing Access to the Amazon QuickSight Console]in the Amazon QuickSight
+	// User Guide.
+	//
+	// Use [GenerateEmbedUrlForRegisteredUser] where you want to provide an authoring portal that allows users to create
+	// data sources, datasets, analyses, and dashboards. The users who accesses an
+	// embedded Amazon QuickSight console needs to belong to the author or admin
+	// security cohort. If you want to restrict permissions to some of these features,
+	// add a custom permissions profile to the user with the [UpdateUser]API operation. Use the [RegisterUser]
 	// API operation to add a new user with a custom permission profile attached. For
 	// more information, see the following sections in the Amazon QuickSight User
 	// Guide:
-	//   - Embedding the Full Functionality of the Amazon QuickSight Console for
-	//   Authenticated Users (https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics-full-console-for-authenticated-users.html)
-	//   - Customizing Access to the Amazon QuickSight Console (https://docs.aws.amazon.com/quicksight/latest/user/customizing-permissions-to-the-quicksight-console.html)
+	//
+	// [Embedding the Full Functionality of the Amazon QuickSight Console for Authenticated Users]
+	//
+	// [Customizing Access to the Amazon QuickSight Console]
+	//
 	// For more information about the high-level steps for embedding and for an
-	// interactive demo of the ways you can customize embedding, visit the Amazon
-	// QuickSight Developer Portal (https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html)
-	// .
+	// interactive demo of the ways you can customize embedding, visit the [Amazon QuickSight Developer Portal].
+	//
+	// [Customizing Access to the Amazon QuickSight Console]: https://docs.aws.amazon.com/quicksight/latest/user/customizing-permissions-to-the-quicksight-console.html
+	// [Amazon QuickSight Developer Portal]: https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-portal.html
+	// [Embedding the Full Functionality of the Amazon QuickSight Console for Authenticated Users]: https://docs.aws.amazon.com/quicksight/latest/user/embedded-analytics-full-console-for-authenticated-users.html
+	// [UpdateUser]: https://docs.aws.amazon.com/quicksight/latest/APIReference/API_UpdateUser.html
+	// [GenerateEmbedUrlForRegisteredUser]: https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GenerateEmbedUrlForRegisteredUser.html
+	// [RegisterUser]: https://docs.aws.amazon.com/quicksight/latest/APIReference/API_RegisterUser.html
 	QuickSightConsole *RegisteredUserQuickSightConsoleEmbeddingConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// An object that provides information about the configuration of a Generative Q&A
+// experience.
+type RegisteredUserGenerativeQnAEmbeddingConfiguration struct {
+
+	// The ID of the new Q reader experience topic that you want to make the starting
+	// topic in the Generative Q&A experience. You can find a topic ID by navigating to
+	// the Topics pane in the Amazon QuickSight application and opening a topic. The ID
+	// is in the URL for the topic that you open.
+	//
+	// If you don't specify an initial topic or you specify a legacy topic, a list of
+	// all shared new reader experience topics is shown in the Generative Q&A
+	// experience for your readers. When you select an initial new reader experience
+	// topic, you can specify whether or not readers are allowed to select other new
+	// reader experience topics from the available ones in the list.
+	InitialTopicId *string
 
 	noSmithyDocumentSerde
 }
@@ -9754,13 +12869,17 @@ type RegisteredUserEmbeddingExperienceConfiguration struct {
 // Information about the Q search bar embedding experience.
 type RegisteredUserQSearchBarEmbeddingConfiguration struct {
 
-	// The ID of the Q topic that you want to make the starting topic in the Q search
-	// bar. You can find a topic ID by navigating to the Topics pane in the Amazon
-	// QuickSight application and opening a topic. The ID is in the URL for the topic
-	// that you open. If you don't specify an initial topic, a list of all shared
-	// topics is shown in the Q bar for your readers. When you select an initial topic,
-	// you can specify whether or not readers are allowed to select other topics from
-	// the available ones in the list.
+	// The ID of the legacy Q topic that you want to use as the starting topic in the
+	// Q search bar. To locate the topic ID of the topic that you want to use, open the
+	// [Amazon QuickSight console], navigate to the Topics pane, and choose thre topic that you want to use. The
+	// TopicID is located in the URL of the topic that opens. When you select an
+	// initial topic, you can specify whether or not readers are allowed to select
+	// other topics from the list of available topics.
+	//
+	// If you don't specify an initial topic or if you specify a new reader experience
+	// topic, a list of all shared legacy topics is shown in the Q bar.
+	//
+	// [Amazon QuickSight console]: https://quicksight.aws.amazon.com/
 	InitialTopicId *string
 
 	noSmithyDocumentSerde
@@ -9772,14 +12891,21 @@ type RegisteredUserQuickSightConsoleEmbeddingConfiguration struct {
 	// The embedding configuration of an embedded Amazon QuickSight console.
 	FeatureConfigurations *RegisteredUserConsoleFeatureConfigurations
 
-	// The initial URL path for the Amazon QuickSight console. InitialPath is
-	// required. The entry point URL is constrained to the following paths:
+	// The initial URL path for the Amazon QuickSight console. InitialPath is required.
+	//
+	// The entry point URL is constrained to the following paths:
+	//
 	//   - /start
+	//
 	//   - /start/analyses
+	//
 	//   - /start/dashboards
+	//
 	//   - /start/favorites
+	//
 	//   - /dashboards/DashboardId . DashboardId is the actual ID key from the Amazon
 	//   QuickSight console URL of the dashboard.
+	//
 	//   - /analyses/AnalysisId . AnalysisId is the actual ID key from the Amazon
 	//   QuickSight console URL of the analysis.
 	InitialPath *string
@@ -9834,18 +12960,26 @@ type RelativeDatesFilter struct {
 	FilterId *string
 
 	// This option determines how null values should be treated when filtering data.
+	//
 	//   - ALL_VALUES : Include null values in filtered results.
+	//
 	//   - NULLS_ONLY : Only include null values in filtered results.
+	//
 	//   - NON_NULLS_ONLY : Exclude null values from filtered results.
 	//
 	// This member is required.
 	NullOption FilterNullOption
 
 	// The range date type of the filter. Choose one of the options below:
+	//
 	//   - PREVIOUS
+	//
 	//   - THIS
+	//
 	//   - LAST
+	//
 	//   - NOW
+	//
 	//   - NEXT
 	//
 	// This member is required.
@@ -9855,6 +12989,10 @@ type RelativeDatesFilter struct {
 	//
 	// This member is required.
 	TimeGranularity TimeGranularity
+
+	// The default configurations for the associated controls. This applies only for
+	// filters that are scoped to multiple sheets.
+	DefaultFilterControlConfiguration *DefaultFilterControlConfiguration
 
 	// The configuration for the exclude period of the filter.
 	ExcludePeriodConfiguration *ExcludePeriodConfiguration
@@ -9912,10 +13050,13 @@ type ResourcePermission struct {
 
 	// The Amazon Resource Name (ARN) of the principal. This can be one of the
 	// following:
+	//
 	//   - The ARN of an Amazon QuickSight user or group associated with a data source
 	//   or dataset. (This is common.)
+	//
 	//   - The ARN of an Amazon QuickSight user, group, or namespace associated with
 	//   an analysis, dashboard, template, or theme. (This is common.)
+	//
 	//   - The ARN of an Amazon Web Services account root: This is an IAM ARN rather
 	//   than a QuickSight ARN. Use this option only to share resources (templates)
 	//   across Amazon Web Services accounts. (This is less common.)
@@ -9949,6 +13090,9 @@ type RowAlternateColorOptions struct {
 	// Determines the widget status.
 	Status WidgetStatus
 
+	// The primary background color options for alternate rows.
+	UsePrimaryBackgroundColor WidgetStatus
+
 	noSmithyDocumentSerde
 }
 
@@ -9969,9 +13113,12 @@ type RowInfo struct {
 
 // Information about a dataset that contains permissions for row-level security
 // (RLS). The permissions dataset maps fields to users or groups. For more
-// information, see Using Row-Level Security (RLS) to Restrict Access to a Dataset (https://docs.aws.amazon.com/quicksight/latest/user/restrict-access-to-a-data-set-using-row-level-security.html)
-// in the Amazon QuickSight User Guide. The option to deny permissions by setting
-// PermissionPolicy to DENY_ACCESS is not supported for new RLS datasets.
+// information, see [Using Row-Level Security (RLS) to Restrict Access to a Dataset]in the Amazon QuickSight User Guide.
+//
+// The option to deny permissions by setting PermissionPolicy to DENY_ACCESS is
+// not supported for new RLS datasets.
+//
+// [Using Row-Level Security (RLS) to Restrict Access to a Dataset]: https://docs.aws.amazon.com/quicksight/latest/user/restrict-access-to-a-data-set-using-row-level-security.html
 type RowLevelPermissionDataSet struct {
 
 	// The Amazon Resource Name (ARN) of the dataset that contains permissions for RLS.
@@ -9986,9 +13133,11 @@ type RowLevelPermissionDataSet struct {
 	PermissionPolicy RowLevelPermissionPolicy
 
 	// The user or group rules associated with the dataset that contains permissions
-	// for RLS. By default, FormatVersion is VERSION_1 . When FormatVersion is
-	// VERSION_1 , UserName and GroupName are required. When FormatVersion is VERSION_2
-	// , UserARN and GroupARN are required, and Namespace must not exist.
+	// for RLS.
+	//
+	// By default, FormatVersion is VERSION_1 . When FormatVersion is VERSION_1 ,
+	// UserName and GroupName are required. When FormatVersion is VERSION_2 , UserARN
+	// and GroupARN are required, and Namespace must not exist.
 	FormatVersion RowLevelPermissionFormatVersion
 
 	// The namespace associated with the dataset that contains permissions for RLS.
@@ -10101,8 +13250,10 @@ type S3Source struct {
 	// This member is required.
 	DataSourceArn *string
 
-	// A physical table type for an S3 data source. For files that aren't JSON, only
-	// STRING data types are supported in input columns.
+	// A physical table type for an S3 data source.
+	//
+	// For files that aren't JSON, only STRING data types are supported in input
+	// columns.
 	//
 	// This member is required.
 	InputColumns []InputColumn
@@ -10113,13 +13264,16 @@ type S3Source struct {
 	noSmithyDocumentSerde
 }
 
-// The configuration of the same-sheet target visuals that you want to be
-// filtered. This is a union type structure. For this structure to be valid, only
-// one of the attributes can be defined.
+// The configuration of the same-sheet target visuals that you want to be filtered.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type SameSheetTargetVisualConfiguration struct {
 
-	// The options that choose the target visual in the same sheet. Valid values are
-	// defined as follows:
+	// The options that choose the target visual in the same sheet.
+	//
+	// Valid values are defined as follows:
+	//
 	//   - ALL_VISUALS : Applies the filter operation to all visuals in the same sheet.
 	TargetVisualOptions TargetVisualOptions
 
@@ -10154,6 +13308,9 @@ type SankeyDiagramChartConfiguration struct {
 	// The field well configuration of a sankey diagram.
 	FieldWells *SankeyDiagramFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The sort configuration of a sankey diagram.
 	SortConfiguration *SankeyDiagramSortConfiguration
 
@@ -10185,8 +13342,11 @@ type SankeyDiagramSortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A sankey diagram. For more information, see Using Sankey diagrams (https://docs.aws.amazon.com/quicksight/latest/user/sankey-diagram.html)
-// in the Amazon QuickSight User Guide.
+// A sankey diagram.
+//
+// For more information, see [Using Sankey diagrams] in the Amazon QuickSight User Guide.
+//
+// [Using Sankey diagrams]: https://docs.aws.amazon.com/quicksight/latest/user/sankey-diagram.html
 type SankeyDiagramVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -10208,6 +13368,9 @@ type SankeyDiagramVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -10223,10 +13386,14 @@ type ScatterPlotCategoricallyAggregatedFieldWells struct {
 	// The size field well of a scatter plot.
 	Size []MeasureField
 
-	// The x-axis field well of a scatter plot. The x-axis is aggregated by category.
+	// The x-axis field well of a scatter plot.
+	//
+	// The x-axis is aggregated by category.
 	XAxis []MeasureField
 
-	// The y-axis field well of a scatter plot. The y-axis is aggregated by category.
+	// The y-axis field well of a scatter plot.
+	//
+	// The y-axis is aggregated by category.
 	YAxis []MeasureField
 
 	noSmithyDocumentSerde
@@ -10241,8 +13408,14 @@ type ScatterPlotConfiguration struct {
 	// The field wells of the visual.
 	FieldWells *ScatterPlotFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The legend display setup of the visual.
 	Legend *LegendOptions
+
+	// The sort configuration of a scatter plot.
+	SortConfiguration *ScatterPlotSortConfiguration
 
 	// The legend display setup of the visual.
 	Tooltip *TooltipOptions
@@ -10269,8 +13442,10 @@ type ScatterPlotConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The field well configuration of a scatter plot. This is a union type structure.
-// For this structure to be valid, only one of the attributes can be defined.
+// The field well configuration of a scatter plot.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type ScatterPlotFieldWells struct {
 
 	// The aggregated field wells of a scatter plot. The x and y-axes of scatter plots
@@ -10280,6 +13455,15 @@ type ScatterPlotFieldWells struct {
 	// The unaggregated field wells of a scatter plot. The x and y-axes of these
 	// scatter plots are unaggregated.
 	ScatterPlotUnaggregatedFieldWells *ScatterPlotUnaggregatedFieldWells
+
+	noSmithyDocumentSerde
+}
+
+// The sort configuration of a scatter plot.
+type ScatterPlotSortConfiguration struct {
+
+	// The limit configuration of the visual display for an axis.
+	ScatterPlotLimitConfiguration *ItemsLimitConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -10296,19 +13480,24 @@ type ScatterPlotUnaggregatedFieldWells struct {
 	// The size field well of a scatter plot.
 	Size []MeasureField
 
-	// The x-axis field well of a scatter plot. The x-axis is a dimension field and
-	// cannot be aggregated.
+	// The x-axis field well of a scatter plot.
+	//
+	// The x-axis is a dimension field and cannot be aggregated.
 	XAxis []DimensionField
 
-	// The y-axis field well of a scatter plot. The y-axis is a dimension field and
-	// cannot be aggregated.
+	// The y-axis field well of a scatter plot.
+	//
+	// The y-axis is a dimension field and cannot be aggregated.
 	YAxis []DimensionField
 
 	noSmithyDocumentSerde
 }
 
-// A scatter plot. For more information, see Using scatter plots (https://docs.aws.amazon.com/quicksight/latest/user/scatter-plot.html)
-// in the Amazon QuickSight User Guide.
+// A scatter plot.
+//
+// For more information, see [Using scatter plots] in the Amazon QuickSight User Guide.
+//
+// [Using scatter plots]: https://docs.aws.amazon.com/quicksight/latest/user/scatter-plot.html
 type ScatterPlotVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -10332,6 +13521,9 @@ type ScatterPlotVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -10423,7 +13615,9 @@ type SectionBasedLayoutPaperCanvasSizeOptions struct {
 
 	// The paper orientation that is used to define canvas dimensions. Choose one of
 	// the following options:
+	//
 	//   - PORTRAIT
+	//
 	//   - LANDSCAPE
 	PaperOrientation PaperOrientation
 
@@ -10456,11 +13650,14 @@ type SectionPageBreakConfiguration struct {
 // The options that style a section.
 type SectionStyle struct {
 
-	// The height of a section. Heights can only be defined for header and footer
-	// sections. The default height margin is 0.5 inches.
+	// The height of a section.
+	//
+	// Heights can only be defined for header and footer sections. The default height
+	// margin is 0.5 inches.
 	Height *string
 
 	// The spacing between section content and its top, bottom, left, and right edges.
+	//
 	// There is no padding by default.
 	Padding *Spacing
 
@@ -10469,8 +13666,10 @@ type SectionStyle struct {
 
 // The configuration for applying a filter to specific sheets or visuals. You can
 // apply this filter to multiple visuals that are on one sheet or to all visuals on
-// a sheet. This is a union type structure. For this structure to be valid, only
-// one of the attributes can be defined.
+// a sheet.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type SelectedSheetsFilterScopeConfiguration struct {
 
 	// The sheet ID and visual IDs of the sheet and visuals that the filter is applied
@@ -10522,8 +13721,10 @@ type SemanticType struct {
 	noSmithyDocumentSerde
 }
 
-// The series item configuration of a line chart. This is a union type structure.
-// For this structure to be valid, only one of the attributes can be defined.
+// The series item configuration of a line chart.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type SeriesItem struct {
 
 	// The data field series item configuration of a line chart.
@@ -10570,9 +13771,10 @@ type SetParameterValueConfiguration struct {
 	// This member is required.
 	DestinationParameterName *string
 
-	// The configuration of destination parameter values. This is a union type
-	// structure. For this structure to be valid, only one of the attributes can be
-	// defined.
+	// The configuration of destination parameter values.
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
+	// attributes can be defined.
 	//
 	// This member is required.
 	Value *DestinationParameterValueConfiguration
@@ -10592,12 +13794,26 @@ type ShapeConditionalFormat struct {
 	noSmithyDocumentSerde
 }
 
+// The shared view settings of an embedded dashboard.
+type SharedViewConfigurations struct {
+
+	// The shared view settings of an embedded dashboard.
+	//
+	// This member is required.
+	Enabled bool
+
+	noSmithyDocumentSerde
+}
+
 // A sheet, which is an object that contains a set of visuals that are viewed
 // together on one page in Amazon QuickSight. Every analysis and dashboard contains
 // at least one sheet. Each sheet contains at least one visualization widget, for
 // example a chart, pivot table, or narrative insight. Sheets can be associated
 // with other components, such as controls, filters, and so on.
 type Sheet struct {
+
+	// A list of images on a sheet.
+	Images []SheetImage
 
 	// The name of a sheet. This name is displayed on the sheet's tab in the Amazon
 	// QuickSight console.
@@ -10612,7 +13828,7 @@ type Sheet struct {
 // A control to display info icons for filters and parameters.
 type SheetControlInfoIconLabelOptions struct {
 
-	// The text content of info icon.
+	//  The text content of info icon.
 	InfoIconText *string
 
 	// The visibility configuration of info icon label options.
@@ -10664,30 +13880,41 @@ type SheetDefinition struct {
 	SheetId *string
 
 	// The layout content type of the sheet. Choose one of the following options:
+	//
 	//   - PAGINATED : Creates a sheet for a paginated report.
+	//
 	//   - INTERACTIVE : Creates a sheet for an interactive dashboard.
 	ContentType SheetContentType
 
 	// A description of the sheet.
 	Description *string
 
-	// The list of filter controls that are on a sheet. For more information, see
-	// Adding filter controls to analysis sheets (https://docs.aws.amazon.com/quicksight/latest/user/filter-controls.html)
-	// in the Amazon QuickSight User Guide.
+	// The list of filter controls that are on a sheet.
+	//
+	// For more information, see [Adding filter controls to analysis sheets] in the Amazon QuickSight User Guide.
+	//
+	// [Adding filter controls to analysis sheets]: https://docs.aws.amazon.com/quicksight/latest/user/filter-controls.html
 	FilterControls []FilterControl
 
-	// Layouts define how the components of a sheet are arranged. For more
-	// information, see Types of layout (https://docs.aws.amazon.com/quicksight/latest/user/types-of-layout.html)
-	// in the Amazon QuickSight User Guide.
+	// A list of images on a sheet.
+	Images []SheetImage
+
+	// Layouts define how the components of a sheet are arranged.
+	//
+	// For more information, see [Types of layout] in the Amazon QuickSight User Guide.
+	//
+	// [Types of layout]: https://docs.aws.amazon.com/quicksight/latest/user/types-of-layout.html
 	Layouts []Layout
 
 	// The name of the sheet. This name is displayed on the sheet's tab in the Amazon
 	// QuickSight console.
 	Name *string
 
-	// The list of parameter controls that are on a sheet. For more information, see
-	// Using a Control with a Parameter in Amazon QuickSight (https://docs.aws.amazon.com/quicksight/latest/user/parameters-controls.html)
-	// in the Amazon QuickSight User Guide.
+	// The list of parameter controls that are on a sheet.
+	//
+	// For more information, see [Using a Control with a Parameter in Amazon QuickSight] in the Amazon QuickSight User Guide.
+	//
+	// [Using a Control with a Parameter in Amazon QuickSight]: https://docs.aws.amazon.com/quicksight/latest/user/parameters-controls.html
 	ParameterControls []ParameterControl
 
 	// The control layouts of the sheet.
@@ -10711,7 +13938,9 @@ type SheetElementConfigurationOverrides struct {
 
 	// Determines whether or not the overrides are visible. Choose one of the
 	// following options:
+	//
 	//   - VISIBLE
+	//
 	//   - HIDDEN
 	Visibility Visibility
 
@@ -10730,6 +13959,101 @@ type SheetElementRenderingRule struct {
 	//
 	// This member is required.
 	Expression *string
+
+	noSmithyDocumentSerde
+}
+
+// An image that is located on a sheet.
+type SheetImage struct {
+
+	// The ID of the sheet image.
+	//
+	// This member is required.
+	SheetImageId *string
+
+	// The source of the image.
+	//
+	// This member is required.
+	Source *SheetImageSource
+
+	// A list of custom actions that are configured for an image.
+	Actions []ImageCustomAction
+
+	// The alt text for the image.
+	ImageContentAltText *string
+
+	// The general image interactions setup for an image.
+	Interactions *ImageInteractionOptions
+
+	// Determines how the image is scaled.
+	Scaling *SheetImageScalingConfiguration
+
+	// The tooltip to be shown when hovering over the image.
+	Tooltip *SheetImageTooltipConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Determines how the image is scaled
+type SheetImageScalingConfiguration struct {
+
+	// The scaling option to use when fitting the image inside the container.
+	//
+	// Valid values are defined as follows:
+	//
+	//   - SCALE_TO_WIDTH : The image takes up the entire width of the container. The
+	//   image aspect ratio is preserved.
+	//
+	//   - SCALE_TO_HEIGHT : The image takes up the entire height of the container. The
+	//   image aspect ratio is preserved.
+	//
+	//   - SCALE_TO_CONTAINER : The image takes up the entire width and height of the
+	//   container. The image aspect ratio is not preserved.
+	//
+	//   - SCALE_NONE : The image is displayed in its original size and is not scaled
+	//   to the container.
+	ScalingType SheetImageScalingType
+
+	noSmithyDocumentSerde
+}
+
+// The source of the image.
+type SheetImageSource struct {
+
+	// The source of the static file that contains the image.
+	SheetImageStaticFileSource *SheetImageStaticFileSource
+
+	noSmithyDocumentSerde
+}
+
+// The source of the static file that contains the image.
+type SheetImageStaticFileSource struct {
+
+	// The ID of the static file that contains the image.
+	//
+	// This member is required.
+	StaticFileId *string
+
+	noSmithyDocumentSerde
+}
+
+// The tooltip configuration for a sheet image.
+type SheetImageTooltipConfiguration struct {
+
+	// The text that appears in the tooltip.
+	TooltipText *SheetImageTooltipText
+
+	// The visibility of the tooltip.
+	Visibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// The text that appears in the sheet image tooltip.
+type SheetImageTooltipText struct {
+
+	// The plain text format.
+	PlainText *string
 
 	noSmithyDocumentSerde
 }
@@ -10775,7 +14099,9 @@ type SheetTextBox struct {
 type SheetVisualScopingConfiguration struct {
 
 	// The scope of the applied entities. Choose one of the following options:
+	//
 	//   - ALL_VISUALS
+	//
 	//   - SELECTED_VISUALS
 	//
 	// This member is required.
@@ -10792,8 +14118,10 @@ type SheetVisualScopingConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The text format for the title. This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The text format for the title.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type ShortFormatText struct {
 
 	// Plain text format.
@@ -10835,6 +14163,15 @@ type SimpleClusterMarker struct {
 	noSmithyDocumentSerde
 }
 
+// The settings of a chart's single axis configuration.
+type SingleAxisOptions struct {
+
+	// The Y axis options of a single axis configuration.
+	YAxisOptions *YAxisOptions
+
+	noSmithyDocumentSerde
+}
+
 // The display options of a control.
 type SliderControlDisplayOptions struct {
 
@@ -10843,6 +14180,18 @@ type SliderControlDisplayOptions struct {
 
 	// The options to configure the title visibility, name, and font size.
 	TitleOptions *LabelOptions
+
+	noSmithyDocumentSerde
+}
+
+// The definition for the slot.
+type Slot struct {
+
+	// The slot ID of the slot.
+	SlotId *string
+
+	// The visual ID for the slot.
+	VisualId *string
 
 	noSmithyDocumentSerde
 }
@@ -10867,13 +14216,17 @@ type SmallMultiplesAxisProperties struct {
 type SmallMultiplesOptions struct {
 
 	// Sets the maximum number of visible columns to display in the grid of small
-	// multiples panels. The default is Auto , which automatically adjusts the columns
-	// in the grid to fit the overall layout and size of the given chart.
+	// multiples panels.
+	//
+	// The default is Auto , which automatically adjusts the columns in the grid to fit
+	// the overall layout and size of the given chart.
 	MaxVisibleColumns *int64
 
 	// Sets the maximum number of visible rows to display in the grid of small
-	// multiples panels. The default value is Auto , which automatically adjusts the
-	// rows in the grid to fit the overall layout and size of the given chart.
+	// multiples panels.
+	//
+	// The default value is Auto , which automatically adjusts the rows in the grid to
+	// fit the overall layout and size of the given chart.
 	MaxVisibleRows *int64
 
 	// Configures the display options for each small multiples panel.
@@ -10894,11 +14247,13 @@ type SnapshotAnonymousUser struct {
 	// The tags to be used for row-level security (RLS). Make sure that the relevant
 	// datasets have RLS tags configured before you start a snapshot export job. You
 	// can configure the RLS tags of a dataset with a
-	// DataSet$RowLevelPermissionTagConfiguration API call. These are not the tags that
-	// are used for Amazon Web Services resource tagging. For more information on row
-	// level security in Amazon QuickSight, see Using Row-Level Security (RLS) with
-	// Tags (https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-rls-tags.html)
-	// in the Amazon QuickSight User Guide.
+	// DataSet$RowLevelPermissionTagConfiguration API call.
+	//
+	// These are not the tags that are used for Amazon Web Services resource tagging.
+	// For more information on row level security in Amazon QuickSight, see [Using Row-Level Security (RLS) with Tags]in the
+	// Amazon QuickSight User Guide.
+	//
+	// [Using Row-Level Security (RLS) with Tags]: https://docs.aws.amazon.com/quicksight/latest/user/quicksight-dev-rls-tags.html
 	RowLevelPermissionTags []SessionTag
 
 	noSmithyDocumentSerde
@@ -10938,7 +14293,7 @@ type SnapshotConfiguration struct {
 // generated snapshot.
 type SnapshotDestinationConfiguration struct {
 
-	// A list of SnapshotS3DestinationConfiguration objects that contain Amazon S3
+	//  A list of SnapshotS3DestinationConfiguration objects that contain Amazon S3
 	// destination configurations. This structure can hold a maximum of 1
 	// S3DestinationConfiguration .
 	S3Destinations []SnapshotS3DestinationConfiguration
@@ -10950,8 +14305,8 @@ type SnapshotDestinationConfiguration struct {
 // generate. This information is provided by you when you start a new snapshot job.
 type SnapshotFile struct {
 
-	// The format of the snapshot file to be generated. You can choose between CSV and
-	// PDF .
+	// The format of the snapshot file to be generated. You can choose between CSV ,
+	// Excel , or PDF .
 	//
 	// This member is required.
 	FormatType SnapshotFileFormatType
@@ -10959,7 +14314,8 @@ type SnapshotFile struct {
 	// A list of SnapshotFileSheetSelection objects that contain information on the
 	// dashboard sheet that is exported. These objects provide information about the
 	// snapshot artifacts that are generated during the job. This structure can hold a
-	// maximum of 5 CSV configurations or 1 configuration for PDF.
+	// maximum of 5 CSV configurations, 5 Excel configurations, or 1 configuration for
+	// PDF.
 	//
 	// This member is required.
 	SheetSelections []SnapshotFileSheetSelection
@@ -10984,23 +14340,28 @@ type SnapshotFileSheetSelection struct {
 
 	// The selection scope of the visuals on a sheet of a dashboard that you are
 	// generating a snapthot of. You can choose one of the following options.
+	//
 	//   - ALL_VISUALS - Selects all visuals that are on the sheet. This value is
 	//   required if the snapshot is a PDF.
+	//
 	//   - SELECTED_VISUALS - Select the visual that you want to add to the snapshot.
-	//   This value is required if the snapshot is a CSV.
+	//   This value is required if the snapshot is a CSV or Excel workbook.
 	//
 	// This member is required.
 	SelectionScope SnapshotFileSheetSelectionScope
 
 	// The sheet ID of the dashboard to generate the snapshot artifact from. This
-	// value is required for CSV or PDF format types.
+	// value is required for CSV, Excel, and PDF format types.
 	//
 	// This member is required.
 	SheetId *string
 
-	// A structure that lists the IDs of the visuals in the selected sheet. Supported
+	//  A structure that lists the IDs of the visuals in the selected sheet. Supported
 	// visual types are table, pivot table visuals. This value is required if you are
-	// generating a CSV. This value supports a maximum of 1 visual ID.
+	// generating a CSV or Excel workbook. This value supports a maximum of 1 visual ID
+	// for CSV and 5 visual IDs across up to 5 sheet selections for Excel. If you are
+	// generating an Excel workbook, the order of the visual IDs provided in this
+	// structure determines the order of the worksheets in the Excel file.
 	VisualIds []string
 
 	noSmithyDocumentSerde
@@ -11024,7 +14385,7 @@ type SnapshotJobErrorInfo struct {
 // the generated file.
 type SnapshotJobResult struct {
 
-	// A list of AnonymousUserSnapshotJobResult objects that contain information on
+	//  A list of AnonymousUserSnapshotJobResult objects that contain information on
 	// anonymous users and their user configurations. This data provided by you when
 	// you make a StartDashboardSnapshotJob API call.
 	AnonymousUsers []AnonymousUserSnapshotJobResult
@@ -11047,10 +14408,10 @@ type SnapshotJobResultErrorInfo struct {
 // A structure that contains information on the generated snapshot file groups.
 type SnapshotJobResultFileGroup struct {
 
-	// A list of SnapshotFile objects.
+	//  A list of SnapshotFile objects.
 	Files []SnapshotFile
 
-	// A list of SnapshotJobS3Result objects.
+	//  A list of SnapshotJobS3Result objects.
 	S3Results []SnapshotJobS3Result
 
 	noSmithyDocumentSerde
@@ -11081,6 +14442,8 @@ type SnapshotS3DestinationConfiguration struct {
 
 	// A structure that contains details about the Amazon S3 bucket that the generated
 	// dashboard snapshot is saved in.
+	//
+	// This member is required.
 	BucketConfiguration *S3BucketConfiguration
 
 	noSmithyDocumentSerde
@@ -11101,7 +14464,7 @@ type SnapshotUserConfiguration struct {
 // snapshot is generated for. Sensitive user information is excluded.
 type SnapshotUserConfigurationRedacted struct {
 
-	// An array of records that describe anonymous users that the dashboard snapshot
+	//  An array of records that describe anonymous users that the dashboard snapshot
 	// is generated for. Sensitive user information is excluded.
 	AnonymousUsers []SnapshotAnonymousUserRedacted
 
@@ -11125,6 +14488,17 @@ type SnowflakeParameters struct {
 	//
 	// This member is required.
 	Warehouse *string
+
+	// The authentication type that you want to use for your connection. This
+	// parameter accepts OAuth and non-OAuth authentication types.
+	AuthenticationType AuthenticationType
+
+	// The database access control role.
+	DatabaseAccessControlRole *string
+
+	// An object that contains information needed to create a data source connection
+	// between an Amazon QuickSight account and Snowflake.
+	OAuthParameters *OAuthParameters
 
 	noSmithyDocumentSerde
 }
@@ -11158,7 +14532,21 @@ type SparkParameters struct {
 	// Port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
+
+	noSmithyDocumentSerde
+}
+
+// A static file that contains the geospatial data.
+type SpatialStaticFile struct {
+
+	// The ID of the spatial static file.
+	//
+	// This member is required.
+	StaticFileId *string
+
+	// The source of the spatial static file.
+	Source *StaticFileSource
 
 	noSmithyDocumentSerde
 }
@@ -11179,7 +14567,7 @@ type SqlServerParameters struct {
 	// Port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -11194,6 +14582,41 @@ type SslProperties struct {
 	noSmithyDocumentSerde
 }
 
+// The parameters that are required to connect to a Starburst data source.
+type StarburstParameters struct {
+
+	// The catalog name for the Starburst data source.
+	//
+	// This member is required.
+	Catalog *string
+
+	// The host name of the Starburst data source.
+	//
+	// This member is required.
+	Host *string
+
+	// The port for the Starburst data source.
+	//
+	// This member is required.
+	Port *int32
+
+	// The authentication type that you want to use for your connection. This
+	// parameter accepts OAuth and non-OAuth authentication types.
+	AuthenticationType AuthenticationType
+
+	// The database access control role.
+	DatabaseAccessControlRole *string
+
+	// An object that contains information needed to create a data source connection
+	// between an Amazon QuickSight account and Starburst.
+	OAuthParameters *OAuthParameters
+
+	// The product type for the Starburst data source.
+	ProductType StarburstProductType
+
+	noSmithyDocumentSerde
+}
+
 // The state perssitence configuration of an embedded dashboard.
 type StatePersistenceConfigurations struct {
 
@@ -11202,6 +14625,64 @@ type StatePersistenceConfigurations struct {
 	//
 	// This member is required.
 	Enabled bool
+
+	noSmithyDocumentSerde
+}
+
+// The static file.
+type StaticFile struct {
+
+	// The image static file.
+	ImageStaticFile *ImageStaticFile
+
+	// The spacial static file.
+	SpatialStaticFile *SpatialStaticFile
+
+	noSmithyDocumentSerde
+}
+
+// The structure that contains the Amazon S3 location to download the static file
+// from.
+type StaticFileS3SourceOptions struct {
+
+	// The name of the Amazon S3 bucket.
+	//
+	// This member is required.
+	BucketName *string
+
+	// The identifier of the static file in the Amazon S3 bucket.
+	//
+	// This member is required.
+	ObjectKey *string
+
+	// The Region of the Amazon S3 account that contains the bucket.
+	//
+	// This member is required.
+	Region *string
+
+	noSmithyDocumentSerde
+}
+
+// The source of the static file.
+type StaticFileSource struct {
+
+	// The structure that contains the Amazon S3 location to download the static file
+	// from.
+	S3Options *StaticFileS3SourceOptions
+
+	// The structure that contains the URL to download the static file from.
+	UrlOptions *StaticFileUrlSourceOptions
+
+	noSmithyDocumentSerde
+}
+
+// The structure that contains the URL to download the static file from.
+type StaticFileUrlSourceOptions struct {
+
+	// The URL to download the static file from.
+	//
+	// This member is required.
+	Url *string
 
 	noSmithyDocumentSerde
 }
@@ -11318,7 +14799,9 @@ type StringValueWhenUnsetConfiguration struct {
 	CustomValue *string
 
 	// The built-in options for default values. The value can be one of the following:
+	//
 	//   - RECOMMENDED : The recommended value.
+	//
 	//   - NULL : The NULL value.
 	ValueWhenUnsetOption ValueWhenUnsetOption
 
@@ -11340,6 +14823,9 @@ type SubtotalOptions struct {
 	// The cell styling options for the subtotals of header cells.
 	MetricHeaderCellStyle *TableCellStyle
 
+	// The style targets options for subtotals.
+	StyleTargets []TableStyleTarget
+
 	// The cell styling options for the subtotal cells.
 	TotalCellStyle *TableCellStyle
 
@@ -11348,6 +14834,33 @@ type SubtotalOptions struct {
 
 	// The cell styling options for the subtotals of value cells.
 	ValueCellStyle *TableCellStyle
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a SucceededTopicReviewedAnswer .
+type SucceededTopicReviewedAnswer struct {
+
+	// The answer ID for the SucceededTopicReviewedAnswer .
+	AnswerId *string
+
+	noSmithyDocumentSerde
+}
+
+// A success entry that occurs when a KeyRegistration job is successfully applied
+// to the Amazon QuickSight account.
+type SuccessfulKeyRegistrationEntry struct {
+
+	// The ARN of the KMS key that is associated with the
+	// SuccessfulKeyRegistrationEntry entry.
+	//
+	// This member is required.
+	KeyArn *string
+
+	// The HTTP status of a SuccessfulKeyRegistrationEntry entry.
+	//
+	// This member is required.
+	StatusCode int32
 
 	noSmithyDocumentSerde
 }
@@ -11465,6 +14978,9 @@ type TableConfiguration struct {
 	// The field wells of the visual.
 	FieldWells *TableFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The paginated report options for a table visual.
 	PaginatedReportOptions *TablePaginatedReportOptions
 
@@ -11569,13 +15085,17 @@ type TableFieldOption struct {
 	noSmithyDocumentSerde
 }
 
-// The field options for a table visual.
+// The field options of a table visual.
 type TableFieldOptions struct {
 
-	// The order of field IDs of the field options for a table visual.
+	// The order of the field IDs that are configured as field options for a table
+	// visual.
 	Order []string
 
-	// The selected field options for the table field options.
+	// The settings for the pinned columns of a table visual.
+	PinnedFieldOptions *TablePinnedFieldOptions
+
+	// The field options to be configured to a table.
 	SelectedFieldOptions []TableFieldOption
 
 	noSmithyDocumentSerde
@@ -11593,8 +15113,10 @@ type TableFieldURLConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The field wells for a table visual. This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The field wells for a table visual.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type TableFieldWells struct {
 
 	// The aggregated field well for the table.
@@ -11642,6 +15164,15 @@ type TablePaginatedReportOptions struct {
 
 	// The visibility of printing table overflow across pages.
 	VerticalOverflowVisibility Visibility
+
+	noSmithyDocumentSerde
+}
+
+// The settings for the pinned columns of a table visual.
+type TablePinnedFieldOptions struct {
+
+	// A list of columns to be pinned to the left of a table visual.
+	PinnedLeftFields []string
 
 	noSmithyDocumentSerde
 }
@@ -11695,6 +15226,17 @@ type TableSortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// The table style target.
+type TableStyleTarget struct {
+
+	// The cell type of the table style target.
+	//
+	// This member is required.
+	CellType StyledCellType
+
+	noSmithyDocumentSerde
+}
+
 // The unaggregated field well for the table.
 type TableUnaggregatedFieldWells struct {
 
@@ -11705,8 +15247,11 @@ type TableUnaggregatedFieldWells struct {
 	noSmithyDocumentSerde
 }
 
-// A table visual. For more information, see Using tables as visuals (https://docs.aws.amazon.com/quicksight/latest/user/tabular.html)
-// in the Amazon QuickSight User Guide.
+// A table visual.
+//
+// For more information, see [Using tables as visuals] in the Amazon QuickSight User Guide.
+//
+// [Using tables as visuals]: https://docs.aws.amazon.com/quicksight/latest/user/tabular.html
 type TableVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -11730,6 +15275,9 @@ type TableVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -11759,8 +15307,9 @@ type TagColumnOperation struct {
 	// This member is required.
 	ColumnName *string
 
-	// The dataset column tag, currently only used for geospatial type tagging. This
-	// is not tags for the Amazon Web Services tagging feature.
+	// The dataset column tag, currently only used for geospatial type tagging.
+	//
+	// This is not tags for the Amazon Web Services tagging feature.
 	//
 	// This member is required.
 	Tags []ColumnTag
@@ -11773,10 +15322,11 @@ type TagColumnOperation struct {
 // create a dashboard. A template adds a layer of abstraction by using placeholders
 // to replace the dataset associated with an analysis. You can use templates to
 // create dashboards by replacing dataset placeholders with datasets that follow
-// the same schema that was used to create the source analysis and template. You
-// can share templates across Amazon Web Services accounts by allowing users in
-// other Amazon Web Services accounts to create a template or a dashboard from an
-// existing template.
+// the same schema that was used to create the source analysis and template.
+//
+// You can share templates across Amazon Web Services accounts by allowing users
+// in other Amazon Web Services accounts to create a template or a dashboard from
+// an existing template.
 type Template struct {
 
 	// The Amazon Resource Name (ARN) of the template.
@@ -11922,12 +15472,19 @@ type TemplateVersion struct {
 	SourceEntityArn *string
 
 	// The status that is associated with the template.
+	//
 	//   - CREATION_IN_PROGRESS
+	//
 	//   - CREATION_SUCCESSFUL
+	//
 	//   - CREATION_FAILED
+	//
 	//   - UPDATE_IN_PROGRESS
+	//
 	//   - UPDATE_SUCCESSFUL
+	//
 	//   - UPDATE_FAILED
+	//
 	//   - DELETED
 	Status ResourceStatus
 
@@ -11955,22 +15512,38 @@ type TemplateVersionDefinition struct {
 	// An array of calculated field definitions for the template.
 	CalculatedFields []CalculatedField
 
-	// An array of template-level column configurations. Column configurations are
+	//  An array of template-level column configurations. Column configurations are
 	// used to set default formatting for a column that's used throughout a template.
 	ColumnConfigurations []ColumnConfiguration
 
-	// Filter definitions for a template. For more information, see Filtering Data (https://docs.aws.amazon.com/quicksight/latest/user/filtering-visual-data.html)
-	// in the Amazon QuickSight User Guide.
+	// Filter definitions for a template.
+	//
+	// For more information, see [Filtering Data] in the Amazon QuickSight User Guide.
+	//
+	// [Filtering Data]: https://docs.aws.amazon.com/quicksight/latest/user/filtering-visual-data.html
 	FilterGroups []FilterGroup
 
-	// An array of parameter declarations for a template. Parameters are named
-	// variables that can transfer a value for use by an action or an object. For more
-	// information, see Parameters in Amazon QuickSight (https://docs.aws.amazon.com/quicksight/latest/user/parameters-in-quicksight.html)
-	// in the Amazon QuickSight User Guide.
+	// An array of option definitions for a template.
+	Options *AssetOptions
+
+	// An array of parameter declarations for a template.
+	//
+	// Parameters are named variables that can transfer a value for use by an action
+	// or an object.
+	//
+	// For more information, see [Parameters in Amazon QuickSight] in the Amazon QuickSight User Guide.
+	//
+	// [Parameters in Amazon QuickSight]: https://docs.aws.amazon.com/quicksight/latest/user/parameters-in-quicksight.html
 	ParameterDeclarations []ParameterDeclaration
+
+	// A structure that describes the query execution options.
+	QueryExecutionOptions *QueryExecutionOptions
 
 	// An array of sheet definitions for a template.
 	Sheets []SheetDefinition
+
+	// The static files for the definition.
+	StaticFiles []StaticFile
 
 	noSmithyDocumentSerde
 }
@@ -12012,7 +15585,7 @@ type TeradataParameters struct {
 	// Port.
 	//
 	// This member is required.
-	Port int32
+	Port *int32
 
 	noSmithyDocumentSerde
 }
@@ -12226,6 +15799,12 @@ type ThemeVersionSummary struct {
 // The options that determine the thousands separator configuration.
 type ThousandSeparatorOptions struct {
 
+	// Determines the way numbers are styled to accommodate different readability
+	// standards. The DEFAULT value uses the standard international grouping system
+	// and groups numbers by the thousands. The LAKHS value uses the Indian numbering
+	// system and groups numbers by lakhs and crores.
+	GroupingStyle DigitGroupingStyle
+
 	// Determines the thousands separator symbol.
 	Symbol NumericSeparatorSymbol
 
@@ -12273,7 +15852,9 @@ type TimeBasedForecastProperties struct {
 
 	// The seasonality setup of a forecast computation. Choose one of the following
 	// options:
+	//
 	//   - NULL : The input is set to NULL .
+	//
 	//   - NON_NULL : The input is set to a custom value.
 	Seasonality *int32
 
@@ -12297,15 +15878,26 @@ type TimeEqualityFilter struct {
 	// This member is required.
 	FilterId *string
 
-	// The parameter whose value should be used for the filter value. This field is
-	// mutually exclusive to Value .
+	// The default configurations for the associated controls. This applies only for
+	// filters that are scoped to multiple sheets.
+	DefaultFilterControlConfiguration *DefaultFilterControlConfiguration
+
+	// The parameter whose value should be used for the filter value.
+	//
+	// This field is mutually exclusive to Value and RollingDate .
 	ParameterName *string
+
+	// The rolling date input for the TimeEquality filter.
+	//
+	// This field is mutually exclusive to Value and ParameterName .
+	RollingDate *RollingDateConfiguration
 
 	// The level of time precision that is used to aggregate DateTime values.
 	TimeGranularity TimeGranularity
 
-	// The value of a TimeEquality filter. This field is mutually exclusive to
-	// ParameterName .
+	// The value of a TimeEquality filter.
+	//
+	// This field is mutually exclusive to RollingDate and ParameterName .
 	Value *time.Time
 
 	noSmithyDocumentSerde
@@ -12352,12 +15944,19 @@ type TimeRangeFilter struct {
 	FilterId *string
 
 	// This option determines how null values should be treated when filtering data.
+	//
 	//   - ALL_VALUES : Include null values in filtered results.
+	//
 	//   - NULLS_ONLY : Only include null values in filtered results.
+	//
 	//   - NON_NULLS_ONLY : Exclude null values from filtered results.
 	//
 	// This member is required.
 	NullOption FilterNullOption
+
+	// The default configurations for the associated controls. This applies only for
+	// filters that are scoped to multiple sheets.
+	DefaultFilterControlConfiguration *DefaultFilterControlConfiguration
 
 	// The exclude period of the time range filter.
 	ExcludePeriodConfiguration *ExcludePeriodConfiguration
@@ -12382,8 +15981,10 @@ type TimeRangeFilter struct {
 	noSmithyDocumentSerde
 }
 
-// The value of a time range filter. This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The value of a time range filter.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type TimeRangeFilterValue struct {
 
 	// The parameter type input value.
@@ -12398,8 +15999,10 @@ type TimeRangeFilterValue struct {
 	noSmithyDocumentSerde
 }
 
-// The tooltip. This is a union type structure. For this structure to be valid,
-// only one of the attributes can be defined.
+// The tooltip.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type TooltipItem struct {
 
 	// The tooltip item for the columns that are not part of a field well.
@@ -12419,7 +16022,9 @@ type TooltipOptions struct {
 	FieldBasedTooltip *FieldBasedTooltip
 
 	// The selected type for the tooltip. Choose one of the following options:
+	//
 	//   - BASIC : A basic tooltip.
+	//
 	//   - DETAILED : A detailed tooltip.
 	SelectedTooltipType SelectedTooltipType
 
@@ -12448,6 +16053,10 @@ type TopBottomFilter struct {
 	// This member is required.
 	FilterId *string
 
+	// The default configurations for the associated controls. This applies only for
+	// filters that are scoped to multiple sheets.
+	DefaultFilterControlConfiguration *DefaultFilterControlConfiguration
+
 	// The number of items to include in the top bottom filter results.
 	Limit *int32
 
@@ -12463,36 +16072,34 @@ type TopBottomFilter struct {
 // The top movers and bottom movers computation setup.
 type TopBottomMoversComputation struct {
 
-	// The category field that is used in a computation.
-	//
-	// This member is required.
-	Category *DimensionField
-
 	// The ID for a computation.
 	//
 	// This member is required.
 	ComputationId *string
 
-	// The time field that is used in a computation.
-	//
-	// This member is required.
-	Time *DimensionField
-
 	// The computation type. Choose from the following options:
+	//
 	//   - TOP: Top movers computation.
+	//
 	//   - BOTTOM: Bottom movers computation.
 	//
 	// This member is required.
 	Type TopBottomComputationType
 
+	// The category field that is used in a computation.
+	Category *DimensionField
+
 	// The mover size setup of the top and bottom movers computation.
-	MoverSize int32
+	MoverSize *int32
 
 	// The name of a computation.
 	Name *string
 
 	// The sort order setup of the top and bottom movers computation.
 	SortOrder TopBottomSortOrder
+
+	// The time field that is used in a computation.
+	Time *DimensionField
 
 	// The value field that is used in a computation.
 	Value *MeasureField
@@ -12503,28 +16110,28 @@ type TopBottomMoversComputation struct {
 // The top ranked and bottom ranked computation configuration.
 type TopBottomRankedComputation struct {
 
-	// The category field that is used in a computation.
-	//
-	// This member is required.
-	Category *DimensionField
-
 	// The ID for a computation.
 	//
 	// This member is required.
 	ComputationId *string
 
 	// The computation type. Choose one of the following options:
+	//
 	//   - TOP: A top ranked computation.
+	//
 	//   - BOTTOM: A bottom ranked computation.
 	//
 	// This member is required.
 	Type TopBottomComputationType
 
+	// The category field that is used in a computation.
+	Category *DimensionField
+
 	// The name of a computation.
 	Name *string
 
 	// The result size of a top and bottom ranked computation.
-	ResultSize int32
+	ResultSize *int32
 
 	// The value field that is used in a computation.
 	Value *MeasureField
@@ -12584,6 +16191,9 @@ type TopicCalculatedField struct {
 	// A Boolean value that indicates whether to never aggregate calculated field in
 	// filters.
 	NeverAggregateInFilter bool
+
+	// The non additive for the table style target.
+	NonAdditive *bool
 
 	// The list of aggregation types that are not allowed for the calculated field.
 	// Valid values for this structure are COUNT , DISTINCT_COUNT , MIN , MAX , MEDIAN
@@ -12646,8 +16256,6 @@ type TopicColumn struct {
 	ColumnName *string
 
 	// The type of aggregation that is performed on the column data when it's queried.
-	// Valid values for this structure are SUM , MAX , MIN , COUNT , DISTINCT_COUNT ,
-	// and AVERAGE .
 	Aggregation DefaultAggregation
 
 	// The list of aggregation types that are allowed for the column. Valid values for
@@ -12689,6 +16297,9 @@ type TopicColumn struct {
 	// used in a filter context.
 	NeverAggregateInFilter bool
 
+	// The non additive value for the column.
+	NonAdditive *bool
+
 	// The list of aggregation types that are not allowed for the column. Valid values
 	// for this structure are COUNT , DISTINCT_COUNT , MIN , MAX , MEDIAN , SUM ,
 	// AVERAGE , STDEV , STDEVP , VAR , VARP , and PERCENTILE .
@@ -12699,6 +16310,36 @@ type TopicColumn struct {
 
 	// The level of time precision that is used to aggregate DateTime values.
 	TimeGranularity TopicTimeGranularity
+
+	noSmithyDocumentSerde
+}
+
+// Configuration options for a Topic .
+type TopicConfigOptions struct {
+
+	// Enables Amazon Q Business Insights for a Topic .
+	QBusinessInsightsEnabled *bool
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a TopicConstantValue .
+type TopicConstantValue struct {
+
+	// The constant type of a TopicConstantValue .
+	ConstantType ConstantType
+
+	// The maximum for the TopicConstantValue .
+	Maximum *string
+
+	// The minimum for the TopicConstantValue .
+	Minimum *string
+
+	// The value of the TopicConstantValue .
+	Value *string
+
+	// The value list of the TopicConstantValue .
+	ValueList []CollectiveConstantEntry
 
 	noSmithyDocumentSerde
 }
@@ -12721,6 +16362,9 @@ type TopicDateRangeFilter struct {
 // description, and associated data sets.
 type TopicDetails struct {
 
+	// Configuration options for a Topic .
+	ConfigOptions *TopicConfigOptions
+
 	// The data sets that the topic is associated with.
 	DataSets []DatasetMetadata
 
@@ -12729,6 +16373,9 @@ type TopicDetails struct {
 
 	// The name of the topic.
 	Name *string
+
+	// The user experience version of a topic.
+	UserExperienceVersion TopicUserExperienceVersion
 
 	noSmithyDocumentSerde
 }
@@ -12775,6 +16422,180 @@ type TopicFilter struct {
 
 	// The relative date filter.
 	RelativeDateFilter *TopicRelativeDateFilter
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a TopicIR .
+type TopicIR struct {
+
+	// The contribution analysis for the TopicIR .
+	ContributionAnalysis *TopicIRContributionAnalysis
+
+	// The filters for the TopicIR .
+	Filters [][]TopicIRFilterOption
+
+	// The GroupBy list for the TopicIR .
+	GroupByList []TopicIRGroupBy
+
+	// The metrics for the TopicIR .
+	Metrics []TopicIRMetric
+
+	// The sort for the TopicIR .
+	Sort *TopicSortClause
+
+	// The visual for the TopicIR .
+	Visual *VisualOptions
+
+	noSmithyDocumentSerde
+}
+
+// The definition of a TopicIRComparisonMethod .
+type TopicIRComparisonMethod struct {
+
+	// The period for the TopicIRComparisonMethod .
+	Period TopicTimeGranularity
+
+	// The type for the TopicIRComparisonMethod .
+	Type ComparisonMethodType
+
+	// The window size for the TopicIRComparisonMethod .
+	WindowSize int32
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a TopicIRContributionAnalysis .
+type TopicIRContributionAnalysis struct {
+
+	// The direction for the TopicIRContributionAnalysis .
+	Direction ContributionAnalysisDirection
+
+	// The factors for a TopicIRContributionAnalysis .
+	Factors []ContributionAnalysisFactor
+
+	// The sort type for the TopicIRContributionAnalysis .
+	SortType ContributionAnalysisSortType
+
+	// The time ranges for the TopicIRContributionAnalysis .
+	TimeRanges *ContributionAnalysisTimeRanges
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a TopicIRFilterOption .
+type TopicIRFilterOption struct {
+
+	// The agg metrics for the TopicIRFilterOption .
+	AggMetrics []FilterAggMetrics
+
+	// The aggregation for the TopicIRFilterOption .
+	Aggregation AggType
+
+	// The aggregation function parameters for the TopicIRFilterOption .
+	AggregationFunctionParameters map[string]string
+
+	// The AggregationPartitionBy for the TopicIRFilterOption .
+	AggregationPartitionBy []AggregationPartitionBy
+
+	// The anchor for the TopicIRFilterOption .
+	Anchor *Anchor
+
+	// The constant for the TopicIRFilterOption .
+	Constant *TopicConstantValue
+
+	// The filter class for the TopicIRFilterOption .
+	FilterClass FilterClass
+
+	// The filter type for the TopicIRFilterOption .
+	FilterType TopicIRFilterType
+
+	// The function for the TopicIRFilterOption .
+	Function TopicIRFilterFunction
+
+	// The inclusive for the TopicIRFilterOption .
+	Inclusive bool
+
+	// The inverse for the TopicIRFilterOption .
+	Inverse bool
+
+	// The last next offset for the TopicIRFilterOption .
+	LastNextOffset *TopicConstantValue
+
+	// The null filter for the TopicIRFilterOption .
+	NullFilter NullFilterOption
+
+	// The operand field for the TopicIRFilterOption .
+	OperandField *Identifier
+
+	// The range for the TopicIRFilterOption .
+	Range *TopicConstantValue
+
+	// The sort direction for the TopicIRFilterOption .
+	SortDirection TopicSortDirection
+
+	// The time granularity for the TopicIRFilterOption .
+	TimeGranularity TimeGranularity
+
+	// The TopBottomLimit for the TopicIRFilterOption .
+	TopBottomLimit *TopicConstantValue
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a TopicIRGroupBy .
+type TopicIRGroupBy struct {
+
+	// The display format for the TopicIRGroupBy .
+	DisplayFormat DisplayFormat
+
+	// A structure that represents additional options for display formatting.
+	DisplayFormatOptions *DisplayFormatOptions
+
+	// The field name for the TopicIRGroupBy .
+	FieldName *Identifier
+
+	// The named entity for the TopicIRGroupBy .
+	NamedEntity *NamedEntityRef
+
+	// The sort for the TopicIRGroupBy .
+	Sort *TopicSortClause
+
+	// The time granularity for the TopicIRGroupBy .
+	TimeGranularity TopicTimeGranularity
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a TopicIRMetric .
+type TopicIRMetric struct {
+
+	// The calculated field references for the TopicIRMetric .
+	CalculatedFieldReferences []Identifier
+
+	// The comparison method for the TopicIRMetric .
+	ComparisonMethod *TopicIRComparisonMethod
+
+	// The display format for the TopicIRMetric .
+	DisplayFormat DisplayFormat
+
+	// A structure that represents additional options for display formatting.
+	DisplayFormatOptions *DisplayFormatOptions
+
+	// The expression for the TopicIRMetric .
+	Expression *string
+
+	// The function for the TopicIRMetric .
+	Function *AggFunction
+
+	// The metric ID for the TopicIRMetric .
+	MetricId *Identifier
+
+	// The named entity for the TopicIRMetric .
+	NamedEntity *NamedEntityRef
+
+	// The operands for the TopicIRMetric .
+	Operands []Identifier
 
 	noSmithyDocumentSerde
 }
@@ -12938,6 +16759,60 @@ type TopicRelativeDateFilter struct {
 	noSmithyDocumentSerde
 }
 
+// The deinition for a TopicReviewedAnswer .
+type TopicReviewedAnswer struct {
+
+	// The answer ID of the reviewed answer.
+	//
+	// This member is required.
+	AnswerId *string
+
+	// The Dataset ARN for the TopicReviewedAnswer .
+	//
+	// This member is required.
+	DatasetArn *string
+
+	// The question for the TopicReviewedAnswer .
+	//
+	// This member is required.
+	Question *string
+
+	// The Amazon Resource Name (ARN) of the reviewed answer.
+	Arn *string
+
+	// The mir for the TopicReviewedAnswer .
+	Mir *TopicIR
+
+	// The primary visual for the TopicReviewedAnswer .
+	PrimaryVisual *TopicVisual
+
+	// The template for the TopicReviewedAnswer .
+	Template *TopicTemplate
+
+	noSmithyDocumentSerde
+}
+
+// The filter that is used to search for a topic.
+type TopicSearchFilter struct {
+
+	// The name of the topic search filter.
+	//
+	// This member is required.
+	Name TopicFilterAttribute
+
+	// The operator like equals or like.
+	//
+	// This member is required.
+	Operator TopicFilterOperator
+
+	// The value of the topic search filter.
+	//
+	// This member is required.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
 // A structure that represents a singular filter constant, used in filters to
 // specify a single value to match against.
 type TopicSingularFilterConstant struct {
@@ -12948,6 +16823,18 @@ type TopicSingularFilterConstant struct {
 
 	// The value of the singular filter constant.
 	SingularConstant *string
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a TopicSortClause .
+type TopicSortClause struct {
+
+	// The operand for a TopicSortClause .
+	Operand *Identifier
+
+	// The sort direction for the TopicSortClause .
+	SortDirection TopicSortDirection
 
 	noSmithyDocumentSerde
 }
@@ -12965,6 +16852,39 @@ type TopicSummary struct {
 	// Amazon Web Services account.
 	TopicId *string
 
+	// The user experience version of the topic.
+	UserExperienceVersion TopicUserExperienceVersion
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a TopicTemplate .
+type TopicTemplate struct {
+
+	// The slots for the TopicTemplate .
+	Slots []Slot
+
+	// The template type for the TopicTemplate .
+	TemplateType *string
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a TopicVisual .
+type TopicVisual struct {
+
+	// The ir for the TopicVisual .
+	Ir *TopicIR
+
+	// The role for the TopicVisual .
+	Role VisualRole
+
+	// The supporting visuals for the TopicVisual .
+	SupportingVisuals []TopicVisual
+
+	// The visual ID for the TopicVisual .
+	VisualId *string
+
 	noSmithyDocumentSerde
 }
 
@@ -12976,13 +16896,36 @@ type TotalAggregationComputation struct {
 	// This member is required.
 	ComputationId *string
 
-	// The value field that is used in a computation.
-	//
-	// This member is required.
-	Value *MeasureField
-
 	// The name of a computation.
 	Name *string
+
+	// The value field that is used in a computation.
+	Value *MeasureField
+
+	noSmithyDocumentSerde
+}
+
+// An aggregation function that aggregates the total values of a measure.
+type TotalAggregationFunction struct {
+
+	// A built in aggregation function for total values.
+	SimpleTotalAggregationFunction SimpleTotalAggregationFunction
+
+	noSmithyDocumentSerde
+}
+
+// The total aggregation settings map of a field id.
+type TotalAggregationOption struct {
+
+	// The field id that's associated with the total aggregation option.
+	//
+	// This member is required.
+	FieldId *string
+
+	// The total aggregation function that you want to set for a specified field id.
+	//
+	// This member is required.
+	TotalAggregationFunction *TotalAggregationFunction
 
 	noSmithyDocumentSerde
 }
@@ -12998,6 +16941,9 @@ type TotalOptions struct {
 
 	// The scroll status (pinned, scrolled) for the total cells.
 	ScrollStatus TableTotalsScrollStatus
+
+	// The total aggregation settings for each value field.
+	TotalAggregationOptions []TotalAggregationOption
 
 	// Cell styling options for the total cells.
 	TotalCellStyle *TableCellStyle
@@ -13138,6 +17084,9 @@ type TreeMapConfiguration struct {
 	// displayed in a tree map.
 	GroupLabelOptions *ChartAxisLabelOptions
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The legend display setup of the visual.
 	Legend *LegendOptions
 
@@ -13154,8 +17103,10 @@ type TreeMapConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The field wells of a tree map. This is a union type structure. For this
-// structure to be valid, only one of the attributes can be defined.
+// The field wells of a tree map.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type TreeMapFieldWells struct {
 
 	// The aggregated field wells of a tree map.
@@ -13176,8 +17127,11 @@ type TreeMapSortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A tree map. For more information, see Using tree maps (https://docs.aws.amazon.com/quicksight/latest/user/tree-map.html)
-// in the Amazon QuickSight User Guide.
+// A tree map.
+//
+// For more information, see [Using tree maps] in the Amazon QuickSight User Guide.
+//
+// [Using tree maps]: https://docs.aws.amazon.com/quicksight/latest/user/tree-map.html
 type TreeMapVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -13202,6 +17156,9 @@ type TreeMapVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
 	noSmithyDocumentSerde
 }
 
@@ -13214,13 +17171,34 @@ type TrendArrowOptions struct {
 	noSmithyDocumentSerde
 }
 
+// The parameters that are required to connect to a Trino data source.
+type TrinoParameters struct {
+
+	// The catalog name for the Trino data source.
+	//
+	// This member is required.
+	Catalog *string
+
+	// The host name of the Trino data source.
+	//
+	// This member is required.
+	Host *string
+
+	// The port for the Trino data source.
+	//
+	// This member is required.
+	Port *int32
+
+	noSmithyDocumentSerde
+}
+
 // The parameters for Twitter.
 type TwitterParameters struct {
 
 	// Maximum number of rows to query Twitter.
 	//
 	// This member is required.
-	MaxRows int32
+	MaxRows *int32
 
 	// Twitter query string.
 	//
@@ -13242,8 +17220,9 @@ type Typography struct {
 // The theme colors that apply to UI and to charts, excluding data colors. The
 // colors description is a hexadecimal color code that consists of six
 // alphanumerical characters, prefixed with # , for example #37BFF5. For more
-// information, see Using Themes in Amazon QuickSight (https://docs.aws.amazon.com/quicksight/latest/user/themes-in-quicksight.html)
-// in the Amazon QuickSight User Guide.
+// information, see [Using Themes in Amazon QuickSight]in the Amazon QuickSight User Guide.
+//
+// [Using Themes in Amazon QuickSight]: https://docs.aws.amazon.com/quicksight/latest/user/themes-in-quicksight.html
 type UIColorPalette struct {
 
 	// This color is that applies to selected states and buttons.
@@ -13326,18 +17305,27 @@ type UnaggregatedField struct {
 	noSmithyDocumentSerde
 }
 
-// The unique values computation configuration.
-type UniqueValuesComputation struct {
+// A UniqueKey configuration that references a dataset column.
+type UniqueKey struct {
 
-	// The category field that is used in a computation.
+	// The name of the column that is referenced in the UniqueKey configuration.
 	//
 	// This member is required.
-	Category *DimensionField
+	ColumnNames []string
+
+	noSmithyDocumentSerde
+}
+
+// The unique values computation configuration.
+type UniqueValuesComputation struct {
 
 	// The ID for a computation.
 	//
 	// This member is required.
 	ComputationId *string
+
+	// The category field that is used in a computation.
+	Category *DimensionField
 
 	// The name of a computation.
 	Name *string
@@ -13402,8 +17390,9 @@ type User struct {
 	// The type of supported external login provider that provides identity to let the
 	// user federate into Amazon QuickSight with an associated IAM role. The type can
 	// be one of the following.
-	//   - COGNITO : Amazon Cognito. The provider URL is
-	//   cognito-identity.amazonaws.com.
+	//
+	//   - COGNITO : Amazon Cognito. The provider URL is cognito-identity.amazonaws.com.
+	//
 	//   - CUSTOM_OIDC : Custom OpenID Connect (OIDC) provider.
 	ExternalLoginFederationProviderType *string
 
@@ -13421,12 +17410,29 @@ type User struct {
 
 	// The Amazon QuickSight role for the user. The user role can be one of the
 	// following:.
+	//
 	//   - READER : A user who has read-only access to dashboards.
+	//
 	//   - AUTHOR : A user who can create data sources, datasets, analyses, and
 	//   dashboards.
+	//
 	//   - ADMIN : A user who is an author, who can also manage Amazon Amazon
 	//   QuickSight settings.
+	//
+	//   - READER_PRO : Reader Pro adds Generative BI capabilities to the Reader role.
+	//   Reader Pros have access to Amazon Q in Amazon QuickSight, can build stories with
+	//   Amazon Q, and can generate executive summaries from dashboards.
+	//
+	//   - AUTHOR_PRO : Author Pro adds Generative BI capabilities to the Author role.
+	//   Author Pros can author dashboards with natural language with Amazon Q, build
+	//   stories with Amazon Q, create Topics for Q&A, and generate executive summaries
+	//   from dashboards.
+	//
+	//   - ADMIN_PRO : Admin Pros are Author Pros who can also manage Amazon QuickSight
+	//   administrative settings. Admin Pro users are billed at Author Pro pricing.
+	//
 	//   - RESTRICTED_READER : This role isn't currently available for use.
+	//
 	//   - RESTRICTED_AUTHOR : This role isn't currently available for use.
 	Role UserRole
 
@@ -13435,6 +17441,21 @@ type User struct {
 	// N/A when the value for IdentityType is IAM and the corresponding IAM user is
 	// deleted.
 	UserName *string
+
+	noSmithyDocumentSerde
+}
+
+// The option to relax the validation that is required to create and update
+// analyses, dashboards, and templates with definition objects. When you set this
+// value to LENIENT , validation is skipped for specific errors.
+type ValidationStrategy struct {
+
+	// The mode of validation for the asset to be created or updated. When you set
+	// this value to STRICT , strict validation for every error is enforced. When you
+	// set this value to LENIENT , validation is skipped for specific UI errors.
+	//
+	// This member is required.
+	Mode ValidationStrategyMode
 
 	noSmithyDocumentSerde
 }
@@ -13448,102 +17469,173 @@ type VisibleRangeOptions struct {
 	noSmithyDocumentSerde
 }
 
-// A visual displayed on a sheet in an analysis, dashboard, or template. This is a
-// union type structure. For this structure to be valid, only one of the attributes
-// can be defined.
+// A visual displayed on a sheet in an analysis, dashboard, or template.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type Visual struct {
 
-	// A bar chart. For more information, see Using bar charts (https://docs.aws.amazon.com/quicksight/latest/user/bar-charts.html)
-	// in the Amazon QuickSight User Guide.
+	// A bar chart.
+	//
+	// For more information, see [Using bar charts] in the Amazon QuickSight User Guide.
+	//
+	// [Using bar charts]: https://docs.aws.amazon.com/quicksight/latest/user/bar-charts.html
 	BarChartVisual *BarChartVisual
 
-	// A box plot. For more information, see Using box plots (https://docs.aws.amazon.com/quicksight/latest/user/box-plots.html)
-	// in the Amazon QuickSight User Guide.
+	// A box plot.
+	//
+	// For more information, see [Using box plots] in the Amazon QuickSight User Guide.
+	//
+	// [Using box plots]: https://docs.aws.amazon.com/quicksight/latest/user/box-plots.html
 	BoxPlotVisual *BoxPlotVisual
 
-	// A combo chart. For more information, see Using combo charts (https://docs.aws.amazon.com/quicksight/latest/user/combo-charts.html)
-	// in the Amazon QuickSight User Guide.
+	// A combo chart.
+	//
+	// For more information, see [Using combo charts] in the Amazon QuickSight User Guide.
+	//
+	// [Using combo charts]: https://docs.aws.amazon.com/quicksight/latest/user/combo-charts.html
 	ComboChartVisual *ComboChartVisual
 
-	// A visual that contains custom content. For more information, see Using custom
-	// visual content (https://docs.aws.amazon.com/quicksight/latest/user/custom-visual-content.html)
-	// in the Amazon QuickSight User Guide.
+	// A visual that contains custom content.
+	//
+	// For more information, see [Using custom visual content] in the Amazon QuickSight User Guide.
+	//
+	// [Using custom visual content]: https://docs.aws.amazon.com/quicksight/latest/user/custom-visual-content.html
 	CustomContentVisual *CustomContentVisual
 
 	// An empty visual.
 	EmptyVisual *EmptyVisual
 
-	// A filled map. For more information, see Creating filled maps (https://docs.aws.amazon.com/quicksight/latest/user/filled-maps.html)
-	// in the Amazon QuickSight User Guide.
+	// A filled map.
+	//
+	// For more information, see [Creating filled maps] in the Amazon QuickSight User Guide.
+	//
+	// [Creating filled maps]: https://docs.aws.amazon.com/quicksight/latest/user/filled-maps.html
 	FilledMapVisual *FilledMapVisual
 
-	// A funnel chart. For more information, see Using funnel charts (https://docs.aws.amazon.com/quicksight/latest/user/funnel-visual-content.html)
-	// in the Amazon QuickSight User Guide.
+	// A funnel chart.
+	//
+	// For more information, see [Using funnel charts] in the Amazon QuickSight User Guide.
+	//
+	// [Using funnel charts]: https://docs.aws.amazon.com/quicksight/latest/user/funnel-visual-content.html
 	FunnelChartVisual *FunnelChartVisual
 
-	// A gauge chart. For more information, see Using gauge charts (https://docs.aws.amazon.com/quicksight/latest/user/gauge-chart.html)
-	// in the Amazon QuickSight User Guide.
+	// A gauge chart.
+	//
+	// For more information, see [Using gauge charts] in the Amazon QuickSight User Guide.
+	//
+	// [Using gauge charts]: https://docs.aws.amazon.com/quicksight/latest/user/gauge-chart.html
 	GaugeChartVisual *GaugeChartVisual
 
-	// A geospatial map or a points on map visual. For more information, see Creating
-	// point maps (https://docs.aws.amazon.com/quicksight/latest/user/point-maps.html)
-	// in the Amazon QuickSight User Guide.
+	// A geospatial map or a points on map visual.
+	//
+	// For more information, see [Creating point maps] in the Amazon QuickSight User Guide.
+	//
+	// [Creating point maps]: https://docs.aws.amazon.com/quicksight/latest/user/point-maps.html
 	GeospatialMapVisual *GeospatialMapVisual
 
-	// A heat map. For more information, see Using heat maps (https://docs.aws.amazon.com/quicksight/latest/user/heat-map.html)
-	// in the Amazon QuickSight User Guide.
+	// A heat map.
+	//
+	// For more information, see [Using heat maps] in the Amazon QuickSight User Guide.
+	//
+	// [Using heat maps]: https://docs.aws.amazon.com/quicksight/latest/user/heat-map.html
 	HeatMapVisual *HeatMapVisual
 
-	// A histogram. For more information, see Using histograms (https://docs.aws.amazon.com/quicksight/latest/user/histogram-charts.html)
-	// in the Amazon QuickSight User Guide.
+	// A histogram.
+	//
+	// For more information, see [Using histograms] in the Amazon QuickSight User Guide.
+	//
+	// [Using histograms]: https://docs.aws.amazon.com/quicksight/latest/user/histogram-charts.html
 	HistogramVisual *HistogramVisual
 
-	// An insight visual. For more information, see Working with insights (https://docs.aws.amazon.com/quicksight/latest/user/computational-insights.html)
-	// in the Amazon QuickSight User Guide.
+	// An insight visual.
+	//
+	// For more information, see [Working with insights] in the Amazon QuickSight User Guide.
+	//
+	// [Working with insights]: https://docs.aws.amazon.com/quicksight/latest/user/computational-insights.html
 	InsightVisual *InsightVisual
 
-	// A key performance indicator (KPI). For more information, see Using KPIs (https://docs.aws.amazon.com/quicksight/latest/user/kpi.html)
-	// in the Amazon QuickSight User Guide.
+	// A key performance indicator (KPI).
+	//
+	// For more information, see [Using KPIs] in the Amazon QuickSight User Guide.
+	//
+	// [Using KPIs]: https://docs.aws.amazon.com/quicksight/latest/user/kpi.html
 	KPIVisual *KPIVisual
 
-	// A line chart. For more information, see Using line charts (https://docs.aws.amazon.com/quicksight/latest/user/line-charts.html)
-	// in the Amazon QuickSight User Guide.
+	// The properties for a layer map visual
+	LayerMapVisual *LayerMapVisual
+
+	// A line chart.
+	//
+	// For more information, see [Using line charts] in the Amazon QuickSight User Guide.
+	//
+	// [Using line charts]: https://docs.aws.amazon.com/quicksight/latest/user/line-charts.html
 	LineChartVisual *LineChartVisual
 
-	// A pie or donut chart. For more information, see Using pie charts (https://docs.aws.amazon.com/quicksight/latest/user/pie-chart.html)
-	// in the Amazon QuickSight User Guide.
+	// A pie or donut chart.
+	//
+	// For more information, see [Using pie charts] in the Amazon QuickSight User Guide.
+	//
+	// [Using pie charts]: https://docs.aws.amazon.com/quicksight/latest/user/pie-chart.html
 	PieChartVisual *PieChartVisual
 
-	// A pivot table. For more information, see Using pivot tables (https://docs.aws.amazon.com/quicksight/latest/user/pivot-table.html)
-	// in the Amazon QuickSight User Guide.
+	// A pivot table.
+	//
+	// For more information, see [Using pivot tables] in the Amazon QuickSight User Guide.
+	//
+	// [Using pivot tables]: https://docs.aws.amazon.com/quicksight/latest/user/pivot-table.html
 	PivotTableVisual *PivotTableVisual
 
-	// A radar chart visual. For more information, see Using radar charts (https://docs.aws.amazon.com/quicksight/latest/user/radar-chart.html)
-	// in the Amazon QuickSight User Guide.
+	// The custom plugin visual type.
+	PluginVisual *PluginVisual
+
+	// A radar chart visual.
+	//
+	// For more information, see [Using radar charts] in the Amazon QuickSight User Guide.
+	//
+	// [Using radar charts]: https://docs.aws.amazon.com/quicksight/latest/user/radar-chart.html
 	RadarChartVisual *RadarChartVisual
 
-	// A sankey diagram. For more information, see Using Sankey diagrams (https://docs.aws.amazon.com/quicksight/latest/user/sankey-diagram.html)
-	// in the Amazon QuickSight User Guide.
+	// A sankey diagram.
+	//
+	// For more information, see [Using Sankey diagrams] in the Amazon QuickSight User Guide.
+	//
+	// [Using Sankey diagrams]: https://docs.aws.amazon.com/quicksight/latest/user/sankey-diagram.html
 	SankeyDiagramVisual *SankeyDiagramVisual
 
-	// A scatter plot. For more information, see Using scatter plots (https://docs.aws.amazon.com/quicksight/latest/user/scatter-plot.html)
-	// in the Amazon QuickSight User Guide.
+	// A scatter plot.
+	//
+	// For more information, see [Using scatter plots] in the Amazon QuickSight User Guide.
+	//
+	// [Using scatter plots]: https://docs.aws.amazon.com/quicksight/latest/user/scatter-plot.html
 	ScatterPlotVisual *ScatterPlotVisual
 
-	// A table visual. For more information, see Using tables as visuals (https://docs.aws.amazon.com/quicksight/latest/user/tabular.html)
-	// in the Amazon QuickSight User Guide.
+	// A table visual.
+	//
+	// For more information, see [Using tables as visuals] in the Amazon QuickSight User Guide.
+	//
+	// [Using tables as visuals]: https://docs.aws.amazon.com/quicksight/latest/user/tabular.html
 	TableVisual *TableVisual
 
-	// A tree map. For more information, see Using tree maps (https://docs.aws.amazon.com/quicksight/latest/user/tree-map.html)
-	// in the Amazon QuickSight User Guide.
+	// A tree map.
+	//
+	// For more information, see [Using tree maps] in the Amazon QuickSight User Guide.
+	//
+	// [Using tree maps]: https://docs.aws.amazon.com/quicksight/latest/user/tree-map.html
 	TreeMapVisual *TreeMapVisual
 
-	// A waterfall chart. For more information, see Using waterfall charts (https://docs.aws.amazon.com/quicksight/latest/user/waterfall-chart.html)
-	// in the Amazon QuickSight User Guide.
+	// A waterfall chart.
+	//
+	// For more information, see [Using waterfall charts] in the Amazon QuickSight User Guide.
+	//
+	// [Using waterfall charts]: https://docs.aws.amazon.com/quicksight/latest/user/waterfall-chart.html
 	WaterfallVisual *WaterfallVisual
 
-	// A word cloud. For more information, see Using word clouds (https://docs.aws.amazon.com/quicksight/latest/user/word-cloud.html)
-	// in the Amazon QuickSight User Guide.
+	// A word cloud.
+	//
+	// For more information, see [Using word clouds] in the Amazon QuickSight User Guide.
+	//
+	// [Using word clouds]: https://docs.aws.amazon.com/quicksight/latest/user/word-cloud.html
 	WordCloudVisual *WordCloudVisual
 
 	noSmithyDocumentSerde
@@ -13561,8 +17653,10 @@ type VisualAxisSortOption struct {
 // A custom action defined on a visual.
 type VisualCustomAction struct {
 
-	// A list of VisualCustomActionOperations . This is a union type structure. For
-	// this structure to be valid, only one of the attributes can be defined.
+	// A list of VisualCustomActionOperations .
+	//
+	// This is a union type structure. For this structure to be valid, only one of the
+	// attributes can be defined.
 	//
 	// This member is required.
 	ActionOperations []VisualCustomActionOperation
@@ -13577,9 +17671,13 @@ type VisualCustomAction struct {
 	// This member is required.
 	Name *string
 
-	// The trigger of the VisualCustomAction . Valid values are defined as follows:
+	// The trigger of the VisualCustomAction .
+	//
+	// Valid values are defined as follows:
+	//
 	//   - DATA_POINT_CLICK : Initiates a custom action by a left pointer click on a
 	//   data point.
+	//
 	//   - DATA_POINT_MENU : Initiates a custom action by right pointer click from the
 	//   menu.
 	//
@@ -13592,9 +17690,10 @@ type VisualCustomAction struct {
 	noSmithyDocumentSerde
 }
 
-// The operation that is defined by the custom action. This is a union type
-// structure. For this structure to be valid, only one of the attributes can be
-// defined.
+// The operation that is defined by the custom action.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type VisualCustomActionOperation struct {
 
 	// The filter operation that filters data included in a visual or in an entire
@@ -13614,11 +17713,32 @@ type VisualCustomActionOperation struct {
 	noSmithyDocumentSerde
 }
 
+// The general visual interactions setup for visual publish options
+type VisualInteractionOptions struct {
+
+	// The context menu options for a visual.
+	ContextMenuOption *ContextMenuOption
+
+	// The on-visual menu options for a visual.
+	VisualMenuOption *VisualMenuOption
+
+	noSmithyDocumentSerde
+}
+
 // The menu options for a visual.
 type VisualMenuOption struct {
 
 	// The availaiblity status of a visual's menu options.
 	AvailabilityStatus DashboardBehavior
+
+	noSmithyDocumentSerde
+}
+
+// The definition for a VisualOptions .
+type VisualOptions struct {
+
+	// The type for a VisualOptions .
+	Type *string
 
 	noSmithyDocumentSerde
 }
@@ -13773,6 +17893,15 @@ type WaterfallChartAggregatedFieldWells struct {
 	noSmithyDocumentSerde
 }
 
+// The color configuration of a waterfall visual.
+type WaterfallChartColorConfiguration struct {
+
+	// The color configuration for individual groups within a waterfall visual.
+	GroupColorConfiguration *WaterfallChartGroupColorConfiguration
+
+	noSmithyDocumentSerde
+}
+
 // The configuration for a waterfall visual.
 type WaterfallChartConfiguration struct {
 
@@ -13782,11 +17911,17 @@ type WaterfallChartConfiguration struct {
 	// The options that determine the presentation of the category axis label.
 	CategoryAxisLabelOptions *ChartAxisLabelOptions
 
+	// The color configuration of a waterfall visual.
+	ColorConfiguration *WaterfallChartColorConfiguration
+
 	// The data label configuration of a waterfall visual.
 	DataLabels *DataLabelOptions
 
 	// The field well configuration of a waterfall visual.
 	FieldWells *WaterfallChartFieldWells
+
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
 
 	// The legend configuration of a waterfall visual.
 	Legend *LegendOptions
@@ -13818,6 +17953,21 @@ type WaterfallChartFieldWells struct {
 	noSmithyDocumentSerde
 }
 
+// The color configuration for individual groups within a waterfall visual.
+type WaterfallChartGroupColorConfiguration struct {
+
+	// Defines the color for the negative bars of a waterfall chart.
+	NegativeBarColor *string
+
+	// Defines the color for the positive bars of a waterfall chart.
+	PositiveBarColor *string
+
+	// Defines the color for the total bars of a waterfall chart.
+	TotalBarColor *string
+
+	noSmithyDocumentSerde
+}
+
 // The options that determine the presentation of a waterfall visual.
 type WaterfallChartOptions struct {
 
@@ -13839,8 +17989,11 @@ type WaterfallChartSortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A waterfall chart. For more information, see Using waterfall charts (https://docs.aws.amazon.com/quicksight/latest/user/waterfall-chart.html)
-// in the Amazon QuickSight User Guide.
+// A waterfall chart.
+//
+// For more information, see [Using waterfall charts] in the Amazon QuickSight User Guide.
+//
+// [Using waterfall charts]: https://docs.aws.amazon.com/quicksight/latest/user/waterfall-chart.html
 type WaterfallVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -13864,6 +18017,9 @@ type WaterfallVisual struct {
 
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
+
+	// The alt text for the visual.
+	VisualContentAltText *string
 
 	noSmithyDocumentSerde
 }
@@ -13928,6 +18084,9 @@ type WordCloudChartConfiguration struct {
 	// The field wells of the visual.
 	FieldWells *WordCloudFieldWells
 
+	// The general visual interactions setup for a visual.
+	Interactions *VisualInteractionOptions
+
 	// The sort configuration of a word cloud visual.
 	SortConfiguration *WordCloudSortConfiguration
 
@@ -13937,8 +18096,10 @@ type WordCloudChartConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// The field wells of a word cloud visual. This is a union type structure. For
-// this structure to be valid, only one of the attributes can be defined.
+// The field wells of a word cloud visual.
+//
+// This is a union type structure. For this structure to be valid, only one of the
+// attributes can be defined.
 type WordCloudFieldWells struct {
 
 	// The aggregated field wells of a word cloud.
@@ -13986,8 +18147,11 @@ type WordCloudSortConfiguration struct {
 	noSmithyDocumentSerde
 }
 
-// A word cloud. For more information, see Using word clouds (https://docs.aws.amazon.com/quicksight/latest/user/word-cloud.html)
-// in the Amazon QuickSight User Guide.
+// A word cloud.
+//
+// For more information, see [Using word clouds] in the Amazon QuickSight User Guide.
+//
+// [Using word clouds]: https://docs.aws.amazon.com/quicksight/latest/user/word-cloud.html
 type WordCloudVisual struct {
 
 	// The unique identifier of a visual. This identifier must be unique within the
@@ -14012,6 +18176,23 @@ type WordCloudVisual struct {
 	// The title that is displayed on the visual.
 	Title *VisualTitleLabelOptions
 
+	// The alt text for the visual.
+	VisualContentAltText *string
+
+	noSmithyDocumentSerde
+}
+
+// The options that are available for a single Y axis in a chart.
+type YAxisOptions struct {
+
+	// The Y axis type to be used in the chart.
+	//
+	// If you choose PRIMARY_Y_AXIS , the primary Y Axis is located on the leftmost
+	// vertical axis of the chart.
+	//
+	// This member is required.
+	YAxis SingleYAxisOption
+
 	noSmithyDocumentSerde
 }
 
@@ -14027,5 +18208,6 @@ type UnknownUnionMember struct {
 }
 
 func (*UnknownUnionMember) isDataSourceParameters() {}
+func (*UnknownUnionMember) isImageSource()          {}
 func (*UnknownUnionMember) isPhysicalTable()        {}
 func (*UnknownUnionMember) isTransformOperation()   {}

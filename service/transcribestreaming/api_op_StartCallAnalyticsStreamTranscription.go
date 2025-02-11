@@ -4,15 +4,10 @@ package transcribestreaming
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
 	"github.com/aws/aws-sdk-go-v2/aws/protocol/eventstream/eventstreamapi"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/transcribestreaming/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithysync "github.com/aws/smithy-go/sync"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
@@ -22,15 +17,20 @@ import (
 
 // Starts a bidirectional HTTP/2 or WebSocket stream where audio is streamed to
 // Amazon Transcribe and the transcription results are streamed to your
-// application. Use this operation for Call Analytics (https://docs.aws.amazon.com/transcribe/latest/dg/call-analytics.html)
-// transcriptions. The following parameters are required:
+// application. Use this operation for [Call Analytics]transcriptions.
+//
+// The following parameters are required:
+//
 //   - language-code
+//
 //   - media-encoding
+//
 //   - sample-rate
 //
-// For more information on streaming with Amazon Transcribe, see Transcribing
-// streaming audio (https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html)
-// .
+// For more information on streaming with Amazon Transcribe, see [Transcribing streaming audio].
+//
+// [Call Analytics]: https://docs.aws.amazon.com/transcribe/latest/dg/call-analytics.html
+// [Transcribing streaming audio]: https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html
 func (c *Client) StartCallAnalyticsStreamTranscription(ctx context.Context, params *StartCallAnalyticsStreamTranscriptionInput, optFns ...func(*Options)) (*StartCallAnalyticsStreamTranscriptionOutput, error) {
 	if params == nil {
 		params = &StartCallAnalyticsStreamTranscriptionInput{}
@@ -48,23 +48,28 @@ func (c *Client) StartCallAnalyticsStreamTranscription(ctx context.Context, para
 
 type StartCallAnalyticsStreamTranscriptionInput struct {
 
-	// Specify the language code that represents the language spoken in your audio. If
-	// you're unsure of the language spoken in your audio, consider using
-	// IdentifyLanguage to enable automatic language identification. For a list of
-	// languages supported with streaming Call Analytics, refer to the Supported
-	// languages (https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html)
+	// Specify the language code that represents the language spoken in your audio.
+	//
+	// For a list of languages supported with real-time Call Analytics, refer to the [Supported languages]
 	// table.
+	//
+	// [Supported languages]: https://docs.aws.amazon.com/transcribe/latest/dg/supported-languages.html
 	//
 	// This member is required.
 	LanguageCode types.CallAnalyticsLanguageCode
 
 	// Specify the encoding of your input audio. Supported formats are:
+	//
 	//   - FLAC
+	//
 	//   - OPUS-encoded audio in an Ogg container
+	//
 	//   - PCM (only signed 16-bit little-endian audio formats, which does not include
 	//   WAV)
-	// For more information, see Media formats (https://docs.aws.amazon.com/transcribe/latest/dg/how-input.html#how-input-audio)
-	// .
+	//
+	// For more information, see [Media formats].
+	//
+	// [Media formats]: https://docs.aws.amazon.com/transcribe/latest/dg/how-input.html#how-input-audio
 	//
 	// This member is required.
 	MediaEncoding types.MediaEncoding
@@ -78,82 +83,119 @@ type StartCallAnalyticsStreamTranscriptionInput struct {
 	MediaSampleRateHertz *int32
 
 	// Labels all personally identifiable information (PII) identified in your
-	// transcript. Content identification is performed at the segment level; PII
-	// specified in PiiEntityTypes is flagged upon complete transcription of an audio
-	// segment. You can’t set ContentIdentificationType and ContentRedactionType in
-	// the same request. If you set both, your request returns a BadRequestException .
-	// For more information, see Redacting or identifying personally identifiable
-	// information (https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html)
-	// .
+	// transcript.
+	//
+	// Content identification is performed at the segment level; PII specified in
+	// PiiEntityTypes is flagged upon complete transcription of an audio segment. If
+	// you don't include PiiEntityTypes in your request, all PII is identified.
+	//
+	// You can’t set ContentIdentificationType and ContentRedactionType in the same
+	// request. If you set both, your request returns a BadRequestException .
+	//
+	// For more information, see [Redacting or identifying personally identifiable information].
+	//
+	// [Redacting or identifying personally identifiable information]: https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html
 	ContentIdentificationType types.ContentIdentificationType
 
 	// Redacts all personally identifiable information (PII) identified in your
-	// transcript. Content redaction is performed at the segment level; PII specified
-	// in PiiEntityTypes is redacted upon complete transcription of an audio segment.
+	// transcript.
+	//
+	// Content redaction is performed at the segment level; PII specified in
+	// PiiEntityTypes is redacted upon complete transcription of an audio segment. If
+	// you don't include PiiEntityTypes in your request, all PII is redacted.
+	//
 	// You can’t set ContentRedactionType and ContentIdentificationType in the same
-	// request. If you set both, your request returns a BadRequestException . For more
-	// information, see Redacting or identifying personally identifiable information (https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html)
-	// .
+	// request. If you set both, your request returns a BadRequestException .
+	//
+	// For more information, see [Redacting or identifying personally identifiable information].
+	//
+	// [Redacting or identifying personally identifiable information]: https://docs.aws.amazon.com/transcribe/latest/dg/pii-redaction.html
 	ContentRedactionType types.ContentRedactionType
 
 	// Enables partial result stabilization for your transcription. Partial result
 	// stabilization can reduce latency in your output, but may impact accuracy. For
-	// more information, see Partial-result stabilization (https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization)
-	// .
+	// more information, see [Partial-result stabilization].
+	//
+	// [Partial-result stabilization]: https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization
 	EnablePartialResultsStabilization bool
 
 	// Specify the name of the custom language model that you want to use when
 	// processing your transcription. Note that language model names are case
-	// sensitive. The language of the specified language model must match the language
-	// code you specify in your transcription request. If the languages don't match,
-	// the custom language model isn't applied. There are no errors or warnings
-	// associated with a language mismatch. For more information, see Custom language
-	// models (https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html)
-	// .
+	// sensitive.
+	//
+	// The language of the specified language model must match the language code you
+	// specify in your transcription request. If the languages don't match, the custom
+	// language model isn't applied. There are no errors or warnings associated with a
+	// language mismatch.
+	//
+	// For more information, see [Custom language models].
+	//
+	// [Custom language models]: https://docs.aws.amazon.com/transcribe/latest/dg/custom-language-models.html
 	LanguageModelName *string
 
 	// Specify the level of stability to use when you enable partial results
-	// stabilization ( EnablePartialResultsStabilization ). Low stability provides the
-	// highest accuracy. High stability transcribes faster, but with slightly lower
-	// accuracy. For more information, see Partial-result stabilization (https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization)
-	// .
+	// stabilization ( EnablePartialResultsStabilization ).
+	//
+	// Low stability provides the highest accuracy. High stability transcribes faster,
+	// but with slightly lower accuracy.
+	//
+	// For more information, see [Partial-result stabilization].
+	//
+	// [Partial-result stabilization]: https://docs.aws.amazon.com/transcribe/latest/dg/streaming.html#streaming-partial-result-stabilization
 	PartialResultsStability types.PartialResultsStability
 
 	// Specify which types of personally identifiable information (PII) you want to
 	// redact in your transcript. You can include as many types as you'd like, or you
-	// can select ALL . To include PiiEntityTypes in your Call Analytics request, you
-	// must also include either ContentIdentificationType or ContentRedactionType .
-	// Values must be comma-separated and can include: BANK_ACCOUNT_NUMBER ,
-	// BANK_ROUTING , CREDIT_DEBIT_NUMBER , CREDIT_DEBIT_CVV , CREDIT_DEBIT_EXPIRY ,
-	// PIN , EMAIL , ADDRESS , NAME , PHONE , SSN , or ALL .
+	// can select ALL .
+	//
+	// Values must be comma-separated and can include: ADDRESS , BANK_ACCOUNT_NUMBER ,
+	// BANK_ROUTING , CREDIT_DEBIT_CVV , CREDIT_DEBIT_EXPIRY , CREDIT_DEBIT_NUMBER ,
+	// EMAIL , NAME , PHONE , PIN , SSN , or ALL .
+	//
+	// Note that if you include PiiEntityTypes in your request, you must also include
+	// ContentIdentificationType or ContentRedactionType .
+	//
+	// If you include ContentRedactionType or ContentIdentificationType in your
+	// request, but do not include PiiEntityTypes , all PII is redacted or identified.
 	PiiEntityTypes *string
 
 	// Specify a name for your Call Analytics transcription session. If you don't
 	// include this parameter in your request, Amazon Transcribe generates an ID and
-	// returns it in the response. You can use a session ID to retry a streaming
-	// session.
+	// returns it in the response.
 	SessionId *string
 
-	// Specify how you want your vocabulary filter applied to your transcript. To
-	// replace words with *** , choose mask . To delete words, choose remove . To flag
-	// words without changing them, choose tag .
+	// Specify how you want your vocabulary filter applied to your transcript.
+	//
+	// To replace words with *** , choose mask .
+	//
+	// To delete words, choose remove .
+	//
+	// To flag words without changing them, choose tag .
 	VocabularyFilterMethod types.VocabularyFilterMethod
 
 	// Specify the name of the custom vocabulary filter that you want to use when
 	// processing your transcription. Note that vocabulary filter names are case
-	// sensitive. If the language of the specified custom vocabulary filter doesn't
-	// match the language identified in your media, the vocabulary filter is not
-	// applied to your transcription. For more information, see Using vocabulary
-	// filtering with unwanted words (https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html)
-	// .
+	// sensitive.
+	//
+	// If the language of the specified custom vocabulary filter doesn't match the
+	// language identified in your media, the vocabulary filter is not applied to your
+	// transcription.
+	//
+	// For more information, see [Using vocabulary filtering with unwanted words].
+	//
+	// [Using vocabulary filtering with unwanted words]: https://docs.aws.amazon.com/transcribe/latest/dg/vocabulary-filtering.html
 	VocabularyFilterName *string
 
 	// Specify the name of the custom vocabulary that you want to use when processing
-	// your transcription. Note that vocabulary names are case sensitive. If the
-	// language of the specified custom vocabulary doesn't match the language
+	// your transcription. Note that vocabulary names are case sensitive.
+	//
+	// If the language of the specified custom vocabulary doesn't match the language
 	// identified in your media, the custom vocabulary is not applied to your
-	// transcription. For more information, see Custom vocabularies (https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html)
-	// .
+	// transcription.
+	//
+	// For more information, see [Custom vocabularies].
+	//
+	// [Custom vocabularies]: https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html
 	VocabularyName *string
 
 	noSmithyDocumentSerde
@@ -192,7 +234,7 @@ type StartCallAnalyticsStreamTranscriptionOutput struct {
 	// Lists the PII entity types you specified in your Call Analytics request.
 	PiiEntityTypes *string
 
-	// Provides the identifier for your Call Analytics streaming request.
+	// Provides the identifier for your real-time Call Analytics request.
 	RequestId *string
 
 	// Provides the identifier for your Call Analytics transcription session.
@@ -224,6 +266,9 @@ func (o *StartCallAnalyticsStreamTranscriptionOutput) GetStream() *StartCallAnal
 }
 
 func (c *Client) addOperationStartCallAnalyticsStreamTranscriptionMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpStartCallAnalyticsStreamTranscription{}, middleware.After)
 	if err != nil {
 		return err
@@ -232,6 +277,10 @@ func (c *Client) addOperationStartCallAnalyticsStreamTranscriptionMiddlewares(st
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "StartCallAnalyticsStreamTranscription"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
@@ -244,28 +293,28 @@ func (c *Client) addOperationStartCallAnalyticsStreamTranscriptionMiddlewares(st
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddStreamingEventsPayload(stack); err != nil {
+	if err = addStreamingEventsPayload(stack); err != nil {
 		return err
 	}
-	if err = v4.AddContentSHA256HeaderMiddleware(stack); err != nil {
+	if err = addContentSHA256Header(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -274,7 +323,13 @@ func (c *Client) addOperationStartCallAnalyticsStreamTranscriptionMiddlewares(st
 	if err = eventstreamapi.AddInitializeStreamWriter(stack); err != nil {
 		return err
 	}
-	if err = addStartCallAnalyticsStreamTranscriptionResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartCallAnalyticsStreamTranscriptionValidationMiddleware(stack); err != nil {
@@ -283,7 +338,7 @@ func (c *Client) addOperationStartCallAnalyticsStreamTranscriptionMiddlewares(st
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opStartCallAnalyticsStreamTranscription(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -295,7 +350,19 @@ func (c *Client) addOperationStartCallAnalyticsStreamTranscriptionMiddlewares(st
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -305,7 +372,6 @@ func newServiceMetadataMiddleware_opStartCallAnalyticsStreamTranscription(region
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "transcribe",
 		OperationName: "StartCallAnalyticsStreamTranscription",
 	}
 }
@@ -450,127 +516,4 @@ func (es *StartCallAnalyticsStreamTranscriptionEventStream) waitStreamClose() {
 		es.Close()
 
 	}
-}
-
-type opStartCallAnalyticsStreamTranscriptionResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opStartCallAnalyticsStreamTranscriptionResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opStartCallAnalyticsStreamTranscriptionResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "transcribe"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "transcribe"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("transcribe")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addStartCallAnalyticsStreamTranscriptionResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opStartCallAnalyticsStreamTranscriptionResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

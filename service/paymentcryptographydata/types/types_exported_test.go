@@ -117,6 +117,40 @@ func ExampleCryptogramAuthResponse_outputUsage() {
 var _ *types.CryptogramVerificationArpcMethod2
 var _ *types.CryptogramVerificationArpcMethod1
 
+func ExampleDerivationMethodAttributes_outputUsage() {
+	var union types.DerivationMethodAttributes
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.DerivationMethodAttributesMemberAmex:
+		_ = v.Value // Value is types.AmexAttributes
+
+	case *types.DerivationMethodAttributesMemberEmv2000:
+		_ = v.Value // Value is types.Emv2000Attributes
+
+	case *types.DerivationMethodAttributesMemberEmvCommon:
+		_ = v.Value // Value is types.EmvCommonAttributes
+
+	case *types.DerivationMethodAttributesMemberMastercard:
+		_ = v.Value // Value is types.MasterCardAttributes
+
+	case *types.DerivationMethodAttributesMemberVisa:
+		_ = v.Value // Value is types.VisaAttributes
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.Emv2000Attributes
+var _ *types.MasterCardAttributes
+var _ *types.AmexAttributes
+var _ *types.EmvCommonAttributes
+var _ *types.VisaAttributes
+
 func ExampleEncryptionDecryptionAttributes_outputUsage() {
 	var union types.EncryptionDecryptionAttributes
 	// type switches can be used to check the union value
@@ -126,6 +160,9 @@ func ExampleEncryptionDecryptionAttributes_outputUsage() {
 
 	case *types.EncryptionDecryptionAttributesMemberDukpt:
 		_ = v.Value // Value is types.DukptEncryptionAttributes
+
+	case *types.EncryptionDecryptionAttributesMemberEmv:
+		_ = v.Value // Value is types.EmvEncryptionAttributes
 
 	case *types.EncryptionDecryptionAttributesMemberSymmetric:
 		_ = v.Value // Value is types.SymmetricEncryptionAttributes
@@ -139,6 +176,7 @@ func ExampleEncryptionDecryptionAttributes_outputUsage() {
 	}
 }
 
+var _ *types.EmvEncryptionAttributes
 var _ *types.SymmetricEncryptionAttributes
 var _ *types.AsymmetricEncryptionAttributes
 var _ *types.DukptEncryptionAttributes
@@ -194,6 +232,7 @@ func ExamplePinData_outputUsage() {
 	}
 }
 
+var _ *string
 var _ *string
 
 func ExamplePinGenerationAttributes_outputUsage() {
@@ -361,3 +400,25 @@ func ExampleTranslationIsoFormats_outputUsage() {
 
 var _ *types.TranslationPinDataIsoFormat1
 var _ *types.TranslationPinDataIsoFormat034
+
+func ExampleWrappedKeyMaterial_outputUsage() {
+	var union types.WrappedKeyMaterial
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.WrappedKeyMaterialMemberDiffieHellmanSymmetricKey:
+		_ = v.Value // Value is types.EcdhDerivationAttributes
+
+	case *types.WrappedKeyMaterialMemberTr31KeyBlock:
+		_ = v.Value // Value is string
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *string
+var _ *types.EcdhDerivationAttributes

@@ -4,14 +4,9 @@ package elasticsearchservice
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/elasticsearchservice/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -32,12 +27,12 @@ func (c *Client) DescribeOutboundCrossClusterSearchConnections(ctx context.Conte
 	return out, nil
 }
 
-// Container for the parameters to the
-// DescribeOutboundCrossClusterSearchConnections operation.
+// Container for the parameters to the DescribeOutboundCrossClusterSearchConnections operation.
 type DescribeOutboundCrossClusterSearchConnectionsInput struct {
 
-	// A list of filters used to match properties for outbound cross-cluster search
-	// connection. Available Filter names for this operation are:
+	//  A list of filters used to match properties for outbound cross-cluster search
+	// connection. Available Filternames for this operation are:
+	//
 	//   - cross-cluster-search-connection-id
 	//   - destination-domain-info.domain-name
 	//   - destination-domain-info.owner-id
@@ -49,19 +44,18 @@ type DescribeOutboundCrossClusterSearchConnectionsInput struct {
 	// defaults to 100.
 	MaxResults int32
 
-	// NextToken is sent in case the earlier API call results contain the NextToken.
+	//  NextToken is sent in case the earlier API call results contain the NextToken.
 	// It is used for pagination.
 	NextToken *string
 
 	noSmithyDocumentSerde
 }
 
-// The result of a DescribeOutboundCrossClusterSearchConnections request. Contains
-// the list of connections matching the filter criteria.
+// The result of a DescribeOutboundCrossClusterSearchConnections request. Contains the list of connections matching the filter
+// criteria.
 type DescribeOutboundCrossClusterSearchConnectionsOutput struct {
 
-	// Consists of list of OutboundCrossClusterSearchConnection matching the specified
-	// filter criteria.
+	// Consists of list of OutboundCrossClusterSearchConnection matching the specified filter criteria.
 	CrossClusterSearchConnections []types.OutboundCrossClusterSearchConnection
 
 	// If more results are available and NextToken is present, make the next request
@@ -75,6 +69,9 @@ type DescribeOutboundCrossClusterSearchConnectionsOutput struct {
 }
 
 func (c *Client) addOperationDescribeOutboundCrossClusterSearchConnectionsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpDescribeOutboundCrossClusterSearchConnections{}, middleware.After)
 	if err != nil {
 		return err
@@ -83,34 +80,38 @@ func (c *Client) addOperationDescribeOutboundCrossClusterSearchConnectionsMiddle
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeOutboundCrossClusterSearchConnections"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -122,13 +123,19 @@ func (c *Client) addOperationDescribeOutboundCrossClusterSearchConnectionsMiddle
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeOutboundCrossClusterSearchConnectionsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeOutboundCrossClusterSearchConnections(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -140,19 +147,23 @@ func (c *Client) addOperationDescribeOutboundCrossClusterSearchConnectionsMiddle
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// DescribeOutboundCrossClusterSearchConnectionsAPIClient is a client that
-// implements the DescribeOutboundCrossClusterSearchConnections operation.
-type DescribeOutboundCrossClusterSearchConnectionsAPIClient interface {
-	DescribeOutboundCrossClusterSearchConnections(context.Context, *DescribeOutboundCrossClusterSearchConnectionsInput, ...func(*Options)) (*DescribeOutboundCrossClusterSearchConnectionsOutput, error)
-}
-
-var _ DescribeOutboundCrossClusterSearchConnectionsAPIClient = (*Client)(nil)
 
 // DescribeOutboundCrossClusterSearchConnectionsPaginatorOptions is the paginator
 // options for DescribeOutboundCrossClusterSearchConnections
@@ -217,6 +228,9 @@ func (p *DescribeOutboundCrossClusterSearchConnectionsPaginator) NextPage(ctx co
 
 	params.MaxResults = p.options.Limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeOutboundCrossClusterSearchConnections(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -236,134 +250,18 @@ func (p *DescribeOutboundCrossClusterSearchConnectionsPaginator) NextPage(ctx co
 	return result, nil
 }
 
+// DescribeOutboundCrossClusterSearchConnectionsAPIClient is a client that
+// implements the DescribeOutboundCrossClusterSearchConnections operation.
+type DescribeOutboundCrossClusterSearchConnectionsAPIClient interface {
+	DescribeOutboundCrossClusterSearchConnections(context.Context, *DescribeOutboundCrossClusterSearchConnectionsInput, ...func(*Options)) (*DescribeOutboundCrossClusterSearchConnectionsOutput, error)
+}
+
+var _ DescribeOutboundCrossClusterSearchConnectionsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opDescribeOutboundCrossClusterSearchConnections(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "es",
 		OperationName: "DescribeOutboundCrossClusterSearchConnections",
 	}
-}
-
-type opDescribeOutboundCrossClusterSearchConnectionsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeOutboundCrossClusterSearchConnectionsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeOutboundCrossClusterSearchConnectionsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "es"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "es"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("es")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeOutboundCrossClusterSearchConnectionsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeOutboundCrossClusterSearchConnectionsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

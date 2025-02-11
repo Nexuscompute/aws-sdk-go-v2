@@ -465,7 +465,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Updates one or more phone numbers.</p>",
+                "smithy.api#documentation": "<p>Updates phone number product types, calling names, or phone number names. You can update one attribute at a time for each \n         <code>UpdatePhoneNumberRequestItem</code>. For example, you can update the product type, the calling name, or phone name.\n        </p>\n         <note>\n            <p>You cannot have a duplicate <code>phoneNumberId</code> in a request.</p>\n         </note>",
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/phone-numbers?operation=batch-update",
@@ -737,6 +737,9 @@
                     "target": "com.amazonaws.chimesdkvoice#DeleteVoiceConnectorEmergencyCallingConfiguration"
                 },
                 {
+                    "target": "com.amazonaws.chimesdkvoice#DeleteVoiceConnectorExternalSystemsConfiguration"
+                },
+                {
                     "target": "com.amazonaws.chimesdkvoice#DeleteVoiceConnectorGroup"
                 },
                 {
@@ -801,6 +804,9 @@
                 },
                 {
                     "target": "com.amazonaws.chimesdkvoice#GetVoiceConnectorEmergencyCallingConfiguration"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#GetVoiceConnectorExternalSystemsConfiguration"
                 },
                 {
                     "target": "com.amazonaws.chimesdkvoice#GetVoiceConnectorGroup"
@@ -879,6 +885,9 @@
                 },
                 {
                     "target": "com.amazonaws.chimesdkvoice#PutVoiceConnectorEmergencyCallingConfiguration"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#PutVoiceConnectorExternalSystemsConfiguration"
                 },
                 {
                     "target": "com.amazonaws.chimesdkvoice#PutVoiceConnectorLoggingConfiguration"
@@ -1015,7 +1024,6 @@
                                     ]
                                 }
                             ],
-                            "type": "tree",
                             "rules": [
                                 {
                                     "conditions": [
@@ -1034,7 +1042,6 @@
                                 },
                                 {
                                     "conditions": [],
-                                    "type": "tree",
                                     "rules": [
                                         {
                                             "conditions": [
@@ -1062,13 +1069,14 @@
                                             },
                                             "type": "endpoint"
                                         }
-                                    ]
+                                    ],
+                                    "type": "tree"
                                 }
-                            ]
+                            ],
+                            "type": "tree"
                         },
                         {
                             "conditions": [],
-                            "type": "tree",
                             "rules": [
                                 {
                                     "conditions": [
@@ -1081,7 +1089,6 @@
                                             ]
                                         }
                                     ],
-                                    "type": "tree",
                                     "rules": [
                                         {
                                             "conditions": [
@@ -1095,7 +1102,6 @@
                                                     "assign": "PartitionResult"
                                                 }
                                             ],
-                                            "type": "tree",
                                             "rules": [
                                                 {
                                                     "conditions": [
@@ -1118,7 +1124,6 @@
                                                             ]
                                                         }
                                                     ],
-                                                    "type": "tree",
                                                     "rules": [
                                                         {
                                                             "conditions": [
@@ -1153,11 +1158,9 @@
                                                                     ]
                                                                 }
                                                             ],
-                                                            "type": "tree",
                                                             "rules": [
                                                                 {
                                                                     "conditions": [],
-                                                                    "type": "tree",
                                                                     "rules": [
                                                                         {
                                                                             "conditions": [],
@@ -1168,16 +1171,19 @@
                                                                             },
                                                                             "type": "endpoint"
                                                                         }
-                                                                    ]
+                                                                    ],
+                                                                    "type": "tree"
                                                                 }
-                                                            ]
+                                                            ],
+                                                            "type": "tree"
                                                         },
                                                         {
                                                             "conditions": [],
                                                             "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
                                                             "type": "error"
                                                         }
-                                                    ]
+                                                    ],
+                                                    "type": "tree"
                                                 },
                                                 {
                                                     "conditions": [
@@ -1191,14 +1197,12 @@
                                                             ]
                                                         }
                                                     ],
-                                                    "type": "tree",
                                                     "rules": [
                                                         {
                                                             "conditions": [
                                                                 {
                                                                     "fn": "booleanEquals",
                                                                     "argv": [
-                                                                        true,
                                                                         {
                                                                             "fn": "getAttr",
                                                                             "argv": [
@@ -1207,15 +1211,14 @@
                                                                                 },
                                                                                 "supportsFIPS"
                                                                             ]
-                                                                        }
+                                                                        },
+                                                                        true
                                                                     ]
                                                                 }
                                                             ],
-                                                            "type": "tree",
                                                             "rules": [
                                                                 {
                                                                     "conditions": [],
-                                                                    "type": "tree",
                                                                     "rules": [
                                                                         {
                                                                             "conditions": [],
@@ -1226,16 +1229,19 @@
                                                                             },
                                                                             "type": "endpoint"
                                                                         }
-                                                                    ]
+                                                                    ],
+                                                                    "type": "tree"
                                                                 }
-                                                            ]
+                                                            ],
+                                                            "type": "tree"
                                                         },
                                                         {
                                                             "conditions": [],
                                                             "error": "FIPS is enabled but this partition does not support FIPS",
                                                             "type": "error"
                                                         }
-                                                    ]
+                                                    ],
+                                                    "type": "tree"
                                                 },
                                                 {
                                                     "conditions": [
@@ -1249,7 +1255,6 @@
                                                             ]
                                                         }
                                                     ],
-                                                    "type": "tree",
                                                     "rules": [
                                                         {
                                                             "conditions": [
@@ -1269,11 +1274,9 @@
                                                                     ]
                                                                 }
                                                             ],
-                                                            "type": "tree",
                                                             "rules": [
                                                                 {
                                                                     "conditions": [],
-                                                                    "type": "tree",
                                                                     "rules": [
                                                                         {
                                                                             "conditions": [],
@@ -1284,20 +1287,22 @@
                                                                             },
                                                                             "type": "endpoint"
                                                                         }
-                                                                    ]
+                                                                    ],
+                                                                    "type": "tree"
                                                                 }
-                                                            ]
+                                                            ],
+                                                            "type": "tree"
                                                         },
                                                         {
                                                             "conditions": [],
                                                             "error": "DualStack is enabled but this partition does not support DualStack",
                                                             "type": "error"
                                                         }
-                                                    ]
+                                                    ],
+                                                    "type": "tree"
                                                 },
                                                 {
                                                     "conditions": [],
-                                                    "type": "tree",
                                                     "rules": [
                                                         {
                                                             "conditions": [],
@@ -1308,175 +1313,27 @@
                                                             },
                                                             "type": "endpoint"
                                                         }
-                                                    ]
+                                                    ],
+                                                    "type": "tree"
                                                 }
-                                            ]
+                                            ],
+                                            "type": "tree"
                                         }
-                                    ]
+                                    ],
+                                    "type": "tree"
                                 },
                                 {
                                     "conditions": [],
                                     "error": "Invalid Configuration: Missing Region",
                                     "type": "error"
                                 }
-                            ]
+                            ],
+                            "type": "tree"
                         }
                     ]
                 },
                 "smithy.rules#endpointTests": {
                     "testCases": [
-                        {
-                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://voice-chime-fips.us-gov-east-1.api.aws"
-                                }
-                            },
-                            "params": {
-                                "Region": "us-gov-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": true
-                            }
-                        },
-                        {
-                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://voice-chime-fips.us-gov-east-1.amazonaws.com"
-                                }
-                            },
-                            "params": {
-                                "Region": "us-gov-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
-                            }
-                        },
-                        {
-                            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://voice-chime.us-gov-east-1.api.aws"
-                                }
-                            },
-                            "params": {
-                                "Region": "us-gov-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://voice-chime.us-gov-east-1.amazonaws.com"
-                                }
-                            },
-                            "params": {
-                                "Region": "us-gov-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
-                            }
-                        },
-                        {
-                            "documentation": "For region cn-north-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://voice-chime-fips.cn-north-1.api.amazonwebservices.com.cn"
-                                }
-                            },
-                            "params": {
-                                "Region": "cn-north-1",
-                                "UseDualStack": true,
-                                "UseFIPS": true
-                            }
-                        },
-                        {
-                            "documentation": "For region cn-north-1 with FIPS enabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://voice-chime-fips.cn-north-1.amazonaws.com.cn"
-                                }
-                            },
-                            "params": {
-                                "Region": "cn-north-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
-                            }
-                        },
-                        {
-                            "documentation": "For region cn-north-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://voice-chime.cn-north-1.api.amazonwebservices.com.cn"
-                                }
-                            },
-                            "params": {
-                                "Region": "cn-north-1",
-                                "UseDualStack": true,
-                                "UseFIPS": false
-                            }
-                        },
-                        {
-                            "documentation": "For region cn-north-1 with FIPS disabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://voice-chime.cn-north-1.amazonaws.com.cn"
-                                }
-                            },
-                            "params": {
-                                "Region": "cn-north-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
-                            "expect": {
-                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": true
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://voice-chime-fips.us-iso-east-1.c2s.ic.gov"
-                                }
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
-                            "expect": {
-                                "error": "DualStack is enabled but this partition does not support DualStack"
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": false
-                            }
-                        },
-                        {
-                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack disabled",
-                            "expect": {
-                                "endpoint": {
-                                    "url": "https://voice-chime.us-iso-east-1.c2s.ic.gov"
-                                }
-                            },
-                            "params": {
-                                "Region": "us-iso-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
-                            }
-                        },
                         {
                             "documentation": "For region us-east-1 with FIPS enabled and DualStack enabled",
                             "expect": {
@@ -1486,8 +1343,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1499,8 +1356,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1512,8 +1369,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1525,8 +1382,160 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region cn-north-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://voice-chime-fips.cn-north-1.api.amazonwebservices.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "cn-north-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region cn-north-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://voice-chime-fips.cn-north-1.amazonaws.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "cn-north-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region cn-north-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://voice-chime.cn-north-1.api.amazonwebservices.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "cn-north-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region cn-north-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://voice-chime.cn-north-1.amazonaws.com.cn"
+                                }
+                            },
+                            "params": {
+                                "Region": "cn-north-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://voice-chime-fips.us-gov-east-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://voice-chime-fips.us-gov-east-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://voice-chime.us-gov-east-1.api.aws"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-gov-east-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://voice-chime.us-gov-east-1.amazonaws.com"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-gov-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://voice-chime-fips.us-iso-east-1.c2s.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "error": "DualStack is enabled but this partition does not support DualStack"
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://voice-chime.us-iso-east-1.c2s.ic.gov"
+                                }
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1536,8 +1545,8 @@
                             },
                             "params": {
                                 "Region": "us-isob-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1549,8 +1558,8 @@
                             },
                             "params": {
                                 "Region": "us-isob-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1560,8 +1569,8 @@
                             },
                             "params": {
                                 "Region": "us-isob-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1573,12 +1582,12 @@
                             },
                             "params": {
                                 "Region": "us-isob-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
-                            "documentation": "For custom endpoint with fips disabled and dualstack disabled",
+                            "documentation": "For custom endpoint with region set and fips disabled and dualstack disabled",
                             "expect": {
                                 "endpoint": {
                                     "url": "https://example.com"
@@ -1586,8 +1595,21 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": false,
                                 "UseFIPS": false,
+                                "UseDualStack": false,
+                                "Endpoint": "https://example.com"
+                            }
+                        },
+                        {
+                            "documentation": "For custom endpoint with region not set and fips disabled and dualstack disabled",
+                            "expect": {
+                                "endpoint": {
+                                    "url": "https://example.com"
+                                }
+                            },
+                            "params": {
+                                "UseFIPS": false,
+                                "UseDualStack": false,
                                 "Endpoint": "https://example.com"
                             }
                         },
@@ -1598,8 +1620,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": false,
                                 "UseFIPS": true,
+                                "UseDualStack": false,
                                 "Endpoint": "https://example.com"
                             }
                         },
@@ -1610,9 +1632,15 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": true,
                                 "UseFIPS": false,
+                                "UseDualStack": true,
                                 "Endpoint": "https://example.com"
+                            }
+                        },
+                        {
+                            "documentation": "Missing region",
+                            "expect": {
+                                "error": "Invalid Configuration: Missing Region"
                             }
                         }
                     ],
@@ -1650,6 +1678,41 @@
                 "smithy.api#documentation": "<p>Multiple instances of the same request were made simultaneously.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 409
+            }
+        },
+        "com.amazonaws.chimesdkvoice#ContactCenterSystemType": {
+            "type": "enum",
+            "members": {
+                "GENESYS_ENGAGE_ON_PREMISES": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "GENESYS_ENGAGE_ON_PREMISES"
+                    }
+                },
+                "AVAYA_AURA_CALL_CENTER_ELITE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AVAYA_AURA_CALL_CENTER_ELITE"
+                    }
+                },
+                "AVAYA_AURA_CONTACT_CENTER": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AVAYA_AURA_CONTACT_CENTER"
+                    }
+                },
+                "CISCO_UNIFIED_CONTACT_CENTER_ENTERPRISE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CISCO_UNIFIED_CONTACT_CENTER_ENTERPRISE"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.chimesdkvoice#ContactCenterSystemTypeList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.chimesdkvoice#ContactCenterSystemType"
             }
         },
         "com.amazonaws.chimesdkvoice#Country": {
@@ -1736,6 +1799,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>List of phone numbers, in E.164 format.</p>",
                         "smithy.api#required": {}
+                    }
+                },
+                "Name": {
+                    "target": "com.amazonaws.chimesdkvoice#PhoneNumberName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the name assigned to one or more phone numbers.</p>"
                     }
                 }
             },
@@ -2314,6 +2383,12 @@
                     "target": "com.amazonaws.chimesdkvoice#TagList",
                     "traits": {
                         "smithy.api#documentation": "<p>The tags assigned to the Voice Connector.</p>"
+                    }
+                },
+                "IntegrationType": {
+                    "target": "com.amazonaws.chimesdkvoice#VoiceConnectorIntegrationType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connectors for use with Amazon Connect.</p>\n         <p>The following options are available:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>CONNECT_CALL_TRANSFER_CONNECTOR</code> - Enables enterprises to integrate\n               Amazon Connect with other voice systems to directly transfer voice calls and\n               metadata without using the public telephone network. They can use Amazon Connect\n               telephony and Interactive Voice Response (IVR) with their existing voice systems to\n               modernize the IVR experience of their existing contact center and their enterprise\n               and branch voice systems. Additionally, enterprises migrating their contact center to\n               Amazon Connect can start with Connect telephony and IVR for immediate\n               modernization ahead of agent migration.</p>\n            </li>\n            <li>\n               <p>\n                  <code>CONNECT_ANALYTICS_CONNECTOR</code> - Enables enterprises to integrate\n               Amazon Connect with other voice systems for real-time and post-call analytics.\n               They can use Amazon Connect Contact Lens with their existing voice systems to\n               provides call recordings, conversational analytics (including contact transcript,\n               sensitive data redaction, content categorization, theme detection, sentiment\n               analysis, real-time alerts, and post-contact summary), and agent performance\n               evaluations (including evaluation forms, automated evaluation, supervisor review)\n               with a rich user experience to display, search and filter customer interactions, and\n               programmatic access to data streams and the data lake. Additionally, enterprises\n               migrating their contact center to Amazon Connect can start with Contact Lens\n               analytics and performance insights ahead of agent migration.</p>\n            </li>\n         </ul>"
                     }
                 }
             },
@@ -2912,6 +2987,63 @@
                     "target": "com.amazonaws.chimesdkvoice#NonEmptyString",
                     "traits": {
                         "smithy.api#documentation": "<p>The Voice Connector ID.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.chimesdkvoice#DeleteVoiceConnectorExternalSystemsConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.chimesdkvoice#DeleteVoiceConnectorExternalSystemsConfigurationRequest"
+            },
+            "output": {
+                "target": "smithy.api#Unit"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.chimesdkvoice#BadRequestException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ForbiddenException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#NotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ServiceFailureException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ServiceUnavailableException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ThrottledClientException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#UnauthorizedClientException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Deletes the external systems configuration for a Voice Connector.</p>",
+                "smithy.api#http": {
+                    "method": "DELETE",
+                    "uri": "/voice-connectors/{VoiceConnectorId}/external-systems-configuration",
+                    "code": 204
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.chimesdkvoice#DeleteVoiceConnectorExternalSystemsConfigurationRequest": {
+            "type": "structure",
+            "members": {
+                "VoiceConnectorId": {
+                    "target": "com.amazonaws.chimesdkvoice#NonEmptyString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Voice Connector for which to delete the external system\n         configuration.</p>",
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
                     }
@@ -3689,6 +3821,26 @@
                 }
             }
         },
+        "com.amazonaws.chimesdkvoice#ExternalSystemsConfiguration": {
+            "type": "structure",
+            "members": {
+                "SessionBorderControllerTypes": {
+                    "target": "com.amazonaws.chimesdkvoice#SessionBorderControllerTypeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The session border controllers.</p>"
+                    }
+                },
+                "ContactCenterSystemTypes": {
+                    "target": "com.amazonaws.chimesdkvoice#ContactCenterSystemTypeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The contact center system.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>Contains information about an external systems configuration for a Voice\n         Connector.</p>"
+            }
+        },
         "com.amazonaws.chimesdkvoice#ForbiddenException": {
             "type": "structure",
             "members": {
@@ -4153,7 +4305,10 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Gets the Alexa Skill configuration for the SIP media application.</p>",
+                "smithy.api#deprecated": {
+                    "message": "Due to changes made by the Amazon Alexa service, this API is no longer available for use. For more information, refer to the Alexa Smart Properties page(https://developer.amazon.com/en-US/alexa/alexasmartproperties)."
+                },
+                "smithy.api#documentation": "<p>Gets the Alexa Skill configuration for the SIP media application.</p>\n         <important>\n            <p>Due to changes made by the Amazon Alexa service, this API is no longer available for use. For more information, refer to \n         the <a href=\"https://developer.amazon.com/en-US/alexa/alexasmartproperties\">Alexa Smart Properties</a> page.</p>\n         </important>",
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/sip-media-applications/{SipMediaApplicationId}/alexa-skill-configuration",
@@ -4548,6 +4703,76 @@
                     "target": "com.amazonaws.chimesdkvoice#EmergencyCallingConfiguration",
                     "traits": {
                         "smithy.api#documentation": "<p>The details of the emergency calling configuration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.chimesdkvoice#GetVoiceConnectorExternalSystemsConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.chimesdkvoice#GetVoiceConnectorExternalSystemsConfigurationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.chimesdkvoice#GetVoiceConnectorExternalSystemsConfigurationResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.chimesdkvoice#BadRequestException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ForbiddenException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#NotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ServiceFailureException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ServiceUnavailableException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ThrottledClientException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#UnauthorizedClientException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Gets information about an external systems configuration for a Voice\n         Connector.</p>",
+                "smithy.api#http": {
+                    "method": "GET",
+                    "uri": "/voice-connectors/{VoiceConnectorId}/external-systems-configuration",
+                    "code": 200
+                }
+            }
+        },
+        "com.amazonaws.chimesdkvoice#GetVoiceConnectorExternalSystemsConfigurationRequest": {
+            "type": "structure",
+            "members": {
+                "VoiceConnectorId": {
+                    "target": "com.amazonaws.chimesdkvoice#NonEmptyString",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Voice Connector for which to return information about the\n         external system configuration.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.chimesdkvoice#GetVoiceConnectorExternalSystemsConfigurationResponse": {
+            "type": "structure",
+            "members": {
+                "ExternalSystemsConfiguration": {
+                    "target": "com.amazonaws.chimesdkvoice#ExternalSystemsConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An object that contains information about an external systems configuration for a Voice Connector.</p>"
                     }
                 }
             },
@@ -5281,7 +5506,7 @@
                 "VoiceToneAnalysisTaskId": {
                     "target": "com.amazonaws.chimesdkvoice#NonEmptyString256",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ID of the voice tone anlysis task.</p>",
+                        "smithy.api#documentation": "<p>The ID of the voice tone analysis task.</p>",
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
                     }
@@ -6467,7 +6692,7 @@
                 "Disabled": {
                     "target": "com.amazonaws.chimesdkvoice#Boolean",
                     "traits": {
-                        "smithy.api#documentation": "<p>Denotes the configration as enabled or disabled.</p>"
+                        "smithy.api#documentation": "<p>Denotes the configuration as enabled or disabled.</p>"
                     }
                 },
                 "ConfigurationArn": {
@@ -6858,6 +7083,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The phone number's order ID.</p>"
                     }
+                },
+                "Name": {
+                    "target": "com.amazonaws.chimesdkvoice#PhoneNumberName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the phone number.</p>"
+                    }
                 }
             },
             "traits": {
@@ -7034,6 +7265,17 @@
                     "min": 1,
                     "max": 500
                 }
+            }
+        },
+        "com.amazonaws.chimesdkvoice#PhoneNumberName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 256
+                },
+                "smithy.api#pattern": "^$|^[a-zA-Z0-9\\,\\.\\_\\-]+(\\s+[a-zA-Z0-9\\,\\.\\_\\-]+)*$",
+                "smithy.api#sensitive": {}
             }
         },
         "com.amazonaws.chimesdkvoice#PhoneNumberOrder": {
@@ -7494,7 +7736,10 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Updates the Alexa Skill configuration for the SIP media application.</p>",
+                "smithy.api#deprecated": {
+                    "message": "Due to changes made by the Amazon Alexa service, this API is no longer available for use. For more information, refer to the Alexa Smart Properties page(https://developer.amazon.com/en-US/alexa/alexasmartproperties)."
+                },
+                "smithy.api#documentation": "<p>Updates the Alexa Skill configuration for the SIP media application.</p>\n         <important>\n            <p>Due to changes made by the Amazon Alexa service, this API is no longer available for use. For more information, refer to \n         the <a href=\"https://developer.amazon.com/en-US/alexa/alexasmartproperties\">Alexa Smart Properties</a> page.</p>\n         </important>",
                 "smithy.api#http": {
                     "method": "PUT",
                     "uri": "/sip-media-applications/{SipMediaApplicationId}/alexa-skill-configuration",
@@ -7684,6 +7929,92 @@
                     "target": "com.amazonaws.chimesdkvoice#EmergencyCallingConfiguration",
                     "traits": {
                         "smithy.api#documentation": "<p>The updated configuration.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#output": {}
+            }
+        },
+        "com.amazonaws.chimesdkvoice#PutVoiceConnectorExternalSystemsConfiguration": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.chimesdkvoice#PutVoiceConnectorExternalSystemsConfigurationRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.chimesdkvoice#PutVoiceConnectorExternalSystemsConfigurationResponse"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.chimesdkvoice#BadRequestException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ConflictException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ForbiddenException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#NotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ServiceFailureException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ServiceUnavailableException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#ThrottledClientException"
+                },
+                {
+                    "target": "com.amazonaws.chimesdkvoice#UnauthorizedClientException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Adds an external systems configuration to a Voice Connector.</p>",
+                "smithy.api#http": {
+                    "method": "PUT",
+                    "uri": "/voice-connectors/{VoiceConnectorId}/external-systems-configuration",
+                    "code": 200
+                },
+                "smithy.api#idempotent": {}
+            }
+        },
+        "com.amazonaws.chimesdkvoice#PutVoiceConnectorExternalSystemsConfigurationRequest": {
+            "type": "structure",
+            "members": {
+                "VoiceConnectorId": {
+                    "target": "com.amazonaws.chimesdkvoice#NonEmptyString128",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the Voice Connector for which to add the external system\n         configuration.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
+                "SessionBorderControllerTypes": {
+                    "target": "com.amazonaws.chimesdkvoice#SessionBorderControllerTypeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The session border controllers to use.</p>"
+                    }
+                },
+                "ContactCenterSystemTypes": {
+                    "target": "com.amazonaws.chimesdkvoice#ContactCenterSystemTypeList",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The contact center system to use.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.chimesdkvoice#PutVoiceConnectorExternalSystemsConfigurationResponse": {
+            "type": "structure",
+            "members": {
+                "ExternalSystemsConfiguration": {
+                    "target": "com.amazonaws.chimesdkvoice#ExternalSystemsConfiguration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>An object that contains information about an external systems configuration for a Voice Connector.</p>"
                     }
                 }
             },
@@ -8486,6 +8817,47 @@
                 "smithy.api#httpError": 503
             }
         },
+        "com.amazonaws.chimesdkvoice#SessionBorderControllerType": {
+            "type": "enum",
+            "members": {
+                "RIBBON_SBC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "RIBBON_SBC"
+                    }
+                },
+                "ORACLE_ACME_PACKET_SBC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ORACLE_ACME_PACKET_SBC"
+                    }
+                },
+                "AVAYA_SBCE": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AVAYA_SBCE"
+                    }
+                },
+                "CISCO_UNIFIED_BORDER_ELEMENT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CISCO_UNIFIED_BORDER_ELEMENT"
+                    }
+                },
+                "AUDIOCODES_MEDIANT_SBC": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AUDIOCODES_MEDIANT_SBC"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.chimesdkvoice#SessionBorderControllerTypeList": {
+            "type": "list",
+            "member": {
+                "target": "com.amazonaws.chimesdkvoice#SessionBorderControllerType"
+            }
+        },
         "com.amazonaws.chimesdkvoice#SipApplicationPriority": {
             "type": "integer",
             "traits": {
@@ -8578,7 +8950,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The Alexa Skill configuration of a SIP media application.</p>"
+                "smithy.api#documentation": "<p>The Alexa Skill configuration of a SIP media application.</p>\n         <important>\n            <p>Due to changes made by the Amazon Alexa service, this data type is no longer available for use. For more information, refer to \n         the <a href=\"https://developer.amazon.com/en-US/alexa/alexasmartproperties\">Alexa Smart Properties</a> page.</p>\n         </important>"
             }
         },
         "com.amazonaws.chimesdkvoice#SipMediaApplicationCall": {
@@ -9710,7 +10082,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Updates phone number details, such as product type or calling name, for the \n         specified phone number ID. You can update one phone number detail at a time. For \n         example, you can update either the product type or the calling name in one action.</p>\n         <p>For numbers outside the U.S., you must use the Amazon Chime SDK SIP Media \n         Application Dial-In product type.</p>\n         <p>Updates to outbound calling names can take 72 hours to complete. Pending \n         updates to outbound calling names must be complete before you can request another \n         update.</p>",
+                "smithy.api#documentation": "<p>Updates phone number details, such as product type, calling name, or phone number name for the \n         specified phone number ID. You can update one phone number detail at a time. For \n         example, you can update either the product type, calling name, or phone number name in one action.</p>\n         <p>For numbers outside the U.S., you must use the Amazon Chime SDK SIP Media \n         Application Dial-In product type.</p>\n         <p>Updates to outbound calling names can take 72 hours to complete. Pending \n         updates to outbound calling names must be complete before you can request another \n         update.</p>",
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/phone-numbers/{PhoneNumberId}",
@@ -9740,6 +10112,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The outbound calling name associated with the phone number.</p>"
                     }
+                },
+                "Name": {
+                    "target": "com.amazonaws.chimesdkvoice#PhoneNumberName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>Specifies the updated name assigned to one or more phone numbers.</p>"
+                    }
                 }
             },
             "traits": {
@@ -9766,6 +10144,12 @@
                     "target": "com.amazonaws.chimesdkvoice#CallingName",
                     "traits": {
                         "smithy.api#documentation": "<p>The outbound calling name to update.</p>"
+                    }
+                },
+                "Name": {
+                    "target": "com.amazonaws.chimesdkvoice#PhoneNumberName",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The name of the phone number.</p>"
                     }
                 }
             },
@@ -10627,7 +11011,7 @@
                 "Country": {
                     "target": "com.amazonaws.chimesdkvoice#SensitiveNonEmptyString",
                     "traits": {
-                        "smithy.api#documentation": "<p>The country in the address being validated.</p>",
+                        "smithy.api#documentation": "<p>The country in the address being validated as two-letter country code in ISO 3166-1\n         alpha-2 format, such as <code>US</code>. For more information, see <a href=\"https://en.wikipedia.org/wiki/ISO_3166-1_alpha-2\">ISO 3166-1 alpha-2</a> in\n         Wikipedia.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -10650,7 +11034,7 @@
                     "target": "com.amazonaws.chimesdkvoice#ValidationResult",
                     "traits": {
                         "smithy.api#default": 0,
-                        "smithy.api#documentation": "<p>Number indicating the result of address validation. <code>0</code> means the \n         address was perfect as-is and successfully validated. <code>1</code> means the \n         address was corrected. <code>2</code> means the address sent was not close \n         enough and was not validated.</p>"
+                        "smithy.api#documentation": "<p>Number indicating the result of address validation.</p>\n         <p>Each possible result is defined as follows:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>0</code> - Address validation succeeded.</p>\n            </li>\n            <li>\n               <p>\n                  <code>1</code> - Address validation succeeded. The address was a close enough\n               match and has been corrected as part of the address object.</p>\n            </li>\n            <li>\n               <p>\n                  <code>2</code> - Address validation failed. You should re-submit the validation\n               request with candidates from the <code>CandidateAddressList</code> result, if it's a\n               close match.</p>\n            </li>\n         </ul>"
                     }
                 },
                 "AddressExternalId": {
@@ -10735,6 +11119,12 @@
                     "target": "com.amazonaws.chimesdkvoice#NonEmptyString",
                     "traits": {
                         "smithy.api#documentation": "<p>The ARN of the Voice Connector.</p>"
+                    }
+                },
+                "IntegrationType": {
+                    "target": "com.amazonaws.chimesdkvoice#VoiceConnectorIntegrationType",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The connectors for use with Amazon Connect.</p>"
                     }
                 }
             },
@@ -10871,6 +11261,23 @@
                     "max": 256
                 },
                 "smithy.api#pattern": "^[a-zA-Z0-9 _.-]+$"
+            }
+        },
+        "com.amazonaws.chimesdkvoice#VoiceConnectorIntegrationType": {
+            "type": "enum",
+            "members": {
+                "CONNECT_CALL_TRANSFER_CONNECTOR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CONNECT_CALL_TRANSFER_CONNECTOR"
+                    }
+                },
+                "CONNECT_ANALYTICS_CONNECTOR": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "CONNECT_ANALYTICS_CONNECTOR"
+                    }
+                }
             }
         },
         "com.amazonaws.chimesdkvoice#VoiceConnectorItem": {

@@ -710,6 +710,26 @@ func (m *validateOpDescribePendingMaintenanceActions) HandleInitialize(ctx conte
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpFailoverGlobalCluster struct {
+}
+
+func (*validateOpFailoverGlobalCluster) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpFailoverGlobalCluster) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*FailoverGlobalClusterInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpFailoverGlobalClusterInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpListTagsForResource struct {
 }
 
@@ -1050,6 +1070,26 @@ func (m *validateOpStopDBCluster) HandleInitialize(ctx context.Context, in middl
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpSwitchoverGlobalCluster struct {
+}
+
+func (*validateOpSwitchoverGlobalCluster) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpSwitchoverGlobalCluster) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*SwitchoverGlobalClusterInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpSwitchoverGlobalClusterInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 func addOpAddSourceIdentifierToSubscriptionValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpAddSourceIdentifierToSubscription{}, middleware.After)
 }
@@ -1190,6 +1230,10 @@ func addOpDescribePendingMaintenanceActionsValidationMiddleware(stack *middlewar
 	return stack.Initialize.Add(&validateOpDescribePendingMaintenanceActions{}, middleware.After)
 }
 
+func addOpFailoverGlobalClusterValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpFailoverGlobalCluster{}, middleware.After)
+}
+
 func addOpListTagsForResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListTagsForResource{}, middleware.After)
 }
@@ -1256,6 +1300,10 @@ func addOpStartDBClusterValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpStopDBClusterValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpStopDBCluster{}, middleware.After)
+}
+
+func addOpSwitchoverGlobalClusterValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpSwitchoverGlobalCluster{}, middleware.After)
 }
 
 func validateFilter(v *types.Filter) error {
@@ -1908,6 +1956,24 @@ func validateOpDescribePendingMaintenanceActionsInput(v *DescribePendingMaintena
 	}
 }
 
+func validateOpFailoverGlobalClusterInput(v *FailoverGlobalClusterInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "FailoverGlobalClusterInput"}
+	if v.GlobalClusterIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("GlobalClusterIdentifier"))
+	}
+	if v.TargetDbClusterIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TargetDbClusterIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpListTagsForResourceInput(v *ListTagsForResourceInput) error {
 	if v == nil {
 		return nil
@@ -2187,6 +2253,24 @@ func validateOpStopDBClusterInput(v *StopDBClusterInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "StopDBClusterInput"}
 	if v.DBClusterIdentifier == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DBClusterIdentifier"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpSwitchoverGlobalClusterInput(v *SwitchoverGlobalClusterInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SwitchoverGlobalClusterInput"}
+	if v.GlobalClusterIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("GlobalClusterIdentifier"))
+	}
+	if v.TargetDbClusterIdentifier == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TargetDbClusterIdentifier"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

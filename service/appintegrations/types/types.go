@@ -4,7 +4,57 @@ package types
 
 import (
 	smithydocument "github.com/aws/smithy-go/document"
+	"time"
 )
+
+// Summary information about the Application Association.
+type ApplicationAssociationSummary struct {
+
+	// The Amazon Resource Name (ARN) of the Application.
+	ApplicationArn *string
+
+	// The Amazon Resource Name (ARN) of the Application Association.
+	ApplicationAssociationArn *string
+
+	// The identifier for the client that is associated with the Application
+	// Association.
+	ClientId *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for where the application should be loaded from.
+type ApplicationSourceConfig struct {
+
+	// The external URL source for the application.
+	ExternalUrlConfig *ExternalUrlConfig
+
+	noSmithyDocumentSerde
+}
+
+// Summary information about the Application.
+type ApplicationSummary struct {
+
+	// The Amazon Resource Name (ARN) of the Application.
+	Arn *string
+
+	// The time when the application was created.
+	CreatedTime *time.Time
+
+	// A unique identifier for the Application.
+	Id *string
+
+	// The time when the application was last modified.
+	LastModifiedTime *time.Time
+
+	// The name of the application.
+	Name *string
+
+	// The namespace of the application.
+	Namespace *string
+
+	noSmithyDocumentSerde
+}
 
 // Summary information about the DataIntegration association.
 type DataIntegrationAssociationSummary struct {
@@ -18,6 +68,15 @@ type DataIntegrationAssociationSummary struct {
 
 	// The Amazon Resource Name (ARN) of the DataIntegration association.
 	DataIntegrationAssociationArn *string
+
+	// The URI of the data destination.
+	DestinationURI *string
+
+	// The configuration for how the files should be pulled from the source.
+	ExecutionConfiguration *ExecutionConfiguration
+
+	// The execution status of the last job.
+	LastExecutionStatus *LastExecutionStatus
 
 	noSmithyDocumentSerde
 }
@@ -97,6 +156,37 @@ type EventIntegrationAssociation struct {
 	noSmithyDocumentSerde
 }
 
+// The configuration for how the files should be pulled from the source.
+type ExecutionConfiguration struct {
+
+	// The mode for data import/export execution.
+	//
+	// This member is required.
+	ExecutionMode ExecutionMode
+
+	// The start and end time for data pull from the source.
+	OnDemandConfiguration *OnDemandConfiguration
+
+	// The name of the data and how often it should be pulled from the source.
+	ScheduleConfiguration *ScheduleConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// The external URL source for the application.
+type ExternalUrlConfig struct {
+
+	// The URL to access the application.
+	//
+	// This member is required.
+	AccessUrl *string
+
+	// Additional URLs to allow list if different than the access URL.
+	ApprovedOrigins []string
+
+	noSmithyDocumentSerde
+}
+
 // The configuration for what files should be pulled from the source.
 type FileConfiguration struct {
 
@@ -107,6 +197,53 @@ type FileConfiguration struct {
 
 	// Restrictions for what files should be pulled from the source.
 	Filters map[string][]string
+
+	noSmithyDocumentSerde
+}
+
+// The execution status of the last job.
+type LastExecutionStatus struct {
+
+	// The job status enum string.
+	ExecutionStatus ExecutionStatus
+
+	// The status message of a job.
+	StatusMessage *string
+
+	noSmithyDocumentSerde
+}
+
+// The start and end time for data pull from the source.
+type OnDemandConfiguration struct {
+
+	// The start time for data pull from the source as an Unix/epoch string in
+	// milliseconds
+	//
+	// This member is required.
+	StartTime *string
+
+	// The end time for data pull from the source as an Unix/epoch string in
+	// milliseconds
+	EndTime *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration of an event that the application publishes.
+type Publication struct {
+
+	// The name of the publication.
+	//
+	// This member is required.
+	Event *string
+
+	// The JSON schema of the publication event.
+	//
+	// This member is required.
+	Schema *string
+
+	// The description of the publication.
+	Description *string
 
 	noSmithyDocumentSerde
 }
@@ -125,6 +262,20 @@ type ScheduleConfiguration struct {
 
 	// The name of the object to pull from the data source.
 	Object *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration of an event that the application subscribes.
+type Subscription struct {
+
+	// The name of the subscription.
+	//
+	// This member is required.
+	Event *string
+
+	// The description of the subscription.
+	Description *string
 
 	noSmithyDocumentSerde
 }

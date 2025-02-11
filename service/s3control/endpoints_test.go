@@ -5,11 +5,13 @@ package s3control
 import (
 	"context"
 	smithy "github.com/aws/smithy-go"
+	smithyauth "github.com/aws/smithy-go/auth"
 	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/ptr"
-	"github.com/google/go-cmp/cmp"
+	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"net/http"
 	"net/url"
+	"reflect"
 	"strings"
 	"testing"
 )
@@ -44,16 +46,23 @@ func TestEndpointCase0(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -61,14 +70,12 @@ func TestEndpointCase0(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -102,16 +109,23 @@ func TestEndpointCase1(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -119,14 +133,12 @@ func TestEndpointCase1(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -160,16 +172,23 @@ func TestEndpointCase2(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -177,14 +196,12 @@ func TestEndpointCase2(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -218,16 +235,23 @@ func TestEndpointCase3(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "cn-north-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "cn-north-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -235,14 +259,12 @@ func TestEndpointCase3(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -276,16 +298,23 @@ func TestEndpointCase4(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -293,14 +322,12 @@ func TestEndpointCase4(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -334,16 +361,23 @@ func TestEndpointCase5(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -351,14 +385,12 @@ func TestEndpointCase5(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -392,16 +424,23 @@ func TestEndpointCase6(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-gov-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-gov-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -409,14 +448,12 @@ func TestEndpointCase6(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -450,16 +487,23 @@ func TestEndpointCase7(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "cn-north-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "cn-north-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -467,14 +511,12 @@ func TestEndpointCase7(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -508,16 +550,23 @@ func TestEndpointCase8(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "cn-north-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "cn-north-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -525,14 +574,12 @@ func TestEndpointCase8(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -566,16 +613,23 @@ func TestEndpointCase9(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-gov-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-gov-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -583,14 +637,12 @@ func TestEndpointCase9(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -624,16 +676,23 @@ func TestEndpointCase10(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "af-south-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "af-south-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -641,14 +700,12 @@ func TestEndpointCase10(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -682,16 +739,23 @@ func TestEndpointCase11(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "af-south-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "af-south-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -699,14 +763,12 @@ func TestEndpointCase11(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -740,16 +802,23 @@ func TestEndpointCase12(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-gov-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-gov-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -757,14 +826,12 @@ func TestEndpointCase12(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -793,16 +860,23 @@ func TestEndpointCase13(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -810,14 +884,12 @@ func TestEndpointCase13(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -846,16 +918,23 @@ func TestEndpointCase14(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -863,14 +942,12 @@ func TestEndpointCase14(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -898,16 +975,23 @@ func TestEndpointCase15(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -915,21 +999,19 @@ func TestEndpointCase15(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // ListRegionalBuckets + OutpostId = outposts endpoint@us-east-2
 func TestEndpointCase16(t *testing.T) {
 	var params = EndpointParameters{
-		AccountId:         ptr.String("123"),
+		AccountId:         ptr.String("123456789012"),
 		OutpostId:         ptr.String("op-123"),
 		Region:            ptr.String("us-east-2"),
 		RequiresAccountId: ptr.Bool(true),
@@ -951,16 +1033,23 @@ func TestEndpointCase16(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -968,21 +1057,19 @@ func TestEndpointCase16(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // ListRegionalBuckets without OutpostId = regular endpoint@us-east-2
 func TestEndpointCase17(t *testing.T) {
 	var params = EndpointParameters{
-		AccountId:         ptr.String("123"),
+		AccountId:         ptr.String("123456789012"),
 		Region:            ptr.String("us-east-2"),
 		RequiresAccountId: ptr.Bool(true),
 		UseDualStack:      ptr.Bool(false),
@@ -997,22 +1084,29 @@ func TestEndpointCase17(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://123.s3-control.us-east-2.amazonaws.com")
+	uri, _ := url.Parse("https://123456789012.s3-control.us-east-2.amazonaws.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1020,21 +1114,19 @@ func TestEndpointCase17(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // ListRegionalBucket + OutpostId with fips = outposts endpoint@us-east-2
 func TestEndpointCase18(t *testing.T) {
 	var params = EndpointParameters{
-		AccountId:         ptr.String("123"),
+		AccountId:         ptr.String("123456789012"),
 		OutpostId:         ptr.String("op-123"),
 		Region:            ptr.String("us-east-2"),
 		RequiresAccountId: ptr.Bool(true),
@@ -1056,16 +1148,23 @@ func TestEndpointCase18(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1073,18 +1172,16 @@ func TestEndpointCase18(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
-// outpost access points do not support dualstack@us-west-2
+// outpost access points support dualstack@us-west-2
 func TestEndpointCase19(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint"),
@@ -1099,41 +1196,58 @@ func TestEndpointCase19(t *testing.T) {
 	result, err := resolver.ResolveEndpoint(context.Background(), params)
 	_, _ = result, err
 
-	if err == nil {
-		t.Fatalf("expect error, got none")
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
 	}
-	if e, a := "Invalid configuration: Outpost Access Points do not support dual-stack", err.Error(); !strings.Contains(a, e) {
-		t.Errorf("expect %v error in %v", e, a)
+
+	uri, _ := url.Parse("https://s3-outposts.us-west-2.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI: *uri,
+		Headers: func() http.Header {
+			headers := http.Header{}
+			headers.Set("x-amz-account-id", "123456789012")
+			headers.Set("x-amz-outpost-id", "op-01234567890123456")
+			return headers
+		}(),
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
-// outpost access points do not support dualstack@cn-north-1
+// outpost access points support dualstack@af-south-1
 func TestEndpointCase20(t *testing.T) {
 	var params = EndpointParameters{
-		AccessPointName:   ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint"),
-		AccountId:         ptr.String("123456789012"),
-		Region:            ptr.String("cn-north-1"),
-		RequiresAccountId: ptr.Bool(true),
-		UseDualStack:      ptr.Bool(true),
-		UseFIPS:           ptr.Bool(false),
-	}
-
-	resolver := NewDefaultEndpointResolverV2()
-	result, err := resolver.ResolveEndpoint(context.Background(), params)
-	_, _ = result, err
-
-	if err == nil {
-		t.Fatalf("expect error, got none")
-	}
-	if e, a := "Invalid configuration: Outpost Access Points do not support dual-stack", err.Error(); !strings.Contains(a, e) {
-		t.Errorf("expect %v error in %v", e, a)
-	}
-}
-
-// outpost access points do not support dualstack@af-south-1
-func TestEndpointCase21(t *testing.T) {
-	var params = EndpointParameters{
-		AccessPointName:   ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint"),
+		AccessPointName:   ptr.String("arn:aws:s3-outposts:af-south-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint"),
 		AccountId:         ptr.String("123456789012"),
 		Region:            ptr.String("af-south-1"),
 		RequiresAccountId: ptr.Bool(true),
@@ -1145,11 +1259,114 @@ func TestEndpointCase21(t *testing.T) {
 	result, err := resolver.ResolveEndpoint(context.Background(), params)
 	_, _ = result, err
 
-	if err == nil {
-		t.Fatalf("expect error, got none")
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
 	}
-	if e, a := "Invalid configuration: Outpost Access Points do not support dual-stack", err.Error(); !strings.Contains(a, e) {
-		t.Errorf("expect %v error in %v", e, a)
+
+	uri, _ := url.Parse("https://s3-outposts.af-south-1.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI: *uri,
+		Headers: func() http.Header {
+			headers := http.Header{}
+			headers.Set("x-amz-account-id", "123456789012")
+			headers.Set("x-amz-outpost-id", "op-01234567890123456")
+			return headers
+		}(),
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "af-south-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// outpost access points support fips + dualstack@af-south-1
+func TestEndpointCase21(t *testing.T) {
+	var params = EndpointParameters{
+		AccessPointName:   ptr.String("arn:aws:s3-outposts:af-south-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint"),
+		AccountId:         ptr.String("123456789012"),
+		Region:            ptr.String("af-south-1"),
+		RequiresAccountId: ptr.Bool(true),
+		UseDualStack:      ptr.Bool(true),
+		UseFIPS:           ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://s3-outposts-fips.af-south-1.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI: *uri,
+		Headers: func() http.Header {
+			headers := http.Header{}
+			headers.Set("x-amz-account-id", "123456789012")
+			headers.Set("x-amz-outpost-id", "op-01234567890123456")
+			return headers
+		}(),
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "af-south-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1245,16 +1462,23 @@ func TestEndpointCase25(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1262,14 +1486,12 @@ func TestEndpointCase25(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1304,16 +1526,23 @@ func TestEndpointCase26(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1321,14 +1550,12 @@ func TestEndpointCase26(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1336,7 +1563,7 @@ func TestEndpointCase26(t *testing.T) {
 func TestEndpointCase27(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint"),
-		AccountId:         ptr.String("9999999"),
+		AccountId:         ptr.String("999999999999"),
 		Region:            ptr.String("us-west-2"),
 		RequiresAccountId: ptr.Bool(true),
 		UseArnRegion:      ptr.Bool(false),
@@ -1351,7 +1578,7 @@ func TestEndpointCase27(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expect error, got none")
 	}
-	if e, a := "Invalid ARN: the accountId specified in the ARN (`123456789012`) does not match the parameter (`9999999`)", err.Error(); !strings.Contains(a, e) {
+	if e, a := "Invalid ARN: the accountId specified in the ARN (`123456789012`) does not match the parameter (`999999999999`)", err.Error(); !strings.Contains(a, e) {
 		t.Errorf("expect %v error in %v", e, a)
 	}
 }
@@ -1382,16 +1609,23 @@ func TestEndpointCase28(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1399,14 +1633,12 @@ func TestEndpointCase28(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1441,16 +1673,23 @@ func TestEndpointCase29(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1458,14 +1697,12 @@ func TestEndpointCase29(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1541,16 +1778,23 @@ func TestEndpointCase32(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1558,14 +1802,12 @@ func TestEndpointCase32(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1599,16 +1841,23 @@ func TestEndpointCase33(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1616,21 +1865,19 @@ func TestEndpointCase33(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // ListRegionalBucket + OutpostId endpoint url@us-east-2
 func TestEndpointCase34(t *testing.T) {
 	var params = EndpointParameters{
-		AccountId:         ptr.String("123"),
+		AccountId:         ptr.String("123456789012"),
 		Endpoint:          ptr.String("https://beta.example.com"),
 		OutpostId:         ptr.String("op-123"),
 		Region:            ptr.String("us-east-2"),
@@ -1653,16 +1900,23 @@ func TestEndpointCase34(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1670,21 +1924,19 @@ func TestEndpointCase34(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // ListRegionalBucket + OutpostId + fips + endpoint url@us-east-2
 func TestEndpointCase35(t *testing.T) {
 	var params = EndpointParameters{
-		AccountId:         ptr.String("123"),
+		AccountId:         ptr.String("123456789012"),
 		Endpoint:          ptr.String("https://beta.example.com"),
 		OutpostId:         ptr.String("op-123"),
 		Region:            ptr.String("us-east-2"),
@@ -1707,16 +1959,23 @@ func TestEndpointCase35(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1724,19 +1983,75 @@ func TestEndpointCase35(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// ListRegionalBucket + OutpostId + fips + dualstack@us-east-2
+func TestEndpointCase36(t *testing.T) {
+	var params = EndpointParameters{
+		AccountId:         ptr.String("123456789012"),
+		OutpostId:         ptr.String("op-123"),
+		Region:            ptr.String("us-east-2"),
+		RequiresAccountId: ptr.Bool(true),
+		UseDualStack:      ptr.Bool(true),
+		UseFIPS:           ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://s3-outposts-fips.us-east-2.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // CreateBucket + OutpostId endpoint url@us-east-2
-func TestEndpointCase36(t *testing.T) {
+func TestEndpointCase37(t *testing.T) {
 	var params = EndpointParameters{
 		Bucket:            ptr.String("blah"),
 		Endpoint:          ptr.String("https://beta.example.com"),
@@ -1761,16 +2076,23 @@ func TestEndpointCase36(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1778,22 +2100,20 @@ func TestEndpointCase36(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // dualstack cannot be used with outposts when an endpoint URL is set@us-west-2.
-func TestEndpointCase37(t *testing.T) {
+func TestEndpointCase38(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint"),
-		Endpoint:          ptr.String("https://beta.example.com"),
+		Endpoint:          ptr.String("https://s3-outposts.us-west-2.api.aws"),
 		Region:            ptr.String("us-west-2"),
 		RequiresAccountId: ptr.Bool(true),
 		UseDualStack:      ptr.Bool(true),
@@ -1807,31 +2127,7 @@ func TestEndpointCase37(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expect error, got none")
 	}
-	if e, a := "Invalid configuration: Outpost Access Points do not support dual-stack", err.Error(); !strings.Contains(a, e) {
-		t.Errorf("expect %v error in %v", e, a)
-	}
-}
-
-// Dual-stack cannot be used with outposts@us-west-2
-func TestEndpointCase38(t *testing.T) {
-	var params = EndpointParameters{
-		Bucket:            ptr.String("bucketname"),
-		Endpoint:          ptr.String("https://beta.example.com"),
-		OutpostId:         ptr.String("op-123"),
-		Region:            ptr.String("us-west-2"),
-		RequiresAccountId: ptr.Bool(false),
-		UseDualStack:      ptr.Bool(true),
-		UseFIPS:           ptr.Bool(false),
-	}
-
-	resolver := NewDefaultEndpointResolverV2()
-	result, err := resolver.ResolveEndpoint(context.Background(), params)
-	_, _ = result, err
-
-	if err == nil {
-		t.Fatalf("expect error, got none")
-	}
-	if e, a := "Invalid configuration: Outposts do not support dual-stack", err.Error(); !strings.Contains(a, e) {
+	if e, a := "Invalid Configuration: DualStack and custom endpoint are not supported", err.Error(); !strings.Contains(a, e) {
 		t.Errorf("expect %v error in %v", e, a)
 	}
 }
@@ -1865,16 +2161,23 @@ func TestEndpointCase39(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1882,14 +2185,12 @@ func TestEndpointCase39(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1923,16 +2224,23 @@ func TestEndpointCase40(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1940,14 +2248,12 @@ func TestEndpointCase40(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -1980,16 +2286,23 @@ func TestEndpointCase41(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-gov-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-gov-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -1997,14 +2310,12 @@ func TestEndpointCase41(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2037,16 +2348,23 @@ func TestEndpointCase42(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-gov-west-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-gov-west-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2054,14 +2372,12 @@ func TestEndpointCase42(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2094,16 +2410,23 @@ func TestEndpointCase43(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2111,36 +2434,74 @@ func TestEndpointCase43(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
-// Outposts do not support dualstack@us-west-2
+// bucket ARN in aws partition with fips + dualstack@us-east-2
 func TestEndpointCase44(t *testing.T) {
 	var params = EndpointParameters{
-		Bucket:            ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:bucket:mybucket"),
-		Region:            ptr.String("us-west-2"),
+		Bucket:            ptr.String("arn:aws:s3-outposts:us-east-2:123456789012:outpost:op-01234567890123456:bucket:mybucket"),
+		Region:            ptr.String("us-east-2"),
 		RequiresAccountId: ptr.Bool(true),
 		UseDualStack:      ptr.Bool(true),
-		UseFIPS:           ptr.Bool(false),
+		UseFIPS:           ptr.Bool(true),
 	}
 
 	resolver := NewDefaultEndpointResolverV2()
 	result, err := resolver.ResolveEndpoint(context.Background(), params)
 	_, _ = result, err
 
-	if err == nil {
-		t.Fatalf("expect error, got none")
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
 	}
-	if e, a := "Invalid configuration: Outpost buckets do not support dual-stack", err.Error(); !strings.Contains(a, e) {
-		t.Errorf("expect %v error in %v", e, a)
+
+	uri, _ := url.Parse("https://s3-outposts-fips.us-east-2.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI: *uri,
+		Headers: func() http.Header {
+			headers := http.Header{}
+			headers.Set("x-amz-account-id", "123456789012")
+			headers.Set("x-amz-outpost-id", "op-01234567890123456")
+			return headers
+		}(),
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2173,16 +2534,23 @@ func TestEndpointCase45(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "cn-north-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "cn-north-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2190,14 +2558,12 @@ func TestEndpointCase45(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2231,16 +2597,23 @@ func TestEndpointCase46(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2248,14 +2621,12 @@ func TestEndpointCase46(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2288,16 +2659,23 @@ func TestEndpointCase47(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-gov-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-gov-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2305,14 +2683,12 @@ func TestEndpointCase47(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2345,16 +2721,23 @@ func TestEndpointCase48(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-gov-west-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-gov-west-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2362,14 +2745,12 @@ func TestEndpointCase48(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2402,16 +2783,23 @@ func TestEndpointCase49(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2419,18 +2807,16 @@ func TestEndpointCase49(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
-// Outposts do not support dualstack@us-west-2
+// Outposts support dualstack @us-west-2
 func TestEndpointCase50(t *testing.T) {
 	var params = EndpointParameters{
 		Bucket:            ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:bucket:mybucket"),
@@ -2444,11 +2830,51 @@ func TestEndpointCase50(t *testing.T) {
 	result, err := resolver.ResolveEndpoint(context.Background(), params)
 	_, _ = result, err
 
-	if err == nil {
-		t.Fatalf("expect error, got none")
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
 	}
-	if e, a := "Invalid configuration: Outpost buckets do not support dual-stack", err.Error(); !strings.Contains(a, e) {
-		t.Errorf("expect %v error in %v", e, a)
+
+	uri, _ := url.Parse("https://s3-outposts.us-west-2.api.aws")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI: *uri,
+		Headers: func() http.Header {
+			headers := http.Header{}
+			headers.Set("x-amz-account-id", "123456789012")
+			headers.Set("x-amz-outpost-id", "op-01234567890123456")
+			return headers
+		}(),
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2481,16 +2907,23 @@ func TestEndpointCase51(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "af-south-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "af-south-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2498,14 +2931,12 @@ func TestEndpointCase51(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2539,16 +2970,23 @@ func TestEndpointCase52(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2556,14 +2994,12 @@ func TestEndpointCase52(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2596,16 +3032,23 @@ func TestEndpointCase53(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-gov-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-gov-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2613,14 +3056,12 @@ func TestEndpointCase53(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2653,16 +3094,23 @@ func TestEndpointCase54(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-gov-west-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-gov-west-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2670,14 +3118,12 @@ func TestEndpointCase54(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
@@ -2710,16 +3156,23 @@ func TestEndpointCase55(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2727,41 +3180,17 @@ func TestEndpointCase55(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
-	}
-}
-
-// Outposts do not support dualstack@us-west-2
-func TestEndpointCase56(t *testing.T) {
-	var params = EndpointParameters{
-		Bucket:            ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:bucket:mybucket"),
-		Region:            ptr.String("us-west-2"),
-		RequiresAccountId: ptr.Bool(true),
-		UseDualStack:      ptr.Bool(true),
-		UseFIPS:           ptr.Bool(false),
-	}
-
-	resolver := NewDefaultEndpointResolverV2()
-	result, err := resolver.ResolveEndpoint(context.Background(), params)
-	_, _ = result, err
-
-	if err == nil {
-		t.Fatalf("expect error, got none")
-	}
-	if e, a := "Invalid configuration: Outpost buckets do not support dual-stack", err.Error(); !strings.Contains(a, e) {
-		t.Errorf("expect %v error in %v", e, a)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // Invalid ARN: missing outpost id and bucket@us-west-2
-func TestEndpointCase57(t *testing.T) {
+func TestEndpointCase56(t *testing.T) {
 	var params = EndpointParameters{
 		Bucket:            ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost"),
 		Region:            ptr.String("us-west-2"),
@@ -2783,7 +3212,7 @@ func TestEndpointCase57(t *testing.T) {
 }
 
 // Invalid ARN: missing bucket@us-west-2
-func TestEndpointCase58(t *testing.T) {
+func TestEndpointCase57(t *testing.T) {
 	var params = EndpointParameters{
 		Bucket:            ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456"),
 		Region:            ptr.String("us-west-2"),
@@ -2805,7 +3234,7 @@ func TestEndpointCase58(t *testing.T) {
 }
 
 // Invalid ARN: missing outpost and bucket ids@us-west-2
-func TestEndpointCase59(t *testing.T) {
+func TestEndpointCase58(t *testing.T) {
 	var params = EndpointParameters{
 		Bucket:            ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:bucket"),
 		Region:            ptr.String("us-west-2"),
@@ -2827,7 +3256,7 @@ func TestEndpointCase59(t *testing.T) {
 }
 
 // Invalid ARN: missing bucket id@us-west-2
-func TestEndpointCase60(t *testing.T) {
+func TestEndpointCase59(t *testing.T) {
 	var params = EndpointParameters{
 		Bucket:            ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:bucket"),
 		Region:            ptr.String("us-west-2"),
@@ -2849,7 +3278,7 @@ func TestEndpointCase60(t *testing.T) {
 }
 
 // account id inserted into hostname@us-west-2
-func TestEndpointCase61(t *testing.T) {
+func TestEndpointCase60(t *testing.T) {
 	var params = EndpointParameters{
 		AccountId:         ptr.String("1234567890"),
 		Region:            ptr.String("us-west-2"),
@@ -2872,16 +3301,23 @@ func TestEndpointCase61(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2889,19 +3325,17 @@ func TestEndpointCase61(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // account id prefix with dualstack@us-east-1
-func TestEndpointCase62(t *testing.T) {
+func TestEndpointCase61(t *testing.T) {
 	var params = EndpointParameters{
 		AccountId:         ptr.String("1234567890"),
 		Region:            ptr.String("us-east-1"),
@@ -2924,16 +3358,23 @@ func TestEndpointCase62(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2941,19 +3382,17 @@ func TestEndpointCase62(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // account id prefix with fips@us-east-1
-func TestEndpointCase63(t *testing.T) {
+func TestEndpointCase62(t *testing.T) {
 	var params = EndpointParameters{
 		AccountId:         ptr.String("1234567890"),
 		Region:            ptr.String("us-east-1"),
@@ -2976,16 +3415,23 @@ func TestEndpointCase63(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -2993,21 +3439,19 @@ func TestEndpointCase63(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // custom account id prefix with fips@us-east-1
-func TestEndpointCase64(t *testing.T) {
+func TestEndpointCase63(t *testing.T) {
 	var params = EndpointParameters{
-		AccountId:         ptr.String("1234567890-aBC"),
+		AccountId:         ptr.String("123456789012"),
 		Region:            ptr.String("us-east-1"),
 		RequiresAccountId: ptr.Bool(true),
 		UseDualStack:      ptr.Bool(false),
@@ -3022,22 +3466,29 @@ func TestEndpointCase64(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://1234567890-aBC.s3-control-fips.us-east-1.amazonaws.com")
+	uri, _ := url.Parse("https://123456789012.s3-control-fips.us-east-1.amazonaws.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3045,19 +3496,17 @@ func TestEndpointCase64(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // standard url @ us-east-1
-func TestEndpointCase65(t *testing.T) {
+func TestEndpointCase64(t *testing.T) {
 	var params = EndpointParameters{
 		Region: ptr.String("us-east-1"),
 	}
@@ -3076,16 +3525,23 @@ func TestEndpointCase65(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3093,19 +3549,17 @@ func TestEndpointCase65(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // fips url @ us-east-1
-func TestEndpointCase66(t *testing.T) {
+func TestEndpointCase65(t *testing.T) {
 	var params = EndpointParameters{
 		Region:  ptr.String("us-east-1"),
 		UseFIPS: ptr.Bool(true),
@@ -3125,16 +3579,23 @@ func TestEndpointCase66(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3142,19 +3603,17 @@ func TestEndpointCase66(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // dualstack url @ us-east-1
-func TestEndpointCase67(t *testing.T) {
+func TestEndpointCase66(t *testing.T) {
 	var params = EndpointParameters{
 		Region:       ptr.String("us-east-1"),
 		UseDualStack: ptr.Bool(true),
@@ -3174,16 +3633,23 @@ func TestEndpointCase67(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3191,19 +3657,17 @@ func TestEndpointCase67(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // fips,dualstack url @ us-east-1
-func TestEndpointCase68(t *testing.T) {
+func TestEndpointCase67(t *testing.T) {
 	var params = EndpointParameters{
 		Region:       ptr.String("us-east-1"),
 		UseDualStack: ptr.Bool(true),
@@ -3224,16 +3688,23 @@ func TestEndpointCase68(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3241,19 +3712,17 @@ func TestEndpointCase68(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // standard url @ cn-north-1
-func TestEndpointCase69(t *testing.T) {
+func TestEndpointCase68(t *testing.T) {
 	var params = EndpointParameters{
 		Region: ptr.String("cn-north-1"),
 	}
@@ -3272,16 +3741,23 @@ func TestEndpointCase69(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "cn-north-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "cn-north-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3289,19 +3765,17 @@ func TestEndpointCase69(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // fips @ cn-north-1
-func TestEndpointCase70(t *testing.T) {
+func TestEndpointCase69(t *testing.T) {
 	var params = EndpointParameters{
 		Region:       ptr.String("cn-north-1"),
 		UseDualStack: ptr.Bool(true),
@@ -3321,9 +3795,9 @@ func TestEndpointCase70(t *testing.T) {
 }
 
 // custom account id prefix @us-east-1
-func TestEndpointCase71(t *testing.T) {
+func TestEndpointCase70(t *testing.T) {
 	var params = EndpointParameters{
-		AccountId:         ptr.String("1234567890-aBC"),
+		AccountId:         ptr.String("123456789012"),
 		Region:            ptr.String("us-east-1"),
 		RequiresAccountId: ptr.Bool(true),
 		UseDualStack:      ptr.Bool(false),
@@ -3338,22 +3812,29 @@ func TestEndpointCase71(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://1234567890-aBC.s3-control.us-east-1.amazonaws.com")
+	uri, _ := url.Parse("https://123456789012.s3-control.us-east-1.amazonaws.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3361,19 +3842,17 @@ func TestEndpointCase71(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // invalid account id prefix @us-east-1
-func TestEndpointCase72(t *testing.T) {
+func TestEndpointCase71(t *testing.T) {
 	var params = EndpointParameters{
 		AccountId:         ptr.String("/?invalid&not-host*label"),
 		Region:            ptr.String("us-east-1"),
@@ -3395,9 +3874,9 @@ func TestEndpointCase72(t *testing.T) {
 }
 
 // custom account id prefix with fips@us-east-1
-func TestEndpointCase73(t *testing.T) {
+func TestEndpointCase72(t *testing.T) {
 	var params = EndpointParameters{
-		AccountId:         ptr.String("1234567890-aBC"),
+		AccountId:         ptr.String("123456789012"),
 		Region:            ptr.String("us-east-1"),
 		RequiresAccountId: ptr.Bool(true),
 		UseDualStack:      ptr.Bool(false),
@@ -3412,22 +3891,29 @@ func TestEndpointCase73(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://1234567890-aBC.s3-control-fips.us-east-1.amazonaws.com")
+	uri, _ := url.Parse("https://123456789012.s3-control-fips.us-east-1.amazonaws.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3435,21 +3921,19 @@ func TestEndpointCase73(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // custom account id prefix with dualstack,fips@us-east-1
-func TestEndpointCase74(t *testing.T) {
+func TestEndpointCase73(t *testing.T) {
 	var params = EndpointParameters{
-		AccountId:         ptr.String("1234567890-aBC"),
+		AccountId:         ptr.String("123456789012"),
 		Region:            ptr.String("us-east-1"),
 		RequiresAccountId: ptr.Bool(true),
 		UseDualStack:      ptr.Bool(true),
@@ -3464,22 +3948,29 @@ func TestEndpointCase74(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://1234567890-aBC.s3-control-fips.dualstack.us-east-1.amazonaws.com")
+	uri, _ := url.Parse("https://123456789012.s3-control-fips.dualstack.us-east-1.amazonaws.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3487,21 +3978,19 @@ func TestEndpointCase74(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // custom account id with custom endpoint
-func TestEndpointCase75(t *testing.T) {
+func TestEndpointCase74(t *testing.T) {
 	var params = EndpointParameters{
-		AccountId:         ptr.String("1234567890-aBC"),
+		AccountId:         ptr.String("123456789012"),
 		Region:            ptr.String("us-east-1"),
 		RequiresAccountId: ptr.Bool(true),
 		Endpoint:          ptr.String("https://example.com"),
@@ -3515,22 +4004,29 @@ func TestEndpointCase75(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://1234567890-aBC.example.com")
+	uri, _ := url.Parse("https://123456789012.example.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3538,19 +4034,17 @@ func TestEndpointCase75(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // RequiresAccountId with AccountId unset
-func TestEndpointCase76(t *testing.T) {
+func TestEndpointCase75(t *testing.T) {
 	var params = EndpointParameters{
 		Region:            ptr.String("us-east-1"),
 		RequiresAccountId: ptr.Bool(true),
@@ -3569,7 +4063,7 @@ func TestEndpointCase76(t *testing.T) {
 }
 
 // RequiresAccountId with AccountId unset and custom endpoint
-func TestEndpointCase77(t *testing.T) {
+func TestEndpointCase76(t *testing.T) {
 	var params = EndpointParameters{
 		Region:            ptr.String("us-east-1"),
 		Endpoint:          ptr.String("https://beta.example.com"),
@@ -3589,7 +4083,7 @@ func TestEndpointCase77(t *testing.T) {
 }
 
 // RequiresAccountId with invalid AccountId and custom endpoint
-func TestEndpointCase78(t *testing.T) {
+func TestEndpointCase77(t *testing.T) {
 	var params = EndpointParameters{
 		Region:            ptr.String("us-east-1"),
 		Endpoint:          ptr.String("https://beta.example.com"),
@@ -3609,10 +4103,10 @@ func TestEndpointCase78(t *testing.T) {
 	}
 }
 
-// account id with custom endpoint, fips and dualstack
-func TestEndpointCase79(t *testing.T) {
+// account id with custom endpoint, fips
+func TestEndpointCase78(t *testing.T) {
 	var params = EndpointParameters{
-		AccountId:         ptr.String("1234567890-aBC"),
+		AccountId:         ptr.String("123456789012"),
 		Region:            ptr.String("us-east-1"),
 		RequiresAccountId: ptr.Bool(true),
 		Endpoint:          ptr.String("https://example.com"),
@@ -3627,22 +4121,29 @@ func TestEndpointCase79(t *testing.T) {
 		t.Fatalf("expect no error, got %v", err)
 	}
 
-	uri, _ := url.Parse("https://1234567890-aBC.example.com")
+	uri, _ := url.Parse("https://123456789012.example.com")
 
 	expectEndpoint := smithyendpoints.Endpoint{
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3650,18 +4151,71 @@ func TestEndpointCase79(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
-// custom endpoint, fips and dualstack
+// custom endpoint, fips
+func TestEndpointCase79(t *testing.T) {
+	var params = EndpointParameters{
+		Region:   ptr.String("us-east-1"),
+		Endpoint: ptr.String("https://example.com"),
+		UseFIPS:  ptr.Bool(true),
+	}
+
+	resolver := NewDefaultEndpointResolverV2()
+	result, err := resolver.ResolveEndpoint(context.Background(), params)
+	_, _ = result, err
+
+	if err != nil {
+		t.Fatalf("expect no error, got %v", err)
+	}
+
+	uri, _ := url.Parse("https://example.com")
+
+	expectEndpoint := smithyendpoints.Endpoint{
+		URI:     *uri,
+		Headers: http.Header{},
+		Properties: func() smithy.Properties {
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
+				},
+			})
+			return out
+		}(),
+	}
+
+	if e, a := expectEndpoint.URI, result.URI; e != a {
+		t.Errorf("expect %v URI, got %v", e, a)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
+	}
+
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
+	}
+}
+
+// custom endpoint, fips
 func TestEndpointCase80(t *testing.T) {
 	var params = EndpointParameters{
 		Region:   ptr.String("us-east-1"),
@@ -3683,16 +4237,23 @@ func TestEndpointCase80(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3700,119 +4261,38 @@ func TestEndpointCase80(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
-// custom endpoint, fips
+// custom endpoint, DualStack
 func TestEndpointCase81(t *testing.T) {
 	var params = EndpointParameters{
-		Region:   ptr.String("us-east-1"),
-		Endpoint: ptr.String("https://example.com"),
-		UseFIPS:  ptr.Bool(true),
+		Region:       ptr.String("us-east-1"),
+		Endpoint:     ptr.String("https://example.com"),
+		UseFIPS:      ptr.Bool(false),
+		UseDualStack: ptr.Bool(true),
 	}
 
 	resolver := NewDefaultEndpointResolverV2()
 	result, err := resolver.ResolveEndpoint(context.Background(), params)
 	_, _ = result, err
 
-	if err != nil {
-		t.Fatalf("expect no error, got %v", err)
+	if err == nil {
+		t.Fatalf("expect error, got none")
 	}
-
-	uri, _ := url.Parse("https://example.com")
-
-	expectEndpoint := smithyendpoints.Endpoint{
-		URI:     *uri,
-		Headers: http.Header{},
-		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
-				},
-			})
-			return properties
-		}(),
-	}
-
-	if e, a := expectEndpoint.URI, result.URI; e != a {
-		t.Errorf("expect %v URI, got %v", e, a)
-	}
-
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
-	}
-
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
-	}
-}
-
-// custom endpoint, dualstack
-func TestEndpointCase82(t *testing.T) {
-	var params = EndpointParameters{
-		Region:   ptr.String("us-east-1"),
-		Endpoint: ptr.String("https://example.com"),
-		UseFIPS:  ptr.Bool(false),
-	}
-
-	resolver := NewDefaultEndpointResolverV2()
-	result, err := resolver.ResolveEndpoint(context.Background(), params)
-	_, _ = result, err
-
-	if err != nil {
-		t.Fatalf("expect no error, got %v", err)
-	}
-
-	uri, _ := url.Parse("https://example.com")
-
-	expectEndpoint := smithyendpoints.Endpoint{
-		URI:     *uri,
-		Headers: http.Header{},
-		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
-				},
-			})
-			return properties
-		}(),
-	}
-
-	if e, a := expectEndpoint.URI, result.URI; e != a {
-		t.Errorf("expect %v URI, got %v", e, a)
-	}
-
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
-	}
-
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if e, a := "Invalid Configuration: DualStack and custom endpoint are not supported", err.Error(); !strings.Contains(a, e) {
+		t.Errorf("expect %v error in %v", e, a)
 	}
 }
 
 // region not set
-func TestEndpointCase83(t *testing.T) {
+func TestEndpointCase82(t *testing.T) {
 	var params = EndpointParameters{}
 
 	resolver := NewDefaultEndpointResolverV2()
@@ -3828,7 +4308,7 @@ func TestEndpointCase83(t *testing.T) {
 }
 
 // invalid partition
-func TestEndpointCase84(t *testing.T) {
+func TestEndpointCase83(t *testing.T) {
 	var params = EndpointParameters{
 		Region: ptr.String("invalid-region 42"),
 	}
@@ -3846,7 +4326,7 @@ func TestEndpointCase84(t *testing.T) {
 }
 
 // ListRegionalBuckets + OutpostId without accountId set.
-func TestEndpointCase85(t *testing.T) {
+func TestEndpointCase84(t *testing.T) {
 	var params = EndpointParameters{
 		OutpostId:         ptr.String("op-123"),
 		Region:            ptr.String("us-east-2"),
@@ -3868,7 +4348,7 @@ func TestEndpointCase85(t *testing.T) {
 }
 
 // ListRegionalBuckets + OutpostId with invalid accountId set.
-func TestEndpointCase86(t *testing.T) {
+func TestEndpointCase85(t *testing.T) {
 	var params = EndpointParameters{
 		AccountId:         ptr.String("/?invalid&not-host*label"),
 		OutpostId:         ptr.String("op-123"),
@@ -3891,7 +4371,7 @@ func TestEndpointCase86(t *testing.T) {
 }
 
 // accesspoint set but missing accountId
-func TestEndpointCase87(t *testing.T) {
+func TestEndpointCase86(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("myaccesspoint"),
 		Region:            ptr.String("us-west-2"),
@@ -3913,7 +4393,7 @@ func TestEndpointCase87(t *testing.T) {
 }
 
 // outpost accesspoint ARN with missing accountId
-func TestEndpointCase88(t *testing.T) {
+func TestEndpointCase87(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("arn:aws:s3-outposts:us-west-2::outpost:op-01234567890123456:outpost:op1"),
 		Region:            ptr.String("us-west-2"),
@@ -3935,7 +4415,7 @@ func TestEndpointCase88(t *testing.T) {
 }
 
 // bucket ARN with missing accountId
-func TestEndpointCase89(t *testing.T) {
+func TestEndpointCase88(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("arn:aws:s3-outposts:us-west-2::outpost:op-01234567890123456:bucket:mybucket"),
 		Region:            ptr.String("us-west-2"),
@@ -3957,7 +4437,7 @@ func TestEndpointCase89(t *testing.T) {
 }
 
 // endpoint url with accesspoint (non-arn)
-func TestEndpointCase90(t *testing.T) {
+func TestEndpointCase89(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("apname"),
 		Endpoint:          ptr.String("https://beta.example.com"),
@@ -3982,16 +4462,23 @@ func TestEndpointCase90(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -3999,19 +4486,17 @@ func TestEndpointCase90(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // access point name with an accesspoint arn@us-west-2
-func TestEndpointCase91(t *testing.T) {
+func TestEndpointCase90(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint"),
 		Endpoint:          ptr.String("https://beta.example.com"),
@@ -4040,16 +4525,23 @@ func TestEndpointCase91(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -4057,19 +4549,17 @@ func TestEndpointCase91(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
-// Dualstack + Custom endpoint is not supported(non-arn)
-func TestEndpointCase92(t *testing.T) {
+// DualStack + Custom endpoint is not supported(non-arn)
+func TestEndpointCase91(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("apname"),
 		Endpoint:          ptr.String("https://beta.example.com"),
@@ -4087,16 +4577,16 @@ func TestEndpointCase92(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expect error, got none")
 	}
-	if e, a := "Invalid Configuration: Dualstack and custom endpoint are not supported", err.Error(); !strings.Contains(a, e) {
+	if e, a := "Invalid Configuration: DualStack and custom endpoint are not supported", err.Error(); !strings.Contains(a, e) {
 		t.Errorf("expect %v error in %v", e, a)
 	}
 }
 
-// get bucket with endpoint_url and dualstack is not supported@us-west-2
-func TestEndpointCase93(t *testing.T) {
+// get bucket with custom endpoint and dualstack is not supported@us-west-2
+func TestEndpointCase92(t *testing.T) {
 	var params = EndpointParameters{
 		Bucket:            ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:bucket:mybucket"),
-		Endpoint:          ptr.String("https://beta.example.com"),
+		Endpoint:          ptr.String("https://s3-outposts.us-west-2.api.aws"),
 		Region:            ptr.String("us-west-2"),
 		RequiresAccountId: ptr.Bool(true),
 		UseDualStack:      ptr.Bool(true),
@@ -4110,13 +4600,13 @@ func TestEndpointCase93(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expect error, got none")
 	}
-	if e, a := "Invalid configuration: Outpost buckets do not support dual-stack", err.Error(); !strings.Contains(a, e) {
+	if e, a := "Invalid Configuration: DualStack and custom endpoint are not supported", err.Error(); !strings.Contains(a, e) {
 		t.Errorf("expect %v error in %v", e, a)
 	}
 }
 
 // ListRegionalBuckets + OutpostId with fips in CN.
-func TestEndpointCase94(t *testing.T) {
+func TestEndpointCase93(t *testing.T) {
 	var params = EndpointParameters{
 		AccountId:         ptr.String("0123456789012"),
 		OutpostId:         ptr.String("op-123"),
@@ -4139,7 +4629,7 @@ func TestEndpointCase94(t *testing.T) {
 }
 
 // ListRegionalBuckets + invalid OutpostId.
-func TestEndpointCase95(t *testing.T) {
+func TestEndpointCase94(t *testing.T) {
 	var params = EndpointParameters{
 		AccountId:         ptr.String("0123456789012"),
 		OutpostId:         ptr.String("?outpost/invalid+"),
@@ -4162,7 +4652,7 @@ func TestEndpointCase95(t *testing.T) {
 }
 
 // bucket ARN with mismatched accountId
-func TestEndpointCase96(t *testing.T) {
+func TestEndpointCase95(t *testing.T) {
 	var params = EndpointParameters{
 		Bucket:            ptr.String("arn:aws:s3-outposts:us-west-2:999999:outpost:op-01234567890123456:bucket:mybucket"),
 		AccountId:         ptr.String("0123456789012"),
@@ -4185,7 +4675,7 @@ func TestEndpointCase96(t *testing.T) {
 }
 
 // OutpostId with invalid region
-func TestEndpointCase97(t *testing.T) {
+func TestEndpointCase96(t *testing.T) {
 	var params = EndpointParameters{
 		OutpostId:         ptr.String("op-123"),
 		Region:            ptr.String("invalid-region 42"),
@@ -4208,7 +4698,7 @@ func TestEndpointCase97(t *testing.T) {
 }
 
 // OutpostId with RequireAccountId unset
-func TestEndpointCase98(t *testing.T) {
+func TestEndpointCase97(t *testing.T) {
 	var params = EndpointParameters{
 		OutpostId:    ptr.String("op-123"),
 		Region:       ptr.String("us-west-2"),
@@ -4230,16 +4720,23 @@ func TestEndpointCase98(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -4247,20 +4744,18 @@ func TestEndpointCase98(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // Outpost Accesspoint ARN with arn region and client region mismatch with
 // UseArnRegion=false
-func TestEndpointCase99(t *testing.T) {
+func TestEndpointCase98(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("arn:aws:s3-outposts:us-east-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint"),
 		AccountId:         ptr.String("123456789012"),
@@ -4285,7 +4780,7 @@ func TestEndpointCase99(t *testing.T) {
 
 // Outpost Bucket ARN with arn region and client region mismatch with
 // UseArnRegion=false
-func TestEndpointCase100(t *testing.T) {
+func TestEndpointCase99(t *testing.T) {
 	var params = EndpointParameters{
 		Bucket:            ptr.String("arn:aws:s3-outposts:us-east-1:123456789012:outpost:op-01234567890123456:bucket:mybucket"),
 		Endpoint:          ptr.String("https://beta.example.com"),
@@ -4309,7 +4804,7 @@ func TestEndpointCase100(t *testing.T) {
 }
 
 // Accesspoint ARN with region mismatch and UseArnRegion unset
-func TestEndpointCase101(t *testing.T) {
+func TestEndpointCase100(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("arn:aws:s3-outposts:us-east-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint"),
 		AccountId:         ptr.String("123456789012"),
@@ -4338,16 +4833,23 @@ func TestEndpointCase101(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -4355,19 +4857,17 @@ func TestEndpointCase101(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // Bucket ARN with region mismatch and UseArnRegion unset
-func TestEndpointCase102(t *testing.T) {
+func TestEndpointCase101(t *testing.T) {
 	var params = EndpointParameters{
 		Bucket:            ptr.String("arn:aws:s3-outposts:us-east-1:123456789012:outpost:op-01234567890123456:bucket:mybucket"),
 		Region:            ptr.String("us-west-2"),
@@ -4395,16 +4895,23 @@ func TestEndpointCase102(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-east-1",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-east-1")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -4412,19 +4919,17 @@ func TestEndpointCase102(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // Outpost Bucket ARN with partition mismatch with UseArnRegion=true
-func TestEndpointCase103(t *testing.T) {
+func TestEndpointCase102(t *testing.T) {
 	var params = EndpointParameters{
 		Bucket:            ptr.String("arn:aws:s3-outposts:cn-north-1:123456789012:outpost:op-01234567890123456:bucket:mybucket"),
 		Region:            ptr.String("us-west-2"),
@@ -4447,7 +4952,7 @@ func TestEndpointCase103(t *testing.T) {
 }
 
 // Accesspoint ARN with partition mismatch and UseArnRegion=true
-func TestEndpointCase104(t *testing.T) {
+func TestEndpointCase103(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("arn:aws:s3-outposts:cn-north-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint"),
 		AccountId:         ptr.String("123456789012"),
@@ -4471,7 +4976,7 @@ func TestEndpointCase104(t *testing.T) {
 }
 
 // Accesspoint ARN with region mismatch, UseArnRegion=false and custom endpoint
-func TestEndpointCase105(t *testing.T) {
+func TestEndpointCase104(t *testing.T) {
 	var params = EndpointParameters{
 		AccessPointName:   ptr.String("arn:aws:s3-outposts:cn-north-1:123456789012:outpost:op-01234567890123456:accesspoint:myaccesspoint"),
 		Region:            ptr.String("us-west-2"),
@@ -4495,7 +5000,7 @@ func TestEndpointCase105(t *testing.T) {
 }
 
 // outpost bucket arn@us-west-2
-func TestEndpointCase106(t *testing.T) {
+func TestEndpointCase105(t *testing.T) {
 	var params = EndpointParameters{
 		Bucket:            ptr.String("arn:aws:s3-outposts:us-west-2:123456789012:outpost:op-01234567890123456:bucket:mybucket"),
 		Region:            ptr.String("us-west-2"),
@@ -4523,16 +5028,23 @@ func TestEndpointCase106(t *testing.T) {
 			return headers
 		}(),
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3-outposts",
-					"signingRegion":         "us-west-2",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3-outposts")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3-outposts")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "us-west-2")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -4540,19 +5052,17 @@ func TestEndpointCase106(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // S3 Snow Control with bucket
-func TestEndpointCase107(t *testing.T) {
+func TestEndpointCase106(t *testing.T) {
 	var params = EndpointParameters{
 		Region:       ptr.String("snow"),
 		Bucket:       ptr.String("bucketName"),
@@ -4575,16 +5085,23 @@ func TestEndpointCase107(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "snow",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "snow")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -4592,19 +5109,17 @@ func TestEndpointCase107(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // S3 Snow Control without bucket
-func TestEndpointCase108(t *testing.T) {
+func TestEndpointCase107(t *testing.T) {
 	var params = EndpointParameters{
 		Region:       ptr.String("snow"),
 		Endpoint:     ptr.String("https://10.0.1.12:433"),
@@ -4626,16 +5141,23 @@ func TestEndpointCase108(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "snow",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "snow")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -4643,19 +5165,17 @@ func TestEndpointCase108(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // S3 Snow Control with bucket and without port
-func TestEndpointCase109(t *testing.T) {
+func TestEndpointCase108(t *testing.T) {
 	var params = EndpointParameters{
 		Region:       ptr.String("snow"),
 		Bucket:       ptr.String("bucketName"),
@@ -4678,16 +5198,23 @@ func TestEndpointCase109(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "snow",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "snow")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -4695,19 +5222,17 @@ func TestEndpointCase109(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // S3 Snow Control with bucket and with DNS
-func TestEndpointCase110(t *testing.T) {
+func TestEndpointCase109(t *testing.T) {
 	var params = EndpointParameters{
 		Region:       ptr.String("snow"),
 		Bucket:       ptr.String("bucketName"),
@@ -4730,16 +5255,23 @@ func TestEndpointCase110(t *testing.T) {
 		URI:     *uri,
 		Headers: http.Header{},
 		Properties: func() smithy.Properties {
-			var properties smithy.Properties
-			properties.Set("authSchemes", []interface{}{
-				map[string]interface{}{
-					"name":                  "sigv4",
-					"signingName":           "s3",
-					"signingRegion":         "snow",
-					"disableDoubleEncoding": true,
+			var out smithy.Properties
+			smithyauth.SetAuthOptions(&out, []*smithyauth.Option{
+				{
+					SchemeID: "aws.auth#sigv4",
+					SignerProperties: func() smithy.Properties {
+						var sp smithy.Properties
+						smithyhttp.SetSigV4SigningName(&sp, "s3")
+						smithyhttp.SetSigV4ASigningName(&sp, "s3")
+
+						smithyhttp.SetSigV4SigningRegion(&sp, "snow")
+
+						smithyhttp.SetDisableDoubleEncoding(&sp, true)
+						return sp
+					}(),
 				},
 			})
-			return properties
+			return out
 		}(),
 	}
 
@@ -4747,19 +5279,17 @@ func TestEndpointCase110(t *testing.T) {
 		t.Errorf("expect %v URI, got %v", e, a)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Headers, result.Headers); diff != "" {
-		t.Errorf("expect headers to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Headers, result.Headers) {
+		t.Errorf("expect headers to match\n%v != %v", expectEndpoint.Headers, result.Headers)
 	}
 
-	if diff := cmp.Diff(expectEndpoint.Properties, result.Properties,
-		cmp.AllowUnexported(smithy.Properties{}),
-	); diff != "" {
-		t.Errorf("expect properties to match\n%s", diff)
+	if !reflect.DeepEqual(expectEndpoint.Properties, result.Properties) {
+		t.Errorf("expect properties to match\n%v != %v", expectEndpoint.Properties, result.Properties)
 	}
 }
 
 // S3 Snow Control with FIPS enabled
-func TestEndpointCase111(t *testing.T) {
+func TestEndpointCase110(t *testing.T) {
 	var params = EndpointParameters{
 		Region:       ptr.String("snow"),
 		Bucket:       ptr.String("bucketName"),
@@ -4780,8 +5310,8 @@ func TestEndpointCase111(t *testing.T) {
 	}
 }
 
-// S3 Snow Control with Dual-stack enabled
-func TestEndpointCase112(t *testing.T) {
+// S3 Snow Control with Dualstack enabled
+func TestEndpointCase111(t *testing.T) {
 	var params = EndpointParameters{
 		Region:       ptr.String("snow"),
 		Bucket:       ptr.String("bucketName"),
@@ -4797,7 +5327,7 @@ func TestEndpointCase112(t *testing.T) {
 	if err == nil {
 		t.Fatalf("expect error, got none")
 	}
-	if e, a := "S3 Snow does not support Dual-stack", err.Error(); !strings.Contains(a, e) {
+	if e, a := "S3 Snow does not support DualStack", err.Error(); !strings.Contains(a, e) {
 		t.Errorf("expect %v error in %v", e, a)
 	}
 }

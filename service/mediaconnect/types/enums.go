@@ -12,8 +12,9 @@ const (
 )
 
 // Values returns all known values for Algorithm. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Algorithm) Values() []Algorithm {
 	return []Algorithm{
 		"aes128",
@@ -31,8 +32,9 @@ const (
 )
 
 // Values returns all known values for BridgePlacement. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BridgePlacement) Values() []BridgePlacement {
 	return []BridgePlacement{
 		"AVAILABLE",
@@ -59,8 +61,9 @@ const (
 )
 
 // Values returns all known values for BridgeState. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BridgeState) Values() []BridgeState {
 	return []BridgeState{
 		"CREATING",
@@ -92,8 +95,9 @@ const (
 )
 
 // Values returns all known values for Colorimetry. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Colorimetry) Values() []Colorimetry {
 	return []Colorimetry{
 		"BT601",
@@ -115,12 +119,32 @@ const (
 )
 
 // Values returns all known values for ConnectionStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConnectionStatus) Values() []ConnectionStatus {
 	return []ConnectionStatus{
 		"CONNECTED",
 		"DISCONNECTED",
+	}
+}
+
+type ContentQualityAnalysisState string
+
+// Enum values for ContentQualityAnalysisState
+const (
+	ContentQualityAnalysisStateEnabled  ContentQualityAnalysisState = "ENABLED"
+	ContentQualityAnalysisStateDisabled ContentQualityAnalysisState = "DISABLED"
+)
+
+// Values returns all known values for ContentQualityAnalysisState. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ContentQualityAnalysisState) Values() []ContentQualityAnalysisState {
+	return []ContentQualityAnalysisState{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 
@@ -134,8 +158,9 @@ const (
 )
 
 // Values returns all known values for DesiredState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DesiredState) Values() []DesiredState {
 	return []DesiredState{
 		"ACTIVE",
@@ -152,8 +177,9 @@ const (
 )
 
 // Values returns all known values for DurationUnits. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DurationUnits) Values() []DurationUnits {
 	return []DurationUnits{
 		"MONTHS",
@@ -169,8 +195,9 @@ const (
 )
 
 // Values returns all known values for EncoderProfile. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EncoderProfile) Values() []EncoderProfile {
 	return []EncoderProfile{
 		"main",
@@ -189,8 +216,9 @@ const (
 )
 
 // Values returns all known values for EncodingName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EncodingName) Values() []EncodingName {
 	return []EncodingName{
 		"jxsv",
@@ -209,8 +237,9 @@ const (
 )
 
 // Values returns all known values for EntitlementStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EntitlementStatus) Values() []EntitlementStatus {
 	return []EntitlementStatus{
 		"ENABLED",
@@ -227,8 +256,9 @@ const (
 )
 
 // Values returns all known values for FailoverMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FailoverMode) Values() []FailoverMode {
 	return []FailoverMode{
 		"MERGE",
@@ -249,8 +279,9 @@ const (
 )
 
 // Values returns all known values for GatewayState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (GatewayState) Values() []GatewayState {
 	return []GatewayState{
 		"CREATING",
@@ -275,8 +306,9 @@ const (
 )
 
 // Values returns all known values for InstanceState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceState) Values() []InstanceState {
 	return []InstanceState{
 		"REGISTERING",
@@ -298,8 +330,9 @@ const (
 )
 
 // Values returns all known values for KeyType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KeyType) Values() []KeyType {
 	return []KeyType{
 		"speke",
@@ -322,8 +355,9 @@ const (
 )
 
 // Values returns all known values for MaintenanceDay. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MaintenanceDay) Values() []MaintenanceDay {
 	return []MaintenanceDay{
 		"Monday",
@@ -346,8 +380,9 @@ const (
 )
 
 // Values returns all known values for MediaStreamType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MediaStreamType) Values() []MediaStreamType {
 	return []MediaStreamType{
 		"video",
@@ -365,12 +400,32 @@ const (
 )
 
 // Values returns all known values for NetworkInterfaceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NetworkInterfaceType) Values() []NetworkInterfaceType {
 	return []NetworkInterfaceType{
 		"ena",
 		"efa",
+	}
+}
+
+type OutputStatus string
+
+// Enum values for OutputStatus
+const (
+	OutputStatusEnabled  OutputStatus = "ENABLED"
+	OutputStatusDisabled OutputStatus = "DISABLED"
+)
+
+// Values returns all known values for OutputStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OutputStatus) Values() []OutputStatus {
+	return []OutputStatus{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 
@@ -382,8 +437,9 @@ const (
 )
 
 // Values returns all known values for PriceUnits. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PriceUnits) Values() []PriceUnits {
 	return []PriceUnits{
 		"HOURLY",
@@ -408,8 +464,9 @@ const (
 )
 
 // Values returns all known values for Protocol. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Protocol) Values() []Protocol {
 	return []Protocol{
 		"zixi-push",
@@ -436,8 +493,9 @@ const (
 )
 
 // Values returns all known values for Range. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Range) Values() []Range {
 	return []Range{
 		"NARROW",
@@ -457,8 +515,9 @@ const (
 )
 
 // Values returns all known values for ReservationState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReservationState) Values() []ReservationState {
 	return []ReservationState{
 		"ACTIVE",
@@ -476,8 +535,9 @@ const (
 )
 
 // Values returns all known values for ResourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceType) Values() []ResourceType {
 	return []ResourceType{
 		"Mbps_Outbound_Bandwidth",
@@ -494,8 +554,9 @@ const (
 )
 
 // Values returns all known values for ScanMode. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScanMode) Values() []ScanMode {
 	return []ScanMode{
 		"progressive",
@@ -513,8 +574,9 @@ const (
 )
 
 // Values returns all known values for SourceType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SourceType) Values() []SourceType {
 	return []SourceType{
 		"OWNED",
@@ -531,8 +593,9 @@ const (
 )
 
 // Values returns all known values for State. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (State) Values() []State {
 	return []State{
 		"ENABLED",
@@ -554,8 +617,9 @@ const (
 )
 
 // Values returns all known values for Status. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Status) Values() []Status {
 	return []Status{
 		"STANDBY",
@@ -584,8 +648,9 @@ const (
 )
 
 // Values returns all known values for Tcs. Note that this can be expanded in the
-// future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Tcs) Values() []Tcs {
 	return []Tcs{
 		"SDR",
@@ -597,5 +662,24 @@ func (Tcs) Values() []Tcs {
 		"ST2065-1",
 		"ST428-1",
 		"DENSITY",
+	}
+}
+
+type ThumbnailState string
+
+// Enum values for ThumbnailState
+const (
+	ThumbnailStateEnabled  ThumbnailState = "ENABLED"
+	ThumbnailStateDisabled ThumbnailState = "DISABLED"
+)
+
+// Values returns all known values for ThumbnailState. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ThumbnailState) Values() []ThumbnailState {
+	return []ThumbnailState{
+		"ENABLED",
+		"DISABLED",
 	}
 }

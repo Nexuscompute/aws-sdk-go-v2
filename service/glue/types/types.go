@@ -11,13 +11,19 @@ import (
 type Action struct {
 
 	// The job arguments used when this trigger fires. For this job run, they replace
-	// the default arguments set in the job definition itself. You can specify
-	// arguments here that your own job-execution script consumes, as well as arguments
-	// that Glue itself consumes. For information about how to specify and consume your
-	// own Job arguments, see the Calling Glue APIs in Python (https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html)
-	// topic in the developer guide. For information about the key-value pairs that
-	// Glue consumes to set up your job, see the Special Parameters Used by Glue (https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html)
-	// topic in the developer guide.
+	// the default arguments set in the job definition itself.
+	//
+	// You can specify arguments here that your own job-execution script consumes, as
+	// well as arguments that Glue itself consumes.
+	//
+	// For information about how to specify and consume your own Job arguments, see
+	// the [Calling Glue APIs in Python]topic in the developer guide.
+	//
+	// For information about the key-value pairs that Glue consumes to set up your
+	// job, see the [Special Parameters Used by Glue]topic in the developer guide.
+	//
+	// [Calling Glue APIs in Python]: https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html
+	// [Special Parameters Used by Glue]: https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html
 	Arguments map[string]string
 
 	// The name of the crawler to be used with this action.
@@ -33,9 +39,20 @@ type Action struct {
 	SecurityConfiguration *string
 
 	// The JobRun timeout in minutes. This is the maximum time that a job run can
-	// consume resources before it is terminated and enters TIMEOUT status. The
-	// default is 2,880 minutes (48 hours). This overrides the timeout value set in the
-	// parent job.
+	// consume resources before it is terminated and enters TIMEOUT status. This
+	// overrides the timeout value set in the parent job.
+	//
+	// Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the
+	// jobs will throw an exception.
+	//
+	// When the value is left blank, the timeout is defaulted to 2880 minutes.
+	//
+	// Any existing Glue jobs that had a timeout value greater than 7 days will be
+	// defaulted to 7 days. For instance if you have specified a timeout of 20 days for
+	// a batch job, it will be stopped on the 7th day.
+	//
+	// For streaming jobs, if you have set up a maintenance window, it will be
+	// restarted during the maintenance window after 7 days.
 	Timeout *int32
 
 	noSmithyDocumentSerde
@@ -72,9 +89,11 @@ type Aggregate struct {
 // transform.
 type AggregateOperation struct {
 
-	// Specifies the aggregation function to apply. Possible aggregation functions
-	// include: avg countDistinct, count, first, last, kurtosis, max, min, skewness,
-	// stddev_samp, stddev_pop, sum, sumDistinct, var_samp, var_pop
+	// Specifies the aggregation function to apply.
+	//
+	// Possible aggregation functions include: avg countDistinct, count, first, last,
+	// kurtosis, max, min, skewness, stddev_samp, stddev_pop, sum, sumDistinct,
+	// var_samp, var_pop
 	//
 	// This member is required.
 	AggFunc AggFunction
@@ -84,6 +103,20 @@ type AggregateOperation struct {
 	//
 	// This member is required.
 	Column []string
+
+	noSmithyDocumentSerde
+}
+
+// An object representing a value allowed for a property.
+type AllowedValue struct {
+
+	// The value allowed for the property.
+	//
+	// This member is required.
+	Value *string
+
+	// A description of the allowed value.
+	Description *string
 
 	noSmithyDocumentSerde
 }
@@ -221,6 +254,21 @@ type AmazonRedshiftTarget struct {
 	noSmithyDocumentSerde
 }
 
+// A failed annotation.
+type AnnotationError struct {
+
+	// The reason why the annotation failed.
+	FailureReason *string
+
+	// The Profile ID for the failed annotation.
+	ProfileId *string
+
+	// The Statistic ID for the failed annotation.
+	StatisticId *string
+
+	noSmithyDocumentSerde
+}
+
 // Specifies a transform that maps data property keys in the data source to data
 // property keys in the data target. You can rename keys, modify the data types for
 // keys, and choose which keys to drop from the dataset.
@@ -300,17 +348,111 @@ type AuditContext struct {
 	noSmithyDocumentSerde
 }
 
+// The authentication configuration for a connection returned by the
+// DescribeConnectionType API.
+type AuthConfiguration struct {
+
+	// The type of authentication for a connection.
+	//
+	// This member is required.
+	AuthenticationType *Property
+
+	// A map of key-value pairs for the OAuth2 properties. Each value is a a Property
+	// object.
+	BasicAuthenticationProperties map[string]Property
+
+	// A map of key-value pairs for the custom authentication properties. Each value
+	// is a a Property object.
+	CustomAuthenticationProperties map[string]Property
+
+	// A map of key-value pairs for the OAuth2 properties. Each value is a a Property
+	// object.
+	OAuth2Properties map[string]Property
+
+	// The Amazon Resource Name (ARN) for the Secrets Manager.
+	SecretArn *Property
+
+	noSmithyDocumentSerde
+}
+
+// A structure containing the authentication configuration.
+type AuthenticationConfiguration struct {
+
+	// A structure containing the authentication configuration.
+	AuthenticationType AuthenticationType
+
+	// The properties for OAuth2 authentication.
+	OAuth2Properties *OAuth2Properties
+
+	// The secret manager ARN to store credentials.
+	SecretArn *string
+
+	noSmithyDocumentSerde
+}
+
+// A structure containing the authentication configuration in the CreateConnection
+// request.
+type AuthenticationConfigurationInput struct {
+
+	// A structure containing the authentication configuration in the CreateConnection
+	// request.
+	AuthenticationType AuthenticationType
+
+	// The credentials used when the authentication type is basic authentication.
+	BasicAuthenticationCredentials *BasicAuthenticationCredentials
+
+	// The credentials used when the authentication type is custom authentication.
+	CustomAuthenticationCredentials map[string]string
+
+	// The ARN of the KMS key used to encrypt the connection. Only taken an as input
+	// in the request and stored in the Secret Manager.
+	KmsKeyArn *string
+
+	// The properties for OAuth2 authentication in the CreateConnection request.
+	OAuth2Properties *OAuth2PropertiesInput
+
+	// The secret manager ARN to store credentials in the CreateConnection request.
+	SecretArn *string
+
+	noSmithyDocumentSerde
+}
+
+// The set of properties required for the the OAuth2 AUTHORIZATION_CODE grant type
+// workflow.
+type AuthorizationCodeProperties struct {
+
+	// An authorization code to be used in the third leg of the AUTHORIZATION_CODE
+	// grant workflow. This is a single-use code which becomes invalid once exchanged
+	// for an access token, thus it is acceptable to have this value as a request
+	// parameter.
+	AuthorizationCode *string
+
+	// The redirect URI where the user gets redirected to by authorization server when
+	// issuing an authorization code. The URI is subsequently used when the
+	// authorization code is exchanged for an access token.
+	RedirectUri *string
+
+	noSmithyDocumentSerde
+}
+
 // A list of errors that can occur when registering partition indexes for an
-// existing table. These errors give the details about why an index registration
-// failed and provide a limited number of partitions in the response, so that you
-// can fix the partitions at fault and try registering the index again. The most
-// common set of errors that can occur are categorized as follows:
+// existing table.
+//
+// These errors give the details about why an index registration failed and
+// provide a limited number of partitions in the response, so that you can fix the
+// partitions at fault and try registering the index again. The most common set of
+// errors that can occur are categorized as follows:
+//
 //   - EncryptedPartitionError: The partitions are encrypted.
+//
 //   - InvalidPartitionTypeDataError: The partition value doesn't match the data
 //     type for that partition column.
+//
 //   - MissingPartitionValueError: The partitions are encrypted.
+//
 //   - UnsupportedPartitionCharacterError: Characters inside the partition value
 //     are not supported. For example: U+0000 , U+0001, U+0002.
+//
 //   - InternalError: Any error which does not belong to other error codes.
 type BackfillError struct {
 
@@ -320,6 +462,18 @@ type BackfillError struct {
 
 	// A list of a limited number of partitions in the response.
 	Partitions []PartitionValueList
+
+	noSmithyDocumentSerde
+}
+
+// For supplying basic auth credentials when not providing a SecretArn value.
+type BasicAuthenticationCredentials struct {
+
+	// The password to connect to the data source.
+	Password *string
+
+	// The username to connect to the data source.
+	Username *string
 
 	noSmithyDocumentSerde
 }
@@ -349,6 +503,51 @@ type BasicCatalogTarget struct {
 	// This member is required.
 	Table *string
 
+	// The partition keys used to distribute data across multiple partitions or shards
+	// based on a specific key or set of key.
+	PartitionKeys [][]string
+
+	noSmithyDocumentSerde
+}
+
+// Represents a table optimizer to retrieve in the BatchGetTableOptimizer
+// operation.
+type BatchGetTableOptimizerEntry struct {
+
+	// The Catalog ID of the table.
+	CatalogId *string
+
+	// The name of the database in the catalog in which the table resides.
+	DatabaseName *string
+
+	// The name of the table.
+	TableName *string
+
+	// The type of table optimizer.
+	Type TableOptimizerType
+
+	noSmithyDocumentSerde
+}
+
+// Contains details on one of the errors in the error list returned by the
+// BatchGetTableOptimizer operation.
+type BatchGetTableOptimizerError struct {
+
+	// The Catalog ID of the table.
+	CatalogId *string
+
+	// The name of the database in the catalog in which the table resides.
+	DatabaseName *string
+
+	// An ErrorDetail object containing code and message details about the error.
+	Error *ErrorDetail
+
+	// The name of the table.
+	TableName *string
+
+	// The type of table optimizer.
+	Type TableOptimizerType
+
 	noSmithyDocumentSerde
 }
 
@@ -375,6 +574,26 @@ type BatchStopJobRunSuccessfulSubmission struct {
 
 	// The JobRunId of the job run that was stopped.
 	JobRunId *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains details for one of the table optimizers returned by the
+// BatchGetTableOptimizer operation.
+type BatchTableOptimizer struct {
+
+	// The Catalog ID of the table.
+	CatalogId *string
+
+	// The name of the database in the catalog in which the table resides.
+	DatabaseName *string
+
+	// The name of the table.
+	TableName *string
+
+	// A TableOptimizer object that contains details on the configuration and last run
+	// of a table optimizer.
+	TableOptimizer *TableOptimizer
 
 	noSmithyDocumentSerde
 }
@@ -463,9 +682,13 @@ type Blueprint struct {
 	ParameterSpec *string
 
 	// The status of the blueprint registration.
+	//
 	//   - Creating — The blueprint registration is in progress.
+	//
 	//   - Active — The blueprint has been successfully registered.
+	//
 	//   - Updating — An update to the blueprint registration is in progress.
+	//
 	//   - Failed — The blueprint registration failed.
 	Status BlueprintStatus
 
@@ -517,9 +740,13 @@ type BlueprintRun struct {
 	StartedOn *time.Time
 
 	// The state of the blueprint run. Possible values are:
+	//
 	//   - Running — The blueprint run is in progress.
+	//
 	//   - Succeeded — The blueprint run completed successfully.
+	//
 	//   - Failed — The blueprint run failed and rollback is complete.
+	//
 	//   - Rolling Back — The blueprint run failed and rollback is in progress.
 	State BlueprintRunState
 
@@ -547,6 +774,85 @@ type BooleanColumnStatisticsData struct {
 	//
 	// This member is required.
 	NumberOfTrues int64
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the supported authentication types returned by the
+// DescribeConnectionType API.
+type Capabilities struct {
+
+	// A list of supported authentication types.
+	//
+	// This member is required.
+	SupportedAuthenticationTypes []AuthenticationType
+
+	// A list of supported compute environments.
+	//
+	// This member is required.
+	SupportedComputeEnvironments []ComputeEnvironment
+
+	// A list of supported data operations.
+	//
+	// This member is required.
+	SupportedDataOperations []DataOperation
+
+	noSmithyDocumentSerde
+}
+
+// The catalog object represents a logical grouping of databases in the Glue Data
+// Catalog or a federated source. You can now create a Redshift-federated catalog
+// or a catalog containing resource links to Redshift databases in another account
+// or region.
+type Catalog struct {
+
+	// The name of the catalog. Cannot be the same as the account ID.
+	//
+	// This member is required.
+	Name *string
+
+	// The ID of the catalog. To grant access to the default catalog, this field
+	// should not be provided.
+	CatalogId *string
+
+	// A CatalogProperties object that specifies data lake access properties and other
+	// custom properties.
+	CatalogProperties *CatalogPropertiesOutput
+
+	// An array of PrincipalPermissions objects. Creates a set of default permissions
+	// on the database(s) for principals. Used by Amazon Web Services Lake Formation.
+	// Not used in the normal course of Glue operations.
+	CreateDatabaseDefaultPermissions []PrincipalPermissions
+
+	// An array of PrincipalPermissions objects. Creates a set of default permissions
+	// on the table(s) for principals. Used by Amazon Web Services Lake Formation. Not
+	// used in the normal course of Glue operations.
+	CreateTableDefaultPermissions []PrincipalPermissions
+
+	// The time at which the catalog was created.
+	CreateTime *time.Time
+
+	// Description string, not more than 2048 bytes long, matching the URI address
+	// multi-line string pattern. A description of the catalog.
+	Description *string
+
+	// A FederatedCatalog object that points to an entity outside the Glue Data
+	// Catalog.
+	FederatedCatalog *FederatedCatalog
+
+	//  A map array of key-value pairs that define parameters and properties of the
+	// catalog.
+	Parameters map[string]string
+
+	// The Amazon Resource Name (ARN) assigned to the catalog resource.
+	ResourceArn *string
+
+	// A TargetRedshiftCatalog object that describes a target catalog for database
+	// resource linking.
+	TargetRedshiftCatalog *TargetRedshiftCatalog
+
+	// The time at which the catalog was last updated.
+	UpdateTime *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -636,6 +942,42 @@ type CatalogImportStatus struct {
 	noSmithyDocumentSerde
 }
 
+// A structure that describes catalog properties.
+type CatalogInput struct {
+
+	// A CatalogProperties object that specifies data lake access properties and other
+	// custom properties.
+	CatalogProperties *CatalogProperties
+
+	// An array of PrincipalPermissions objects. Creates a set of default permissions
+	// on the database(s) for principals. Used by Amazon Web Services Lake Formation.
+	// Typically should be explicitly set as an empty list.
+	CreateDatabaseDefaultPermissions []PrincipalPermissions
+
+	// An array of PrincipalPermissions objects. Creates a set of default permissions
+	// on the table(s) for principals. Used by Amazon Web Services Lake Formation.
+	// Typically should be explicitly set as an empty list.
+	CreateTableDefaultPermissions []PrincipalPermissions
+
+	// Description string, not more than 2048 bytes long, matching the URI address
+	// multi-line string pattern. A description of the catalog.
+	Description *string
+
+	// A FederatedCatalog object. A FederatedCatalog structure that references an
+	// entity outside the Glue Data Catalog, for example a Redshift database.
+	FederatedCatalog *FederatedCatalog
+
+	// A map array of key-value pairs that define the parameters and properties of the
+	// catalog.
+	Parameters map[string]string
+
+	// A TargetRedshiftCatalog object that describes a target catalog for resource
+	// linking.
+	TargetRedshiftCatalog *TargetRedshiftCatalog
+
+	noSmithyDocumentSerde
+}
+
 // Specifies an Apache Kafka data store in the Data Catalog.
 type CatalogKafkaSource struct {
 
@@ -698,6 +1040,36 @@ type CatalogKinesisSource struct {
 
 	// The amount of time to spend processing each micro batch.
 	WindowSize *int32
+
+	noSmithyDocumentSerde
+}
+
+// A structure that specifies data lake access properties and other custom
+// properties.
+type CatalogProperties struct {
+
+	// Additional key-value properties for the catalog, such as column statistics
+	// optimizations.
+	CustomProperties map[string]string
+
+	// A DataLakeAccessProperties object that specifies properties to configure data
+	// lake access for your catalog resource in the Glue Data Catalog.
+	DataLakeAccessProperties *DataLakeAccessProperties
+
+	noSmithyDocumentSerde
+}
+
+// Property attributes that include configuration properties for the catalog
+// resource.
+type CatalogPropertiesOutput struct {
+
+	// Additional key-value properties for the catalog, such as column statistics
+	// optimizations.
+	CustomProperties map[string]string
+
+	// A DataLakeAccessProperties object with input properties to configure data lake
+	// access for your catalog resource in the Glue Data Catalog.
+	DataLakeAccessProperties *DataLakeAccessPropertiesOutput
 
 	noSmithyDocumentSerde
 }
@@ -766,9 +1138,10 @@ type CatalogTarget struct {
 
 // Classifiers are triggered during a crawl task. A classifier checks whether a
 // given file is in a format it can handle. If it is, the classifier creates a
-// schema in the form of a StructType object that matches that data format. You
-// can use the standard classifiers that Glue provides, or you can write your own
-// classifiers to best categorize your data sources and specify the appropriate
+// schema in the form of a StructType object that matches that data format.
+//
+// You can use the standard classifiers that Glue provides, or you can write your
+// own classifiers to best categorize your data sources and specify the appropriate
 // schemas to use for them. A classifier can be a grok classifier, an XML
 // classifier, a JSON classifier, or a custom CSV classifier, as specified in one
 // of the fields in the Classifier object.
@@ -840,6 +1213,12 @@ type CodeGenConfigurationNode struct {
 
 	// Specifies a target that uses a Glue Data Catalog table.
 	CatalogTarget *BasicCatalogTarget
+
+	// Specifies a source generated with standard connection options.
+	ConnectorDataSource *ConnectorDataSource
+
+	// Specifies a target generated with standard connection options.
+	ConnectorDataTarget *ConnectorDataTarget
 
 	// Specifies a transform that uses custom code you provide to perform the data
 	// transformation. The output is a collection of DynamicFrames.
@@ -1136,9 +1515,10 @@ type ColumnError struct {
 }
 
 // A structure containing the column name and column importance score for a
-// column. Column importance helps you understand how columns contribute to your
-// model, by identifying which columns in your records are more important than
-// others.
+// column.
+//
+// Column importance helps you understand how columns contribute to your model, by
+// identifying which columns in your records are more important than others.
 type ColumnImportance struct {
 
 	// The name of a column.
@@ -1206,9 +1586,9 @@ type ColumnStatisticsData struct {
 	// Date column statistics data.
 	DateColumnStatisticsData *DateColumnStatisticsData
 
-	// Decimal column statistics data. UnscaledValues within are Base64-encoded binary
-	// objects storing big-endian, two's complement representations of the decimal's
-	// unscaled value.
+	//  Decimal column statistics data. UnscaledValues within are Base64-encoded
+	// binary objects storing big-endian, two's complement representations of the
+	// decimal's unscaled value.
 	DecimalColumnStatisticsData *DecimalColumnStatisticsData
 
 	// Double column statistics data.
@@ -1231,6 +1611,176 @@ type ColumnStatisticsError struct {
 
 	// An error message with the reason for the failure of an operation.
 	Error *ErrorDetail
+
+	noSmithyDocumentSerde
+}
+
+// The object that shows the details of the column stats run.
+type ColumnStatisticsTaskRun struct {
+
+	// The ID of the Data Catalog where the table resides. If none is supplied, the
+	// Amazon Web Services account ID is used by default.
+	CatalogID *string
+
+	// A list of the column names. If none is supplied, all column names for the table
+	// will be used by default.
+	ColumnNameList []string
+
+	// The identifier for the particular column statistics task run.
+	ColumnStatisticsTaskRunId *string
+
+	// The type of column statistics computation.
+	ComputationType ComputationType
+
+	// The time that this task was created.
+	CreationTime *time.Time
+
+	// The Amazon Web Services account ID.
+	CustomerId *string
+
+	// The calculated DPU usage in seconds for all autoscaled workers.
+	DPUSeconds float64
+
+	// The database where the table resides.
+	DatabaseName *string
+
+	// The end time of the task.
+	EndTime *time.Time
+
+	// The error message for the job.
+	ErrorMessage *string
+
+	// The last point in time when this task was modified.
+	LastUpdated *time.Time
+
+	// The number of workers used to generate column statistics. The job is
+	// preconfigured to autoscale up to 25 instances.
+	NumberOfWorkers int32
+
+	// The IAM role that the service assumes to generate statistics.
+	Role *string
+
+	// The percentage of rows used to generate statistics. If none is supplied, the
+	// entire table will be used to generate stats.
+	SampleSize float64
+
+	// Name of the security configuration that is used to encrypt CloudWatch logs for
+	// the column stats task run.
+	SecurityConfiguration *string
+
+	// The start time of the task.
+	StartTime *time.Time
+
+	// The status of the task run.
+	Status ColumnStatisticsState
+
+	// The name of the table for which column statistics is generated.
+	TableName *string
+
+	// The type of workers being used for generating stats. The default is g.1x .
+	WorkerType *string
+
+	noSmithyDocumentSerde
+}
+
+// The settings for a column statistics task.
+type ColumnStatisticsTaskSettings struct {
+
+	// The ID of the Data Catalog in which the database resides.
+	CatalogID *string
+
+	// A list of column names for which to run statistics.
+	ColumnNameList []string
+
+	// The name of the database where the table resides.
+	DatabaseName *string
+
+	// The last ExecutionAttempt for the column statistics task run.
+	LastExecutionAttempt *ExecutionAttempt
+
+	// The role used for running the column statistics.
+	Role *string
+
+	// The percentage of data to sample.
+	SampleSize float64
+
+	// A schedule for running the column statistics, specified in CRON syntax.
+	Schedule *Schedule
+
+	// The type of schedule for a column statistics task. Possible values may be CRON
+	// or AUTO .
+	ScheduleType ScheduleType
+
+	// Name of the security configuration that is used to encrypt CloudWatch logs.
+	SecurityConfiguration *string
+
+	// The source of setting the column statistics task. Possible values may be CATALOG
+	// or TABLE .
+	SettingSource SettingSource
+
+	// The name of the table for which to generate column statistics.
+	TableName *string
+
+	noSmithyDocumentSerde
+}
+
+// A structure that contains compaction metrics for the optimizer run.
+type CompactionMetrics struct {
+
+	// A structure containing the Iceberg compaction metrics for the optimizer run.
+	IcebergMetrics *IcebergCompactionMetrics
+
+	noSmithyDocumentSerde
+}
+
+// An object containing configuration for a compute environment (such as Spark,
+// Python or Athena) returned by the DescribeConnectionType API.
+type ComputeEnvironmentConfiguration struct {
+
+	// The type of compute environment.
+	//
+	// This member is required.
+	ComputeEnvironment ComputeEnvironment
+
+	// The connection option name overrides for the compute environment.
+	//
+	// This member is required.
+	ConnectionOptionNameOverrides map[string]string
+
+	// The parameters used as connection options for the compute environment.
+	//
+	// This member is required.
+	ConnectionOptions map[string]Property
+
+	// The connection properties that are required as overrides for the compute
+	// environment.
+	//
+	// This member is required.
+	ConnectionPropertiesRequiredOverrides []string
+
+	// The connection property name overrides for the compute environment.
+	//
+	// This member is required.
+	ConnectionPropertyNameOverrides map[string]string
+
+	// A description of the compute environment.
+	//
+	// This member is required.
+	Description *string
+
+	// A name for the compute environment configuration.
+	//
+	// This member is required.
+	Name *string
+
+	// The supported authentication types for the compute environment.
+	//
+	// This member is required.
+	SupportedAuthenticationTypes []AuthenticationType
+
+	// Indicates whether PhysicalConnectionProperties are required for the compute
+	// environment.
+	PhysicalConnectionPropertiesRequired *bool
 
 	noSmithyDocumentSerde
 }
@@ -1259,9 +1809,50 @@ type Condition struct {
 	noSmithyDocumentSerde
 }
 
+// Condition expression defined in the Glue Studio data preparation recipe node.
+type ConditionExpression struct {
+
+	// The condition of the condition expression.
+	//
+	// This member is required.
+	Condition *string
+
+	// The target column of the condition expressions.
+	//
+	// This member is required.
+	TargetColumn *string
+
+	// The value of the condition expression.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the values that an admin sets for each job or session parameter
+// configured in a Glue usage profile.
+type ConfigurationObject struct {
+
+	// A list of allowed values for the parameter.
+	AllowedValues []string
+
+	// A default value for the parameter.
+	DefaultValue *string
+
+	// A maximum allowed value for the parameter.
+	MaxValue *string
+
+	// A minimum allowed value for the parameter.
+	MinValue *string
+
+	noSmithyDocumentSerde
+}
+
 // The confusion matrix shows you what your transform is predicting accurately and
-// what types of errors it is making. For more information, see Confusion matrix (https://en.wikipedia.org/wiki/Confusion_matrix)
-// in Wikipedia.
+// what types of errors it is making.
+//
+// For more information, see [Confusion matrix] in Wikipedia.
+//
+// [Confusion matrix]: https://en.wikipedia.org/wiki/Confusion_matrix
 type ConfusionMatrix struct {
 
 	// The number of matches in the data that the transform didn't find, in the
@@ -1286,112 +1877,192 @@ type ConfusionMatrix struct {
 // Defines a connection to a data source.
 type Connection struct {
 
-	// These key-value pairs define parameters for the connection:
+	// Connection properties specific to the Athena compute environment.
+	AthenaProperties map[string]string
+
+	// The authentication properties of the connection.
+	AuthenticationConfiguration *AuthenticationConfiguration
+
+	// A list of compute environments compatible with the connection.
+	CompatibleComputeEnvironments []ComputeEnvironment
+
+	// These key-value pairs define parameters for the connection when using the
+	// version 1 Connection schema:
+	//
 	//   - HOST - The host URI: either the fully qualified domain name (FQDN) or the
 	//   IPv4 address of the database host.
+	//
 	//   - PORT - The port number, between 1024 and 65535, of the port on which the
 	//   database host is listening for database connections.
+	//
 	//   - USER_NAME - The name under which to log in to the database. The value string
 	//   for USER_NAME is " USERNAME ".
+	//
 	//   - PASSWORD - A password, if one is used, for the user name.
+	//
 	//   - ENCRYPTED_PASSWORD - When you enable connection password protection by
 	//   setting ConnectionPasswordEncryption in the Data Catalog encryption settings,
 	//   this field stores the encrypted password.
+	//
 	//   - JDBC_DRIVER_JAR_URI - The Amazon Simple Storage Service (Amazon S3) path of
 	//   the JAR file that contains the JDBC driver to use.
+	//
 	//   - JDBC_DRIVER_CLASS_NAME - The class name of the JDBC driver to use.
+	//
 	//   - JDBC_ENGINE - The name of the JDBC engine to use.
+	//
 	//   - JDBC_ENGINE_VERSION - The version of the JDBC engine to use.
+	//
 	//   - CONFIG_FILES - (Reserved for future use.)
+	//
 	//   - INSTANCE_ID - The instance ID to use.
+	//
 	//   - JDBC_CONNECTION_URL - The URL for connecting to a JDBC data source.
+	//
 	//   - JDBC_ENFORCE_SSL - A Boolean string (true, false) specifying whether Secure
 	//   Sockets Layer (SSL) with hostname matching is enforced for the JDBC connection
 	//   on the client. The default is false.
+	//
 	//   - CUSTOM_JDBC_CERT - An Amazon S3 location specifying the customer's root
 	//   certificate. Glue uses this root certificate to validate the customer’s
 	//   certificate when connecting to the customer database. Glue only handles X.509
 	//   certificates. The certificate provided must be DER-encoded and supplied in
 	//   Base64 encoding PEM format.
+	//
 	//   - SKIP_CUSTOM_JDBC_CERT_VALIDATION - By default, this is false . Glue
 	//   validates the Signature algorithm and Subject Public Key Algorithm for the
 	//   customer certificate. The only permitted algorithms for the Signature algorithm
 	//   are SHA256withRSA, SHA384withRSA or SHA512withRSA. For the Subject Public Key
 	//   Algorithm, the key length must be at least 2048. You can set the value of this
 	//   property to true to skip Glue’s validation of the customer certificate.
+	//
 	//   - CUSTOM_JDBC_CERT_STRING - A custom JDBC certificate string which is used for
 	//   domain match or distinguished name match to prevent a man-in-the-middle attack.
 	//   In Oracle database, this is used as the SSL_SERVER_CERT_DN ; in Microsoft SQL
 	//   Server, this is used as the hostNameInCertificate .
+	//
 	//   - CONNECTION_URL - The URL for connecting to a general (non-JDBC) data source.
+	//
 	//   - SECRET_ID - The secret ID used for the secret manager of credentials.
+	//
 	//   - CONNECTOR_URL - The connector URL for a MARKETPLACE or CUSTOM connection.
+	//
 	//   - CONNECTOR_TYPE - The connector type for a MARKETPLACE or CUSTOM connection.
+	//
 	//   - CONNECTOR_CLASS_NAME - The connector class name for a MARKETPLACE or CUSTOM
 	//   connection.
+	//
 	//   - KAFKA_BOOTSTRAP_SERVERS - A comma-separated list of host and port pairs that
 	//   are the addresses of the Apache Kafka brokers in a Kafka cluster to which a
 	//   Kafka client will connect to and bootstrap itself.
+	//
 	//   - KAFKA_SSL_ENABLED - Whether to enable or disable SSL on an Apache Kafka
 	//   connection. Default value is "true".
+	//
 	//   - KAFKA_CUSTOM_CERT - The Amazon S3 URL for the private CA cert file (.pem
 	//   format). The default is an empty string.
+	//
 	//   - KAFKA_SKIP_CUSTOM_CERT_VALIDATION - Whether to skip the validation of the CA
 	//   cert file or not. Glue validates for three algorithms: SHA256withRSA,
 	//   SHA384withRSA and SHA512withRSA. Default value is "false".
+	//
 	//   - KAFKA_CLIENT_KEYSTORE - The Amazon S3 location of the client keystore file
 	//   for Kafka client side authentication (Optional).
+	//
 	//   - KAFKA_CLIENT_KEYSTORE_PASSWORD - The password to access the provided
 	//   keystore (Optional).
+	//
 	//   - KAFKA_CLIENT_KEY_PASSWORD - A keystore can consist of multiple keys, so this
 	//   is the password to access the client key to be used with the Kafka server side
 	//   key (Optional).
+	//
 	//   - ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD - The encrypted version of the
 	//   Kafka client keystore password (if the user has the Glue encrypt passwords
 	//   setting selected).
+	//
 	//   - ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD - The encrypted version of the Kafka
 	//   client key password (if the user has the Glue encrypt passwords setting
 	//   selected).
-	//   - KAFKA_SASL_MECHANISM - "SCRAM-SHA-512" , "GSSAPI" , or "AWS_MSK_IAM" . These
-	//   are the supported SASL Mechanisms (https://www.iana.org/assignments/sasl-mechanisms/sasl-mechanisms.xhtml)
-	//   .
+	//
+	//   - KAFKA_SASL_MECHANISM - "SCRAM-SHA-512" , "GSSAPI" , "AWS_MSK_IAM" , or
+	//   "PLAIN" . These are the supported [SASL Mechanisms].
+	//
+	//   - KAFKA_SASL_PLAIN_USERNAME - A plaintext username used to authenticate with
+	//   the "PLAIN" mechanism.
+	//
+	//   - KAFKA_SASL_PLAIN_PASSWORD - A plaintext password used to authenticate with
+	//   the "PLAIN" mechanism.
+	//
+	//   - ENCRYPTED_KAFKA_SASL_PLAIN_PASSWORD - The encrypted version of the Kafka
+	//   SASL PLAIN password (if the user has the Glue encrypt passwords setting
+	//   selected).
+	//
 	//   - KAFKA_SASL_SCRAM_USERNAME - A plaintext username used to authenticate with
 	//   the "SCRAM-SHA-512" mechanism.
+	//
 	//   - KAFKA_SASL_SCRAM_PASSWORD - A plaintext password used to authenticate with
 	//   the "SCRAM-SHA-512" mechanism.
+	//
 	//   - ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD - The encrypted version of the Kafka
 	//   SASL SCRAM password (if the user has the Glue encrypt passwords setting
 	//   selected).
+	//
+	//   - KAFKA_SASL_SCRAM_SECRETS_ARN - The Amazon Resource Name of a secret in
+	//   Amazon Web Services Secrets Manager.
+	//
 	//   - KAFKA_SASL_GSSAPI_KEYTAB - The S3 location of a Kerberos keytab file. A
 	//   keytab stores long-term keys for one or more principals. For more information,
-	//   see MIT Kerberos Documentation: Keytab (https://web.mit.edu/kerberos/krb5-latest/doc/basic/keytab_def.html)
-	//   .
+	//   see [MIT Kerberos Documentation: Keytab].
+	//
 	//   - KAFKA_SASL_GSSAPI_KRB5_CONF - The S3 location of a Kerberos krb5.conf file.
 	//   A krb5.conf stores Kerberos configuration information, such as the location of
-	//   the KDC server. For more information, see MIT Kerberos Documentation:
-	//   krb5.conf (https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/krb5_conf.html)
-	//   .
+	//   the KDC server. For more information, see [MIT Kerberos Documentation: krb5.conf].
+	//
 	//   - KAFKA_SASL_GSSAPI_SERVICE - The Kerberos service name, as set with
-	//   sasl.kerberos.service.name in your Kafka Configuration (https://kafka.apache.org/documentation/#brokerconfigs_sasl.kerberos.service.name)
-	//   .
+	//   sasl.kerberos.service.name in your [Kafka Configuration].
+	//
 	//   - KAFKA_SASL_GSSAPI_PRINCIPAL - The name of the Kerberos princial used by
-	//   Glue. For more information, see Kafka Documentation: Configuring Kafka Brokers (https://kafka.apache.org/documentation/#security_sasl_kerberos_clientconfig)
-	//   .
+	//   Glue. For more information, see [Kafka Documentation: Configuring Kafka Brokers].
+	//
+	//   - ROLE_ARN - The role to be used for running queries.
+	//
+	//   - REGION - The Amazon Web Services Region where queries will be run.
+	//
+	//   - WORKGROUP_NAME - The name of an Amazon Redshift serverless workgroup or
+	//   Amazon Athena workgroup in which queries will run.
+	//
+	//   - CLUSTER_IDENTIFIER - The cluster identifier of an Amazon Redshift cluster in
+	//   which queries will run.
+	//
+	//   - DATABASE - The Amazon Redshift database that you are connecting to.
+	//
+	// [MIT Kerberos Documentation: Keytab]: https://web.mit.edu/kerberos/krb5-latest/doc/basic/keytab_def.html
+	// [SASL Mechanisms]: https://www.iana.org/assignments/sasl-mechanisms/sasl-mechanisms.xhtml
+	// [Kafka Documentation: Configuring Kafka Brokers]: https://kafka.apache.org/documentation/#security_sasl_kerberos_clientconfig
+	// [Kafka Configuration]: https://kafka.apache.org/documentation/#brokerconfigs_sasl.kerberos.service.name
+	// [MIT Kerberos Documentation: krb5.conf]: https://web.mit.edu/kerberos/krb5-1.12/doc/admin/conf_files/krb5_conf.html
 	ConnectionProperties map[string]string
+
+	// The version of the connection schema for this connection. Version 2 supports
+	// properties for specific compute environments.
+	ConnectionSchemaVersion *int32
 
 	// The type of the connection. Currently, SFTP is not supported.
 	ConnectionType ConnectionType
 
-	// The time that this connection definition was created.
+	// The timestamp of the time that this connection definition was created.
 	CreationTime *time.Time
 
 	// The description of the connection.
 	Description *string
 
+	// A timestamp of the time this connection was last validated.
+	LastConnectionValidationTime *time.Time
+
 	// The user, group, or role that last updated this connection definition.
 	LastUpdatedBy *string
 
-	// The last time that this connection definition was updated.
+	// The timestamp of the last time the connection definition was updated.
 	LastUpdatedTime *time.Time
 
 	// A list of criteria that can be used in selecting this connection.
@@ -1400,9 +2071,21 @@ type Connection struct {
 	// The name of the connection definition.
 	Name *string
 
-	// A map of physical connection requirements, such as virtual private cloud (VPC)
-	// and SecurityGroup , that are needed to make this connection successfully.
+	// The physical connection requirements, such as virtual private cloud (VPC) and
+	// SecurityGroup , that are needed to make this connection successfully.
 	PhysicalConnectionRequirements *PhysicalConnectionRequirements
+
+	// Connection properties specific to the Python compute environment.
+	PythonProperties map[string]string
+
+	// Connection properties specific to the Spark compute environment.
+	SparkProperties map[string]string
+
+	// The status of the connection. Can be one of: READY , IN_PROGRESS , or FAILED .
+	Status ConnectionStatus
+
+	// The reason for the connection status.
+	StatusReason *string
 
 	noSmithyDocumentSerde
 }
@@ -1416,64 +2099,154 @@ type ConnectionInput struct {
 	ConnectionProperties map[string]string
 
 	// The type of the connection. Currently, these types are supported:
+	//
 	//   - JDBC - Designates a connection to a database through Java Database
-	//   Connectivity (JDBC). JDBC Connections use the following ConnectionParameters.
+	//   Connectivity (JDBC).
+	//
+	// JDBC Connections use the following ConnectionParameters.
+	//
 	//   - Required: All of ( HOST , PORT , JDBC_ENGINE ) or JDBC_CONNECTION_URL .
+	//
 	//   - Required: All of ( USERNAME , PASSWORD ) or SECRET_ID .
+	//
 	//   - Optional: JDBC_ENFORCE_SSL , CUSTOM_JDBC_CERT , CUSTOM_JDBC_CERT_STRING ,
 	//   SKIP_CUSTOM_JDBC_CERT_VALIDATION . These parameters are used to configure SSL
 	//   with JDBC.
-	//   - KAFKA - Designates a connection to an Apache Kafka streaming platform. KAFKA
-	//   Connections use the following ConnectionParameters.
+	//
+	//   - KAFKA - Designates a connection to an Apache Kafka streaming platform.
+	//
+	// KAFKA Connections use the following ConnectionParameters.
+	//
 	//   - Required: KAFKA_BOOTSTRAP_SERVERS .
+	//
 	//   - Optional: KAFKA_SSL_ENABLED , KAFKA_CUSTOM_CERT ,
 	//   KAFKA_SKIP_CUSTOM_CERT_VALIDATION . These parameters are used to configure SSL
 	//   with KAFKA .
+	//
 	//   - Optional: KAFKA_CLIENT_KEYSTORE , KAFKA_CLIENT_KEYSTORE_PASSWORD ,
 	//   KAFKA_CLIENT_KEY_PASSWORD , ENCRYPTED_KAFKA_CLIENT_KEYSTORE_PASSWORD ,
 	//   ENCRYPTED_KAFKA_CLIENT_KEY_PASSWORD . These parameters are used to configure
 	//   TLS client configuration with SSL in KAFKA .
+	//
 	//   - Optional: KAFKA_SASL_MECHANISM . Can be specified as SCRAM-SHA-512 , GSSAPI
 	//   , or AWS_MSK_IAM .
+	//
 	//   - Optional: KAFKA_SASL_SCRAM_USERNAME , KAFKA_SASL_SCRAM_PASSWORD ,
 	//   ENCRYPTED_KAFKA_SASL_SCRAM_PASSWORD . These parameters are used to configure
 	//   SASL/SCRAM-SHA-512 authentication with KAFKA .
+	//
 	//   - Optional: KAFKA_SASL_GSSAPI_KEYTAB , KAFKA_SASL_GSSAPI_KRB5_CONF ,
 	//   KAFKA_SASL_GSSAPI_SERVICE , KAFKA_SASL_GSSAPI_PRINCIPAL . These parameters are
 	//   used to configure SASL/GSSAPI authentication with KAFKA .
-	//   - MONGODB - Designates a connection to a MongoDB document database. MONGODB
-	//   Connections use the following ConnectionParameters.
+	//
+	//   - MONGODB - Designates a connection to a MongoDB document database.
+	//
+	// MONGODB Connections use the following ConnectionParameters.
+	//
 	//   - Required: CONNECTION_URL .
+	//
 	//   - Required: All of ( USERNAME , PASSWORD ) or SECRET_ID .
+	//
+	//   - VIEW_VALIDATION_REDSHIFT - Designates a connection used for view validation
+	//   by Amazon Redshift.
+	//
+	//   - VIEW_VALIDATION_ATHENA - Designates a connection used for view validation by
+	//   Amazon Athena.
+	//
 	//   - NETWORK - Designates a network connection to a data source within an Amazon
-	//   Virtual Private Cloud environment (Amazon VPC). NETWORK Connections do not
-	//   require ConnectionParameters. Instead, provide a PhysicalConnectionRequirements.
+	//   Virtual Private Cloud environment (Amazon VPC).
+	//
+	// NETWORK Connections do not require ConnectionParameters. Instead, provide a
+	//   PhysicalConnectionRequirements.
 	//
 	//   - MARKETPLACE - Uses configuration settings contained in a connector purchased
 	//   from Amazon Web Services Marketplace to read from and write to data stores that
-	//   are not natively supported by Glue. MARKETPLACE Connections use the following
-	//   ConnectionParameters.
+	//   are not natively supported by Glue.
+	//
+	// MARKETPLACE Connections use the following ConnectionParameters.
+	//
 	//   - Required: CONNECTOR_TYPE , CONNECTOR_URL , CONNECTOR_CLASS_NAME ,
 	//   CONNECTION_URL .
+	//
 	//   - Required for JDBC CONNECTOR_TYPE connections: All of ( USERNAME , PASSWORD )
 	//   or SECRET_ID .
+	//
 	//   - CUSTOM - Uses configuration settings contained in a custom connector to read
 	//   from and write to data stores that are not natively supported by Glue.
-	// SFTP is not supported. For more information about how optional
-	// ConnectionProperties are used to configure features in Glue, consult Glue
-	// connection properties (https://docs.aws.amazon.com/glue/latest/dg/connection-defining.html)
-	// . For more information about how optional ConnectionProperties are used to
-	// configure features in Glue Studio, consult Using connectors and connections (https://docs.aws.amazon.com/glue/latest/ug/connectors-chapter.html)
-	// .
+	//
+	// Additionally, a ConnectionType for the following SaaS connectors is supported:
+	//
+	//   - FACEBOOKADS - Designates a connection to Facebook Ads.
+	//
+	//   - GOOGLEADS - Designates a connection to Google Ads.
+	//
+	//   - GOOGLESHEETS - Designates a connection to Google Sheets.
+	//
+	//   - GOOGLEANALYTICS4 - Designates a connection to Google Analytics 4.
+	//
+	//   - HUBSPOT - Designates a connection to HubSpot.
+	//
+	//   - INSTAGRAMADS - Designates a connection to Instagram Ads.
+	//
+	//   - INTERCOM - Designates a connection to Intercom.
+	//
+	//   - JIRACLOUD - Designates a connection to Jira Cloud.
+	//
+	//   - MARKETO - Designates a connection to Adobe Marketo Engage.
+	//
+	//   - NETSUITEERP - Designates a connection to Oracle NetSuite.
+	//
+	//   - SALESFORCE - Designates a connection to Salesforce using OAuth
+	//   authentication.
+	//
+	//   - SALESFORCEMARKETINGCLOUD - Designates a connection to Salesforce Marketing
+	//   Cloud.
+	//
+	//   - SALESFORCEPARDOT - Designates a connection to Salesforce Marketing Cloud
+	//   Account Engagement (MCAE).
+	//
+	//   - SAPODATA - Designates a connection to SAP OData.
+	//
+	//   - SERVICENOW - Designates a connection to ServiceNow.
+	//
+	//   - SLACK - Designates a connection to Slack.
+	//
+	//   - SNAPCHATADS - Designates a connection to Snapchat Ads.
+	//
+	//   - STRIPE - Designates a connection to Stripe.
+	//
+	//   - ZENDESK - Designates a connection to Zendesk.
+	//
+	//   - ZOHOCRM - Designates a connection to Zoho CRM.
+	//
+	// For more information on the connection parameters needed for a particular
+	// connector, see the documentation for the connector in [Adding an Glue connection]in the Glue User Guide.
+	//
+	// SFTP is not supported.
+	//
+	// For more information about how optional ConnectionProperties are used to
+	// configure features in Glue, consult [Glue connection properties].
+	//
+	// For more information about how optional ConnectionProperties are used to
+	// configure features in Glue Studio, consult [Using connectors and connections].
+	//
+	// [Glue connection properties]: https://docs.aws.amazon.com/glue/latest/dg/connection-defining.html
+	// [Using connectors and connections]: https://docs.aws.amazon.com/glue/latest/ug/connectors-chapter.html
+	// [Adding an Glue connection]: https://docs.aws.amazon.com/glue/latest/dg/console-connections.html
 	//
 	// This member is required.
 	ConnectionType ConnectionType
 
-	// The name of the connection. Connection will not function as expected without a
-	// name.
+	// The name of the connection.
 	//
 	// This member is required.
 	Name *string
+
+	// Connection properties specific to the Athena compute environment.
+	AthenaProperties map[string]string
+
+	// The authentication properties of the connection.
+	AuthenticationConfiguration *AuthenticationConfigurationInput
 
 	// The description of the connection.
 	Description *string
@@ -1481,9 +2254,22 @@ type ConnectionInput struct {
 	// A list of criteria that can be used in selecting this connection.
 	MatchCriteria []string
 
-	// A map of physical connection requirements, such as virtual private cloud (VPC)
-	// and SecurityGroup , that are needed to successfully make this connection.
+	// The physical connection requirements, such as virtual private cloud (VPC) and
+	// SecurityGroup , that are needed to successfully make this connection.
 	PhysicalConnectionRequirements *PhysicalConnectionRequirements
+
+	// Connection properties specific to the Python compute environment.
+	PythonProperties map[string]string
+
+	// Connection properties specific to the Spark compute environment.
+	SparkProperties map[string]string
+
+	// A flag to validate the credentials during create connection. Default is true.
+	ValidateCredentials bool
+
+	// The compute environments that the specified connection properties are validated
+	// against.
+	ValidateForComputeEnvironments []ComputeEnvironment
 
 	noSmithyDocumentSerde
 }
@@ -1491,13 +2277,16 @@ type ConnectionInput struct {
 // The data structure used by the Data Catalog to encrypt the password as part of
 // CreateConnection or UpdateConnection and store it in the ENCRYPTED_PASSWORD
 // field in the connection properties. You can enable catalog encryption or only
-// password encryption. When a CreationConnection request arrives containing a
-// password, the Data Catalog first encrypts the password using your KMS key. It
-// then encrypts the whole connection object again if catalog encryption is also
-// enabled. This encryption requires that you set KMS key permissions to enable or
-// restrict access on the password key according to your security requirements. For
-// example, you might want only administrators to have decrypt permission on the
-// password key.
+// password encryption.
+//
+// When a CreationConnection request arrives containing a password, the Data
+// Catalog first encrypts the password using your KMS key. It then encrypts the
+// whole connection object again if catalog encryption is also enabled.
+//
+// This encryption requires that you set KMS key permissions to enable or restrict
+// access on the password key according to your security requirements. For example,
+// you might want only administrators to have decrypt permission on the password
+// key.
 type ConnectionPasswordEncryption struct {
 
 	// When the ReturnConnectionPasswordEncrypted flag is set to "true", passwords
@@ -1507,12 +2296,14 @@ type ConnectionPasswordEncryption struct {
 	// This member is required.
 	ReturnConnectionPasswordEncrypted bool
 
-	// An KMS key that is used to encrypt the connection password. If connection
-	// password protection is enabled, the caller of CreateConnection and
-	// UpdateConnection needs at least kms:Encrypt permission on the specified KMS
-	// key, to encrypt passwords before storing them in the Data Catalog. You can set
-	// the decrypt permission to enable or restrict access on the password key
-	// according to your security requirements.
+	// An KMS key that is used to encrypt the connection password.
+	//
+	// If connection password protection is enabled, the caller of CreateConnection
+	// and UpdateConnection needs at least kms:Encrypt permission on the specified KMS
+	// key, to encrypt passwords before storing them in the Data Catalog.
+	//
+	// You can set the decrypt permission to enable or restrict access on the password
+	// key according to your security requirements.
 	AwsKmsKeyId *string
 
 	noSmithyDocumentSerde
@@ -1523,6 +2314,109 @@ type ConnectionsList struct {
 
 	// A list of connections used by the job.
 	Connections []string
+
+	noSmithyDocumentSerde
+}
+
+// Brief information about a supported connection type returned by the
+// ListConnectionTypes API.
+type ConnectionTypeBrief struct {
+
+	// The supported authentication types, data interface types (compute
+	// environments), and data operations of the connector.
+	Capabilities *Capabilities
+
+	// The name of the connection type.
+	ConnectionType ConnectionType
+
+	// A description of the connection type.
+	Description *string
+
+	noSmithyDocumentSerde
+}
+
+// Specifies a source generated with standard connection options.
+type ConnectorDataSource struct {
+
+	// The connectionType , as provided to the underlying Glue library. This node type
+	// supports the following connection types:
+	//
+	//   - opensearch
+	//
+	//   - azuresql
+	//
+	//   - azurecosmos
+	//
+	//   - bigquery
+	//
+	//   - saphana
+	//
+	//   - teradata
+	//
+	//   - vertica
+	//
+	// This member is required.
+	ConnectionType *string
+
+	// A map specifying connection options for the node. You can find standard
+	// connection options for the corresponding connection type in the [Connection parameters]section of the
+	// Glue documentation.
+	//
+	// [Connection parameters]: https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-connect.html
+	//
+	// This member is required.
+	Data map[string]string
+
+	// The name of this source node.
+	//
+	// This member is required.
+	Name *string
+
+	// Specifies the data schema for this source.
+	OutputSchemas []GlueSchema
+
+	noSmithyDocumentSerde
+}
+
+// Specifies a target generated with standard connection options.
+type ConnectorDataTarget struct {
+
+	// The connectionType , as provided to the underlying Glue library. This node type
+	// supports the following connection types:
+	//
+	//   - opensearch
+	//
+	//   - azuresql
+	//
+	//   - azurecosmos
+	//
+	//   - bigquery
+	//
+	//   - saphana
+	//
+	//   - teradata
+	//
+	//   - vertica
+	//
+	// This member is required.
+	ConnectionType *string
+
+	// A map specifying connection options for the node. You can find standard
+	// connection options for the corresponding connection type in the [Connection parameters]section of the
+	// Glue documentation.
+	//
+	// [Connection parameters]: https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-connect.html
+	//
+	// This member is required.
+	Data map[string]string
+
+	// The name of this target node.
+	//
+	// This member is required.
+	Name *string
+
+	// The nodes that are inputs to the data target.
+	Inputs []string
 
 	noSmithyDocumentSerde
 }
@@ -1561,9 +2455,9 @@ type Crawler struct {
 	Classifiers []string
 
 	// Crawler configuration information. This versioned JSON string allows users to
-	// specify aspects of a crawler's behavior. For more information, see Setting
-	// crawler configuration options (https://docs.aws.amazon.com/glue/latest/dg/crawler-configuration.html)
-	// .
+	// specify aspects of a crawler's behavior. For more information, see [Setting crawler configuration options].
+	//
+	// [Setting crawler configuration options]: https://docs.aws.amazon.com/glue/latest/dg/crawler-configuration.html
 	Configuration *string
 
 	// If the crawler is running, contains the total time elapsed since the last crawl
@@ -1741,22 +2635,31 @@ type CrawlsFilter struct {
 
 	// A key used to filter the crawler runs for a specified crawler. Valid values for
 	// each of the field names are:
+	//
 	//   - CRAWL_ID : A string representing the UUID identifier for a crawl.
+	//
 	//   - STATE : A string representing the state of the crawl.
+	//
 	//   - START_TIME and END_TIME : The epoch timestamp in milliseconds.
-	//   - DPU_HOUR : The number of data processing unit (DPU) hours used for the
-	//   crawl.
+	//
+	//   - DPU_HOUR : The number of data processing unit (DPU) hours used for the crawl.
 	FieldName FieldName
 
 	// The value provided for comparison on the crawl field.
 	FieldValue *string
 
 	// A defined comparator that operates on the value. The available operators are:
+	//
 	//   - GT : Greater than.
+	//
 	//   - GE : Greater than or equal to.
+	//
 	//   - LT : Less than.
+	//
 	//   - LE : Less than or equal to.
+	//
 	//   - EQ : Equal to.
+	//
 	//   - NE : Not equal to.
 	FilterOperator FilterOperator
 
@@ -1797,6 +2700,11 @@ type CreateCsvClassifierRequest struct {
 	// Must be different from the column delimiter.
 	QuoteSymbol *string
 
+	// Sets the SerDe for processing CSV in the classifier, which will be applied in
+	// the Data Catalog. Valid values are OpenCSVSerDe , LazySimpleSerDe , and None .
+	// You can specify the None value when you want the crawler to do the detection.
+	Serde CsvSerdeOption
+
 	noSmithyDocumentSerde
 }
 
@@ -1829,9 +2737,9 @@ type CreateGrokClassifierRequest struct {
 type CreateJsonClassifierRequest struct {
 
 	// A JsonPath string defining the JSON data for the classifier to classify. Glue
-	// supports a subset of JsonPath, as described in Writing JsonPath Custom
-	// Classifiers (https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html#custom-classifier-json)
-	// .
+	// supports a subset of JsonPath, as described in [Writing JsonPath Custom Classifiers].
+	//
+	// [Writing JsonPath Custom Classifiers]: https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html#custom-classifier-json
 	//
 	// This member is required.
 	JsonPath *string
@@ -1907,6 +2815,11 @@ type CsvClassifier struct {
 	// must be different from the column delimiter.
 	QuoteSymbol *string
 
+	// Sets the SerDe for processing CSV in the classifier, which will be applied in
+	// the Data Catalog. Valid values are OpenCSVSerDe , LazySimpleSerDe , and None .
+	// You can specify the None value when you want the crawler to do the detection.
+	Serde CsvSerdeOption
+
 	// The version of this classifier.
 	Version int64
 
@@ -1961,7 +2874,9 @@ type CustomEntityType struct {
 
 	// A list of context words. If none of these context words are found within the
 	// vicinity of the regular expression the data will not be detected as sensitive
-	// data. If no context words are passed only a regular expression is checked.
+	// data.
+	//
+	// If no context words are passed only a regular expression is checked.
 	ContextWords []string
 
 	noSmithyDocumentSerde
@@ -2045,8 +2960,9 @@ type DatabaseInput struct {
 	// The location of the database (for example, an HDFS path).
 	LocationUri *string
 
-	// These key-value pairs define parameters and properties of the database. These
-	// key-value pairs define parameters and properties of the database.
+	// These key-value pairs define parameters and properties of the database.
+	//
+	// These key-value pairs define parameters and properties of the database.
 	Parameters map[string]string
 
 	// A DatabaseIdentifier structure that describes a target database for resource
@@ -2071,11 +2987,122 @@ type DataCatalogEncryptionSettings struct {
 	noSmithyDocumentSerde
 }
 
+// Input properties to configure data lake access for your catalog resource in the
+// Glue Data Catalog.
+type DataLakeAccessProperties struct {
+
+	// Specifies a federated catalog type for the native catalog resource. The
+	// currently supported type is aws:redshift .
+	CatalogType *string
+
+	// Turns on or off data lake access for Apache Spark applications that access
+	// Amazon Redshift databases in the Data Catalog from any non-Redshift engine, such
+	// as Amazon Athena, Amazon EMR, or Glue ETL.
+	DataLakeAccess bool
+
+	// A role that will be assumed by Glue for transferring data into/out of the
+	// staging bucket during a query.
+	DataTransferRole *string
+
+	// An encryption key that will be used for the staging bucket that will be created
+	// along with the catalog.
+	KmsKey *string
+
+	noSmithyDocumentSerde
+}
+
+// The output properties of the data lake access configuration for your catalog
+// resource in the Glue Data Catalog.
+type DataLakeAccessPropertiesOutput struct {
+
+	// Specifies a federated catalog type for the native catalog resource. The
+	// currently supported type is aws:redshift .
+	CatalogType *string
+
+	// Turns on or off data lake access for Apache Spark applications that access
+	// Amazon Redshift databases in the Data Catalog.
+	DataLakeAccess bool
+
+	// A role that will be assumed by Glue for transferring data into/out of the
+	// staging bucket during a query.
+	DataTransferRole *string
+
+	// An encryption key that will be used for the staging bucket that will be created
+	// along with the catalog.
+	KmsKey *string
+
+	// The managed Redshift Serverless compute name that is created for your catalog
+	// resource.
+	ManagedWorkgroupName *string
+
+	// The managed Redshift Serverless compute status.
+	ManagedWorkgroupStatus *string
+
+	// The default Redshift database resource name in the managed compute.
+	RedshiftDatabaseName *string
+
+	// A message that gives more detailed information about the managed workgroup
+	// status.
+	StatusMessage *string
+
+	noSmithyDocumentSerde
+}
+
 // The Lake Formation principal.
 type DataLakePrincipal struct {
 
 	// An identifier for the Lake Formation principal.
 	DataLakePrincipalIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// An Inclusion Annotation.
+type DatapointInclusionAnnotation struct {
+
+	// The inclusion annotation value to apply to the statistic.
+	InclusionAnnotation InclusionAnnotationValue
+
+	// The ID of the data quality profile the statistic belongs to.
+	ProfileId *string
+
+	// The Statistic ID.
+	StatisticId *string
+
+	noSmithyDocumentSerde
+}
+
+// Describes the result of the evaluation of a data quality analyzer.
+type DataQualityAnalyzerResult struct {
+
+	// A description of the data quality analyzer.
+	Description *string
+
+	// A map of metrics associated with the evaluation of the analyzer.
+	EvaluatedMetrics map[string]float64
+
+	// An evaluation message.
+	EvaluationMessage *string
+
+	// The name of the data quality analyzer.
+	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// Specifies how Data Quality assets in your account should be encrypted.
+type DataQualityEncryption struct {
+
+	// The encryption mode to use for encrypting Data Quality assets. These assets
+	// include data quality rulesets, results, statistics, anomaly detection models and
+	// observations.
+	//
+	// Valid values are SSEKMS for encryption using a customer-managed KMS key, or
+	// DISABLED .
+	DataQualityEncryptionMode DataQualityEncryptionMode
+
+	// The Amazon Resource Name (ARN) of the KMS key to be used to encrypt the data.
+	KmsKeyArn *string
 
 	noSmithyDocumentSerde
 }
@@ -2086,14 +3113,56 @@ type DataQualityEvaluationRunAdditionalRunOptions struct {
 	// Whether or not to enable CloudWatch metrics.
 	CloudWatchMetricsEnabled *bool
 
+	// Set the evaluation method for composite rules in the ruleset to ROW/COLUMN
+	CompositeRuleEvaluationMethod DQCompositeRuleEvaluationMethod
+
 	// Prefix for Amazon S3 to store results.
 	ResultsS3Prefix *string
 
 	noSmithyDocumentSerde
 }
 
+// Describes the data quality metric value according to the analysis of historical
+// data.
+type DataQualityMetricValues struct {
+
+	// The actual value of the data quality metric.
+	ActualValue *float64
+
+	// The expected value of the data quality metric according to the analysis of
+	// historical data.
+	ExpectedValue *float64
+
+	// The lower limit of the data quality metric value according to the analysis of
+	// historical data.
+	LowerLimit *float64
+
+	// The upper limit of the data quality metric value according to the analysis of
+	// historical data.
+	UpperLimit *float64
+
+	noSmithyDocumentSerde
+}
+
+// Describes the observation generated after evaluating the rules and analyzers.
+type DataQualityObservation struct {
+
+	// A description of the data quality observation.
+	Description *string
+
+	// An object of type MetricBasedObservation representing the observation that is
+	// based on evaluated data quality metrics.
+	MetricBasedObservation *MetricBasedObservation
+
+	noSmithyDocumentSerde
+}
+
 // Describes a data quality result.
 type DataQualityResult struct {
+
+	// A list of DataQualityAnalyzerResult objects representing the results for each
+	// analyzer.
+	AnalyzerResults []DataQualityAnalyzerResult
 
 	// The date and time when this data quality run completed.
 	CompletedOn *time.Time
@@ -2111,6 +3180,13 @@ type DataQualityResult struct {
 
 	// The job run ID associated with the data quality result, if any.
 	JobRunId *string
+
+	// A list of DataQualityObservation objects representing the observations
+	// generated after evaluating the rules and analyzers.
+	Observations []DataQualityObservation
+
+	// The Profile ID for the data quality result.
+	ProfileId *string
 
 	// A unique result ID for the data quality result.
 	ResultId *string
@@ -2220,6 +3296,9 @@ type DataQualityRuleResult struct {
 
 	// A map of metrics associated with the evaluation of the rule.
 	EvaluatedMetrics map[string]float64
+
+	// The evaluated rule.
+	EvaluatedRule *string
 
 	// An evaluation message.
 	EvaluationMessage *string
@@ -2452,8 +3531,12 @@ type DeltaTarget struct {
 // and load (ETL) scripts.
 type DevEndpoint struct {
 
-	// A map of arguments used to configure the DevEndpoint . Valid arguments are:
+	// A map of arguments used to configure the DevEndpoint .
+	//
+	// Valid arguments are:
+	//
 	//   - "--enable-glue-datacatalog": ""
+	//
 	// You can specify a version of Python support for development endpoints by using
 	// the Arguments parameter in the CreateDevEndpoint or UpdateDevEndpoint APIs. If
 	// no arguments are provided, the version defaults to Python 2.
@@ -2469,15 +3552,20 @@ type DevEndpoint struct {
 	EndpointName *string
 
 	// The path to one or more Java .jar files in an S3 bucket that should be loaded
-	// in your DevEndpoint . You can only use pure Java/Scala libraries with a
-	// DevEndpoint .
+	// in your DevEndpoint .
+	//
+	// You can only use pure Java/Scala libraries with a DevEndpoint .
 	ExtraJarsS3Path *string
 
 	// The paths to one or more Python libraries in an Amazon S3 bucket that should be
 	// loaded in your DevEndpoint . Multiple values must be complete paths separated by
-	// a comma. You can only use pure Python libraries with a DevEndpoint . Libraries
-	// that rely on C extensions, such as the pandas (http://pandas.pydata.org/)
-	// Python data analysis library, are not currently supported.
+	// a comma.
+	//
+	// You can only use pure Python libraries with a DevEndpoint . Libraries that rely
+	// on C extensions, such as the [pandas]Python data analysis library, are not currently
+	// supported.
+	//
+	// [pandas]: http://pandas.pydata.org/
 	ExtraPythonLibsS3Path *string
 
 	// The reason for a current failure in this DevEndpoint .
@@ -2485,13 +3573,19 @@ type DevEndpoint struct {
 
 	// Glue version determines the versions of Apache Spark and Python that Glue
 	// supports. The Python version indicates the version supported for running your
-	// ETL scripts on development endpoints. For more information about the available
-	// Glue versions and corresponding Spark and Python versions, see Glue version (https://docs.aws.amazon.com/glue/latest/dg/add-job.html)
-	// in the developer guide. Development endpoints that are created without
-	// specifying a Glue version default to Glue 0.9. You can specify a version of
-	// Python support for development endpoints by using the Arguments parameter in
-	// the CreateDevEndpoint or UpdateDevEndpoint APIs. If no arguments are provided,
-	// the version defaults to Python 2.
+	// ETL scripts on development endpoints.
+	//
+	// For more information about the available Glue versions and corresponding Spark
+	// and Python versions, see [Glue version]in the developer guide.
+	//
+	// Development endpoints that are created without specifying a Glue version
+	// default to Glue 0.9.
+	//
+	// You can specify a version of Python support for development endpoints by using
+	// the Arguments parameter in the CreateDevEndpoint or UpdateDevEndpoint APIs. If
+	// no arguments are provided, the version defaults to Python 2.
+	//
+	// [Glue version]: https://docs.aws.amazon.com/glue/latest/dg/add-job.html
 	GlueVersion *string
 
 	// The point in time at which this DevEndpoint was last modified.
@@ -2504,8 +3598,10 @@ type DevEndpoint struct {
 	NumberOfNodes int32
 
 	// The number of workers of a defined workerType that are allocated to the
-	// development endpoint. The maximum number of workers you can define are 299 for
-	// G.1X , and 149 for G.2X .
+	// development endpoint.
+	//
+	// The maximum number of workers you can define are 299 for G.1X , and 149 for G.2X
+	// .
 	NumberOfWorkers *int32
 
 	// A private IP address to access the DevEndpoint within a VPC if the DevEndpoint
@@ -2524,11 +3620,12 @@ type DevEndpoint struct {
 
 	// A list of public keys to be used by the DevEndpoints for authentication. Using
 	// this attribute is preferred over a single public key because the public keys
-	// allow you to have a different private key per client. If you previously created
-	// an endpoint with a public key, you must remove that key to be able to set a list
-	// of public keys. Call the UpdateDevEndpoint API operation with the public key
-	// content in the deletePublicKeys attribute, and the list of new keys in the
-	// addPublicKeys attribute.
+	// allow you to have a different private key per client.
+	//
+	// If you previously created an endpoint with a public key, you must remove that
+	// key to be able to set a list of public keys. Call the UpdateDevEndpoint API
+	// operation with the public key content in the deletePublicKeys attribute, and
+	// the list of new keys in the addPublicKeys attribute.
 	PublicKeys []string
 
 	// The Amazon Resource Name (ARN) of the IAM role used in this DevEndpoint .
@@ -2552,14 +3649,18 @@ type DevEndpoint struct {
 
 	// The type of predefined worker that is allocated to the development endpoint.
 	// Accepts a value of Standard, G.1X, or G.2X.
+	//
 	//   - For the Standard worker type, each worker provides 4 vCPU, 16 GB of memory
 	//   and a 50GB disk, and 2 executors per worker.
+	//
 	//   - For the G.1X worker type, each worker maps to 1 DPU (4 vCPU, 16 GB of
 	//   memory, 64 GB disk), and provides 1 executor per worker. We recommend this
 	//   worker type for memory-intensive jobs.
+	//
 	//   - For the G.2X worker type, each worker maps to 2 DPU (8 vCPU, 32 GB of
 	//   memory, 128 GB disk), and provides 1 executor per worker. We recommend this
 	//   worker type for memory-intensive jobs.
+	//
 	// Known issue: when a development endpoint is created with the G.2X WorkerType
 	// configuration, the Spark drivers for the development endpoint will run on 4
 	// vCPU, 16 GB of memory, and a 64 GB disk.
@@ -2578,16 +3679,20 @@ type DevEndpoint struct {
 type DevEndpointCustomLibraries struct {
 
 	// The path to one or more Java .jar files in an S3 bucket that should be loaded
-	// in your DevEndpoint . You can only use pure Java/Scala libraries with a
-	// DevEndpoint .
+	// in your DevEndpoint .
+	//
+	// You can only use pure Java/Scala libraries with a DevEndpoint .
 	ExtraJarsS3Path *string
 
 	// The paths to one or more Python libraries in an Amazon Simple Storage Service
 	// (Amazon S3) bucket that should be loaded in your DevEndpoint . Multiple values
-	// must be complete paths separated by a comma. You can only use pure Python
-	// libraries with a DevEndpoint . Libraries that rely on C extensions, such as the
-	// pandas (http://pandas.pydata.org/) Python data analysis library, are not
-	// currently supported.
+	// must be complete paths separated by a comma.
+	//
+	// You can only use pure Python libraries with a DevEndpoint . Libraries that rely
+	// on C extensions, such as the [pandas]Python data analysis library, are not currently
+	// supported.
+	//
+	// [pandas]: http://pandas.pydata.org/
 	ExtraPythonLibsS3Path *string
 
 	noSmithyDocumentSerde
@@ -2805,8 +3910,10 @@ type DropNullFields struct {
 
 	// A structure that specifies a list of NullValueField structures that represent a
 	// custom null value such as zero or other value being used as a null placeholder
-	// unique to the dataset. The DropNullFields transform removes custom null values
-	// only if both the value of the null placeholder and the datatype match the data.
+	// unique to the dataset.
+	//
+	// The DropNullFields transform removes custom null values only if both the value
+	// of the null placeholder and the datatype match the data.
 	NullTextList []NullValueField
 
 	noSmithyDocumentSerde
@@ -2882,18 +3989,21 @@ type DynamoDBTarget struct {
 
 	// Indicates whether to scan all the records, or to sample rows from the table.
 	// Scanning all the records can take a long time when the table is not a high
-	// throughput table. A value of true means to scan all records, while a value of
-	// false means to sample the records. If no value is specified, the value defaults
-	// to true .
+	// throughput table.
+	//
+	// A value of true means to scan all records, while a value of false means to
+	// sample the records. If no value is specified, the value defaults to true .
 	ScanAll *bool
 
 	// The percentage of the configured read capacity units to use by the Glue
 	// crawler. Read capacity units is a term defined by DynamoDB, and is a numeric
 	// value that acts as rate limiter for the number of reads that can be performed on
-	// that table per second. The valid values are null or a value between 0.1 to 1.5.
-	// A null value is used when user does not provide a value, and defaults to 0.5 of
-	// the configured Read Capacity Unit (for provisioned tables), or 0.25 of the max
-	// configured Read Capacity Unit (for tables using on-demand mode).
+	// that table per second.
+	//
+	// The valid values are null or a value between 0.1 to 1.5. A null value is used
+	// when user does not provide a value, and defaults to 0.5 of the configured Read
+	// Capacity Unit (for provisioned tables), or 0.25 of the max configured Read
+	// Capacity Unit (for tables using on-demand mode).
 	ScanRate *float64
 
 	noSmithyDocumentSerde
@@ -2920,6 +4030,10 @@ type EncryptionAtRest struct {
 	// This member is required.
 	CatalogEncryptionMode CatalogEncryptionMode
 
+	// The role that Glue assumes to encrypt and decrypt the Data Catalog objects on
+	// the caller's behalf.
+	CatalogEncryptionServiceRole *string
+
 	// The ID of the KMS key to use for encryption at rest.
 	SseAwsKmsKeyId *string
 
@@ -2932,11 +4046,41 @@ type EncryptionConfiguration struct {
 	// The encryption configuration for Amazon CloudWatch.
 	CloudWatchEncryption *CloudWatchEncryption
 
+	// The encryption configuration for Glue Data Quality assets.
+	DataQualityEncryption *DataQualityEncryption
+
 	// The encryption configuration for job bookmarks.
 	JobBookmarksEncryption *JobBookmarksEncryption
 
 	// The encryption configuration for Amazon Simple Storage Service (Amazon S3) data.
 	S3Encryption []S3Encryption
+
+	noSmithyDocumentSerde
+}
+
+// An entity supported by a given ConnectionType .
+type Entity struct {
+
+	// The type of entities that are present in the response. This value depends on
+	// the source connection. For example this is SObjects for Salesforce and databases
+	// or schemas or tables for sources like Amazon Redshift.
+	Category *string
+
+	// An optional map of keys which may be returned for an entity by a connector.
+	CustomProperties map[string]string
+
+	// A description of the entity.
+	Description *string
+
+	// The name of the entity.
+	EntityName *string
+
+	// A Boolean value which helps to determine whether there are sub objects that can
+	// be listed.
+	IsParentEntity *bool
+
+	// Label used for the entity.
+	Label *string
 
 	noSmithyDocumentSerde
 }
@@ -3054,11 +4198,29 @@ type EventBatchingCondition struct {
 	// EventBridge event trigger fires.
 	//
 	// This member is required.
-	BatchSize int32
+	BatchSize *int32
 
 	// Window of time in seconds after which EventBridge event trigger fires. Window
 	// starts when first event is received.
 	BatchWindow *int32
+
+	noSmithyDocumentSerde
+}
+
+// A run attempt for a column statistics task run.
+type ExecutionAttempt struct {
+
+	// A task run ID for the last column statistics task run.
+	ColumnStatisticsTaskRunId *string
+
+	// An error message associated with the last column statistics task run.
+	ErrorMessage *string
+
+	// A timestamp when the last column statistics task run occurred.
+	ExecutionTimestamp *time.Time
+
+	// The status of the last column statistics task run.
+	Status ExecutionStatus
 
 	noSmithyDocumentSerde
 }
@@ -3080,6 +4242,19 @@ type ExportLabelsTaskRunProperties struct {
 	// The Amazon Simple Storage Service (Amazon S3) path where you will export the
 	// labels.
 	OutputS3Path *string
+
+	noSmithyDocumentSerde
+}
+
+// A catalog that points to an entity outside the Glue Data Catalog.
+type FederatedCatalog struct {
+
+	// The name of the connection to an external data source, for example a
+	// Redshift-federated catalog.
+	ConnectionName *string
+
+	// A unique identifier for the federated catalog.
+	Identifier *string
 
 	noSmithyDocumentSerde
 }
@@ -3107,6 +4282,72 @@ type FederatedTable struct {
 
 	// A unique identifier for the federated table.
 	Identifier *string
+
+	noSmithyDocumentSerde
+}
+
+// The Field object has information about the different properties associated with
+// a field in the connector.
+type Field struct {
+
+	// Optional map of keys which may be returned.
+	CustomProperties map[string]string
+
+	// A description of the field.
+	Description *string
+
+	// A unique identifier for the field.
+	FieldName *string
+
+	// The type of data in the field.
+	FieldType FieldDataType
+
+	// Indicates whether this field can be created as part of a destination write.
+	IsCreateable *bool
+
+	// Indicates whether this field is populated automatically when the object is
+	// created, such as a created at timestamp.
+	IsDefaultOnCreate *bool
+
+	//  Indicates whether this field can used in a filter clause ( WHERE clause) of a
+	// SQL statement when querying data.
+	IsFilterable *bool
+
+	// Indicates whether this field can be nullable or not.
+	IsNullable *bool
+
+	// Indicates whether a given field can be used in partitioning the query made to
+	// SaaS.
+	IsPartitionable *bool
+
+	// Indicates whether this field can used as a primary key for the given entity.
+	IsPrimaryKey *bool
+
+	// Indicates whether this field can be added in Select clause of SQL query or
+	// whether it is retrievable or not.
+	IsRetrievable *bool
+
+	// Indicates whether this field can be updated as part of a destination write.
+	IsUpdateable *bool
+
+	// Indicates whether this field can be upserted as part of a destination write.
+	IsUpsertable *bool
+
+	// A readable label used for the field.
+	Label *string
+
+	// The data type returned by the SaaS API, such as “picklist” or “textarea” from
+	// Salesforce.
+	NativeDataType *string
+
+	// A parent field name for a nested field.
+	ParentField *string
+
+	// Indicates the support filter operators for this field.
+	SupportedFilterOperators []FieldFilterOperator
+
+	// A list of supported values for the field.
+	SupportedValues []string
 
 	noSmithyDocumentSerde
 }
@@ -3210,8 +4451,11 @@ type FindMatchesMetrics struct {
 	// The area under the precision/recall curve (AUPRC) is a single number measuring
 	// the overall quality of the transform, that is independent of the choice made for
 	// precision vs. recall. Higher values indicate that you have a more attractive
-	// precision vs. recall tradeoff. For more information, see Precision and recall (https://en.wikipedia.org/wiki/Precision_and_recall)
-	// in Wikipedia.
+	// precision vs. recall tradeoff.
+	//
+	// For more information, see [Precision and recall] in Wikipedia.
+	//
+	// [Precision and recall]: https://en.wikipedia.org/wiki/Precision_and_recall
 	AreaUnderPRCurve *float64
 
 	// A list of ColumnImportance structures containing column importance metrics,
@@ -3219,27 +4463,37 @@ type FindMatchesMetrics struct {
 	ColumnImportances []ColumnImportance
 
 	// The confusion matrix shows you what your transform is predicting accurately and
-	// what types of errors it is making. For more information, see Confusion matrix (https://en.wikipedia.org/wiki/Confusion_matrix)
-	// in Wikipedia.
+	// what types of errors it is making.
+	//
+	// For more information, see [Confusion matrix] in Wikipedia.
+	//
+	// [Confusion matrix]: https://en.wikipedia.org/wiki/Confusion_matrix
 	ConfusionMatrix *ConfusionMatrix
 
 	// The maximum F1 metric indicates the transform's accuracy between 0 and 1, where
-	// 1 is the best accuracy. For more information, see F1 score (https://en.wikipedia.org/wiki/F1_score)
-	// in Wikipedia.
+	// 1 is the best accuracy.
+	//
+	// For more information, see [F1 score] in Wikipedia.
+	//
+	// [F1 score]: https://en.wikipedia.org/wiki/F1_score
 	F1 *float64
 
 	// The precision metric indicates when often your transform is correct when it
 	// predicts a match. Specifically, it measures how well the transform finds true
-	// positives from the total true positives possible. For more information, see
-	// Precision and recall (https://en.wikipedia.org/wiki/Precision_and_recall) in
-	// Wikipedia.
+	// positives from the total true positives possible.
+	//
+	// For more information, see [Precision and recall] in Wikipedia.
+	//
+	// [Precision and recall]: https://en.wikipedia.org/wiki/Precision_and_recall
 	Precision *float64
 
 	// The recall metric indicates that for an actual match, how often your transform
 	// predicts the match. Specifically, it measures how well the transform finds true
-	// positives from the total records in the source data. For more information, see
-	// Precision and recall (https://en.wikipedia.org/wiki/Precision_and_recall) in
-	// Wikipedia.
+	// positives from the total records in the source data.
+	//
+	// For more information, see [Precision and recall] in Wikipedia.
+	//
+	// [Precision and recall]: https://en.wikipedia.org/wiki/Precision_and_recall
 	Recall *float64
 
 	noSmithyDocumentSerde
@@ -3253,11 +4507,14 @@ type FindMatchesParameters struct {
 	// cost concerns. A value of 1.0 means a bias purely for accuracy, which typically
 	// results in a higher cost, sometimes substantially higher. A value of 0.0 means a
 	// bias purely for cost, which results in a less accurate FindMatches transform,
-	// sometimes with unacceptable accuracy. Accuracy measures how well the transform
-	// finds true positives and true negatives. Increasing accuracy requires more
-	// machine resources and cost. But it also results in increased recall. Cost
-	// measures how many compute resources, and thus money, are consumed to run the
-	// transform.
+	// sometimes with unacceptable accuracy.
+	//
+	// Accuracy measures how well the transform finds true positives and true
+	// negatives. Increasing accuracy requires more machine resources and cost. But it
+	// also results in increased recall.
+	//
+	// Cost measures how many compute resources, and thus money, are consumed to run
+	// the transform.
 	AccuracyCostTradeoff *float64
 
 	// The value to switch on or off to force the output to match the provided labels
@@ -3265,6 +4522,7 @@ type FindMatchesParameters struct {
 	// to match the provided labels. The results override the normal conflation
 	// results. If the value is False , the find matches transform does not ensure all
 	// the labels provided are respected, and the results rely on the trained model.
+	//
 	// Note that setting this value to true may increase the conflation execution time.
 	EnforceProvidedLabels *bool
 
@@ -3272,10 +4530,13 @@ type FindMatchesParameters struct {
 	// and recall. A value of 0.5 means no preference; a value of 1.0 means a bias
 	// purely for precision, and a value of 0.0 means a bias for recall. Because this
 	// is a tradeoff, choosing values close to 1.0 means very low recall, and choosing
-	// values close to 0.0 results in very low precision. The precision metric
-	// indicates how often your model is correct when it predicts a match. The recall
-	// metric indicates that for an actual match, how often your model predicts the
-	// match.
+	// values close to 0.0 results in very low precision.
+	//
+	// The precision metric indicates how often your model is correct when it predicts
+	// a match.
+	//
+	// The recall metric indicates that for an actual match, how often your model
+	// predicts the match.
 	PrecisionRecallTradeoff *float64
 
 	// The name of a column that uniquely identifies rows in the source table. Used to
@@ -3303,6 +4564,9 @@ type FindMatchesTaskRunProperties struct {
 // Filters the connection definitions that are returned by the GetConnections API
 // operation.
 type GetConnectionsFilter struct {
+
+	// Denotes if the connection was created with schema version 1 or 2.
+	ConnectionSchemaVersion *int32
 
 	// The type of connections to return. Currently, SFTP is not supported.
 	ConnectionType ConnectionType
@@ -3370,8 +4634,10 @@ type GlueTable struct {
 	TableName *string
 
 	// Additional options for the table. Currently there are two keys supported:
+	//
 	//   - pushDownPredicate : to filter on partitions without having to list and read
 	//   all the files in your dataset.
+	//
 	//   - catalogPartitionPredicate : to use server-side partition pruning using
 	//   partition indexes in the Glue Data Catalog.
 	AdditionalOptions map[string]string
@@ -3455,8 +4721,9 @@ type GrokClassifier struct {
 	Classification *string
 
 	// The grok pattern applied to a data store by this classifier. For more
-	// information, see built-in patterns in Writing Custom Classifiers (https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html)
-	// .
+	// information, see built-in patterns in [Writing Custom Classifiers].
+	//
+	// [Writing Custom Classifiers]: https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html
 	//
 	// This member is required.
 	GrokPattern *string
@@ -3470,8 +4737,9 @@ type GrokClassifier struct {
 	CreationTime *time.Time
 
 	// Optional custom grok patterns defined by this classifier. For more information,
-	// see custom patterns in Writing Custom Classifiers (https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html)
-	// .
+	// see custom patterns in [Writing Custom Classifiers].
+	//
+	// [Writing Custom Classifiers]: https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html
 	CustomPatterns *string
 
 	// The time that this classifier was last updated.
@@ -3492,8 +4760,9 @@ type HudiTarget struct {
 	ConnectionName *string
 
 	// A list of glob patterns used to exclude from the crawl. For more information,
-	// see Catalog Tables with a Crawler (https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html)
-	// .
+	// see [Catalog Tables with a Crawler].
+	//
+	// [Catalog Tables with a Crawler]: https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html
 	Exclusions []string
 
 	// The maximum depth of Amazon S3 paths that the crawler can traverse to discover
@@ -3503,9 +4772,28 @@ type HudiTarget struct {
 
 	// An array of Amazon S3 location strings for Hudi, each indicating the root
 	// folder with which the metadata files for a Hudi table resides. The Hudi folder
-	// may be located in a child folder of the root folder. The crawler will scan all
-	// folders underneath a path for a Hudi folder.
+	// may be located in a child folder of the root folder.
+	//
+	// The crawler will scan all folders underneath a path for a Hudi folder.
 	Paths []string
+
+	noSmithyDocumentSerde
+}
+
+// Compaction metrics for Iceberg for the optimizer run.
+type IcebergCompactionMetrics struct {
+
+	// The duration of the job in hours.
+	JobDurationInHour float64
+
+	// The number of bytes removed by the compaction job run.
+	NumberOfBytesCompacted int64
+
+	// The number of DPU hours consumed by the job.
+	NumberOfDpus int32
+
+	// The number of files removed by the compaction job run.
+	NumberOfFilesCompacted int64
 
 	noSmithyDocumentSerde
 }
@@ -3525,6 +4813,77 @@ type IcebergInput struct {
 	noSmithyDocumentSerde
 }
 
+// The configuration for an Iceberg orphan file deletion optimizer.
+type IcebergOrphanFileDeletionConfiguration struct {
+
+	// Specifies a directory in which to look for files (defaults to the table's
+	// location). You may choose a sub-directory rather than the top-level table
+	// location.
+	Location *string
+
+	// The number of days that orphan files should be retained before file deletion.
+	// If an input is not provided, the default value 3 will be used.
+	OrphanFileRetentionPeriodInDays *int32
+
+	noSmithyDocumentSerde
+}
+
+// Orphan file deletion metrics for Iceberg for the optimizer run.
+type IcebergOrphanFileDeletionMetrics struct {
+
+	// The duration of the job in hours.
+	JobDurationInHour float64
+
+	// The number of DPU hours consumed by the job.
+	NumberOfDpus int32
+
+	// The number of orphan files deleted by the orphan file deletion job run.
+	NumberOfOrphanFilesDeleted int64
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for an Iceberg snapshot retention optimizer.
+type IcebergRetentionConfiguration struct {
+
+	// If set to false, snapshots are only deleted from table metadata, and the
+	// underlying data and metadata files are not deleted.
+	CleanExpiredFiles *bool
+
+	// The number of Iceberg snapshots to retain within the retention period. If an
+	// input is not provided, the corresponding Iceberg table configuration field will
+	// be used or if not present, the default value 1 will be used.
+	NumberOfSnapshotsToRetain *int32
+
+	// The number of days to retain the Iceberg snapshots. If an input is not
+	// provided, the corresponding Iceberg table configuration field will be used or if
+	// not present, the default value 5 will be used.
+	SnapshotRetentionPeriodInDays *int32
+
+	noSmithyDocumentSerde
+}
+
+// Snapshot retention metrics for Iceberg for the optimizer run.
+type IcebergRetentionMetrics struct {
+
+	// The duration of the job in hours.
+	JobDurationInHour float64
+
+	// The number of data files deleted by the retention job run.
+	NumberOfDataFilesDeleted int64
+
+	// The number of DPU hours consumed by the job.
+	NumberOfDpus int32
+
+	// The number of manifest files deleted by the retention job run.
+	NumberOfManifestFilesDeleted int64
+
+	// The number of manifest lists deleted by the retention job run.
+	NumberOfManifestListsDeleted int64
+
+	noSmithyDocumentSerde
+}
+
 // Specifies an Apache Iceberg data source where Iceberg tables are stored in
 // Amazon S3.
 type IcebergTarget struct {
@@ -3533,8 +4892,9 @@ type IcebergTarget struct {
 	ConnectionName *string
 
 	// A list of glob patterns used to exclude from the crawl. For more information,
-	// see Catalog Tables with a Crawler (https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html)
-	// .
+	// see [Catalog Tables with a Crawler].
+	//
+	// [Catalog Tables with a Crawler]: https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html
 	Exclusions []string
 
 	// The maximum depth of Amazon S3 paths that the crawler can traverse to discover
@@ -3562,6 +4922,160 @@ type ImportLabelsTaskRunProperties struct {
 	noSmithyDocumentSerde
 }
 
+// A structure for an integration that writes data into a resource.
+type InboundIntegration struct {
+
+	// The time that the integration was created, in UTC.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The ARN of the zero-ETL integration.
+	//
+	// This member is required.
+	IntegrationArn *string
+
+	// The ARN of the source resource for the integration.
+	//
+	// This member is required.
+	SourceArn *string
+
+	// The possible statuses are:
+	//
+	//   - CREATING: The integration is being created.
+	//
+	//   - ACTIVE: The integration creation succeeds.
+	//
+	//   - MODIFYING: The integration is being modified.
+	//
+	//   - FAILED: The integration creation fails.
+	//
+	//   - DELETING: The integration is deleted.
+	//
+	//   - SYNCING: The integration is synchronizing.
+	//
+	//   - NEEDS_ATTENTION: The integration needs attention, such as synchronization.
+	//
+	// This member is required.
+	Status IntegrationStatus
+
+	// The ARN of the target resource for the integration.
+	//
+	// This member is required.
+	TargetArn *string
+
+	// A list of errors associated with the integration.
+	Errors []IntegrationError
+
+	noSmithyDocumentSerde
+}
+
+// Describes a zero-ETL integration.
+type Integration struct {
+
+	// The time that the integration was created, in UTC.
+	//
+	// This member is required.
+	CreateTime *time.Time
+
+	// The Amazon Resource Name (ARN) for the integration.
+	//
+	// This member is required.
+	IntegrationArn *string
+
+	// A unique name for the integration.
+	//
+	// This member is required.
+	IntegrationName *string
+
+	// The ARN for the source of the integration.
+	//
+	// This member is required.
+	SourceArn *string
+
+	// The possible statuses are:
+	//
+	//   - CREATING: The integration is being created.
+	//
+	//   - ACTIVE: The integration creation succeeds.
+	//
+	//   - MODIFYING: The integration is being modified.
+	//
+	//   - FAILED: The integration creation fails.
+	//
+	//   - DELETING: The integration is deleted.
+	//
+	//   - SYNCING: The integration is synchronizing.
+	//
+	//   - NEEDS_ATTENTION: The integration needs attention, such as synchronization.
+	//
+	// This member is required.
+	Status IntegrationStatus
+
+	// The ARN for the target of the integration.
+	//
+	// This member is required.
+	TargetArn *string
+
+	// An optional set of non-secret key–value pairs that contains additional
+	// contextual information for encryption. This can only be provided if KMSKeyId is
+	// provided.
+	AdditionalEncryptionContext map[string]string
+
+	// Selects source tables for the integration using Maxwell filter syntax.
+	DataFilter *string
+
+	// A description for the integration.
+	Description *string
+
+	// A list of errors associated with the integration.
+	Errors []IntegrationError
+
+	// The ARN of a KMS key used for encrypting the channel.
+	KmsKeyId *string
+
+	// Metadata assigned to the resource consisting of a list of key-value pairs.
+	Tags []Tag
+
+	noSmithyDocumentSerde
+}
+
+// An error associated with a zero-ETL integration.
+type IntegrationError struct {
+
+	// The code associated with this error.
+	ErrorCode *string
+
+	// A message describing the error.
+	ErrorMessage *string
+
+	noSmithyDocumentSerde
+}
+
+// A filter that can be used when invoking a DescribeIntegrations request.
+type IntegrationFilter struct {
+
+	// The name of the filter.
+	Name *string
+
+	// A list of filter values.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// A structure that describes how data is partitioned on the target.
+type IntegrationPartition struct {
+
+	// The field name used to partition data on the target.
+	FieldName *string
+
+	// Specifies a function used to partition data on the target.
+	FunctionSpec *string
+
+	noSmithyDocumentSerde
+}
+
 // Additional connection options for the connector.
 type JDBCConnectorOptions struct {
 
@@ -3575,8 +5089,11 @@ type JDBCConnectorOptions struct {
 	DataTypeMapping map[string]GlueRecordType
 
 	// Extra condition clause to filter data from source. For example:
-	// BillingCity='Mountain View' When using a query instead of a table name, you
-	// should validate that the query works with the specified filterPredicate .
+	//
+	//     BillingCity='Mountain View'
+	//
+	// When using a query instead of a table name, you should validate that the query
+	// works with the specified filterPredicate .
 	FilterPredicate *string
 
 	// The name of the job bookmark keys on which to sort.
@@ -3697,13 +5214,15 @@ type JdbcTarget struct {
 
 	// Specify a value of RAWTYPES or COMMENTS to enable additional metadata in table
 	// responses. RAWTYPES provides the native-level datatype. COMMENTS provides
-	// comments associated with a column or table in the database. If you do not need
-	// additional metadata, keep the field empty.
+	// comments associated with a column or table in the database.
+	//
+	// If you do not need additional metadata, keep the field empty.
 	EnableAdditionalMetadata []JdbcMetadataEntry
 
 	// A list of glob patterns used to exclude from the crawl. For more information,
-	// see Catalog Tables with a Crawler (https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html)
-	// .
+	// see [Catalog Tables with a Crawler].
+	//
+	// [Catalog Tables with a Crawler]: https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html
 	Exclusions []string
 
 	// The path of the JDBC target.
@@ -3715,11 +5234,14 @@ type JdbcTarget struct {
 // Specifies a job definition.
 type Job struct {
 
-	// This field is deprecated. Use MaxCapacity instead. The number of Glue data
-	// processing units (DPUs) allocated to runs of this job. You can allocate a
-	// minimum of 2 DPUs; the default is 10. A DPU is a relative measure of processing
-	// power that consists of 4 vCPUs of compute capacity and 16 GB of memory. For more
-	// information, see the Glue pricing page (https://aws.amazon.com/glue/pricing/) .
+	// This field is deprecated. Use MaxCapacity instead.
+	//
+	// The number of Glue data processing units (DPUs) allocated to runs of this job.
+	// You can allocate a minimum of 2 DPUs; the default is 10. A DPU is a relative
+	// measure of processing power that consists of 4 vCPUs of compute capacity and 16
+	// GB of memory. For more information, see the [Glue pricing page].
+	//
+	// [Glue pricing page]: https://aws.amazon.com/glue/pricing/
 	//
 	// Deprecated: This property is deprecated, use MaxCapacity instead.
 	AllocatedCapacity int32
@@ -3738,19 +5260,26 @@ type Job struct {
 	CreatedOn *time.Time
 
 	// The default arguments for every run of this job, specified as name-value pairs.
+	//
 	// You can specify arguments here that your own job-execution script consumes, as
-	// well as arguments that Glue itself consumes. Job arguments may be logged. Do not
-	// pass plaintext secrets as arguments. Retrieve secrets from a Glue Connection,
-	// Secrets Manager or other secret management mechanism if you intend to keep them
-	// within the Job. For information about how to specify and consume your own Job
-	// arguments, see the Calling Glue APIs in Python (https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html)
-	// topic in the developer guide. For information about the arguments you can
-	// provide to this field when configuring Spark jobs, see the Special Parameters
-	// Used by Glue (https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html)
-	// topic in the developer guide. For information about the arguments you can
-	// provide to this field when configuring Ray jobs, see Using job parameters in
-	// Ray jobs (https://docs.aws.amazon.com/glue/latest/dg/author-job-ray-job-parameters.html)
-	// in the developer guide.
+	// well as arguments that Glue itself consumes.
+	//
+	// Job arguments may be logged. Do not pass plaintext secrets as arguments.
+	// Retrieve secrets from a Glue Connection, Secrets Manager or other secret
+	// management mechanism if you intend to keep them within the Job.
+	//
+	// For information about how to specify and consume your own Job arguments, see
+	// the [Calling Glue APIs in Python]topic in the developer guide.
+	//
+	// For information about the arguments you can provide to this field when
+	// configuring Spark jobs, see the [Special Parameters Used by Glue]topic in the developer guide.
+	//
+	// For information about the arguments you can provide to this field when
+	// configuring Ray jobs, see [Using job parameters in Ray jobs]in the developer guide.
+	//
+	// [Using job parameters in Ray jobs]: https://docs.aws.amazon.com/glue/latest/dg/author-job-ray-job-parameters.html
+	// [Calling Glue APIs in Python]: https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html
+	// [Special Parameters Used by Glue]: https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html
 	DefaultArguments map[string]string
 
 	// A description of the job.
@@ -3758,8 +5287,11 @@ type Job struct {
 
 	// Indicates whether the job is run with a standard or flexible execution class.
 	// The standard execution class is ideal for time-sensitive workloads that require
-	// fast job startup and dedicated resources. The flexible execution class is
-	// appropriate for time-insensitive jobs whose start and completion times may vary.
+	// fast job startup and dedicated resources.
+	//
+	// The flexible execution class is appropriate for time-insensitive jobs whose
+	// start and completion times may vary.
+	//
 	// Only jobs with Glue version 3.0 and above and command type glueetl will be
 	// allowed to set ExecutionClass to FLEX . The flexible execution class is
 	// available for Spark jobs.
@@ -3771,14 +5303,40 @@ type Job struct {
 
 	// In Spark jobs, GlueVersion determines the versions of Apache Spark and Python
 	// that Glue available in a job. The Python version indicates the version supported
-	// for jobs of type Spark. Ray jobs should set GlueVersion to 4.0 or greater.
-	// However, the versions of Ray, Python and additional libraries available in your
-	// Ray job are determined by the Runtime parameter of the Job command. For more
-	// information about the available Glue versions and corresponding Spark and Python
-	// versions, see Glue version (https://docs.aws.amazon.com/glue/latest/dg/add-job.html)
-	// in the developer guide. Jobs that are created without specifying a Glue version
-	// default to Glue 0.9.
+	// for jobs of type Spark.
+	//
+	// Ray jobs should set GlueVersion to 4.0 or greater. However, the versions of
+	// Ray, Python and additional libraries available in your Ray job are determined by
+	// the Runtime parameter of the Job command.
+	//
+	// For more information about the available Glue versions and corresponding Spark
+	// and Python versions, see [Glue version]in the developer guide.
+	//
+	// Jobs that are created without specifying a Glue version default to Glue 0.9.
+	//
+	// [Glue version]: https://docs.aws.amazon.com/glue/latest/dg/add-job.html
 	GlueVersion *string
+
+	// A mode that describes how a job was created. Valid values are:
+	//
+	//   - SCRIPT - The job was created using the Glue Studio script editor.
+	//
+	//   - VISUAL - The job was created using the Glue Studio visual editor.
+	//
+	//   - NOTEBOOK - The job was created using an interactive sessions notebook.
+	//
+	// When the JobMode field is missing or null, SCRIPT is assigned as the default
+	// value.
+	JobMode JobMode
+
+	// Specifies whether job run queuing is enabled for the job runs for this job.
+	//
+	// A value of true means job run queuing is enabled for the job runs. If false or
+	// not populated, the job runs will not be considered for queueing.
+	//
+	// If this field does not match the value set in the job run, then the value from
+	// the job run field will be used.
+	JobRunQueuingEnabled *bool
 
 	// The last point in time when this job definition was modified.
 	LastModifiedOn *time.Time
@@ -3786,22 +5344,38 @@ type Job struct {
 	// This field is reserved for future use.
 	LogUri *string
 
+	// This field specifies a day of the week and hour for a maintenance window for
+	// streaming jobs. Glue periodically performs maintenance activities. During these
+	// maintenance windows, Glue will need to restart your streaming jobs.
+	//
+	// Glue will restart the job within 3 hours of the specified maintenance window.
+	// For instance, if you set up the maintenance window for Monday at 10:00AM GMT,
+	// your jobs will be restarted between 10:00AM GMT to 1:00PM GMT.
+	MaintenanceWindow *string
+
 	// For Glue version 1.0 or earlier jobs, using the standard worker type, the
 	// number of Glue data processing units (DPUs) that can be allocated when this job
 	// runs. A DPU is a relative measure of processing power that consists of 4 vCPUs
-	// of compute capacity and 16 GB of memory. For more information, see the Glue
-	// pricing page (https://aws.amazon.com/glue/pricing/) . For Glue version 2.0 or
-	// later jobs, you cannot specify a Maximum capacity . Instead, you should specify
-	// a Worker type and the Number of workers . Do not set MaxCapacity if using
-	// WorkerType and NumberOfWorkers . The value that can be allocated for MaxCapacity
-	// depends on whether you are running a Python shell job, an Apache Spark ETL job,
-	// or an Apache Spark streaming ETL job:
+	// of compute capacity and 16 GB of memory. For more information, see the [Glue pricing page].
+	//
+	// For Glue version 2.0 or later jobs, you cannot specify a Maximum capacity .
+	// Instead, you should specify a Worker type and the Number of workers .
+	//
+	// Do not set MaxCapacity if using WorkerType and NumberOfWorkers .
+	//
+	// The value that can be allocated for MaxCapacity depends on whether you are
+	// running a Python shell job, an Apache Spark ETL job, or an Apache Spark
+	// streaming ETL job:
+	//
 	//   - When you specify a Python shell job ( JobCommand.Name ="pythonshell"), you
 	//   can allocate either 0.0625 or 1 DPU. The default is 0.0625 DPU.
+	//
 	//   - When you specify an Apache Spark ETL job ( JobCommand.Name ="glueetl") or
 	//   Apache Spark streaming ETL job ( JobCommand.Name ="gluestreaming"), you can
 	//   allocate from 2 to 100 DPUs. The default is 10 DPUs. This job type cannot have a
 	//   fractional DPU allocation.
+	//
+	// [Glue pricing page]: https://aws.amazon.com/glue/pricing/
 	MaxCapacity *float64
 
 	// The maximum number of times to retry this job after a JobRun fails.
@@ -3821,6 +5395,9 @@ type Job struct {
 	// runs.
 	NumberOfWorkers *int32
 
+	// The name of an Glue usage profile associated with the job.
+	ProfileName *string
+
 	// The name or Amazon Resource Name (ARN) of the IAM role associated with this job.
 	Role *string
 
@@ -3832,44 +5409,59 @@ type Job struct {
 	SourceControlDetails *SourceControlDetails
 
 	// The job timeout in minutes. This is the maximum time that a job run can consume
-	// resources before it is terminated and enters TIMEOUT status. The default is
-	// 2,880 minutes (48 hours).
+	// resources before it is terminated and enters TIMEOUT status.
+	//
+	// Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the
+	// jobs will throw an exception.
+	//
+	// When the value is left blank, the timeout is defaulted to 2880 minutes.
+	//
+	// Any existing Glue jobs that had a timeout value greater than 7 days will be
+	// defaulted to 7 days. For instance if you have specified a timeout of 20 days for
+	// a batch job, it will be stopped on the 7th day.
+	//
+	// For streaming jobs, if you have set up a maintenance window, it will be
+	// restarted during the maintenance window after 7 days.
 	Timeout *int32
 
 	// The type of predefined worker that is allocated when a job runs. Accepts a
 	// value of G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X
 	// for Ray jobs.
+	//
 	//   - For the G.1X worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of
-	//   memory) with 84GB disk (approximately 34GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for workloads such as data transforms,
-	//   joins, and queries, to offers a scalable and cost effective way to run most
-	//   jobs.
+	//   memory) with 94GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for workloads such as data transforms, joins, and queries, to offers
+	//   a scalable and cost effective way to run most jobs.
+	//
 	//   - For the G.2X worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of
-	//   memory) with 128GB disk (approximately 77GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for workloads such as data transforms,
-	//   joins, and queries, to offers a scalable and cost effective way to run most
-	//   jobs.
+	//   memory) with 138GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for workloads such as data transforms, joins, and queries, to offers
+	//   a scalable and cost effective way to run most jobs.
+	//
 	//   - For the G.4X worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of
-	//   memory) with 256GB disk (approximately 235GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for jobs whose workloads contain your most
-	//   demanding transforms, aggregations, joins, and queries. This worker type is
-	//   available only for Glue version 3.0 or later Spark ETL jobs in the following
-	//   Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West
-	//   (Oregon), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo),
-	//   Canada (Central), Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).
+	//   memory) with 256GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for jobs whose workloads contain your most demanding transforms,
+	//   aggregations, joins, and queries. This worker type is available only for Glue
+	//   version 3.0 or later Spark ETL jobs in the following Amazon Web Services
+	//   Regions: US East (Ohio), US East (N. Virginia), US West (Oregon), Asia Pacific
+	//   (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central),
+	//   Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).
+	//
 	//   - For the G.8X worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of
-	//   memory) with 512GB disk (approximately 487GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for jobs whose workloads contain your most
-	//   demanding transforms, aggregations, joins, and queries. This worker type is
-	//   available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon
-	//   Web Services Regions as supported for the G.4X worker type.
+	//   memory) with 512GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for jobs whose workloads contain your most demanding transforms,
+	//   aggregations, joins, and queries. This worker type is available only for Glue
+	//   version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as
+	//   supported for the G.4X worker type.
+	//
 	//   - For the G.025X worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of
-	//   memory) with 84GB disk (approximately 34GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for low volume streaming jobs. This worker
-	//   type is only available for Glue version 3.0 streaming jobs.
+	//   memory) with 84GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for low volume streaming jobs. This worker type is only available
+	//   for Glue version 3.0 or later streaming jobs.
+	//
 	//   - For the Z.2X worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of
-	//   memory) with 128 GB disk (approximately 120GB free), and provides up to 8 Ray
-	//   workers based on the autoscaler.
+	//   memory) with 128 GB disk, and provides up to 8 Ray workers based on the
+	//   autoscaler.
 	WorkerType WorkerType
 
 	noSmithyDocumentSerde
@@ -3928,9 +5520,10 @@ type JobCommand struct {
 
 	// In Ray jobs, Runtime is used to specify the versions of Ray, Python and
 	// additional libraries available in your environment. This field is not used in
-	// other job types. For supported runtime environment values, see Working with Ray
-	// jobs (https://docs.aws.amazon.com/glue/latest/dg/author-job-ray-runtimes.html)
-	// in the Glue Developer Guide.
+	// other job types. For supported runtime environment values, see [Supported Ray runtime environments]in the Glue
+	// Developer Guide.
+	//
+	// [Supported Ray runtime environments]: https://docs.aws.amazon.com/glue/latest/dg/ray-jobs-section.html
 	Runtime *string
 
 	// Specifies the Amazon Simple Storage Service (Amazon S3) path to a script that
@@ -3952,30 +5545,40 @@ type JobNodeDetails struct {
 // Contains information about a job run.
 type JobRun struct {
 
-	// This field is deprecated. Use MaxCapacity instead. The number of Glue data
-	// processing units (DPUs) allocated to this JobRun. From 2 to 100 DPUs can be
-	// allocated; the default is 10. A DPU is a relative measure of processing power
-	// that consists of 4 vCPUs of compute capacity and 16 GB of memory. For more
-	// information, see the Glue pricing page (https://aws.amazon.com/glue/pricing/) .
+	// This field is deprecated. Use MaxCapacity instead.
+	//
+	// The number of Glue data processing units (DPUs) allocated to this JobRun. From
+	// 2 to 100 DPUs can be allocated; the default is 10. A DPU is a relative measure
+	// of processing power that consists of 4 vCPUs of compute capacity and 16 GB of
+	// memory. For more information, see the [Glue pricing page].
+	//
+	// [Glue pricing page]: https://aws.amazon.com/glue/pricing/
 	//
 	// Deprecated: This property is deprecated, use MaxCapacity instead.
 	AllocatedCapacity int32
 
 	// The job arguments associated with this run. For this job run, they replace the
-	// default arguments set in the job definition itself. You can specify arguments
-	// here that your own job-execution script consumes, as well as arguments that Glue
-	// itself consumes. Job arguments may be logged. Do not pass plaintext secrets as
-	// arguments. Retrieve secrets from a Glue Connection, Secrets Manager or other
-	// secret management mechanism if you intend to keep them within the Job. For
-	// information about how to specify and consume your own Job arguments, see the
-	// Calling Glue APIs in Python (https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html)
-	// topic in the developer guide. For information about the arguments you can
-	// provide to this field when configuring Spark jobs, see the Special Parameters
-	// Used by Glue (https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html)
-	// topic in the developer guide. For information about the arguments you can
-	// provide to this field when configuring Ray jobs, see Using job parameters in
-	// Ray jobs (https://docs.aws.amazon.com/glue/latest/dg/author-job-ray-job-parameters.html)
-	// in the developer guide.
+	// default arguments set in the job definition itself.
+	//
+	// You can specify arguments here that your own job-execution script consumes, as
+	// well as arguments that Glue itself consumes.
+	//
+	// Job arguments may be logged. Do not pass plaintext secrets as arguments.
+	// Retrieve secrets from a Glue Connection, Secrets Manager or other secret
+	// management mechanism if you intend to keep them within the Job.
+	//
+	// For information about how to specify and consume your own Job arguments, see
+	// the [Calling Glue APIs in Python]topic in the developer guide.
+	//
+	// For information about the arguments you can provide to this field when
+	// configuring Spark jobs, see the [Special Parameters Used by Glue]topic in the developer guide.
+	//
+	// For information about the arguments you can provide to this field when
+	// configuring Ray jobs, see [Using job parameters in Ray jobs]in the developer guide.
+	//
+	// [Using job parameters in Ray jobs]: https://docs.aws.amazon.com/glue/latest/dg/author-job-ray-job-parameters.html
+	// [Calling Glue APIs in Python]: https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html
+	// [Special Parameters Used by Glue]: https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html
 	Arguments map[string]string
 
 	// The number of the attempt to run this job.
@@ -3984,13 +5587,14 @@ type JobRun struct {
 	// The date and time that this job run completed.
 	CompletedOn *time.Time
 
-	// This field populates only for Auto Scaling job runs, and represents the total
-	// time each executor ran during the lifecycle of a job run in seconds, multiplied
-	// by a DPU factor (1 for G.1X , 2 for G.2X , or 0.25 for G.025X workers). This
-	// value may be different than the executionEngineRuntime * MaxCapacity as in the
-	// case of Auto Scaling jobs, as the number of executors running at a given time
-	// may be less than the MaxCapacity . Therefore, it is possible that the value of
-	// DPUSeconds is less than executionEngineRuntime * MaxCapacity .
+	// This field can be set for either job runs with execution class FLEX or when
+	// Auto Scaling is enabled, and represents the total time each executor ran during
+	// the lifecycle of a job run in seconds, multiplied by a DPU factor (1 for G.1X ,
+	// 2 for G.2X , or 0.25 for G.025X workers). This value may be different than the
+	// executionEngineRuntime * MaxCapacity as in the case of Auto Scaling jobs, as
+	// the number of executors running at a given time may be less than the MaxCapacity
+	// . Therefore, it is possible that the value of DPUSeconds is less than
+	// executionEngineRuntime * MaxCapacity .
 	DPUSeconds *float64
 
 	// An error message associated with this job run.
@@ -3998,8 +5602,11 @@ type JobRun struct {
 
 	// Indicates whether the job is run with a standard or flexible execution class.
 	// The standard execution-class is ideal for time-sensitive workloads that require
-	// fast job startup and dedicated resources. The flexible execution class is
-	// appropriate for time-insensitive jobs whose start and completion times may vary.
+	// fast job startup and dedicated resources.
+	//
+	// The flexible execution class is appropriate for time-insensitive jobs whose
+	// start and completion times may vary.
+	//
 	// Only jobs with Glue version 3.0 and above and command type glueetl will be
 	// allowed to set ExecutionClass to FLEX . The flexible execution class is
 	// available for Spark jobs.
@@ -4010,24 +5617,48 @@ type JobRun struct {
 
 	// In Spark jobs, GlueVersion determines the versions of Apache Spark and Python
 	// that Glue available in a job. The Python version indicates the version supported
-	// for jobs of type Spark. Ray jobs should set GlueVersion to 4.0 or greater.
-	// However, the versions of Ray, Python and additional libraries available in your
-	// Ray job are determined by the Runtime parameter of the Job command. For more
-	// information about the available Glue versions and corresponding Spark and Python
-	// versions, see Glue version (https://docs.aws.amazon.com/glue/latest/dg/add-job.html)
-	// in the developer guide. Jobs that are created without specifying a Glue version
-	// default to Glue 0.9.
+	// for jobs of type Spark.
+	//
+	// Ray jobs should set GlueVersion to 4.0 or greater. However, the versions of
+	// Ray, Python and additional libraries available in your Ray job are determined by
+	// the Runtime parameter of the Job command.
+	//
+	// For more information about the available Glue versions and corresponding Spark
+	// and Python versions, see [Glue version]in the developer guide.
+	//
+	// Jobs that are created without specifying a Glue version default to Glue 0.9.
+	//
+	// [Glue version]: https://docs.aws.amazon.com/glue/latest/dg/add-job.html
 	GlueVersion *string
 
 	// The ID of this job run.
 	Id *string
 
+	// A mode that describes how a job was created. Valid values are:
+	//
+	//   - SCRIPT - The job was created using the Glue Studio script editor.
+	//
+	//   - VISUAL - The job was created using the Glue Studio visual editor.
+	//
+	//   - NOTEBOOK - The job was created using an interactive sessions notebook.
+	//
+	// When the JobMode field is missing or null, SCRIPT is assigned as the default
+	// value.
+	JobMode JobMode
+
 	// The name of the job definition being used in this run.
 	JobName *string
 
+	// Specifies whether job run queuing is enabled for the job run.
+	//
+	// A value of true means job run queuing is enabled for the job run. If false or
+	// not populated, the job run will not be considered for queueing.
+	JobRunQueuingEnabled *bool
+
 	// The current state of the job run. For more information about the statuses of
-	// jobs that have terminated abnormally, see Glue Job Run Statuses (https://docs.aws.amazon.com/glue/latest/dg/job-run-statuses.html)
-	// .
+	// jobs that have terminated abnormally, see [Glue Job Run Statuses].
+	//
+	// [Glue Job Run Statuses]: https://docs.aws.amazon.com/glue/latest/dg/job-run-statuses.html
 	JobRunState JobRunState
 
 	// The last time that this job run was modified.
@@ -4041,22 +5672,38 @@ type JobRun struct {
 	// configuration is used to encrypt the log group.
 	LogGroupName *string
 
+	// This field specifies a day of the week and hour for a maintenance window for
+	// streaming jobs. Glue periodically performs maintenance activities. During these
+	// maintenance windows, Glue will need to restart your streaming jobs.
+	//
+	// Glue will restart the job within 3 hours of the specified maintenance window.
+	// For instance, if you set up the maintenance window for Monday at 10:00AM GMT,
+	// your jobs will be restarted between 10:00AM GMT to 1:00PM GMT.
+	MaintenanceWindow *string
+
 	// For Glue version 1.0 or earlier jobs, using the standard worker type, the
 	// number of Glue data processing units (DPUs) that can be allocated when this job
 	// runs. A DPU is a relative measure of processing power that consists of 4 vCPUs
-	// of compute capacity and 16 GB of memory. For more information, see the Glue
-	// pricing page (https://aws.amazon.com/glue/pricing/) . For Glue version 2.0+
-	// jobs, you cannot specify a Maximum capacity . Instead, you should specify a
-	// Worker type and the Number of workers . Do not set MaxCapacity if using
-	// WorkerType and NumberOfWorkers . The value that can be allocated for MaxCapacity
-	// depends on whether you are running a Python shell job, an Apache Spark ETL job,
-	// or an Apache Spark streaming ETL job:
+	// of compute capacity and 16 GB of memory. For more information, see the [Glue pricing page].
+	//
+	// For Glue version 2.0+ jobs, you cannot specify a Maximum capacity . Instead, you
+	// should specify a Worker type and the Number of workers .
+	//
+	// Do not set MaxCapacity if using WorkerType and NumberOfWorkers .
+	//
+	// The value that can be allocated for MaxCapacity depends on whether you are
+	// running a Python shell job, an Apache Spark ETL job, or an Apache Spark
+	// streaming ETL job:
+	//
 	//   - When you specify a Python shell job ( JobCommand.Name ="pythonshell"), you
 	//   can allocate either 0.0625 or 1 DPU. The default is 0.0625 DPU.
+	//
 	//   - When you specify an Apache Spark ETL job ( JobCommand.Name ="glueetl") or
 	//   Apache Spark streaming ETL job ( JobCommand.Name ="gluestreaming"), you can
 	//   allocate from 2 to 100 DPUs. The default is 10 DPUs. This job type cannot have a
 	//   fractional DPU allocation.
+	//
+	// [Glue pricing page]: https://aws.amazon.com/glue/pricing/
 	MaxCapacity *float64
 
 	// Specifies configuration properties of a job run notification.
@@ -4073,16 +5720,37 @@ type JobRun struct {
 	// the StartJobRun action.
 	PreviousRunId *string
 
+	// The name of an Glue usage profile associated with the job run.
+	ProfileName *string
+
 	// The name of the SecurityConfiguration structure to be used with this job run.
 	SecurityConfiguration *string
 
 	// The date and time at which this job run was started.
 	StartedOn *time.Time
 
+	// This field holds details that pertain to the state of a job run. The field is
+	// nullable.
+	//
+	// For example, when a job run is in a WAITING state as a result of job run
+	// queuing, the field has the reason why the job run is in that state.
+	StateDetail *string
+
 	// The JobRun timeout in minutes. This is the maximum time that a job run can
 	// consume resources before it is terminated and enters TIMEOUT status. This value
-	// overrides the timeout value set in the parent job. Streaming jobs do not have a
-	// timeout. The default for non-streaming jobs is 2,880 minutes (48 hours).
+	// overrides the timeout value set in the parent job.
+	//
+	// Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the
+	// jobs will throw an exception.
+	//
+	// When the value is left blank, the timeout is defaulted to 2880 minutes.
+	//
+	// Any existing Glue jobs that had a timeout value greater than 7 days will be
+	// defaulted to 7 days. For instance if you have specified a timeout of 20 days for
+	// a batch job, it will be stopped on the 7th day.
+	//
+	// For streaming jobs, if you have set up a maintenance window, it will be
+	// restarted during the maintenance window after 7 days.
 	Timeout *int32
 
 	// The name of the trigger that started this job run.
@@ -4091,37 +5759,41 @@ type JobRun struct {
 	// The type of predefined worker that is allocated when a job runs. Accepts a
 	// value of G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X
 	// for Ray jobs.
+	//
 	//   - For the G.1X worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of
-	//   memory) with 84GB disk (approximately 34GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for workloads such as data transforms,
-	//   joins, and queries, to offers a scalable and cost effective way to run most
-	//   jobs.
+	//   memory) with 94GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for workloads such as data transforms, joins, and queries, to offers
+	//   a scalable and cost effective way to run most jobs.
+	//
 	//   - For the G.2X worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of
-	//   memory) with 128GB disk (approximately 77GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for workloads such as data transforms,
-	//   joins, and queries, to offers a scalable and cost effective way to run most
-	//   jobs.
+	//   memory) with 138GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for workloads such as data transforms, joins, and queries, to offers
+	//   a scalable and cost effective way to run most jobs.
+	//
 	//   - For the G.4X worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of
-	//   memory) with 256GB disk (approximately 235GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for jobs whose workloads contain your most
-	//   demanding transforms, aggregations, joins, and queries. This worker type is
-	//   available only for Glue version 3.0 or later Spark ETL jobs in the following
-	//   Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West
-	//   (Oregon), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo),
-	//   Canada (Central), Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).
+	//   memory) with 256GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for jobs whose workloads contain your most demanding transforms,
+	//   aggregations, joins, and queries. This worker type is available only for Glue
+	//   version 3.0 or later Spark ETL jobs in the following Amazon Web Services
+	//   Regions: US East (Ohio), US East (N. Virginia), US West (Oregon), Asia Pacific
+	//   (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central),
+	//   Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).
+	//
 	//   - For the G.8X worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of
-	//   memory) with 512GB disk (approximately 487GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for jobs whose workloads contain your most
-	//   demanding transforms, aggregations, joins, and queries. This worker type is
-	//   available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon
-	//   Web Services Regions as supported for the G.4X worker type.
+	//   memory) with 512GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for jobs whose workloads contain your most demanding transforms,
+	//   aggregations, joins, and queries. This worker type is available only for Glue
+	//   version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as
+	//   supported for the G.4X worker type.
+	//
 	//   - For the G.025X worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of
-	//   memory) with 84GB disk (approximately 34GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for low volume streaming jobs. This worker
-	//   type is only available for Glue version 3.0 streaming jobs.
+	//   memory) with 84GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for low volume streaming jobs. This worker type is only available
+	//   for Glue version 3.0 or later streaming jobs.
+	//
 	//   - For the Z.2X worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of
-	//   memory) with 128 GB disk (approximately 120GB free), and provides up to 8 Ray
-	//   workers based on the autoscaler.
+	//   memory) with 128 GB disk, and provides up to 8 Ray workers based on the
+	//   autoscaler.
 	WorkerType WorkerType
 
 	noSmithyDocumentSerde
@@ -4131,11 +5803,14 @@ type JobRun struct {
 // job definition is completely overwritten by this information.
 type JobUpdate struct {
 
-	// This field is deprecated. Use MaxCapacity instead. The number of Glue data
-	// processing units (DPUs) to allocate to this job. You can allocate a minimum of 2
-	// DPUs; the default is 10. A DPU is a relative measure of processing power that
-	// consists of 4 vCPUs of compute capacity and 16 GB of memory. For more
-	// information, see the Glue pricing page (https://aws.amazon.com/glue/pricing/) .
+	// This field is deprecated. Use MaxCapacity instead.
+	//
+	// The number of Glue data processing units (DPUs) to allocate to this job. You
+	// can allocate a minimum of 2 DPUs; the default is 10. A DPU is a relative measure
+	// of processing power that consists of 4 vCPUs of compute capacity and 16 GB of
+	// memory. For more information, see the [Glue pricing page].
+	//
+	// [Glue pricing page]: https://aws.amazon.com/glue/pricing/
 	//
 	// Deprecated: This property is deprecated, use MaxCapacity instead.
 	AllocatedCapacity int32
@@ -4151,19 +5826,26 @@ type JobUpdate struct {
 	Connections *ConnectionsList
 
 	// The default arguments for every run of this job, specified as name-value pairs.
+	//
 	// You can specify arguments here that your own job-execution script consumes, as
-	// well as arguments that Glue itself consumes. Job arguments may be logged. Do not
-	// pass plaintext secrets as arguments. Retrieve secrets from a Glue Connection,
-	// Secrets Manager or other secret management mechanism if you intend to keep them
-	// within the Job. For information about how to specify and consume your own Job
-	// arguments, see the Calling Glue APIs in Python (https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html)
-	// topic in the developer guide. For information about the arguments you can
-	// provide to this field when configuring Spark jobs, see the Special Parameters
-	// Used by Glue (https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html)
-	// topic in the developer guide. For information about the arguments you can
-	// provide to this field when configuring Ray jobs, see Using job parameters in
-	// Ray jobs (https://docs.aws.amazon.com/glue/latest/dg/author-job-ray-job-parameters.html)
-	// in the developer guide.
+	// well as arguments that Glue itself consumes.
+	//
+	// Job arguments may be logged. Do not pass plaintext secrets as arguments.
+	// Retrieve secrets from a Glue Connection, Secrets Manager or other secret
+	// management mechanism if you intend to keep them within the Job.
+	//
+	// For information about how to specify and consume your own Job arguments, see
+	// the [Calling Glue APIs in Python]topic in the developer guide.
+	//
+	// For information about the arguments you can provide to this field when
+	// configuring Spark jobs, see the [Special Parameters Used by Glue]topic in the developer guide.
+	//
+	// For information about the arguments you can provide to this field when
+	// configuring Ray jobs, see [Using job parameters in Ray jobs]in the developer guide.
+	//
+	// [Using job parameters in Ray jobs]: https://docs.aws.amazon.com/glue/latest/dg/author-job-ray-job-parameters.html
+	// [Calling Glue APIs in Python]: https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-python-calling.html
+	// [Special Parameters Used by Glue]: https://docs.aws.amazon.com/glue/latest/dg/aws-glue-programming-etl-glue-arguments.html
 	DefaultArguments map[string]string
 
 	// Description of the job being defined.
@@ -4171,8 +5853,11 @@ type JobUpdate struct {
 
 	// Indicates whether the job is run with a standard or flexible execution class.
 	// The standard execution-class is ideal for time-sensitive workloads that require
-	// fast job startup and dedicated resources. The flexible execution class is
-	// appropriate for time-insensitive jobs whose start and completion times may vary.
+	// fast job startup and dedicated resources.
+	//
+	// The flexible execution class is appropriate for time-insensitive jobs whose
+	// start and completion times may vary.
+	//
 	// Only jobs with Glue version 3.0 and above and command type glueetl will be
 	// allowed to set ExecutionClass to FLEX . The flexible execution class is
 	// available for Spark jobs.
@@ -4184,34 +5869,76 @@ type JobUpdate struct {
 
 	// In Spark jobs, GlueVersion determines the versions of Apache Spark and Python
 	// that Glue available in a job. The Python version indicates the version supported
-	// for jobs of type Spark. Ray jobs should set GlueVersion to 4.0 or greater.
-	// However, the versions of Ray, Python and additional libraries available in your
-	// Ray job are determined by the Runtime parameter of the Job command. For more
-	// information about the available Glue versions and corresponding Spark and Python
-	// versions, see Glue version (https://docs.aws.amazon.com/glue/latest/dg/add-job.html)
-	// in the developer guide. Jobs that are created without specifying a Glue version
-	// default to Glue 0.9.
+	// for jobs of type Spark.
+	//
+	// Ray jobs should set GlueVersion to 4.0 or greater. However, the versions of
+	// Ray, Python and additional libraries available in your Ray job are determined by
+	// the Runtime parameter of the Job command.
+	//
+	// For more information about the available Glue versions and corresponding Spark
+	// and Python versions, see [Glue version]in the developer guide.
+	//
+	// Jobs that are created without specifying a Glue version default to Glue 0.9.
+	//
+	// [Glue version]: https://docs.aws.amazon.com/glue/latest/dg/add-job.html
 	GlueVersion *string
+
+	// A mode that describes how a job was created. Valid values are:
+	//
+	//   - SCRIPT - The job was created using the Glue Studio script editor.
+	//
+	//   - VISUAL - The job was created using the Glue Studio visual editor.
+	//
+	//   - NOTEBOOK - The job was created using an interactive sessions notebook.
+	//
+	// When the JobMode field is missing or null, SCRIPT is assigned as the default
+	// value.
+	JobMode JobMode
+
+	// Specifies whether job run queuing is enabled for the job runs for this job.
+	//
+	// A value of true means job run queuing is enabled for the job runs. If false or
+	// not populated, the job runs will not be considered for queueing.
+	//
+	// If this field does not match the value set in the job run, then the value from
+	// the job run field will be used.
+	JobRunQueuingEnabled *bool
 
 	// This field is reserved for future use.
 	LogUri *string
 
+	// This field specifies a day of the week and hour for a maintenance window for
+	// streaming jobs. Glue periodically performs maintenance activities. During these
+	// maintenance windows, Glue will need to restart your streaming jobs.
+	//
+	// Glue will restart the job within 3 hours of the specified maintenance window.
+	// For instance, if you set up the maintenance window for Monday at 10:00AM GMT,
+	// your jobs will be restarted between 10:00AM GMT to 1:00PM GMT.
+	MaintenanceWindow *string
+
 	// For Glue version 1.0 or earlier jobs, using the standard worker type, the
 	// number of Glue data processing units (DPUs) that can be allocated when this job
 	// runs. A DPU is a relative measure of processing power that consists of 4 vCPUs
-	// of compute capacity and 16 GB of memory. For more information, see the Glue
-	// pricing page (https://aws.amazon.com/glue/pricing/) . For Glue version 2.0+
-	// jobs, you cannot specify a Maximum capacity . Instead, you should specify a
-	// Worker type and the Number of workers . Do not set MaxCapacity if using
-	// WorkerType and NumberOfWorkers . The value that can be allocated for MaxCapacity
-	// depends on whether you are running a Python shell job, an Apache Spark ETL job,
-	// or an Apache Spark streaming ETL job:
+	// of compute capacity and 16 GB of memory. For more information, see the [Glue pricing page].
+	//
+	// For Glue version 2.0+ jobs, you cannot specify a Maximum capacity . Instead, you
+	// should specify a Worker type and the Number of workers .
+	//
+	// Do not set MaxCapacity if using WorkerType and NumberOfWorkers .
+	//
+	// The value that can be allocated for MaxCapacity depends on whether you are
+	// running a Python shell job, an Apache Spark ETL job, or an Apache Spark
+	// streaming ETL job:
+	//
 	//   - When you specify a Python shell job ( JobCommand.Name ="pythonshell"), you
 	//   can allocate either 0.0625 or 1 DPU. The default is 0.0625 DPU.
+	//
 	//   - When you specify an Apache Spark ETL job ( JobCommand.Name ="glueetl") or
 	//   Apache Spark streaming ETL job ( JobCommand.Name ="gluestreaming"), you can
 	//   allocate from 2 to 100 DPUs. The default is 10 DPUs. This job type cannot have a
 	//   fractional DPU allocation.
+	//
+	// [Glue pricing page]: https://aws.amazon.com/glue/pricing/
 	MaxCapacity *float64
 
 	// The maximum number of times to retry this job if it fails.
@@ -4240,44 +5967,59 @@ type JobUpdate struct {
 	SourceControlDetails *SourceControlDetails
 
 	// The job timeout in minutes. This is the maximum time that a job run can consume
-	// resources before it is terminated and enters TIMEOUT status. The default is
-	// 2,880 minutes (48 hours).
+	// resources before it is terminated and enters TIMEOUT status.
+	//
+	// Jobs must have timeout values less than 7 days or 10080 minutes. Otherwise, the
+	// jobs will throw an exception.
+	//
+	// When the value is left blank, the timeout is defaulted to 2880 minutes.
+	//
+	// Any existing Glue jobs that had a timeout value greater than 7 days will be
+	// defaulted to 7 days. For instance if you have specified a timeout of 20 days for
+	// a batch job, it will be stopped on the 7th day.
+	//
+	// For streaming jobs, if you have set up a maintenance window, it will be
+	// restarted during the maintenance window after 7 days.
 	Timeout *int32
 
 	// The type of predefined worker that is allocated when a job runs. Accepts a
 	// value of G.1X, G.2X, G.4X, G.8X or G.025X for Spark jobs. Accepts the value Z.2X
 	// for Ray jobs.
+	//
 	//   - For the G.1X worker type, each worker maps to 1 DPU (4 vCPUs, 16 GB of
-	//   memory) with 84GB disk (approximately 34GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for workloads such as data transforms,
-	//   joins, and queries, to offers a scalable and cost effective way to run most
-	//   jobs.
+	//   memory) with 94GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for workloads such as data transforms, joins, and queries, to offers
+	//   a scalable and cost effective way to run most jobs.
+	//
 	//   - For the G.2X worker type, each worker maps to 2 DPU (8 vCPUs, 32 GB of
-	//   memory) with 128GB disk (approximately 77GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for workloads such as data transforms,
-	//   joins, and queries, to offers a scalable and cost effective way to run most
-	//   jobs.
+	//   memory) with 138GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for workloads such as data transforms, joins, and queries, to offers
+	//   a scalable and cost effective way to run most jobs.
+	//
 	//   - For the G.4X worker type, each worker maps to 4 DPU (16 vCPUs, 64 GB of
-	//   memory) with 256GB disk (approximately 235GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for jobs whose workloads contain your most
-	//   demanding transforms, aggregations, joins, and queries. This worker type is
-	//   available only for Glue version 3.0 or later Spark ETL jobs in the following
-	//   Amazon Web Services Regions: US East (Ohio), US East (N. Virginia), US West
-	//   (Oregon), Asia Pacific (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo),
-	//   Canada (Central), Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).
+	//   memory) with 256GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for jobs whose workloads contain your most demanding transforms,
+	//   aggregations, joins, and queries. This worker type is available only for Glue
+	//   version 3.0 or later Spark ETL jobs in the following Amazon Web Services
+	//   Regions: US East (Ohio), US East (N. Virginia), US West (Oregon), Asia Pacific
+	//   (Singapore), Asia Pacific (Sydney), Asia Pacific (Tokyo), Canada (Central),
+	//   Europe (Frankfurt), Europe (Ireland), and Europe (Stockholm).
+	//
 	//   - For the G.8X worker type, each worker maps to 8 DPU (32 vCPUs, 128 GB of
-	//   memory) with 512GB disk (approximately 487GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for jobs whose workloads contain your most
-	//   demanding transforms, aggregations, joins, and queries. This worker type is
-	//   available only for Glue version 3.0 or later Spark ETL jobs, in the same Amazon
-	//   Web Services Regions as supported for the G.4X worker type.
+	//   memory) with 512GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for jobs whose workloads contain your most demanding transforms,
+	//   aggregations, joins, and queries. This worker type is available only for Glue
+	//   version 3.0 or later Spark ETL jobs, in the same Amazon Web Services Regions as
+	//   supported for the G.4X worker type.
+	//
 	//   - For the G.025X worker type, each worker maps to 0.25 DPU (2 vCPUs, 4 GB of
-	//   memory) with 84GB disk (approximately 34GB free), and provides 1 executor per
-	//   worker. We recommend this worker type for low volume streaming jobs. This worker
-	//   type is only available for Glue version 3.0 streaming jobs.
+	//   memory) with 84GB disk, and provides 1 executor per worker. We recommend this
+	//   worker type for low volume streaming jobs. This worker type is only available
+	//   for Glue version 3.0 or later streaming jobs.
+	//
 	//   - For the Z.2X worker type, each worker maps to 2 M-DPU (8vCPUs, 64 GB of
-	//   memory) with 128 GB disk (approximately 120GB free), and provides up to 8 Ray
-	//   workers based on the autoscaler.
+	//   memory) with 128 GB disk, and provides up to 8 Ray workers based on the
+	//   autoscaler.
 	WorkerType WorkerType
 
 	noSmithyDocumentSerde
@@ -4331,9 +6073,9 @@ type JoinColumn struct {
 type JsonClassifier struct {
 
 	// A JsonPath string defining the JSON data for the classifier to classify. Glue
-	// supports a subset of JsonPath, as described in Writing JsonPath Custom
-	// Classifiers (https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html#custom-classifier-json)
-	// .
+	// supports a subset of JsonPath, as described in [Writing JsonPath Custom Classifiers].
+	//
+	// [Writing JsonPath Custom Classifiers]: https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html#custom-classifier-json
 	//
 	// This member is required.
 	JsonPath *string
@@ -4435,8 +6177,9 @@ type KafkaStreamingSourceOptions struct {
 	// The timestamp of the record in the Kafka topic to start reading data from. The
 	// possible values are a timestamp string in UTC format of the pattern
 	// yyyy-mm-ddTHH:MM:SSZ (where Z represents a UTC timezone offset with a +/-. For
-	// example: "2023-04-04T08:00:00+08:00"). Only one of StartingTimestamp or
-	// StartingOffsets must be set.
+	// example: "2023-04-04T08:00:00+08:00").
+	//
+	// Only one of StartingTimestamp or StartingOffsets must be set.
 	StartingTimestamp *time.Time
 
 	// A Java regex string that identifies the topic list to subscribe to. You must
@@ -4509,13 +6252,16 @@ type KinesisStreamingSourceOptions struct {
 	// version 2.0 and above.
 	IdleTimeBetweenReadsInMs *int64
 
-	// The maximum number of records to fetch per shard in the Kinesis data stream.
-	// The default value is 100000 .
+	// The maximum number of records to fetch per shard in the Kinesis data stream per
+	// microbatch. Note: The client can exceed this limit if the streaming job has
+	// already read extra records from Kinesis (in the same get-records call). If
+	// MaxFetchRecordsPerShard needs to be strict then it needs to be a multiple of
+	// MaxRecordPerRead . The default value is 100000 .
 	MaxFetchRecordsPerShard *int64
 
-	// The maximum time spent in the job executor to fetch a record from the Kinesis
-	// data stream per shard, specified in milliseconds (ms). The default value is 1000
-	// .
+	// The maximum time spent for the job executor to read records for the current
+	// batch from the Kinesis data stream, specified in milliseconds (ms). Multiple
+	// GetRecords API calls may be made within this time. The default value is 1000 .
 	MaxFetchTimeInMs *int64
 
 	// The maximum number of records to fetch from the Kinesis data stream in each
@@ -4550,9 +6296,10 @@ type KinesisStreamingSourceOptions struct {
 	// possible values are "latest" , "trim_horizon" , "earliest" , or a timestamp
 	// string in UTC format in the pattern yyyy-mm-ddTHH:MM:SSZ (where Z represents a
 	// UTC timezone offset with a +/-. For example: "2023-04-04T08:00:00-04:00"). The
-	// default value is "latest" . Note: Using a value that is a timestamp string in
-	// UTC format for "startingPosition" is supported only for Glue version 4.0 or
-	// later.
+	// default value is "latest" .
+	//
+	// Note: Using a value that is a timestamp string in UTC format for
+	// "startingPosition" is supported only for Glue version 4.0 or later.
 	StartingPosition StartingPosition
 
 	// The timestamp of the record in the Kinesis data stream to start reading data
@@ -4647,7 +6394,9 @@ type LastCrawlInfo struct {
 type LineageConfiguration struct {
 
 	// Specifies whether data lineage is enabled for the crawler. Valid values are:
+	//
 	//   - ENABLE: enables data lineage for the crawler
+	//
 	//   - DISABLE: disables data lineage for the crawler
 	CrawlerLineageSettings CrawlerLineageSettings
 
@@ -4697,13 +6446,19 @@ type Mapping struct {
 	// Only applicable to nested data structures. If you want to change the parent
 	// structure, but also one of its children, you can fill out this data strucutre.
 	// It is also Mapping , but its FromPath will be the parent's FromPath plus the
-	// FromPath from this structure. For the children part, suppose you have the
-	// structure: { "FromPath": "OuterStructure", "ToKey": "OuterStructure", "ToType":
-	// "Struct", "Dropped": false, "Chidlren": [{ "FromPath": "inner", "ToKey":
-	// "inner", "ToType": "Double", "Dropped": false, }] } You can specify a Mapping
-	// that looks like: { "FromPath": "OuterStructure", "ToKey": "OuterStructure",
-	// "ToType": "Struct", "Dropped": false, "Chidlren": [{ "FromPath": "inner",
-	// "ToKey": "inner", "ToType": "Double", "Dropped": false, }] }
+	// FromPath from this structure.
+	//
+	// For the children part, suppose you have the structure:
+	//
+	//     { "FromPath": "OuterStructure", "ToKey": "OuterStructure", "ToType": "Struct",
+	//     "Dropped": false, "Chidlren": [{ "FromPath": "inner", "ToKey": "inner",
+	//     "ToType": "Double", "Dropped": false, }] }
+	//
+	// You can specify a Mapping that looks like:
+	//
+	//     { "FromPath": "OuterStructure", "ToKey": "OuterStructure", "ToType": "Struct",
+	//     "Dropped": false, "Chidlren": [{ "FromPath": "inner", "ToKey": "inner",
+	//     "ToType": "Double", "Dropped": false, }] }
 	Children []Mapping
 
 	// If true, then the column is removed.
@@ -4805,6 +6560,27 @@ type MetadataKeyValuePair struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the metric based observation generated based on evaluated data
+// quality metrics.
+type MetricBasedObservation struct {
+
+	// The name of the data quality metric used for generating the observation.
+	MetricName *string
+
+	// An object of type DataQualityMetricValues representing the analysis of the data
+	// quality metric value.
+	MetricValues *DataQualityMetricValues
+
+	// A list of new data quality rules generated as part of the observation based on
+	// the data quality metric value.
+	NewRules []string
+
+	// The Statistic ID.
+	StatisticId *string
+
+	noSmithyDocumentSerde
+}
+
 // Specifies a Microsoft SQL server data source in the Glue Data Catalog.
 type MicrosoftSQLServerCatalogSource struct {
 
@@ -4868,9 +6644,10 @@ type MLTransform struct {
 
 	// This value determines which version of Glue this machine learning transform is
 	// compatible with. Glue 1.0 is recommended for most customers. If the value is not
-	// set, the Glue compatibility defaults to Glue 0.9. For more information, see
-	// Glue Versions (https://docs.aws.amazon.com/glue/latest/dg/release-notes.html#release-notes-versions)
-	// in the developer guide.
+	// set, the Glue compatibility defaults to Glue 0.9. For more information, see [Glue Versions]in
+	// the developer guide.
+	//
+	// [Glue Versions]: https://docs.aws.amazon.com/glue/latest/dg/release-notes.html#release-notes-versions
 	GlueVersion *string
 
 	// A list of Glue table definitions used by the transform.
@@ -4888,16 +6665,23 @@ type MLTransform struct {
 	// The number of Glue data processing units (DPUs) that are allocated to task runs
 	// for this transform. You can allocate from 2 to 100 DPUs; the default is 10. A
 	// DPU is a relative measure of processing power that consists of 4 vCPUs of
-	// compute capacity and 16 GB of memory. For more information, see the Glue
-	// pricing page (http://aws.amazon.com/glue/pricing/) . MaxCapacity is a mutually
-	// exclusive option with NumberOfWorkers and WorkerType .
+	// compute capacity and 16 GB of memory. For more information, see the [Glue pricing page].
+	//
+	// MaxCapacity is a mutually exclusive option with NumberOfWorkers and WorkerType .
+	//
 	//   - If either NumberOfWorkers or WorkerType is set, then MaxCapacity cannot be
 	//   set.
+	//
 	//   - If MaxCapacity is set then neither NumberOfWorkers or WorkerType can be set.
+	//
 	//   - If WorkerType is set, then NumberOfWorkers is required (and vice versa).
+	//
 	//   - MaxCapacity and NumberOfWorkers must both be at least 1.
+	//
 	// When the WorkerType field is set to a value other than Standard , the
 	// MaxCapacity field is set automatically and becomes read-only.
+	//
+	// [Glue pricing page]: http://aws.amazon.com/glue/pricing/
 	MaxCapacity *float64
 
 	// The maximum number of times to retry after an MLTaskRun of the machine learning
@@ -4909,8 +6693,9 @@ type MLTransform struct {
 	Name *string
 
 	// The number of workers of a defined workerType that are allocated when a task of
-	// the transform runs. If WorkerType is set, then NumberOfWorkers is required (and
-	// vice versa).
+	// the transform runs.
+	//
+	// If WorkerType is set, then NumberOfWorkers is required (and vice versa).
 	NumberOfWorkers *int32
 
 	// A TransformParameters object. You can use parameters to tune (customize) the
@@ -4922,12 +6707,15 @@ type MLTransform struct {
 	// The name or Amazon Resource Name (ARN) of the IAM role with the required
 	// permissions. The required permissions include both Glue service role permissions
 	// to Glue resources, and Amazon S3 permissions required by the transform.
+	//
 	//   - This role needs Glue service role permissions to allow access to resources
-	//   in Glue. See Attach a Policy to IAM Users That Access Glue (https://docs.aws.amazon.com/glue/latest/dg/attach-policy-iam-user.html)
-	//   .
+	//   in Glue. See [Attach a Policy to IAM Users That Access Glue].
+	//
 	//   - This role needs permission to your Amazon Simple Storage Service (Amazon
 	//   S3) sources, targets, temporary directory, scripts, and any libraries used by
 	//   the task run for this transform.
+	//
+	// [Attach a Policy to IAM Users That Access Glue]: https://docs.aws.amazon.com/glue/latest/dg/attach-policy-iam-user.html
 	Role *string
 
 	// A map of key-value pairs representing the columns and data types that this
@@ -4951,17 +6739,25 @@ type MLTransform struct {
 
 	// The type of predefined worker that is allocated when a task of this transform
 	// runs. Accepts a value of Standard, G.1X, or G.2X.
+	//
 	//   - For the Standard worker type, each worker provides 4 vCPU, 16 GB of memory
 	//   and a 50GB disk, and 2 executors per worker.
+	//
 	//   - For the G.1X worker type, each worker provides 4 vCPU, 16 GB of memory and a
 	//   64GB disk, and 1 executor per worker.
+	//
 	//   - For the G.2X worker type, each worker provides 8 vCPU, 32 GB of memory and a
 	//   128GB disk, and 1 executor per worker.
+	//
 	// MaxCapacity is a mutually exclusive option with NumberOfWorkers and WorkerType .
+	//
 	//   - If either NumberOfWorkers or WorkerType is set, then MaxCapacity cannot be
 	//   set.
+	//
 	//   - If MaxCapacity is set then neither NumberOfWorkers or WorkerType can be set.
+	//
 	//   - If WorkerType is set, then NumberOfWorkers is required (and vice versa).
+	//
 	//   - MaxCapacity and NumberOfWorkers must both be at least 1.
 	WorkerType WorkerType
 
@@ -4973,7 +6769,9 @@ type MLTransform struct {
 type MLUserDataEncryption struct {
 
 	// The encryption mode applied to user data. Valid values are:
+	//
 	//   - DISABLED: encryption is disabled
+	//
 	//   - SSEKMS: use of server-side encryption with Key Management Service (SSE-KMS)
 	//   for user data stored in Amazon S3.
 	//
@@ -4998,9 +6796,10 @@ type MongoDBTarget struct {
 
 	// Indicates whether to scan all the records, or to sample rows from the table.
 	// Scanning all the records can take a long time when the table is not a high
-	// throughput table. A value of true means to scan all records, while a value of
-	// false means to sample the records. If no value is specified, the value defaults
-	// to true .
+	// throughput table.
+	//
+	// A value of true means to scan all records, while a value of false means to
+	// sample the records. If no value is specified, the value defaults to true .
 	ScanAll *bool
 
 	noSmithyDocumentSerde
@@ -5121,6 +6920,83 @@ type NullValueField struct {
 	noSmithyDocumentSerde
 }
 
+// The OAuth2 client app used for the connection.
+type OAuth2ClientApplication struct {
+
+	// The reference to the SaaS-side client app that is Amazon Web Services managed.
+	AWSManagedClientApplicationReference *string
+
+	// The client application clientID if the ClientAppType is USER_MANAGED .
+	UserManagedClientApplicationClientId *string
+
+	noSmithyDocumentSerde
+}
+
+// The credentials used when the authentication type is OAuth2 authentication.
+type OAuth2Credentials struct {
+
+	// The access token used when the authentication type is OAuth2.
+	AccessToken *string
+
+	// The JSON Web Token (JWT) used when the authentication type is OAuth2.
+	JwtToken *string
+
+	// The refresh token used when the authentication type is OAuth2.
+	RefreshToken *string
+
+	// The client application client secret if the client application is user managed.
+	UserManagedClientApplicationClientSecret *string
+
+	noSmithyDocumentSerde
+}
+
+// A structure containing properties for OAuth2 authentication.
+type OAuth2Properties struct {
+
+	// The client application type. For example, AWS_MANAGED or USER_MANAGED.
+	OAuth2ClientApplication *OAuth2ClientApplication
+
+	// The OAuth2 grant type. For example, AUTHORIZATION_CODE , JWT_BEARER , or
+	// CLIENT_CREDENTIALS .
+	OAuth2GrantType OAuth2GrantType
+
+	// The URL of the provider's authentication server, to exchange an authorization
+	// code for an access token.
+	TokenUrl *string
+
+	// A map of parameters that are added to the token GET request.
+	TokenUrlParametersMap map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// A structure containing properties for OAuth2 in the CreateConnection request.
+type OAuth2PropertiesInput struct {
+
+	// The set of properties required for the the OAuth2 AUTHORIZATION_CODE grant type.
+	AuthorizationCodeProperties *AuthorizationCodeProperties
+
+	// The client application type in the CreateConnection request. For example,
+	// AWS_MANAGED or USER_MANAGED .
+	OAuth2ClientApplication *OAuth2ClientApplication
+
+	// The credentials used when the authentication type is OAuth2 authentication.
+	OAuth2Credentials *OAuth2Credentials
+
+	// The OAuth2 grant type in the CreateConnection request. For example,
+	// AUTHORIZATION_CODE , JWT_BEARER , or CLIENT_CREDENTIALS .
+	OAuth2GrantType OAuth2GrantType
+
+	// The URL of the provider's authentication server, to exchange an authorization
+	// code for an access token.
+	TokenUrl *string
+
+	// A map of parameters that are added to the token GET request.
+	TokenUrlParametersMap map[string]string
+
+	noSmithyDocumentSerde
+}
+
 // A structure representing an open format table.
 type OpenTableFormatInput struct {
 
@@ -5210,6 +7086,25 @@ type Order struct {
 	noSmithyDocumentSerde
 }
 
+// The configuration for an orphan file deletion optimizer.
+type OrphanFileDeletionConfiguration struct {
+
+	// The configuration for an Iceberg orphan file deletion optimizer.
+	IcebergConfiguration *IcebergOrphanFileDeletionConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// A structure that contains orphan file deletion metrics for the optimizer run.
+type OrphanFileDeletionMetrics struct {
+
+	// A structure containing the Iceberg orphan file deletion metrics for the
+	// optimizer run.
+	IcebergMetrics *IcebergOrphanFileDeletionMetrics
+
+	noSmithyDocumentSerde
+}
+
 // A structure containing other metadata for a schema version belonging to the
 // same metadata key.
 type OtherMetadataValueListItem struct {
@@ -5293,11 +7188,17 @@ type PartitionIndexDescriptor struct {
 	// This member is required.
 	IndexName *string
 
-	// The status of the partition index. The possible statuses are:
+	// The status of the partition index.
+	//
+	// The possible statuses are:
+	//
 	//   - CREATING: The index is being created. When an index is in a CREATING state,
 	//   the index or its table cannot be deleted.
+	//
 	//   - ACTIVE: The index creation succeeds.
+	//
 	//   - FAILED: The index creation fails.
+	//
 	//   - DELETING: The index is deleted from the list of indexes.
 	//
 	// This member is required.
@@ -5332,10 +7233,12 @@ type PartitionInput struct {
 	StorageDescriptor *StorageDescriptor
 
 	// The values of the partition. Although this parameter is not required by the
-	// SDK, you must specify this parameter for a valid input. The values for the keys
-	// for the new partition must be passed as an array of String objects that must be
-	// ordered in the same order as the partition keys appearing in the Amazon S3
-	// prefix. Otherwise Glue will add the values to the wrong keys.
+	// SDK, you must specify this parameter for a valid input.
+	//
+	// The values for the keys for the new partition must be passed as an array of
+	// String objects that must be ordered in the same order as the partition keys
+	// appearing in the Amazon S3 prefix. Otherwise Glue will add the values to the
+	// wrong keys.
 	Values []string
 
 	noSmithyDocumentSerde
@@ -5352,12 +7255,10 @@ type PartitionValueList struct {
 	noSmithyDocumentSerde
 }
 
-// Specifies the physical requirements for a connection.
+// The OAuth client app in GetConnection response.
 type PhysicalConnectionRequirements struct {
 
-	// The connection's Availability Zone. This field is redundant because the
-	// specified subnet implies the Availability Zone to be used. Currently the field
-	// must be populated, but it will be deprecated in the future.
+	// The connection's Availability Zone.
 	AvailabilityZone *string
 
 	// The security group ID list used by the connection.
@@ -5373,7 +7274,9 @@ type PhysicalConnectionRequirements struct {
 type PIIDetection struct {
 
 	// Indicates the types of entities the PIIDetection transform will identify as PII
-	// data. PII type entities include: PERSON_NAME, DATE, USA_SNN, EMAIL, USA_ITIN,
+	// data.
+	//
+	// PII type entities include: PERSON_NAME, DATE, USA_SNN, EMAIL, USA_ITIN,
 	// USA_PASSPORT_NUMBER, PHONE_NUMBER, BANK_ACCOUNT, IP_ADDRESS, MAC_ADDRESS,
 	// USA_CPT_CODE, USA_HCPCS_CODE, USA_NATIONAL_DRUG_CODE,
 	// USA_MEDICARE_BENEFICIARY_IDENTIFIER,
@@ -5499,6 +7402,54 @@ type PrincipalPermissions struct {
 	noSmithyDocumentSerde
 }
 
+// Specifies the job and session values that an admin configures in an Glue usage
+// profile.
+type ProfileConfiguration struct {
+
+	// A key-value map of configuration parameters for Glue jobs.
+	JobConfiguration map[string]ConfigurationObject
+
+	// A key-value map of configuration parameters for Glue sessions.
+	SessionConfiguration map[string]ConfigurationObject
+
+	noSmithyDocumentSerde
+}
+
+// An object that defines a connection type for a compute environment.
+type Property struct {
+
+	// A description of the property.
+	//
+	// This member is required.
+	Description *string
+
+	// The name of the property.
+	//
+	// This member is required.
+	Name *string
+
+	// Describes the type of property.
+	//
+	// This member is required.
+	PropertyTypes []PropertyType
+
+	// Indicates whether the property is required.
+	//
+	// This member is required.
+	Required *bool
+
+	// A list of AllowedValue objects representing the values allowed for the property.
+	AllowedValues []AllowedValue
+
+	// Indicates which data operations are applicable to the property.
+	DataOperationScopes []DataOperation
+
+	// The default value for the property.
+	DefaultValue *string
+
+	noSmithyDocumentSerde
+}
+
 // Defines a property predicate.
 type PropertyPredicate struct {
 
@@ -5510,6 +7461,30 @@ type PropertyPredicate struct {
 
 	// The value of the property.
 	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// A structure used as a protocol between query engines and Lake Formation or
+// Glue. Contains both a Lake Formation generated authorization identifier and
+// information from the request's authorization context.
+type QuerySessionContext struct {
+
+	// An opaque string-string map passed by the query engine.
+	AdditionalContext map[string]string
+
+	// An identifier string for the consumer cluster.
+	ClusterId *string
+
+	// A cryptographically generated query identifier generated by Glue or Lake
+	// Formation.
+	QueryAuthorizationId *string
+
+	// A unique identifier generated by the query engine for the query.
+	QueryId *string
+
+	// A timestamp provided by the query engine for when the query started.
+	QueryStartTime *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -5528,9 +7503,24 @@ type Recipe struct {
 	Name *string
 
 	// A reference to the DataBrew recipe used by the node.
+	RecipeReference *RecipeReference
+
+	// Transform steps used in the recipe node.
+	RecipeSteps []RecipeStep
+
+	noSmithyDocumentSerde
+}
+
+// Actions defined in the Glue Studio data preparation recipe node.
+type RecipeAction struct {
+
+	// The operation of the recipe action.
 	//
 	// This member is required.
-	RecipeReference *RecipeReference
+	Operation *string
+
+	// The parameters of the recipe action.
+	Parameters map[string]string
 
 	noSmithyDocumentSerde
 }
@@ -5551,18 +7541,37 @@ type RecipeReference struct {
 	noSmithyDocumentSerde
 }
 
+// A recipe step used in a Glue Studio data preparation recipe node.
+type RecipeStep struct {
+
+	// The transformation action of the recipe step.
+	//
+	// This member is required.
+	Action *RecipeAction
+
+	// The condition expressions for the recipe step.
+	ConditionExpressions []ConditionExpression
+
+	noSmithyDocumentSerde
+}
+
 // When crawling an Amazon S3 data source after the first crawl is complete,
 // specifies whether to crawl the entire dataset again or to crawl only folders
-// that were added since the last crawler run. For more information, see
-// Incremental Crawls in Glue (https://docs.aws.amazon.com/glue/latest/dg/incremental-crawls.html)
-// in the developer guide.
+// that were added since the last crawler run. For more information, see [Incremental Crawls in Glue]in the
+// developer guide.
+//
+// [Incremental Crawls in Glue]: https://docs.aws.amazon.com/glue/latest/dg/incremental-crawls.html
 type RecrawlPolicy struct {
 
 	// Specifies whether to crawl the entire dataset again or to crawl only folders
-	// that were added since the last crawler run. A value of CRAWL_EVERYTHING
-	// specifies crawling the entire dataset again. A value of CRAWL_NEW_FOLDERS_ONLY
-	// specifies crawling only folders that were added since the last crawler run. A
-	// value of CRAWL_EVENT_MODE specifies crawling only the changes identified by
+	// that were added since the last crawler run.
+	//
+	// A value of CRAWL_EVERYTHING specifies crawling the entire dataset again.
+	//
+	// A value of CRAWL_NEW_FOLDERS_ONLY specifies crawling only folders that were
+	// added since the last crawler run.
+	//
+	// A value of CRAWL_EVENT_MODE specifies crawling only the changes identified by
 	// Amazon S3 events.
 	RecrawlBehavior RecrawlBehavior
 
@@ -5728,6 +7737,57 @@ type ResourceUri struct {
 
 	// The URI for accessing the resource.
 	Uri *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for a snapshot retention optimizer.
+type RetentionConfiguration struct {
+
+	// The configuration for an Iceberg snapshot retention optimizer.
+	IcebergConfiguration *IcebergRetentionConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// A structure that contains retention metrics for the optimizer run.
+type RetentionMetrics struct {
+
+	// A structure containing the Iceberg retention metrics for the optimizer run.
+	IcebergMetrics *IcebergRetentionMetrics
+
+	noSmithyDocumentSerde
+}
+
+// A run identifier.
+type RunIdentifier struct {
+
+	// The Job Run ID.
+	JobRunId *string
+
+	// The Run ID.
+	RunId *string
+
+	noSmithyDocumentSerde
+}
+
+// Metrics for the optimizer run.
+//
+// This structure is deprecated. See the individual metric members for compaction,
+// retention, and orphan file deletion.
+type RunMetrics struct {
+
+	// The duration of the job in hours.
+	JobDurationInHour *string
+
+	// The number of bytes removed by the compaction job run.
+	NumberOfBytesCompacted *string
+
+	// The number of DPU hours consumed by the job.
+	NumberOfDpus *string
+
+	// The number of files removed by the compaction job run.
+	NumberOfFilesCompacted *string
 
 	noSmithyDocumentSerde
 }
@@ -6404,8 +8464,9 @@ type S3Target struct {
 	EventQueueArn *string
 
 	// A list of glob patterns used to exclude from the crawl. For more information,
-	// see Catalog Tables with a Crawler (https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html)
-	// .
+	// see [Catalog Tables with a Crawler].
+	//
+	// [Catalog Tables with a Crawler]: https://docs.aws.amazon.com/glue/latest/dg/add-crawler.html
 	Exclusions []string
 
 	// The path to the Amazon S3 target.
@@ -6422,10 +8483,10 @@ type S3Target struct {
 // A scheduling object using a cron statement to schedule an event.
 type Schedule struct {
 
-	// A cron expression used to specify the schedule (see Time-Based Schedules for
-	// Jobs and Crawlers (https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html)
-	// . For example, to run something every day at 12:15 UTC, you would specify:
-	// cron(15 12 * * ? *) .
+	// A cron expression used to specify the schedule (see [Time-Based Schedules for Jobs and Crawlers]. For example, to run
+	// something every day at 12:15 UTC, you would specify: cron(15 12 * * ? *) .
+	//
+	// [Time-Based Schedules for Jobs and Crawlers]: https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html
 	ScheduleExpression *string
 
 	// The state of the schedule.
@@ -6527,7 +8588,7 @@ type SchemaVersionErrorItem struct {
 	ErrorDetails *ErrorDetails
 
 	// The version number of the schema.
-	VersionNumber int64
+	VersionNumber *int64
 
 	noSmithyDocumentSerde
 }
@@ -6548,7 +8609,7 @@ type SchemaVersionListItem struct {
 	Status SchemaVersionStatus
 
 	// The version number of the schema.
-	VersionNumber int64
+	VersionNumber *int64
 
 	noSmithyDocumentSerde
 }
@@ -6560,7 +8621,7 @@ type SchemaVersionNumber struct {
 	LatestVersion bool
 
 	// The version number of the schema.
-	VersionNumber int64
+	VersionNumber *int64
 
 	noSmithyDocumentSerde
 }
@@ -6593,7 +8654,7 @@ type Segment struct {
 	// The total number of segments.
 	//
 	// This member is required.
-	TotalSegments int32
+	TotalSegments *int32
 
 	noSmithyDocumentSerde
 }
@@ -6664,11 +8725,17 @@ type Session struct {
 	// The command object.See SessionCommand.
 	Command *SessionCommand
 
+	// The date and time that this session is completed.
+	CompletedOn *time.Time
+
 	// The number of connections used for the session.
 	Connections *ConnectionsList
 
 	// The time and date when the session was created.
 	CreatedOn *time.Time
+
+	// The DPUs consumed by the session (formula: ExecutionTime * MaxCapacity).
+	DPUSeconds *float64
 
 	// A map array of key-value pairs. Max is 75 pairs.
 	DefaultArguments map[string]string
@@ -6679,6 +8746,9 @@ type Session struct {
 	// The error message displayed during the session.
 	ErrorMessage *string
 
+	// The total time the session ran for.
+	ExecutionTime *float64
+
 	// The Glue version determines the versions of Apache Spark and Python that Glue
 	// supports. The GlueVersion must be greater than 2.0.
 	GlueVersion *string
@@ -6686,10 +8756,19 @@ type Session struct {
 	// The ID of the session.
 	Id *string
 
+	// The number of minutes when idle before the session times out.
+	IdleTimeout *int32
+
 	// The number of Glue data processing units (DPUs) that can be allocated when the
 	// job runs. A DPU is a relative measure of processing power that consists of 4
 	// vCPUs of compute capacity and 16 GB memory.
 	MaxCapacity *float64
+
+	// The number of workers of a defined WorkerType to use for the session.
+	NumberOfWorkers *int32
+
+	// The name of an Glue usage profile associated with the session.
+	ProfileName *string
 
 	// The code execution progress of the session.
 	Progress float64
@@ -6703,6 +8782,11 @@ type Session struct {
 
 	// The session status.
 	Status SessionStatus
+
+	// The type of predefined worker that is allocated when a session runs. Accepts a
+	// value of G.1X , G.2X , G.4X , or G.8X for Spark sessions. Accepts the value Z.2X
+	// for Ray sessions.
+	WorkerType WorkerType
 
 	noSmithyDocumentSerde
 }
@@ -6903,6 +8987,33 @@ type SourceControlDetails struct {
 	noSmithyDocumentSerde
 }
 
+// The resource properties associated with the integration source.
+type SourceProcessingProperties struct {
+
+	// The IAM role to access the Glue connection.
+	RoleArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Properties used by the source leg to process data from the source.
+type SourceTableConfig struct {
+
+	// A list of fields used for column-level filtering.
+	Fields []string
+
+	// A condition clause used for row-level filtering.
+	FilterPredicate *string
+
+	// Unique identifier of a record.
+	PrimaryKey []string
+
+	// Incremental pull timestamp-based field.
+	RecordUpdateField *string
+
+	noSmithyDocumentSerde
+}
+
 // Specifies a connector to an Apache Spark data source.
 type SparkConnectorSource struct {
 
@@ -6994,7 +9105,11 @@ type SparkSQL struct {
 	// A list of aliases. An alias allows you to specify what name to use in the SQL
 	// for a given input. For example, you have a datasource named "MyDataSource". If
 	// you specify From as MyDataSource, and Alias as SqlName, then in your SQL you
-	// can do: select * from SqlName and that gets data from MyDataSource.
+	// can do:
+	//
+	//     select * from SqlName
+	//
+	// and that gets data from MyDataSource.
 	//
 	// This member is required.
 	SqlAliases []SqlAlias
@@ -7154,6 +9269,101 @@ type StatementOutputData struct {
 	noSmithyDocumentSerde
 }
 
+// A Statistic Annotation.
+type StatisticAnnotation struct {
+
+	// The inclusion annotation applied to the statistic.
+	InclusionAnnotation *TimestampedInclusionAnnotation
+
+	// The Profile ID.
+	ProfileId *string
+
+	// The Statistic ID.
+	StatisticId *string
+
+	// The timestamp when the annotated statistic was recorded.
+	StatisticRecordedOn *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// The statistic model result.
+type StatisticModelResult struct {
+
+	// The actual value.
+	ActualValue *float64
+
+	// The date.
+	Date *time.Time
+
+	// The inclusion annotation.
+	InclusionAnnotation InclusionAnnotationValue
+
+	// The lower bound.
+	LowerBound *float64
+
+	// The predicted value.
+	PredictedValue *float64
+
+	// The upper bound.
+	UpperBound *float64
+
+	noSmithyDocumentSerde
+}
+
+// Summary information about a statistic.
+type StatisticSummary struct {
+
+	// The list of columns referenced by the statistic.
+	ColumnsReferenced []string
+
+	// The value of the statistic.
+	DoubleValue float64
+
+	// The evaluation level of the statistic. Possible values: Dataset , Column ,
+	// Multicolumn .
+	EvaluationLevel StatisticEvaluationLevel
+
+	// The inclusion annotation for the statistic.
+	InclusionAnnotation *TimestampedInclusionAnnotation
+
+	// The Profile ID.
+	ProfileId *string
+
+	// The timestamp when the statistic was recorded.
+	RecordedOn *time.Time
+
+	// The list of datasets referenced by the statistic.
+	ReferencedDatasets []string
+
+	// The Run Identifier
+	RunIdentifier *RunIdentifier
+
+	// The Statistic ID.
+	StatisticId *string
+
+	// The name of the statistic.
+	StatisticName *string
+
+	// A StatisticPropertiesMap , which contains a NameString and DescriptionString
+	StatisticProperties map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// A structure containing information about an asynchronous change to a table.
+type StatusDetails struct {
+
+	// A Table object representing the requested changes.
+	RequestedChange *Table
+
+	// A list of ViewValidation objects that contain information for an analytical
+	// engine to validate a view.
+	ViewValidations []ViewValidation
+
+	noSmithyDocumentSerde
+}
+
 // Describes the physical storage of table data.
 type StorageDescriptor struct {
 
@@ -7189,9 +9399,10 @@ type StorageDescriptor struct {
 	// The user-supplied properties in key-value form.
 	Parameters map[string]string
 
-	// An object that references a schema stored in the Glue Schema Registry. When
-	// creating a table, you can pass an empty list of columns for the schema, and
-	// instead use a schema reference.
+	// An object that references a schema stored in the Glue Schema Registry.
+	//
+	// When creating a table, you can pass an empty list of columns for the schema,
+	// and instead use a schema reference.
 	SchemaReference *SchemaReference
 
 	// The serialization/deserialization (SerDe) information.
@@ -7247,6 +9458,18 @@ type StringColumnStatisticsData struct {
 	noSmithyDocumentSerde
 }
 
+// A structure specifying the dialect and dialect version used by the query engine.
+type SupportedDialect struct {
+
+	// The dialect of the query engine.
+	Dialect ViewDialect
+
+	// The version of the dialect of the query engine. For example, 3.0.0.
+	DialectVersion *string
+
+	noSmithyDocumentSerde
+}
+
 // Represents a collection of related data organized in columns and rows.
 type Table struct {
 
@@ -7275,6 +9498,10 @@ type Table struct {
 	// Catalog.
 	FederatedTable *FederatedTable
 
+	// Specifies whether the view supports the SQL dialects of one or more different
+	// query engines and can therefore be read by those engines.
+	IsMultiDialectView *bool
+
 	// Indicates whether the table has been registered with Lake Formation.
 	IsRegisteredWithLakeFormation bool
 
@@ -7292,13 +9519,21 @@ type Table struct {
 	Parameters map[string]string
 
 	// A list of columns by which the table is partitioned. Only primitive types are
-	// supported as partition keys. When you create a table used by Amazon Athena, and
-	// you do not specify any partitionKeys , you must at least set the value of
-	// partitionKeys to an empty list. For example: "PartitionKeys": []
+	// supported as partition keys.
+	//
+	// When you create a table used by Amazon Athena, and you do not specify any
+	// partitionKeys , you must at least set the value of partitionKeys to an empty
+	// list. For example:
+	//
+	//     "PartitionKeys": []
 	PartitionKeys []Column
 
 	// The retention time for this table.
 	Retention int32
+
+	// A structure containing information about the state of an asynchronous change to
+	// a table.
+	Status *TableStatus
 
 	// A storage descriptor containing information about the physical storage of this
 	// table.
@@ -7306,9 +9541,12 @@ type Table struct {
 
 	// The type of this table. Glue will create tables with the EXTERNAL_TABLE type.
 	// Other services, such as Athena, may create tables with additional table types.
-	// Glue related table types: EXTERNAL_TABLE Hive compatible attribute - indicates a
-	// non-Hive managed table. GOVERNED Used by Lake Formation. The Glue Data Catalog
-	// understands GOVERNED .
+	//
+	// Glue related table types:
+	//
+	// EXTERNAL_TABLE Hive compatible attribute - indicates a non-Hive managed table.
+	//
+	// GOVERNED Used by Lake Formation. The Glue Data Catalog understands GOVERNED .
 	TableType *string
 
 	// A TableIdentifier structure that describes a target table for resource linking.
@@ -7319,6 +9557,10 @@ type Table struct {
 
 	// The ID of the table version.
 	VersionId *string
+
+	// A structure that contains all the information that defines the view, including
+	// the dialect or dialects for the view, and the query.
+	ViewDefinition *ViewDefinition
 
 	// Included for Apache Hive compatibility. Not used in the normal course of Glue
 	// operations.
@@ -7388,9 +9630,13 @@ type TableInput struct {
 	Parameters map[string]string
 
 	// A list of columns by which the table is partitioned. Only primitive types are
-	// supported as partition keys. When you create a table used by Amazon Athena, and
-	// you do not specify any partitionKeys , you must at least set the value of
-	// partitionKeys to an empty list. For example: "PartitionKeys": []
+	// supported as partition keys.
+	//
+	// When you create a table used by Amazon Athena, and you do not specify any
+	// partitionKeys , you must at least set the value of partitionKeys to an empty
+	// list. For example:
+	//
+	//     "PartitionKeys": []
 	PartitionKeys []Column
 
 	// The retention time for this table.
@@ -7402,13 +9648,20 @@ type TableInput struct {
 
 	// The type of this table. Glue will create tables with the EXTERNAL_TABLE type.
 	// Other services, such as Athena, may create tables with additional table types.
-	// Glue related table types: EXTERNAL_TABLE Hive compatible attribute - indicates a
-	// non-Hive managed table. GOVERNED Used by Lake Formation. The Glue Data Catalog
-	// understands GOVERNED .
+	//
+	// Glue related table types:
+	//
+	// EXTERNAL_TABLE Hive compatible attribute - indicates a non-Hive managed table.
+	//
+	// GOVERNED Used by Lake Formation. The Glue Data Catalog understands GOVERNED .
 	TableType *string
 
 	// A TableIdentifier structure that describes a target table for resource linking.
 	TargetTable *TableIdentifier
+
+	// A structure that contains all the information that defines the view, including
+	// the dialect or dialects for the view, and the query.
+	ViewDefinition *ViewDefinitionInput
 
 	// Included for Apache Hive compatibility. Not used in the normal course of Glue
 	// operations.
@@ -7418,6 +9671,150 @@ type TableInput struct {
 	// operations. If the table is a VIRTUAL_VIEW , certain Athena configuration
 	// encoded in base64.
 	ViewOriginalText *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about an optimizer associated with a table.
+type TableOptimizer struct {
+
+	// A TableOptimizerConfiguration object that was specified when creating or
+	// updating a table optimizer.
+	Configuration *TableOptimizerConfiguration
+
+	// A TableOptimizerRun object representing the last run of the table optimizer.
+	LastRun *TableOptimizerRun
+
+	// The type of table optimizer. The valid values are:
+	//
+	//   - compaction : for managing compaction with a table optimizer.
+	//
+	//   - retention : for managing the retention of snapshot with a table optimizer.
+	//
+	//   - orphan_file_deletion : for managing the deletion of orphan files with a
+	//   table optimizer.
+	Type TableOptimizerType
+
+	noSmithyDocumentSerde
+}
+
+// Contains details on the configuration of a table optimizer. You pass this
+// configuration when creating or updating a table optimizer.
+type TableOptimizerConfiguration struct {
+
+	// Whether table optimization is enabled.
+	Enabled *bool
+
+	// The configuration for an orphan file deletion optimizer.
+	OrphanFileDeletionConfiguration *OrphanFileDeletionConfiguration
+
+	// The configuration for a snapshot retention optimizer.
+	RetentionConfiguration *RetentionConfiguration
+
+	// A role passed by the caller which gives the service permission to update the
+	// resources associated with the optimizer on the caller's behalf.
+	RoleArn *string
+
+	// A TableOptimizerVpcConfiguration object representing the VPC configuration for
+	// a table optimizer.
+	//
+	// This configuration is necessary to perform optimization on tables that are in a
+	// customer VPC.
+	VpcConfiguration TableOptimizerVpcConfiguration
+
+	noSmithyDocumentSerde
+}
+
+// Contains details for a table optimizer run.
+type TableOptimizerRun struct {
+
+	// A CompactionMetrics object containing metrics for the optimizer run.
+	CompactionMetrics *CompactionMetrics
+
+	// Represents the epoch timestamp at which the compaction job ended.
+	EndTimestamp *time.Time
+
+	// An error that occured during the optimizer run.
+	Error *string
+
+	// An event type representing the status of the table optimizer run.
+	EventType TableOptimizerEventType
+
+	// A RunMetrics object containing metrics for the optimizer run.
+	//
+	// This member is deprecated. See the individual metric members for compaction,
+	// retention, and orphan file deletion.
+	//
+	// Deprecated: Metrics has been replaced by optimizer type specific metrics such
+	// as IcebergCompactionMetrics
+	Metrics *RunMetrics
+
+	// An OrphanFileDeletionMetrics object containing metrics for the optimizer run.
+	OrphanFileDeletionMetrics *OrphanFileDeletionMetrics
+
+	// A RetentionMetrics object containing metrics for the optimizer run.
+	RetentionMetrics *RetentionMetrics
+
+	// Represents the epoch timestamp at which the compaction job was started within
+	// Lake Formation.
+	StartTimestamp *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// An object that describes the VPC configuration for a table optimizer.
+//
+// This configuration is necessary to perform optimization on tables that are in a
+// customer VPC.
+//
+// The following types satisfy this interface:
+//
+//	TableOptimizerVpcConfigurationMemberGlueConnectionName
+type TableOptimizerVpcConfiguration interface {
+	isTableOptimizerVpcConfiguration()
+}
+
+// The name of the Glue connection used for the VPC for the table optimizer.
+type TableOptimizerVpcConfigurationMemberGlueConnectionName struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*TableOptimizerVpcConfigurationMemberGlueConnectionName) isTableOptimizerVpcConfiguration() {}
+
+// A structure containing information about the state of an asynchronous change to
+// a table.
+type TableStatus struct {
+
+	// Indicates which action was called on the table, currently only CREATE or UPDATE .
+	Action ResourceAction
+
+	// A StatusDetails object with information about the requested change.
+	Details *StatusDetails
+
+	// An error that will only appear when the state is "FAILED". This is a parent
+	// level exception message, there may be different Error s for each dialect.
+	Error *ErrorDetail
+
+	// An ISO 8601 formatted date string indicating the time that the change was
+	// initiated.
+	RequestTime *time.Time
+
+	// The ARN of the user who requested the asynchronous change.
+	RequestedBy *string
+
+	// A generic status for the change in progress, such as QUEUED, IN_PROGRESS,
+	// SUCCESS, or FAILED.
+	State ResourceState
+
+	// An ISO 8601 formatted date string indicating the time that the state was last
+	// updated.
+	UpdateTime *time.Time
+
+	// The ARN of the user to last manually alter the asynchronous change (requesting
+	// cancellation, etc).
+	UpdatedBy *string
 
 	noSmithyDocumentSerde
 }
@@ -7447,6 +9844,75 @@ type TableVersionError struct {
 	// The ID value of the version in question. A VersionID is a string representation
 	// of an integer. Each version is incremented by 1.
 	VersionId *string
+
+	noSmithyDocumentSerde
+}
+
+// The Tag object represents a label that you can assign to an Amazon Web Services
+// resource. Each tag consists of a key and an optional value, both of which you
+// define.
+//
+// For more information about tags, and controlling access to resources in Glue,
+// see [Amazon Web Services Tags in Glue]and [Specifying Glue Resource ARNs] in the developer guide.
+//
+// [Specifying Glue Resource ARNs]: https://docs.aws.amazon.com/glue/latest/dg/glue-specifying-resource-arns.html
+// [Amazon Web Services Tags in Glue]: https://docs.aws.amazon.com/glue/latest/dg/monitor-tags.html
+type Tag struct {
+
+	// The tag key. The key is required when you create a tag on an object. The key is
+	// case-sensitive, and must not contain the prefix aws.
+	Key *string
+
+	// The tag value. The value is optional when you create a tag on an object. The
+	// value is case-sensitive, and must not contain the prefix aws.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// The resource properties associated with the integration target.
+type TargetProcessingProperties struct {
+
+	// The Glue network connection to configure the Glue job running in the customer
+	// VPC.
+	ConnectionName *string
+
+	// The ARN of an Eventbridge event bus to receive the integration status
+	// notification.
+	EventBusArn *string
+
+	// The ARN of the KMS key used for encryption.
+	KmsArn *string
+
+	// The IAM role to access the Glue database.
+	RoleArn *string
+
+	noSmithyDocumentSerde
+}
+
+// A structure that describes a target catalog for resource linking.
+type TargetRedshiftCatalog struct {
+
+	// The Amazon Resource Name (ARN) of the catalog resource.
+	//
+	// This member is required.
+	CatalogArn *string
+
+	noSmithyDocumentSerde
+}
+
+// Properties used by the target leg to partition the data on the target.
+type TargetTableConfig struct {
+
+	// Determines the file layout on the target.
+	PartitionSpec []IntegrationPartition
+
+	// The optional name of a target table.
+	TargetTableName *string
+
+	// Specifies how nested objects are flattened to top-level elements. Valid values
+	// are: "TOPLEVEL", "FULL", or "NOUNNEST".
+	UnnestSpec UnnestSpec
 
 	noSmithyDocumentSerde
 }
@@ -7546,6 +10012,64 @@ type TaskRunSortCriteria struct {
 	noSmithyDocumentSerde
 }
 
+// A structure that is used to specify testing a connection to a service.
+type TestConnectionInput struct {
+
+	// The key-value pairs that define parameters for the connection.
+	//
+	// JDBC connections use the following connection properties:
+	//
+	//   - Required: All of ( HOST , PORT , JDBC_ENGINE ) or JDBC_CONNECTION_URL .
+	//
+	//   - Required: All of ( USERNAME , PASSWORD ) or SECRET_ID .
+	//
+	//   - Optional: JDBC_ENFORCE_SSL , CUSTOM_JDBC_CERT , CUSTOM_JDBC_CERT_STRING ,
+	//   SKIP_CUSTOM_JDBC_CERT_VALIDATION . These parameters are used to configure SSL
+	//   with JDBC.
+	//
+	// SALESFORCE connections require the AuthenticationConfiguration member to be
+	// configured.
+	//
+	// This member is required.
+	ConnectionProperties map[string]string
+
+	// The type of connection to test. This operation is only available for the JDBC
+	// or SALESFORCE connection types.
+	//
+	// This member is required.
+	ConnectionType ConnectionType
+
+	// A structure containing the authentication configuration in the TestConnection
+	// request. Required for a connection to Salesforce using OAuth authentication.
+	AuthenticationConfiguration *AuthenticationConfigurationInput
+
+	noSmithyDocumentSerde
+}
+
+// A timestamped inclusion annotation.
+type TimestampedInclusionAnnotation struct {
+
+	// The timestamp when the inclusion annotation was last modified.
+	LastModifiedOn *time.Time
+
+	// The inclusion annotation value.
+	Value InclusionAnnotationValue
+
+	noSmithyDocumentSerde
+}
+
+// A timestamp filter.
+type TimestampFilter struct {
+
+	// The timestamp after which statistics should be included in the results.
+	RecordedAfter *time.Time
+
+	// The timestamp before which statistics should be included in the results.
+	RecordedBefore *time.Time
+
+	noSmithyDocumentSerde
+}
+
 // Specifies the parameters in the config file of the dynamic transform.
 type TransformConfigParameter struct {
 
@@ -7582,8 +10106,10 @@ type TransformConfigParameter struct {
 
 // The encryption-at-rest settings of the transform that apply to accessing user
 // data. Machine learning transforms can access user data encrypted in Amazon S3
-// using KMS. Additionally, imported labels and trained transforms can now be
-// encrypted using a customer provided KMS key.
+// using KMS.
+//
+// Additionally, imported labels and trained transforms can now be encrypted using
+// a customer provided KMS key.
 type TransformEncryption struct {
 
 	// An MLUserDataEncryption object containing the encryption mode and
@@ -7607,9 +10133,10 @@ type TransformFilterCriteria struct {
 
 	// This value determines which version of Glue this machine learning transform is
 	// compatible with. Glue 1.0 is recommended for most customers. If the value is not
-	// set, the Glue compatibility defaults to Glue 0.9. For more information, see
-	// Glue Versions (https://docs.aws.amazon.com/glue/latest/dg/release-notes.html#release-notes-versions)
-	// in the developer guide.
+	// set, the Glue compatibility defaults to Glue 0.9. For more information, see [Glue Versions]in
+	// the developer guide.
+	//
+	// [Glue Versions]: https://docs.aws.amazon.com/glue/latest/dg/release-notes.html#release-notes-versions
 	GlueVersion *string
 
 	// Filter on transforms last modified after this date.
@@ -7643,9 +10170,11 @@ type TransformFilterCriteria struct {
 // transform.
 type TransformParameters struct {
 
-	// The type of machine learning transform. For information about the types of
-	// machine learning transforms, see Creating Machine Learning Transforms (https://docs.aws.amazon.com/glue/latest/dg/add-job-machine-learning-transform.html)
-	// .
+	// The type of machine learning transform.
+	//
+	// For information about the types of machine learning transforms, see [Creating Machine Learning Transforms].
+	//
+	// [Creating Machine Learning Transforms]: https://docs.aws.amazon.com/glue/latest/dg/add-job-machine-learning-transform.html
 	//
 	// This member is required.
 	TransformType TransformType
@@ -7696,10 +10225,10 @@ type Trigger struct {
 	// The predicate of this trigger, which defines when it will fire.
 	Predicate *Predicate
 
-	// A cron expression used to specify the schedule (see Time-Based Schedules for
-	// Jobs and Crawlers (https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html)
-	// . For example, to run something every day at 12:15 UTC, you would specify:
-	// cron(15 12 * * ? *) .
+	// A cron expression used to specify the schedule (see [Time-Based Schedules for Jobs and Crawlers]. For example, to run
+	// something every day at 12:15 UTC, you would specify: cron(15 12 * * ? *) .
+	//
+	// [Time-Based Schedules for Jobs and Crawlers]: https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html
 	Schedule *string
 
 	// The current state of the trigger.
@@ -7743,10 +10272,10 @@ type TriggerUpdate struct {
 	// The predicate of this trigger, which defines when it will fire.
 	Predicate *Predicate
 
-	// A cron expression used to specify the schedule (see Time-Based Schedules for
-	// Jobs and Crawlers (https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html)
-	// . For example, to run something every day at 12:15 UTC, you would specify:
-	// cron(15 12 * * ? *) .
+	// A cron expression used to specify the schedule (see [Time-Based Schedules for Jobs and Crawlers]. For example, to run
+	// something every day at 12:15 UTC, you would specify: cron(15 12 * * ? *) .
+	//
+	// [Time-Based Schedules for Jobs and Crawlers]: https://docs.aws.amazon.com/glue/latest/dg/monitor-data-warehouse-schedule.html
 	Schedule *string
 
 	noSmithyDocumentSerde
@@ -7782,10 +10311,12 @@ type Union struct {
 	// This member is required.
 	Name *string
 
-	// Indicates the type of Union transform. Specify ALL to join all rows from data
-	// sources to the resulting DynamicFrame. The resulting union does not remove
-	// duplicate rows. Specify DISTINCT to remove duplicate rows in the resulting
-	// DynamicFrame.
+	// Indicates the type of Union transform.
+	//
+	// Specify ALL to join all rows from data sources to the resulting DynamicFrame.
+	// The resulting union does not remove duplicate rows.
+	//
+	// Specify DISTINCT to remove duplicate rows in the resulting DynamicFrame.
 	//
 	// This member is required.
 	UnionType UnionType
@@ -7827,6 +10358,11 @@ type UpdateCsvClassifierRequest struct {
 	// must be different from the column delimiter.
 	QuoteSymbol *string
 
+	// Sets the SerDe for processing CSV in the classifier, which will be applied in
+	// the Data Catalog. Valid values are OpenCSVSerDe , LazySimpleSerDe , and None .
+	// You can specify the None value when you want the crawler to do the detection.
+	Serde CsvSerdeOption
+
 	noSmithyDocumentSerde
 }
 
@@ -7860,9 +10396,9 @@ type UpdateJsonClassifierRequest struct {
 	Name *string
 
 	// A JsonPath string defining the JSON data for the classifier to classify. Glue
-	// supports a subset of JsonPath, as described in Writing JsonPath Custom
-	// Classifiers (https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html#custom-classifier-json)
-	// .
+	// supports a subset of JsonPath, as described in [Writing JsonPath Custom Classifiers].
+	//
+	// [Writing JsonPath Custom Classifiers]: https://docs.aws.amazon.com/glue/latest/dg/custom-classifier.html#custom-classifier-json
 	JsonPath *string
 
 	noSmithyDocumentSerde
@@ -7899,6 +10435,24 @@ type UpsertRedshiftTargetOptions struct {
 
 	// The keys used to determine whether to perform an update or insert.
 	UpsertKeys []string
+
+	noSmithyDocumentSerde
+}
+
+// Describes an Glue usage profile.
+type UsageProfileDefinition struct {
+
+	// The date and time when the usage profile was created.
+	CreatedOn *time.Time
+
+	// A description of the usage profile.
+	Description *string
+
+	// The date and time when the usage profile was last modified.
+	LastModifiedOn *time.Time
+
+	// The name of the usage profile.
+	Name *string
 
 	noSmithyDocumentSerde
 }
@@ -7950,6 +10504,135 @@ type UserDefinedFunctionInput struct {
 
 	// The resource URIs for the function.
 	ResourceUris []ResourceUri
+
+	noSmithyDocumentSerde
+}
+
+// A structure containing details for representations.
+type ViewDefinition struct {
+
+	// The definer of a view in SQL.
+	Definer *string
+
+	// You can set this flag as true to instruct the engine not to push user-provided
+	// operations into the logical plan of the view during query planning. However,
+	// setting this flag does not guarantee that the engine will comply. Refer to the
+	// engine's documentation to understand the guarantees provided, if any.
+	IsProtected *bool
+
+	// A list of representations.
+	Representations []ViewRepresentation
+
+	// A list of table Amazon Resource Names (ARNs).
+	SubObjects []string
+
+	noSmithyDocumentSerde
+}
+
+// A structure containing details for creating or updating an Glue view.
+type ViewDefinitionInput struct {
+
+	// The definer of a view in SQL.
+	Definer *string
+
+	// You can set this flag as true to instruct the engine not to push user-provided
+	// operations into the logical plan of the view during query planning. However,
+	// setting this flag does not guarantee that the engine will comply. Refer to the
+	// engine's documentation to understand the guarantees provided, if any.
+	IsProtected *bool
+
+	// A list of structures that contains the dialect of the view, and the query that
+	// defines the view.
+	Representations []ViewRepresentationInput
+
+	// A list of base table ARNs that make up the view.
+	SubObjects []string
+
+	noSmithyDocumentSerde
+}
+
+// A structure that contains the dialect of the view, and the query that defines
+// the view.
+type ViewRepresentation struct {
+
+	// The dialect of the query engine.
+	Dialect ViewDialect
+
+	// The version of the dialect of the query engine. For example, 3.0.0.
+	DialectVersion *string
+
+	// Dialects marked as stale are no longer valid and must be updated before they
+	// can be queried in their respective query engines.
+	IsStale *bool
+
+	// The name of the connection to be used to validate the specific representation
+	// of the view.
+	ValidationConnection *string
+
+	// The expanded SQL for the view. This SQL is used by engines while processing a
+	// query on a view. Engines may perform operations during view creation to
+	// transform ViewOriginalText to ViewExpandedText . For example:
+	//
+	//   - Fully qualified identifiers: SELECT * from table1 -> SELECT * from
+	//   db1.table1
+	ViewExpandedText *string
+
+	// The SELECT query provided by the customer during CREATE VIEW DDL . This SQL is
+	// not used during a query on a view ( ViewExpandedText is used instead).
+	// ViewOriginalText is used for cases like SHOW CREATE VIEW where users want to
+	// see the original DDL command that created the view.
+	ViewOriginalText *string
+
+	noSmithyDocumentSerde
+}
+
+// A structure containing details of a representation to update or create a Lake
+// Formation view.
+type ViewRepresentationInput struct {
+
+	// A parameter that specifies the engine type of a specific representation.
+	Dialect ViewDialect
+
+	// A parameter that specifies the version of the engine of a specific
+	// representation.
+	DialectVersion *string
+
+	// The name of the connection to be used to validate the specific representation
+	// of the view.
+	ValidationConnection *string
+
+	// A string that represents the SQL query that describes the view with expanded
+	// resource ARNs
+	ViewExpandedText *string
+
+	// A string that represents the original SQL query that describes the view.
+	ViewOriginalText *string
+
+	noSmithyDocumentSerde
+}
+
+// A structure that contains information for an analytical engine to validate a
+// view, prior to persisting the view metadata. Used in the case of direct
+// UpdateTable or CreateTable API calls.
+type ViewValidation struct {
+
+	// The dialect of the query engine.
+	Dialect ViewDialect
+
+	// The version of the dialect of the query engine. For example, 3.0.0.
+	DialectVersion *string
+
+	// An error associated with the validation.
+	Error *ErrorDetail
+
+	// The state of the validation.
+	State ResourceState
+
+	// The time of the last update.
+	UpdateTime *time.Time
+
+	// The SELECT query that defines the view, as provided by the customer.
+	ViewValidationText *string
 
 	noSmithyDocumentSerde
 }
@@ -8116,3 +10799,14 @@ type XMLClassifier struct {
 }
 
 type noSmithyDocumentSerde = smithydocument.NoSerde
+
+// UnknownUnionMember is returned when a union member is returned over the wire,
+// but has an unknown tag.
+type UnknownUnionMember struct {
+	Tag   string
+	Value []byte
+
+	noSmithyDocumentSerde
+}
+
+func (*UnknownUnionMember) isTableOptimizerVpcConfiguration() {}

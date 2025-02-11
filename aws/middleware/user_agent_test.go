@@ -2,8 +2,10 @@ package middleware
 
 import (
 	"context"
+	"fmt"
 	"net/http"
 	"os"
+	"reflect"
 	"runtime"
 	"strings"
 	"testing"
@@ -11,11 +13,14 @@ import (
 	"github.com/aws/aws-sdk-go-v2/aws"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
-	"github.com/google/go-cmp/cmp"
-	"github.com/google/go-cmp/cmp/cmpopts"
 )
 
-var expectedAgent = aws.SDKName + "/" + aws.SDKVersion + " os/" + getNormalizedOSName() + " lang/go#" + languageVersion + " md/GOOS#" + runtime.GOOS + " md/GOARCH#" + runtime.GOARCH
+var expectedAgent = aws.SDKName + "/" + aws.SDKVersion +
+	" ua/2.1" +
+	" os/" + getNormalizedOSName() +
+	" lang/go#" + strings.Map(rules, languageVersion) + // normalize as the user-agent builder will
+	" md/GOOS#" + runtime.GOOS +
+	" md/GOARCH#" + runtime.GOARCH
 
 func TestRequestUserAgent_HandleBuild(t *testing.T) {
 	cases := map[string]struct {
@@ -37,7 +42,7 @@ func TestRequestUserAgent_HandleBuild(t *testing.T) {
 			}},
 			Next: func(t *testing.T, expect middleware.BuildInput) middleware.BuildHandler {
 				return middleware.BuildHandlerFunc(func(ctx context.Context, input middleware.BuildInput) (o middleware.BuildOutput, m middleware.Metadata, err error) {
-					if diff := cmp.Diff(input, expect, cmpopts.IgnoreUnexported(http.Request{}, smithyhttp.Request{})); len(diff) > 0 {
+					if diff := cmpDiff(input, expect); len(diff) > 0 {
 						t.Error(diff)
 					}
 					return o, m, err
@@ -59,7 +64,7 @@ func TestRequestUserAgent_HandleBuild(t *testing.T) {
 			}},
 			Next: func(t *testing.T, expect middleware.BuildInput) middleware.BuildHandler {
 				return middleware.BuildHandlerFunc(func(ctx context.Context, input middleware.BuildInput) (o middleware.BuildOutput, m middleware.Metadata, err error) {
-					if diff := cmp.Diff(input, expect, cmpopts.IgnoreUnexported(http.Request{}, smithyhttp.Request{})); len(diff) > 0 {
+					if diff := cmpDiff(input, expect); len(diff) > 0 {
 						t.Error(diff)
 					}
 					return o, m, err
@@ -81,7 +86,7 @@ func TestRequestUserAgent_HandleBuild(t *testing.T) {
 			}},
 			Next: func(t *testing.T, expect middleware.BuildInput) middleware.BuildHandler {
 				return middleware.BuildHandlerFunc(func(ctx context.Context, input middleware.BuildInput) (o middleware.BuildOutput, m middleware.Metadata, err error) {
-					if diff := cmp.Diff(input, expect, cmpopts.IgnoreUnexported(http.Request{}, smithyhttp.Request{})); len(diff) > 0 {
+					if diff := cmpDiff(input, expect); len(diff) > 0 {
 						t.Error(diff)
 					}
 					return o, m, err
@@ -105,7 +110,7 @@ func TestRequestUserAgent_HandleBuild(t *testing.T) {
 				os.Setenv(k, v)
 			}
 
-			b := newRequestUserAgent()
+			b := NewRequestUserAgent()
 			_, _, err := b.HandleBuild(context.Background(), tt.In, tt.Next(t, tt.Expect))
 			if (err != nil) != tt.Err {
 				t.Errorf("error %v, want error %v", err, tt.Err)
@@ -148,7 +153,7 @@ func TestAddUserAgentKey(t *testing.T) {
 
 	for name, c := range cases {
 		t.Run(name, func(t *testing.T) {
-			b := newRequestUserAgent()
+			b := NewRequestUserAgent()
 			stack := middleware.NewStack("testStack", smithyhttp.NewStackRequest)
 			err := stack.Build.Add(b, middleware.After)
 			if err != nil {
@@ -172,7 +177,7 @@ func TestAddUserAgentKey(t *testing.T) {
 				t.Fatalf("expect User-Agent to be present")
 			}
 			if ua[0] != c.Expect {
-				t.Error("User-Agent did not match expected")
+				t.Errorf("User-Agent: %q != %q", c.Expect, ua[0])
 			}
 		})
 	}
@@ -201,7 +206,7 @@ func TestAddUserAgentKeyValue(t *testing.T) {
 
 	for name, c := range cases {
 		t.Run(name, func(t *testing.T) {
-			b := newRequestUserAgent()
+			b := NewRequestUserAgent()
 			stack := middleware.NewStack("testStack", smithyhttp.NewStackRequest)
 			err := stack.Build.Add(b, middleware.After)
 			if err != nil {
@@ -225,7 +230,72 @@ func TestAddUserAgentKeyValue(t *testing.T) {
 				t.Fatalf("expect User-Agent to be present")
 			}
 			if ua[0] != c.Expect {
-				t.Error("User-Agent did not match expected")
+				t.Errorf("User-Agent: %q != %q", c.Expect, ua[0])
+			}
+		})
+	}
+}
+
+func TestAddUserAgentFeature(t *testing.T) {
+	restoreEnv := clearEnv()
+	defer restoreEnv()
+
+	cases := map[string]struct {
+		Features []UserAgentFeature
+		Expect   string
+	}{
+		"none": {
+			Features: []UserAgentFeature{},
+			Expect:   expectedAgent,
+		},
+		"one": {
+			Features: []UserAgentFeature{
+				UserAgentFeatureWaiter,
+			},
+			Expect: expectedAgent + " " + "m/B",
+		},
+		"two": {
+			Features: []UserAgentFeature{
+				UserAgentFeatureRetryModeAdaptive, // ensure stable order, and idempotent
+				UserAgentFeatureRetryModeAdaptive,
+				UserAgentFeatureWaiter,
+			},
+			Expect: expectedAgent + " " + "m/B,F",
+		},
+	}
+
+	for name, c := range cases {
+		t.Run(name, func(t *testing.T) {
+			b := NewRequestUserAgent()
+			stack := middleware.NewStack("testStack", smithyhttp.NewStackRequest)
+			err := stack.Build.Add(b, middleware.After)
+			if err != nil {
+				t.Fatalf("expect no error, got %v", err)
+			}
+
+			for _, f := range c.Features {
+				b.AddUserAgentFeature(f)
+			}
+
+			in := middleware.BuildInput{
+				Request: &smithyhttp.Request{
+					Request: &http.Request{
+						Header: map[string][]string{},
+					},
+				},
+			}
+			_, _, err = b.HandleBuild(context.Background(), in, middleware.BuildHandlerFunc(func(ctx context.Context, input middleware.BuildInput) (o middleware.BuildOutput, m middleware.Metadata, err error) {
+				return o, m, err
+			}))
+			if err != nil {
+				t.Fatalf("expect no error, got %v", err)
+			}
+			ua, ok := in.Request.(*smithyhttp.Request).Header["User-Agent"]
+			if !ok {
+				t.Fatalf("expect User-Agent to be present")
+			}
+			if ua[0] != c.Expect {
+				t.Errorf("User-Agent: %q != %q", c.Expect, ua[0])
 			}
 		})
 	}
@@ -254,7 +324,7 @@ func TestAddSDKAgentKey(t *testing.T) {
 
 	for name, c := range cases {
 		t.Run(name, func(t *testing.T) {
-			b := newRequestUserAgent()
+			b := NewRequestUserAgent()
 			stack := middleware.NewStack("testStack", smithyhttp.NewStackRequest)
 			err := stack.Build.Add(b, middleware.After)
 			if err != nil {
@@ -278,7 +348,7 @@ func TestAddSDKAgentKey(t *testing.T) {
 				t.Fatalf("expect User-Agent to be present")
 			}
 			if ua[0] != c.Expect {
-				t.Error("User-Agent did not match expected")
+				t.Errorf("User-Agent: %q != %q", c.Expect, ua[0])
 			}
 		})
 	}
@@ -310,7 +380,7 @@ func TestAddSDKAgentKeyValue(t *testing.T) {
 
 	for name, c := range cases {
 		t.Run(name, func(t *testing.T) {
-			b := newRequestUserAgent()
+			b := NewRequestUserAgent()
 			stack := middleware.NewStack("testStack", smithyhttp.NewStackRequest)
 			err := stack.Build.Add(b, middleware.After)
 			if err != nil {
@@ -334,7 +404,7 @@ func TestAddSDKAgentKeyValue(t *testing.T) {
 				t.Fatalf("expect User-Agent to be present")
 			}
 			if ua[0] != c.Expect {
-				t.Error("User-Agent did not match expected")
+				t.Errorf("User-Agent: expected %q != actual %q", c.Expect, ua[0])
 			}
 		})
 	}
@@ -381,7 +451,7 @@ func TestAddUserAgentKey_AddToStack(t *testing.T) {
 				t.Fatalf("expect User-Agent to be present")
 			}
 			if ua[0] != c.Expect {
-				t.Error("User-Agent did not match expected")
+				t.Errorf("User-Agent: %q != %q", c.Expect, ua[0])
 			}
 		})
 	}
@@ -431,8 +501,15 @@ func TestAddUserAgentKeyValue_AddToStack(t *testing.T) {
 				t.Fatalf("expect User-Agent to be present")
 			}
 			if ua[0] != c.Expect {
-				t.Error("User-Agent did not match expected")
+				t.Errorf("User-Agent: %q != %q", c.Expect, ua[0])
 			}
 		})
 	}
+}
+
+func cmpDiff(e, a interface{}) string {
+	if !reflect.DeepEqual(e, a) {
+		return fmt.Sprintf("%v != %v", e, a)
+	}
+	return ""
 }

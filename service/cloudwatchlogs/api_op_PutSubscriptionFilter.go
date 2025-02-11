@@ -4,38 +4,50 @@ package cloudwatchlogs
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/cloudwatchlogs/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Creates or updates a subscription filter and associates it with the specified
 // log group. With subscription filters, you can subscribe to a real-time stream of
-// log events ingested through PutLogEvents (https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html)
-// and have them delivered to a specific destination. When log events are sent to
-// the receiving service, they are Base64 encoded and compressed with the GZIP
-// format. The following destinations are supported for subscription filters:
+// log events ingested through [PutLogEvents]and have them delivered to a specific destination.
+// When log events are sent to the receiving service, they are Base64 encoded and
+// compressed with the GZIP format.
+//
+// The following destinations are supported for subscription filters:
+//
 //   - An Amazon Kinesis data stream belonging to the same account as the
 //     subscription filter, for same-account delivery.
-//   - A logical destination created with PutDestination (https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDestination.html)
-//     that belongs to a different account, for cross-account delivery. We currently
-//     support Kinesis Data Streams and Kinesis Data Firehose as logical destinations.
+//
+//   - A logical destination created with [PutDestination]that belongs to a different account, for
+//     cross-account delivery. We currently support Kinesis Data Streams and Firehose
+//     as logical destinations.
+//
 //   - An Amazon Kinesis Data Firehose delivery stream that belongs to the same
 //     account as the subscription filter, for same-account delivery.
+//
 //   - An Lambda function that belongs to the same account as the subscription
 //     filter, for same-account delivery.
 //
 // Each log group can have up to two subscription filters associated with it. If
 // you are updating an existing filter, you must specify the correct name in
-// filterName . To perform a PutSubscriptionFilter operation for any destination
-// except a Lambda function, you must also have the iam:PassRole permission.
+// filterName .
+//
+// Using regular expressions in filter patterns is supported. For these filters,
+// there is a quotas of quota of two regular expression patterns within a single
+// filter pattern. There is also a quota of five regular expression patterns per
+// log group. For more information about using regular expressions in filter
+// patterns, see [Filter pattern syntax for metric filters, subscription filters, filter log events, and Live Tail].
+//
+// To perform a PutSubscriptionFilter operation for any destination except a
+// Lambda function, you must also have the iam:PassRole permission.
+//
+// [PutDestination]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDestination.html
+// [PutLogEvents]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutLogEvents.html
+// [Filter pattern syntax for metric filters, subscription filters, filter log events, and Live Tail]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/FilterAndPatternSyntax.html
 func (c *Client) PutSubscriptionFilter(ctx context.Context, params *PutSubscriptionFilterInput, optFns ...func(*Options)) (*PutSubscriptionFilterOutput, error) {
 	if params == nil {
 		params = &PutSubscriptionFilterInput{}
@@ -55,26 +67,33 @@ type PutSubscriptionFilterInput struct {
 
 	// The ARN of the destination to deliver matching log events to. Currently, the
 	// supported destinations are:
+	//
 	//   - An Amazon Kinesis stream belonging to the same account as the subscription
 	//   filter, for same-account delivery.
+	//
 	//   - A logical destination (specified using an ARN) belonging to a different
-	//   account, for cross-account delivery. If you're setting up a cross-account
-	//   subscription, the destination must have an IAM policy associated with it. The
-	//   IAM policy must allow the sender to send logs to the destination. For more
-	//   information, see PutDestinationPolicy (https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDestinationPolicy.html)
-	//   .
+	//   account, for cross-account delivery.
+	//
+	// If you're setting up a cross-account subscription, the destination must have an
+	//   IAM policy associated with it. The IAM policy must allow the sender to send logs
+	//   to the destination. For more information, see [PutDestinationPolicy].
+	//
 	//   - A Kinesis Data Firehose delivery stream belonging to the same account as
 	//   the subscription filter, for same-account delivery.
+	//
 	//   - A Lambda function belonging to the same account as the subscription filter,
 	//   for same-account delivery.
+	//
+	// [PutDestinationPolicy]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutDestinationPolicy.html
 	//
 	// This member is required.
 	DestinationArn *string
 
 	// A name for the subscription filter. If you are updating an existing filter, you
 	// must specify the correct name in filterName . To find the name of the filter
-	// currently associated with a log group, use DescribeSubscriptionFilters (https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeSubscriptionFilters.html)
-	// .
+	// currently associated with a log group, use [DescribeSubscriptionFilters].
+	//
+	// [DescribeSubscriptionFilters]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_DescribeSubscriptionFilters.html
 	//
 	// This member is required.
 	FilterName *string
@@ -88,6 +107,17 @@ type PutSubscriptionFilterInput struct {
 	//
 	// This member is required.
 	LogGroupName *string
+
+	// This parameter is valid only for log groups that have an active log
+	// transformer. For more information about log transformers, see [PutTransformer].
+	//
+	// If the log group uses either a log-group level or account-level transformer,
+	// and you specify true , the subscription filter will be applied on the
+	// transformed version of the log events instead of the original ingested log
+	// events.
+	//
+	// [PutTransformer]: https://docs.aws.amazon.com/AmazonCloudWatchLogs/latest/APIReference/API_PutTransformer.html
+	ApplyOnTransformedLogs bool
 
 	// The method used to distribute log data to the destination. By default, log data
 	// is grouped by log stream, but the grouping can be set to random for a more even
@@ -111,6 +141,9 @@ type PutSubscriptionFilterOutput struct {
 }
 
 func (c *Client) addOperationPutSubscriptionFilterMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpPutSubscriptionFilter{}, middleware.After)
 	if err != nil {
 		return err
@@ -119,34 +152,38 @@ func (c *Client) addOperationPutSubscriptionFilterMiddlewares(stack *middleware.
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "PutSubscriptionFilter"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -158,7 +195,13 @@ func (c *Client) addOperationPutSubscriptionFilterMiddlewares(stack *middleware.
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addPutSubscriptionFilterResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpPutSubscriptionFilterValidationMiddleware(stack); err != nil {
@@ -167,7 +210,7 @@ func (c *Client) addOperationPutSubscriptionFilterMiddlewares(stack *middleware.
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opPutSubscriptionFilter(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -179,7 +222,19 @@ func (c *Client) addOperationPutSubscriptionFilterMiddlewares(stack *middleware.
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -189,130 +244,6 @@ func newServiceMetadataMiddleware_opPutSubscriptionFilter(region string) *awsmid
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "logs",
 		OperationName: "PutSubscriptionFilter",
 	}
-}
-
-type opPutSubscriptionFilterResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opPutSubscriptionFilterResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opPutSubscriptionFilterResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "logs"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "logs"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("logs")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addPutSubscriptionFilterResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opPutSubscriptionFilterResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

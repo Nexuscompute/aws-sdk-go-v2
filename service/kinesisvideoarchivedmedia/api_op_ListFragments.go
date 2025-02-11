@@ -4,40 +4,45 @@ package kinesisvideoarchivedmedia
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/kinesisvideoarchivedmedia/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Returns a list of Fragment objects from the specified stream and timestamp
-// range within the archived data. Listing fragments is eventually consistent. This
-// means that even if the producer receives an acknowledgment that a fragment is
-// persisted, the result might not be returned immediately from a request to
-// ListFragments . However, results are typically available in less than one
-// second. You must first call the GetDataEndpoint API to get an endpoint. Then
-// send the ListFragments requests to this endpoint using the --endpoint-url
-// parameter (https://docs.aws.amazon.com/cli/latest/reference/) . If an error is
-// thrown after invoking a Kinesis Video Streams archived media API, in addition to
-// the HTTP status code and the response body, it includes the following pieces of
-// information:
+// Returns a list of Fragment objects from the specified stream and timestamp range within
+// the archived data.
+//
+// Listing fragments is eventually consistent. This means that even if the
+// producer receives an acknowledgment that a fragment is persisted, the result
+// might not be returned immediately from a request to ListFragments . However,
+// results are typically available in less than one second.
+//
+// You must first call the GetDataEndpoint API to get an endpoint. Then send the
+// ListFragments requests to this endpoint using the [--endpoint-url parameter].
+//
+// If an error is thrown after invoking a Kinesis Video Streams archived media
+// API, in addition to the HTTP status code and the response body, it includes the
+// following pieces of information:
+//
 //   - x-amz-ErrorType HTTP header – contains a more specific error type in
 //     addition to what the HTTP status code provides.
-//   - x-amz-RequestId HTTP header – if you want to report an issue to AWS, the
-//     support team can better diagnose the problem if given the Request Id.
+//
+//   - x-amz-RequestId HTTP header – if you want to report an issue to Amazon Web
+//     Services, the support team can better diagnose the problem if given the Request
+//     Id.
 //
 // Both the HTTP status code and the ErrorType header can be utilized to make
 // programmatic decisions about whether errors are retry-able and under what
 // conditions, as well as provide information on what actions the client programmer
-// might need to take in order to successfully try again. For more information, see
-// the Errors section at the bottom of this topic, as well as Common Errors (https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/CommonErrors.html)
-// .
+// might need to take in order to successfully try again.
+//
+// For more information, see the Errors section at the bottom of this topic, as
+// well as [Common Errors].
+//
+// [--endpoint-url parameter]: https://docs.aws.amazon.com/cli/latest/reference/
+// [Common Errors]: https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/CommonErrors.html
 func (c *Client) ListFragments(ctx context.Context, params *ListFragmentsInput, optFns ...func(*Options)) (*ListFragmentsOutput, error) {
 	if params == nil {
 		params = &ListFragmentsInput{}
@@ -57,16 +62,17 @@ type ListFragmentsInput struct {
 
 	// Describes the timestamp range and timestamp origin for the range of fragments
 	// to return.
+	//
+	// This is only required when the NextToken isn't passed in the API.
 	FragmentSelector *types.FragmentSelector
 
 	// The total number of fragments to return. If the total number of fragments
-	// available is more than the value specified in max-results , then a
-	// ListFragmentsOutput$NextToken is provided in the output that you can use to
-	// resume pagination.
+	// available is more than the value specified in max-results , then a ListFragmentsOutput$NextToken is provided
+	// in the output that you can use to resume pagination.
 	MaxResults *int64
 
-	// A token to specify where to start paginating. This is the
-	// ListFragmentsOutput$NextToken from a previously truncated response.
+	// A token to specify where to start paginating. This is the ListFragmentsOutput$NextToken from a previously
+	// truncated response.
 	NextToken *string
 
 	// The Amazon Resource Name (ARN) of the stream from which to retrieve a fragment
@@ -82,8 +88,8 @@ type ListFragmentsInput struct {
 
 type ListFragmentsOutput struct {
 
-	// A list of archived Fragment objects from the stream that meet the selector
-	// criteria. Results are in no specific order, even across pages.
+	// A list of archived Fragment objects from the stream that meet the selector criteria.
+	// Results are in no specific order, even across pages.
 	Fragments []types.Fragment
 
 	// If the returned list is truncated, the operation returns this token to use to
@@ -98,6 +104,9 @@ type ListFragmentsOutput struct {
 }
 
 func (c *Client) addOperationListFragmentsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpListFragments{}, middleware.After)
 	if err != nil {
 		return err
@@ -106,34 +115,38 @@ func (c *Client) addOperationListFragmentsMiddlewares(stack *middleware.Stack, o
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListFragments"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -145,7 +158,13 @@ func (c *Client) addOperationListFragmentsMiddlewares(stack *middleware.Stack, o
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListFragmentsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListFragmentsValidationMiddleware(stack); err != nil {
@@ -154,7 +173,7 @@ func (c *Client) addOperationListFragmentsMiddlewares(stack *middleware.Stack, o
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListFragments(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -166,140 +185,122 @@ func (c *Client) addOperationListFragmentsMiddlewares(stack *middleware.Stack, o
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
 
+// ListFragmentsPaginatorOptions is the paginator options for ListFragments
+type ListFragmentsPaginatorOptions struct {
+	// The total number of fragments to return. If the total number of fragments
+	// available is more than the value specified in max-results , then a ListFragmentsOutput$NextToken is provided
+	// in the output that you can use to resume pagination.
+	Limit int64
+
+	// Set to true if pagination should stop if the service returns a pagination token
+	// that matches the most recent token provided to the service.
+	StopOnDuplicateToken bool
+}
+
+// ListFragmentsPaginator is a paginator for ListFragments
+type ListFragmentsPaginator struct {
+	options   ListFragmentsPaginatorOptions
+	client    ListFragmentsAPIClient
+	params    *ListFragmentsInput
+	nextToken *string
+	firstPage bool
+}
+
+// NewListFragmentsPaginator returns a new ListFragmentsPaginator
+func NewListFragmentsPaginator(client ListFragmentsAPIClient, params *ListFragmentsInput, optFns ...func(*ListFragmentsPaginatorOptions)) *ListFragmentsPaginator {
+	if params == nil {
+		params = &ListFragmentsInput{}
+	}
+
+	options := ListFragmentsPaginatorOptions{}
+	if params.MaxResults != nil {
+		options.Limit = *params.MaxResults
+	}
+
+	for _, fn := range optFns {
+		fn(&options)
+	}
+
+	return &ListFragmentsPaginator{
+		options:   options,
+		client:    client,
+		params:    params,
+		firstPage: true,
+		nextToken: params.NextToken,
+	}
+}
+
+// HasMorePages returns a boolean indicating whether more pages are available
+func (p *ListFragmentsPaginator) HasMorePages() bool {
+	return p.firstPage || (p.nextToken != nil && len(*p.nextToken) != 0)
+}
+
+// NextPage retrieves the next ListFragments page.
+func (p *ListFragmentsPaginator) NextPage(ctx context.Context, optFns ...func(*Options)) (*ListFragmentsOutput, error) {
+	if !p.HasMorePages() {
+		return nil, fmt.Errorf("no more pages available")
+	}
+
+	params := *p.params
+	params.NextToken = p.nextToken
+
+	var limit *int64
+	if p.options.Limit > 0 {
+		limit = &p.options.Limit
+	}
+	params.MaxResults = limit
+
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
+	result, err := p.client.ListFragments(ctx, &params, optFns...)
+	if err != nil {
+		return nil, err
+	}
+	p.firstPage = false
+
+	prevToken := p.nextToken
+	p.nextToken = result.NextToken
+
+	if p.options.StopOnDuplicateToken &&
+		prevToken != nil &&
+		p.nextToken != nil &&
+		*prevToken == *p.nextToken {
+		p.nextToken = nil
+	}
+
+	return result, nil
+}
+
+// ListFragmentsAPIClient is a client that implements the ListFragments operation.
+type ListFragmentsAPIClient interface {
+	ListFragments(context.Context, *ListFragmentsInput, ...func(*Options)) (*ListFragmentsOutput, error)
+}
+
+var _ ListFragmentsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListFragments(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "kinesisvideo",
 		OperationName: "ListFragments",
 	}
-}
-
-type opListFragmentsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListFragmentsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListFragmentsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "kinesisvideo"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "kinesisvideo"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("kinesisvideo")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListFragmentsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListFragmentsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

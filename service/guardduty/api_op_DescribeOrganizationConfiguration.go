@@ -4,23 +4,21 @@ package guardduty
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/guardduty/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Returns information about the account selected as the delegated administrator
-// for GuardDuty. There might be regional differences because some data sources
-// might not be available in all the Amazon Web Services Regions where GuardDuty is
-// presently supported. For more information, see Regions and endpoints (https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html)
-// .
+// for GuardDuty.
+//
+// There might be regional differences because some data sources might not be
+// available in all the Amazon Web Services Regions where GuardDuty is presently
+// supported. For more information, see [Regions and endpoints].
+//
+// [Regions and endpoints]: https://docs.aws.amazon.com/guardduty/latest/ug/guardduty_regions.html
 func (c *Client) DescribeOrganizationConfiguration(ctx context.Context, params *DescribeOrganizationConfigurationInput, optFns ...func(*Options)) (*DescribeOrganizationConfigurationOutput, error) {
 	if params == nil {
 		params = &DescribeOrganizationConfigurationInput{}
@@ -38,15 +36,20 @@ func (c *Client) DescribeOrganizationConfiguration(ctx context.Context, params *
 
 type DescribeOrganizationConfigurationInput struct {
 
-	// The ID of the detector to retrieve information about the delegated
-	// administrator from.
+	// The detector ID of the delegated administrator for which you need to retrieve
+	// the information.
+	//
+	// To find the detectorId in the current Region, see the Settings page in the
+	// GuardDuty console, or run the [ListDetectors]API.
+	//
+	// [ListDetectors]: https://docs.aws.amazon.com/guardduty/latest/APIReference/API_ListDetectors.html
 	//
 	// This member is required.
 	DetectorId *string
 
 	// You can use this parameter to indicate the maximum number of items that you
 	// want in the response.
-	MaxResults int32
+	MaxResults *int32
 
 	// You can use this parameter when paginating results. Set the value of this
 	// parameter to null on your first call to the list action. For subsequent calls to
@@ -63,26 +66,39 @@ type DescribeOrganizationConfigurationOutput struct {
 	// associated with the delegated administrator account for your organization.
 	//
 	// This member is required.
-	MemberAccountLimitReached bool
+	MemberAccountLimitReached *bool
 
 	// Indicates whether GuardDuty is automatically enabled for accounts added to the
-	// organization. Even though this is still supported, we recommend using
+	// organization.
+	//
+	// Even though this is still supported, we recommend using
 	// AutoEnableOrganizationMembers to achieve the similar results.
 	//
 	// Deprecated: This field is deprecated, use AutoEnableOrganizationMembers instead
-	AutoEnable bool
+	AutoEnable *bool
 
-	// Indicates the auto-enablement configuration of GuardDuty for the member
-	// accounts in the organization.
+	// Indicates the auto-enablement configuration of GuardDuty or any of the
+	// corresponding protection plans for the member accounts in the organization.
+	//
 	//   - NEW : Indicates that when a new account joins the organization, they will
-	//   have GuardDuty enabled automatically.
-	//   - ALL : Indicates that all accounts in the Amazon Web Services Organization
-	//   have GuardDuty enabled automatically. This includes NEW accounts that join the
-	//   organization and accounts that may have been suspended or removed from the
-	//   organization in GuardDuty.
-	//   - NONE : Indicates that GuardDuty will not be automatically enabled for any
-	//   accounts in the organization. GuardDuty must be managed for each account
-	//   individually by the administrator.
+	//   have GuardDuty or any of the corresponding protection plans enabled
+	//   automatically.
+	//
+	//   - ALL : Indicates that all accounts in the organization have GuardDuty and any
+	//   of the corresponding protection plans enabled automatically. This includes NEW
+	//   accounts that join the organization and accounts that may have been suspended or
+	//   removed from the organization in GuardDuty.
+	//
+	//   - NONE : Indicates that GuardDuty or any of the corresponding protection plans
+	//   will not be automatically enabled for any account in the organization. The
+	//   administrator must manage GuardDuty for each account in the organization
+	//   individually.
+	//
+	// When you update the auto-enable setting from ALL or NEW to NONE , this action
+	//   doesn't disable the corresponding option for your existing accounts. This
+	//   configuration will apply to the new accounts that join the organization. After
+	//   you update the auto-enable settings, no new account will have the corresponding
+	//   option as enabled.
 	AutoEnableOrganizationMembers types.AutoEnableMembers
 
 	// Describes which data sources are enabled automatically for member accounts.
@@ -104,6 +120,9 @@ type DescribeOrganizationConfigurationOutput struct {
 }
 
 func (c *Client) addOperationDescribeOrganizationConfigurationMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpDescribeOrganizationConfiguration{}, middleware.After)
 	if err != nil {
 		return err
@@ -112,34 +131,38 @@ func (c *Client) addOperationDescribeOrganizationConfigurationMiddlewares(stack 
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeOrganizationConfiguration"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -151,7 +174,13 @@ func (c *Client) addOperationDescribeOrganizationConfigurationMiddlewares(stack 
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeOrganizationConfigurationResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeOrganizationConfigurationValidationMiddleware(stack); err != nil {
@@ -160,7 +189,7 @@ func (c *Client) addOperationDescribeOrganizationConfigurationMiddlewares(stack 
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeOrganizationConfiguration(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -172,19 +201,23 @@ func (c *Client) addOperationDescribeOrganizationConfigurationMiddlewares(stack 
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// DescribeOrganizationConfigurationAPIClient is a client that implements the
-// DescribeOrganizationConfiguration operation.
-type DescribeOrganizationConfigurationAPIClient interface {
-	DescribeOrganizationConfiguration(context.Context, *DescribeOrganizationConfigurationInput, ...func(*Options)) (*DescribeOrganizationConfigurationOutput, error)
-}
-
-var _ DescribeOrganizationConfigurationAPIClient = (*Client)(nil)
 
 // DescribeOrganizationConfigurationPaginatorOptions is the paginator options for
 // DescribeOrganizationConfiguration
@@ -216,8 +249,8 @@ func NewDescribeOrganizationConfigurationPaginator(client DescribeOrganizationCo
 	}
 
 	options := DescribeOrganizationConfigurationPaginatorOptions{}
-	if params.MaxResults != 0 {
-		options.Limit = params.MaxResults
+	if params.MaxResults != nil {
+		options.Limit = *params.MaxResults
 	}
 
 	for _, fn := range optFns {
@@ -247,8 +280,15 @@ func (p *DescribeOrganizationConfigurationPaginator) NextPage(ctx context.Contex
 	params := *p.params
 	params.NextToken = p.nextToken
 
-	params.MaxResults = p.options.Limit
+	var limit *int32
+	if p.options.Limit > 0 {
+		limit = &p.options.Limit
+	}
+	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.DescribeOrganizationConfiguration(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -268,134 +308,18 @@ func (p *DescribeOrganizationConfigurationPaginator) NextPage(ctx context.Contex
 	return result, nil
 }
 
+// DescribeOrganizationConfigurationAPIClient is a client that implements the
+// DescribeOrganizationConfiguration operation.
+type DescribeOrganizationConfigurationAPIClient interface {
+	DescribeOrganizationConfiguration(context.Context, *DescribeOrganizationConfigurationInput, ...func(*Options)) (*DescribeOrganizationConfigurationOutput, error)
+}
+
+var _ DescribeOrganizationConfigurationAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opDescribeOrganizationConfiguration(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "guardduty",
 		OperationName: "DescribeOrganizationConfiguration",
 	}
-}
-
-type opDescribeOrganizationConfigurationResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeOrganizationConfigurationResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeOrganizationConfigurationResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "guardduty"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "guardduty"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("guardduty")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeOrganizationConfigurationResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeOrganizationConfigurationResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

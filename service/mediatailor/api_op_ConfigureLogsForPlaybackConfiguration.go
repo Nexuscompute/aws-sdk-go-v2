@@ -4,18 +4,15 @@ package mediatailor
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
+	"github.com/aws/aws-sdk-go-v2/service/mediatailor/types"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Amazon CloudWatch log settings for a playback configuration.
+// Defines where AWS Elemental MediaTailor sends logs for the playback
+// configuration.
 func (c *Client) ConfigureLogsForPlaybackConfiguration(ctx context.Context, params *ConfigureLogsForPlaybackConfigurationInput, optFns ...func(*Options)) (*ConfigureLogsForPlaybackConfigurationOutput, error) {
 	if params == nil {
 		params = &ConfigureLogsForPlaybackConfigurationInput{}
@@ -34,13 +31,16 @@ func (c *Client) ConfigureLogsForPlaybackConfiguration(ctx context.Context, para
 // Configures Amazon CloudWatch log settings for a playback configuration.
 type ConfigureLogsForPlaybackConfigurationInput struct {
 
-	// The percentage of session logs that MediaTailor sends to your Cloudwatch Logs
+	// The percentage of session logs that MediaTailor sends to your CloudWatch Logs
 	// account. For example, if your playback configuration has 1000 sessions and
 	// percentEnabled is set to 60 , MediaTailor sends logs for 600 of the sessions to
 	// CloudWatch Logs. MediaTailor decides at random which of the playback
 	// configuration sessions to send logs for. If you want to view logs for a specific
-	// session, you can use the debug log mode (https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html)
-	// . Valid values: 0 - 100
+	// session, you can use the [debug log mode].
+	//
+	// Valid values: 0 - 100
+	//
+	// [debug log mode]: https://docs.aws.amazon.com/mediatailor/latest/ug/debug-log-mode.html
 	//
 	// This member is required.
 	PercentEnabled int32
@@ -49,6 +49,19 @@ type ConfigureLogsForPlaybackConfigurationInput struct {
 	//
 	// This member is required.
 	PlaybackConfigurationName *string
+
+	// The method used for collecting logs from AWS Elemental MediaTailor. To
+	// configure MediaTailor to send logs directly to Amazon CloudWatch Logs, choose
+	// LEGACY_CLOUDWATCH . To configure MediaTailor to send logs to CloudWatch, which
+	// then vends the logs to your destination of choice, choose VENDED_LOGS .
+	// Supported destinations are CloudWatch Logs log group, Amazon S3 bucket, and
+	// Amazon Data Firehose stream.
+	//
+	// To use vended logs, you must configure the delivery destination in Amazon
+	// CloudWatch, as described in [Enable logging from AWS services, Logging that requires additional permissions [V2]].
+	//
+	// [Enable logging from AWS services, Logging that requires additional permissions [V2]]: https://docs.aws.amazon.com/AmazonCloudWatch/latest/logs/AWS-logs-and-resource-policy.html#AWS-vended-logs-permissions-V2
+	EnabledLoggingStrategies []types.LoggingStrategy
 
 	noSmithyDocumentSerde
 }
@@ -61,6 +74,14 @@ type ConfigureLogsForPlaybackConfigurationOutput struct {
 	// This member is required.
 	PercentEnabled int32
 
+	// The method used for collecting logs from AWS Elemental MediaTailor.
+	// LEGACY_CLOUDWATCH indicates that MediaTailor is sending logs directly to Amazon
+	// CloudWatch Logs. VENDED_LOGS indicates that MediaTailor is sending logs to
+	// CloudWatch, which then vends the logs to your destination of choice. Supported
+	// destinations are CloudWatch Logs log group, Amazon S3 bucket, and Amazon Data
+	// Firehose stream.
+	EnabledLoggingStrategies []types.LoggingStrategy
+
 	// The name of the playback configuration.
 	PlaybackConfigurationName *string
 
@@ -71,6 +92,9 @@ type ConfigureLogsForPlaybackConfigurationOutput struct {
 }
 
 func (c *Client) addOperationConfigureLogsForPlaybackConfigurationMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpConfigureLogsForPlaybackConfiguration{}, middleware.After)
 	if err != nil {
 		return err
@@ -79,34 +103,38 @@ func (c *Client) addOperationConfigureLogsForPlaybackConfigurationMiddlewares(st
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ConfigureLogsForPlaybackConfiguration"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -118,7 +146,13 @@ func (c *Client) addOperationConfigureLogsForPlaybackConfigurationMiddlewares(st
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addConfigureLogsForPlaybackConfigurationResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpConfigureLogsForPlaybackConfigurationValidationMiddleware(stack); err != nil {
@@ -127,7 +161,7 @@ func (c *Client) addOperationConfigureLogsForPlaybackConfigurationMiddlewares(st
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opConfigureLogsForPlaybackConfiguration(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -139,7 +173,19 @@ func (c *Client) addOperationConfigureLogsForPlaybackConfigurationMiddlewares(st
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -149,130 +195,6 @@ func newServiceMetadataMiddleware_opConfigureLogsForPlaybackConfiguration(region
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "mediatailor",
 		OperationName: "ConfigureLogsForPlaybackConfiguration",
 	}
-}
-
-type opConfigureLogsForPlaybackConfigurationResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opConfigureLogsForPlaybackConfigurationResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opConfigureLogsForPlaybackConfigurationResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "mediatailor"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "mediatailor"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("mediatailor")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addConfigureLogsForPlaybackConfigurationResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opConfigureLogsForPlaybackConfigurationResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -770,6 +770,26 @@ func (m *validateOpRunJobFlow) HandleInitialize(ctx context.Context, in middlewa
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpSetKeepJobFlowAliveWhenNoSteps struct {
+}
+
+func (*validateOpSetKeepJobFlowAliveWhenNoSteps) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpSetKeepJobFlowAliveWhenNoSteps) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*SetKeepJobFlowAliveWhenNoStepsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpSetKeepJobFlowAliveWhenNoStepsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpSetTerminationProtection struct {
 }
 
@@ -785,6 +805,26 @@ func (m *validateOpSetTerminationProtection) HandleInitialize(ctx context.Contex
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpSetTerminationProtectionInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpSetUnhealthyNodeReplacement struct {
+}
+
+func (*validateOpSetUnhealthyNodeReplacement) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpSetUnhealthyNodeReplacement) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*SetUnhealthyNodeReplacementInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpSetUnhealthyNodeReplacementInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1062,8 +1102,16 @@ func addOpRunJobFlowValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpRunJobFlow{}, middleware.After)
 }
 
+func addOpSetKeepJobFlowAliveWhenNoStepsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpSetKeepJobFlowAliveWhenNoSteps{}, middleware.After)
+}
+
 func addOpSetTerminationProtectionValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpSetTerminationProtection{}, middleware.After)
+}
+
+func addOpSetUnhealthyNodeReplacementValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpSetUnhealthyNodeReplacement{}, middleware.After)
 }
 
 func addOpSetVisibleToAllUsersValidationMiddleware(stack *middleware.Stack) error {
@@ -1121,6 +1169,9 @@ func validateBlockPublicAccessConfiguration(v *types.BlockPublicAccessConfigurat
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "BlockPublicAccessConfiguration"}
+	if v.BlockPublicSecurityGroupRules == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BlockPublicSecurityGroupRules"))
+	}
 	if v.PermittedPublicSecurityGroupRuleRanges != nil {
 		if err := validatePortRanges(v.PermittedPublicSecurityGroupRuleRanges); err != nil {
 			invalidParams.AddNested("PermittedPublicSecurityGroupRuleRanges", err.(smithy.InvalidParamsError))
@@ -1318,11 +1369,6 @@ func validateInstanceFleetConfig(v *types.InstanceFleetConfig) error {
 			invalidParams.AddNested("LaunchSpecifications", err.(smithy.InvalidParamsError))
 		}
 	}
-	if v.ResizeSpecifications != nil {
-		if err := validateInstanceFleetResizingSpecifications(v.ResizeSpecifications); err != nil {
-			invalidParams.AddNested("ResizeSpecifications", err.(smithy.InvalidParamsError))
-		}
-	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1355,9 +1401,9 @@ func validateInstanceFleetModifyConfig(v *types.InstanceFleetModifyConfig) error
 	if v.InstanceFleetId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("InstanceFleetId"))
 	}
-	if v.ResizeSpecifications != nil {
-		if err := validateInstanceFleetResizingSpecifications(v.ResizeSpecifications); err != nil {
-			invalidParams.AddNested("ResizeSpecifications", err.(smithy.InvalidParamsError))
+	if v.InstanceTypeConfigs != nil {
+		if err := validateInstanceTypeConfigList(v.InstanceTypeConfigs); err != nil {
+			invalidParams.AddNested("InstanceTypeConfigs", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1380,28 +1426,6 @@ func validateInstanceFleetProvisioningSpecifications(v *types.InstanceFleetProvi
 	if v.OnDemandSpecification != nil {
 		if err := validateOnDemandProvisioningSpecification(v.OnDemandSpecification); err != nil {
 			invalidParams.AddNested("OnDemandSpecification", err.(smithy.InvalidParamsError))
-		}
-	}
-	if invalidParams.Len() > 0 {
-		return invalidParams
-	} else {
-		return nil
-	}
-}
-
-func validateInstanceFleetResizingSpecifications(v *types.InstanceFleetResizingSpecifications) error {
-	if v == nil {
-		return nil
-	}
-	invalidParams := smithy.InvalidParamsError{Context: "InstanceFleetResizingSpecifications"}
-	if v.SpotResizeSpecification != nil {
-		if err := validateSpotResizingSpecification(v.SpotResizeSpecification); err != nil {
-			invalidParams.AddNested("SpotResizeSpecification", err.(smithy.InvalidParamsError))
-		}
-	}
-	if v.OnDemandResizeSpecification != nil {
-		if err := validateOnDemandResizingSpecification(v.OnDemandResizeSpecification); err != nil {
-			invalidParams.AddNested("OnDemandResizeSpecification", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1592,21 +1616,6 @@ func validateOnDemandProvisioningSpecification(v *types.OnDemandProvisioningSpec
 	invalidParams := smithy.InvalidParamsError{Context: "OnDemandProvisioningSpecification"}
 	if len(v.AllocationStrategy) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("AllocationStrategy"))
-	}
-	if invalidParams.Len() > 0 {
-		return invalidParams
-	} else {
-		return nil
-	}
-}
-
-func validateOnDemandResizingSpecification(v *types.OnDemandResizingSpecification) error {
-	if v == nil {
-		return nil
-	}
-	invalidParams := smithy.InvalidParamsError{Context: "OnDemandResizingSpecification"}
-	if v.TimeoutDurationMinutes == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("TimeoutDurationMinutes"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1821,21 +1830,6 @@ func validateSpotProvisioningSpecification(v *types.SpotProvisioningSpecificatio
 	}
 	if len(v.TimeoutAction) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("TimeoutAction"))
-	}
-	if invalidParams.Len() > 0 {
-		return invalidParams
-	} else {
-		return nil
-	}
-}
-
-func validateSpotResizingSpecification(v *types.SpotResizingSpecification) error {
-	if v == nil {
-		return nil
-	}
-	invalidParams := smithy.InvalidParamsError{Context: "SpotResizingSpecification"}
-	if v.TimeoutDurationMinutes == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("TimeoutDurationMinutes"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2227,9 +2221,6 @@ func validateOpGetClusterSessionCredentialsInput(v *GetClusterSessionCredentials
 	if v.ClusterId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ClusterId"))
 	}
-	if v.ExecutionRoleArn == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("ExecutionRoleArn"))
-	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -2608,6 +2599,24 @@ func validateOpRunJobFlowInput(v *RunJobFlowInput) error {
 	}
 }
 
+func validateOpSetKeepJobFlowAliveWhenNoStepsInput(v *SetKeepJobFlowAliveWhenNoStepsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SetKeepJobFlowAliveWhenNoStepsInput"}
+	if v.JobFlowIds == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("JobFlowIds"))
+	}
+	if v.KeepJobFlowAliveWhenNoSteps == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("KeepJobFlowAliveWhenNoSteps"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpSetTerminationProtectionInput(v *SetTerminationProtectionInput) error {
 	if v == nil {
 		return nil
@@ -2615,6 +2624,27 @@ func validateOpSetTerminationProtectionInput(v *SetTerminationProtectionInput) e
 	invalidParams := smithy.InvalidParamsError{Context: "SetTerminationProtectionInput"}
 	if v.JobFlowIds == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("JobFlowIds"))
+	}
+	if v.TerminationProtected == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TerminationProtected"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpSetUnhealthyNodeReplacementInput(v *SetUnhealthyNodeReplacementInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "SetUnhealthyNodeReplacementInput"}
+	if v.JobFlowIds == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("JobFlowIds"))
+	}
+	if v.UnhealthyNodeReplacement == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("UnhealthyNodeReplacement"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2630,6 +2660,9 @@ func validateOpSetVisibleToAllUsersInput(v *SetVisibleToAllUsersInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "SetVisibleToAllUsersInput"}
 	if v.JobFlowIds == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("JobFlowIds"))
+	}
+	if v.VisibleToAllUsers == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("VisibleToAllUsers"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

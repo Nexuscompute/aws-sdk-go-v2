@@ -2,6 +2,69 @@
 
 package types
 
+type BillingMode string
+
+// Enum values for BillingMode
+const (
+	BillingModeExtendableRetentionPricing BillingMode = "EXTENDABLE_RETENTION_PRICING"
+	BillingModeFixedRetentionPricing      BillingMode = "FIXED_RETENTION_PRICING"
+)
+
+// Values returns all known values for BillingMode. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (BillingMode) Values() []BillingMode {
+	return []BillingMode{
+		"EXTENDABLE_RETENTION_PRICING",
+		"FIXED_RETENTION_PRICING",
+	}
+}
+
+type DashboardStatus string
+
+// Enum values for DashboardStatus
+const (
+	DashboardStatusCreating DashboardStatus = "CREATING"
+	DashboardStatusCreated  DashboardStatus = "CREATED"
+	DashboardStatusUpdating DashboardStatus = "UPDATING"
+	DashboardStatusUpdated  DashboardStatus = "UPDATED"
+	DashboardStatusDeleting DashboardStatus = "DELETING"
+)
+
+// Values returns all known values for DashboardStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DashboardStatus) Values() []DashboardStatus {
+	return []DashboardStatus{
+		"CREATING",
+		"CREATED",
+		"UPDATING",
+		"UPDATED",
+		"DELETING",
+	}
+}
+
+type DashboardType string
+
+// Enum values for DashboardType
+const (
+	DashboardTypeManaged DashboardType = "MANAGED"
+	DashboardTypeCustom  DashboardType = "CUSTOM"
+)
+
+// Values returns all known values for DashboardType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DashboardType) Values() []DashboardType {
+	return []DashboardType{
+		"MANAGED",
+		"CUSTOM",
+	}
+}
+
 type DeliveryStatus string
 
 // Enum values for DeliveryStatus
@@ -18,8 +81,9 @@ const (
 )
 
 // Values returns all known values for DeliveryStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeliveryStatus) Values() []DeliveryStatus {
 	return []DeliveryStatus{
 		"SUCCESS",
@@ -43,8 +107,9 @@ const (
 )
 
 // Values returns all known values for DestinationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DestinationType) Values() []DestinationType {
 	return []DestinationType{
 		"EVENT_DATA_STORE",
@@ -60,8 +125,9 @@ const (
 )
 
 // Values returns all known values for EventCategory. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EventCategory) Values() []EventCategory {
 	return []EventCategory{
 		"insight",
@@ -81,8 +147,9 @@ const (
 )
 
 // Values returns all known values for EventDataStoreStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EventDataStoreStatus) Values() []EventDataStoreStatus {
 	return []EventDataStoreStatus{
 		"CREATED",
@@ -91,6 +158,29 @@ func (EventDataStoreStatus) Values() []EventDataStoreStatus {
 		"STARTING_INGESTION",
 		"STOPPING_INGESTION",
 		"STOPPED_INGESTION",
+	}
+}
+
+type FederationStatus string
+
+// Enum values for FederationStatus
+const (
+	FederationStatusEnabling  FederationStatus = "ENABLING"
+	FederationStatusEnabled   FederationStatus = "ENABLED"
+	FederationStatusDisabling FederationStatus = "DISABLING"
+	FederationStatusDisabled  FederationStatus = "DISABLED"
+)
+
+// Values returns all known values for FederationStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FederationStatus) Values() []FederationStatus {
+	return []FederationStatus{
+		"ENABLING",
+		"ENABLED",
+		"DISABLING",
+		"DISABLED",
 	}
 }
 
@@ -104,8 +194,9 @@ const (
 )
 
 // Values returns all known values for ImportFailureStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImportFailureStatus) Values() []ImportFailureStatus {
 	return []ImportFailureStatus{
 		"FAILED",
@@ -126,8 +217,9 @@ const (
 )
 
 // Values returns all known values for ImportStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImportStatus) Values() []ImportStatus {
 	return []ImportStatus{
 		"INITIALIZING",
@@ -135,6 +227,25 @@ func (ImportStatus) Values() []ImportStatus {
 		"FAILED",
 		"STOPPED",
 		"COMPLETED",
+	}
+}
+
+type InsightsMetricDataType string
+
+// Enum values for InsightsMetricDataType
+const (
+	InsightsMetricDataTypeFillWithZeros InsightsMetricDataType = "FillWithZeros"
+	InsightsMetricDataTypeNonZeroData   InsightsMetricDataType = "NonZeroData"
+)
+
+// Values returns all known values for InsightsMetricDataType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InsightsMetricDataType) Values() []InsightsMetricDataType {
+	return []InsightsMetricDataType{
+		"FillWithZeros",
+		"NonZeroData",
 	}
 }
 
@@ -147,8 +258,9 @@ const (
 )
 
 // Values returns all known values for InsightType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InsightType) Values() []InsightType {
 	return []InsightType{
 		"ApiCallRateInsight",
@@ -171,8 +283,9 @@ const (
 )
 
 // Values returns all known values for LookupAttributeKey. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LookupAttributeKey) Values() []LookupAttributeKey {
 	return []LookupAttributeKey{
 		"EventId",
@@ -199,8 +312,9 @@ const (
 )
 
 // Values returns all known values for QueryStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (QueryStatus) Values() []QueryStatus {
 	return []QueryStatus{
 		"QUEUED",
@@ -222,12 +336,52 @@ const (
 )
 
 // Values returns all known values for ReadWriteType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReadWriteType) Values() []ReadWriteType {
 	return []ReadWriteType{
 		"ReadOnly",
 		"WriteOnly",
 		"All",
+	}
+}
+
+type RefreshScheduleFrequencyUnit string
+
+// Enum values for RefreshScheduleFrequencyUnit
+const (
+	RefreshScheduleFrequencyUnitHours RefreshScheduleFrequencyUnit = "HOURS"
+	RefreshScheduleFrequencyUnitDays  RefreshScheduleFrequencyUnit = "DAYS"
+)
+
+// Values returns all known values for RefreshScheduleFrequencyUnit. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RefreshScheduleFrequencyUnit) Values() []RefreshScheduleFrequencyUnit {
+	return []RefreshScheduleFrequencyUnit{
+		"HOURS",
+		"DAYS",
+	}
+}
+
+type RefreshScheduleStatus string
+
+// Enum values for RefreshScheduleStatus
+const (
+	RefreshScheduleStatusEnabled  RefreshScheduleStatus = "ENABLED"
+	RefreshScheduleStatusDisabled RefreshScheduleStatus = "DISABLED"
+)
+
+// Values returns all known values for RefreshScheduleStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RefreshScheduleStatus) Values() []RefreshScheduleStatus {
+	return []RefreshScheduleStatus{
+		"ENABLED",
+		"DISABLED",
 	}
 }

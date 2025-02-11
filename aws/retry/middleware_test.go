@@ -11,11 +11,12 @@ import (
 	"testing"
 	"time"
 
+	internalcontext "github.com/aws/aws-sdk-go-v2/internal/context"
+
 	"github.com/aws/aws-sdk-go-v2/aws/ratelimit"
 	"github.com/aws/aws-sdk-go-v2/internal/sdk"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
-	"github.com/google/go-cmp/cmp"
 )
 
 func TestMetricsHeaderMiddleware(t *testing.T) {
@@ -203,13 +204,16 @@ func TestAttemptMiddleware(t *testing.T) {
 					MaxAttempts: 3,
 				},
 				{
-					AttemptNum:  2,
-					AttemptTime: time.Date(2020, 8, 19, 10, 21, 30, 0, time.UTC),
+					AttemptNum: 2,
+					// note that here and everywhere else, time goes up two
+					// additional minutes because of the metrics calling
+					// sdk.NowTime twice
+					AttemptTime: time.Date(2020, 8, 19, 10, 23, 30, 0, time.UTC),
 					MaxAttempts: 3,
 				},
 				{
 					AttemptNum:  3,
-					AttemptTime: time.Date(2020, 8, 19, 10, 22, 30, 0, time.UTC),
+					AttemptTime: time.Date(2020, 8, 19, 10, 26, 30, 0, time.UTC),
 					MaxAttempts: 3,
 				},
 			},
@@ -367,7 +371,7 @@ func TestAttemptMiddleware(t *testing.T) {
 				},
 				{
 					AttemptNum:  2,
-					AttemptTime: time.Date(2020, 8, 19, 10, 21, 30, 0, time.UTC),
+					AttemptTime: time.Date(2020, 8, 19, 10, 23, 30, 0, time.UTC),
 					MaxAttempts: 3,
 				},
 			},
@@ -427,7 +431,7 @@ func TestAttemptMiddleware(t *testing.T) {
 					t.Errorf("expect %v, got %v", tt.Err, err)
 				}
 			}
-			if diff := cmp.Diff(recorded, tt.Expect); len(diff) > 0 {
+			if diff := cmpDiff(recorded, tt.Expect); len(diff) > 0 {
 				t.Error(diff)
 			}
 
@@ -486,10 +490,88 @@ func TestAttemptReleaseRetryLock(t *testing.T) {
 	}
 }
 
+type errorCodeImplementer struct {
+	errorCode string
+}
+
+func (e errorCodeImplementer) Error() string {
+	return e.errorCode
+}
+
+func (e errorCodeImplementer) ErrorCode() string {
+	return e.errorCode
+}
+
+func TestClockSkew(t *testing.T) {
+	cases := map[string]struct {
+		skew        time.Duration
+		err         error
+		shouldRetry bool
+	}{
+		"no skew and any error no retry": {
+			skew:        time.Duration(0),
+			err:         fmt.Errorf("any error"),
+			shouldRetry: false,
+		},
+		"no skew wrong error code no retry": {
+			skew:        time.Duration(0),
+			err:         errorCodeImplementer{"any"},
+			shouldRetry: false,
+		},
+		"skewed retryable error code does retry": {
+			skew:        5 * time.Minute,
+			err:         errorCodeImplementer{"SignatureDoesNotMatch"},
+			shouldRetry: true,
+		},
+		"low skew retryable error code no retry": {
+			skew:        3 * time.Minute,
+			err:         errorCodeImplementer{"SignatureDoesNotMatch"},
+			shouldRetry: false,
+		},
+	}
+	for name, tt := range cases {
+		t.Run(name, func(t *testing.T) {
+			am := NewAttemptMiddleware(NewStandard(func(s *StandardOptions) {
+			}), func(i any) any { return i })
+			ctx := internalcontext.SetAttemptSkewContext(context.Background(), tt.skew)
+			_, metadata, err := am.HandleFinalize(ctx, middleware.FinalizeInput{}, middleware.FinalizeHandlerFunc(
+				func(ctx context.Context, in middleware.FinalizeInput) (
+					out middleware.FinalizeOutput, metadata middleware.Metadata, err error,
+				) {
+					return out, metadata, tt.err
+				}))
+			if err == nil {
+				t.Errorf("Exected return from next middleware, got none")
+			}
+			attemptResults, ok := GetAttemptResults(metadata)
+			if !ok {
+				t.Errorf("Got no expected results from metadata. Metadata was %v", metadata)
+			}
+			if len(attemptResults.Results) == 0 {
+				t.Errorf("Expected attempt results, got no results. Attempt was %v", attemptResults)
+			}
+			wasRetried := attemptResults.Results[0].Retried
+			if tt.shouldRetry && !wasRetried {
+				t.Errorf("Expected retries, found none %v", attemptResults.Results)
+			}
+			if !tt.shouldRetry && wasRetried {
+				t.Errorf("Expected retries, found none. Results %v", attemptResults.Results)
+			}
+		})
+	}
+}
+
 // mockRawResponseKey is used to test the behavior when response metadata is
 // nested within the attempt request.
 type mockRawResponseKey struct{}
 
 func setMockRawResponse(m *middleware.Metadata, v interface{}) {
 	m.Set(mockRawResponseKey{}, v)
+}
+
+func cmpDiff(e, a interface{}) string {
+	if !reflect.DeepEqual(e, a) {
+		return fmt.Sprintf("%v != %v", e, a)
+	}
+	return ""
 }

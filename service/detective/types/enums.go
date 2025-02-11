@@ -12,8 +12,9 @@ const (
 )
 
 // Values returns all known values for DatasourcePackage. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DatasourcePackage) Values() []DatasourcePackage {
 	return []DatasourcePackage{
 		"DETECTIVE_CORE",
@@ -33,13 +34,33 @@ const (
 
 // Values returns all known values for DatasourcePackageIngestState. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DatasourcePackageIngestState) Values() []DatasourcePackageIngestState {
 	return []DatasourcePackageIngestState{
 		"STARTED",
 		"STOPPED",
 		"DISABLED",
+	}
+}
+
+type EntityType string
+
+// Enum values for EntityType
+const (
+	EntityTypeIamRole EntityType = "IAM_ROLE"
+	EntityTypeIamUser EntityType = "IAM_USER"
+)
+
+// Values returns all known values for EntityType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EntityType) Values() []EntityType {
+	return []EntityType{
+		"IAM_ROLE",
+		"IAM_USER",
 	}
 }
 
@@ -53,13 +74,66 @@ const (
 )
 
 // Values returns all known values for ErrorCode. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ErrorCode) Values() []ErrorCode {
 	return []ErrorCode{
 		"INVALID_GRAPH_ARN",
 		"INVALID_REQUEST_BODY",
 		"INTERNAL_ERROR",
+	}
+}
+
+type Field string
+
+// Enum values for Field
+const (
+	FieldSeverity    Field = "SEVERITY"
+	FieldStatus      Field = "STATUS"
+	FieldCreatedTime Field = "CREATED_TIME"
+)
+
+// Values returns all known values for Field. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Field) Values() []Field {
+	return []Field{
+		"SEVERITY",
+		"STATUS",
+		"CREATED_TIME",
+	}
+}
+
+type IndicatorType string
+
+// Enum values for IndicatorType
+const (
+	IndicatorTypeTtpObserved         IndicatorType = "TTP_OBSERVED"
+	IndicatorTypeImpossibleTravel    IndicatorType = "IMPOSSIBLE_TRAVEL"
+	IndicatorTypeFlaggedIpAddress    IndicatorType = "FLAGGED_IP_ADDRESS"
+	IndicatorTypeNewGeolocation      IndicatorType = "NEW_GEOLOCATION"
+	IndicatorTypeNewAso              IndicatorType = "NEW_ASO"
+	IndicatorTypeNewUserAgent        IndicatorType = "NEW_USER_AGENT"
+	IndicatorTypeRelatedFinding      IndicatorType = "RELATED_FINDING"
+	IndicatorTypeRelatedFindingGroup IndicatorType = "RELATED_FINDING_GROUP"
+)
+
+// Values returns all known values for IndicatorType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IndicatorType) Values() []IndicatorType {
+	return []IndicatorType{
+		"TTP_OBSERVED",
+		"IMPOSSIBLE_TRAVEL",
+		"FLAGGED_IP_ADDRESS",
+		"NEW_GEOLOCATION",
+		"NEW_ASO",
+		"NEW_USER_AGENT",
+		"RELATED_FINDING",
+		"RELATED_FINDING_GROUP",
 	}
 }
 
@@ -72,8 +146,9 @@ const (
 )
 
 // Values returns all known values for InvitationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InvitationType) Values() []InvitationType {
 	return []InvitationType{
 		"INVITATION",
@@ -90,8 +165,9 @@ const (
 )
 
 // Values returns all known values for MemberDisabledReason. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MemberDisabledReason) Values() []MemberDisabledReason {
 	return []MemberDisabledReason{
 		"VOLUME_TOO_HIGH",
@@ -111,8 +187,9 @@ const (
 )
 
 // Values returns all known values for MemberStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MemberStatus) Values() []MemberStatus {
 	return []MemberStatus{
 		"INVITED",
@@ -120,5 +197,106 @@ func (MemberStatus) Values() []MemberStatus {
 		"VERIFICATION_FAILED",
 		"ENABLED",
 		"ACCEPTED_BUT_DISABLED",
+	}
+}
+
+type Reason string
+
+// Enum values for Reason
+const (
+	ReasonAwsThreatIntelligence Reason = "AWS_THREAT_INTELLIGENCE"
+)
+
+// Values returns all known values for Reason. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Reason) Values() []Reason {
+	return []Reason{
+		"AWS_THREAT_INTELLIGENCE",
+	}
+}
+
+type Severity string
+
+// Enum values for Severity
+const (
+	SeverityInformational Severity = "INFORMATIONAL"
+	SeverityLow           Severity = "LOW"
+	SeverityMedium        Severity = "MEDIUM"
+	SeverityHigh          Severity = "HIGH"
+	SeverityCritical      Severity = "CRITICAL"
+)
+
+// Values returns all known values for Severity. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Severity) Values() []Severity {
+	return []Severity{
+		"INFORMATIONAL",
+		"LOW",
+		"MEDIUM",
+		"HIGH",
+		"CRITICAL",
+	}
+}
+
+type SortOrder string
+
+// Enum values for SortOrder
+const (
+	SortOrderAsc  SortOrder = "ASC"
+	SortOrderDesc SortOrder = "DESC"
+)
+
+// Values returns all known values for SortOrder. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SortOrder) Values() []SortOrder {
+	return []SortOrder{
+		"ASC",
+		"DESC",
+	}
+}
+
+type State string
+
+// Enum values for State
+const (
+	StateActive   State = "ACTIVE"
+	StateArchived State = "ARCHIVED"
+)
+
+// Values returns all known values for State. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (State) Values() []State {
+	return []State{
+		"ACTIVE",
+		"ARCHIVED",
+	}
+}
+
+type Status string
+
+// Enum values for Status
+const (
+	StatusRunning    Status = "RUNNING"
+	StatusFailed     Status = "FAILED"
+	StatusSuccessful Status = "SUCCESSFUL"
+)
+
+// Values returns all known values for Status. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Status) Values() []Status {
+	return []Status{
+		"RUNNING",
+		"FAILED",
+		"SUCCESSFUL",
 	}
 }

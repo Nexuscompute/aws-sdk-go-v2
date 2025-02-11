@@ -4,21 +4,16 @@ package shield
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/shield/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Retrieves Protection objects for the account. You can retrieve all protections
-// or you can provide filtering criteria and retrieve just the subset of
-// protections that match the criteria.
+// Retrieves Protection objects for the account. You can retrieve all protections or you can
+// provide filtering criteria and retrieve just the subset of protections that
+// match the criteria.
 func (c *Client) ListProtections(ctx context.Context, params *ListProtectionsInput, optFns ...func(*Options)) (*ListProtectionsOutput, error) {
 	if params == nil {
 		params = &ListProtectionsInput{}
@@ -48,20 +43,26 @@ type ListProtectionsInput struct {
 	// list request. Shield Advanced might return fewer objects than you indicate in
 	// this setting, even if more objects are available. If there are more objects
 	// remaining, Shield Advanced will always also return a NextToken value in the
-	// response. The default setting is 20.
+	// response.
+	//
+	// The default setting is 20.
 	MaxResults *int32
 
 	// When you request a list of objects from Shield Advanced, if the response does
 	// not include all of the remaining available objects, Shield Advanced includes a
 	// NextToken value in the response. You can retrieve the next batch of objects by
 	// requesting the list again and providing the token that was returned by the prior
-	// call in your request. You can indicate the maximum number of objects that you
-	// want Shield Advanced to return for a single call with the MaxResults setting.
-	// Shield Advanced will not return more than MaxResults objects, but may return
-	// fewer, even if more objects are still available. Whenever more objects remain
-	// that Shield Advanced has not yet returned to you, the response will include a
-	// NextToken value. On your first call to a list operation, leave this setting
-	// empty.
+	// call in your request.
+	//
+	// You can indicate the maximum number of objects that you want Shield Advanced to
+	// return for a single call with the MaxResults setting. Shield Advanced will not
+	// return more than MaxResults objects, but may return fewer, even if more objects
+	// are still available.
+	//
+	// Whenever more objects remain that Shield Advanced has not yet returned to you,
+	// the response will include a NextToken value.
+	//
+	// On your first call to a list operation, leave this setting empty.
 	NextToken *string
 
 	noSmithyDocumentSerde
@@ -73,12 +74,15 @@ type ListProtectionsOutput struct {
 	// not include all of the remaining available objects, Shield Advanced includes a
 	// NextToken value in the response. You can retrieve the next batch of objects by
 	// requesting the list again and providing the token that was returned by the prior
-	// call in your request. You can indicate the maximum number of objects that you
-	// want Shield Advanced to return for a single call with the MaxResults setting.
-	// Shield Advanced will not return more than MaxResults objects, but may return
-	// fewer, even if more objects are still available. Whenever more objects remain
-	// that Shield Advanced has not yet returned to you, the response will include a
-	// NextToken value.
+	// call in your request.
+	//
+	// You can indicate the maximum number of objects that you want Shield Advanced to
+	// return for a single call with the MaxResults setting. Shield Advanced will not
+	// return more than MaxResults objects, but may return fewer, even if more objects
+	// are still available.
+	//
+	// Whenever more objects remain that Shield Advanced has not yet returned to you,
+	// the response will include a NextToken value.
 	NextToken *string
 
 	// The array of enabled Protection objects.
@@ -91,6 +95,9 @@ type ListProtectionsOutput struct {
 }
 
 func (c *Client) addOperationListProtectionsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpListProtections{}, middleware.After)
 	if err != nil {
 		return err
@@ -99,34 +106,38 @@ func (c *Client) addOperationListProtectionsMiddlewares(stack *middleware.Stack,
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListProtections"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -138,13 +149,19 @@ func (c *Client) addOperationListProtectionsMiddlewares(stack *middleware.Stack,
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListProtectionsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListProtections(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -156,19 +173,23 @@ func (c *Client) addOperationListProtectionsMiddlewares(stack *middleware.Stack,
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// ListProtectionsAPIClient is a client that implements the ListProtections
-// operation.
-type ListProtectionsAPIClient interface {
-	ListProtections(context.Context, *ListProtectionsInput, ...func(*Options)) (*ListProtectionsOutput, error)
-}
-
-var _ ListProtectionsAPIClient = (*Client)(nil)
 
 // ListProtectionsPaginatorOptions is the paginator options for ListProtections
 type ListProtectionsPaginatorOptions struct {
@@ -176,7 +197,9 @@ type ListProtectionsPaginatorOptions struct {
 	// list request. Shield Advanced might return fewer objects than you indicate in
 	// this setting, even if more objects are available. If there are more objects
 	// remaining, Shield Advanced will always also return a NextToken value in the
-	// response. The default setting is 20.
+	// response.
+	//
+	// The default setting is 20.
 	Limit int32
 
 	// Set to true if pagination should stop if the service returns a pagination token
@@ -237,6 +260,9 @@ func (p *ListProtectionsPaginator) NextPage(ctx context.Context, optFns ...func(
 	}
 	params.MaxResults = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListProtections(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -256,134 +282,18 @@ func (p *ListProtectionsPaginator) NextPage(ctx context.Context, optFns ...func(
 	return result, nil
 }
 
+// ListProtectionsAPIClient is a client that implements the ListProtections
+// operation.
+type ListProtectionsAPIClient interface {
+	ListProtections(context.Context, *ListProtectionsInput, ...func(*Options)) (*ListProtectionsOutput, error)
+}
+
+var _ ListProtectionsAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListProtections(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "shield",
 		OperationName: "ListProtections",
 	}
-}
-
-type opListProtectionsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListProtectionsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListProtectionsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "shield"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "shield"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("shield")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListProtectionsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListProtectionsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -1011,6 +1011,40 @@ func validate__listOfAdBreak(v []types.AdBreak) error {
 	}
 }
 
+func validate__listOfAlternateMedia(v []types.AlternateMedia) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListOfAlternateMedia"}
+	for i := range v {
+		if err := validateAlternateMedia(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validate__listOfAudienceMedia(v []types.AudienceMedia) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListOfAudienceMedia"}
+	for i := range v {
+		if err := validateAudienceMedia(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validate__listOfAvailMatchingCriteria(v []types.AvailMatchingCriteria) error {
 	if v == nil {
 		return nil
@@ -1062,6 +1096,55 @@ func validateAdBreakMetadataList(v []types.KeyValuePair) error {
 	}
 }
 
+func validateAdConditioningConfiguration(v *types.AdConditioningConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AdConditioningConfiguration"}
+	if len(v.StreamingMediaFileConditioning) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("StreamingMediaFileConditioning"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateAlternateMedia(v *types.AlternateMedia) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AlternateMedia"}
+	if v.AdBreaks != nil {
+		if err := validate__listOfAdBreak(v.AdBreaks); err != nil {
+			invalidParams.AddNested("AdBreaks", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateAudienceMedia(v *types.AudienceMedia) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AudienceMedia"}
+	if v.AlternateMedia != nil {
+		if err := validate__listOfAlternateMedia(v.AlternateMedia); err != nil {
+			invalidParams.AddNested("AlternateMedia", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateAvailMatchingCriteria(v *types.AvailMatchingCriteria) error {
 	if v == nil {
 		return nil
@@ -1073,18 +1156,6 @@ func validateAvailMatchingCriteria(v *types.AvailMatchingCriteria) error {
 	if len(v.Operator) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Operator"))
 	}
-	if invalidParams.Len() > 0 {
-		return invalidParams
-	} else {
-		return nil
-	}
-}
-
-func validateClipRange(v *types.ClipRange) error {
-	if v == nil {
-		return nil
-	}
-	invalidParams := smithy.InvalidParamsError{Context: "ClipRange"}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1245,10 +1316,20 @@ func validateScheduleConfiguration(v *types.ScheduleConfiguration) error {
 			invalidParams.AddNested("Transition", err.(smithy.InvalidParamsError))
 		}
 	}
-	if v.ClipRange != nil {
-		if err := validateClipRange(v.ClipRange); err != nil {
-			invalidParams.AddNested("ClipRange", err.(smithy.InvalidParamsError))
-		}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateTimeShiftConfiguration(v *types.TimeShiftConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "TimeShiftConfiguration"}
+	if v.MaxTimeDelaySeconds == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaxTimeDelaySeconds"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1267,23 +1348,6 @@ func validateTransition(v *types.Transition) error {
 	}
 	if v.Type == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Type"))
-	}
-	if invalidParams.Len() > 0 {
-		return invalidParams
-	} else {
-		return nil
-	}
-}
-
-func validateUpdateProgramScheduleConfiguration(v *types.UpdateProgramScheduleConfiguration) error {
-	if v == nil {
-		return nil
-	}
-	invalidParams := smithy.InvalidParamsError{Context: "UpdateProgramScheduleConfiguration"}
-	if v.ClipRange != nil {
-		if err := validateClipRange(v.ClipRange); err != nil {
-			invalidParams.AddNested("ClipRange", err.(smithy.InvalidParamsError))
-		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1342,6 +1406,11 @@ func validateOpCreateChannelInput(v *CreateChannelInput) error {
 	}
 	if len(v.PlaybackMode) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("PlaybackMode"))
+	}
+	if v.TimeShiftConfiguration != nil {
+		if err := validateTimeShiftConfiguration(v.TimeShiftConfiguration); err != nil {
+			invalidParams.AddNested("TimeShiftConfiguration", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1432,6 +1501,11 @@ func validateOpCreateProgramInput(v *CreateProgramInput) error {
 	}
 	if v.SourceLocationName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("SourceLocationName"))
+	}
+	if v.AudienceMedia != nil {
+		if err := validate__listOfAudienceMedia(v.AudienceMedia); err != nil {
+			invalidParams.AddNested("AudienceMedia", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1867,6 +1941,11 @@ func validateOpPutPlaybackConfigurationInput(v *PutPlaybackConfigurationInput) e
 	if v.Name == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Name"))
 	}
+	if v.AdConditioningConfiguration != nil {
+		if err := validateAdConditioningConfiguration(v.AdConditioningConfiguration); err != nil {
+			invalidParams.AddNested("AdConditioningConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -1955,6 +2034,11 @@ func validateOpUpdateChannelInput(v *UpdateChannelInput) error {
 			invalidParams.AddNested("Outputs", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.TimeShiftConfiguration != nil {
+		if err := validateTimeShiftConfiguration(v.TimeShiftConfiguration); err != nil {
+			invalidParams.AddNested("TimeShiftConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -2005,9 +2089,10 @@ func validateOpUpdateProgramInput(v *UpdateProgramInput) error {
 	}
 	if v.ScheduleConfiguration == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ScheduleConfiguration"))
-	} else if v.ScheduleConfiguration != nil {
-		if err := validateUpdateProgramScheduleConfiguration(v.ScheduleConfiguration); err != nil {
-			invalidParams.AddNested("ScheduleConfiguration", err.(smithy.InvalidParamsError))
+	}
+	if v.AudienceMedia != nil {
+		if err := validate__listOfAudienceMedia(v.AudienceMedia); err != nil {
+			invalidParams.AddNested("AudienceMedia", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {

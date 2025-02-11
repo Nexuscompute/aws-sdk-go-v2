@@ -4,66 +4,39 @@ package efs
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/efs/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
 )
 
-// Creates a replication configuration that replicates an existing EFS file system
-// to a new, read-only file system. For more information, see Amazon EFS
-// replication (https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html) in
-// the Amazon EFS User Guide. The replication configuration specifies the
-// following:
-//   - Source file system - An existing EFS file system that you want replicated.
-//     The source file system cannot be a destination file system in an existing
+// Creates a replication conﬁguration to either a new or existing EFS file system.
+// For more information, see [Amazon EFS replication]in the Amazon EFS User Guide. The replication
+// configuration specifies the following:
+//
+//   - Source file system – The EFS file system that you want to replicate.
+//
+//   - Destination file system – The destination file system to which the source
+//     file system is replicated. There can only be one destination file system in a
 //     replication configuration.
-//   - Destination file system configuration - The configuration of the
-//     destination file system to which the source file system will be replicated.
-//     There can only be one destination file system in a replication configuration.
-//     The destination file system configuration consists of the following properties:
-//   - Amazon Web Services Region - The Amazon Web Services Region in which the
-//     destination file system is created. Amazon EFS replication is available in all
-//     Amazon Web Services Regions that Amazon EFS is available in, except Africa (Cape
-//     Town), Asia Pacific (Hong Kong), Asia Pacific (Jakarta), Europe (Milan), and
-//     Middle East (Bahrain).
-//   - Availability Zone - If you want the destination file system to use EFS One
-//     Zone availability and durability, you must specify the Availability Zone to
-//     create the file system in. For more information about EFS storage classes, see
-//     Amazon EFS storage classes (https://docs.aws.amazon.com/efs/latest/ug/storage-classes.html)
-//     in the Amazon EFS User Guide.
-//   - Encryption - All destination file systems are created with encryption at
-//     rest enabled. You can specify the Key Management Service (KMS) key that is used
-//     to encrypt the destination file system. If you don't specify a KMS key, your
-//     service-managed KMS key for Amazon EFS is used. After the file system is
-//     created, you cannot change the KMS key.
 //
-// The following properties are set by default:
-//   - Performance mode - The destination file system's performance mode matches
-//     that of the source file system, unless the destination file system uses EFS One
-//     Zone storage. In that case, the General Purpose performance mode is used. The
-//     performance mode cannot be changed.
-//   - Throughput mode - The destination file system's throughput mode matches
-//     that of the source file system. After the file system is created, you can modify
-//     the throughput mode.
+// A file system can be part of only one replication configuration.
 //
-// The following properties are turned off by default:
-//   - Lifecycle management - EFS lifecycle management and EFS Intelligent-Tiering
-//     are not enabled on the destination file system. After the destination file
-//     system is created, you can enable EFS lifecycle management and EFS
-//     Intelligent-Tiering.
-//   - Automatic backups - Automatic daily backups not enabled on the destination
-//     file system. After the file system is created, you can change this setting.
+// The destination parameters for the replication configuration depend on whether
 //
-// For more information, see Amazon EFS replication (https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html)
-// in the Amazon EFS User Guide.
+//	you are replicating to a new file system or to an existing file system, and if
+//	you are replicating across Amazon Web Services accounts. See DestinationToCreatefor more
+//	information.
+//
+// This operation requires permissions for the
+// elasticfilesystem:CreateReplicationConfiguration action. Additionally, other
+// permissions are required depending on how you are replicating file systems. For
+// more information, see [Required permissions for replication]in the Amazon EFS User Guide.
+//
+// [Required permissions for replication]: https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html#efs-replication-permissions
+// [Amazon EFS replication]: https://docs.aws.amazon.com/efs/latest/ug/efs-replication.html
 func (c *Client) CreateReplicationConfiguration(ctx context.Context, params *CreateReplicationConfigurationInput, optFns ...func(*Options)) (*CreateReplicationConfigurationOutput, error) {
 	if params == nil {
 		params = &CreateReplicationConfigurationInput{}
@@ -97,6 +70,7 @@ type CreateReplicationConfigurationInput struct {
 	noSmithyDocumentSerde
 }
 
+// Describes the replication configuration for a specific file system.
 type CreateReplicationConfigurationOutput struct {
 
 	// Describes when the replication configuration was created.
@@ -109,8 +83,8 @@ type CreateReplicationConfigurationOutput struct {
 	// This member is required.
 	Destinations []types.Destination
 
-	// The Amazon Resource Name (ARN) of the original source Amazon EFS file system in
-	// the replication configuration.
+	// The Amazon Resource Name (ARN) of the original source EFS file system in the
+	// replication configuration.
 	//
 	// This member is required.
 	OriginalSourceFileSystemArn *string
@@ -126,11 +100,13 @@ type CreateReplicationConfigurationOutput struct {
 	// This member is required.
 	SourceFileSystemId *string
 
-	// The Amazon Web Services Region in which the source Amazon EFS file system is
-	// located.
+	// The Amazon Web Services Region in which the source EFS file system is located.
 	//
 	// This member is required.
 	SourceFileSystemRegion *string
+
+	// ID of the Amazon Web Services account in which the source file system resides.
+	SourceFileSystemOwnerId *string
 
 	// Metadata pertaining to the operation's result.
 	ResultMetadata middleware.Metadata
@@ -139,6 +115,9 @@ type CreateReplicationConfigurationOutput struct {
 }
 
 func (c *Client) addOperationCreateReplicationConfigurationMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpCreateReplicationConfiguration{}, middleware.After)
 	if err != nil {
 		return err
@@ -147,34 +126,38 @@ func (c *Client) addOperationCreateReplicationConfigurationMiddlewares(stack *mi
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateReplicationConfiguration"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -186,7 +169,13 @@ func (c *Client) addOperationCreateReplicationConfigurationMiddlewares(stack *mi
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateReplicationConfigurationResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateReplicationConfigurationValidationMiddleware(stack); err != nil {
@@ -195,7 +184,7 @@ func (c *Client) addOperationCreateReplicationConfigurationMiddlewares(stack *mi
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateReplicationConfiguration(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -207,7 +196,19 @@ func (c *Client) addOperationCreateReplicationConfigurationMiddlewares(stack *mi
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -217,130 +218,6 @@ func newServiceMetadataMiddleware_opCreateReplicationConfiguration(region string
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "elasticfilesystem",
 		OperationName: "CreateReplicationConfiguration",
 	}
-}
-
-type opCreateReplicationConfigurationResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateReplicationConfigurationResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateReplicationConfigurationResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "elasticfilesystem"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "elasticfilesystem"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("elasticfilesystem")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateReplicationConfigurationResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateReplicationConfigurationResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -2,6 +2,44 @@
 
 package types
 
+type AllocationStrategy string
+
+// Enum values for AllocationStrategy
+const (
+	AllocationStrategyPrioritized AllocationStrategy = "Prioritized"
+	AllocationStrategyLowestPrice AllocationStrategy = "LowestPrice"
+)
+
+// Values returns all known values for AllocationStrategy. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AllocationStrategy) Values() []AllocationStrategy {
+	return []AllocationStrategy{
+		"Prioritized",
+		"LowestPrice",
+	}
+}
+
+type AsgType string
+
+// Enum values for AsgType
+const (
+	AsgTypeSingleInstanceType AsgType = "SingleInstanceType"
+	AsgTypeMixedInstanceType  AsgType = "MixedInstanceTypes"
+)
+
+// Values returns all known values for AsgType. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AsgType) Values() []AsgType {
+	return []AsgType{
+		"SingleInstanceType",
+		"MixedInstanceTypes",
+	}
+}
+
 type AutoScalingConfiguration string
 
 // Enum values for AutoScalingConfiguration
@@ -12,6 +50,7 @@ const (
 
 // Values returns all known values for AutoScalingConfiguration. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (AutoScalingConfiguration) Values() []AutoScalingConfiguration {
 	return []AutoScalingConfiguration{
@@ -29,8 +68,9 @@ const (
 )
 
 // Values returns all known values for CpuVendorArchitecture. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CpuVendorArchitecture) Values() []CpuVendorArchitecture {
 	return []CpuVendorArchitecture{
 		"AWS_ARM64",
@@ -47,8 +87,9 @@ const (
 )
 
 // Values returns all known values for Currency. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Currency) Values() []Currency {
 	return []Currency{
 		"USD",
@@ -67,14 +108,97 @@ const (
 )
 
 // Values returns all known values for CurrentPerformanceRisk. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CurrentPerformanceRisk) Values() []CurrentPerformanceRisk {
 	return []CurrentPerformanceRisk{
 		"VeryLow",
 		"Low",
 		"Medium",
 		"High",
+	}
+}
+
+type CustomizableMetricHeadroom string
+
+// Enum values for CustomizableMetricHeadroom
+const (
+	CustomizableMetricHeadroomPercent30 CustomizableMetricHeadroom = "PERCENT_30"
+	CustomizableMetricHeadroomPercent20 CustomizableMetricHeadroom = "PERCENT_20"
+	CustomizableMetricHeadroomPercent10 CustomizableMetricHeadroom = "PERCENT_10"
+	CustomizableMetricHeadroomPercent0  CustomizableMetricHeadroom = "PERCENT_0"
+)
+
+// Values returns all known values for CustomizableMetricHeadroom. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CustomizableMetricHeadroom) Values() []CustomizableMetricHeadroom {
+	return []CustomizableMetricHeadroom{
+		"PERCENT_30",
+		"PERCENT_20",
+		"PERCENT_10",
+		"PERCENT_0",
+	}
+}
+
+type CustomizableMetricName string
+
+// Enum values for CustomizableMetricName
+const (
+	CustomizableMetricNameCpuUtilization    CustomizableMetricName = "CpuUtilization"
+	CustomizableMetricNameMemoryUtilization CustomizableMetricName = "MemoryUtilization"
+)
+
+// Values returns all known values for CustomizableMetricName. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CustomizableMetricName) Values() []CustomizableMetricName {
+	return []CustomizableMetricName{
+		"CpuUtilization",
+		"MemoryUtilization",
+	}
+}
+
+type CustomizableMetricThreshold string
+
+// Enum values for CustomizableMetricThreshold
+const (
+	CustomizableMetricThresholdP90  CustomizableMetricThreshold = "P90"
+	CustomizableMetricThresholdP95  CustomizableMetricThreshold = "P95"
+	CustomizableMetricThresholdP995 CustomizableMetricThreshold = "P99_5"
+)
+
+// Values returns all known values for CustomizableMetricThreshold. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CustomizableMetricThreshold) Values() []CustomizableMetricThreshold {
+	return []CustomizableMetricThreshold{
+		"P90",
+		"P95",
+		"P99_5",
+	}
+}
+
+type Dimension string
+
+// Enum values for Dimension
+const (
+	DimensionSavingsValue              Dimension = "SavingsValue"
+	DimensionSavingsValueAfterDiscount Dimension = "SavingsValueAfterDiscount"
+)
+
+// Values returns all known values for Dimension. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Dimension) Values() []Dimension {
+	return []Dimension{
+		"SavingsValue",
+		"SavingsValueAfterDiscount",
 	}
 }
 
@@ -86,8 +210,9 @@ const (
 )
 
 // Values returns all known values for EBSFilterName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EBSFilterName) Values() []EBSFilterName {
 	return []EBSFilterName{
 		"Finding",
@@ -103,8 +228,9 @@ const (
 )
 
 // Values returns all known values for EBSFinding. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EBSFinding) Values() []EBSFinding {
 	return []EBSFinding{
 		"Optimized",
@@ -123,14 +249,59 @@ const (
 )
 
 // Values returns all known values for EBSMetricName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EBSMetricName) Values() []EBSMetricName {
 	return []EBSMetricName{
 		"VolumeReadOpsPerSecond",
 		"VolumeWriteOpsPerSecond",
 		"VolumeReadBytesPerSecond",
 		"VolumeWriteBytesPerSecond",
+	}
+}
+
+type EBSSavingsEstimationModeSource string
+
+// Enum values for EBSSavingsEstimationModeSource
+const (
+	EBSSavingsEstimationModeSourcePublicPricing           EBSSavingsEstimationModeSource = "PublicPricing"
+	EBSSavingsEstimationModeSourceCostExplorerRightsizing EBSSavingsEstimationModeSource = "CostExplorerRightsizing"
+	EBSSavingsEstimationModeSourceCostOptimizationHub     EBSSavingsEstimationModeSource = "CostOptimizationHub"
+)
+
+// Values returns all known values for EBSSavingsEstimationModeSource. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EBSSavingsEstimationModeSource) Values() []EBSSavingsEstimationModeSource {
+	return []EBSSavingsEstimationModeSource{
+		"PublicPricing",
+		"CostExplorerRightsizing",
+		"CostOptimizationHub",
+	}
+}
+
+type ECSSavingsEstimationModeSource string
+
+// Enum values for ECSSavingsEstimationModeSource
+const (
+	ECSSavingsEstimationModeSourcePublicPricing           ECSSavingsEstimationModeSource = "PublicPricing"
+	ECSSavingsEstimationModeSourceCostExplorerRightsizing ECSSavingsEstimationModeSource = "CostExplorerRightsizing"
+	ECSSavingsEstimationModeSourceCostOptimizationHub     ECSSavingsEstimationModeSource = "CostOptimizationHub"
+)
+
+// Values returns all known values for ECSSavingsEstimationModeSource. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ECSSavingsEstimationModeSource) Values() []ECSSavingsEstimationModeSource {
+	return []ECSSavingsEstimationModeSource{
+		"PublicPricing",
+		"CostExplorerRightsizing",
+		"CostOptimizationHub",
 	}
 }
 
@@ -143,8 +314,9 @@ const (
 )
 
 // Values returns all known values for ECSServiceLaunchType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ECSServiceLaunchType) Values() []ECSServiceLaunchType {
 	return []ECSServiceLaunchType{
 		"EC2",
@@ -161,8 +333,9 @@ const (
 )
 
 // Values returns all known values for ECSServiceMetricName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ECSServiceMetricName) Values() []ECSServiceMetricName {
 	return []ECSServiceMetricName{
 		"Cpu",
@@ -180,6 +353,7 @@ const (
 
 // Values returns all known values for ECSServiceMetricStatistic. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ECSServiceMetricStatistic) Values() []ECSServiceMetricStatistic {
 	return []ECSServiceMetricStatistic{
@@ -198,8 +372,9 @@ const (
 
 // Values returns all known values for ECSServiceRecommendationFilterName. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ECSServiceRecommendationFilterName) Values() []ECSServiceRecommendationFilterName {
 	return []ECSServiceRecommendationFilterName{
 		"Finding",
@@ -218,8 +393,9 @@ const (
 
 // Values returns all known values for ECSServiceRecommendationFinding. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ECSServiceRecommendationFinding) Values() []ECSServiceRecommendationFinding {
 	return []ECSServiceRecommendationFinding{
 		"Optimized",
@@ -240,8 +416,9 @@ const (
 
 // Values returns all known values for ECSServiceRecommendationFindingReasonCode.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ECSServiceRecommendationFindingReasonCode) Values() []ECSServiceRecommendationFindingReasonCode {
 	return []ECSServiceRecommendationFindingReasonCode{
 		"MemoryOverprovisioned",
@@ -261,8 +438,9 @@ const (
 
 // Values returns all known values for EnhancedInfrastructureMetrics. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EnhancedInfrastructureMetrics) Values() []EnhancedInfrastructureMetrics {
 	return []EnhancedInfrastructureMetrics{
 		"Active",
@@ -278,8 +456,9 @@ const (
 )
 
 // Values returns all known values for EnrollmentFilterName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EnrollmentFilterName) Values() []EnrollmentFilterName {
 	return []EnrollmentFilterName{
 		"Status",
@@ -290,66 +469,86 @@ type ExportableAutoScalingGroupField string
 
 // Enum values for ExportableAutoScalingGroupField
 const (
-	ExportableAutoScalingGroupFieldAccountId                                                       ExportableAutoScalingGroupField = "AccountId"
-	ExportableAutoScalingGroupFieldAutoScalingGroupArn                                             ExportableAutoScalingGroupField = "AutoScalingGroupArn"
-	ExportableAutoScalingGroupFieldAutoScalingGroupName                                            ExportableAutoScalingGroupField = "AutoScalingGroupName"
-	ExportableAutoScalingGroupFieldFinding                                                         ExportableAutoScalingGroupField = "Finding"
-	ExportableAutoScalingGroupFieldUtilizationMetricsCpuMaximum                                    ExportableAutoScalingGroupField = "UtilizationMetricsCpuMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsMemoryMaximum                                 ExportableAutoScalingGroupField = "UtilizationMetricsMemoryMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsEbsReadOpsPerSecondMaximum                    ExportableAutoScalingGroupField = "UtilizationMetricsEbsReadOpsPerSecondMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsEbsWriteOpsPerSecondMaximum                   ExportableAutoScalingGroupField = "UtilizationMetricsEbsWriteOpsPerSecondMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsEbsReadBytesPerSecondMaximum                  ExportableAutoScalingGroupField = "UtilizationMetricsEbsReadBytesPerSecondMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsEbsWriteBytesPerSecondMaximum                 ExportableAutoScalingGroupField = "UtilizationMetricsEbsWriteBytesPerSecondMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsDiskReadOpsPerSecondMaximum                   ExportableAutoScalingGroupField = "UtilizationMetricsDiskReadOpsPerSecondMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsDiskWriteOpsPerSecondMaximum                  ExportableAutoScalingGroupField = "UtilizationMetricsDiskWriteOpsPerSecondMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsDiskReadBytesPerSecondMaximum                 ExportableAutoScalingGroupField = "UtilizationMetricsDiskReadBytesPerSecondMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsDiskWriteBytesPerSecondMaximum                ExportableAutoScalingGroupField = "UtilizationMetricsDiskWriteBytesPerSecondMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsNetworkInBytesPerSecondMaximum                ExportableAutoScalingGroupField = "UtilizationMetricsNetworkInBytesPerSecondMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsNetworkOutBytesPerSecondMaximum               ExportableAutoScalingGroupField = "UtilizationMetricsNetworkOutBytesPerSecondMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsNetworkPacketsInPerSecondMaximum              ExportableAutoScalingGroupField = "UtilizationMetricsNetworkPacketsInPerSecondMaximum"
-	ExportableAutoScalingGroupFieldUtilizationMetricsNetworkPacketsOutPerSecondMaximum             ExportableAutoScalingGroupField = "UtilizationMetricsNetworkPacketsOutPerSecondMaximum"
-	ExportableAutoScalingGroupFieldLookbackPeriodInDays                                            ExportableAutoScalingGroupField = "LookbackPeriodInDays"
-	ExportableAutoScalingGroupFieldCurrentConfigurationInstanceType                                ExportableAutoScalingGroupField = "CurrentConfigurationInstanceType"
-	ExportableAutoScalingGroupFieldCurrentConfigurationDesiredCapacity                             ExportableAutoScalingGroupField = "CurrentConfigurationDesiredCapacity"
-	ExportableAutoScalingGroupFieldCurrentConfigurationMinSize                                     ExportableAutoScalingGroupField = "CurrentConfigurationMinSize"
-	ExportableAutoScalingGroupFieldCurrentConfigurationMaxSize                                     ExportableAutoScalingGroupField = "CurrentConfigurationMaxSize"
-	ExportableAutoScalingGroupFieldCurrentOnDemandPrice                                            ExportableAutoScalingGroupField = "CurrentOnDemandPrice"
-	ExportableAutoScalingGroupFieldCurrentStandardOneYearNoUpfrontReservedPrice                    ExportableAutoScalingGroupField = "CurrentStandardOneYearNoUpfrontReservedPrice"
-	ExportableAutoScalingGroupFieldCurrentStandardThreeYearNoUpfrontReservedPrice                  ExportableAutoScalingGroupField = "CurrentStandardThreeYearNoUpfrontReservedPrice"
-	ExportableAutoScalingGroupFieldCurrentVcpus                                                    ExportableAutoScalingGroupField = "CurrentVCpus"
-	ExportableAutoScalingGroupFieldCurrentMemory                                                   ExportableAutoScalingGroupField = "CurrentMemory"
-	ExportableAutoScalingGroupFieldCurrentStorage                                                  ExportableAutoScalingGroupField = "CurrentStorage"
-	ExportableAutoScalingGroupFieldCurrentNetwork                                                  ExportableAutoScalingGroupField = "CurrentNetwork"
-	ExportableAutoScalingGroupFieldRecommendationOptionsConfigurationInstanceType                  ExportableAutoScalingGroupField = "RecommendationOptionsConfigurationInstanceType"
-	ExportableAutoScalingGroupFieldRecommendationOptionsConfigurationDesiredCapacity               ExportableAutoScalingGroupField = "RecommendationOptionsConfigurationDesiredCapacity"
-	ExportableAutoScalingGroupFieldRecommendationOptionsConfigurationMinSize                       ExportableAutoScalingGroupField = "RecommendationOptionsConfigurationMinSize"
-	ExportableAutoScalingGroupFieldRecommendationOptionsConfigurationMaxSize                       ExportableAutoScalingGroupField = "RecommendationOptionsConfigurationMaxSize"
-	ExportableAutoScalingGroupFieldRecommendationOptionsProjectedUtilizationMetricsCpuMaximum      ExportableAutoScalingGroupField = "RecommendationOptionsProjectedUtilizationMetricsCpuMaximum"
-	ExportableAutoScalingGroupFieldRecommendationOptionsProjectedUtilizationMetricsMemoryMaximum   ExportableAutoScalingGroupField = "RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum"
-	ExportableAutoScalingGroupFieldRecommendationOptionsPerformanceRisk                            ExportableAutoScalingGroupField = "RecommendationOptionsPerformanceRisk"
-	ExportableAutoScalingGroupFieldRecommendationOptionsOnDemandPrice                              ExportableAutoScalingGroupField = "RecommendationOptionsOnDemandPrice"
-	ExportableAutoScalingGroupFieldRecommendationOptionsStandardOneYearNoUpfrontReservedPrice      ExportableAutoScalingGroupField = "RecommendationOptionsStandardOneYearNoUpfrontReservedPrice"
-	ExportableAutoScalingGroupFieldRecommendationOptionsStandardThreeYearNoUpfrontReservedPrice    ExportableAutoScalingGroupField = "RecommendationOptionsStandardThreeYearNoUpfrontReservedPrice"
-	ExportableAutoScalingGroupFieldRecommendationOptionsVcpus                                      ExportableAutoScalingGroupField = "RecommendationOptionsVcpus"
-	ExportableAutoScalingGroupFieldRecommendationOptionsMemory                                     ExportableAutoScalingGroupField = "RecommendationOptionsMemory"
-	ExportableAutoScalingGroupFieldRecommendationOptionsStorage                                    ExportableAutoScalingGroupField = "RecommendationOptionsStorage"
-	ExportableAutoScalingGroupFieldRecommendationOptionsNetwork                                    ExportableAutoScalingGroupField = "RecommendationOptionsNetwork"
-	ExportableAutoScalingGroupFieldLastRefreshTimestamp                                            ExportableAutoScalingGroupField = "LastRefreshTimestamp"
-	ExportableAutoScalingGroupFieldCurrentPerformanceRisk                                          ExportableAutoScalingGroupField = "CurrentPerformanceRisk"
-	ExportableAutoScalingGroupFieldRecommendationOptionsSavingsOpportunityPercentage               ExportableAutoScalingGroupField = "RecommendationOptionsSavingsOpportunityPercentage"
-	ExportableAutoScalingGroupFieldRecommendationOptionsEstimatedMonthlySavingsCurrency            ExportableAutoScalingGroupField = "RecommendationOptionsEstimatedMonthlySavingsCurrency"
-	ExportableAutoScalingGroupFieldRecommendationOptionsEstimatedMonthlySavingsValue               ExportableAutoScalingGroupField = "RecommendationOptionsEstimatedMonthlySavingsValue"
-	ExportableAutoScalingGroupFieldEffectiveRecommendationPreferencesCpuVendorArchitectures        ExportableAutoScalingGroupField = "EffectiveRecommendationPreferencesCpuVendorArchitectures"
-	ExportableAutoScalingGroupFieldEffectiveRecommendationPreferencesEnhancedInfrastructureMetrics ExportableAutoScalingGroupField = "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics"
-	ExportableAutoScalingGroupFieldEffectiveRecommendationPreferencesInferredWorkloadTypes         ExportableAutoScalingGroupField = "EffectiveRecommendationPreferencesInferredWorkloadTypes"
-	ExportableAutoScalingGroupFieldInferredWorkloadTypes                                           ExportableAutoScalingGroupField = "InferredWorkloadTypes"
-	ExportableAutoScalingGroupFieldRecommendationOptionsMigrationEffort                            ExportableAutoScalingGroupField = "RecommendationOptionsMigrationEffort"
+	ExportableAutoScalingGroupFieldAccountId                                                                  ExportableAutoScalingGroupField = "AccountId"
+	ExportableAutoScalingGroupFieldAutoScalingGroupArn                                                        ExportableAutoScalingGroupField = "AutoScalingGroupArn"
+	ExportableAutoScalingGroupFieldAutoScalingGroupName                                                       ExportableAutoScalingGroupField = "AutoScalingGroupName"
+	ExportableAutoScalingGroupFieldFinding                                                                    ExportableAutoScalingGroupField = "Finding"
+	ExportableAutoScalingGroupFieldUtilizationMetricsCpuMaximum                                               ExportableAutoScalingGroupField = "UtilizationMetricsCpuMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsMemoryMaximum                                            ExportableAutoScalingGroupField = "UtilizationMetricsMemoryMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsEbsReadOpsPerSecondMaximum                               ExportableAutoScalingGroupField = "UtilizationMetricsEbsReadOpsPerSecondMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsEbsWriteOpsPerSecondMaximum                              ExportableAutoScalingGroupField = "UtilizationMetricsEbsWriteOpsPerSecondMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsEbsReadBytesPerSecondMaximum                             ExportableAutoScalingGroupField = "UtilizationMetricsEbsReadBytesPerSecondMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsEbsWriteBytesPerSecondMaximum                            ExportableAutoScalingGroupField = "UtilizationMetricsEbsWriteBytesPerSecondMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsDiskReadOpsPerSecondMaximum                              ExportableAutoScalingGroupField = "UtilizationMetricsDiskReadOpsPerSecondMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsDiskWriteOpsPerSecondMaximum                             ExportableAutoScalingGroupField = "UtilizationMetricsDiskWriteOpsPerSecondMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsDiskReadBytesPerSecondMaximum                            ExportableAutoScalingGroupField = "UtilizationMetricsDiskReadBytesPerSecondMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsDiskWriteBytesPerSecondMaximum                           ExportableAutoScalingGroupField = "UtilizationMetricsDiskWriteBytesPerSecondMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsNetworkInBytesPerSecondMaximum                           ExportableAutoScalingGroupField = "UtilizationMetricsNetworkInBytesPerSecondMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsNetworkOutBytesPerSecondMaximum                          ExportableAutoScalingGroupField = "UtilizationMetricsNetworkOutBytesPerSecondMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsNetworkPacketsInPerSecondMaximum                         ExportableAutoScalingGroupField = "UtilizationMetricsNetworkPacketsInPerSecondMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsNetworkPacketsOutPerSecondMaximum                        ExportableAutoScalingGroupField = "UtilizationMetricsNetworkPacketsOutPerSecondMaximum"
+	ExportableAutoScalingGroupFieldLookbackPeriodInDays                                                       ExportableAutoScalingGroupField = "LookbackPeriodInDays"
+	ExportableAutoScalingGroupFieldCurrentConfigurationInstanceType                                           ExportableAutoScalingGroupField = "CurrentConfigurationInstanceType"
+	ExportableAutoScalingGroupFieldCurrentConfigurationDesiredCapacity                                        ExportableAutoScalingGroupField = "CurrentConfigurationDesiredCapacity"
+	ExportableAutoScalingGroupFieldCurrentConfigurationMinSize                                                ExportableAutoScalingGroupField = "CurrentConfigurationMinSize"
+	ExportableAutoScalingGroupFieldCurrentConfigurationMaxSize                                                ExportableAutoScalingGroupField = "CurrentConfigurationMaxSize"
+	ExportableAutoScalingGroupFieldCurrentConfigurationAllocationStrategy                                     ExportableAutoScalingGroupField = "CurrentConfigurationAllocationStrategy"
+	ExportableAutoScalingGroupFieldCurrentConfigurationMixedInstanceTypes                                     ExportableAutoScalingGroupField = "CurrentConfigurationMixedInstanceTypes"
+	ExportableAutoScalingGroupFieldCurrentConfigurationType                                                   ExportableAutoScalingGroupField = "CurrentConfigurationType"
+	ExportableAutoScalingGroupFieldCurrentOnDemandPrice                                                       ExportableAutoScalingGroupField = "CurrentOnDemandPrice"
+	ExportableAutoScalingGroupFieldCurrentStandardOneYearNoUpfrontReservedPrice                               ExportableAutoScalingGroupField = "CurrentStandardOneYearNoUpfrontReservedPrice"
+	ExportableAutoScalingGroupFieldCurrentStandardThreeYearNoUpfrontReservedPrice                             ExportableAutoScalingGroupField = "CurrentStandardThreeYearNoUpfrontReservedPrice"
+	ExportableAutoScalingGroupFieldCurrentVcpus                                                               ExportableAutoScalingGroupField = "CurrentVCpus"
+	ExportableAutoScalingGroupFieldCurrentMemory                                                              ExportableAutoScalingGroupField = "CurrentMemory"
+	ExportableAutoScalingGroupFieldCurrentStorage                                                             ExportableAutoScalingGroupField = "CurrentStorage"
+	ExportableAutoScalingGroupFieldCurrentNetwork                                                             ExportableAutoScalingGroupField = "CurrentNetwork"
+	ExportableAutoScalingGroupFieldRecommendationOptionsConfigurationInstanceType                             ExportableAutoScalingGroupField = "RecommendationOptionsConfigurationInstanceType"
+	ExportableAutoScalingGroupFieldRecommendationOptionsConfigurationDesiredCapacity                          ExportableAutoScalingGroupField = "RecommendationOptionsConfigurationDesiredCapacity"
+	ExportableAutoScalingGroupFieldRecommendationOptionsConfigurationMinSize                                  ExportableAutoScalingGroupField = "RecommendationOptionsConfigurationMinSize"
+	ExportableAutoScalingGroupFieldRecommendationOptionsConfigurationMaxSize                                  ExportableAutoScalingGroupField = "RecommendationOptionsConfigurationMaxSize"
+	ExportableAutoScalingGroupFieldRecommendationOptionsConfigurationEstimatedInstanceHourReductionPercentage ExportableAutoScalingGroupField = "RecommendationOptionsConfigurationEstimatedInstanceHourReductionPercentage"
+	ExportableAutoScalingGroupFieldRecommendationOptionsConfigurationAllocationStrategy                       ExportableAutoScalingGroupField = "RecommendationOptionsConfigurationAllocationStrategy"
+	ExportableAutoScalingGroupFieldRecommendationOptionsConfigurationMixedInstanceTypes                       ExportableAutoScalingGroupField = "RecommendationOptionsConfigurationMixedInstanceTypes"
+	ExportableAutoScalingGroupFieldRecommendationOptionsConfigurationType                                     ExportableAutoScalingGroupField = "RecommendationOptionsConfigurationType"
+	ExportableAutoScalingGroupFieldRecommendationOptionsProjectedUtilizationMetricsCpuMaximum                 ExportableAutoScalingGroupField = "RecommendationOptionsProjectedUtilizationMetricsCpuMaximum"
+	ExportableAutoScalingGroupFieldRecommendationOptionsProjectedUtilizationMetricsMemoryMaximum              ExportableAutoScalingGroupField = "RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum"
+	ExportableAutoScalingGroupFieldRecommendationOptionsPerformanceRisk                                       ExportableAutoScalingGroupField = "RecommendationOptionsPerformanceRisk"
+	ExportableAutoScalingGroupFieldRecommendationOptionsOnDemandPrice                                         ExportableAutoScalingGroupField = "RecommendationOptionsOnDemandPrice"
+	ExportableAutoScalingGroupFieldRecommendationOptionsStandardOneYearNoUpfrontReservedPrice                 ExportableAutoScalingGroupField = "RecommendationOptionsStandardOneYearNoUpfrontReservedPrice"
+	ExportableAutoScalingGroupFieldRecommendationOptionsStandardThreeYearNoUpfrontReservedPrice               ExportableAutoScalingGroupField = "RecommendationOptionsStandardThreeYearNoUpfrontReservedPrice"
+	ExportableAutoScalingGroupFieldRecommendationOptionsVcpus                                                 ExportableAutoScalingGroupField = "RecommendationOptionsVcpus"
+	ExportableAutoScalingGroupFieldRecommendationOptionsMemory                                                ExportableAutoScalingGroupField = "RecommendationOptionsMemory"
+	ExportableAutoScalingGroupFieldRecommendationOptionsStorage                                               ExportableAutoScalingGroupField = "RecommendationOptionsStorage"
+	ExportableAutoScalingGroupFieldRecommendationOptionsNetwork                                               ExportableAutoScalingGroupField = "RecommendationOptionsNetwork"
+	ExportableAutoScalingGroupFieldLastRefreshTimestamp                                                       ExportableAutoScalingGroupField = "LastRefreshTimestamp"
+	ExportableAutoScalingGroupFieldCurrentPerformanceRisk                                                     ExportableAutoScalingGroupField = "CurrentPerformanceRisk"
+	ExportableAutoScalingGroupFieldRecommendationOptionsSavingsOpportunityPercentage                          ExportableAutoScalingGroupField = "RecommendationOptionsSavingsOpportunityPercentage"
+	ExportableAutoScalingGroupFieldRecommendationOptionsEstimatedMonthlySavingsCurrency                       ExportableAutoScalingGroupField = "RecommendationOptionsEstimatedMonthlySavingsCurrency"
+	ExportableAutoScalingGroupFieldRecommendationOptionsEstimatedMonthlySavingsValue                          ExportableAutoScalingGroupField = "RecommendationOptionsEstimatedMonthlySavingsValue"
+	ExportableAutoScalingGroupFieldEffectiveRecommendationPreferencesCpuVendorArchitectures                   ExportableAutoScalingGroupField = "EffectiveRecommendationPreferencesCpuVendorArchitectures"
+	ExportableAutoScalingGroupFieldEffectiveRecommendationPreferencesEnhancedInfrastructureMetrics            ExportableAutoScalingGroupField = "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics"
+	ExportableAutoScalingGroupFieldEffectiveRecommendationPreferencesInferredWorkloadTypes                    ExportableAutoScalingGroupField = "EffectiveRecommendationPreferencesInferredWorkloadTypes"
+	ExportableAutoScalingGroupFieldEffectiveRecommendationPreferencesPreferredResources                       ExportableAutoScalingGroupField = "EffectiveRecommendationPreferencesPreferredResources"
+	ExportableAutoScalingGroupFieldEffectiveRecommendationPreferencesLookbackPeriod                           ExportableAutoScalingGroupField = "EffectiveRecommendationPreferencesLookBackPeriod"
+	ExportableAutoScalingGroupFieldInferredWorkloadTypes                                                      ExportableAutoScalingGroupField = "InferredWorkloadTypes"
+	ExportableAutoScalingGroupFieldRecommendationOptionsMigrationEffort                                       ExportableAutoScalingGroupField = "RecommendationOptionsMigrationEffort"
+	ExportableAutoScalingGroupFieldCurrentInstanceGpuInfo                                                     ExportableAutoScalingGroupField = "CurrentInstanceGpuInfo"
+	ExportableAutoScalingGroupFieldRecommendationOptionsInstanceGpuInfo                                       ExportableAutoScalingGroupField = "RecommendationOptionsInstanceGpuInfo"
+	ExportableAutoScalingGroupFieldUtilizationMetricsGpuPercentageMaximum                                     ExportableAutoScalingGroupField = "UtilizationMetricsGpuPercentageMaximum"
+	ExportableAutoScalingGroupFieldUtilizationMetricsGpuMemoryPercentageMaximum                               ExportableAutoScalingGroupField = "UtilizationMetricsGpuMemoryPercentageMaximum"
+	ExportableAutoScalingGroupFieldRecommendationOptionsProjectedUtilizationMetricsGpuMaximum                 ExportableAutoScalingGroupField = "RecommendationOptionsProjectedUtilizationMetricsGpuPercentageMaximum"
+	ExportableAutoScalingGroupFieldRecommendationOptionsProjectedUtilizationMetricsGpuMemoryMaximum           ExportableAutoScalingGroupField = "RecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum"
+	ExportableAutoScalingGroupFieldEffectiveRecommendationPreferencesSavingsEstimationMode                    ExportableAutoScalingGroupField = "EffectiveRecommendationPreferencesSavingsEstimationMode"
+	ExportableAutoScalingGroupFieldRecommendationOptionsSavingsOpportunityAfterDiscountsPercentage            ExportableAutoScalingGroupField = "RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage"
+	ExportableAutoScalingGroupFieldRecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts         ExportableAutoScalingGroupField = "RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts"
+	ExportableAutoScalingGroupFieldRecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts            ExportableAutoScalingGroupField = "RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts"
 )
 
 // Values returns all known values for ExportableAutoScalingGroupField. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExportableAutoScalingGroupField) Values() []ExportableAutoScalingGroupField {
 	return []ExportableAutoScalingGroupField{
 		"AccountId",
@@ -375,6 +574,9 @@ func (ExportableAutoScalingGroupField) Values() []ExportableAutoScalingGroupFiel
 		"CurrentConfigurationDesiredCapacity",
 		"CurrentConfigurationMinSize",
 		"CurrentConfigurationMaxSize",
+		"CurrentConfigurationAllocationStrategy",
+		"CurrentConfigurationMixedInstanceTypes",
+		"CurrentConfigurationType",
 		"CurrentOnDemandPrice",
 		"CurrentStandardOneYearNoUpfrontReservedPrice",
 		"CurrentStandardThreeYearNoUpfrontReservedPrice",
@@ -386,6 +588,10 @@ func (ExportableAutoScalingGroupField) Values() []ExportableAutoScalingGroupFiel
 		"RecommendationOptionsConfigurationDesiredCapacity",
 		"RecommendationOptionsConfigurationMinSize",
 		"RecommendationOptionsConfigurationMaxSize",
+		"RecommendationOptionsConfigurationEstimatedInstanceHourReductionPercentage",
+		"RecommendationOptionsConfigurationAllocationStrategy",
+		"RecommendationOptionsConfigurationMixedInstanceTypes",
+		"RecommendationOptionsConfigurationType",
 		"RecommendationOptionsProjectedUtilizationMetricsCpuMaximum",
 		"RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum",
 		"RecommendationOptionsPerformanceRisk",
@@ -404,8 +610,20 @@ func (ExportableAutoScalingGroupField) Values() []ExportableAutoScalingGroupFiel
 		"EffectiveRecommendationPreferencesCpuVendorArchitectures",
 		"EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics",
 		"EffectiveRecommendationPreferencesInferredWorkloadTypes",
+		"EffectiveRecommendationPreferencesPreferredResources",
+		"EffectiveRecommendationPreferencesLookBackPeriod",
 		"InferredWorkloadTypes",
 		"RecommendationOptionsMigrationEffort",
+		"CurrentInstanceGpuInfo",
+		"RecommendationOptionsInstanceGpuInfo",
+		"UtilizationMetricsGpuPercentageMaximum",
+		"UtilizationMetricsGpuMemoryPercentageMaximum",
+		"RecommendationOptionsProjectedUtilizationMetricsGpuPercentageMaximum",
+		"RecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum",
+		"EffectiveRecommendationPreferencesSavingsEstimationMode",
+		"RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage",
+		"RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
+		"RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts",
 	}
 }
 
@@ -413,34 +631,39 @@ type ExportableECSServiceField string
 
 // Enum values for ExportableECSServiceField
 const (
-	ExportableECSServiceFieldAccountId                                                     ExportableECSServiceField = "AccountId"
-	ExportableECSServiceFieldServiceArn                                                    ExportableECSServiceField = "ServiceArn"
-	ExportableECSServiceFieldLookbackPeriodInDays                                          ExportableECSServiceField = "LookbackPeriodInDays"
-	ExportableECSServiceFieldLastRefreshTimestamp                                          ExportableECSServiceField = "LastRefreshTimestamp"
-	ExportableECSServiceFieldLaunchType                                                    ExportableECSServiceField = "LaunchType"
-	ExportableECSServiceFieldCurrentPerformanceRisk                                        ExportableECSServiceField = "CurrentPerformanceRisk"
-	ExportableECSServiceFieldCurrentServiceConfigurationMemory                             ExportableECSServiceField = "CurrentServiceConfigurationMemory"
-	ExportableECSServiceFieldCurrentServiceConfigurationCpu                                ExportableECSServiceField = "CurrentServiceConfigurationCpu"
-	ExportableECSServiceFieldCurrentServiceConfigurationTaskDefinitionArn                  ExportableECSServiceField = "CurrentServiceConfigurationTaskDefinitionArn"
-	ExportableECSServiceFieldCurrentServiceConfigurationAutoScalingConfiguration           ExportableECSServiceField = "CurrentServiceConfigurationAutoScalingConfiguration"
-	ExportableECSServiceFieldCurrentServiceContainerConfigurations                         ExportableECSServiceField = "CurrentServiceContainerConfigurations"
-	ExportableECSServiceFieldUtilizationMetricsCpuMaximum                                  ExportableECSServiceField = "UtilizationMetricsCpuMaximum"
-	ExportableECSServiceFieldUtilizationMetricsMemoryMaximum                               ExportableECSServiceField = "UtilizationMetricsMemoryMaximum"
-	ExportableECSServiceFieldFinding                                                       ExportableECSServiceField = "Finding"
-	ExportableECSServiceFieldFindingReasonCodes                                            ExportableECSServiceField = "FindingReasonCodes"
-	ExportableECSServiceFieldRecommendationOptionsMemory                                   ExportableECSServiceField = "RecommendationOptionsMemory"
-	ExportableECSServiceFieldRecommendationOptionsCpu                                      ExportableECSServiceField = "RecommendationOptionsCpu"
-	ExportableECSServiceFieldRecommendationOptionsSavingsOpportunityPercentage             ExportableECSServiceField = "RecommendationOptionsSavingsOpportunityPercentage"
-	ExportableECSServiceFieldRecommendationOptionsEstimatedMonthlySavingsCurrency          ExportableECSServiceField = "RecommendationOptionsEstimatedMonthlySavingsCurrency"
-	ExportableECSServiceFieldRecommendationOptionsEstimatedMonthlySavingsValue             ExportableECSServiceField = "RecommendationOptionsEstimatedMonthlySavingsValue"
-	ExportableECSServiceFieldRecommendationOptionsContainerRecommendations                 ExportableECSServiceField = "RecommendationOptionsContainerRecommendations"
-	ExportableECSServiceFieldRecommendationOptionsProjectedUtilizationMetricsCpuMaximum    ExportableECSServiceField = "RecommendationOptionsProjectedUtilizationMetricsCpuMaximum"
-	ExportableECSServiceFieldRecommendationOptionsProjectedUtilizationMetricsMemoryMaximum ExportableECSServiceField = "RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum"
-	ExportableECSServiceFieldTags                                                          ExportableECSServiceField = "Tags"
+	ExportableECSServiceFieldAccountId                                                          ExportableECSServiceField = "AccountId"
+	ExportableECSServiceFieldServiceArn                                                         ExportableECSServiceField = "ServiceArn"
+	ExportableECSServiceFieldLookbackPeriodInDays                                               ExportableECSServiceField = "LookbackPeriodInDays"
+	ExportableECSServiceFieldLastRefreshTimestamp                                               ExportableECSServiceField = "LastRefreshTimestamp"
+	ExportableECSServiceFieldLaunchType                                                         ExportableECSServiceField = "LaunchType"
+	ExportableECSServiceFieldCurrentPerformanceRisk                                             ExportableECSServiceField = "CurrentPerformanceRisk"
+	ExportableECSServiceFieldCurrentServiceConfigurationMemory                                  ExportableECSServiceField = "CurrentServiceConfigurationMemory"
+	ExportableECSServiceFieldCurrentServiceConfigurationCpu                                     ExportableECSServiceField = "CurrentServiceConfigurationCpu"
+	ExportableECSServiceFieldCurrentServiceConfigurationTaskDefinitionArn                       ExportableECSServiceField = "CurrentServiceConfigurationTaskDefinitionArn"
+	ExportableECSServiceFieldCurrentServiceConfigurationAutoScalingConfiguration                ExportableECSServiceField = "CurrentServiceConfigurationAutoScalingConfiguration"
+	ExportableECSServiceFieldCurrentServiceContainerConfigurations                              ExportableECSServiceField = "CurrentServiceContainerConfigurations"
+	ExportableECSServiceFieldUtilizationMetricsCpuMaximum                                       ExportableECSServiceField = "UtilizationMetricsCpuMaximum"
+	ExportableECSServiceFieldUtilizationMetricsMemoryMaximum                                    ExportableECSServiceField = "UtilizationMetricsMemoryMaximum"
+	ExportableECSServiceFieldFinding                                                            ExportableECSServiceField = "Finding"
+	ExportableECSServiceFieldFindingReasonCodes                                                 ExportableECSServiceField = "FindingReasonCodes"
+	ExportableECSServiceFieldRecommendationOptionsMemory                                        ExportableECSServiceField = "RecommendationOptionsMemory"
+	ExportableECSServiceFieldRecommendationOptionsCpu                                           ExportableECSServiceField = "RecommendationOptionsCpu"
+	ExportableECSServiceFieldRecommendationOptionsSavingsOpportunityPercentage                  ExportableECSServiceField = "RecommendationOptionsSavingsOpportunityPercentage"
+	ExportableECSServiceFieldRecommendationOptionsEstimatedMonthlySavingsCurrency               ExportableECSServiceField = "RecommendationOptionsEstimatedMonthlySavingsCurrency"
+	ExportableECSServiceFieldRecommendationOptionsEstimatedMonthlySavingsValue                  ExportableECSServiceField = "RecommendationOptionsEstimatedMonthlySavingsValue"
+	ExportableECSServiceFieldRecommendationOptionsContainerRecommendations                      ExportableECSServiceField = "RecommendationOptionsContainerRecommendations"
+	ExportableECSServiceFieldRecommendationOptionsProjectedUtilizationMetricsCpuMaximum         ExportableECSServiceField = "RecommendationOptionsProjectedUtilizationMetricsCpuMaximum"
+	ExportableECSServiceFieldRecommendationOptionsProjectedUtilizationMetricsMemoryMaximum      ExportableECSServiceField = "RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum"
+	ExportableECSServiceFieldTags                                                               ExportableECSServiceField = "Tags"
+	ExportableECSServiceFieldEffectiveRecommendationPreferencesSavingsEstimationMode            ExportableECSServiceField = "EffectiveRecommendationPreferencesSavingsEstimationMode"
+	ExportableECSServiceFieldRecommendationOptionsSavingsOpportunityAfterDiscountsPercentage    ExportableECSServiceField = "RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage"
+	ExportableECSServiceFieldRecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts ExportableECSServiceField = "RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts"
+	ExportableECSServiceFieldRecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts    ExportableECSServiceField = "RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts"
 )
 
 // Values returns all known values for ExportableECSServiceField. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ExportableECSServiceField) Values() []ExportableECSServiceField {
 	return []ExportableECSServiceField{
@@ -468,6 +691,65 @@ func (ExportableECSServiceField) Values() []ExportableECSServiceField {
 		"RecommendationOptionsProjectedUtilizationMetricsCpuMaximum",
 		"RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum",
 		"Tags",
+		"EffectiveRecommendationPreferencesSavingsEstimationMode",
+		"RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage",
+		"RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
+		"RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts",
+	}
+}
+
+type ExportableIdleField string
+
+// Enum values for ExportableIdleField
+const (
+	ExportableIdleFieldAccountId                                         ExportableIdleField = "AccountId"
+	ExportableIdleFieldResourceArn                                       ExportableIdleField = "ResourceArn"
+	ExportableIdleFieldResourceId                                        ExportableIdleField = "ResourceId"
+	ExportableIdleFieldResourceType                                      ExportableIdleField = "ResourceType"
+	ExportableIdleFieldLastRefreshTimestamp                              ExportableIdleField = "LastRefreshTimestamp"
+	ExportableIdleFieldLookbackPeriodInDays                              ExportableIdleField = "LookbackPeriodInDays"
+	ExportableIdleFieldSavingsOpportunity                                ExportableIdleField = "SavingsOpportunity"
+	ExportableIdleFieldSavingsOpportunityAfterDiscount                   ExportableIdleField = "SavingsOpportunityAfterDiscount"
+	ExportableIdleFieldUtilizationMetricsCpuMaximum                      ExportableIdleField = "UtilizationMetricsCpuMaximum"
+	ExportableIdleFieldUtilizationMetricsMemoryMaximum                   ExportableIdleField = "UtilizationMetricsMemoryMaximum"
+	ExportableIdleFieldUtilizationMetricsNetworkOutBytesPerSecondMaximum ExportableIdleField = "UtilizationMetricsNetworkOutBytesPerSecondMaximum"
+	ExportableIdleFieldUtilizationMetricsNetworkInBytesPerSecondMaximum  ExportableIdleField = "UtilizationMetricsNetworkInBytesPerSecondMaximum"
+	ExportableIdleFieldUtilizationMetricsDatabaseConnectionsMaximum      ExportableIdleField = "UtilizationMetricsDatabaseConnectionsMaximum"
+	ExportableIdleFieldUtilizationMetricsEbsVolumeReadIopsMaximum        ExportableIdleField = "UtilizationMetricsEBSVolumeReadIOPSMaximum"
+	ExportableIdleFieldUtilizationMetricsEbsVolumeWriteIopsMaximum       ExportableIdleField = "UtilizationMetricsEBSVolumeWriteIOPSMaximum"
+	ExportableIdleFieldUtilizationMetricsVolumeReadOpsPerSecondMaximum   ExportableIdleField = "UtilizationMetricsVolumeReadOpsPerSecondMaximum"
+	ExportableIdleFieldUtilizationMetricsVolumeWriteOpsPerSecondMaximum  ExportableIdleField = "UtilizationMetricsVolumeWriteOpsPerSecondMaximum"
+	ExportableIdleFieldFinding                                           ExportableIdleField = "Finding"
+	ExportableIdleFieldFindingDescription                                ExportableIdleField = "FindingDescription"
+	ExportableIdleFieldTags                                              ExportableIdleField = "Tags"
+)
+
+// Values returns all known values for ExportableIdleField. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ExportableIdleField) Values() []ExportableIdleField {
+	return []ExportableIdleField{
+		"AccountId",
+		"ResourceArn",
+		"ResourceId",
+		"ResourceType",
+		"LastRefreshTimestamp",
+		"LookbackPeriodInDays",
+		"SavingsOpportunity",
+		"SavingsOpportunityAfterDiscount",
+		"UtilizationMetricsCpuMaximum",
+		"UtilizationMetricsMemoryMaximum",
+		"UtilizationMetricsNetworkOutBytesPerSecondMaximum",
+		"UtilizationMetricsNetworkInBytesPerSecondMaximum",
+		"UtilizationMetricsDatabaseConnectionsMaximum",
+		"UtilizationMetricsEBSVolumeReadIOPSMaximum",
+		"UtilizationMetricsEBSVolumeWriteIOPSMaximum",
+		"UtilizationMetricsVolumeReadOpsPerSecondMaximum",
+		"UtilizationMetricsVolumeWriteOpsPerSecondMaximum",
+		"Finding",
+		"FindingDescription",
+		"Tags",
 	}
 }
 
@@ -475,68 +757,83 @@ type ExportableInstanceField string
 
 // Enum values for ExportableInstanceField
 const (
-	ExportableInstanceFieldAccountId                                                       ExportableInstanceField = "AccountId"
-	ExportableInstanceFieldInstanceArn                                                     ExportableInstanceField = "InstanceArn"
-	ExportableInstanceFieldInstanceName                                                    ExportableInstanceField = "InstanceName"
-	ExportableInstanceFieldFinding                                                         ExportableInstanceField = "Finding"
-	ExportableInstanceFieldFindingReasonCodes                                              ExportableInstanceField = "FindingReasonCodes"
-	ExportableInstanceFieldLookbackPeriodInDays                                            ExportableInstanceField = "LookbackPeriodInDays"
-	ExportableInstanceFieldCurrentInstanceType                                             ExportableInstanceField = "CurrentInstanceType"
-	ExportableInstanceFieldUtilizationMetricsCpuMaximum                                    ExportableInstanceField = "UtilizationMetricsCpuMaximum"
-	ExportableInstanceFieldUtilizationMetricsMemoryMaximum                                 ExportableInstanceField = "UtilizationMetricsMemoryMaximum"
-	ExportableInstanceFieldUtilizationMetricsEbsReadOpsPerSecondMaximum                    ExportableInstanceField = "UtilizationMetricsEbsReadOpsPerSecondMaximum"
-	ExportableInstanceFieldUtilizationMetricsEbsWriteOpsPerSecondMaximum                   ExportableInstanceField = "UtilizationMetricsEbsWriteOpsPerSecondMaximum"
-	ExportableInstanceFieldUtilizationMetricsEbsReadBytesPerSecondMaximum                  ExportableInstanceField = "UtilizationMetricsEbsReadBytesPerSecondMaximum"
-	ExportableInstanceFieldUtilizationMetricsEbsWriteBytesPerSecondMaximum                 ExportableInstanceField = "UtilizationMetricsEbsWriteBytesPerSecondMaximum"
-	ExportableInstanceFieldUtilizationMetricsDiskReadOpsPerSecondMaximum                   ExportableInstanceField = "UtilizationMetricsDiskReadOpsPerSecondMaximum"
-	ExportableInstanceFieldUtilizationMetricsDiskWriteOpsPerSecondMaximum                  ExportableInstanceField = "UtilizationMetricsDiskWriteOpsPerSecondMaximum"
-	ExportableInstanceFieldUtilizationMetricsDiskReadBytesPerSecondMaximum                 ExportableInstanceField = "UtilizationMetricsDiskReadBytesPerSecondMaximum"
-	ExportableInstanceFieldUtilizationMetricsDiskWriteBytesPerSecondMaximum                ExportableInstanceField = "UtilizationMetricsDiskWriteBytesPerSecondMaximum"
-	ExportableInstanceFieldUtilizationMetricsNetworkInBytesPerSecondMaximum                ExportableInstanceField = "UtilizationMetricsNetworkInBytesPerSecondMaximum"
-	ExportableInstanceFieldUtilizationMetricsNetworkOutBytesPerSecondMaximum               ExportableInstanceField = "UtilizationMetricsNetworkOutBytesPerSecondMaximum"
-	ExportableInstanceFieldUtilizationMetricsNetworkPacketsInPerSecondMaximum              ExportableInstanceField = "UtilizationMetricsNetworkPacketsInPerSecondMaximum"
-	ExportableInstanceFieldUtilizationMetricsNetworkPacketsOutPerSecondMaximum             ExportableInstanceField = "UtilizationMetricsNetworkPacketsOutPerSecondMaximum"
-	ExportableInstanceFieldCurrentOnDemandPrice                                            ExportableInstanceField = "CurrentOnDemandPrice"
-	ExportableInstanceFieldCurrentStandardOneYearNoUpfrontReservedPrice                    ExportableInstanceField = "CurrentStandardOneYearNoUpfrontReservedPrice"
-	ExportableInstanceFieldCurrentStandardThreeYearNoUpfrontReservedPrice                  ExportableInstanceField = "CurrentStandardThreeYearNoUpfrontReservedPrice"
-	ExportableInstanceFieldCurrentVcpus                                                    ExportableInstanceField = "CurrentVCpus"
-	ExportableInstanceFieldCurrentMemory                                                   ExportableInstanceField = "CurrentMemory"
-	ExportableInstanceFieldCurrentStorage                                                  ExportableInstanceField = "CurrentStorage"
-	ExportableInstanceFieldCurrentNetwork                                                  ExportableInstanceField = "CurrentNetwork"
-	ExportableInstanceFieldRecommendationOptionsInstanceType                               ExportableInstanceField = "RecommendationOptionsInstanceType"
-	ExportableInstanceFieldRecommendationOptionsProjectedUtilizationMetricsCpuMaximum      ExportableInstanceField = "RecommendationOptionsProjectedUtilizationMetricsCpuMaximum"
-	ExportableInstanceFieldRecommendationOptionsProjectedUtilizationMetricsMemoryMaximum   ExportableInstanceField = "RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum"
-	ExportableInstanceFieldRecommendationOptionsPlatformDifferences                        ExportableInstanceField = "RecommendationOptionsPlatformDifferences"
-	ExportableInstanceFieldRecommendationOptionsPerformanceRisk                            ExportableInstanceField = "RecommendationOptionsPerformanceRisk"
-	ExportableInstanceFieldRecommendationOptionsVcpus                                      ExportableInstanceField = "RecommendationOptionsVcpus"
-	ExportableInstanceFieldRecommendationOptionsMemory                                     ExportableInstanceField = "RecommendationOptionsMemory"
-	ExportableInstanceFieldRecommendationOptionsStorage                                    ExportableInstanceField = "RecommendationOptionsStorage"
-	ExportableInstanceFieldRecommendationOptionsNetwork                                    ExportableInstanceField = "RecommendationOptionsNetwork"
-	ExportableInstanceFieldRecommendationOptionsOnDemandPrice                              ExportableInstanceField = "RecommendationOptionsOnDemandPrice"
-	ExportableInstanceFieldRecommendationOptionsStandardOneYearNoUpfrontReservedPrice      ExportableInstanceField = "RecommendationOptionsStandardOneYearNoUpfrontReservedPrice"
-	ExportableInstanceFieldRecommendationOptionsStandardThreeYearNoUpfrontReservedPrice    ExportableInstanceField = "RecommendationOptionsStandardThreeYearNoUpfrontReservedPrice"
-	ExportableInstanceFieldRecommendationsSourcesRecommendationSourceArn                   ExportableInstanceField = "RecommendationsSourcesRecommendationSourceArn"
-	ExportableInstanceFieldRecommendationsSourcesRecommendationSourceType                  ExportableInstanceField = "RecommendationsSourcesRecommendationSourceType"
-	ExportableInstanceFieldLastRefreshTimestamp                                            ExportableInstanceField = "LastRefreshTimestamp"
-	ExportableInstanceFieldCurrentPerformanceRisk                                          ExportableInstanceField = "CurrentPerformanceRisk"
-	ExportableInstanceFieldRecommendationOptionsSavingsOpportunityPercentage               ExportableInstanceField = "RecommendationOptionsSavingsOpportunityPercentage"
-	ExportableInstanceFieldRecommendationOptionsEstimatedMonthlySavingsCurrency            ExportableInstanceField = "RecommendationOptionsEstimatedMonthlySavingsCurrency"
-	ExportableInstanceFieldRecommendationOptionsEstimatedMonthlySavingsValue               ExportableInstanceField = "RecommendationOptionsEstimatedMonthlySavingsValue"
-	ExportableInstanceFieldEffectiveRecommendationPreferencesCpuVendorArchitectures        ExportableInstanceField = "EffectiveRecommendationPreferencesCpuVendorArchitectures"
-	ExportableInstanceFieldEffectiveRecommendationPreferencesEnhancedInfrastructureMetrics ExportableInstanceField = "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics"
-	ExportableInstanceFieldEffectiveRecommendationPreferencesInferredWorkloadTypes         ExportableInstanceField = "EffectiveRecommendationPreferencesInferredWorkloadTypes"
-	ExportableInstanceFieldInferredWorkloadTypes                                           ExportableInstanceField = "InferredWorkloadTypes"
-	ExportableInstanceFieldRecommendationOptionsMigrationEffort                            ExportableInstanceField = "RecommendationOptionsMigrationEffort"
-	ExportableInstanceFieldEffectiveRecommendationPreferencesExternalMetricsSource         ExportableInstanceField = "EffectiveRecommendationPreferencesExternalMetricsSource"
-	ExportableInstanceFieldInstanceState                                                   ExportableInstanceField = "InstanceState"
-	ExportableInstanceFieldTags                                                            ExportableInstanceField = "Tags"
-	ExportableInstanceFieldExternalMetricStatusCode                                        ExportableInstanceField = "ExternalMetricStatusCode"
-	ExportableInstanceFieldExternalMetricStatusReason                                      ExportableInstanceField = "ExternalMetricStatusReason"
+	ExportableInstanceFieldAccountId                                                                  ExportableInstanceField = "AccountId"
+	ExportableInstanceFieldInstanceArn                                                                ExportableInstanceField = "InstanceArn"
+	ExportableInstanceFieldInstanceName                                                               ExportableInstanceField = "InstanceName"
+	ExportableInstanceFieldFinding                                                                    ExportableInstanceField = "Finding"
+	ExportableInstanceFieldFindingReasonCodes                                                         ExportableInstanceField = "FindingReasonCodes"
+	ExportableInstanceFieldLookbackPeriodInDays                                                       ExportableInstanceField = "LookbackPeriodInDays"
+	ExportableInstanceFieldCurrentInstanceType                                                        ExportableInstanceField = "CurrentInstanceType"
+	ExportableInstanceFieldUtilizationMetricsCpuMaximum                                               ExportableInstanceField = "UtilizationMetricsCpuMaximum"
+	ExportableInstanceFieldUtilizationMetricsMemoryMaximum                                            ExportableInstanceField = "UtilizationMetricsMemoryMaximum"
+	ExportableInstanceFieldUtilizationMetricsEbsReadOpsPerSecondMaximum                               ExportableInstanceField = "UtilizationMetricsEbsReadOpsPerSecondMaximum"
+	ExportableInstanceFieldUtilizationMetricsEbsWriteOpsPerSecondMaximum                              ExportableInstanceField = "UtilizationMetricsEbsWriteOpsPerSecondMaximum"
+	ExportableInstanceFieldUtilizationMetricsEbsReadBytesPerSecondMaximum                             ExportableInstanceField = "UtilizationMetricsEbsReadBytesPerSecondMaximum"
+	ExportableInstanceFieldUtilizationMetricsEbsWriteBytesPerSecondMaximum                            ExportableInstanceField = "UtilizationMetricsEbsWriteBytesPerSecondMaximum"
+	ExportableInstanceFieldUtilizationMetricsDiskReadOpsPerSecondMaximum                              ExportableInstanceField = "UtilizationMetricsDiskReadOpsPerSecondMaximum"
+	ExportableInstanceFieldUtilizationMetricsDiskWriteOpsPerSecondMaximum                             ExportableInstanceField = "UtilizationMetricsDiskWriteOpsPerSecondMaximum"
+	ExportableInstanceFieldUtilizationMetricsDiskReadBytesPerSecondMaximum                            ExportableInstanceField = "UtilizationMetricsDiskReadBytesPerSecondMaximum"
+	ExportableInstanceFieldUtilizationMetricsDiskWriteBytesPerSecondMaximum                           ExportableInstanceField = "UtilizationMetricsDiskWriteBytesPerSecondMaximum"
+	ExportableInstanceFieldUtilizationMetricsNetworkInBytesPerSecondMaximum                           ExportableInstanceField = "UtilizationMetricsNetworkInBytesPerSecondMaximum"
+	ExportableInstanceFieldUtilizationMetricsNetworkOutBytesPerSecondMaximum                          ExportableInstanceField = "UtilizationMetricsNetworkOutBytesPerSecondMaximum"
+	ExportableInstanceFieldUtilizationMetricsNetworkPacketsInPerSecondMaximum                         ExportableInstanceField = "UtilizationMetricsNetworkPacketsInPerSecondMaximum"
+	ExportableInstanceFieldUtilizationMetricsNetworkPacketsOutPerSecondMaximum                        ExportableInstanceField = "UtilizationMetricsNetworkPacketsOutPerSecondMaximum"
+	ExportableInstanceFieldCurrentOnDemandPrice                                                       ExportableInstanceField = "CurrentOnDemandPrice"
+	ExportableInstanceFieldCurrentStandardOneYearNoUpfrontReservedPrice                               ExportableInstanceField = "CurrentStandardOneYearNoUpfrontReservedPrice"
+	ExportableInstanceFieldCurrentStandardThreeYearNoUpfrontReservedPrice                             ExportableInstanceField = "CurrentStandardThreeYearNoUpfrontReservedPrice"
+	ExportableInstanceFieldCurrentVcpus                                                               ExportableInstanceField = "CurrentVCpus"
+	ExportableInstanceFieldCurrentMemory                                                              ExportableInstanceField = "CurrentMemory"
+	ExportableInstanceFieldCurrentStorage                                                             ExportableInstanceField = "CurrentStorage"
+	ExportableInstanceFieldCurrentNetwork                                                             ExportableInstanceField = "CurrentNetwork"
+	ExportableInstanceFieldRecommendationOptionsInstanceType                                          ExportableInstanceField = "RecommendationOptionsInstanceType"
+	ExportableInstanceFieldRecommendationOptionsProjectedUtilizationMetricsCpuMaximum                 ExportableInstanceField = "RecommendationOptionsProjectedUtilizationMetricsCpuMaximum"
+	ExportableInstanceFieldRecommendationOptionsProjectedUtilizationMetricsMemoryMaximum              ExportableInstanceField = "RecommendationOptionsProjectedUtilizationMetricsMemoryMaximum"
+	ExportableInstanceFieldRecommendationOptionsPlatformDifferences                                   ExportableInstanceField = "RecommendationOptionsPlatformDifferences"
+	ExportableInstanceFieldRecommendationOptionsPerformanceRisk                                       ExportableInstanceField = "RecommendationOptionsPerformanceRisk"
+	ExportableInstanceFieldRecommendationOptionsVcpus                                                 ExportableInstanceField = "RecommendationOptionsVcpus"
+	ExportableInstanceFieldRecommendationOptionsMemory                                                ExportableInstanceField = "RecommendationOptionsMemory"
+	ExportableInstanceFieldRecommendationOptionsStorage                                               ExportableInstanceField = "RecommendationOptionsStorage"
+	ExportableInstanceFieldRecommendationOptionsNetwork                                               ExportableInstanceField = "RecommendationOptionsNetwork"
+	ExportableInstanceFieldRecommendationOptionsOnDemandPrice                                         ExportableInstanceField = "RecommendationOptionsOnDemandPrice"
+	ExportableInstanceFieldRecommendationOptionsStandardOneYearNoUpfrontReservedPrice                 ExportableInstanceField = "RecommendationOptionsStandardOneYearNoUpfrontReservedPrice"
+	ExportableInstanceFieldRecommendationOptionsStandardThreeYearNoUpfrontReservedPrice               ExportableInstanceField = "RecommendationOptionsStandardThreeYearNoUpfrontReservedPrice"
+	ExportableInstanceFieldRecommendationsSourcesRecommendationSourceArn                              ExportableInstanceField = "RecommendationsSourcesRecommendationSourceArn"
+	ExportableInstanceFieldRecommendationsSourcesRecommendationSourceType                             ExportableInstanceField = "RecommendationsSourcesRecommendationSourceType"
+	ExportableInstanceFieldLastRefreshTimestamp                                                       ExportableInstanceField = "LastRefreshTimestamp"
+	ExportableInstanceFieldCurrentPerformanceRisk                                                     ExportableInstanceField = "CurrentPerformanceRisk"
+	ExportableInstanceFieldRecommendationOptionsSavingsOpportunityPercentage                          ExportableInstanceField = "RecommendationOptionsSavingsOpportunityPercentage"
+	ExportableInstanceFieldRecommendationOptionsEstimatedMonthlySavingsCurrency                       ExportableInstanceField = "RecommendationOptionsEstimatedMonthlySavingsCurrency"
+	ExportableInstanceFieldRecommendationOptionsEstimatedMonthlySavingsValue                          ExportableInstanceField = "RecommendationOptionsEstimatedMonthlySavingsValue"
+	ExportableInstanceFieldEffectiveRecommendationPreferencesCpuVendorArchitectures                   ExportableInstanceField = "EffectiveRecommendationPreferencesCpuVendorArchitectures"
+	ExportableInstanceFieldEffectiveRecommendationPreferencesEnhancedInfrastructureMetrics            ExportableInstanceField = "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics"
+	ExportableInstanceFieldEffectiveRecommendationPreferencesInferredWorkloadTypes                    ExportableInstanceField = "EffectiveRecommendationPreferencesInferredWorkloadTypes"
+	ExportableInstanceFieldInferredWorkloadTypes                                                      ExportableInstanceField = "InferredWorkloadTypes"
+	ExportableInstanceFieldRecommendationOptionsMigrationEffort                                       ExportableInstanceField = "RecommendationOptionsMigrationEffort"
+	ExportableInstanceFieldEffectiveRecommendationPreferencesExternalMetricsSource                    ExportableInstanceField = "EffectiveRecommendationPreferencesExternalMetricsSource"
+	ExportableInstanceFieldTags                                                                       ExportableInstanceField = "Tags"
+	ExportableInstanceFieldInstanceState                                                              ExportableInstanceField = "InstanceState"
+	ExportableInstanceFieldExternalMetricStatusCode                                                   ExportableInstanceField = "ExternalMetricStatusCode"
+	ExportableInstanceFieldExternalMetricStatusReason                                                 ExportableInstanceField = "ExternalMetricStatusReason"
+	ExportableInstanceFieldCurrentInstanceGpuInfo                                                     ExportableInstanceField = "CurrentInstanceGpuInfo"
+	ExportableInstanceFieldRecommendationOptionsInstanceGpuInfo                                       ExportableInstanceField = "RecommendationOptionsInstanceGpuInfo"
+	ExportableInstanceFieldUtilizationMetricsGpuPercentageMaximum                                     ExportableInstanceField = "UtilizationMetricsGpuPercentageMaximum"
+	ExportableInstanceFieldUtilizationMetricsGpuMemoryPercentageMaximum                               ExportableInstanceField = "UtilizationMetricsGpuMemoryPercentageMaximum"
+	ExportableInstanceFieldRecommendationOptionsProjectedUtilizationMetricsGpuPercentageMaximum       ExportableInstanceField = "RecommendationOptionsProjectedUtilizationMetricsGpuPercentageMaximum"
+	ExportableInstanceFieldRecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum ExportableInstanceField = "RecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum"
+	ExportableInstanceFieldIdle                                                                       ExportableInstanceField = "Idle"
+	ExportableInstanceFieldEffectiveRecommendationPreferencesPreferredResources                       ExportableInstanceField = "EffectiveRecommendationPreferencesPreferredResources"
+	ExportableInstanceFieldEffectiveRecommendationPreferencesLookbackPeriod                           ExportableInstanceField = "EffectiveRecommendationPreferencesLookBackPeriod"
+	ExportableInstanceFieldEffectiveRecommendationPreferencesUtilizationPreferences                   ExportableInstanceField = "EffectiveRecommendationPreferencesUtilizationPreferences"
+	ExportableInstanceFieldEffectiveRecommendationPreferencesSavingsEstimationMode                    ExportableInstanceField = "EffectiveRecommendationPreferencesSavingsEstimationMode"
+	ExportableInstanceFieldRecommendationOptionsSavingsOpportunityAfterDiscountsPercentage            ExportableInstanceField = "RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage"
+	ExportableInstanceFieldRecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts         ExportableInstanceField = "RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts"
+	ExportableInstanceFieldRecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts            ExportableInstanceField = "RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts"
 )
 
 // Values returns all known values for ExportableInstanceField. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExportableInstanceField) Values() []ExportableInstanceField {
 	return []ExportableInstanceField{
 		"AccountId",
@@ -592,10 +889,24 @@ func (ExportableInstanceField) Values() []ExportableInstanceField {
 		"InferredWorkloadTypes",
 		"RecommendationOptionsMigrationEffort",
 		"EffectiveRecommendationPreferencesExternalMetricsSource",
-		"InstanceState",
 		"Tags",
+		"InstanceState",
 		"ExternalMetricStatusCode",
 		"ExternalMetricStatusReason",
+		"CurrentInstanceGpuInfo",
+		"RecommendationOptionsInstanceGpuInfo",
+		"UtilizationMetricsGpuPercentageMaximum",
+		"UtilizationMetricsGpuMemoryPercentageMaximum",
+		"RecommendationOptionsProjectedUtilizationMetricsGpuPercentageMaximum",
+		"RecommendationOptionsProjectedUtilizationMetricsGpuMemoryPercentageMaximum",
+		"Idle",
+		"EffectiveRecommendationPreferencesPreferredResources",
+		"EffectiveRecommendationPreferencesLookBackPeriod",
+		"EffectiveRecommendationPreferencesUtilizationPreferences",
+		"EffectiveRecommendationPreferencesSavingsEstimationMode",
+		"RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage",
+		"RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
+		"RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts",
 	}
 }
 
@@ -630,12 +941,17 @@ const (
 	ExportableLambdaFunctionFieldRecommendationOptionsEstimatedMonthlySavingsCurrency               ExportableLambdaFunctionField = "RecommendationOptionsEstimatedMonthlySavingsCurrency"
 	ExportableLambdaFunctionFieldRecommendationOptionsEstimatedMonthlySavingsValue                  ExportableLambdaFunctionField = "RecommendationOptionsEstimatedMonthlySavingsValue"
 	ExportableLambdaFunctionFieldTags                                                               ExportableLambdaFunctionField = "Tags"
+	ExportableLambdaFunctionFieldEffectiveRecommendationPreferencesSavingsEstimationMode            ExportableLambdaFunctionField = "EffectiveRecommendationPreferencesSavingsEstimationMode"
+	ExportableLambdaFunctionFieldRecommendationOptionsSavingsOpportunityAfterDiscountsPercentage    ExportableLambdaFunctionField = "RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage"
+	ExportableLambdaFunctionFieldRecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts ExportableLambdaFunctionField = "RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts"
+	ExportableLambdaFunctionFieldRecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts    ExportableLambdaFunctionField = "RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts"
 )
 
 // Values returns all known values for ExportableLambdaFunctionField. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExportableLambdaFunctionField) Values() []ExportableLambdaFunctionField {
 	return []ExportableLambdaFunctionField{
 		"AccountId",
@@ -665,6 +981,222 @@ func (ExportableLambdaFunctionField) Values() []ExportableLambdaFunctionField {
 		"RecommendationOptionsEstimatedMonthlySavingsCurrency",
 		"RecommendationOptionsEstimatedMonthlySavingsValue",
 		"Tags",
+		"EffectiveRecommendationPreferencesSavingsEstimationMode",
+		"RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage",
+		"RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
+		"RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts",
+	}
+}
+
+type ExportableLicenseField string
+
+// Enum values for ExportableLicenseField
+const (
+	ExportableLicenseFieldAccountId                                            ExportableLicenseField = "AccountId"
+	ExportableLicenseFieldResourceArn                                          ExportableLicenseField = "ResourceArn"
+	ExportableLicenseFieldLookbackPeriodInDays                                 ExportableLicenseField = "LookbackPeriodInDays"
+	ExportableLicenseFieldLastRefreshTimestamp                                 ExportableLicenseField = "LastRefreshTimestamp"
+	ExportableLicenseFieldLicenseFinding                                       ExportableLicenseField = "Finding"
+	ExportableLicenseFieldLicenseFindingReasonCodes                            ExportableLicenseField = "FindingReasonCodes"
+	ExportableLicenseFieldCurrentLicenseConfigurationNumberOfCores             ExportableLicenseField = "CurrentLicenseConfigurationNumberOfCores"
+	ExportableLicenseFieldCurrentLicenseConfigurationInstanceType              ExportableLicenseField = "CurrentLicenseConfigurationInstanceType"
+	ExportableLicenseFieldCurrentLicenseConfigurationOperatingSystem           ExportableLicenseField = "CurrentLicenseConfigurationOperatingSystem"
+	ExportableLicenseFieldCurrentLicenseConfigurationLicenseName               ExportableLicenseField = "CurrentLicenseConfigurationLicenseName"
+	ExportableLicenseFieldCurrentLicenseConfigurationLicenseEdition            ExportableLicenseField = "CurrentLicenseConfigurationLicenseEdition"
+	ExportableLicenseFieldCurrentLicenseConfigurationLicenseModel              ExportableLicenseField = "CurrentLicenseConfigurationLicenseModel"
+	ExportableLicenseFieldCurrentLicenseConfigurationLicenseVersion            ExportableLicenseField = "CurrentLicenseConfigurationLicenseVersion"
+	ExportableLicenseFieldCurrentLicenseConfigurationMetricsSource             ExportableLicenseField = "CurrentLicenseConfigurationMetricsSource"
+	ExportableLicenseFieldRecommendationOptionsOperatingSystem                 ExportableLicenseField = "RecommendationOptionsOperatingSystem"
+	ExportableLicenseFieldRecommendationOptionsLicenseEdition                  ExportableLicenseField = "RecommendationOptionsLicenseEdition"
+	ExportableLicenseFieldRecommendationOptionsLicenseModel                    ExportableLicenseField = "RecommendationOptionsLicenseModel"
+	ExportableLicenseFieldRecommendationOptionsSavingsOpportunityPercentage    ExportableLicenseField = "RecommendationOptionsSavingsOpportunityPercentage"
+	ExportableLicenseFieldRecommendationOptionsEstimatedMonthlySavingsCurrency ExportableLicenseField = "RecommendationOptionsEstimatedMonthlySavingsCurrency"
+	ExportableLicenseFieldRecommendationOptionsEstimatedMonthlySavingsValue    ExportableLicenseField = "RecommendationOptionsEstimatedMonthlySavingsValue"
+	ExportableLicenseFieldTags                                                 ExportableLicenseField = "Tags"
+)
+
+// Values returns all known values for ExportableLicenseField. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ExportableLicenseField) Values() []ExportableLicenseField {
+	return []ExportableLicenseField{
+		"AccountId",
+		"ResourceArn",
+		"LookbackPeriodInDays",
+		"LastRefreshTimestamp",
+		"Finding",
+		"FindingReasonCodes",
+		"CurrentLicenseConfigurationNumberOfCores",
+		"CurrentLicenseConfigurationInstanceType",
+		"CurrentLicenseConfigurationOperatingSystem",
+		"CurrentLicenseConfigurationLicenseName",
+		"CurrentLicenseConfigurationLicenseEdition",
+		"CurrentLicenseConfigurationLicenseModel",
+		"CurrentLicenseConfigurationLicenseVersion",
+		"CurrentLicenseConfigurationMetricsSource",
+		"RecommendationOptionsOperatingSystem",
+		"RecommendationOptionsLicenseEdition",
+		"RecommendationOptionsLicenseModel",
+		"RecommendationOptionsSavingsOpportunityPercentage",
+		"RecommendationOptionsEstimatedMonthlySavingsCurrency",
+		"RecommendationOptionsEstimatedMonthlySavingsValue",
+		"Tags",
+	}
+}
+
+type ExportableRDSDBField string
+
+// Enum values for ExportableRDSDBField
+const (
+	ExportableRDSDBFieldResourceArn                                                                ExportableRDSDBField = "ResourceArn"
+	ExportableRDSDBFieldAccountId                                                                  ExportableRDSDBField = "AccountId"
+	ExportableRDSDBFieldEngine                                                                     ExportableRDSDBField = "Engine"
+	ExportableRDSDBFieldEngineVersion                                                              ExportableRDSDBField = "EngineVersion"
+	ExportableRDSDBFieldIdle                                                                       ExportableRDSDBField = "Idle"
+	ExportableRDSDBFieldMultiAzDbInstance                                                          ExportableRDSDBField = "MultiAZDBInstance"
+	ExportableRDSDBFieldCurrentDbInstanceClass                                                     ExportableRDSDBField = "CurrentDBInstanceClass"
+	ExportableRDSDBFieldCurrentStorageConfigurationStorageType                                     ExportableRDSDBField = "CurrentStorageConfigurationStorageType"
+	ExportableRDSDBFieldCurrentStorageConfigurationAllocatedStorage                                ExportableRDSDBField = "CurrentStorageConfigurationAllocatedStorage"
+	ExportableRDSDBFieldCurrentStorageConfigurationMaxAllocatedStorage                             ExportableRDSDBField = "CurrentStorageConfigurationMaxAllocatedStorage"
+	ExportableRDSDBFieldCurrentStorageConfigurationIops                                            ExportableRDSDBField = "CurrentStorageConfigurationIOPS"
+	ExportableRDSDBFieldCurrentStorageConfigurationStorageThroughput                               ExportableRDSDBField = "CurrentStorageConfigurationStorageThroughput"
+	ExportableRDSDBFieldCurrentInstanceOnDemandHourlyPrice                                         ExportableRDSDBField = "CurrentInstanceOnDemandHourlyPrice"
+	ExportableRDSDBFieldCurrentStorageOnDemandMonthlyPrice                                         ExportableRDSDBField = "CurrentStorageOnDemandMonthlyPrice"
+	ExportableRDSDBFieldLookbackPeriodInDays                                                       ExportableRDSDBField = "LookbackPeriodInDays"
+	ExportableRDSDBFieldCurrentInstancePerformanceRisk                                             ExportableRDSDBField = "CurrentInstancePerformanceRisk"
+	ExportableRDSDBFieldUtilizationMetricsCpuMaximum                                               ExportableRDSDBField = "UtilizationMetricsCpuMaximum"
+	ExportableRDSDBFieldUtilizationMetricsMemoryMaximum                                            ExportableRDSDBField = "UtilizationMetricsMemoryMaximum"
+	ExportableRDSDBFieldUtilizationMetricsEbsVolumeStorageSpaceUtilizationMaximum                  ExportableRDSDBField = "UtilizationMetricsEBSVolumeStorageSpaceUtilizationMaximum"
+	ExportableRDSDBFieldUtilizationMetricsNetworkReceiveThroughputMaximum                          ExportableRDSDBField = "UtilizationMetricsNetworkReceiveThroughputMaximum"
+	ExportableRDSDBFieldUtilizationMetricsNetworkTransmitThroughputMaximum                         ExportableRDSDBField = "UtilizationMetricsNetworkTransmitThroughputMaximum"
+	ExportableRDSDBFieldUtilizationMetricsEbsVolumeReadIopsMaximum                                 ExportableRDSDBField = "UtilizationMetricsEBSVolumeReadIOPSMaximum"
+	ExportableRDSDBFieldUtilizationMetricsEbsVolumeWriteIopsMaximum                                ExportableRDSDBField = "UtilizationMetricsEBSVolumeWriteIOPSMaximum"
+	ExportableRDSDBFieldUtilizationMetricsEbsVolumeReadThroughputMaximum                           ExportableRDSDBField = "UtilizationMetricsEBSVolumeReadThroughputMaximum"
+	ExportableRDSDBFieldUtilizationMetricsEbsVolumeWriteThroughputMaximum                          ExportableRDSDBField = "UtilizationMetricsEBSVolumeWriteThroughputMaximum"
+	ExportableRDSDBFieldUtilizationMetricsDatabaseConnectionsMaximum                               ExportableRDSDBField = "UtilizationMetricsDatabaseConnectionsMaximum"
+	ExportableRDSDBFieldUtilizationMetricsStorageNetworkReceiveThroughputMaximum                   ExportableRDSDBField = "UtilizationMetricsStorageNetworkReceiveThroughputMaximum"
+	ExportableRDSDBFieldUtilizationMetricsStorageNetworkTransmitThroughputMaximum                  ExportableRDSDBField = "UtilizationMetricsStorageNetworkTransmitThroughputMaximum"
+	ExportableRDSDBFieldUtilizationMetricsAuroraMemoryHealthStateMaximum                           ExportableRDSDBField = "UtilizationMetricsAuroraMemoryHealthStateMaximum"
+	ExportableRDSDBFieldUtilizationMetricsAuroraMemoryNumDeclinedSqlTotalMaximum                   ExportableRDSDBField = "UtilizationMetricsAuroraMemoryNumDeclinedSqlTotalMaximum"
+	ExportableRDSDBFieldUtilizationMetricsAuroraMemoryNumKillConnTotalMaximum                      ExportableRDSDBField = "UtilizationMetricsAuroraMemoryNumKillConnTotalMaximum"
+	ExportableRDSDBFieldUtilizationMetricsAuroraMemoryNumKillQueryTotalMaximum                     ExportableRDSDBField = "UtilizationMetricsAuroraMemoryNumKillQueryTotalMaximum"
+	ExportableRDSDBFieldUtilizationMetricsReadIopsEphemeralStorageMaximum                          ExportableRDSDBField = "UtilizationMetricsReadIOPSEphemeralStorageMaximum"
+	ExportableRDSDBFieldUtilizationMetricsWriteIopsEphemeralStorageMaximum                         ExportableRDSDBField = "UtilizationMetricsWriteIOPSEphemeralStorageMaximum"
+	ExportableRDSDBFieldInstanceFinding                                                            ExportableRDSDBField = "InstanceFinding"
+	ExportableRDSDBFieldInstanceFindingReasonCodes                                                 ExportableRDSDBField = "InstanceFindingReasonCodes"
+	ExportableRDSDBFieldStorageFinding                                                             ExportableRDSDBField = "StorageFinding"
+	ExportableRDSDBFieldStorageFindingReasonCodes                                                  ExportableRDSDBField = "StorageFindingReasonCodes"
+	ExportableRDSDBFieldInstanceRecommendationOptionsDbInstanceClass                               ExportableRDSDBField = "InstanceRecommendationOptionsDBInstanceClass"
+	ExportableRDSDBFieldInstanceRecommendationOptionsRank                                          ExportableRDSDBField = "InstanceRecommendationOptionsRank"
+	ExportableRDSDBFieldInstanceRecommendationOptionsPerformanceRisk                               ExportableRDSDBField = "InstanceRecommendationOptionsPerformanceRisk"
+	ExportableRDSDBFieldInstanceRecommendationOptionsProjectedUtilizationMetricsCpuMaximum         ExportableRDSDBField = "InstanceRecommendationOptionsProjectedUtilizationMetricsCpuMaximum"
+	ExportableRDSDBFieldStorageRecommendationOptionsStorageType                                    ExportableRDSDBField = "StorageRecommendationOptionsStorageType"
+	ExportableRDSDBFieldStorageRecommendationOptionsAllocatedStorage                               ExportableRDSDBField = "StorageRecommendationOptionsAllocatedStorage"
+	ExportableRDSDBFieldStorageRecommendationOptionsMaxAllocatedStorage                            ExportableRDSDBField = "StorageRecommendationOptionsMaxAllocatedStorage"
+	ExportableRDSDBFieldStorageRecommendationOptionsIops                                           ExportableRDSDBField = "StorageRecommendationOptionsIOPS"
+	ExportableRDSDBFieldStorageRecommendationOptionsStorageThroughput                              ExportableRDSDBField = "StorageRecommendationOptionsStorageThroughput"
+	ExportableRDSDBFieldStorageRecommendationOptionsRank                                           ExportableRDSDBField = "StorageRecommendationOptionsRank"
+	ExportableRDSDBFieldInstanceRecommendationOptionsInstanceOnDemandHourlyPrice                   ExportableRDSDBField = "InstanceRecommendationOptionsInstanceOnDemandHourlyPrice"
+	ExportableRDSDBFieldInstanceRecommendationOptionsSavingsOpportunityPercentage                  ExportableRDSDBField = "InstanceRecommendationOptionsSavingsOpportunityPercentage"
+	ExportableRDSDBFieldInstanceRecommendationOptionsEstimatedMonthlySavingsCurrency               ExportableRDSDBField = "InstanceRecommendationOptionsEstimatedMonthlySavingsCurrency"
+	ExportableRDSDBFieldInstanceRecommendationOptionsEstimatedMonthlySavingsValue                  ExportableRDSDBField = "InstanceRecommendationOptionsEstimatedMonthlySavingsValue"
+	ExportableRDSDBFieldInstanceRecommendationOptionsSavingsOpportunityAfterDiscountsPercentage    ExportableRDSDBField = "InstanceRecommendationOptionsSavingsOpportunityAfterDiscountsPercentage"
+	ExportableRDSDBFieldInstanceRecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts ExportableRDSDBField = "InstanceRecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts"
+	ExportableRDSDBFieldInstanceRecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts    ExportableRDSDBField = "InstanceRecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts"
+	ExportableRDSDBFieldStorageRecommendationOptionsOnDemandMonthlyPrice                           ExportableRDSDBField = "StorageRecommendationOptionsOnDemandMonthlyPrice"
+	ExportableRDSDBFieldStorageRecommendationOptionsSavingsOpportunityPercentage                   ExportableRDSDBField = "StorageRecommendationOptionsSavingsOpportunityPercentage"
+	ExportableRDSDBFieldStorageRecommendationOptionsEstimatedMonthlySavingsCurrency                ExportableRDSDBField = "StorageRecommendationOptionsEstimatedMonthlySavingsCurrency"
+	ExportableRDSDBFieldStorageRecommendationOptionsEstimatedMonthlySavingsValue                   ExportableRDSDBField = "StorageRecommendationOptionsEstimatedMonthlySavingsValue"
+	ExportableRDSDBFieldStorageRecommendationOptionsSavingsOpportunityAfterDiscountsPercentage     ExportableRDSDBField = "StorageRecommendationOptionsSavingsOpportunityAfterDiscountsPercentage"
+	ExportableRDSDBFieldStorageRecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts  ExportableRDSDBField = "StorageRecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts"
+	ExportableRDSDBFieldStorageRecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts     ExportableRDSDBField = "StorageRecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts"
+	ExportableRDSDBFieldEffectiveRecommendationPreferencesCpuVendorArchitectures                   ExportableRDSDBField = "EffectiveRecommendationPreferencesCpuVendorArchitectures"
+	ExportableRDSDBFieldEffectiveRecommendationPreferencesEnhancedInfrastructureMetrics            ExportableRDSDBField = "EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics"
+	ExportableRDSDBFieldEffectiveRecommendationPreferencesLookbackPeriod                           ExportableRDSDBField = "EffectiveRecommendationPreferencesLookBackPeriod"
+	ExportableRDSDBFieldEffectiveRecommendationPreferencesSavingsEstimationMode                    ExportableRDSDBField = "EffectiveRecommendationPreferencesSavingsEstimationMode"
+	ExportableRDSDBFieldLastRefreshTimestamp                                                       ExportableRDSDBField = "LastRefreshTimestamp"
+	ExportableRDSDBFieldTags                                                                       ExportableRDSDBField = "Tags"
+	ExportableRDSDBFieldDbClusterIdentifier                                                        ExportableRDSDBField = "DBClusterIdentifier"
+	ExportableRDSDBFieldPromotionTier                                                              ExportableRDSDBField = "PromotionTier"
+)
+
+// Values returns all known values for ExportableRDSDBField. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ExportableRDSDBField) Values() []ExportableRDSDBField {
+	return []ExportableRDSDBField{
+		"ResourceArn",
+		"AccountId",
+		"Engine",
+		"EngineVersion",
+		"Idle",
+		"MultiAZDBInstance",
+		"CurrentDBInstanceClass",
+		"CurrentStorageConfigurationStorageType",
+		"CurrentStorageConfigurationAllocatedStorage",
+		"CurrentStorageConfigurationMaxAllocatedStorage",
+		"CurrentStorageConfigurationIOPS",
+		"CurrentStorageConfigurationStorageThroughput",
+		"CurrentInstanceOnDemandHourlyPrice",
+		"CurrentStorageOnDemandMonthlyPrice",
+		"LookbackPeriodInDays",
+		"CurrentInstancePerformanceRisk",
+		"UtilizationMetricsCpuMaximum",
+		"UtilizationMetricsMemoryMaximum",
+		"UtilizationMetricsEBSVolumeStorageSpaceUtilizationMaximum",
+		"UtilizationMetricsNetworkReceiveThroughputMaximum",
+		"UtilizationMetricsNetworkTransmitThroughputMaximum",
+		"UtilizationMetricsEBSVolumeReadIOPSMaximum",
+		"UtilizationMetricsEBSVolumeWriteIOPSMaximum",
+		"UtilizationMetricsEBSVolumeReadThroughputMaximum",
+		"UtilizationMetricsEBSVolumeWriteThroughputMaximum",
+		"UtilizationMetricsDatabaseConnectionsMaximum",
+		"UtilizationMetricsStorageNetworkReceiveThroughputMaximum",
+		"UtilizationMetricsStorageNetworkTransmitThroughputMaximum",
+		"UtilizationMetricsAuroraMemoryHealthStateMaximum",
+		"UtilizationMetricsAuroraMemoryNumDeclinedSqlTotalMaximum",
+		"UtilizationMetricsAuroraMemoryNumKillConnTotalMaximum",
+		"UtilizationMetricsAuroraMemoryNumKillQueryTotalMaximum",
+		"UtilizationMetricsReadIOPSEphemeralStorageMaximum",
+		"UtilizationMetricsWriteIOPSEphemeralStorageMaximum",
+		"InstanceFinding",
+		"InstanceFindingReasonCodes",
+		"StorageFinding",
+		"StorageFindingReasonCodes",
+		"InstanceRecommendationOptionsDBInstanceClass",
+		"InstanceRecommendationOptionsRank",
+		"InstanceRecommendationOptionsPerformanceRisk",
+		"InstanceRecommendationOptionsProjectedUtilizationMetricsCpuMaximum",
+		"StorageRecommendationOptionsStorageType",
+		"StorageRecommendationOptionsAllocatedStorage",
+		"StorageRecommendationOptionsMaxAllocatedStorage",
+		"StorageRecommendationOptionsIOPS",
+		"StorageRecommendationOptionsStorageThroughput",
+		"StorageRecommendationOptionsRank",
+		"InstanceRecommendationOptionsInstanceOnDemandHourlyPrice",
+		"InstanceRecommendationOptionsSavingsOpportunityPercentage",
+		"InstanceRecommendationOptionsEstimatedMonthlySavingsCurrency",
+		"InstanceRecommendationOptionsEstimatedMonthlySavingsValue",
+		"InstanceRecommendationOptionsSavingsOpportunityAfterDiscountsPercentage",
+		"InstanceRecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
+		"InstanceRecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts",
+		"StorageRecommendationOptionsOnDemandMonthlyPrice",
+		"StorageRecommendationOptionsSavingsOpportunityPercentage",
+		"StorageRecommendationOptionsEstimatedMonthlySavingsCurrency",
+		"StorageRecommendationOptionsEstimatedMonthlySavingsValue",
+		"StorageRecommendationOptionsSavingsOpportunityAfterDiscountsPercentage",
+		"StorageRecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
+		"StorageRecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts",
+		"EffectiveRecommendationPreferencesCpuVendorArchitectures",
+		"EffectiveRecommendationPreferencesEnhancedInfrastructureMetrics",
+		"EffectiveRecommendationPreferencesLookBackPeriod",
+		"EffectiveRecommendationPreferencesSavingsEstimationMode",
+		"LastRefreshTimestamp",
+		"Tags",
+		"DBClusterIdentifier",
+		"PromotionTier",
 	}
 }
 
@@ -672,41 +1204,47 @@ type ExportableVolumeField string
 
 // Enum values for ExportableVolumeField
 const (
-	ExportableVolumeFieldAccountId                                                  ExportableVolumeField = "AccountId"
-	ExportableVolumeFieldVolumeArn                                                  ExportableVolumeField = "VolumeArn"
-	ExportableVolumeFieldFinding                                                    ExportableVolumeField = "Finding"
-	ExportableVolumeFieldUtilizationMetricsVolumeReadOpsPerSecondMaximum            ExportableVolumeField = "UtilizationMetricsVolumeReadOpsPerSecondMaximum"
-	ExportableVolumeFieldUtilizationMetricsVolumeWriteOpsPerSecondMaximum           ExportableVolumeField = "UtilizationMetricsVolumeWriteOpsPerSecondMaximum"
-	ExportableVolumeFieldUtilizationMetricsVolumeReadBytesPerSecondMaximum          ExportableVolumeField = "UtilizationMetricsVolumeReadBytesPerSecondMaximum"
-	ExportableVolumeFieldUtilizationMetricsVolumeWriteBytesPerSecondMaximum         ExportableVolumeField = "UtilizationMetricsVolumeWriteBytesPerSecondMaximum"
-	ExportableVolumeFieldLookbackPeriodInDays                                       ExportableVolumeField = "LookbackPeriodInDays"
-	ExportableVolumeFieldCurrentConfigurationVolumeType                             ExportableVolumeField = "CurrentConfigurationVolumeType"
-	ExportableVolumeFieldCurrentConfigurationVolumeBaselineIops                     ExportableVolumeField = "CurrentConfigurationVolumeBaselineIOPS"
-	ExportableVolumeFieldCurrentConfigurationVolumeBaselineThroughput               ExportableVolumeField = "CurrentConfigurationVolumeBaselineThroughput"
-	ExportableVolumeFieldCurrentConfigurationVolumeBurstIops                        ExportableVolumeField = "CurrentConfigurationVolumeBurstIOPS"
-	ExportableVolumeFieldCurrentConfigurationVolumeBurstThroughput                  ExportableVolumeField = "CurrentConfigurationVolumeBurstThroughput"
-	ExportableVolumeFieldCurrentConfigurationVolumeSize                             ExportableVolumeField = "CurrentConfigurationVolumeSize"
-	ExportableVolumeFieldCurrentMonthlyPrice                                        ExportableVolumeField = "CurrentMonthlyPrice"
-	ExportableVolumeFieldRecommendationOptionsConfigurationVolumeType               ExportableVolumeField = "RecommendationOptionsConfigurationVolumeType"
-	ExportableVolumeFieldRecommendationOptionsConfigurationVolumeBaselineIops       ExportableVolumeField = "RecommendationOptionsConfigurationVolumeBaselineIOPS"
-	ExportableVolumeFieldRecommendationOptionsConfigurationVolumeBaselineThroughput ExportableVolumeField = "RecommendationOptionsConfigurationVolumeBaselineThroughput"
-	ExportableVolumeFieldRecommendationOptionsConfigurationVolumeBurstIops          ExportableVolumeField = "RecommendationOptionsConfigurationVolumeBurstIOPS"
-	ExportableVolumeFieldRecommendationOptionsConfigurationVolumeBurstThroughput    ExportableVolumeField = "RecommendationOptionsConfigurationVolumeBurstThroughput"
-	ExportableVolumeFieldRecommendationOptionsConfigurationVolumeSize               ExportableVolumeField = "RecommendationOptionsConfigurationVolumeSize"
-	ExportableVolumeFieldRecommendationOptionsMonthlyPrice                          ExportableVolumeField = "RecommendationOptionsMonthlyPrice"
-	ExportableVolumeFieldRecommendationOptionsPerformanceRisk                       ExportableVolumeField = "RecommendationOptionsPerformanceRisk"
-	ExportableVolumeFieldLastRefreshTimestamp                                       ExportableVolumeField = "LastRefreshTimestamp"
-	ExportableVolumeFieldCurrentPerformanceRisk                                     ExportableVolumeField = "CurrentPerformanceRisk"
-	ExportableVolumeFieldRecommendationOptionsSavingsOpportunityPercentage          ExportableVolumeField = "RecommendationOptionsSavingsOpportunityPercentage"
-	ExportableVolumeFieldRecommendationOptionsEstimatedMonthlySavingsCurrency       ExportableVolumeField = "RecommendationOptionsEstimatedMonthlySavingsCurrency"
-	ExportableVolumeFieldRecommendationOptionsEstimatedMonthlySavingsValue          ExportableVolumeField = "RecommendationOptionsEstimatedMonthlySavingsValue"
-	ExportableVolumeFieldRootVolume                                                 ExportableVolumeField = "RootVolume"
-	ExportableVolumeFieldTags                                                       ExportableVolumeField = "Tags"
+	ExportableVolumeFieldAccountId                                                          ExportableVolumeField = "AccountId"
+	ExportableVolumeFieldVolumeArn                                                          ExportableVolumeField = "VolumeArn"
+	ExportableVolumeFieldFinding                                                            ExportableVolumeField = "Finding"
+	ExportableVolumeFieldUtilizationMetricsVolumeReadOpsPerSecondMaximum                    ExportableVolumeField = "UtilizationMetricsVolumeReadOpsPerSecondMaximum"
+	ExportableVolumeFieldUtilizationMetricsVolumeWriteOpsPerSecondMaximum                   ExportableVolumeField = "UtilizationMetricsVolumeWriteOpsPerSecondMaximum"
+	ExportableVolumeFieldUtilizationMetricsVolumeReadBytesPerSecondMaximum                  ExportableVolumeField = "UtilizationMetricsVolumeReadBytesPerSecondMaximum"
+	ExportableVolumeFieldUtilizationMetricsVolumeWriteBytesPerSecondMaximum                 ExportableVolumeField = "UtilizationMetricsVolumeWriteBytesPerSecondMaximum"
+	ExportableVolumeFieldLookbackPeriodInDays                                               ExportableVolumeField = "LookbackPeriodInDays"
+	ExportableVolumeFieldCurrentConfigurationVolumeType                                     ExportableVolumeField = "CurrentConfigurationVolumeType"
+	ExportableVolumeFieldCurrentConfigurationVolumeBaselineIops                             ExportableVolumeField = "CurrentConfigurationVolumeBaselineIOPS"
+	ExportableVolumeFieldCurrentConfigurationVolumeBaselineThroughput                       ExportableVolumeField = "CurrentConfigurationVolumeBaselineThroughput"
+	ExportableVolumeFieldCurrentConfigurationVolumeBurstIops                                ExportableVolumeField = "CurrentConfigurationVolumeBurstIOPS"
+	ExportableVolumeFieldCurrentConfigurationVolumeBurstThroughput                          ExportableVolumeField = "CurrentConfigurationVolumeBurstThroughput"
+	ExportableVolumeFieldCurrentConfigurationVolumeSize                                     ExportableVolumeField = "CurrentConfigurationVolumeSize"
+	ExportableVolumeFieldCurrentMonthlyPrice                                                ExportableVolumeField = "CurrentMonthlyPrice"
+	ExportableVolumeFieldRecommendationOptionsConfigurationVolumeType                       ExportableVolumeField = "RecommendationOptionsConfigurationVolumeType"
+	ExportableVolumeFieldRecommendationOptionsConfigurationVolumeBaselineIops               ExportableVolumeField = "RecommendationOptionsConfigurationVolumeBaselineIOPS"
+	ExportableVolumeFieldRecommendationOptionsConfigurationVolumeBaselineThroughput         ExportableVolumeField = "RecommendationOptionsConfigurationVolumeBaselineThroughput"
+	ExportableVolumeFieldRecommendationOptionsConfigurationVolumeBurstIops                  ExportableVolumeField = "RecommendationOptionsConfigurationVolumeBurstIOPS"
+	ExportableVolumeFieldRecommendationOptionsConfigurationVolumeBurstThroughput            ExportableVolumeField = "RecommendationOptionsConfigurationVolumeBurstThroughput"
+	ExportableVolumeFieldRecommendationOptionsConfigurationVolumeSize                       ExportableVolumeField = "RecommendationOptionsConfigurationVolumeSize"
+	ExportableVolumeFieldRecommendationOptionsMonthlyPrice                                  ExportableVolumeField = "RecommendationOptionsMonthlyPrice"
+	ExportableVolumeFieldRecommendationOptionsPerformanceRisk                               ExportableVolumeField = "RecommendationOptionsPerformanceRisk"
+	ExportableVolumeFieldLastRefreshTimestamp                                               ExportableVolumeField = "LastRefreshTimestamp"
+	ExportableVolumeFieldCurrentPerformanceRisk                                             ExportableVolumeField = "CurrentPerformanceRisk"
+	ExportableVolumeFieldRecommendationOptionsSavingsOpportunityPercentage                  ExportableVolumeField = "RecommendationOptionsSavingsOpportunityPercentage"
+	ExportableVolumeFieldRecommendationOptionsEstimatedMonthlySavingsCurrency               ExportableVolumeField = "RecommendationOptionsEstimatedMonthlySavingsCurrency"
+	ExportableVolumeFieldRecommendationOptionsEstimatedMonthlySavingsValue                  ExportableVolumeField = "RecommendationOptionsEstimatedMonthlySavingsValue"
+	ExportableVolumeFieldTags                                                               ExportableVolumeField = "Tags"
+	ExportableVolumeFieldRootVolume                                                         ExportableVolumeField = "RootVolume"
+	ExportableVolumeFieldCurrentConfigurationRootVolume                                     ExportableVolumeField = "CurrentConfigurationRootVolume"
+	ExportableVolumeFieldEffectiveRecommendationPreferencesSavingsEstimationMode            ExportableVolumeField = "EffectiveRecommendationPreferencesSavingsEstimationMode"
+	ExportableVolumeFieldRecommendationOptionsSavingsOpportunityAfterDiscountsPercentage    ExportableVolumeField = "RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage"
+	ExportableVolumeFieldRecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts ExportableVolumeField = "RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts"
+	ExportableVolumeFieldRecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts    ExportableVolumeField = "RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts"
 )
 
 // Values returns all known values for ExportableVolumeField. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExportableVolumeField) Values() []ExportableVolumeField {
 	return []ExportableVolumeField{
 		"AccountId",
@@ -737,8 +1275,13 @@ func (ExportableVolumeField) Values() []ExportableVolumeField {
 		"RecommendationOptionsSavingsOpportunityPercentage",
 		"RecommendationOptionsEstimatedMonthlySavingsCurrency",
 		"RecommendationOptionsEstimatedMonthlySavingsValue",
-		"RootVolume",
 		"Tags",
+		"RootVolume",
+		"CurrentConfigurationRootVolume",
+		"EffectiveRecommendationPreferencesSavingsEstimationMode",
+		"RecommendationOptionsSavingsOpportunityAfterDiscountsPercentage",
+		"RecommendationOptionsEstimatedMonthlySavingsCurrencyAfterDiscounts",
+		"RecommendationOptionsEstimatedMonthlySavingsValueAfterDiscounts",
 	}
 }
 
@@ -753,8 +1296,9 @@ const (
 )
 
 // Values returns all known values for ExternalMetricsSource. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ExternalMetricsSource) Values() []ExternalMetricsSource {
 	return []ExternalMetricsSource{
 		"Datadog",
@@ -782,6 +1326,7 @@ const (
 
 // Values returns all known values for ExternalMetricStatusCode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ExternalMetricStatusCode) Values() []ExternalMetricStatusCode {
 	return []ExternalMetricStatusCode{
@@ -806,8 +1351,9 @@ const (
 )
 
 // Values returns all known values for FileFormat. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FileFormat) Values() []FileFormat {
 	return []FileFormat{
 		"Csv",
@@ -825,8 +1371,9 @@ const (
 )
 
 // Values returns all known values for FilterName. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FilterName) Values() []FilterName {
 	return []FilterName{
 		"Finding",
@@ -847,8 +1394,9 @@ const (
 )
 
 // Values returns all known values for Finding. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Finding) Values() []Finding {
 	return []Finding{
 		"Underprovisioned",
@@ -867,12 +1415,130 @@ const (
 )
 
 // Values returns all known values for FindingReasonCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FindingReasonCode) Values() []FindingReasonCode {
 	return []FindingReasonCode{
 		"MemoryOverprovisioned",
 		"MemoryUnderprovisioned",
+	}
+}
+
+type Idle string
+
+// Enum values for Idle
+const (
+	IdleTrue  Idle = "True"
+	IdleFalse Idle = "False"
+)
+
+// Values returns all known values for Idle. Note that this can be expanded in the
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Idle) Values() []Idle {
+	return []Idle{
+		"True",
+		"False",
+	}
+}
+
+type IdleFinding string
+
+// Enum values for IdleFinding
+const (
+	IdleFindingIdle       IdleFinding = "Idle"
+	IdleFindingUnattached IdleFinding = "Unattached"
+)
+
+// Values returns all known values for IdleFinding. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IdleFinding) Values() []IdleFinding {
+	return []IdleFinding{
+		"Idle",
+		"Unattached",
+	}
+}
+
+type IdleMetricName string
+
+// Enum values for IdleMetricName
+const (
+	IdleMetricNameCpu                      IdleMetricName = "CPU"
+	IdleMetricNameMemory                   IdleMetricName = "Memory"
+	IdleMetricNameNetworkOutBytesPerSecond IdleMetricName = "NetworkOutBytesPerSecond"
+	IdleMetricNameNetworkInBytesPerSecond  IdleMetricName = "NetworkInBytesPerSecond"
+	IdleMetricNameDatabaseConnections      IdleMetricName = "DatabaseConnections"
+	IdleMetricNameEbsVolumeReadIops        IdleMetricName = "EBSVolumeReadIOPS"
+	IdleMetricNameEbsVolumeWriteIops       IdleMetricName = "EBSVolumeWriteIOPS"
+	IdleMetricNameVolumeReadOpsPerSecond   IdleMetricName = "VolumeReadOpsPerSecond"
+	IdleMetricNameVolumeWriteOpsPerSecond  IdleMetricName = "VolumeWriteOpsPerSecond"
+)
+
+// Values returns all known values for IdleMetricName. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IdleMetricName) Values() []IdleMetricName {
+	return []IdleMetricName{
+		"CPU",
+		"Memory",
+		"NetworkOutBytesPerSecond",
+		"NetworkInBytesPerSecond",
+		"DatabaseConnections",
+		"EBSVolumeReadIOPS",
+		"EBSVolumeWriteIOPS",
+		"VolumeReadOpsPerSecond",
+		"VolumeWriteOpsPerSecond",
+	}
+}
+
+type IdleRecommendationFilterName string
+
+// Enum values for IdleRecommendationFilterName
+const (
+	IdleRecommendationFilterNameFinding      IdleRecommendationFilterName = "Finding"
+	IdleRecommendationFilterNameResourceType IdleRecommendationFilterName = "ResourceType"
+)
+
+// Values returns all known values for IdleRecommendationFilterName. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IdleRecommendationFilterName) Values() []IdleRecommendationFilterName {
+	return []IdleRecommendationFilterName{
+		"Finding",
+		"ResourceType",
+	}
+}
+
+type IdleRecommendationResourceType string
+
+// Enum values for IdleRecommendationResourceType
+const (
+	IdleRecommendationResourceTypeEc2Instance      IdleRecommendationResourceType = "EC2Instance"
+	IdleRecommendationResourceTypeAutoScalingGroup IdleRecommendationResourceType = "AutoScalingGroup"
+	IdleRecommendationResourceTypeEbsVolume        IdleRecommendationResourceType = "EBSVolume"
+	IdleRecommendationResourceTypeEcsService       IdleRecommendationResourceType = "ECSService"
+	IdleRecommendationResourceTypeRdsDbInstance    IdleRecommendationResourceType = "RDSDBInstance"
+)
+
+// Values returns all known values for IdleRecommendationResourceType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (IdleRecommendationResourceType) Values() []IdleRecommendationResourceType {
+	return []IdleRecommendationResourceType{
+		"EC2Instance",
+		"AutoScalingGroup",
+		"EBSVolume",
+		"ECSService",
+		"RDSDBInstance",
 	}
 }
 
@@ -892,8 +1558,9 @@ const (
 )
 
 // Values returns all known values for InferredWorkloadType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InferredWorkloadType) Values() []InferredWorkloadType {
 	return []InferredWorkloadType{
 		"AmazonEmr",
@@ -918,12 +1585,32 @@ const (
 
 // Values returns all known values for InferredWorkloadTypesPreference. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InferredWorkloadTypesPreference) Values() []InferredWorkloadTypesPreference {
 	return []InferredWorkloadTypesPreference{
 		"Active",
 		"Inactive",
+	}
+}
+
+type InstanceIdle string
+
+// Enum values for InstanceIdle
+const (
+	InstanceIdleTrue  InstanceIdle = "True"
+	InstanceIdleFalse InstanceIdle = "False"
+)
+
+// Values returns all known values for InstanceIdle. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InstanceIdle) Values() []InstanceIdle {
+	return []InstanceIdle{
+		"True",
+		"False",
 	}
 }
 
@@ -947,12 +1634,17 @@ const (
 	InstanceRecommendationFindingReasonCodeDiskIopsUnderProvisioned         InstanceRecommendationFindingReasonCode = "DiskIOPSUnderprovisioned"
 	InstanceRecommendationFindingReasonCodeDiskThroughputOverProvisioned    InstanceRecommendationFindingReasonCode = "DiskThroughputOverprovisioned"
 	InstanceRecommendationFindingReasonCodeDiskThroughputUnderProvisioned   InstanceRecommendationFindingReasonCode = "DiskThroughputUnderprovisioned"
+	InstanceRecommendationFindingReasonCodeGpuUnderProvisioned              InstanceRecommendationFindingReasonCode = "GPUUnderprovisioned"
+	InstanceRecommendationFindingReasonCodeGpuOverProvisioned               InstanceRecommendationFindingReasonCode = "GPUOverprovisioned"
+	InstanceRecommendationFindingReasonCodeGpuMemoryUnderProvisioned        InstanceRecommendationFindingReasonCode = "GPUMemoryUnderprovisioned"
+	InstanceRecommendationFindingReasonCodeGpuMemoryOverProvisioned         InstanceRecommendationFindingReasonCode = "GPUMemoryOverprovisioned"
 )
 
 // Values returns all known values for InstanceRecommendationFindingReasonCode.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceRecommendationFindingReasonCode) Values() []InstanceRecommendationFindingReasonCode {
 	return []InstanceRecommendationFindingReasonCode{
 		"CPUOverprovisioned",
@@ -971,6 +1663,32 @@ func (InstanceRecommendationFindingReasonCode) Values() []InstanceRecommendation
 		"DiskIOPSUnderprovisioned",
 		"DiskThroughputOverprovisioned",
 		"DiskThroughputUnderprovisioned",
+		"GPUUnderprovisioned",
+		"GPUOverprovisioned",
+		"GPUMemoryUnderprovisioned",
+		"GPUMemoryOverprovisioned",
+	}
+}
+
+type InstanceSavingsEstimationModeSource string
+
+// Enum values for InstanceSavingsEstimationModeSource
+const (
+	InstanceSavingsEstimationModeSourcePublicPricing           InstanceSavingsEstimationModeSource = "PublicPricing"
+	InstanceSavingsEstimationModeSourceCostExplorerRightsizing InstanceSavingsEstimationModeSource = "CostExplorerRightsizing"
+	InstanceSavingsEstimationModeSourceCostOptimizationHub     InstanceSavingsEstimationModeSource = "CostOptimizationHub"
+)
+
+// Values returns all known values for InstanceSavingsEstimationModeSource. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (InstanceSavingsEstimationModeSource) Values() []InstanceSavingsEstimationModeSource {
+	return []InstanceSavingsEstimationModeSource{
+		"PublicPricing",
+		"CostExplorerRightsizing",
+		"CostOptimizationHub",
 	}
 }
 
@@ -987,8 +1705,9 @@ const (
 )
 
 // Values returns all known values for InstanceState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InstanceState) Values() []InstanceState {
 	return []InstanceState{
 		"pending",
@@ -1009,8 +1728,9 @@ const (
 )
 
 // Values returns all known values for JobFilterName. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobFilterName) Values() []JobFilterName {
 	return []JobFilterName{
 		"ResourceType",
@@ -1029,8 +1749,9 @@ const (
 )
 
 // Values returns all known values for JobStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobStatus) Values() []JobStatus {
 	return []JobStatus{
 		"Queued",
@@ -1049,8 +1770,9 @@ const (
 
 // Values returns all known values for LambdaFunctionMemoryMetricName. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LambdaFunctionMemoryMetricName) Values() []LambdaFunctionMemoryMetricName {
 	return []LambdaFunctionMemoryMetricName{
 		"Duration",
@@ -1068,8 +1790,9 @@ const (
 
 // Values returns all known values for LambdaFunctionMemoryMetricStatistic. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LambdaFunctionMemoryMetricStatistic) Values() []LambdaFunctionMemoryMetricStatistic {
 	return []LambdaFunctionMemoryMetricStatistic{
 		"LowerBound",
@@ -1088,6 +1811,7 @@ const (
 
 // Values returns all known values for LambdaFunctionMetricName. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (LambdaFunctionMetricName) Values() []LambdaFunctionMetricName {
 	return []LambdaFunctionMetricName{
@@ -1106,8 +1830,9 @@ const (
 
 // Values returns all known values for LambdaFunctionMetricStatistic. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LambdaFunctionMetricStatistic) Values() []LambdaFunctionMetricStatistic {
 	return []LambdaFunctionMetricStatistic{
 		"Maximum",
@@ -1125,8 +1850,9 @@ const (
 
 // Values returns all known values for LambdaFunctionRecommendationFilterName.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LambdaFunctionRecommendationFilterName) Values() []LambdaFunctionRecommendationFilterName {
 	return []LambdaFunctionRecommendationFilterName{
 		"Finding",
@@ -1145,8 +1871,9 @@ const (
 
 // Values returns all known values for LambdaFunctionRecommendationFinding. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LambdaFunctionRecommendationFinding) Values() []LambdaFunctionRecommendationFinding {
 	return []LambdaFunctionRecommendationFinding{
 		"Optimized",
@@ -1167,14 +1894,183 @@ const (
 
 // Values returns all known values for
 // LambdaFunctionRecommendationFindingReasonCode. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LambdaFunctionRecommendationFindingReasonCode) Values() []LambdaFunctionRecommendationFindingReasonCode {
 	return []LambdaFunctionRecommendationFindingReasonCode{
 		"MemoryOverprovisioned",
 		"MemoryUnderprovisioned",
 		"InsufficientData",
 		"Inconclusive",
+	}
+}
+
+type LambdaSavingsEstimationModeSource string
+
+// Enum values for LambdaSavingsEstimationModeSource
+const (
+	LambdaSavingsEstimationModeSourcePublicPricing           LambdaSavingsEstimationModeSource = "PublicPricing"
+	LambdaSavingsEstimationModeSourceCostExplorerRightsizing LambdaSavingsEstimationModeSource = "CostExplorerRightsizing"
+	LambdaSavingsEstimationModeSourceCostOptimizationHub     LambdaSavingsEstimationModeSource = "CostOptimizationHub"
+)
+
+// Values returns all known values for LambdaSavingsEstimationModeSource. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LambdaSavingsEstimationModeSource) Values() []LambdaSavingsEstimationModeSource {
+	return []LambdaSavingsEstimationModeSource{
+		"PublicPricing",
+		"CostExplorerRightsizing",
+		"CostOptimizationHub",
+	}
+}
+
+type LicenseEdition string
+
+// Enum values for LicenseEdition
+const (
+	LicenseEditionEnterprise            LicenseEdition = "Enterprise"
+	LicenseEditionStandard              LicenseEdition = "Standard"
+	LicenseEditionFree                  LicenseEdition = "Free"
+	LicenseEditionNoLicenseEditionFound LicenseEdition = "NoLicenseEditionFound"
+)
+
+// Values returns all known values for LicenseEdition. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LicenseEdition) Values() []LicenseEdition {
+	return []LicenseEdition{
+		"Enterprise",
+		"Standard",
+		"Free",
+		"NoLicenseEditionFound",
+	}
+}
+
+type LicenseFinding string
+
+// Enum values for LicenseFinding
+const (
+	LicenseFindingInsufficientMetrics LicenseFinding = "InsufficientMetrics"
+	LicenseFindingOptimized           LicenseFinding = "Optimized"
+	LicenseFindingNotOptimized        LicenseFinding = "NotOptimized"
+)
+
+// Values returns all known values for LicenseFinding. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LicenseFinding) Values() []LicenseFinding {
+	return []LicenseFinding{
+		"InsufficientMetrics",
+		"Optimized",
+		"NotOptimized",
+	}
+}
+
+type LicenseFindingReasonCode string
+
+// Enum values for LicenseFindingReasonCode
+const (
+	LicenseFindingReasonCodeCwAppInsightsDisabled  LicenseFindingReasonCode = "InvalidCloudWatchApplicationInsightsSetup"
+	LicenseFindingReasonCodeCwAppInsightsError     LicenseFindingReasonCode = "CloudWatchApplicationInsightsError"
+	LicenseFindingReasonCodeLicenseOverProvisioned LicenseFindingReasonCode = "LicenseOverprovisioned"
+	LicenseFindingReasonCodeOptimized              LicenseFindingReasonCode = "Optimized"
+)
+
+// Values returns all known values for LicenseFindingReasonCode. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LicenseFindingReasonCode) Values() []LicenseFindingReasonCode {
+	return []LicenseFindingReasonCode{
+		"InvalidCloudWatchApplicationInsightsSetup",
+		"CloudWatchApplicationInsightsError",
+		"LicenseOverprovisioned",
+		"Optimized",
+	}
+}
+
+type LicenseModel string
+
+// Enum values for LicenseModel
+const (
+	LicenseModelLicenseIncluded     LicenseModel = "LicenseIncluded"
+	LicenseModelBringYourOwnLicense LicenseModel = "BringYourOwnLicense"
+)
+
+// Values returns all known values for LicenseModel. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LicenseModel) Values() []LicenseModel {
+	return []LicenseModel{
+		"LicenseIncluded",
+		"BringYourOwnLicense",
+	}
+}
+
+type LicenseName string
+
+// Enum values for LicenseName
+const (
+	LicenseNameSqlserver LicenseName = "SQLServer"
+)
+
+// Values returns all known values for LicenseName. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LicenseName) Values() []LicenseName {
+	return []LicenseName{
+		"SQLServer",
+	}
+}
+
+type LicenseRecommendationFilterName string
+
+// Enum values for LicenseRecommendationFilterName
+const (
+	LicenseRecommendationFilterNameLicenseFinding           LicenseRecommendationFilterName = "Finding"
+	LicenseRecommendationFilterNameLicenseFindingReasonCode LicenseRecommendationFilterName = "FindingReasonCode"
+	LicenseRecommendationFilterNameLicenseName              LicenseRecommendationFilterName = "LicenseName"
+)
+
+// Values returns all known values for LicenseRecommendationFilterName. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LicenseRecommendationFilterName) Values() []LicenseRecommendationFilterName {
+	return []LicenseRecommendationFilterName{
+		"Finding",
+		"FindingReasonCode",
+		"LicenseName",
+	}
+}
+
+type LookBackPeriodPreference string
+
+// Enum values for LookBackPeriodPreference
+const (
+	LookBackPeriodPreferenceDays14 LookBackPeriodPreference = "DAYS_14"
+	LookBackPeriodPreferenceDays32 LookBackPeriodPreference = "DAYS_32"
+	LookBackPeriodPreferenceDays93 LookBackPeriodPreference = "DAYS_93"
+)
+
+// Values returns all known values for LookBackPeriodPreference. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LookBackPeriodPreference) Values() []LookBackPeriodPreference {
+	return []LookBackPeriodPreference{
+		"DAYS_14",
+		"DAYS_32",
+		"DAYS_93",
 	}
 }
 
@@ -1196,11 +2092,14 @@ const (
 	MetricNameNetworkOutBytesPerSecond   MetricName = "NETWORK_OUT_BYTES_PER_SECOND"
 	MetricNameNetworkPacketsInPerSecond  MetricName = "NETWORK_PACKETS_IN_PER_SECOND"
 	MetricNameNetworkPacketsOutPerSecond MetricName = "NETWORK_PACKETS_OUT_PER_SECOND"
+	MetricNameGpuPercentage              MetricName = "GPU_PERCENTAGE"
+	MetricNameGpuMemoryPercentage        MetricName = "GPU_MEMORY_PERCENTAGE"
 )
 
 // Values returns all known values for MetricName. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MetricName) Values() []MetricName {
 	return []MetricName{
 		"Cpu",
@@ -1217,6 +2116,25 @@ func (MetricName) Values() []MetricName {
 		"NETWORK_OUT_BYTES_PER_SECOND",
 		"NETWORK_PACKETS_IN_PER_SECOND",
 		"NETWORK_PACKETS_OUT_PER_SECOND",
+		"GPU_PERCENTAGE",
+		"GPU_MEMORY_PERCENTAGE",
+	}
+}
+
+type MetricSourceProvider string
+
+// Enum values for MetricSourceProvider
+const (
+	MetricSourceProviderCloudWatchAppInsights MetricSourceProvider = "CloudWatchApplicationInsights"
+)
+
+// Values returns all known values for MetricSourceProvider. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MetricSourceProvider) Values() []MetricSourceProvider {
+	return []MetricSourceProvider{
+		"CloudWatchApplicationInsights",
 	}
 }
 
@@ -1229,8 +2147,9 @@ const (
 )
 
 // Values returns all known values for MetricStatistic. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MetricStatistic) Values() []MetricStatistic {
 	return []MetricStatistic{
 		"Maximum",
@@ -1249,14 +2168,34 @@ const (
 )
 
 // Values returns all known values for MigrationEffort. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MigrationEffort) Values() []MigrationEffort {
 	return []MigrationEffort{
 		"VeryLow",
 		"Low",
 		"Medium",
 		"High",
+	}
+}
+
+type Order string
+
+// Enum values for Order
+const (
+	OrderAsc  Order = "Asc"
+	OrderDesc Order = "Desc"
+)
+
+// Values returns all known values for Order. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Order) Values() []Order {
+	return []Order{
+		"Asc",
+		"Desc",
 	}
 }
 
@@ -1273,8 +2212,9 @@ const (
 )
 
 // Values returns all known values for PlatformDifference. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PlatformDifference) Values() []PlatformDifference {
 	return []PlatformDifference{
 		"Hypervisor",
@@ -1286,6 +2226,278 @@ func (PlatformDifference) Values() []PlatformDifference {
 	}
 }
 
+type PreferredResourceName string
+
+// Enum values for PreferredResourceName
+const (
+	PreferredResourceNameEc2InstanceTypes PreferredResourceName = "Ec2InstanceTypes"
+)
+
+// Values returns all known values for PreferredResourceName. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PreferredResourceName) Values() []PreferredResourceName {
+	return []PreferredResourceName{
+		"Ec2InstanceTypes",
+	}
+}
+
+type RDSCurrentInstancePerformanceRisk string
+
+// Enum values for RDSCurrentInstancePerformanceRisk
+const (
+	RDSCurrentInstancePerformanceRiskVeryLow RDSCurrentInstancePerformanceRisk = "VeryLow"
+	RDSCurrentInstancePerformanceRiskLow     RDSCurrentInstancePerformanceRisk = "Low"
+	RDSCurrentInstancePerformanceRiskMedium  RDSCurrentInstancePerformanceRisk = "Medium"
+	RDSCurrentInstancePerformanceRiskHigh    RDSCurrentInstancePerformanceRisk = "High"
+)
+
+// Values returns all known values for RDSCurrentInstancePerformanceRisk. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RDSCurrentInstancePerformanceRisk) Values() []RDSCurrentInstancePerformanceRisk {
+	return []RDSCurrentInstancePerformanceRisk{
+		"VeryLow",
+		"Low",
+		"Medium",
+		"High",
+	}
+}
+
+type RDSDBMetricName string
+
+// Enum values for RDSDBMetricName
+const (
+	RDSDBMetricNameCpu                              RDSDBMetricName = "CPU"
+	RDSDBMetricNameMemory                           RDSDBMetricName = "Memory"
+	RDSDBMetricNameEbsVolumeStorageSpaceUtilization RDSDBMetricName = "EBSVolumeStorageSpaceUtilization"
+	RDSDBMetricNameNetworkReceiveThroughput         RDSDBMetricName = "NetworkReceiveThroughput"
+	RDSDBMetricNameNetworkTransmitThroughput        RDSDBMetricName = "NetworkTransmitThroughput"
+	RDSDBMetricNameEbsVolumeReadIops                RDSDBMetricName = "EBSVolumeReadIOPS"
+	RDSDBMetricNameEbsVolumeWriteIops               RDSDBMetricName = "EBSVolumeWriteIOPS"
+	RDSDBMetricNameEbsVolumeReadThroughput          RDSDBMetricName = "EBSVolumeReadThroughput"
+	RDSDBMetricNameEbsVolumeWriteThroughput         RDSDBMetricName = "EBSVolumeWriteThroughput"
+	RDSDBMetricNameDatabaseConnections              RDSDBMetricName = "DatabaseConnections"
+	RDSDBMetricNameStorageNetworkReceiveThroughput  RDSDBMetricName = "StorageNetworkReceiveThroughput"
+	RDSDBMetricNameStorageNetworkTransmitThroughput RDSDBMetricName = "StorageNetworkTransmitThroughput"
+	RDSDBMetricNameAuroraMemoryHealthState          RDSDBMetricName = "AuroraMemoryHealthState"
+	RDSDBMetricNameAuroraMemoryNumDeclinedSql       RDSDBMetricName = "AuroraMemoryNumDeclinedSql"
+	RDSDBMetricNameAuroraMemoryNumKillConnTotal     RDSDBMetricName = "AuroraMemoryNumKillConnTotal"
+	RDSDBMetricNameAuroraMemoryNumKillQueryTotal    RDSDBMetricName = "AuroraMemoryNumKillQueryTotal"
+	RDSDBMetricNameReadIopsEphemeralStorage         RDSDBMetricName = "ReadIOPSEphemeralStorage"
+	RDSDBMetricNameWriteIopsEphemeralStorage        RDSDBMetricName = "WriteIOPSEphemeralStorage"
+)
+
+// Values returns all known values for RDSDBMetricName. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RDSDBMetricName) Values() []RDSDBMetricName {
+	return []RDSDBMetricName{
+		"CPU",
+		"Memory",
+		"EBSVolumeStorageSpaceUtilization",
+		"NetworkReceiveThroughput",
+		"NetworkTransmitThroughput",
+		"EBSVolumeReadIOPS",
+		"EBSVolumeWriteIOPS",
+		"EBSVolumeReadThroughput",
+		"EBSVolumeWriteThroughput",
+		"DatabaseConnections",
+		"StorageNetworkReceiveThroughput",
+		"StorageNetworkTransmitThroughput",
+		"AuroraMemoryHealthState",
+		"AuroraMemoryNumDeclinedSql",
+		"AuroraMemoryNumKillConnTotal",
+		"AuroraMemoryNumKillQueryTotal",
+		"ReadIOPSEphemeralStorage",
+		"WriteIOPSEphemeralStorage",
+	}
+}
+
+type RDSDBMetricStatistic string
+
+// Enum values for RDSDBMetricStatistic
+const (
+	RDSDBMetricStatisticMaximum RDSDBMetricStatistic = "Maximum"
+	RDSDBMetricStatisticMinimum RDSDBMetricStatistic = "Minimum"
+	RDSDBMetricStatisticAverage RDSDBMetricStatistic = "Average"
+)
+
+// Values returns all known values for RDSDBMetricStatistic. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RDSDBMetricStatistic) Values() []RDSDBMetricStatistic {
+	return []RDSDBMetricStatistic{
+		"Maximum",
+		"Minimum",
+		"Average",
+	}
+}
+
+type RDSDBRecommendationFilterName string
+
+// Enum values for RDSDBRecommendationFilterName
+const (
+	RDSDBRecommendationFilterNameInstanceFinding           RDSDBRecommendationFilterName = "InstanceFinding"
+	RDSDBRecommendationFilterNameInstanceFindingReasonCode RDSDBRecommendationFilterName = "InstanceFindingReasonCode"
+	RDSDBRecommendationFilterNameStorageFinding            RDSDBRecommendationFilterName = "StorageFinding"
+	RDSDBRecommendationFilterNameStorageFindingReasonCode  RDSDBRecommendationFilterName = "StorageFindingReasonCode"
+	RDSDBRecommendationFilterNameIdle                      RDSDBRecommendationFilterName = "Idle"
+)
+
+// Values returns all known values for RDSDBRecommendationFilterName. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RDSDBRecommendationFilterName) Values() []RDSDBRecommendationFilterName {
+	return []RDSDBRecommendationFilterName{
+		"InstanceFinding",
+		"InstanceFindingReasonCode",
+		"StorageFinding",
+		"StorageFindingReasonCode",
+		"Idle",
+	}
+}
+
+type RDSInstanceFinding string
+
+// Enum values for RDSInstanceFinding
+const (
+	RDSInstanceFindingOptimized        RDSInstanceFinding = "Optimized"
+	RDSInstanceFindingUnderProvisioned RDSInstanceFinding = "Underprovisioned"
+	RDSInstanceFindingOverProvisioned  RDSInstanceFinding = "Overprovisioned"
+)
+
+// Values returns all known values for RDSInstanceFinding. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RDSInstanceFinding) Values() []RDSInstanceFinding {
+	return []RDSInstanceFinding{
+		"Optimized",
+		"Underprovisioned",
+		"Overprovisioned",
+	}
+}
+
+type RDSInstanceFindingReasonCode string
+
+// Enum values for RDSInstanceFindingReasonCode
+const (
+	RDSInstanceFindingReasonCodeCpuOverProvisioned                       RDSInstanceFindingReasonCode = "CPUOverprovisioned"
+	RDSInstanceFindingReasonCodeNetworkBandwidthOverProvisioned          RDSInstanceFindingReasonCode = "NetworkBandwidthOverprovisioned"
+	RDSInstanceFindingReasonCodeEbsIopsOverProvisioned                   RDSInstanceFindingReasonCode = "EBSIOPSOverprovisioned"
+	RDSInstanceFindingReasonCodeEbsIopsUnderProvisioned                  RDSInstanceFindingReasonCode = "EBSIOPSUnderprovisioned"
+	RDSInstanceFindingReasonCodeEbsThroughputOverProvisioned             RDSInstanceFindingReasonCode = "EBSThroughputOverprovisioned"
+	RDSInstanceFindingReasonCodeCpuUnderProvisioned                      RDSInstanceFindingReasonCode = "CPUUnderprovisioned"
+	RDSInstanceFindingReasonCodeNetworkBandwidthUnderProvisioned         RDSInstanceFindingReasonCode = "NetworkBandwidthUnderprovisioned"
+	RDSInstanceFindingReasonCodeEbsThroughputUnderProvisioned            RDSInstanceFindingReasonCode = "EBSThroughputUnderprovisioned"
+	RDSInstanceFindingReasonCodeNewGenerationDbInstanceClassAvailable    RDSInstanceFindingReasonCode = "NewGenerationDBInstanceClassAvailable"
+	RDSInstanceFindingReasonCodeNewEngineVersionAvailable                RDSInstanceFindingReasonCode = "NewEngineVersionAvailable"
+	RDSInstanceFindingReasonCodeDbClusterWriterUnderProvisioned          RDSInstanceFindingReasonCode = "DBClusterWriterUnderprovisioned"
+	RDSInstanceFindingReasonCodeMemoryUnderProvisioned                   RDSInstanceFindingReasonCode = "MemoryUnderprovisioned"
+	RDSInstanceFindingReasonCodeInstanceStorageReadIopsUnderProvisioned  RDSInstanceFindingReasonCode = "InstanceStorageReadIOPSUnderprovisioned"
+	RDSInstanceFindingReasonCodeInstanceStorageWriteIopsUnderProvisioned RDSInstanceFindingReasonCode = "InstanceStorageWriteIOPSUnderprovisioned"
+)
+
+// Values returns all known values for RDSInstanceFindingReasonCode. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RDSInstanceFindingReasonCode) Values() []RDSInstanceFindingReasonCode {
+	return []RDSInstanceFindingReasonCode{
+		"CPUOverprovisioned",
+		"NetworkBandwidthOverprovisioned",
+		"EBSIOPSOverprovisioned",
+		"EBSIOPSUnderprovisioned",
+		"EBSThroughputOverprovisioned",
+		"CPUUnderprovisioned",
+		"NetworkBandwidthUnderprovisioned",
+		"EBSThroughputUnderprovisioned",
+		"NewGenerationDBInstanceClassAvailable",
+		"NewEngineVersionAvailable",
+		"DBClusterWriterUnderprovisioned",
+		"MemoryUnderprovisioned",
+		"InstanceStorageReadIOPSUnderprovisioned",
+		"InstanceStorageWriteIOPSUnderprovisioned",
+	}
+}
+
+type RDSSavingsEstimationModeSource string
+
+// Enum values for RDSSavingsEstimationModeSource
+const (
+	RDSSavingsEstimationModeSourcePublicPricing           RDSSavingsEstimationModeSource = "PublicPricing"
+	RDSSavingsEstimationModeSourceCostExplorerRightsizing RDSSavingsEstimationModeSource = "CostExplorerRightsizing"
+	RDSSavingsEstimationModeSourceCostOptimizationHub     RDSSavingsEstimationModeSource = "CostOptimizationHub"
+)
+
+// Values returns all known values for RDSSavingsEstimationModeSource. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RDSSavingsEstimationModeSource) Values() []RDSSavingsEstimationModeSource {
+	return []RDSSavingsEstimationModeSource{
+		"PublicPricing",
+		"CostExplorerRightsizing",
+		"CostOptimizationHub",
+	}
+}
+
+type RDSStorageFinding string
+
+// Enum values for RDSStorageFinding
+const (
+	RDSStorageFindingOptimized        RDSStorageFinding = "Optimized"
+	RDSStorageFindingUnderProvisioned RDSStorageFinding = "Underprovisioned"
+	RDSStorageFindingOverProvisioned  RDSStorageFinding = "Overprovisioned"
+)
+
+// Values returns all known values for RDSStorageFinding. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RDSStorageFinding) Values() []RDSStorageFinding {
+	return []RDSStorageFinding{
+		"Optimized",
+		"Underprovisioned",
+		"Overprovisioned",
+	}
+}
+
+type RDSStorageFindingReasonCode string
+
+// Enum values for RDSStorageFindingReasonCode
+const (
+	RDSStorageFindingReasonCodeEbsVolumeAllocatedStorageUnderProvisioned RDSStorageFindingReasonCode = "EBSVolumeAllocatedStorageUnderprovisioned"
+	RDSStorageFindingReasonCodeEbsVolumeThroughputUnderProvisioned       RDSStorageFindingReasonCode = "EBSVolumeThroughputUnderprovisioned"
+	RDSStorageFindingReasonCodeEbsVolumeIopsOverProvisioned              RDSStorageFindingReasonCode = "EBSVolumeIOPSOverprovisioned"
+	RDSStorageFindingReasonCodeEbsVolumeThroughputOverProvisioned        RDSStorageFindingReasonCode = "EBSVolumeThroughputOverprovisioned"
+	RDSStorageFindingReasonCodeNewGenerationStorageTypeAvailable         RDSStorageFindingReasonCode = "NewGenerationStorageTypeAvailable"
+)
+
+// Values returns all known values for RDSStorageFindingReasonCode. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RDSStorageFindingReasonCode) Values() []RDSStorageFindingReasonCode {
+	return []RDSStorageFindingReasonCode{
+		"EBSVolumeAllocatedStorageUnderprovisioned",
+		"EBSVolumeThroughputUnderprovisioned",
+		"EBSVolumeIOPSOverprovisioned",
+		"EBSVolumeThroughputOverprovisioned",
+		"NewGenerationStorageTypeAvailable",
+	}
+}
+
 type RecommendationPreferenceName string
 
 // Enum values for RecommendationPreferenceName
@@ -1293,17 +2505,24 @@ const (
 	RecommendationPreferenceNameEnhancedInfrastructureMetrics RecommendationPreferenceName = "EnhancedInfrastructureMetrics"
 	RecommendationPreferenceNameInferredWorkloadTypes         RecommendationPreferenceName = "InferredWorkloadTypes"
 	RecommendationPreferenceNameExternalMetricsPreference     RecommendationPreferenceName = "ExternalMetricsPreference"
+	RecommendationPreferenceNameLookbackPeriodPreference      RecommendationPreferenceName = "LookBackPeriodPreference"
+	RecommendationPreferenceNamePreferredResources            RecommendationPreferenceName = "PreferredResources"
+	RecommendationPreferenceNameUtilizationPreferences        RecommendationPreferenceName = "UtilizationPreferences"
 )
 
 // Values returns all known values for RecommendationPreferenceName. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RecommendationPreferenceName) Values() []RecommendationPreferenceName {
 	return []RecommendationPreferenceName{
 		"EnhancedInfrastructureMetrics",
 		"InferredWorkloadTypes",
 		"ExternalMetricsPreference",
+		"LookBackPeriodPreference",
+		"PreferredResources",
+		"UtilizationPreferences",
 	}
 }
 
@@ -1311,15 +2530,19 @@ type RecommendationSourceType string
 
 // Enum values for RecommendationSourceType
 const (
-	RecommendationSourceTypeEc2Instance      RecommendationSourceType = "Ec2Instance"
-	RecommendationSourceTypeAutoScalingGroup RecommendationSourceType = "AutoScalingGroup"
-	RecommendationSourceTypeEbsVolume        RecommendationSourceType = "EbsVolume"
-	RecommendationSourceTypeLambdaFunction   RecommendationSourceType = "LambdaFunction"
-	RecommendationSourceTypeEcsService       RecommendationSourceType = "EcsService"
+	RecommendationSourceTypeEc2Instance          RecommendationSourceType = "Ec2Instance"
+	RecommendationSourceTypeAutoScalingGroup     RecommendationSourceType = "AutoScalingGroup"
+	RecommendationSourceTypeEbsVolume            RecommendationSourceType = "EbsVolume"
+	RecommendationSourceTypeLambdaFunction       RecommendationSourceType = "LambdaFunction"
+	RecommendationSourceTypeEcsService           RecommendationSourceType = "EcsService"
+	RecommendationSourceTypeLicense              RecommendationSourceType = "License"
+	RecommendationSourceTypeRdsDbInstance        RecommendationSourceType = "RdsDBInstance"
+	RecommendationSourceTypeRdsDbInstanceStorage RecommendationSourceType = "RdsDBInstanceStorage"
 )
 
 // Values returns all known values for RecommendationSourceType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (RecommendationSourceType) Values() []RecommendationSourceType {
 	return []RecommendationSourceType{
@@ -1328,6 +2551,9 @@ func (RecommendationSourceType) Values() []RecommendationSourceType {
 		"EbsVolume",
 		"LambdaFunction",
 		"EcsService",
+		"License",
+		"RdsDBInstance",
+		"RdsDBInstanceStorage",
 	}
 }
 
@@ -1341,11 +2567,15 @@ const (
 	ResourceTypeLambdaFunction   ResourceType = "LambdaFunction"
 	ResourceTypeNotApplicable    ResourceType = "NotApplicable"
 	ResourceTypeEcsService       ResourceType = "EcsService"
+	ResourceTypeLicense          ResourceType = "License"
+	ResourceTypeRdsDbInstance    ResourceType = "RdsDBInstance"
+	ResourceTypeIdle             ResourceType = "Idle"
 )
 
 // Values returns all known values for ResourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceType) Values() []ResourceType {
 	return []ResourceType{
 		"Ec2Instance",
@@ -1354,6 +2584,28 @@ func (ResourceType) Values() []ResourceType {
 		"LambdaFunction",
 		"NotApplicable",
 		"EcsService",
+		"License",
+		"RdsDBInstance",
+		"Idle",
+	}
+}
+
+type SavingsEstimationMode string
+
+// Enum values for SavingsEstimationMode
+const (
+	SavingsEstimationModeAfterDiscounts  SavingsEstimationMode = "AfterDiscounts"
+	SavingsEstimationModeBeforeDiscounts SavingsEstimationMode = "BeforeDiscounts"
+)
+
+// Values returns all known values for SavingsEstimationMode. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SavingsEstimationMode) Values() []SavingsEstimationMode {
+	return []SavingsEstimationMode{
+		"AfterDiscounts",
+		"BeforeDiscounts",
 	}
 }
 
@@ -1367,8 +2619,9 @@ const (
 )
 
 // Values returns all known values for ScopeName. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScopeName) Values() []ScopeName {
 	return []ScopeName{
 		"Organization",
@@ -1388,8 +2641,9 @@ const (
 )
 
 // Values returns all known values for Status. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Status) Values() []Status {
 	return []Status{
 		"Active",

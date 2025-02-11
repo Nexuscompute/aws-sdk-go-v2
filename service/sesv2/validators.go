@@ -30,6 +30,26 @@ func (m *validateOpBatchGetMetricData) HandleInitialize(ctx context.Context, in 
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCancelExportJob struct {
+}
+
+func (*validateOpCancelExportJob) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCancelExportJob) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CancelExportJobInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCancelExportJobInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateConfigurationSetEventDestination struct {
 }
 
@@ -230,6 +250,26 @@ func (m *validateOpCreateEmailTemplate) HandleInitialize(ctx context.Context, in
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateExportJob struct {
+}
+
+func (*validateOpCreateExportJob) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateExportJob) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateExportJobInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateExportJobInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateImportJob struct {
 }
 
@@ -245,6 +285,26 @@ func (m *validateOpCreateImportJob) HandleInitialize(ctx context.Context, in mid
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpCreateImportJobInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateMultiRegionEndpoint struct {
+}
+
+func (*validateOpCreateMultiRegionEndpoint) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateMultiRegionEndpoint) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateMultiRegionEndpointInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateMultiRegionEndpointInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -425,6 +485,26 @@ func (m *validateOpDeleteEmailTemplate) HandleInitialize(ctx context.Context, in
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeleteEmailTemplateInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteMultiRegionEndpoint struct {
+}
+
+func (*validateOpDeleteMultiRegionEndpoint) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteMultiRegionEndpoint) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteMultiRegionEndpointInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteMultiRegionEndpointInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -730,6 +810,26 @@ func (m *validateOpGetEmailTemplate) HandleInitialize(ctx context.Context, in mi
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetExportJob struct {
+}
+
+func (*validateOpGetExportJob) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetExportJob) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetExportJobInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetExportJobInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetImportJob struct {
 }
 
@@ -745,6 +845,46 @@ func (m *validateOpGetImportJob) HandleInitialize(ctx context.Context, in middle
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetImportJobInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetMessageInsights struct {
+}
+
+func (*validateOpGetMessageInsights) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetMessageInsights) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetMessageInsightsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetMessageInsightsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetMultiRegionEndpoint struct {
+}
+
+func (*validateOpGetMultiRegionEndpoint) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetMultiRegionEndpoint) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetMultiRegionEndpointInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetMultiRegionEndpointInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1434,6 +1574,10 @@ func addOpBatchGetMetricDataValidationMiddleware(stack *middleware.Stack) error 
 	return stack.Initialize.Add(&validateOpBatchGetMetricData{}, middleware.After)
 }
 
+func addOpCancelExportJobValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCancelExportJob{}, middleware.After)
+}
+
 func addOpCreateConfigurationSetEventDestinationValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateConfigurationSetEventDestination{}, middleware.After)
 }
@@ -1474,8 +1618,16 @@ func addOpCreateEmailTemplateValidationMiddleware(stack *middleware.Stack) error
 	return stack.Initialize.Add(&validateOpCreateEmailTemplate{}, middleware.After)
 }
 
+func addOpCreateExportJobValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateExportJob{}, middleware.After)
+}
+
 func addOpCreateImportJobValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateImportJob{}, middleware.After)
+}
+
+func addOpCreateMultiRegionEndpointValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateMultiRegionEndpoint{}, middleware.After)
 }
 
 func addOpDeleteConfigurationSetEventDestinationValidationMiddleware(stack *middleware.Stack) error {
@@ -1512,6 +1664,10 @@ func addOpDeleteEmailIdentityPolicyValidationMiddleware(stack *middleware.Stack)
 
 func addOpDeleteEmailTemplateValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteEmailTemplate{}, middleware.After)
+}
+
+func addOpDeleteMultiRegionEndpointValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteMultiRegionEndpoint{}, middleware.After)
 }
 
 func addOpDeleteSuppressedDestinationValidationMiddleware(stack *middleware.Stack) error {
@@ -1574,8 +1730,20 @@ func addOpGetEmailTemplateValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetEmailTemplate{}, middleware.After)
 }
 
+func addOpGetExportJobValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetExportJob{}, middleware.After)
+}
+
 func addOpGetImportJobValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetImportJob{}, middleware.After)
+}
+
+func addOpGetMessageInsightsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetMessageInsights{}, middleware.After)
+}
+
+func addOpGetMultiRegionEndpointValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetMultiRegionEndpoint{}, middleware.After)
 }
 
 func addOpGetSuppressedDestinationValidationMiddleware(stack *middleware.Stack) error {
@@ -1780,6 +1948,23 @@ func validateBody(v *types.Body) error {
 	}
 }
 
+func validateBulkEmailContent(v *types.BulkEmailContent) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "BulkEmailContent"}
+	if v.Template != nil {
+		if err := validateTemplate(v.Template); err != nil {
+			invalidParams.AddNested("Template", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateBulkEmailEntry(v *types.BulkEmailEntry) error {
 	if v == nil {
 		return nil
@@ -1791,6 +1976,11 @@ func validateBulkEmailEntry(v *types.BulkEmailEntry) error {
 	if v.ReplacementTags != nil {
 		if err := validateMessageTagList(v.ReplacementTags); err != nil {
 			invalidParams.AddNested("ReplacementTags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ReplacementHeaders != nil {
+		if err := validateMessageHeaderList(v.ReplacementHeaders); err != nil {
+			invalidParams.AddNested("ReplacementHeaders", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1907,6 +2097,25 @@ func validateContent(v *types.Content) error {
 	}
 }
 
+func validateDetails(v *types.Details) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "Details"}
+	if v.RoutesDetails == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RoutesDetails"))
+	} else if v.RoutesDetails != nil {
+		if err := validateRoutesDetails(v.RoutesDetails); err != nil {
+			invalidParams.AddNested("RoutesDetails", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateEmailContent(v *types.EmailContent) error {
 	if v == nil {
 		return nil
@@ -1921,6 +2130,26 @@ func validateEmailContent(v *types.EmailContent) error {
 		if err := validateRawMessage(v.Raw); err != nil {
 			invalidParams.AddNested("Raw", err.(smithy.InvalidParamsError))
 		}
+	}
+	if v.Template != nil {
+		if err := validateTemplate(v.Template); err != nil {
+			invalidParams.AddNested("Template", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateEventBridgeDestination(v *types.EventBridgeDestination) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "EventBridgeDestination"}
+	if v.EventBusArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EventBusArn"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1948,6 +2177,48 @@ func validateEventDestinationDefinition(v *types.EventDestinationDefinition) err
 		if err := validateSnsDestination(v.SnsDestination); err != nil {
 			invalidParams.AddNested("SnsDestination", err.(smithy.InvalidParamsError))
 		}
+	}
+	if v.EventBridgeDestination != nil {
+		if err := validateEventBridgeDestination(v.EventBridgeDestination); err != nil {
+			invalidParams.AddNested("EventBridgeDestination", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateExportDataSource(v *types.ExportDataSource) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ExportDataSource"}
+	if v.MetricsDataSource != nil {
+		if err := validateMetricsDataSource(v.MetricsDataSource); err != nil {
+			invalidParams.AddNested("MetricsDataSource", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.MessageInsightsDataSource != nil {
+		if err := validateMessageInsightsDataSource(v.MessageInsightsDataSource); err != nil {
+			invalidParams.AddNested("MessageInsightsDataSource", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateExportDestination(v *types.ExportDestination) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ExportDestination"}
+	if len(v.DataFormat) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("DataFormat"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2048,6 +2319,64 @@ func validateMessage(v *types.Message) error {
 			invalidParams.AddNested("Body", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.Headers != nil {
+		if err := validateMessageHeaderList(v.Headers); err != nil {
+			invalidParams.AddNested("Headers", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMessageHeader(v *types.MessageHeader) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MessageHeader"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.Value == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Value"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMessageHeaderList(v []types.MessageHeader) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MessageHeaderList"}
+	for i := range v {
+		if err := validateMessageHeader(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateMessageInsightsDataSource(v *types.MessageInsightsDataSource) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MessageInsightsDataSource"}
+	if v.StartDate == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StartDate"))
+	}
+	if v.EndDate == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EndDate"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -2090,6 +2419,33 @@ func validateMessageTagList(v []types.MessageTag) error {
 	}
 }
 
+func validateMetricsDataSource(v *types.MetricsDataSource) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "MetricsDataSource"}
+	if v.Dimensions == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Dimensions"))
+	}
+	if len(v.Namespace) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Namespace"))
+	}
+	if v.Metrics == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Metrics"))
+	}
+	if v.StartDate == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("StartDate"))
+	}
+	if v.EndDate == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EndDate"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateRawMessage(v *types.RawMessage) error {
 	if v == nil {
 		return nil
@@ -2097,6 +2453,38 @@ func validateRawMessage(v *types.RawMessage) error {
 	invalidParams := smithy.InvalidParamsError{Context: "RawMessage"}
 	if v.Data == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Data"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRouteDetails(v *types.RouteDetails) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RouteDetails"}
+	if v.Region == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Region"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRoutesDetails(v []types.RouteDetails) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RoutesDetails"}
+	for i := range v {
+		if err := validateRouteDetails(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2161,6 +2549,23 @@ func validateTagList(v []types.Tag) error {
 	for i := range v {
 		if err := validateTag(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateTemplate(v *types.Template) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "Template"}
+	if v.Headers != nil {
+		if err := validateMessageHeaderList(v.Headers); err != nil {
+			invalidParams.AddNested("Headers", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -2284,6 +2689,21 @@ func validateOpBatchGetMetricDataInput(v *BatchGetMetricDataInput) error {
 		if err := validateBatchGetMetricDataQueries(v.Queries); err != nil {
 			invalidParams.AddNested("Queries", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCancelExportJobInput(v *CancelExportJobInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CancelExportJobInput"}
+	if v.JobId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("JobId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2526,6 +2946,32 @@ func validateOpCreateEmailTemplateInput(v *CreateEmailTemplateInput) error {
 	}
 }
 
+func validateOpCreateExportJobInput(v *CreateExportJobInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateExportJobInput"}
+	if v.ExportDataSource == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ExportDataSource"))
+	} else if v.ExportDataSource != nil {
+		if err := validateExportDataSource(v.ExportDataSource); err != nil {
+			invalidParams.AddNested("ExportDataSource", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ExportDestination == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ExportDestination"))
+	} else if v.ExportDestination != nil {
+		if err := validateExportDestination(v.ExportDestination); err != nil {
+			invalidParams.AddNested("ExportDestination", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpCreateImportJobInput(v *CreateImportJobInput) error {
 	if v == nil {
 		return nil
@@ -2543,6 +2989,33 @@ func validateOpCreateImportJobInput(v *CreateImportJobInput) error {
 	} else if v.ImportDataSource != nil {
 		if err := validateImportDataSource(v.ImportDataSource); err != nil {
 			invalidParams.AddNested("ImportDataSource", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateMultiRegionEndpointInput(v *CreateMultiRegionEndpointInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateMultiRegionEndpointInput"}
+	if v.EndpointName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EndpointName"))
+	}
+	if v.Details == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Details"))
+	} else if v.Details != nil {
+		if err := validateDetails(v.Details); err != nil {
+			invalidParams.AddNested("Details", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.Tags != nil {
+		if err := validateTagList(v.Tags); err != nil {
+			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -2688,6 +3161,21 @@ func validateOpDeleteEmailTemplateInput(v *DeleteEmailTemplateInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "DeleteEmailTemplateInput"}
 	if v.TemplateName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("TemplateName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteMultiRegionEndpointInput(v *DeleteMultiRegionEndpointInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteMultiRegionEndpointInput"}
+	if v.EndpointName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EndpointName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2930,6 +3418,21 @@ func validateOpGetEmailTemplateInput(v *GetEmailTemplateInput) error {
 	}
 }
 
+func validateOpGetExportJobInput(v *GetExportJobInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetExportJobInput"}
+	if v.JobId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("JobId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetImportJobInput(v *GetImportJobInput) error {
 	if v == nil {
 		return nil
@@ -2937,6 +3440,36 @@ func validateOpGetImportJobInput(v *GetImportJobInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "GetImportJobInput"}
 	if v.JobId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("JobId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetMessageInsightsInput(v *GetMessageInsightsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetMessageInsightsInput"}
+	if v.MessageId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MessageId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetMultiRegionEndpointInput(v *GetMultiRegionEndpointInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetMultiRegionEndpointInput"}
+	if v.EndpointName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("EndpointName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -3021,9 +3554,6 @@ func validateOpPutAccountDetailsInput(v *PutAccountDetailsInput) error {
 	}
 	if v.WebsiteURL == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("WebsiteURL"))
-	}
-	if v.UseCaseDescription == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("UseCaseDescription"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -3315,6 +3845,10 @@ func validateOpSendBulkEmailInput(v *SendBulkEmailInput) error {
 	}
 	if v.DefaultContent == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DefaultContent"))
+	} else if v.DefaultContent != nil {
+		if err := validateBulkEmailContent(v.DefaultContent); err != nil {
+			invalidParams.AddNested("DefaultContent", err.(smithy.InvalidParamsError))
+		}
 	}
 	if v.BulkEmailEntries == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("BulkEmailEntries"))

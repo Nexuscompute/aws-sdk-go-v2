@@ -14,10 +14,20 @@ import (
 	"github.com/aws/smithy-go/middleware"
 	"github.com/aws/smithy-go/ptr"
 	smithytime "github.com/aws/smithy-go/time"
+	"github.com/aws/smithy-go/tracing"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"io"
 	"strings"
+	"time"
 )
+
+func deserializeS3Expires(v string) (*time.Time, error) {
+	t, err := smithytime.ParseHTTPDate(v)
+	if err != nil {
+		return nil, nil
+	}
+	return &t, nil
+}
 
 type awsRestjson1_deserializeOpCreateLifecyclePolicy struct {
 }
@@ -34,6 +44,10 @@ func (m *awsRestjson1_deserializeOpCreateLifecyclePolicy) HandleDeserialize(ctx 
 		return out, metadata, err
 	}
 
+	_, span := tracing.StartSpan(ctx, "OperationDeserializer")
+	endTimer := startMetricTimer(ctx, "client.call.deserialization_duration")
+	defer endTimer()
+	defer span.End()
 	response, ok := out.RawResponse.(*smithyhttp.Response)
 	if !ok {
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("unknown transport type %T", out.RawResponse)}
@@ -73,6 +87,7 @@ func (m *awsRestjson1_deserializeOpCreateLifecyclePolicy) HandleDeserialize(ctx 
 		}
 	}
 
+	span.End()
 	return out, metadata, err
 }
 
@@ -191,6 +206,10 @@ func (m *awsRestjson1_deserializeOpDeleteLifecyclePolicy) HandleDeserialize(ctx 
 		return out, metadata, err
 	}
 
+	_, span := tracing.StartSpan(ctx, "OperationDeserializer")
+	endTimer := startMetricTimer(ctx, "client.call.deserialization_duration")
+	defer endTimer()
+	defer span.End()
 	response, ok := out.RawResponse.(*smithyhttp.Response)
 	if !ok {
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("unknown transport type %T", out.RawResponse)}
@@ -202,6 +221,7 @@ func (m *awsRestjson1_deserializeOpDeleteLifecyclePolicy) HandleDeserialize(ctx 
 	output := &DeleteLifecyclePolicyOutput{}
 	out.Result = output
 
+	span.End()
 	return out, metadata, err
 }
 
@@ -280,6 +300,10 @@ func (m *awsRestjson1_deserializeOpGetLifecyclePolicies) HandleDeserialize(ctx c
 		return out, metadata, err
 	}
 
+	_, span := tracing.StartSpan(ctx, "OperationDeserializer")
+	endTimer := startMetricTimer(ctx, "client.call.deserialization_duration")
+	defer endTimer()
+	defer span.End()
 	response, ok := out.RawResponse.(*smithyhttp.Response)
 	if !ok {
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("unknown transport type %T", out.RawResponse)}
@@ -319,6 +343,7 @@ func (m *awsRestjson1_deserializeOpGetLifecyclePolicies) HandleDeserialize(ctx c
 		}
 	}
 
+	span.End()
 	return out, metadata, err
 }
 
@@ -436,6 +461,10 @@ func (m *awsRestjson1_deserializeOpGetLifecyclePolicy) HandleDeserialize(ctx con
 		return out, metadata, err
 	}
 
+	_, span := tracing.StartSpan(ctx, "OperationDeserializer")
+	endTimer := startMetricTimer(ctx, "client.call.deserialization_duration")
+	defer endTimer()
+	defer span.End()
 	response, ok := out.RawResponse.(*smithyhttp.Response)
 	if !ok {
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("unknown transport type %T", out.RawResponse)}
@@ -475,6 +504,7 @@ func (m *awsRestjson1_deserializeOpGetLifecyclePolicy) HandleDeserialize(ctx con
 		}
 	}
 
+	span.End()
 	return out, metadata, err
 }
 
@@ -589,6 +619,10 @@ func (m *awsRestjson1_deserializeOpListTagsForResource) HandleDeserialize(ctx co
 		return out, metadata, err
 	}
 
+	_, span := tracing.StartSpan(ctx, "OperationDeserializer")
+	endTimer := startMetricTimer(ctx, "client.call.deserialization_duration")
+	defer endTimer()
+	defer span.End()
 	response, ok := out.RawResponse.(*smithyhttp.Response)
 	if !ok {
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("unknown transport type %T", out.RawResponse)}
@@ -628,6 +662,7 @@ func (m *awsRestjson1_deserializeOpListTagsForResource) HandleDeserialize(ctx co
 		}
 	}
 
+	span.End()
 	return out, metadata, err
 }
 
@@ -742,6 +777,10 @@ func (m *awsRestjson1_deserializeOpTagResource) HandleDeserialize(ctx context.Co
 		return out, metadata, err
 	}
 
+	_, span := tracing.StartSpan(ctx, "OperationDeserializer")
+	endTimer := startMetricTimer(ctx, "client.call.deserialization_duration")
+	defer endTimer()
+	defer span.End()
 	response, ok := out.RawResponse.(*smithyhttp.Response)
 	if !ok {
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("unknown transport type %T", out.RawResponse)}
@@ -753,6 +792,7 @@ func (m *awsRestjson1_deserializeOpTagResource) HandleDeserialize(ctx context.Co
 	output := &TagResourceOutput{}
 	out.Result = output
 
+	span.End()
 	return out, metadata, err
 }
 
@@ -831,6 +871,10 @@ func (m *awsRestjson1_deserializeOpUntagResource) HandleDeserialize(ctx context.
 		return out, metadata, err
 	}
 
+	_, span := tracing.StartSpan(ctx, "OperationDeserializer")
+	endTimer := startMetricTimer(ctx, "client.call.deserialization_duration")
+	defer endTimer()
+	defer span.End()
 	response, ok := out.RawResponse.(*smithyhttp.Response)
 	if !ok {
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("unknown transport type %T", out.RawResponse)}
@@ -842,6 +886,7 @@ func (m *awsRestjson1_deserializeOpUntagResource) HandleDeserialize(ctx context.
 	output := &UntagResourceOutput{}
 	out.Result = output
 
+	span.End()
 	return out, metadata, err
 }
 
@@ -920,6 +965,10 @@ func (m *awsRestjson1_deserializeOpUpdateLifecyclePolicy) HandleDeserialize(ctx 
 		return out, metadata, err
 	}
 
+	_, span := tracing.StartSpan(ctx, "OperationDeserializer")
+	endTimer := startMetricTimer(ctx, "client.call.deserialization_duration")
+	defer endTimer()
+	defer span.End()
 	response, ok := out.RawResponse.(*smithyhttp.Response)
 	if !ok {
 		return out, metadata, &smithy.DeserializationError{Err: fmt.Errorf("unknown transport type %T", out.RawResponse)}
@@ -931,6 +980,7 @@ func (m *awsRestjson1_deserializeOpUpdateLifecyclePolicy) HandleDeserialize(ctx 
 	output := &UpdateLifecyclePolicyOutput{}
 	out.Result = output
 
+	span.End()
 	return out, metadata, err
 }
 
@@ -1369,7 +1419,7 @@ func awsRestjson1_deserializeDocumentCreateRule(v **types.CreateRule, value inte
 				if err != nil {
 					return err
 				}
-				sv.Interval = int32(i64)
+				sv.Interval = ptr.Int32(int32(i64))
 			}
 
 		case "IntervalUnit":
@@ -1388,6 +1438,11 @@ func awsRestjson1_deserializeDocumentCreateRule(v **types.CreateRule, value inte
 					return fmt.Errorf("expected LocationValues to be of type string, got %T instead", value)
 				}
 				sv.Location = types.LocationValues(jtv)
+			}
+
+		case "Scripts":
+			if err := awsRestjson1_deserializeDocumentScriptsList(&sv.Scripts, value); err != nil {
+				return err
 			}
 
 		case "Times":
@@ -1520,7 +1575,7 @@ func awsRestjson1_deserializeDocumentCrossRegionCopyDeprecateRule(v **types.Cros
 				if err != nil {
 					return err
 				}
-				sv.Interval = int32(i64)
+				sv.Interval = ptr.Int32(int32(i64))
 			}
 
 		case "IntervalUnit":
@@ -1573,7 +1628,7 @@ func awsRestjson1_deserializeDocumentCrossRegionCopyRetainRule(v **types.CrossRe
 				if err != nil {
 					return err
 				}
-				sv.Interval = int32(i64)
+				sv.Interval = ptr.Int32(int32(i64))
 			}
 
 		case "IntervalUnit":
@@ -1714,6 +1769,80 @@ func awsRestjson1_deserializeDocumentCrossRegionCopyRules(v *[]types.CrossRegion
 	return nil
 }
 
+func awsRestjson1_deserializeDocumentCrossRegionCopyTarget(v **types.CrossRegionCopyTarget, value interface{}) error {
+	if v == nil {
+		return fmt.Errorf("unexpected nil of type %T", v)
+	}
+	if value == nil {
+		return nil
+	}
+
+	shape, ok := value.(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("unexpected JSON type %v", value)
+	}
+
+	var sv *types.CrossRegionCopyTarget
+	if *v == nil {
+		sv = &types.CrossRegionCopyTarget{}
+	} else {
+		sv = *v
+	}
+
+	for key, value := range shape {
+		switch key {
+		case "TargetRegion":
+			if value != nil {
+				jtv, ok := value.(string)
+				if !ok {
+					return fmt.Errorf("expected TargetRegion to be of type string, got %T instead", value)
+				}
+				sv.TargetRegion = ptr.String(jtv)
+			}
+
+		default:
+			_, _ = key, value
+
+		}
+	}
+	*v = sv
+	return nil
+}
+
+func awsRestjson1_deserializeDocumentCrossRegionCopyTargetList(v *[]types.CrossRegionCopyTarget, value interface{}) error {
+	if v == nil {
+		return fmt.Errorf("unexpected nil of type %T", v)
+	}
+	if value == nil {
+		return nil
+	}
+
+	shape, ok := value.([]interface{})
+	if !ok {
+		return fmt.Errorf("unexpected JSON type %v", value)
+	}
+
+	var cv []types.CrossRegionCopyTarget
+	if *v == nil {
+		cv = []types.CrossRegionCopyTarget{}
+	} else {
+		cv = *v
+	}
+
+	for _, value := range shape {
+		var col types.CrossRegionCopyTarget
+		destAddr := &col
+		if err := awsRestjson1_deserializeDocumentCrossRegionCopyTarget(&destAddr, value); err != nil {
+			return err
+		}
+		col = *destAddr
+		cv = append(cv, col)
+
+	}
+	*v = cv
+	return nil
+}
+
 func awsRestjson1_deserializeDocumentDeprecateRule(v **types.DeprecateRule, value interface{}) error {
 	if v == nil {
 		return fmt.Errorf("unexpected nil of type %T", v)
@@ -1746,7 +1875,7 @@ func awsRestjson1_deserializeDocumentDeprecateRule(v **types.DeprecateRule, valu
 				if err != nil {
 					return err
 				}
-				sv.Count = int32(i64)
+				sv.Count = ptr.Int32(int32(i64))
 			}
 
 		case "Interval":
@@ -1759,7 +1888,7 @@ func awsRestjson1_deserializeDocumentDeprecateRule(v **types.DeprecateRule, valu
 				if err != nil {
 					return err
 				}
-				sv.Interval = int32(i64)
+				sv.Interval = ptr.Int32(int32(i64))
 			}
 
 		case "IntervalUnit":
@@ -1962,6 +2091,126 @@ func awsRestjson1_deserializeDocumentExcludeDataVolumeTagList(v *[]types.Tag, va
 	return nil
 }
 
+func awsRestjson1_deserializeDocumentExcludeTagsList(v *[]types.Tag, value interface{}) error {
+	if v == nil {
+		return fmt.Errorf("unexpected nil of type %T", v)
+	}
+	if value == nil {
+		return nil
+	}
+
+	shape, ok := value.([]interface{})
+	if !ok {
+		return fmt.Errorf("unexpected JSON type %v", value)
+	}
+
+	var cv []types.Tag
+	if *v == nil {
+		cv = []types.Tag{}
+	} else {
+		cv = *v
+	}
+
+	for _, value := range shape {
+		var col types.Tag
+		destAddr := &col
+		if err := awsRestjson1_deserializeDocumentTag(&destAddr, value); err != nil {
+			return err
+		}
+		col = *destAddr
+		cv = append(cv, col)
+
+	}
+	*v = cv
+	return nil
+}
+
+func awsRestjson1_deserializeDocumentExcludeVolumeTypesList(v *[]string, value interface{}) error {
+	if v == nil {
+		return fmt.Errorf("unexpected nil of type %T", v)
+	}
+	if value == nil {
+		return nil
+	}
+
+	shape, ok := value.([]interface{})
+	if !ok {
+		return fmt.Errorf("unexpected JSON type %v", value)
+	}
+
+	var cv []string
+	if *v == nil {
+		cv = []string{}
+	} else {
+		cv = *v
+	}
+
+	for _, value := range shape {
+		var col string
+		if value != nil {
+			jtv, ok := value.(string)
+			if !ok {
+				return fmt.Errorf("expected VolumeTypeValues to be of type string, got %T instead", value)
+			}
+			col = jtv
+		}
+		cv = append(cv, col)
+
+	}
+	*v = cv
+	return nil
+}
+
+func awsRestjson1_deserializeDocumentExclusions(v **types.Exclusions, value interface{}) error {
+	if v == nil {
+		return fmt.Errorf("unexpected nil of type %T", v)
+	}
+	if value == nil {
+		return nil
+	}
+
+	shape, ok := value.(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("unexpected JSON type %v", value)
+	}
+
+	var sv *types.Exclusions
+	if *v == nil {
+		sv = &types.Exclusions{}
+	} else {
+		sv = *v
+	}
+
+	for key, value := range shape {
+		switch key {
+		case "ExcludeBootVolumes":
+			if value != nil {
+				jtv, ok := value.(bool)
+				if !ok {
+					return fmt.Errorf("expected ExcludeBootVolumes to be of type *bool, got %T instead", value)
+				}
+				sv.ExcludeBootVolumes = ptr.Bool(jtv)
+			}
+
+		case "ExcludeTags":
+			if err := awsRestjson1_deserializeDocumentExcludeTagsList(&sv.ExcludeTags, value); err != nil {
+				return err
+			}
+
+		case "ExcludeVolumeTypes":
+			if err := awsRestjson1_deserializeDocumentExcludeVolumeTypesList(&sv.ExcludeVolumeTypes, value); err != nil {
+				return err
+			}
+
+		default:
+			_, _ = key, value
+
+		}
+	}
+	*v = sv
+	return nil
+}
+
 func awsRestjson1_deserializeDocumentFastRestoreRule(v **types.FastRestoreRule, value interface{}) error {
 	if v == nil {
 		return fmt.Errorf("unexpected nil of type %T", v)
@@ -1999,7 +2248,7 @@ func awsRestjson1_deserializeDocumentFastRestoreRule(v **types.FastRestoreRule, 
 				if err != nil {
 					return err
 				}
-				sv.Count = int32(i64)
+				sv.Count = ptr.Int32(int32(i64))
 			}
 
 		case "Interval":
@@ -2012,7 +2261,7 @@ func awsRestjson1_deserializeDocumentFastRestoreRule(v **types.FastRestoreRule, 
 				if err != nil {
 					return err
 				}
-				sv.Interval = int32(i64)
+				sv.Interval = ptr.Int32(int32(i64))
 			}
 
 		case "IntervalUnit":
@@ -2064,7 +2313,7 @@ func awsRestjson1_deserializeDocumentInternalServerException(v **types.InternalS
 				sv.Code = ptr.String(jtv)
 			}
 
-		case "Message":
+		case "message", "Message":
 			if value != nil {
 				jtv, ok := value.(string)
 				if !ok {
@@ -2113,7 +2362,7 @@ func awsRestjson1_deserializeDocumentInvalidRequestException(v **types.InvalidRe
 				sv.Code = ptr.String(jtv)
 			}
 
-		case "Message":
+		case "message", "Message":
 			if value != nil {
 				jtv, ok := value.(string)
 				if !ok {
@@ -2187,6 +2436,15 @@ func awsRestjson1_deserializeDocumentLifecyclePolicy(v **types.LifecyclePolicy, 
 					return err
 				}
 				sv.DateModified = ptr.Time(t)
+			}
+
+		case "DefaultPolicy":
+			if value != nil {
+				jtv, ok := value.(bool)
+				if !ok {
+					return fmt.Errorf("expected DefaultPolicy to be of type *bool, got %T instead", value)
+				}
+				sv.DefaultPolicy = ptr.Bool(jtv)
 			}
 
 		case "Description":
@@ -2284,6 +2542,15 @@ func awsRestjson1_deserializeDocumentLifecyclePolicySummary(v **types.LifecycleP
 
 	for key, value := range shape {
 		switch key {
+		case "DefaultPolicy":
+			if value != nil {
+				jtv, ok := value.(bool)
+				if !ok {
+					return fmt.Errorf("expected DefaultPolicy to be of type *bool, got %T instead", value)
+				}
+				sv.DefaultPolicy = ptr.Bool(jtv)
+			}
+
 		case "Description":
 			if value != nil {
 				jtv, ok := value.(string)
@@ -2399,7 +2666,7 @@ func awsRestjson1_deserializeDocumentLimitExceededException(v **types.LimitExcee
 				sv.Code = ptr.String(jtv)
 			}
 
-		case "Message":
+		case "message", "Message":
 			if value != nil {
 				jtv, ok := value.(string)
 				if !ok {
@@ -2543,14 +2810,64 @@ func awsRestjson1_deserializeDocumentPolicyDetails(v **types.PolicyDetails, valu
 				return err
 			}
 
+		case "CopyTags":
+			if value != nil {
+				jtv, ok := value.(bool)
+				if !ok {
+					return fmt.Errorf("expected CopyTagsNullable to be of type *bool, got %T instead", value)
+				}
+				sv.CopyTags = ptr.Bool(jtv)
+			}
+
+		case "CreateInterval":
+			if value != nil {
+				jtv, ok := value.(json.Number)
+				if !ok {
+					return fmt.Errorf("expected CreateInterval to be json.Number, got %T instead", value)
+				}
+				i64, err := jtv.Int64()
+				if err != nil {
+					return err
+				}
+				sv.CreateInterval = ptr.Int32(int32(i64))
+			}
+
+		case "CrossRegionCopyTargets":
+			if err := awsRestjson1_deserializeDocumentCrossRegionCopyTargetList(&sv.CrossRegionCopyTargets, value); err != nil {
+				return err
+			}
+
 		case "EventSource":
 			if err := awsRestjson1_deserializeDocumentEventSource(&sv.EventSource, value); err != nil {
 				return err
 			}
 
+		case "Exclusions":
+			if err := awsRestjson1_deserializeDocumentExclusions(&sv.Exclusions, value); err != nil {
+				return err
+			}
+
+		case "ExtendDeletion":
+			if value != nil {
+				jtv, ok := value.(bool)
+				if !ok {
+					return fmt.Errorf("expected ExtendDeletion to be of type *bool, got %T instead", value)
+				}
+				sv.ExtendDeletion = ptr.Bool(jtv)
+			}
+
 		case "Parameters":
 			if err := awsRestjson1_deserializeDocumentParameters(&sv.Parameters, value); err != nil {
 				return err
+			}
+
+		case "PolicyLanguage":
+			if value != nil {
+				jtv, ok := value.(string)
+				if !ok {
+					return fmt.Errorf("expected PolicyLanguageValues to be of type string, got %T instead", value)
+				}
+				sv.PolicyLanguage = types.PolicyLanguageValues(jtv)
 			}
 
 		case "PolicyType":
@@ -2567,9 +2884,31 @@ func awsRestjson1_deserializeDocumentPolicyDetails(v **types.PolicyDetails, valu
 				return err
 			}
 
+		case "ResourceType":
+			if value != nil {
+				jtv, ok := value.(string)
+				if !ok {
+					return fmt.Errorf("expected ResourceTypeValues to be of type string, got %T instead", value)
+				}
+				sv.ResourceType = types.ResourceTypeValues(jtv)
+			}
+
 		case "ResourceTypes":
 			if err := awsRestjson1_deserializeDocumentResourceTypeValuesList(&sv.ResourceTypes, value); err != nil {
 				return err
+			}
+
+		case "RetainInterval":
+			if value != nil {
+				jtv, ok := value.(json.Number)
+				if !ok {
+					return fmt.Errorf("expected RetainInterval to be json.Number, got %T instead", value)
+				}
+				i64, err := jtv.Int64()
+				if err != nil {
+					return err
+				}
+				sv.RetainInterval = ptr.Int32(int32(i64))
 			}
 
 		case "Schedules":
@@ -2694,7 +3033,7 @@ func awsRestjson1_deserializeDocumentResourceNotFoundException(v **types.Resourc
 				sv.Code = ptr.String(jtv)
 			}
 
-		case "Message":
+		case "message", "Message":
 			if value != nil {
 				jtv, ok := value.(string)
 				if !ok {
@@ -2794,7 +3133,7 @@ func awsRestjson1_deserializeDocumentRetainRule(v **types.RetainRule, value inte
 				if err != nil {
 					return err
 				}
-				sv.Count = int32(i64)
+				sv.Count = ptr.Int32(int32(i64))
 			}
 
 		case "Interval":
@@ -2807,7 +3146,7 @@ func awsRestjson1_deserializeDocumentRetainRule(v **types.RetainRule, value inte
 				if err != nil {
 					return err
 				}
-				sv.Interval = int32(i64)
+				sv.Interval = ptr.Int32(int32(i64))
 			}
 
 		case "IntervalUnit":
@@ -2860,7 +3199,7 @@ func awsRestjson1_deserializeDocumentRetentionArchiveTier(v **types.RetentionArc
 				if err != nil {
 					return err
 				}
-				sv.Count = int32(i64)
+				sv.Count = ptr.Int32(int32(i64))
 			}
 
 		case "Interval":
@@ -2873,7 +3212,7 @@ func awsRestjson1_deserializeDocumentRetentionArchiveTier(v **types.RetentionArc
 				if err != nil {
 					return err
 				}
-				sv.Interval = int32(i64)
+				sv.Interval = ptr.Int32(int32(i64))
 			}
 
 		case "IntervalUnit":
@@ -2927,7 +3266,7 @@ func awsRestjson1_deserializeDocumentSchedule(v **types.Schedule, value interfac
 				if !ok {
 					return fmt.Errorf("expected CopyTags to be of type *bool, got %T instead", value)
 				}
-				sv.CopyTags = jtv
+				sv.CopyTags = ptr.Bool(jtv)
 			}
 
 		case "CreateRule":
@@ -3022,6 +3361,129 @@ func awsRestjson1_deserializeDocumentScheduleList(v *[]types.Schedule, value int
 	return nil
 }
 
+func awsRestjson1_deserializeDocumentScript(v **types.Script, value interface{}) error {
+	if v == nil {
+		return fmt.Errorf("unexpected nil of type %T", v)
+	}
+	if value == nil {
+		return nil
+	}
+
+	shape, ok := value.(map[string]interface{})
+	if !ok {
+		return fmt.Errorf("unexpected JSON type %v", value)
+	}
+
+	var sv *types.Script
+	if *v == nil {
+		sv = &types.Script{}
+	} else {
+		sv = *v
+	}
+
+	for key, value := range shape {
+		switch key {
+		case "ExecuteOperationOnScriptFailure":
+			if value != nil {
+				jtv, ok := value.(bool)
+				if !ok {
+					return fmt.Errorf("expected ExecuteOperationOnScriptFailure to be of type *bool, got %T instead", value)
+				}
+				sv.ExecuteOperationOnScriptFailure = ptr.Bool(jtv)
+			}
+
+		case "ExecutionHandler":
+			if value != nil {
+				jtv, ok := value.(string)
+				if !ok {
+					return fmt.Errorf("expected ExecutionHandler to be of type string, got %T instead", value)
+				}
+				sv.ExecutionHandler = ptr.String(jtv)
+			}
+
+		case "ExecutionHandlerService":
+			if value != nil {
+				jtv, ok := value.(string)
+				if !ok {
+					return fmt.Errorf("expected ExecutionHandlerServiceValues to be of type string, got %T instead", value)
+				}
+				sv.ExecutionHandlerService = types.ExecutionHandlerServiceValues(jtv)
+			}
+
+		case "ExecutionTimeout":
+			if value != nil {
+				jtv, ok := value.(json.Number)
+				if !ok {
+					return fmt.Errorf("expected ScriptExecutionTimeout to be json.Number, got %T instead", value)
+				}
+				i64, err := jtv.Int64()
+				if err != nil {
+					return err
+				}
+				sv.ExecutionTimeout = ptr.Int32(int32(i64))
+			}
+
+		case "MaximumRetryCount":
+			if value != nil {
+				jtv, ok := value.(json.Number)
+				if !ok {
+					return fmt.Errorf("expected ScriptMaximumRetryCount to be json.Number, got %T instead", value)
+				}
+				i64, err := jtv.Int64()
+				if err != nil {
+					return err
+				}
+				sv.MaximumRetryCount = ptr.Int32(int32(i64))
+			}
+
+		case "Stages":
+			if err := awsRestjson1_deserializeDocumentStagesList(&sv.Stages, value); err != nil {
+				return err
+			}
+
+		default:
+			_, _ = key, value
+
+		}
+	}
+	*v = sv
+	return nil
+}
+
+func awsRestjson1_deserializeDocumentScriptsList(v *[]types.Script, value interface{}) error {
+	if v == nil {
+		return fmt.Errorf("unexpected nil of type %T", v)
+	}
+	if value == nil {
+		return nil
+	}
+
+	shape, ok := value.([]interface{})
+	if !ok {
+		return fmt.Errorf("unexpected JSON type %v", value)
+	}
+
+	var cv []types.Script
+	if *v == nil {
+		cv = []types.Script{}
+	} else {
+		cv = *v
+	}
+
+	for _, value := range shape {
+		var col types.Script
+		destAddr := &col
+		if err := awsRestjson1_deserializeDocumentScript(&destAddr, value); err != nil {
+			return err
+		}
+		col = *destAddr
+		cv = append(cv, col)
+
+	}
+	*v = cv
+	return nil
+}
+
 func awsRestjson1_deserializeDocumentShareRule(v **types.ShareRule, value interface{}) error {
 	if v == nil {
 		return fmt.Errorf("unexpected nil of type %T", v)
@@ -3059,7 +3521,7 @@ func awsRestjson1_deserializeDocumentShareRule(v **types.ShareRule, value interf
 				if err != nil {
 					return err
 				}
-				sv.UnshareInterval = int32(i64)
+				sv.UnshareInterval = ptr.Int32(int32(i64))
 			}
 
 		case "UnshareIntervalUnit":
@@ -3178,6 +3640,42 @@ func awsRestjson1_deserializeDocumentSnapshotOwnerList(v *[]string, value interf
 				return fmt.Errorf("expected AwsAccountId to be of type string, got %T instead", value)
 			}
 			col = jtv
+		}
+		cv = append(cv, col)
+
+	}
+	*v = cv
+	return nil
+}
+
+func awsRestjson1_deserializeDocumentStagesList(v *[]types.StageValues, value interface{}) error {
+	if v == nil {
+		return fmt.Errorf("unexpected nil of type %T", v)
+	}
+	if value == nil {
+		return nil
+	}
+
+	shape, ok := value.([]interface{})
+	if !ok {
+		return fmt.Errorf("unexpected JSON type %v", value)
+	}
+
+	var cv []types.StageValues
+	if *v == nil {
+		cv = []types.StageValues{}
+	} else {
+		cv = *v
+	}
+
+	for _, value := range shape {
+		var col types.StageValues
+		if value != nil {
+			jtv, ok := value.(string)
+			if !ok {
+				return fmt.Errorf("expected StageValues to be of type string, got %T instead", value)
+			}
+			col = types.StageValues(jtv)
 		}
 		cv = append(cv, col)
 

@@ -3,12 +3,95 @@
 package types
 
 import (
+	"github.com/aws/aws-sdk-go-v2/internal/protocoltest/awsrestjson/document"
 	smithydocument "github.com/aws/smithy-go/document"
 	"time"
 )
 
+type ClientOptionalDefaults struct {
+	Member *int32
+
+	noSmithyDocumentSerde
+}
+
 type ComplexNestedErrorData struct {
 	Foo *string
+
+	noSmithyDocumentSerde
+}
+
+type Defaults struct {
+	DefaultBlob []byte
+
+	DefaultBoolean *bool
+
+	DefaultByte *int8
+
+	DefaultDocumentBoolean document.Interface
+
+	DefaultDocumentList document.Interface
+
+	DefaultDocumentMap document.Interface
+
+	DefaultDocumentString document.Interface
+
+	DefaultDouble *float64
+
+	DefaultEnum TestEnum
+
+	DefaultFloat *float32
+
+	DefaultIntEnum TestIntEnum
+
+	DefaultInteger *int32
+
+	DefaultList []string
+
+	DefaultLong *int64
+
+	DefaultMap map[string]string
+
+	DefaultNullDocument document.Interface
+
+	DefaultShort *int16
+
+	DefaultString *string
+
+	DefaultTimestamp *time.Time
+
+	EmptyBlob []byte
+
+	EmptyString *string
+
+	FalseBoolean bool
+
+	ZeroByte int8
+
+	ZeroDouble float64
+
+	ZeroFloat float32
+
+	ZeroInteger int32
+
+	ZeroLong int64
+
+	ZeroShort int16
+
+	noSmithyDocumentSerde
+}
+
+type Dialog struct {
+	Farewell *Farewell
+
+	Greeting *string
+
+	Language *string
+
+	noSmithyDocumentSerde
+}
+
+type Farewell struct {
+	Phrase *string
 
 	noSmithyDocumentSerde
 }
@@ -195,6 +278,33 @@ type TestConfig struct {
 	noSmithyDocumentSerde
 }
 
+type TopLevel struct {
+
+	// This member is required.
+	Dialog *Dialog
+
+	DialogList []Dialog
+
+	DialogMap map[string]Dialog
+
+	noSmithyDocumentSerde
+}
+
+// The following types satisfy this interface:
+//
+//	UnionPayloadMemberGreeting
+type UnionPayload interface {
+	isUnionPayload()
+}
+
+type UnionPayloadMemberGreeting struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*UnionPayloadMemberGreeting) isUnionPayload() {}
+
 // The following types satisfy this interface:
 //
 //	UnionWithJsonNameMemberBar
@@ -258,4 +368,5 @@ type UnknownUnionMember struct {
 func (*UnknownUnionMember) isMyUnion()           {}
 func (*UnknownUnionMember) isPlayerAction()      {}
 func (*UnknownUnionMember) isSimpleUnion()       {}
+func (*UnknownUnionMember) isUnionPayload()      {}
 func (*UnknownUnionMember) isUnionWithJsonName() {}

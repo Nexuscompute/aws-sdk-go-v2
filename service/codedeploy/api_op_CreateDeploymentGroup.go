@@ -4,14 +4,9 @@ package codedeploy
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/codedeploy/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -35,8 +30,8 @@ func (c *Client) CreateDeploymentGroup(ctx context.Context, params *CreateDeploy
 // Represents the input of a CreateDeploymentGroup operation.
 type CreateDeploymentGroupInput struct {
 
-	// The name of an CodeDeploy application associated with the IAM user or Amazon
-	// Web Services account.
+	// The name of an CodeDeploy application associated with the user or Amazon Web
+	// Services account.
 	//
 	// This member is required.
 	ApplicationName *string
@@ -69,12 +64,15 @@ type CreateDeploymentGroupInput struct {
 	// If specified, the deployment configuration name can be either one of the
 	// predefined configurations provided with CodeDeploy or a custom deployment
 	// configuration that you create by calling the create deployment configuration
-	// operation. CodeDeployDefault.OneAtATime is the default deployment
-	// configuration. It is used if a configuration isn't specified for the deployment
-	// or deployment group. For more information about the predefined deployment
-	// configurations in CodeDeploy, see Working with Deployment Configurations in
-	// CodeDeploy (https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html)
-	// in the CodeDeploy User Guide.
+	// operation.
+	//
+	// CodeDeployDefault.OneAtATime is the default deployment configuration. It is
+	// used if a configuration isn't specified for the deployment or deployment group.
+	//
+	// For more information about the predefined deployment configurations in
+	// CodeDeploy, see [Working with Deployment Configurations in CodeDeploy]in the CodeDeploy User Guide.
+	//
+	// [Working with Deployment Configurations in CodeDeploy]: https://docs.aws.amazon.com/codedeploy/latest/userguide/deployment-configurations.html
 	DeploymentConfigName *string
 
 	// Information about the type of deployment, in-place or blue/green, that you want
@@ -91,7 +89,7 @@ type CreateDeploymentGroupInput struct {
 	// groups. Cannot be used in the same call as ec2TagFilters .
 	Ec2TagSet *types.EC2TagSet
 
-	// The target Amazon ECS services in the deployment group. This applies only to
+	//  The target Amazon ECS services in the deployment group. This applies only to
 	// deployment groups that use the Amazon ECS compute platform. A target Amazon ECS
 	// service is specified as an Amazon ECS cluster and service name pair using the
 	// format : .
@@ -111,22 +109,44 @@ type CreateDeploymentGroupInput struct {
 	OnPremisesTagSet *types.OnPremisesTagSet
 
 	// Indicates what happens when new Amazon EC2 instances are launched
-	// mid-deployment and do not receive the deployed application revision. If this
-	// option is set to UPDATE or is unspecified, CodeDeploy initiates one or more
-	// 'auto-update outdated instances' deployments to apply the deployed application
-	// revision to the new Amazon EC2 instances. If this option is set to IGNORE ,
-	// CodeDeploy does not initiate a deployment to update the new Amazon EC2
-	// instances. This may result in instances having different revisions.
+	// mid-deployment and do not receive the deployed application revision.
+	//
+	// If this option is set to UPDATE or is unspecified, CodeDeploy initiates one or
+	// more 'auto-update outdated instances' deployments to apply the deployed
+	// application revision to the new Amazon EC2 instances.
+	//
+	// If this option is set to IGNORE , CodeDeploy does not initiate a deployment to
+	// update the new Amazon EC2 instances. This may result in instances having
+	// different revisions.
 	OutdatedInstancesStrategy types.OutdatedInstancesStrategy
 
-	// The metadata that you apply to CodeDeploy deployment groups to help you
+	//  The metadata that you apply to CodeDeploy deployment groups to help you
 	// organize and categorize them. Each tag consists of a key and an optional value,
 	// both of which you define.
 	Tags []types.Tag
 
+	// This parameter only applies if you are using CodeDeploy with Amazon EC2 Auto
+	// Scaling. For more information, see [Integrating CodeDeploy with Amazon EC2 Auto Scaling]in the CodeDeploy User Guide.
+	//
+	// Set terminationHookEnabled to true to have CodeDeploy install a termination
+	// hook into your Auto Scaling group when you create a deployment group. When this
+	// hook is installed, CodeDeploy will perform termination deployments.
+	//
+	// For information about termination deployments, see [Enabling termination deployments during Auto Scaling scale-in events] in the CodeDeploy User
+	// Guide.
+	//
+	// For more information about Auto Scaling scale-in events, see the [Scale in] topic in the
+	// Amazon EC2 Auto Scaling User Guide.
+	//
+	// [Enabling termination deployments during Auto Scaling scale-in events]: https://docs.aws.amazon.com/codedeploy/latest/userguide/integrations-aws-auto-scaling.html#integrations-aws-auto-scaling-behaviors-hook-enable
+	// [Integrating CodeDeploy with Amazon EC2 Auto Scaling]: https://docs.aws.amazon.com/codedeploy/latest/userguide/integrations-aws-auto-scaling.html
+	// [Scale in]: https://docs.aws.amazon.com/autoscaling/ec2/userguide/ec2-auto-scaling-lifecycle.html#as-lifecycle-scale-in
+	TerminationHookEnabled *bool
+
 	// Information about triggers to create when the deployment group is created. For
-	// examples, see Create a Trigger for an CodeDeploy Event (https://docs.aws.amazon.com/codedeploy/latest/userguide/how-to-notify-sns.html)
-	// in the CodeDeploy User Guide.
+	// examples, see [Create a Trigger for an CodeDeploy Event]in the CodeDeploy User Guide.
+	//
+	// [Create a Trigger for an CodeDeploy Event]: https://docs.aws.amazon.com/codedeploy/latest/userguide/how-to-notify-sns.html
 	TriggerConfigurations []types.TriggerConfig
 
 	noSmithyDocumentSerde
@@ -145,6 +165,9 @@ type CreateDeploymentGroupOutput struct {
 }
 
 func (c *Client) addOperationCreateDeploymentGroupMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateDeploymentGroup{}, middleware.After)
 	if err != nil {
 		return err
@@ -153,34 +176,38 @@ func (c *Client) addOperationCreateDeploymentGroupMiddlewares(stack *middleware.
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateDeploymentGroup"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -192,7 +219,13 @@ func (c *Client) addOperationCreateDeploymentGroupMiddlewares(stack *middleware.
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateDeploymentGroupResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateDeploymentGroupValidationMiddleware(stack); err != nil {
@@ -201,7 +234,7 @@ func (c *Client) addOperationCreateDeploymentGroupMiddlewares(stack *middleware.
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateDeploymentGroup(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -213,7 +246,19 @@ func (c *Client) addOperationCreateDeploymentGroupMiddlewares(stack *middleware.
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -223,130 +268,6 @@ func newServiceMetadataMiddleware_opCreateDeploymentGroup(region string) *awsmid
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "codedeploy",
 		OperationName: "CreateDeploymentGroup",
 	}
-}
-
-type opCreateDeploymentGroupResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateDeploymentGroupResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateDeploymentGroupResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "codedeploy"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "codedeploy"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("codedeploy")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateDeploymentGroupResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateDeploymentGroupResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

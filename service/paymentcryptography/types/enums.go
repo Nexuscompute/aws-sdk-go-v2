@@ -6,19 +6,22 @@ type KeyAlgorithm string
 
 // Enum values for KeyAlgorithm
 const (
-	KeyAlgorithmTdes2key KeyAlgorithm = "TDES_2KEY"
-	KeyAlgorithmTdes3key KeyAlgorithm = "TDES_3KEY"
-	KeyAlgorithmAes128   KeyAlgorithm = "AES_128"
-	KeyAlgorithmAes192   KeyAlgorithm = "AES_192"
-	KeyAlgorithmAes256   KeyAlgorithm = "AES_256"
-	KeyAlgorithmRsa2048  KeyAlgorithm = "RSA_2048"
-	KeyAlgorithmRsa3072  KeyAlgorithm = "RSA_3072"
-	KeyAlgorithmRsa4096  KeyAlgorithm = "RSA_4096"
+	KeyAlgorithmTdes2key    KeyAlgorithm = "TDES_2KEY"
+	KeyAlgorithmTdes3key    KeyAlgorithm = "TDES_3KEY"
+	KeyAlgorithmAes128      KeyAlgorithm = "AES_128"
+	KeyAlgorithmAes192      KeyAlgorithm = "AES_192"
+	KeyAlgorithmAes256      KeyAlgorithm = "AES_256"
+	KeyAlgorithmRsa2048     KeyAlgorithm = "RSA_2048"
+	KeyAlgorithmRsa3072     KeyAlgorithm = "RSA_3072"
+	KeyAlgorithmRsa4096     KeyAlgorithm = "RSA_4096"
+	KeyAlgorithmEccNistP256 KeyAlgorithm = "ECC_NIST_P256"
+	KeyAlgorithmEccNistP384 KeyAlgorithm = "ECC_NIST_P384"
 )
 
 // Values returns all known values for KeyAlgorithm. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KeyAlgorithm) Values() []KeyAlgorithm {
 	return []KeyAlgorithm{
 		"TDES_2KEY",
@@ -29,6 +32,8 @@ func (KeyAlgorithm) Values() []KeyAlgorithm {
 		"RSA_2048",
 		"RSA_3072",
 		"RSA_4096",
+		"ECC_NIST_P256",
+		"ECC_NIST_P384",
 	}
 }
 
@@ -41,8 +46,9 @@ const (
 )
 
 // Values returns all known values for KeyCheckValueAlgorithm. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KeyCheckValueAlgorithm) Values() []KeyCheckValueAlgorithm {
 	return []KeyCheckValueAlgorithm{
 		"CMAC",
@@ -61,14 +67,36 @@ const (
 )
 
 // Values returns all known values for KeyClass. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KeyClass) Values() []KeyClass {
 	return []KeyClass{
 		"SYMMETRIC_KEY",
 		"ASYMMETRIC_KEY_PAIR",
 		"PRIVATE_KEY",
 		"PUBLIC_KEY",
+	}
+}
+
+type KeyExportability string
+
+// Enum values for KeyExportability
+const (
+	KeyExportabilityExportable    KeyExportability = "EXPORTABLE"
+	KeyExportabilityNonExportable KeyExportability = "NON_EXPORTABLE"
+	KeyExportabilitySensitive     KeyExportability = "SENSITIVE"
+)
+
+// Values returns all known values for KeyExportability. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KeyExportability) Values() []KeyExportability {
+	return []KeyExportability{
+		"EXPORTABLE",
+		"NON_EXPORTABLE",
+		"SENSITIVE",
 	}
 }
 
@@ -80,17 +108,20 @@ const (
 	KeyMaterialTypeTr31KeyBlock                KeyMaterialType = "TR31_KEY_BLOCK"
 	KeyMaterialTypeRootPublicKeyCertificate    KeyMaterialType = "ROOT_PUBLIC_KEY_CERTIFICATE"
 	KeyMaterialTypeTrustedPublicKeyCertificate KeyMaterialType = "TRUSTED_PUBLIC_KEY_CERTIFICATE"
+	KeyMaterialTypeKeyCryptogram               KeyMaterialType = "KEY_CRYPTOGRAM"
 )
 
 // Values returns all known values for KeyMaterialType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KeyMaterialType) Values() []KeyMaterialType {
 	return []KeyMaterialType{
 		"TR34_KEY_BLOCK",
 		"TR31_KEY_BLOCK",
 		"ROOT_PUBLIC_KEY_CERTIFICATE",
 		"TRUSTED_PUBLIC_KEY_CERTIFICATE",
+		"KEY_CRYPTOGRAM",
 	}
 }
 
@@ -103,8 +134,9 @@ const (
 )
 
 // Values returns all known values for KeyOrigin. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KeyOrigin) Values() []KeyOrigin {
 	return []KeyOrigin{
 		"EXTERNAL",
@@ -123,8 +155,9 @@ const (
 )
 
 // Values returns all known values for KeyState. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KeyState) Values() []KeyState {
 	return []KeyState{
 		"CREATE_IN_PROGRESS",
@@ -152,6 +185,7 @@ const (
 	KeyUsageTr31K1KeyBlockProtectionKey            KeyUsage = "TR31_K1_KEY_BLOCK_PROTECTION_KEY"
 	KeyUsageTr31K3AsymmetricKeyForKeyAgreement     KeyUsage = "TR31_K3_ASYMMETRIC_KEY_FOR_KEY_AGREEMENT"
 	KeyUsageTr31M3Iso97973MacKey                   KeyUsage = "TR31_M3_ISO_9797_3_MAC_KEY"
+	KeyUsageTr31M1Iso97971MacKey                   KeyUsage = "TR31_M1_ISO_9797_1_MAC_KEY"
 	KeyUsageTr31M6Iso97975CmacKey                  KeyUsage = "TR31_M6_ISO_9797_5_CMAC_KEY"
 	KeyUsageTr31M7HmacKey                          KeyUsage = "TR31_M7_HMAC_KEY"
 	KeyUsageTr31P0PinEncryptionKey                 KeyUsage = "TR31_P0_PIN_ENCRYPTION_KEY"
@@ -163,8 +197,9 @@ const (
 )
 
 // Values returns all known values for KeyUsage. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KeyUsage) Values() []KeyUsage {
 	return []KeyUsage{
 		"TR31_B0_BASE_DERIVATION_KEY",
@@ -181,6 +216,7 @@ func (KeyUsage) Values() []KeyUsage {
 		"TR31_K1_KEY_BLOCK_PROTECTION_KEY",
 		"TR31_K3_ASYMMETRIC_KEY_FOR_KEY_AGREEMENT",
 		"TR31_M3_ISO_9797_3_MAC_KEY",
+		"TR31_M1_ISO_9797_1_MAC_KEY",
 		"TR31_M6_ISO_9797_5_CMAC_KEY",
 		"TR31_M7_HMAC_KEY",
 		"TR31_P0_PIN_ENCRYPTION_KEY",
@@ -200,8 +236,9 @@ const (
 )
 
 // Values returns all known values for Tr34KeyBlockFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Tr34KeyBlockFormat) Values() []Tr34KeyBlockFormat {
 	return []Tr34KeyBlockFormat{
 		"X9_TR34_2012",
@@ -219,11 +256,31 @@ const (
 
 // Values returns all known values for WrappedKeyMaterialFormat. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (WrappedKeyMaterialFormat) Values() []WrappedKeyMaterialFormat {
 	return []WrappedKeyMaterialFormat{
 		"KEY_CRYPTOGRAM",
 		"TR31_KEY_BLOCK",
 		"TR34_KEY_BLOCK",
+	}
+}
+
+type WrappingKeySpec string
+
+// Enum values for WrappingKeySpec
+const (
+	WrappingKeySpecRsaOaepSha256 WrappingKeySpec = "RSA_OAEP_SHA_256"
+	WrappingKeySpecRsaOaepSha512 WrappingKeySpec = "RSA_OAEP_SHA_512"
+)
+
+// Values returns all known values for WrappingKeySpec. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (WrappingKeySpec) Values() []WrappingKeySpec {
+	return []WrappingKeySpec{
+		"RSA_OAEP_SHA_256",
+		"RSA_OAEP_SHA_512",
 	}
 }

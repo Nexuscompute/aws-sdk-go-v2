@@ -12,13 +12,39 @@ const (
 )
 
 // Values returns all known values for LogExport. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogExport) Values() []LogExport {
 	return []LogExport{
 		"useractivitylog",
 		"userlog",
 		"connectionlog",
+	}
+}
+
+type ManagedWorkgroupStatus string
+
+// Enum values for ManagedWorkgroupStatus
+const (
+	ManagedWorkgroupStatusCreating     ManagedWorkgroupStatus = "CREATING"
+	ManagedWorkgroupStatusDeleting     ManagedWorkgroupStatus = "DELETING"
+	ManagedWorkgroupStatusModifying    ManagedWorkgroupStatus = "MODIFYING"
+	ManagedWorkgroupStatusAvailable    ManagedWorkgroupStatus = "AVAILABLE"
+	ManagedWorkgroupStatusNotAvailable ManagedWorkgroupStatus = "NOT_AVAILABLE"
+)
+
+// Values returns all known values for ManagedWorkgroupStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ManagedWorkgroupStatus) Values() []ManagedWorkgroupStatus {
+	return []ManagedWorkgroupStatus{
+		"CREATING",
+		"DELETING",
+		"MODIFYING",
+		"AVAILABLE",
+		"NOT_AVAILABLE",
 	}
 }
 
@@ -32,13 +58,33 @@ const (
 )
 
 // Values returns all known values for NamespaceStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NamespaceStatus) Values() []NamespaceStatus {
 	return []NamespaceStatus{
 		"AVAILABLE",
 		"MODIFYING",
 		"DELETING",
+	}
+}
+
+type PerformanceTargetStatus string
+
+// Enum values for PerformanceTargetStatus
+const (
+	PerformanceTargetStatusEnabled  PerformanceTargetStatus = "ENABLED"
+	PerformanceTargetStatusDisabled PerformanceTargetStatus = "DISABLED"
+)
+
+// Values returns all known values for PerformanceTargetStatus. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PerformanceTargetStatus) Values() []PerformanceTargetStatus {
+	return []PerformanceTargetStatus{
+		"ENABLED",
+		"DISABLED",
 	}
 }
 
@@ -55,8 +101,9 @@ const (
 )
 
 // Values returns all known values for SnapshotStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SnapshotStatus) Values() []SnapshotStatus {
 	return []SnapshotStatus{
 		"AVAILABLE",
@@ -65,6 +112,25 @@ func (SnapshotStatus) Values() []SnapshotStatus {
 		"CANCELLED",
 		"FAILED",
 		"COPYING",
+	}
+}
+
+type State string
+
+// Enum values for State
+const (
+	StateActive   State = "ACTIVE"
+	StateDisabled State = "DISABLED"
+)
+
+// Values returns all known values for State. Note that this can be expanded in
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (State) Values() []State {
+	return []State{
+		"ACTIVE",
+		"DISABLED",
 	}
 }
 
@@ -78,8 +144,9 @@ const (
 )
 
 // Values returns all known values for UsageLimitBreachAction. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UsageLimitBreachAction) Values() []UsageLimitBreachAction {
 	return []UsageLimitBreachAction{
 		"log",
@@ -98,8 +165,9 @@ const (
 )
 
 // Values returns all known values for UsageLimitPeriod. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UsageLimitPeriod) Values() []UsageLimitPeriod {
 	return []UsageLimitPeriod{
 		"daily",
@@ -117,8 +185,9 @@ const (
 )
 
 // Values returns all known values for UsageLimitUsageType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UsageLimitUsageType) Values() []UsageLimitUsageType {
 	return []UsageLimitUsageType{
 		"serverless-compute",
@@ -137,8 +206,9 @@ const (
 )
 
 // Values returns all known values for WorkgroupStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WorkgroupStatus) Values() []WorkgroupStatus {
 	return []WorkgroupStatus{
 		"CREATING",

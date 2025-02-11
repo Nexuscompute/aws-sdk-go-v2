@@ -96,6 +96,37 @@ func (e *ConflictException) ErrorCode() string {
 }
 func (e *ConflictException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
+// The customer managed key that is registered to your Amazon QuickSight account
+// is unavailable.
+type CustomerManagedKeyUnavailableException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	RequestId *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *CustomerManagedKeyUnavailableException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *CustomerManagedKeyUnavailableException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *CustomerManagedKeyUnavailableException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "CustomerManagedKeyUnavailableException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *CustomerManagedKeyUnavailableException) ErrorFault() smithy.ErrorFault {
+	return smithy.FaultClient
+}
+
 // The domain specified isn't on the allow list. All domains for embedded
 // dashboards must be added to the approved list by an Amazon QuickSight admin.
 type DomainNotWhitelistedException struct {
@@ -181,6 +212,32 @@ func (e *InternalFailureException) ErrorCode() string {
 	return *e.ErrorCodeOverride
 }
 func (e *InternalFailureException) ErrorFault() smithy.ErrorFault { return smithy.FaultServer }
+
+// An internal service exception.
+type InternalServerException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *InternalServerException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *InternalServerException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *InternalServerException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "InternalServerException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *InternalServerException) ErrorFault() smithy.ErrorFault { return smithy.FaultServer }
 
 // The NextToken value isn't valid.
 type InvalidNextTokenException struct {
@@ -504,9 +561,12 @@ func (e *ThrottlingException) ErrorFault() smithy.ErrorFault { return smithy.Fau
 // QuickSight without the required pricing plan on your Amazon Web Services
 // account. Before you can use embedding for anonymous users, a QuickSight
 // administrator needs to add capacity pricing to Amazon QuickSight. You can do
-// this on the Manage Amazon QuickSight page. After capacity pricing is added, you
-// can use the GetDashboardEmbedUrl (https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GetDashboardEmbedUrl.html)
-// API operation with the --identity-type ANONYMOUS option.
+// this on the Manage Amazon QuickSight page.
+//
+// After capacity pricing is added, you can use the [GetDashboardEmbedUrl] API operation with the
+// --identity-type ANONYMOUS option.
+//
+// [GetDashboardEmbedUrl]: https://docs.aws.amazon.com/quicksight/latest/APIReference/API_GetDashboardEmbedUrl.html
 type UnsupportedPricingPlanException struct {
 	Message *string
 

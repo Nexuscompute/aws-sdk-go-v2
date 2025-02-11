@@ -4,14 +4,9 @@ package sagemaker
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/sagemaker/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -20,15 +15,18 @@ import (
 // version of a model by running many training jobs on your dataset using the
 // algorithm you choose and values for hyperparameters within ranges that you
 // specify. It then chooses the hyperparameter values that result in a model that
-// performs the best, as measured by an objective metric that you choose. A
-// hyperparameter tuning job automatically creates Amazon SageMaker experiments,
+// performs the best, as measured by an objective metric that you choose.
+//
+// A hyperparameter tuning job automatically creates Amazon SageMaker experiments,
 // trials, and trial components for each training job that it runs. You can view
-// these entities in Amazon SageMaker Studio. For more information, see View
-// Experiments, Trials, and Trial Components (https://docs.aws.amazon.com/sagemaker/latest/dg/experiments-view-compare.html#experiments-view)
-// . Do not include any security-sensitive information including account access
-// IDs, secrets or tokens in any hyperparameter field. If the use of
-// security-sensitive credentials are detected, SageMaker will reject your training
-// job request and return an exception error.
+// these entities in Amazon SageMaker Studio. For more information, see [View Experiments, Trials, and Trial Components].
+//
+// Do not include any security-sensitive information including account access IDs,
+// secrets or tokens in any hyperparameter field. If the use of security-sensitive
+// credentials are detected, SageMaker will reject your training job request and
+// return an exception error.
+//
+// [View Experiments, Trials, and Trial Components]: https://docs.aws.amazon.com/sagemaker/latest/dg/experiments-view-compare.html#experiments-view
 func (c *Client) CreateHyperParameterTuningJob(ctx context.Context, params *CreateHyperParameterTuningJobInput, optFns ...func(*Options)) (*CreateHyperParameterTuningJobOutput, error) {
 	if params == nil {
 		params = &CreateHyperParameterTuningJobInput{}
@@ -46,12 +44,12 @@ func (c *Client) CreateHyperParameterTuningJob(ctx context.Context, params *Crea
 
 type CreateHyperParameterTuningJobInput struct {
 
-	// The HyperParameterTuningJobConfig (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html)
-	// object that describes the tuning job, including the search strategy, the
+	// The [HyperParameterTuningJobConfig] object that describes the tuning job, including the search strategy, the
 	// objective metric used to evaluate training jobs, ranges of parameters to search,
-	// and resource limits for the tuning job. For more information, see How
-	// Hyperparameter Tuning Works (https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html)
-	// .
+	// and resource limits for the tuning job. For more information, see [How Hyperparameter Tuning Works].
+	//
+	// [How Hyperparameter Tuning Works]: https://docs.aws.amazon.com/sagemaker/latest/dg/automatic-model-tuning-how-it-works.html
+	// [HyperParameterTuningJobConfig]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html
 	//
 	// This member is required.
 	HyperParameterTuningJobConfig *types.HyperParameterTuningJobConfig
@@ -67,55 +65,77 @@ type CreateHyperParameterTuningJobInput struct {
 
 	// Configures SageMaker Automatic model tuning (AMT) to automatically find optimal
 	// parameters for the following fields:
-	//   - ParameterRanges (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-ParameterRanges)
-	//   : The names and ranges of parameters that a hyperparameter tuning job can
+	//
+	// [ParameterRanges]
+	//   - : The names and ranges of parameters that a hyperparameter tuning job can
 	//   optimize.
-	//   - ResourceLimits (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ResourceLimits.html)
-	//   : The maximum resources that can be used for a training job. These resources
-	//   include the maximum number of training jobs, the maximum runtime of a tuning
-	//   job, and the maximum number of training jobs to run at the same time.
-	//   - TrainingJobEarlyStoppingType (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-TrainingJobEarlyStoppingType)
-	//   : A flag that specifies whether or not to use early stopping for training jobs
-	//   launched by a hyperparameter tuning job.
-	//   - RetryStrategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-RetryStrategy)
-	//   : The number of times to retry a training job.
-	//   - Strategy (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html)
-	//   : Specifies how hyperparameter tuning chooses the combinations of hyperparameter
-	//   values to use for the training jobs that it launches.
-	//   - ConvergenceDetected (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ConvergenceDetected.html)
-	//   : A flag to indicate that Automatic model tuning (AMT) has detected model
+	//
+	// [ResourceLimits]
+	//   - : The maximum resources that can be used for a training job. These
+	//   resources include the maximum number of training jobs, the maximum runtime of a
+	//   tuning job, and the maximum number of training jobs to run at the same time.
+	//
+	// [TrainingJobEarlyStoppingType]
+	//   - : A flag that specifies whether or not to use early stopping for training
+	//   jobs launched by a hyperparameter tuning job.
+	//
+	// [RetryStrategy]
+	//   - : The number of times to retry a training job.
+	//
+	// [Strategy]
+	//   - : Specifies how hyperparameter tuning chooses the combinations of
+	//   hyperparameter values to use for the training jobs that it launches.
+	//
+	// [ConvergenceDetected]
+	//   - : A flag to indicate that Automatic model tuning (AMT) has detected model
 	//   convergence.
+	//
+	// [TrainingJobEarlyStoppingType]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-TrainingJobEarlyStoppingType
+	// [ConvergenceDetected]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ConvergenceDetected.html
+	// [ResourceLimits]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ResourceLimits.html
+	// [Strategy]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html
+	// [ParameterRanges]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTuningJobConfig.html#sagemaker-Type-HyperParameterTuningJobConfig-ParameterRanges
+	// [RetryStrategy]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html#sagemaker-Type-HyperParameterTrainingJobDefinition-RetryStrategy
 	Autotune *types.Autotune
 
 	// An array of key-value pairs. You can use tags to categorize your Amazon Web
 	// Services resources in different ways, for example, by purpose, owner, or
-	// environment. For more information, see Tagging Amazon Web Services Resources (https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html)
-	// . Tags that you specify for the tuning job are also added to all training jobs
+	// environment. For more information, see [Tagging Amazon Web Services Resources].
+	//
+	// Tags that you specify for the tuning job are also added to all training jobs
 	// that the tuning job launches.
+	//
+	// [Tagging Amazon Web Services Resources]: https://docs.aws.amazon.com/general/latest/gr/aws_tagging.html
 	Tags []types.Tag
 
-	// The HyperParameterTrainingJobDefinition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html)
-	// object that describes the training jobs that this tuning job launches, including
-	// static hyperparameters, input data configuration, output data configuration,
-	// resource configuration, and stopping condition.
+	// The [HyperParameterTrainingJobDefinition] object that describes the training jobs that this tuning job launches,
+	// including static hyperparameters, input data configuration, output data
+	// configuration, resource configuration, and stopping condition.
+	//
+	// [HyperParameterTrainingJobDefinition]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html
 	TrainingJobDefinition *types.HyperParameterTrainingJobDefinition
 
-	// A list of the HyperParameterTrainingJobDefinition (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html)
-	// objects launched for this tuning job.
+	// A list of the [HyperParameterTrainingJobDefinition] objects launched for this tuning job.
+	//
+	// [HyperParameterTrainingJobDefinition]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_HyperParameterTrainingJobDefinition.html
 	TrainingJobDefinitions []types.HyperParameterTrainingJobDefinition
 
 	// Specifies the configuration for starting the hyperparameter tuning job using
 	// one or more previous tuning jobs as a starting point. The results of previous
 	// tuning jobs are used to inform which combinations of hyperparameters to search
-	// over in the new tuning job. All training jobs launched by the new hyperparameter
-	// tuning job are evaluated by using the objective metric. If you specify
-	// IDENTICAL_DATA_AND_ALGORITHM as the WarmStartType value for the warm start
-	// configuration, the training job that performs the best in the new tuning job is
-	// compared to the best training jobs from the parent tuning jobs. From these, the
-	// training job that performs the best as measured by the objective metric is
-	// returned as the overall best training job. All training jobs launched by parent
-	// hyperparameter tuning jobs and the new hyperparameter tuning jobs count against
-	// the limit of training jobs for the tuning job.
+	// over in the new tuning job.
+	//
+	// All training jobs launched by the new hyperparameter tuning job are evaluated
+	// by using the objective metric. If you specify IDENTICAL_DATA_AND_ALGORITHM as
+	// the WarmStartType value for the warm start configuration, the training job that
+	// performs the best in the new tuning job is compared to the best training jobs
+	// from the parent tuning jobs. From these, the training job that performs the best
+	// as measured by the objective metric is returned as the overall best training
+	// job.
+	//
+	// All training jobs launched by parent hyperparameter tuning jobs and the new
+	// hyperparameter tuning jobs count against the limit of training jobs for the
+	// tuning job.
 	WarmStartConfig *types.HyperParameterTuningJobWarmStartConfig
 
 	noSmithyDocumentSerde
@@ -136,6 +156,9 @@ type CreateHyperParameterTuningJobOutput struct {
 }
 
 func (c *Client) addOperationCreateHyperParameterTuningJobMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateHyperParameterTuningJob{}, middleware.After)
 	if err != nil {
 		return err
@@ -144,34 +167,38 @@ func (c *Client) addOperationCreateHyperParameterTuningJobMiddlewares(stack *mid
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateHyperParameterTuningJob"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -183,7 +210,13 @@ func (c *Client) addOperationCreateHyperParameterTuningJobMiddlewares(stack *mid
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateHyperParameterTuningJobResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateHyperParameterTuningJobValidationMiddleware(stack); err != nil {
@@ -192,7 +225,7 @@ func (c *Client) addOperationCreateHyperParameterTuningJobMiddlewares(stack *mid
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateHyperParameterTuningJob(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -204,7 +237,19 @@ func (c *Client) addOperationCreateHyperParameterTuningJobMiddlewares(stack *mid
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -214,130 +259,6 @@ func newServiceMetadataMiddleware_opCreateHyperParameterTuningJob(region string)
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "sagemaker",
 		OperationName: "CreateHyperParameterTuningJob",
 	}
-}
-
-type opCreateHyperParameterTuningJobResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateHyperParameterTuningJobResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateHyperParameterTuningJobResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "sagemaker"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "sagemaker"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("sagemaker")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateHyperParameterTuningJobResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateHyperParameterTuningJobResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

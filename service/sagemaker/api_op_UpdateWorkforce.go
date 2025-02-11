@@ -4,38 +4,47 @@ package sagemaker
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/sagemaker/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Use this operation to update your workforce. You can use this operation to
 // require that workers use specific IP addresses to work on tasks and to update
-// your OpenID Connect (OIDC) Identity Provider (IdP) workforce configuration. The
-// worker portal is now supported in VPC and public internet. Use SourceIpConfig
-// to restrict worker access to tasks to a specific range of IP addresses. You
-// specify allowed IP addresses by creating a list of up to ten CIDRs (https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
-// . By default, a workforce isn't restricted to specific IP addresses. If you
+// your OpenID Connect (OIDC) Identity Provider (IdP) workforce configuration.
+//
+// The worker portal is now supported in VPC and public internet.
+//
+// Use SourceIpConfig to restrict worker access to tasks to a specific range of IP
+// addresses. You specify allowed IP addresses by creating a list of up to ten [CIDRs].
+// By default, a workforce isn't restricted to specific IP addresses. If you
 // specify a range of IP addresses, workers who attempt to access tasks using any
 // IP address outside the specified range are denied and get a Not Found error
-// message on the worker portal. To restrict access to all the workers in public
-// internet, add the SourceIpConfig CIDR value as "10.0.0.0/16". Amazon SageMaker
-// does not support Source Ip restriction for worker portals in VPC. Use OidcConfig
-// to update the configuration of a workforce created using your own OIDC IdP. You
-// can only update your OIDC IdP configuration when there are no work teams
-// associated with your workforce. You can delete work teams using the
-// DeleteWorkteam (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteWorkteam.html)
-// operation. After restricting access to a range of IP addresses or updating your
-// OIDC IdP configuration with this operation, you can view details about your
-// update workforce using the DescribeWorkforce (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeWorkforce.html)
-// operation. This operation only applies to private workforces.
+// message on the worker portal.
+//
+// To restrict access to all the workers in public internet, add the SourceIpConfig
+// CIDR value as "10.0.0.0/16".
+//
+// Amazon SageMaker does not support Source Ip restriction for worker portals in
+// VPC.
+//
+// Use OidcConfig to update the configuration of a workforce created using your
+// own OIDC IdP.
+//
+// You can only update your OIDC IdP configuration when there are no work teams
+// associated with your workforce. You can delete work teams using the [DeleteWorkteam]operation.
+//
+// After restricting access to a range of IP addresses or updating your OIDC IdP
+// configuration with this operation, you can view details about your update
+// workforce using the [DescribeWorkforce]operation.
+//
+// This operation only applies to private workforces.
+//
+// [DescribeWorkforce]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DescribeWorkforce.html
+// [DeleteWorkteam]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_DeleteWorkteam.html
+// [CIDRs]: https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html
 func (c *Client) UpdateWorkforce(ctx context.Context, params *UpdateWorkforceInput, optFns ...func(*Options)) (*UpdateWorkforceOutput, error) {
 	if params == nil {
 		params = &UpdateWorkforceInput{}
@@ -54,8 +63,9 @@ func (c *Client) UpdateWorkforce(ctx context.Context, params *UpdateWorkforceInp
 type UpdateWorkforceInput struct {
 
 	// The name of the private workforce that you want to update. You can find your
-	// workforce name by using the ListWorkforces (https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ListWorkforces.html)
-	// operation.
+	// workforce name by using the [ListWorkforces]operation.
+	//
+	// [ListWorkforces]: https://docs.aws.amazon.com/sagemaker/latest/APIReference/API_ListWorkforces.html
 	//
 	// This member is required.
 	WorkforceName *string
@@ -64,9 +74,12 @@ type UpdateWorkforceInput struct {
 	// for a workforce made using your own IdP.
 	OidcConfig *types.OidcConfig
 
-	// A list of one to ten worker IP address ranges ( CIDRs (https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html)
-	// ) that can be used to access tasks assigned to this workforce. Maximum: Ten CIDR
-	// values
+	// A list of one to ten worker IP address ranges ([CIDRs] ) that can be used to access
+	// tasks assigned to this workforce.
+	//
+	// Maximum: Ten CIDR values
+	//
+	// [CIDRs]: https://docs.aws.amazon.com/vpc/latest/userguide/VPC_Subnets.html
 	SourceIpConfig *types.SourceIpConfig
 
 	// Use this parameter to update your VPC configuration for a workforce.
@@ -80,8 +93,9 @@ type UpdateWorkforceOutput struct {
 	// A single private workforce. You can create one private work force in each
 	// Amazon Web Services Region. By default, any workforce-related API operation used
 	// in a specific region will apply to the workforce created in that region. To
-	// learn how to create a private workforce, see Create a Private Workforce (https://docs.aws.amazon.com/sagemaker/latest/dg/sms-workforce-create-private.html)
-	// .
+	// learn how to create a private workforce, see [Create a Private Workforce].
+	//
+	// [Create a Private Workforce]: https://docs.aws.amazon.com/sagemaker/latest/dg/sms-workforce-create-private.html
 	//
 	// This member is required.
 	Workforce *types.Workforce
@@ -93,6 +107,9 @@ type UpdateWorkforceOutput struct {
 }
 
 func (c *Client) addOperationUpdateWorkforceMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpUpdateWorkforce{}, middleware.After)
 	if err != nil {
 		return err
@@ -101,34 +118,38 @@ func (c *Client) addOperationUpdateWorkforceMiddlewares(stack *middleware.Stack,
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateWorkforce"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -140,7 +161,13 @@ func (c *Client) addOperationUpdateWorkforceMiddlewares(stack *middleware.Stack,
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateWorkforceResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateWorkforceValidationMiddleware(stack); err != nil {
@@ -149,7 +176,7 @@ func (c *Client) addOperationUpdateWorkforceMiddlewares(stack *middleware.Stack,
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateWorkforce(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -161,7 +188,19 @@ func (c *Client) addOperationUpdateWorkforceMiddlewares(stack *middleware.Stack,
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -171,130 +210,6 @@ func newServiceMetadataMiddleware_opUpdateWorkforce(region string) *awsmiddlewar
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "sagemaker",
 		OperationName: "UpdateWorkforce",
 	}
-}
-
-type opUpdateWorkforceResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateWorkforceResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateWorkforceResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "sagemaker"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "sagemaker"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("sagemaker")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateWorkforceResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateWorkforceResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

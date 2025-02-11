@@ -70,6 +70,51 @@ type ChangeServerLifeCycleStateSourceServerLifecycle struct {
 	noSmithyDocumentSerde
 }
 
+type Connector struct {
+
+	// Connector arn.
+	Arn *string
+
+	// Connector ID.
+	ConnectorID *string
+
+	// Connector name.
+	Name *string
+
+	// Connector SSM command config.
+	SsmCommandConfig *ConnectorSsmCommandConfig
+
+	// Connector SSM instance ID.
+	SsmInstanceID *string
+
+	// Connector tags.
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// Connector SSM command config.
+type ConnectorSsmCommandConfig struct {
+
+	// Connector SSM command config CloudWatch output enabled.
+	//
+	// This member is required.
+	CloudWatchOutputEnabled *bool
+
+	// Connector SSM command config S3 output enabled.
+	//
+	// This member is required.
+	S3OutputEnabled *bool
+
+	// Connector SSM command config CloudWatch log group name.
+	CloudWatchLogGroupName *string
+
+	// Connector SSM command config output S3 bucket name.
+	OutputS3BucketName *string
+
+	noSmithyDocumentSerde
+}
+
 // Source server CPU information.
 type CPU struct {
 
@@ -612,10 +657,10 @@ type LaunchedInstance struct {
 type LaunchTemplateDiskConf struct {
 
 	// Launch template disk iops configuration.
-	Iops int64
+	Iops *int64
 
 	// Launch template disk throughput configuration.
-	Throughput int64
+	Throughput *int64
 
 	// Launch template disk volume type configuration.
 	VolumeType VolumeType
@@ -760,6 +805,15 @@ type ListApplicationsRequestFilters struct {
 
 	// Filter applications list by wave ID.
 	WaveIDs []string
+
+	noSmithyDocumentSerde
+}
+
+// List Connectors Request Filters.
+type ListConnectorsRequestFilters struct {
+
+	// List Connectors Request Filters connector IDs.
+	ConnectorIDs []string
 
 	noSmithyDocumentSerde
 }
@@ -1015,6 +1069,9 @@ type SourceServer struct {
 	// Source server ARN.
 	Arn *string
 
+	// Source Server connector action.
+	ConnectorAction *SourceServerConnectorAction
+
 	// Source server data replication info.
 	DataReplicationInfo *DataReplicationInfo
 
@@ -1081,13 +1138,13 @@ type SourceServerActionDocument struct {
 	MustSucceedForCutover *bool
 
 	// Source server post migration custom action order.
-	Order int32
+	Order *int32
 
 	// Source server post migration custom action parameters.
 	Parameters map[string][]SsmParameterStoreParameter
 
 	// Source server post migration custom action timeout in seconds.
-	TimeoutSeconds int32
+	TimeoutSeconds *int32
 
 	noSmithyDocumentSerde
 }
@@ -1097,6 +1154,18 @@ type SourceServerActionsRequestFilters struct {
 
 	// Action IDs to filter source server post migration custom actions by.
 	ActionIDs []string
+
+	noSmithyDocumentSerde
+}
+
+// Source Server connector action.
+type SourceServerConnectorAction struct {
+
+	// Source Server connector action connector arn.
+	ConnectorArn *string
+
+	// Source Server connector action credentials secret arn.
+	CredentialsSecretArn *string
 
 	noSmithyDocumentSerde
 }
@@ -1124,7 +1193,7 @@ type SsmDocument struct {
 	Parameters map[string][]SsmParameterStoreParameter
 
 	// AWS Systems Manager Document timeout seconds.
-	TimeoutSeconds int32
+	TimeoutSeconds *int32
 
 	noSmithyDocumentSerde
 }
@@ -1196,13 +1265,13 @@ type TemplateActionDocument struct {
 	OperatingSystem *string
 
 	// Template post migration custom action order.
-	Order int32
+	Order *int32
 
 	// Template post migration custom action parameters.
 	Parameters map[string][]SsmParameterStoreParameter
 
 	// Template post migration custom action timeout in seconds.
-	TimeoutSeconds int32
+	TimeoutSeconds *int32
 
 	noSmithyDocumentSerde
 }

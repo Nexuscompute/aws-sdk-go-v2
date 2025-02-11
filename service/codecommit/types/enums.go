@@ -11,12 +11,41 @@ const (
 )
 
 // Values returns all known values for ApprovalState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ApprovalState) Values() []ApprovalState {
 	return []ApprovalState{
 		"APPROVE",
 		"REVOKE",
+	}
+}
+
+type BatchGetRepositoriesErrorCodeEnum string
+
+// Enum values for BatchGetRepositoriesErrorCodeEnum
+const (
+	BatchGetRepositoriesErrorCodeEnumEncryptionIntegrityChecksFailedException BatchGetRepositoriesErrorCodeEnum = "EncryptionIntegrityChecksFailedException"
+	BatchGetRepositoriesErrorCodeEnumEncryptionKeyAccessDeniedException       BatchGetRepositoriesErrorCodeEnum = "EncryptionKeyAccessDeniedException"
+	BatchGetRepositoriesErrorCodeEnumEncryptionKeyDisabledException           BatchGetRepositoriesErrorCodeEnum = "EncryptionKeyDisabledException"
+	BatchGetRepositoriesErrorCodeEnumEncryptionKeyNotFoundException           BatchGetRepositoriesErrorCodeEnum = "EncryptionKeyNotFoundException"
+	BatchGetRepositoriesErrorCodeEnumEncryptionKeyUnavailableException        BatchGetRepositoriesErrorCodeEnum = "EncryptionKeyUnavailableException"
+	BatchGetRepositoriesErrorCodeEnumRepositoryDoesNotExistException          BatchGetRepositoriesErrorCodeEnum = "RepositoryDoesNotExistException"
+)
+
+// Values returns all known values for BatchGetRepositoriesErrorCodeEnum. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (BatchGetRepositoriesErrorCodeEnum) Values() []BatchGetRepositoriesErrorCodeEnum {
+	return []BatchGetRepositoriesErrorCodeEnum{
+		"EncryptionIntegrityChecksFailedException",
+		"EncryptionKeyAccessDeniedException",
+		"EncryptionKeyDisabledException",
+		"EncryptionKeyNotFoundException",
+		"EncryptionKeyUnavailableException",
+		"RepositoryDoesNotExistException",
 	}
 }
 
@@ -30,8 +59,9 @@ const (
 )
 
 // Values returns all known values for ChangeTypeEnum. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ChangeTypeEnum) Values() []ChangeTypeEnum {
 	return []ChangeTypeEnum{
 		"A",
@@ -50,6 +80,7 @@ const (
 
 // Values returns all known values for ConflictDetailLevelTypeEnum. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ConflictDetailLevelTypeEnum) Values() []ConflictDetailLevelTypeEnum {
 	return []ConflictDetailLevelTypeEnum{
@@ -70,8 +101,9 @@ const (
 
 // Values returns all known values for ConflictResolutionStrategyTypeEnum. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConflictResolutionStrategyTypeEnum) Values() []ConflictResolutionStrategyTypeEnum {
 	return []ConflictResolutionStrategyTypeEnum{
 		"NONE",
@@ -91,8 +123,9 @@ const (
 )
 
 // Values returns all known values for FileModeTypeEnum. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FileModeTypeEnum) Values() []FileModeTypeEnum {
 	return []FileModeTypeEnum{
 		"EXECUTABLE",
@@ -111,8 +144,9 @@ const (
 )
 
 // Values returns all known values for MergeOptionTypeEnum. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MergeOptionTypeEnum) Values() []MergeOptionTypeEnum {
 	return []MergeOptionTypeEnum{
 		"FAST_FORWARD_MERGE",
@@ -132,8 +166,9 @@ const (
 )
 
 // Values returns all known values for ObjectTypeEnum. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ObjectTypeEnum) Values() []ObjectTypeEnum {
 	return []ObjectTypeEnum{
 		"FILE",
@@ -152,8 +187,9 @@ const (
 )
 
 // Values returns all known values for OrderEnum. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OrderEnum) Values() []OrderEnum {
 	return []OrderEnum{
 		"ascending",
@@ -170,8 +206,9 @@ const (
 )
 
 // Values returns all known values for OverrideStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OverrideStatus) Values() []OverrideStatus {
 	return []OverrideStatus{
 		"OVERRIDE",
@@ -195,8 +232,9 @@ const (
 )
 
 // Values returns all known values for PullRequestEventType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PullRequestEventType) Values() []PullRequestEventType {
 	return []PullRequestEventType{
 		"PULL_REQUEST_CREATED",
@@ -220,8 +258,9 @@ const (
 )
 
 // Values returns all known values for PullRequestStatusEnum. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PullRequestStatusEnum) Values() []PullRequestStatusEnum {
 	return []PullRequestStatusEnum{
 		"OPEN",
@@ -238,8 +277,9 @@ const (
 )
 
 // Values returns all known values for RelativeFileVersionEnum. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RelativeFileVersionEnum) Values() []RelativeFileVersionEnum {
 	return []RelativeFileVersionEnum{
 		"BEFORE",
@@ -258,8 +298,9 @@ const (
 )
 
 // Values returns all known values for ReplacementTypeEnum. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReplacementTypeEnum) Values() []ReplacementTypeEnum {
 	return []ReplacementTypeEnum{
 		"KEEP_BASE",
@@ -281,6 +322,7 @@ const (
 
 // Values returns all known values for RepositoryTriggerEventEnum. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (RepositoryTriggerEventEnum) Values() []RepositoryTriggerEventEnum {
 	return []RepositoryTriggerEventEnum{
@@ -300,8 +342,9 @@ const (
 )
 
 // Values returns all known values for SortByEnum. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SortByEnum) Values() []SortByEnum {
 	return []SortByEnum{
 		"repositoryName",

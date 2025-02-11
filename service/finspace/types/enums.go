@@ -10,8 +10,9 @@ const (
 )
 
 // Values returns all known values for AutoScalingMetric. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AutoScalingMetric) Values() []AutoScalingMetric {
 	return []AutoScalingMetric{
 		"CPU_UTILIZATION_PERCENTAGE",
@@ -29,8 +30,9 @@ const (
 )
 
 // Values returns all known values for ChangesetStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ChangesetStatus) Values() []ChangesetStatus {
 	return []ChangesetStatus{
 		"PENDING",
@@ -49,8 +51,9 @@ const (
 )
 
 // Values returns all known values for ChangeType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ChangeType) Values() []ChangeType {
 	return []ChangeType{
 		"PUT",
@@ -70,8 +73,9 @@ const (
 )
 
 // Values returns all known values for DnsStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DnsStatus) Values() []DnsStatus {
 	return []DnsStatus{
 		"NONE",
@@ -102,8 +106,9 @@ const (
 )
 
 // Values returns all known values for EnvironmentStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EnvironmentStatus) Values() []EnvironmentStatus {
 	return []EnvironmentStatus{
 		"CREATE_REQUESTED",
@@ -137,8 +142,9 @@ const (
 )
 
 // Values returns all known values for ErrorDetails. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ErrorDetails) Values() []ErrorDetails {
 	return []ErrorDetails{
 		"The inputs to this request are invalid.",
@@ -161,8 +167,9 @@ const (
 )
 
 // Values returns all known values for FederationMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FederationMode) Values() []FederationMode {
 	return []FederationMode{
 		"FEDERATED",
@@ -178,8 +185,9 @@ const (
 )
 
 // Values returns all known values for IPAddressType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (IPAddressType) Values() []IPAddressType {
 	return []IPAddressType{
 		"IP_V4",
@@ -195,12 +203,35 @@ const (
 )
 
 // Values returns all known values for KxAzMode. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KxAzMode) Values() []KxAzMode {
 	return []KxAzMode{
 		"SINGLE",
 		"MULTI",
+	}
+}
+
+type KxClusterCodeDeploymentStrategy string
+
+// Enum values for KxClusterCodeDeploymentStrategy
+const (
+	KxClusterCodeDeploymentStrategyNoRestart KxClusterCodeDeploymentStrategy = "NO_RESTART"
+	KxClusterCodeDeploymentStrategyRolling   KxClusterCodeDeploymentStrategy = "ROLLING"
+	KxClusterCodeDeploymentStrategyForce     KxClusterCodeDeploymentStrategy = "FORCE"
+)
+
+// Values returns all known values for KxClusterCodeDeploymentStrategy. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KxClusterCodeDeploymentStrategy) Values() []KxClusterCodeDeploymentStrategy {
+	return []KxClusterCodeDeploymentStrategy{
+		"NO_RESTART",
+		"ROLLING",
+		"FORCE",
 	}
 }
 
@@ -219,8 +250,9 @@ const (
 )
 
 // Values returns all known values for KxClusterStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KxClusterStatus) Values() []KxClusterStatus {
 	return []KxClusterStatus{
 		"PENDING",
@@ -238,19 +270,108 @@ type KxClusterType string
 
 // Enum values for KxClusterType
 const (
-	KxClusterTypeHdb     KxClusterType = "HDB"
-	KxClusterTypeRdb     KxClusterType = "RDB"
-	KxClusterTypeGateway KxClusterType = "GATEWAY"
+	KxClusterTypeHdb         KxClusterType = "HDB"
+	KxClusterTypeRdb         KxClusterType = "RDB"
+	KxClusterTypeGateway     KxClusterType = "GATEWAY"
+	KxClusterTypeGp          KxClusterType = "GP"
+	KxClusterTypeTickerplant KxClusterType = "TICKERPLANT"
 )
 
 // Values returns all known values for KxClusterType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KxClusterType) Values() []KxClusterType {
 	return []KxClusterType{
 		"HDB",
 		"RDB",
 		"GATEWAY",
+		"GP",
+		"TICKERPLANT",
+	}
+}
+
+type KxDataviewStatus string
+
+// Enum values for KxDataviewStatus
+const (
+	KxDataviewStatusCreating KxDataviewStatus = "CREATING"
+	KxDataviewStatusActive   KxDataviewStatus = "ACTIVE"
+	KxDataviewStatusUpdating KxDataviewStatus = "UPDATING"
+	KxDataviewStatusFailed   KxDataviewStatus = "FAILED"
+	KxDataviewStatusDeleting KxDataviewStatus = "DELETING"
+)
+
+// Values returns all known values for KxDataviewStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KxDataviewStatus) Values() []KxDataviewStatus {
+	return []KxDataviewStatus{
+		"CREATING",
+		"ACTIVE",
+		"UPDATING",
+		"FAILED",
+		"DELETING",
+	}
+}
+
+type KxDeploymentStrategy string
+
+// Enum values for KxDeploymentStrategy
+const (
+	KxDeploymentStrategyNoRestart KxDeploymentStrategy = "NO_RESTART"
+	KxDeploymentStrategyRolling   KxDeploymentStrategy = "ROLLING"
+)
+
+// Values returns all known values for KxDeploymentStrategy. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KxDeploymentStrategy) Values() []KxDeploymentStrategy {
+	return []KxDeploymentStrategy{
+		"NO_RESTART",
+		"ROLLING",
+	}
+}
+
+type KxNAS1Type string
+
+// Enum values for KxNAS1Type
+const (
+	KxNAS1TypeSsd1000 KxNAS1Type = "SSD_1000"
+	KxNAS1TypeSsd250  KxNAS1Type = "SSD_250"
+	KxNAS1TypeHdd12   KxNAS1Type = "HDD_12"
+)
+
+// Values returns all known values for KxNAS1Type. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KxNAS1Type) Values() []KxNAS1Type {
+	return []KxNAS1Type{
+		"SSD_1000",
+		"SSD_250",
+		"HDD_12",
+	}
+}
+
+type KxNodeStatus string
+
+// Enum values for KxNodeStatus
+const (
+	KxNodeStatusRunning      KxNodeStatus = "RUNNING"
+	KxNodeStatusProvisioning KxNodeStatus = "PROVISIONING"
+)
+
+// Values returns all known values for KxNodeStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KxNodeStatus) Values() []KxNodeStatus {
+	return []KxNodeStatus{
+		"RUNNING",
+		"PROVISIONING",
 	}
 }
 
@@ -262,11 +383,108 @@ const (
 )
 
 // Values returns all known values for KxSavedownStorageType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (KxSavedownStorageType) Values() []KxSavedownStorageType {
 	return []KxSavedownStorageType{
 		"SDS01",
+	}
+}
+
+type KxScalingGroupStatus string
+
+// Enum values for KxScalingGroupStatus
+const (
+	KxScalingGroupStatusCreating     KxScalingGroupStatus = "CREATING"
+	KxScalingGroupStatusCreateFailed KxScalingGroupStatus = "CREATE_FAILED"
+	KxScalingGroupStatusActive       KxScalingGroupStatus = "ACTIVE"
+	KxScalingGroupStatusDeleting     KxScalingGroupStatus = "DELETING"
+	KxScalingGroupStatusDeleted      KxScalingGroupStatus = "DELETED"
+	KxScalingGroupStatusDeleteFailed KxScalingGroupStatus = "DELETE_FAILED"
+)
+
+// Values returns all known values for KxScalingGroupStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KxScalingGroupStatus) Values() []KxScalingGroupStatus {
+	return []KxScalingGroupStatus{
+		"CREATING",
+		"CREATE_FAILED",
+		"ACTIVE",
+		"DELETING",
+		"DELETED",
+		"DELETE_FAILED",
+	}
+}
+
+type KxVolumeStatus string
+
+// Enum values for KxVolumeStatus
+const (
+	KxVolumeStatusCreating     KxVolumeStatus = "CREATING"
+	KxVolumeStatusCreateFailed KxVolumeStatus = "CREATE_FAILED"
+	KxVolumeStatusActive       KxVolumeStatus = "ACTIVE"
+	KxVolumeStatusUpdating     KxVolumeStatus = "UPDATING"
+	KxVolumeStatusUpdated      KxVolumeStatus = "UPDATED"
+	KxVolumeStatusUpdateFailed KxVolumeStatus = "UPDATE_FAILED"
+	KxVolumeStatusDeleting     KxVolumeStatus = "DELETING"
+	KxVolumeStatusDeleted      KxVolumeStatus = "DELETED"
+	KxVolumeStatusDeleteFailed KxVolumeStatus = "DELETE_FAILED"
+)
+
+// Values returns all known values for KxVolumeStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KxVolumeStatus) Values() []KxVolumeStatus {
+	return []KxVolumeStatus{
+		"CREATING",
+		"CREATE_FAILED",
+		"ACTIVE",
+		"UPDATING",
+		"UPDATED",
+		"UPDATE_FAILED",
+		"DELETING",
+		"DELETED",
+		"DELETE_FAILED",
+	}
+}
+
+type KxVolumeType string
+
+// Enum values for KxVolumeType
+const (
+	KxVolumeTypeNas1 KxVolumeType = "NAS_1"
+)
+
+// Values returns all known values for KxVolumeType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KxVolumeType) Values() []KxVolumeType {
+	return []KxVolumeType{
+		"NAS_1",
+	}
+}
+
+type RuleAction string
+
+// Enum values for RuleAction
+const (
+	RuleActionAllow RuleAction = "allow"
+	RuleActionDeny  RuleAction = "deny"
+)
+
+// Values returns all known values for RuleAction. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RuleAction) Values() []RuleAction {
+	return []RuleAction{
+		"allow",
+		"deny",
 	}
 }
 
@@ -282,8 +500,9 @@ const (
 )
 
 // Values returns all known values for TgwStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TgwStatus) Values() []TgwStatus {
 	return []TgwStatus{
 		"NONE",
@@ -291,5 +510,22 @@ func (TgwStatus) Values() []TgwStatus {
 		"UPDATING",
 		"FAILED_UPDATE",
 		"SUCCESSFULLY_UPDATED",
+	}
+}
+
+type VolumeType string
+
+// Enum values for VolumeType
+const (
+	VolumeTypeNas1 VolumeType = "NAS_1"
+)
+
+// Values returns all known values for VolumeType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VolumeType) Values() []VolumeType {
+	return []VolumeType{
+		"NAS_1",
 	}
 }

@@ -12,6 +12,7 @@ import (
 	smithyjson "github.com/aws/smithy-go/encoding/json"
 	"github.com/aws/smithy-go/middleware"
 	smithytime "github.com/aws/smithy-go/time"
+	"github.com/aws/smithy-go/tracing"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"path"
 )
@@ -26,6 +27,10 @@ func (*awsAwsjson10_serializeOpDeleteRecommendationPreferences) ID() string {
 func (m *awsAwsjson10_serializeOpDeleteRecommendationPreferences) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -68,6 +73,8 @@ func (m *awsAwsjson10_serializeOpDeleteRecommendationPreferences) HandleSerializ
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -81,6 +88,10 @@ func (*awsAwsjson10_serializeOpDescribeRecommendationExportJobs) ID() string {
 func (m *awsAwsjson10_serializeOpDescribeRecommendationExportJobs) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -123,6 +134,8 @@ func (m *awsAwsjson10_serializeOpDescribeRecommendationExportJobs) HandleSeriali
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -136,6 +149,10 @@ func (*awsAwsjson10_serializeOpExportAutoScalingGroupRecommendations) ID() strin
 func (m *awsAwsjson10_serializeOpExportAutoScalingGroupRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -178,6 +195,8 @@ func (m *awsAwsjson10_serializeOpExportAutoScalingGroupRecommendations) HandleSe
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -191,6 +210,10 @@ func (*awsAwsjson10_serializeOpExportEBSVolumeRecommendations) ID() string {
 func (m *awsAwsjson10_serializeOpExportEBSVolumeRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -233,6 +256,8 @@ func (m *awsAwsjson10_serializeOpExportEBSVolumeRecommendations) HandleSerialize
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -246,6 +271,10 @@ func (*awsAwsjson10_serializeOpExportEC2InstanceRecommendations) ID() string {
 func (m *awsAwsjson10_serializeOpExportEC2InstanceRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -288,6 +317,8 @@ func (m *awsAwsjson10_serializeOpExportEC2InstanceRecommendations) HandleSeriali
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -301,6 +332,10 @@ func (*awsAwsjson10_serializeOpExportECSServiceRecommendations) ID() string {
 func (m *awsAwsjson10_serializeOpExportECSServiceRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -343,6 +378,69 @@ func (m *awsAwsjson10_serializeOpExportECSServiceRecommendations) HandleSerializ
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+
+type awsAwsjson10_serializeOpExportIdleRecommendations struct {
+}
+
+func (*awsAwsjson10_serializeOpExportIdleRecommendations) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsAwsjson10_serializeOpExportIdleRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*ExportIdleRecommendationsInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	operationPath := "/"
+	if len(request.Request.URL.Path) == 0 {
+		request.Request.URL.Path = operationPath
+	} else {
+		request.Request.URL.Path = path.Join(request.Request.URL.Path, operationPath)
+		if request.Request.URL.Path != "/" && operationPath[len(operationPath)-1] == '/' {
+			request.Request.URL.Path += "/"
+		}
+	}
+	request.Request.Method = "POST"
+	httpBindingEncoder, err := httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	httpBindingEncoder.SetHeader("Content-Type").String("application/x-amz-json-1.0")
+	httpBindingEncoder.SetHeader("X-Amz-Target").String("ComputeOptimizerService.ExportIdleRecommendations")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsAwsjson10_serializeOpDocumentExportIdleRecommendationsInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = httpBindingEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -356,6 +454,10 @@ func (*awsAwsjson10_serializeOpExportLambdaFunctionRecommendations) ID() string 
 func (m *awsAwsjson10_serializeOpExportLambdaFunctionRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -398,6 +500,130 @@ func (m *awsAwsjson10_serializeOpExportLambdaFunctionRecommendations) HandleSeri
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+
+type awsAwsjson10_serializeOpExportLicenseRecommendations struct {
+}
+
+func (*awsAwsjson10_serializeOpExportLicenseRecommendations) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsAwsjson10_serializeOpExportLicenseRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*ExportLicenseRecommendationsInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	operationPath := "/"
+	if len(request.Request.URL.Path) == 0 {
+		request.Request.URL.Path = operationPath
+	} else {
+		request.Request.URL.Path = path.Join(request.Request.URL.Path, operationPath)
+		if request.Request.URL.Path != "/" && operationPath[len(operationPath)-1] == '/' {
+			request.Request.URL.Path += "/"
+		}
+	}
+	request.Request.Method = "POST"
+	httpBindingEncoder, err := httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	httpBindingEncoder.SetHeader("Content-Type").String("application/x-amz-json-1.0")
+	httpBindingEncoder.SetHeader("X-Amz-Target").String("ComputeOptimizerService.ExportLicenseRecommendations")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsAwsjson10_serializeOpDocumentExportLicenseRecommendationsInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = httpBindingEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+
+type awsAwsjson10_serializeOpExportRDSDatabaseRecommendations struct {
+}
+
+func (*awsAwsjson10_serializeOpExportRDSDatabaseRecommendations) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsAwsjson10_serializeOpExportRDSDatabaseRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*ExportRDSDatabaseRecommendationsInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	operationPath := "/"
+	if len(request.Request.URL.Path) == 0 {
+		request.Request.URL.Path = operationPath
+	} else {
+		request.Request.URL.Path = path.Join(request.Request.URL.Path, operationPath)
+		if request.Request.URL.Path != "/" && operationPath[len(operationPath)-1] == '/' {
+			request.Request.URL.Path += "/"
+		}
+	}
+	request.Request.Method = "POST"
+	httpBindingEncoder, err := httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	httpBindingEncoder.SetHeader("Content-Type").String("application/x-amz-json-1.0")
+	httpBindingEncoder.SetHeader("X-Amz-Target").String("ComputeOptimizerService.ExportRDSDatabaseRecommendations")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsAwsjson10_serializeOpDocumentExportRDSDatabaseRecommendationsInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = httpBindingEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -411,6 +637,10 @@ func (*awsAwsjson10_serializeOpGetAutoScalingGroupRecommendations) ID() string {
 func (m *awsAwsjson10_serializeOpGetAutoScalingGroupRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -453,6 +683,8 @@ func (m *awsAwsjson10_serializeOpGetAutoScalingGroupRecommendations) HandleSeria
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -466,6 +698,10 @@ func (*awsAwsjson10_serializeOpGetEBSVolumeRecommendations) ID() string {
 func (m *awsAwsjson10_serializeOpGetEBSVolumeRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -508,6 +744,8 @@ func (m *awsAwsjson10_serializeOpGetEBSVolumeRecommendations) HandleSerialize(ct
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -521,6 +759,10 @@ func (*awsAwsjson10_serializeOpGetEC2InstanceRecommendations) ID() string {
 func (m *awsAwsjson10_serializeOpGetEC2InstanceRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -563,6 +805,8 @@ func (m *awsAwsjson10_serializeOpGetEC2InstanceRecommendations) HandleSerialize(
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -576,6 +820,10 @@ func (*awsAwsjson10_serializeOpGetEC2RecommendationProjectedMetrics) ID() string
 func (m *awsAwsjson10_serializeOpGetEC2RecommendationProjectedMetrics) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -618,6 +866,8 @@ func (m *awsAwsjson10_serializeOpGetEC2RecommendationProjectedMetrics) HandleSer
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -631,6 +881,10 @@ func (*awsAwsjson10_serializeOpGetECSServiceRecommendationProjectedMetrics) ID()
 func (m *awsAwsjson10_serializeOpGetECSServiceRecommendationProjectedMetrics) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -673,6 +927,8 @@ func (m *awsAwsjson10_serializeOpGetECSServiceRecommendationProjectedMetrics) Ha
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -686,6 +942,10 @@ func (*awsAwsjson10_serializeOpGetECSServiceRecommendations) ID() string {
 func (m *awsAwsjson10_serializeOpGetECSServiceRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -728,6 +988,8 @@ func (m *awsAwsjson10_serializeOpGetECSServiceRecommendations) HandleSerialize(c
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -741,6 +1003,10 @@ func (*awsAwsjson10_serializeOpGetEffectiveRecommendationPreferences) ID() strin
 func (m *awsAwsjson10_serializeOpGetEffectiveRecommendationPreferences) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -783,6 +1049,8 @@ func (m *awsAwsjson10_serializeOpGetEffectiveRecommendationPreferences) HandleSe
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -796,6 +1064,10 @@ func (*awsAwsjson10_serializeOpGetEnrollmentStatus) ID() string {
 func (m *awsAwsjson10_serializeOpGetEnrollmentStatus) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -838,6 +1110,8 @@ func (m *awsAwsjson10_serializeOpGetEnrollmentStatus) HandleSerialize(ctx contex
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -851,6 +1125,10 @@ func (*awsAwsjson10_serializeOpGetEnrollmentStatusesForOrganization) ID() string
 func (m *awsAwsjson10_serializeOpGetEnrollmentStatusesForOrganization) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -893,6 +1171,69 @@ func (m *awsAwsjson10_serializeOpGetEnrollmentStatusesForOrganization) HandleSer
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+
+type awsAwsjson10_serializeOpGetIdleRecommendations struct {
+}
+
+func (*awsAwsjson10_serializeOpGetIdleRecommendations) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsAwsjson10_serializeOpGetIdleRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*GetIdleRecommendationsInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	operationPath := "/"
+	if len(request.Request.URL.Path) == 0 {
+		request.Request.URL.Path = operationPath
+	} else {
+		request.Request.URL.Path = path.Join(request.Request.URL.Path, operationPath)
+		if request.Request.URL.Path != "/" && operationPath[len(operationPath)-1] == '/' {
+			request.Request.URL.Path += "/"
+		}
+	}
+	request.Request.Method = "POST"
+	httpBindingEncoder, err := httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	httpBindingEncoder.SetHeader("Content-Type").String("application/x-amz-json-1.0")
+	httpBindingEncoder.SetHeader("X-Amz-Target").String("ComputeOptimizerService.GetIdleRecommendations")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsAwsjson10_serializeOpDocumentGetIdleRecommendationsInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = httpBindingEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -906,6 +1247,10 @@ func (*awsAwsjson10_serializeOpGetLambdaFunctionRecommendations) ID() string {
 func (m *awsAwsjson10_serializeOpGetLambdaFunctionRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -948,6 +1293,191 @@ func (m *awsAwsjson10_serializeOpGetLambdaFunctionRecommendations) HandleSeriali
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+
+type awsAwsjson10_serializeOpGetLicenseRecommendations struct {
+}
+
+func (*awsAwsjson10_serializeOpGetLicenseRecommendations) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsAwsjson10_serializeOpGetLicenseRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*GetLicenseRecommendationsInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	operationPath := "/"
+	if len(request.Request.URL.Path) == 0 {
+		request.Request.URL.Path = operationPath
+	} else {
+		request.Request.URL.Path = path.Join(request.Request.URL.Path, operationPath)
+		if request.Request.URL.Path != "/" && operationPath[len(operationPath)-1] == '/' {
+			request.Request.URL.Path += "/"
+		}
+	}
+	request.Request.Method = "POST"
+	httpBindingEncoder, err := httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	httpBindingEncoder.SetHeader("Content-Type").String("application/x-amz-json-1.0")
+	httpBindingEncoder.SetHeader("X-Amz-Target").String("ComputeOptimizerService.GetLicenseRecommendations")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsAwsjson10_serializeOpDocumentGetLicenseRecommendationsInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = httpBindingEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+
+type awsAwsjson10_serializeOpGetRDSDatabaseRecommendationProjectedMetrics struct {
+}
+
+func (*awsAwsjson10_serializeOpGetRDSDatabaseRecommendationProjectedMetrics) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsAwsjson10_serializeOpGetRDSDatabaseRecommendationProjectedMetrics) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*GetRDSDatabaseRecommendationProjectedMetricsInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	operationPath := "/"
+	if len(request.Request.URL.Path) == 0 {
+		request.Request.URL.Path = operationPath
+	} else {
+		request.Request.URL.Path = path.Join(request.Request.URL.Path, operationPath)
+		if request.Request.URL.Path != "/" && operationPath[len(operationPath)-1] == '/' {
+			request.Request.URL.Path += "/"
+		}
+	}
+	request.Request.Method = "POST"
+	httpBindingEncoder, err := httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	httpBindingEncoder.SetHeader("Content-Type").String("application/x-amz-json-1.0")
+	httpBindingEncoder.SetHeader("X-Amz-Target").String("ComputeOptimizerService.GetRDSDatabaseRecommendationProjectedMetrics")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsAwsjson10_serializeOpDocumentGetRDSDatabaseRecommendationProjectedMetricsInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = httpBindingEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
+	return next.HandleSerialize(ctx, in)
+}
+
+type awsAwsjson10_serializeOpGetRDSDatabaseRecommendations struct {
+}
+
+func (*awsAwsjson10_serializeOpGetRDSDatabaseRecommendations) ID() string {
+	return "OperationSerializer"
+}
+
+func (m *awsAwsjson10_serializeOpGetRDSDatabaseRecommendations) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
+	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
+) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
+	request, ok := in.Request.(*smithyhttp.Request)
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
+	}
+
+	input, ok := in.Parameters.(*GetRDSDatabaseRecommendationsInput)
+	_ = input
+	if !ok {
+		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown input parameters type %T", in.Parameters)}
+	}
+
+	operationPath := "/"
+	if len(request.Request.URL.Path) == 0 {
+		request.Request.URL.Path = operationPath
+	} else {
+		request.Request.URL.Path = path.Join(request.Request.URL.Path, operationPath)
+		if request.Request.URL.Path != "/" && operationPath[len(operationPath)-1] == '/' {
+			request.Request.URL.Path += "/"
+		}
+	}
+	request.Request.Method = "POST"
+	httpBindingEncoder, err := httpbinding.NewEncoder(request.URL.Path, request.URL.RawQuery, request.Header)
+	if err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	httpBindingEncoder.SetHeader("Content-Type").String("application/x-amz-json-1.0")
+	httpBindingEncoder.SetHeader("X-Amz-Target").String("ComputeOptimizerService.GetRDSDatabaseRecommendations")
+
+	jsonEncoder := smithyjson.NewEncoder()
+	if err := awsAwsjson10_serializeOpDocumentGetRDSDatabaseRecommendationsInput(input, jsonEncoder.Value); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request, err = request.SetStream(bytes.NewReader(jsonEncoder.Bytes())); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+
+	if request.Request, err = httpBindingEncoder.Encode(request.Request); err != nil {
+		return out, metadata, &smithy.SerializationError{Err: err}
+	}
+	in.Request = request
+
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -961,6 +1491,10 @@ func (*awsAwsjson10_serializeOpGetRecommendationPreferences) ID() string {
 func (m *awsAwsjson10_serializeOpGetRecommendationPreferences) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1003,6 +1537,8 @@ func (m *awsAwsjson10_serializeOpGetRecommendationPreferences) HandleSerialize(c
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -1016,6 +1552,10 @@ func (*awsAwsjson10_serializeOpGetRecommendationSummaries) ID() string {
 func (m *awsAwsjson10_serializeOpGetRecommendationSummaries) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1058,6 +1598,8 @@ func (m *awsAwsjson10_serializeOpGetRecommendationSummaries) HandleSerialize(ctx
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -1071,6 +1613,10 @@ func (*awsAwsjson10_serializeOpPutRecommendationPreferences) ID() string {
 func (m *awsAwsjson10_serializeOpPutRecommendationPreferences) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1113,6 +1659,8 @@ func (m *awsAwsjson10_serializeOpPutRecommendationPreferences) HandleSerialize(c
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 
@@ -1126,6 +1674,10 @@ func (*awsAwsjson10_serializeOpUpdateEnrollmentStatus) ID() string {
 func (m *awsAwsjson10_serializeOpUpdateEnrollmentStatus) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
 	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
 ) {
+	_, span := tracing.StartSpan(ctx, "OperationSerializer")
+	endTimer := startMetricTimer(ctx, "client.call.serialization_duration")
+	defer endTimer()
+	defer span.End()
 	request, ok := in.Request.(*smithyhttp.Request)
 	if !ok {
 		return out, metadata, &smithy.SerializationError{Err: fmt.Errorf("unknown transport type %T", in.Request)}
@@ -1168,6 +1720,8 @@ func (m *awsAwsjson10_serializeOpUpdateEnrollmentStatus) HandleSerialize(ctx con
 	}
 	in.Request = request
 
+	endTimer()
+	span.End()
 	return next.HandleSerialize(ctx, in)
 }
 func awsAwsjson10_serializeDocumentAccountIds(v []string, value smithyjson.Value) error {
@@ -1200,6 +1754,23 @@ func awsAwsjson10_serializeDocumentCpuVendorArchitectures(v []types.CpuVendorArc
 		av := array.Value()
 		av.String(string(v[i]))
 	}
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentCustomizableMetricParameters(v *types.CustomizableMetricParameters, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if len(v.Headroom) > 0 {
+		ok := object.Key("headroom")
+		ok.String(string(v.Headroom))
+	}
+
+	if len(v.Threshold) > 0 {
+		ok := object.Key("threshold")
+		ok.String(string(v.Threshold))
+	}
+
 	return nil
 }
 
@@ -1321,6 +1892,17 @@ func awsAwsjson10_serializeDocumentExportableECSServiceFields(v []types.Exportab
 	return nil
 }
 
+func awsAwsjson10_serializeDocumentExportableIdleFields(v []types.ExportableIdleField, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		av.String(string(v[i]))
+	}
+	return nil
+}
+
 func awsAwsjson10_serializeDocumentExportableInstanceFields(v []types.ExportableInstanceField, value smithyjson.Value) error {
 	array := value.Array()
 	defer array.Close()
@@ -1333,6 +1915,28 @@ func awsAwsjson10_serializeDocumentExportableInstanceFields(v []types.Exportable
 }
 
 func awsAwsjson10_serializeDocumentExportableLambdaFunctionFields(v []types.ExportableLambdaFunctionField, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		av.String(string(v[i]))
+	}
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentExportableLicenseFields(v []types.ExportableLicenseField, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		av.String(string(v[i]))
+	}
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentExportableRDSDBFields(v []types.ExportableRDSDBField, value smithyjson.Value) error {
 	array := value.Array()
 	defer array.Close()
 
@@ -1416,6 +2020,38 @@ func awsAwsjson10_serializeDocumentFunctionArns(v []string, value smithyjson.Val
 	for i := range v {
 		av := array.Value()
 		av.String(v[i])
+	}
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentIdleRecommendationFilter(v *types.IdleRecommendationFilter, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if len(v.Name) > 0 {
+		ok := object.Key("name")
+		ok.String(string(v.Name))
+	}
+
+	if v.Values != nil {
+		ok := object.Key("values")
+		if err := awsAwsjson10_serializeDocumentFilterValues(v.Values, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentIdleRecommendationFilters(v []types.IdleRecommendationFilter, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsAwsjson10_serializeDocumentIdleRecommendationFilter(&v[i], av); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -1506,6 +2142,137 @@ func awsAwsjson10_serializeDocumentLambdaFunctionRecommendationFilters(v []types
 	return nil
 }
 
+func awsAwsjson10_serializeDocumentLicenseRecommendationFilter(v *types.LicenseRecommendationFilter, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if len(v.Name) > 0 {
+		ok := object.Key("name")
+		ok.String(string(v.Name))
+	}
+
+	if v.Values != nil {
+		ok := object.Key("values")
+		if err := awsAwsjson10_serializeDocumentFilterValues(v.Values, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentLicenseRecommendationFilters(v []types.LicenseRecommendationFilter, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsAwsjson10_serializeDocumentLicenseRecommendationFilter(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentOrderBy(v *types.OrderBy, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if len(v.Dimension) > 0 {
+		ok := object.Key("dimension")
+		ok.String(string(v.Dimension))
+	}
+
+	if len(v.Order) > 0 {
+		ok := object.Key("order")
+		ok.String(string(v.Order))
+	}
+
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentPreferredResource(v *types.PreferredResource, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.ExcludeList != nil {
+		ok := object.Key("excludeList")
+		if err := awsAwsjson10_serializeDocumentPreferredResourceValues(v.ExcludeList, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.IncludeList != nil {
+		ok := object.Key("includeList")
+		if err := awsAwsjson10_serializeDocumentPreferredResourceValues(v.IncludeList, ok); err != nil {
+			return err
+		}
+	}
+
+	if len(v.Name) > 0 {
+		ok := object.Key("name")
+		ok.String(string(v.Name))
+	}
+
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentPreferredResources(v []types.PreferredResource, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsAwsjson10_serializeDocumentPreferredResource(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentPreferredResourceValues(v []string, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		av.String(v[i])
+	}
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentRDSDBRecommendationFilter(v *types.RDSDBRecommendationFilter, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if len(v.Name) > 0 {
+		ok := object.Key("name")
+		ok.String(string(v.Name))
+	}
+
+	if v.Values != nil {
+		ok := object.Key("values")
+		if err := awsAwsjson10_serializeDocumentFilterValues(v.Values, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentRDSDBRecommendationFilters(v []types.RDSDBRecommendationFilter, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsAwsjson10_serializeDocumentRDSDBRecommendationFilter(&v[i], av); err != nil {
+			return err
+		}
+	}
+	return nil
+}
+
 func awsAwsjson10_serializeDocumentRecommendationPreferenceNames(v []types.RecommendationPreferenceName, value smithyjson.Value) error {
 	array := value.Array()
 	defer array.Close()
@@ -1528,6 +2295,17 @@ func awsAwsjson10_serializeDocumentRecommendationPreferences(v *types.Recommenda
 		}
 	}
 
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentResourceArns(v []string, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		av.String(v[i])
+	}
 	return nil
 }
 
@@ -1572,6 +2350,38 @@ func awsAwsjson10_serializeDocumentServiceArns(v []string, value smithyjson.Valu
 	for i := range v {
 		av := array.Value()
 		av.String(v[i])
+	}
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentUtilizationPreference(v *types.UtilizationPreference, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if len(v.MetricName) > 0 {
+		ok := object.Key("metricName")
+		ok.String(string(v.MetricName))
+	}
+
+	if v.MetricParameters != nil {
+		ok := object.Key("metricParameters")
+		if err := awsAwsjson10_serializeDocumentCustomizableMetricParameters(v.MetricParameters, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsAwsjson10_serializeDocumentUtilizationPreferences(v []types.UtilizationPreference, value smithyjson.Value) error {
+	array := value.Array()
+	defer array.Close()
+
+	for i := range v {
+		av := array.Value()
+		if err := awsAwsjson10_serializeDocumentUtilizationPreference(&v[i], av); err != nil {
+			return err
+		}
 	}
 	return nil
 }
@@ -1838,6 +2648,51 @@ func awsAwsjson10_serializeOpDocumentExportECSServiceRecommendationsInput(v *Exp
 	return nil
 }
 
+func awsAwsjson10_serializeOpDocumentExportIdleRecommendationsInput(v *ExportIdleRecommendationsInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.AccountIds != nil {
+		ok := object.Key("accountIds")
+		if err := awsAwsjson10_serializeDocumentAccountIds(v.AccountIds, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.FieldsToExport != nil {
+		ok := object.Key("fieldsToExport")
+		if err := awsAwsjson10_serializeDocumentExportableIdleFields(v.FieldsToExport, ok); err != nil {
+			return err
+		}
+	}
+
+	if len(v.FileFormat) > 0 {
+		ok := object.Key("fileFormat")
+		ok.String(string(v.FileFormat))
+	}
+
+	if v.Filters != nil {
+		ok := object.Key("filters")
+		if err := awsAwsjson10_serializeDocumentIdleRecommendationFilters(v.Filters, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.IncludeMemberAccounts {
+		ok := object.Key("includeMemberAccounts")
+		ok.Boolean(v.IncludeMemberAccounts)
+	}
+
+	if v.S3DestinationConfig != nil {
+		ok := object.Key("s3DestinationConfig")
+		if err := awsAwsjson10_serializeDocumentS3DestinationConfig(v.S3DestinationConfig, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func awsAwsjson10_serializeOpDocumentExportLambdaFunctionRecommendationsInput(v *ExportLambdaFunctionRecommendationsInput, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
@@ -1871,6 +2726,103 @@ func awsAwsjson10_serializeOpDocumentExportLambdaFunctionRecommendationsInput(v 
 	if v.IncludeMemberAccounts {
 		ok := object.Key("includeMemberAccounts")
 		ok.Boolean(v.IncludeMemberAccounts)
+	}
+
+	if v.S3DestinationConfig != nil {
+		ok := object.Key("s3DestinationConfig")
+		if err := awsAwsjson10_serializeDocumentS3DestinationConfig(v.S3DestinationConfig, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsAwsjson10_serializeOpDocumentExportLicenseRecommendationsInput(v *ExportLicenseRecommendationsInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.AccountIds != nil {
+		ok := object.Key("accountIds")
+		if err := awsAwsjson10_serializeDocumentAccountIds(v.AccountIds, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.FieldsToExport != nil {
+		ok := object.Key("fieldsToExport")
+		if err := awsAwsjson10_serializeDocumentExportableLicenseFields(v.FieldsToExport, ok); err != nil {
+			return err
+		}
+	}
+
+	if len(v.FileFormat) > 0 {
+		ok := object.Key("fileFormat")
+		ok.String(string(v.FileFormat))
+	}
+
+	if v.Filters != nil {
+		ok := object.Key("filters")
+		if err := awsAwsjson10_serializeDocumentLicenseRecommendationFilters(v.Filters, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.IncludeMemberAccounts {
+		ok := object.Key("includeMemberAccounts")
+		ok.Boolean(v.IncludeMemberAccounts)
+	}
+
+	if v.S3DestinationConfig != nil {
+		ok := object.Key("s3DestinationConfig")
+		if err := awsAwsjson10_serializeDocumentS3DestinationConfig(v.S3DestinationConfig, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsAwsjson10_serializeOpDocumentExportRDSDatabaseRecommendationsInput(v *ExportRDSDatabaseRecommendationsInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.AccountIds != nil {
+		ok := object.Key("accountIds")
+		if err := awsAwsjson10_serializeDocumentAccountIds(v.AccountIds, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.FieldsToExport != nil {
+		ok := object.Key("fieldsToExport")
+		if err := awsAwsjson10_serializeDocumentExportableRDSDBFields(v.FieldsToExport, ok); err != nil {
+			return err
+		}
+	}
+
+	if len(v.FileFormat) > 0 {
+		ok := object.Key("fileFormat")
+		ok.String(string(v.FileFormat))
+	}
+
+	if v.Filters != nil {
+		ok := object.Key("filters")
+		if err := awsAwsjson10_serializeDocumentRDSDBRecommendationFilters(v.Filters, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.IncludeMemberAccounts {
+		ok := object.Key("includeMemberAccounts")
+		ok.Boolean(v.IncludeMemberAccounts)
+	}
+
+	if v.RecommendationPreferences != nil {
+		ok := object.Key("recommendationPreferences")
+		if err := awsAwsjson10_serializeDocumentRecommendationPreferences(v.RecommendationPreferences, ok); err != nil {
+			return err
+		}
 	}
 
 	if v.S3DestinationConfig != nil {
@@ -2163,6 +3115,51 @@ func awsAwsjson10_serializeOpDocumentGetEnrollmentStatusInput(v *GetEnrollmentSt
 	return nil
 }
 
+func awsAwsjson10_serializeOpDocumentGetIdleRecommendationsInput(v *GetIdleRecommendationsInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.AccountIds != nil {
+		ok := object.Key("accountIds")
+		if err := awsAwsjson10_serializeDocumentAccountIds(v.AccountIds, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Filters != nil {
+		ok := object.Key("filters")
+		if err := awsAwsjson10_serializeDocumentIdleRecommendationFilters(v.Filters, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.MaxResults != nil {
+		ok := object.Key("maxResults")
+		ok.Integer(*v.MaxResults)
+	}
+
+	if v.NextToken != nil {
+		ok := object.Key("nextToken")
+		ok.String(*v.NextToken)
+	}
+
+	if v.OrderBy != nil {
+		ok := object.Key("orderBy")
+		if err := awsAwsjson10_serializeDocumentOrderBy(v.OrderBy, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ResourceArns != nil {
+		ok := object.Key("resourceArns")
+		if err := awsAwsjson10_serializeDocumentResourceArns(v.ResourceArns, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
 func awsAwsjson10_serializeOpDocumentGetLambdaFunctionRecommendationsInput(v *GetLambdaFunctionRecommendationsInput, value smithyjson.Value) error {
 	object := value.Object()
 	defer object.Close()
@@ -2196,6 +3193,128 @@ func awsAwsjson10_serializeOpDocumentGetLambdaFunctionRecommendationsInput(v *Ge
 	if v.NextToken != nil {
 		ok := object.Key("nextToken")
 		ok.String(*v.NextToken)
+	}
+
+	return nil
+}
+
+func awsAwsjson10_serializeOpDocumentGetLicenseRecommendationsInput(v *GetLicenseRecommendationsInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.AccountIds != nil {
+		ok := object.Key("accountIds")
+		if err := awsAwsjson10_serializeDocumentAccountIds(v.AccountIds, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Filters != nil {
+		ok := object.Key("filters")
+		if err := awsAwsjson10_serializeDocumentLicenseRecommendationFilters(v.Filters, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.MaxResults != nil {
+		ok := object.Key("maxResults")
+		ok.Integer(*v.MaxResults)
+	}
+
+	if v.NextToken != nil {
+		ok := object.Key("nextToken")
+		ok.String(*v.NextToken)
+	}
+
+	if v.ResourceArns != nil {
+		ok := object.Key("resourceArns")
+		if err := awsAwsjson10_serializeDocumentResourceArns(v.ResourceArns, ok); err != nil {
+			return err
+		}
+	}
+
+	return nil
+}
+
+func awsAwsjson10_serializeOpDocumentGetRDSDatabaseRecommendationProjectedMetricsInput(v *GetRDSDatabaseRecommendationProjectedMetricsInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.EndTime != nil {
+		ok := object.Key("endTime")
+		ok.Double(smithytime.FormatEpochSeconds(*v.EndTime))
+	}
+
+	{
+		ok := object.Key("period")
+		ok.Integer(v.Period)
+	}
+
+	if v.RecommendationPreferences != nil {
+		ok := object.Key("recommendationPreferences")
+		if err := awsAwsjson10_serializeDocumentRecommendationPreferences(v.RecommendationPreferences, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ResourceArn != nil {
+		ok := object.Key("resourceArn")
+		ok.String(*v.ResourceArn)
+	}
+
+	if v.StartTime != nil {
+		ok := object.Key("startTime")
+		ok.Double(smithytime.FormatEpochSeconds(*v.StartTime))
+	}
+
+	if len(v.Stat) > 0 {
+		ok := object.Key("stat")
+		ok.String(string(v.Stat))
+	}
+
+	return nil
+}
+
+func awsAwsjson10_serializeOpDocumentGetRDSDatabaseRecommendationsInput(v *GetRDSDatabaseRecommendationsInput, value smithyjson.Value) error {
+	object := value.Object()
+	defer object.Close()
+
+	if v.AccountIds != nil {
+		ok := object.Key("accountIds")
+		if err := awsAwsjson10_serializeDocumentAccountIds(v.AccountIds, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.Filters != nil {
+		ok := object.Key("filters")
+		if err := awsAwsjson10_serializeDocumentRDSDBRecommendationFilters(v.Filters, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.MaxResults != nil {
+		ok := object.Key("maxResults")
+		ok.Integer(*v.MaxResults)
+	}
+
+	if v.NextToken != nil {
+		ok := object.Key("nextToken")
+		ok.String(*v.NextToken)
+	}
+
+	if v.RecommendationPreferences != nil {
+		ok := object.Key("recommendationPreferences")
+		if err := awsAwsjson10_serializeDocumentRecommendationPreferences(v.RecommendationPreferences, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.ResourceArns != nil {
+		ok := object.Key("resourceArns")
+		if err := awsAwsjson10_serializeDocumentResourceArns(v.ResourceArns, ok); err != nil {
+			return err
+		}
 	}
 
 	return nil
@@ -2275,14 +3394,38 @@ func awsAwsjson10_serializeOpDocumentPutRecommendationPreferencesInput(v *PutRec
 		ok.String(string(v.InferredWorkloadTypes))
 	}
 
+	if len(v.LookBackPeriod) > 0 {
+		ok := object.Key("lookBackPeriod")
+		ok.String(string(v.LookBackPeriod))
+	}
+
+	if v.PreferredResources != nil {
+		ok := object.Key("preferredResources")
+		if err := awsAwsjson10_serializeDocumentPreferredResources(v.PreferredResources, ok); err != nil {
+			return err
+		}
+	}
+
 	if len(v.ResourceType) > 0 {
 		ok := object.Key("resourceType")
 		ok.String(string(v.ResourceType))
 	}
 
+	if len(v.SavingsEstimationMode) > 0 {
+		ok := object.Key("savingsEstimationMode")
+		ok.String(string(v.SavingsEstimationMode))
+	}
+
 	if v.Scope != nil {
 		ok := object.Key("scope")
 		if err := awsAwsjson10_serializeDocumentScope(v.Scope, ok); err != nil {
+			return err
+		}
+	}
+
+	if v.UtilizationPreferences != nil {
+		ok := object.Key("utilizationPreferences")
+		if err := awsAwsjson10_serializeDocumentUtilizationPreferences(v.UtilizationPreferences, ok); err != nil {
 			return err
 		}
 	}

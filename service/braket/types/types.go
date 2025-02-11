@@ -20,6 +20,22 @@ type AlgorithmSpecification struct {
 	noSmithyDocumentSerde
 }
 
+// The Amazon Braket resource and the association type.
+type Association struct {
+
+	// The Amazon Braket resource arn.
+	//
+	// This member is required.
+	Arn *string
+
+	// The association type for the specified Amazon Braket resource arn.
+	//
+	// This member is required.
+	Type AssociationType
+
+	noSmithyDocumentSerde
+}
+
 // The container image used to create an Amazon Braket job.
 type ContainerImage struct {
 
@@ -55,6 +71,26 @@ type DeviceConfig struct {
 	noSmithyDocumentSerde
 }
 
+// Information about tasks and jobs queued on a device.
+type DeviceQueueInfo struct {
+
+	// The name of the queue.
+	//
+	// This member is required.
+	Queue QueueName
+
+	// The number of jobs or tasks in the queue for a given device.
+	//
+	// This member is required.
+	QueueSize *string
+
+	// Optional. Specifies the priority of the queue. Tasks in a priority queue are
+	// processed before the tasks in a normal queue.
+	QueuePriority QueuePriority
+
+	noSmithyDocumentSerde
+}
+
 // Includes information about the device.
 type DeviceSummary struct {
 
@@ -82,6 +118,27 @@ type DeviceSummary struct {
 	//
 	// This member is required.
 	ProviderName *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the queue for a specified job.
+type HybridJobQueueInfo struct {
+
+	// Current position of the job in the jobs queue.
+	//
+	// This member is required.
+	Position *string
+
+	// The name of the queue.
+	//
+	// This member is required.
+	Queue QueueName
+
+	// Optional. Provides more information about the queue position. For example, if
+	// the job is complete and no longer in the queue, the message field contains that
+	// information.
+	Message *string
 
 	noSmithyDocumentSerde
 }
@@ -154,7 +211,7 @@ type JobEventDetails struct {
 	// A message describing the event that occurred related to the Amazon Braket job.
 	Message *string
 
-	// TThe type of event that occurred related to the Amazon Braket job.
+	// The type of event that occurred related to the Amazon Braket job.
 	TimeOfEvent *time.Time
 
 	noSmithyDocumentSerde
@@ -224,6 +281,31 @@ type JobSummary struct {
 	// A tag object that consists of a key and an optional value, used to manage
 	// metadata for Amazon Braket resources.
 	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the queue for the specified quantum task.
+type QuantumTaskQueueInfo struct {
+
+	// Current position of the task in the quantum tasks queue.
+	//
+	// This member is required.
+	Position *string
+
+	// The name of the queue.
+	//
+	// This member is required.
+	Queue QueueName
+
+	// Optional. Provides more information about the queue position. For example, if
+	// the task is complete and no longer in the queue, the message field contains that
+	// information.
+	Message *string
+
+	// Optional. Specifies the priority of the queue. Quantum tasks in a priority
+	// queue are processed before the tasks in a normal queue.
+	QueuePriority QueuePriority
 
 	noSmithyDocumentSerde
 }

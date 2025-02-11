@@ -10,6 +10,26 @@ import (
 	"github.com/aws/smithy-go/middleware"
 )
 
+type validateOpAcceptAccountLinkInvitation struct {
+}
+
+func (*validateOpAcceptAccountLinkInvitation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpAcceptAccountLinkInvitation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*AcceptAccountLinkInvitationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpAcceptAccountLinkInvitationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpAssociateConnectionAlias struct {
 }
 
@@ -50,6 +70,26 @@ func (m *validateOpAssociateIpGroups) HandleInitialize(ctx context.Context, in m
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpAssociateWorkspaceApplication struct {
+}
+
+func (*validateOpAssociateWorkspaceApplication) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpAssociateWorkspaceApplication) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*AssociateWorkspaceApplicationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpAssociateWorkspaceApplicationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpAuthorizeIpRules struct {
 }
 
@@ -85,6 +125,26 @@ func (m *validateOpCopyWorkspaceImage) HandleInitialize(ctx context.Context, in 
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpCopyWorkspaceImageInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateAccountLinkInvitation struct {
+}
+
+func (*validateOpCreateAccountLinkInvitation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateAccountLinkInvitation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateAccountLinkInvitationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateAccountLinkInvitationInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -270,6 +330,46 @@ func (m *validateOpCreateWorkspaces) HandleInitialize(ctx context.Context, in mi
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateWorkspacesPool struct {
+}
+
+func (*validateOpCreateWorkspacesPool) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateWorkspacesPool) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateWorkspacesPoolInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateWorkspacesPoolInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteAccountLinkInvitation struct {
+}
+
+func (*validateOpDeleteAccountLinkInvitation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteAccountLinkInvitation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteAccountLinkInvitationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteAccountLinkInvitationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteClientBranding struct {
 }
 
@@ -390,6 +490,26 @@ func (m *validateOpDeleteWorkspaceImage) HandleInitialize(ctx context.Context, i
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeployWorkspaceApplications struct {
+}
+
+func (*validateOpDeployWorkspaceApplications) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeployWorkspaceApplications) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeployWorkspaceApplicationsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeployWorkspaceApplicationsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeregisterWorkspaceDirectory struct {
 }
 
@@ -405,6 +525,46 @@ func (m *validateOpDeregisterWorkspaceDirectory) HandleInitialize(ctx context.Co
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeregisterWorkspaceDirectoryInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeApplicationAssociations struct {
+}
+
+func (*validateOpDescribeApplicationAssociations) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeApplicationAssociations) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeApplicationAssociationsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeApplicationAssociationsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeBundleAssociations struct {
+}
+
+func (*validateOpDescribeBundleAssociations) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeBundleAssociations) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeBundleAssociationsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeBundleAssociationsInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -490,6 +650,26 @@ func (m *validateOpDescribeConnectionAliasPermissions) HandleInitialize(ctx cont
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDescribeImageAssociations struct {
+}
+
+func (*validateOpDescribeImageAssociations) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeImageAssociations) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeImageAssociationsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeImageAssociationsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDescribeTags struct {
 }
 
@@ -505,6 +685,46 @@ func (m *validateOpDescribeTags) HandleInitialize(ctx context.Context, in middle
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDescribeTagsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeWorkspaceAssociations struct {
+}
+
+func (*validateOpDescribeWorkspaceAssociations) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeWorkspaceAssociations) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeWorkspaceAssociationsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeWorkspaceAssociationsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeWorkspaceDirectories struct {
+}
+
+func (*validateOpDescribeWorkspaceDirectories) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeWorkspaceDirectories) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeWorkspaceDirectoriesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeWorkspaceDirectoriesInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -550,6 +770,46 @@ func (m *validateOpDescribeWorkspaceSnapshots) HandleInitialize(ctx context.Cont
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDescribeWorkspacesPoolSessions struct {
+}
+
+func (*validateOpDescribeWorkspacesPoolSessions) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeWorkspacesPoolSessions) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeWorkspacesPoolSessionsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeWorkspacesPoolSessionsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDescribeWorkspacesPools struct {
+}
+
+func (*validateOpDescribeWorkspacesPools) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDescribeWorkspacesPools) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DescribeWorkspacesPoolsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDescribeWorkspacesPoolsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDisassociateConnectionAlias struct {
 }
 
@@ -585,6 +845,26 @@ func (m *validateOpDisassociateIpGroups) HandleInitialize(ctx context.Context, i
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDisassociateIpGroupsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDisassociateWorkspaceApplication struct {
+}
+
+func (*validateOpDisassociateWorkspaceApplication) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDisassociateWorkspaceApplication) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DisassociateWorkspaceApplicationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDisassociateWorkspaceApplicationInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -750,6 +1030,26 @@ func (m *validateOpModifySelfservicePermissions) HandleInitialize(ctx context.Co
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpModifyStreamingProperties struct {
+}
+
+func (*validateOpModifyStreamingProperties) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpModifyStreamingProperties) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ModifyStreamingPropertiesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpModifyStreamingPropertiesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpModifyWorkspaceAccessProperties struct {
 }
 
@@ -890,6 +1190,26 @@ func (m *validateOpRegisterWorkspaceDirectory) HandleInitialize(ctx context.Cont
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpRejectAccountLinkInvitation struct {
+}
+
+func (*validateOpRejectAccountLinkInvitation) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpRejectAccountLinkInvitation) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*RejectAccountLinkInvitationInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpRejectAccountLinkInvitationInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpRestoreWorkspace struct {
 }
 
@@ -950,6 +1270,26 @@ func (m *validateOpStartWorkspaces) HandleInitialize(ctx context.Context, in mid
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpStartWorkspacesPool struct {
+}
+
+func (*validateOpStartWorkspacesPool) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStartWorkspacesPool) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StartWorkspacesPoolInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStartWorkspacesPoolInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpStopWorkspaces struct {
 }
 
@@ -970,6 +1310,26 @@ func (m *validateOpStopWorkspaces) HandleInitialize(ctx context.Context, in midd
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpStopWorkspacesPool struct {
+}
+
+func (*validateOpStopWorkspacesPool) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpStopWorkspacesPool) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*StopWorkspacesPoolInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpStopWorkspacesPoolInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpTerminateWorkspaces struct {
 }
 
@@ -985,6 +1345,46 @@ func (m *validateOpTerminateWorkspaces) HandleInitialize(ctx context.Context, in
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpTerminateWorkspacesInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpTerminateWorkspacesPool struct {
+}
+
+func (*validateOpTerminateWorkspacesPool) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpTerminateWorkspacesPool) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*TerminateWorkspacesPoolInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpTerminateWorkspacesPoolInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpTerminateWorkspacesPoolSession struct {
+}
+
+func (*validateOpTerminateWorkspacesPoolSession) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpTerminateWorkspacesPoolSession) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*TerminateWorkspacesPoolSessionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpTerminateWorkspacesPoolSessionInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1070,6 +1470,30 @@ func (m *validateOpUpdateWorkspaceImagePermission) HandleInitialize(ctx context.
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateWorkspacesPool struct {
+}
+
+func (*validateOpUpdateWorkspacesPool) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateWorkspacesPool) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateWorkspacesPoolInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateWorkspacesPoolInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+func addOpAcceptAccountLinkInvitationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpAcceptAccountLinkInvitation{}, middleware.After)
+}
+
 func addOpAssociateConnectionAliasValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpAssociateConnectionAlias{}, middleware.After)
 }
@@ -1078,12 +1502,20 @@ func addOpAssociateIpGroupsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpAssociateIpGroups{}, middleware.After)
 }
 
+func addOpAssociateWorkspaceApplicationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpAssociateWorkspaceApplication{}, middleware.After)
+}
+
 func addOpAuthorizeIpRulesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpAuthorizeIpRules{}, middleware.After)
 }
 
 func addOpCopyWorkspaceImageValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCopyWorkspaceImage{}, middleware.After)
+}
+
+func addOpCreateAccountLinkInvitationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateAccountLinkInvitation{}, middleware.After)
 }
 
 func addOpCreateConnectClientAddInValidationMiddleware(stack *middleware.Stack) error {
@@ -1122,6 +1554,14 @@ func addOpCreateWorkspacesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateWorkspaces{}, middleware.After)
 }
 
+func addOpCreateWorkspacesPoolValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateWorkspacesPool{}, middleware.After)
+}
+
+func addOpDeleteAccountLinkInvitationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteAccountLinkInvitation{}, middleware.After)
+}
+
 func addOpDeleteClientBrandingValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteClientBranding{}, middleware.After)
 }
@@ -1146,8 +1586,20 @@ func addOpDeleteWorkspaceImageValidationMiddleware(stack *middleware.Stack) erro
 	return stack.Initialize.Add(&validateOpDeleteWorkspaceImage{}, middleware.After)
 }
 
+func addOpDeployWorkspaceApplicationsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeployWorkspaceApplications{}, middleware.After)
+}
+
 func addOpDeregisterWorkspaceDirectoryValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeregisterWorkspaceDirectory{}, middleware.After)
+}
+
+func addOpDescribeApplicationAssociationsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeApplicationAssociations{}, middleware.After)
+}
+
+func addOpDescribeBundleAssociationsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeBundleAssociations{}, middleware.After)
 }
 
 func addOpDescribeClientBrandingValidationMiddleware(stack *middleware.Stack) error {
@@ -1166,8 +1618,20 @@ func addOpDescribeConnectionAliasPermissionsValidationMiddleware(stack *middlewa
 	return stack.Initialize.Add(&validateOpDescribeConnectionAliasPermissions{}, middleware.After)
 }
 
+func addOpDescribeImageAssociationsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeImageAssociations{}, middleware.After)
+}
+
 func addOpDescribeTagsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDescribeTags{}, middleware.After)
+}
+
+func addOpDescribeWorkspaceAssociationsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeWorkspaceAssociations{}, middleware.After)
+}
+
+func addOpDescribeWorkspaceDirectoriesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeWorkspaceDirectories{}, middleware.After)
 }
 
 func addOpDescribeWorkspaceImagePermissionsValidationMiddleware(stack *middleware.Stack) error {
@@ -1178,12 +1642,24 @@ func addOpDescribeWorkspaceSnapshotsValidationMiddleware(stack *middleware.Stack
 	return stack.Initialize.Add(&validateOpDescribeWorkspaceSnapshots{}, middleware.After)
 }
 
+func addOpDescribeWorkspacesPoolSessionsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeWorkspacesPoolSessions{}, middleware.After)
+}
+
+func addOpDescribeWorkspacesPoolsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDescribeWorkspacesPools{}, middleware.After)
+}
+
 func addOpDisassociateConnectionAliasValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDisassociateConnectionAlias{}, middleware.After)
 }
 
 func addOpDisassociateIpGroupsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDisassociateIpGroups{}, middleware.After)
+}
+
+func addOpDisassociateWorkspaceApplicationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDisassociateWorkspaceApplication{}, middleware.After)
 }
 
 func addOpImportClientBrandingValidationMiddleware(stack *middleware.Stack) error {
@@ -1218,6 +1694,10 @@ func addOpModifySelfservicePermissionsValidationMiddleware(stack *middleware.Sta
 	return stack.Initialize.Add(&validateOpModifySelfservicePermissions{}, middleware.After)
 }
 
+func addOpModifyStreamingPropertiesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpModifyStreamingProperties{}, middleware.After)
+}
+
 func addOpModifyWorkspaceAccessPropertiesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpModifyWorkspaceAccessProperties{}, middleware.After)
 }
@@ -1246,6 +1726,10 @@ func addOpRegisterWorkspaceDirectoryValidationMiddleware(stack *middleware.Stack
 	return stack.Initialize.Add(&validateOpRegisterWorkspaceDirectory{}, middleware.After)
 }
 
+func addOpRejectAccountLinkInvitationValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpRejectAccountLinkInvitation{}, middleware.After)
+}
+
 func addOpRestoreWorkspaceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpRestoreWorkspace{}, middleware.After)
 }
@@ -1258,12 +1742,28 @@ func addOpStartWorkspacesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpStartWorkspaces{}, middleware.After)
 }
 
+func addOpStartWorkspacesPoolValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStartWorkspacesPool{}, middleware.After)
+}
+
 func addOpStopWorkspacesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpStopWorkspaces{}, middleware.After)
 }
 
+func addOpStopWorkspacesPoolValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpStopWorkspacesPool{}, middleware.After)
+}
+
 func addOpTerminateWorkspacesValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpTerminateWorkspaces{}, middleware.After)
+}
+
+func addOpTerminateWorkspacesPoolValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpTerminateWorkspacesPool{}, middleware.After)
+}
+
+func addOpTerminateWorkspacesPoolSessionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpTerminateWorkspacesPoolSession{}, middleware.After)
 }
 
 func addOpUpdateConnectClientAddInValidationMiddleware(stack *middleware.Stack) error {
@@ -1282,6 +1782,58 @@ func addOpUpdateWorkspaceImagePermissionValidationMiddleware(stack *middleware.S
 	return stack.Initialize.Add(&validateOpUpdateWorkspaceImagePermission{}, middleware.After)
 }
 
+func addOpUpdateWorkspacesPoolValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateWorkspacesPool{}, middleware.After)
+}
+
+func validateActiveDirectoryConfig(v *types.ActiveDirectoryConfig) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ActiveDirectoryConfig"}
+	if v.DomainName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DomainName"))
+	}
+	if v.ServiceAccountSecretArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ServiceAccountSecretArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateApplicationSettingsRequest(v *types.ApplicationSettingsRequest) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ApplicationSettingsRequest"}
+	if len(v.Status) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Status"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateCapacity(v *types.Capacity) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "Capacity"}
+	if v.DesiredUserSessions == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DesiredUserSessions"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateConnectionAliasPermission(v *types.ConnectionAliasPermission) error {
 	if v == nil {
 		return nil
@@ -1292,6 +1844,109 @@ func validateConnectionAliasPermission(v *types.ConnectionAliasPermission) error
 	}
 	if v.AllowAssociation == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("AllowAssociation"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDescribeWorkspaceDirectoriesFilter(v *types.DescribeWorkspaceDirectoriesFilter) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWorkspaceDirectoriesFilter"}
+	if len(v.Name) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.Values == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Values"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDescribeWorkspaceDirectoriesFilterList(v []types.DescribeWorkspaceDirectoriesFilter) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWorkspaceDirectoriesFilterList"}
+	for i := range v {
+		if err := validateDescribeWorkspaceDirectoriesFilter(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDescribeWorkspacesPoolsFilter(v *types.DescribeWorkspacesPoolsFilter) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWorkspacesPoolsFilter"}
+	if len(v.Name) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.Values == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Values"))
+	}
+	if len(v.Operator) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Operator"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateDescribeWorkspacesPoolsFilters(v []types.DescribeWorkspacesPoolsFilter) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWorkspacesPoolsFilters"}
+	for i := range v {
+		if err := validateDescribeWorkspacesPoolsFilter(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateGlobalAcceleratorForDirectory(v *types.GlobalAcceleratorForDirectory) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GlobalAcceleratorForDirectory"}
+	if len(v.Mode) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Mode"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateGlobalAcceleratorForWorkSpace(v *types.GlobalAcceleratorForWorkSpace) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GlobalAcceleratorForWorkSpace"}
+	if len(v.Mode) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Mode"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1364,6 +2019,21 @@ func validateRebuildWorkspaceRequests(v []types.RebuildRequest) error {
 	}
 }
 
+func validateRootStorage(v *types.RootStorage) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RootStorage"}
+	if v.Capacity == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Capacity"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateStandbyWorkspace(v *types.StandbyWorkspace) error {
 	if v == nil {
 		return nil
@@ -1395,6 +2065,68 @@ func validateStandbyWorkspacesList(v []types.StandbyWorkspace) error {
 	for i := range v {
 		if err := validateStandbyWorkspace(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateStorageConnector(v *types.StorageConnector) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StorageConnector"}
+	if len(v.ConnectorType) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("ConnectorType"))
+	}
+	if len(v.Status) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Status"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateStorageConnectors(v []types.StorageConnector) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StorageConnectors"}
+	for i := range v {
+		if err := validateStorageConnector(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateStreamingProperties(v *types.StreamingProperties) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StreamingProperties"}
+	if v.UserSettings != nil {
+		if err := validateUserSettings(v.UserSettings); err != nil {
+			invalidParams.AddNested("UserSettings", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.StorageConnectors != nil {
+		if err := validateStorageConnectors(v.StorageConnectors); err != nil {
+			invalidParams.AddNested("StorageConnectors", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.GlobalAccelerator != nil {
+		if err := validateGlobalAcceleratorForDirectory(v.GlobalAccelerator); err != nil {
+			invalidParams.AddNested("GlobalAccelerator", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1468,6 +2200,73 @@ func validateTerminateWorkspaceRequests(v []types.TerminateRequest) error {
 	}
 }
 
+func validateUserSetting(v *types.UserSetting) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UserSetting"}
+	if len(v.Action) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Action"))
+	}
+	if len(v.Permission) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Permission"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateUserSettings(v []types.UserSetting) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UserSettings"}
+	for i := range v {
+		if err := validateUserSetting(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateUserStorage(v *types.UserStorage) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UserStorage"}
+	if v.Capacity == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Capacity"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateWorkspaceProperties(v *types.WorkspaceProperties) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "WorkspaceProperties"}
+	if v.GlobalAccelerator != nil {
+		if err := validateGlobalAcceleratorForWorkSpace(v.GlobalAccelerator); err != nil {
+			invalidParams.AddNested("GlobalAccelerator", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateWorkspaceRequest(v *types.WorkspaceRequest) error {
 	if v == nil {
 		return nil
@@ -1481,6 +2280,11 @@ func validateWorkspaceRequest(v *types.WorkspaceRequest) error {
 	}
 	if v.BundleId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("BundleId"))
+	}
+	if v.WorkspaceProperties != nil {
+		if err := validateWorkspaceProperties(v.WorkspaceProperties); err != nil {
+			invalidParams.AddNested("WorkspaceProperties", err.(smithy.InvalidParamsError))
+		}
 	}
 	if v.Tags != nil {
 		if err := validateTagList(v.Tags); err != nil {
@@ -1503,6 +2307,21 @@ func validateWorkspaceRequestList(v []types.WorkspaceRequest) error {
 		if err := validateWorkspaceRequest(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpAcceptAccountLinkInvitationInput(v *AcceptAccountLinkInvitationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AcceptAccountLinkInvitationInput"}
+	if v.LinkId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LinkId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1547,6 +2366,24 @@ func validateOpAssociateIpGroupsInput(v *AssociateIpGroupsInput) error {
 	}
 }
 
+func validateOpAssociateWorkspaceApplicationInput(v *AssociateWorkspaceApplicationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AssociateWorkspaceApplicationInput"}
+	if v.WorkspaceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WorkspaceId"))
+	}
+	if v.ApplicationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ApplicationId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpAuthorizeIpRulesInput(v *AuthorizeIpRulesInput) error {
 	if v == nil {
 		return nil
@@ -1583,6 +2420,21 @@ func validateOpCopyWorkspaceImageInput(v *CopyWorkspaceImageInput) error {
 		if err := validateTagList(v.Tags); err != nil {
 			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateAccountLinkInvitationInput(v *CreateAccountLinkInvitationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateAccountLinkInvitationInput"}
+	if v.TargetAccountId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TargetAccountId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1741,6 +2593,15 @@ func validateOpCreateWorkspaceBundleInput(v *CreateWorkspaceBundleInput) error {
 	}
 	if v.UserStorage == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("UserStorage"))
+	} else if v.UserStorage != nil {
+		if err := validateUserStorage(v.UserStorage); err != nil {
+			invalidParams.AddNested("UserStorage", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.RootStorage != nil {
+		if err := validateRootStorage(v.RootStorage); err != nil {
+			invalidParams.AddNested("RootStorage", err.(smithy.InvalidParamsError))
+		}
 	}
 	if v.Tags != nil {
 		if err := validateTagList(v.Tags); err != nil {
@@ -1791,6 +2652,62 @@ func validateOpCreateWorkspacesInput(v *CreateWorkspacesInput) error {
 		if err := validateWorkspaceRequestList(v.Workspaces); err != nil {
 			invalidParams.AddNested("Workspaces", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateWorkspacesPoolInput(v *CreateWorkspacesPoolInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateWorkspacesPoolInput"}
+	if v.PoolName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PoolName"))
+	}
+	if v.Description == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Description"))
+	}
+	if v.BundleId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BundleId"))
+	}
+	if v.DirectoryId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("DirectoryId"))
+	}
+	if v.Capacity == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Capacity"))
+	} else if v.Capacity != nil {
+		if err := validateCapacity(v.Capacity); err != nil {
+			invalidParams.AddNested("Capacity", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.Tags != nil {
+		if err := validateTagList(v.Tags); err != nil {
+			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ApplicationSettings != nil {
+		if err := validateApplicationSettingsRequest(v.ApplicationSettings); err != nil {
+			invalidParams.AddNested("ApplicationSettings", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteAccountLinkInvitationInput(v *DeleteAccountLinkInvitationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteAccountLinkInvitationInput"}
+	if v.LinkId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LinkId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1898,6 +2815,21 @@ func validateOpDeleteWorkspaceImageInput(v *DeleteWorkspaceImageInput) error {
 	}
 }
 
+func validateOpDeployWorkspaceApplicationsInput(v *DeployWorkspaceApplicationsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeployWorkspaceApplicationsInput"}
+	if v.WorkspaceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WorkspaceId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDeregisterWorkspaceDirectoryInput(v *DeregisterWorkspaceDirectoryInput) error {
 	if v == nil {
 		return nil
@@ -1905,6 +2837,42 @@ func validateOpDeregisterWorkspaceDirectoryInput(v *DeregisterWorkspaceDirectory
 	invalidParams := smithy.InvalidParamsError{Context: "DeregisterWorkspaceDirectoryInput"}
 	if v.DirectoryId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("DirectoryId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeApplicationAssociationsInput(v *DescribeApplicationAssociationsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeApplicationAssociationsInput"}
+	if v.ApplicationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ApplicationId"))
+	}
+	if v.AssociatedResourceTypes == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AssociatedResourceTypes"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeBundleAssociationsInput(v *DescribeBundleAssociationsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeBundleAssociationsInput"}
+	if v.BundleId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BundleId"))
+	}
+	if v.AssociatedResourceTypes == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AssociatedResourceTypes"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1973,6 +2941,24 @@ func validateOpDescribeConnectionAliasPermissionsInput(v *DescribeConnectionAlia
 	}
 }
 
+func validateOpDescribeImageAssociationsInput(v *DescribeImageAssociationsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeImageAssociationsInput"}
+	if v.ImageId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ImageId"))
+	}
+	if v.AssociatedResourceTypes == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AssociatedResourceTypes"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDescribeTagsInput(v *DescribeTagsInput) error {
 	if v == nil {
 		return nil
@@ -1980,6 +2966,41 @@ func validateOpDescribeTagsInput(v *DescribeTagsInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "DescribeTagsInput"}
 	if v.ResourceId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ResourceId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeWorkspaceAssociationsInput(v *DescribeWorkspaceAssociationsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWorkspaceAssociationsInput"}
+	if v.WorkspaceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WorkspaceId"))
+	}
+	if v.AssociatedResourceTypes == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("AssociatedResourceTypes"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeWorkspaceDirectoriesInput(v *DescribeWorkspaceDirectoriesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWorkspaceDirectoriesInput"}
+	if v.Filters != nil {
+		if err := validateDescribeWorkspaceDirectoriesFilterList(v.Filters); err != nil {
+			invalidParams.AddNested("Filters", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2018,6 +3039,38 @@ func validateOpDescribeWorkspaceSnapshotsInput(v *DescribeWorkspaceSnapshotsInpu
 	}
 }
 
+func validateOpDescribeWorkspacesPoolSessionsInput(v *DescribeWorkspacesPoolSessionsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWorkspacesPoolSessionsInput"}
+	if v.PoolId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PoolId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDescribeWorkspacesPoolsInput(v *DescribeWorkspacesPoolsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DescribeWorkspacesPoolsInput"}
+	if v.Filters != nil {
+		if err := validateDescribeWorkspacesPoolsFilters(v.Filters); err != nil {
+			invalidParams.AddNested("Filters", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpDisassociateConnectionAliasInput(v *DisassociateConnectionAliasInput) error {
 	if v == nil {
 		return nil
@@ -2043,6 +3096,24 @@ func validateOpDisassociateIpGroupsInput(v *DisassociateIpGroupsInput) error {
 	}
 	if v.GroupIds == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("GroupIds"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDisassociateWorkspaceApplicationInput(v *DisassociateWorkspaceApplicationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DisassociateWorkspaceApplicationInput"}
+	if v.WorkspaceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("WorkspaceId"))
+	}
+	if v.ApplicationId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ApplicationId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2194,6 +3265,26 @@ func validateOpModifySelfservicePermissionsInput(v *ModifySelfservicePermissions
 	}
 }
 
+func validateOpModifyStreamingPropertiesInput(v *ModifyStreamingPropertiesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ModifyStreamingPropertiesInput"}
+	if v.ResourceId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ResourceId"))
+	}
+	if v.StreamingProperties != nil {
+		if err := validateStreamingProperties(v.StreamingProperties); err != nil {
+			invalidParams.AddNested("StreamingProperties", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpModifyWorkspaceAccessPropertiesInput(v *ModifyWorkspaceAccessPropertiesInput) error {
 	if v == nil {
 		return nil
@@ -2238,8 +3329,10 @@ func validateOpModifyWorkspacePropertiesInput(v *ModifyWorkspacePropertiesInput)
 	if v.WorkspaceId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("WorkspaceId"))
 	}
-	if v.WorkspaceProperties == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("WorkspaceProperties"))
+	if v.WorkspaceProperties != nil {
+		if err := validateWorkspaceProperties(v.WorkspaceProperties); err != nil {
+			invalidParams.AddNested("WorkspaceProperties", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2309,16 +3402,30 @@ func validateOpRegisterWorkspaceDirectoryInput(v *RegisterWorkspaceDirectoryInpu
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "RegisterWorkspaceDirectoryInput"}
-	if v.DirectoryId == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("DirectoryId"))
-	}
-	if v.EnableWorkDocs == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("EnableWorkDocs"))
-	}
 	if v.Tags != nil {
 		if err := validateTagList(v.Tags); err != nil {
 			invalidParams.AddNested("Tags", err.(smithy.InvalidParamsError))
 		}
+	}
+	if v.ActiveDirectoryConfig != nil {
+		if err := validateActiveDirectoryConfig(v.ActiveDirectoryConfig); err != nil {
+			invalidParams.AddNested("ActiveDirectoryConfig", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpRejectAccountLinkInvitationInput(v *RejectAccountLinkInvitationInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RejectAccountLinkInvitationInput"}
+	if v.LinkId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("LinkId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2375,6 +3482,21 @@ func validateOpStartWorkspacesInput(v *StartWorkspacesInput) error {
 	}
 }
 
+func validateOpStartWorkspacesPoolInput(v *StartWorkspacesPoolInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StartWorkspacesPoolInput"}
+	if v.PoolId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PoolId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpStopWorkspacesInput(v *StopWorkspacesInput) error {
 	if v == nil {
 		return nil
@@ -2382,6 +3504,21 @@ func validateOpStopWorkspacesInput(v *StopWorkspacesInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "StopWorkspacesInput"}
 	if v.StopWorkspaceRequests == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("StopWorkspaceRequests"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpStopWorkspacesPoolInput(v *StopWorkspacesPoolInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "StopWorkspacesPoolInput"}
+	if v.PoolId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PoolId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2401,6 +3538,36 @@ func validateOpTerminateWorkspacesInput(v *TerminateWorkspacesInput) error {
 		if err := validateTerminateWorkspaceRequests(v.TerminateWorkspaceRequests); err != nil {
 			invalidParams.AddNested("TerminateWorkspaceRequests", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpTerminateWorkspacesPoolInput(v *TerminateWorkspacesPoolInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "TerminateWorkspacesPoolInput"}
+	if v.PoolId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PoolId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpTerminateWorkspacesPoolSessionInput(v *TerminateWorkspacesPoolSessionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "TerminateWorkspacesPoolSessionInput"}
+	if v.SessionId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("SessionId"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2480,6 +3647,31 @@ func validateOpUpdateWorkspaceImagePermissionInput(v *UpdateWorkspaceImagePermis
 	}
 	if v.SharedAccountId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("SharedAccountId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateWorkspacesPoolInput(v *UpdateWorkspacesPoolInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateWorkspacesPoolInput"}
+	if v.PoolId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PoolId"))
+	}
+	if v.Capacity != nil {
+		if err := validateCapacity(v.Capacity); err != nil {
+			invalidParams.AddNested("Capacity", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ApplicationSettings != nil {
+		if err := validateApplicationSettingsRequest(v.ApplicationSettings); err != nil {
+			invalidParams.AddNested("ApplicationSettings", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

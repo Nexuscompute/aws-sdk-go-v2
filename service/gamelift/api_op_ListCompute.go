@@ -4,20 +4,35 @@ package gamelift
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/gamelift/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Retrieves all compute resources registered to a fleet in your Amazon Web
-// Services account. You can filter the result set by location.
+// Retrieves information on the compute resources in an Amazon GameLift fleet. Use
+// the pagination parameters to retrieve results in a set of sequential pages.
+//
+// Request options:
+//
+//   - Retrieve a list of all computes in a fleet. Specify a fleet ID.
+//
+//   - Retrieve a list of all computes in a specific fleet location. Specify a
+//     fleet ID and location.
+//
+// Results:
+//
+// If successful, this operation returns information on a set of computes.
+// Depending on the type of fleet, the result includes the following information:
+//
+//   - For managed EC2 fleets (compute type EC2 ), this operation returns
+//     information about the EC2 instance. Compute names are EC2 instance IDs.
+//
+//   - For Anywhere fleets (compute type ANYWHERE ), this operation returns compute
+//     names and details as provided when the compute was registered with
+//     RegisterCompute . This includes GameLiftServiceSdkEndpoint or
+//     GameLiftAgentEndpoint .
 func (c *Client) ListCompute(ctx context.Context, params *ListComputeInput, optFns ...func(*Options)) (*ListComputeOutput, error) {
 	if params == nil {
 		params = &ListComputeInput{}
@@ -35,16 +50,33 @@ func (c *Client) ListCompute(ctx context.Context, params *ListComputeInput, optF
 
 type ListComputeInput struct {
 
-	// A unique identifier for the fleet the compute resources are registered to.
+	// A unique identifier for the fleet to retrieve compute resources for.
 	//
 	// This member is required.
 	FleetId *string
+
+	// The status of computes in a managed container fleet, based on the success of
+	// the latest update deployment.
+	//
+	//   - ACTIVE -- The compute is deployed with the correct container definitions. It
+	//   is ready to process game servers and host game sessions.
+	//
+	//   - IMPAIRED -- An update deployment to the compute failed, and the compute is
+	//   deployed with incorrect container definitions.
+	ComputeStatus types.ListComputeInputStatus
+
+	// For computes in a managed container fleet, the name of the deployed container
+	// group definition.
+	ContainerGroupDefinitionName *string
 
 	// The maximum number of results to return. Use this parameter with NextToken to
 	// get results as a set of sequential pages.
 	Limit *int32
 
-	// The name of the custom location that the compute resources are assigned to.
+	// The name of a location to retrieve compute resources for. For an Amazon
+	// GameLift Anywhere fleet, use a custom location. For a managed fleet, provide a
+	// Amazon Web Services Region or Local Zone code (for example: us-west-2 or
+	// us-west-2-lax-1 ).
 	Location *string
 
 	// A token that indicates the start of the next sequential page of results. Use
@@ -57,7 +89,7 @@ type ListComputeInput struct {
 
 type ListComputeOutput struct {
 
-	// A list of compute resources registered to the fleet you specified.
+	// A list of compute resources in the specified fleet.
 	ComputeList []types.Compute
 
 	// A token that indicates where to resume retrieving results on the next call to
@@ -72,6 +104,9 @@ type ListComputeOutput struct {
 }
 
 func (c *Client) addOperationListComputeMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpListCompute{}, middleware.After)
 	if err != nil {
 		return err
@@ -80,34 +115,38 @@ func (c *Client) addOperationListComputeMiddlewares(stack *middleware.Stack, opt
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ListCompute"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -119,7 +158,13 @@ func (c *Client) addOperationListComputeMiddlewares(stack *middleware.Stack, opt
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addListComputeResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpListComputeValidationMiddleware(stack); err != nil {
@@ -128,7 +173,7 @@ func (c *Client) addOperationListComputeMiddlewares(stack *middleware.Stack, opt
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opListCompute(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -140,18 +185,23 @@ func (c *Client) addOperationListComputeMiddlewares(stack *middleware.Stack, opt
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
 }
-
-// ListComputeAPIClient is a client that implements the ListCompute operation.
-type ListComputeAPIClient interface {
-	ListCompute(context.Context, *ListComputeInput, ...func(*Options)) (*ListComputeOutput, error)
-}
-
-var _ ListComputeAPIClient = (*Client)(nil)
 
 // ListComputePaginatorOptions is the paginator options for ListCompute
 type ListComputePaginatorOptions struct {
@@ -217,6 +267,9 @@ func (p *ListComputePaginator) NextPage(ctx context.Context, optFns ...func(*Opt
 	}
 	params.Limit = limit
 
+	optFns = append([]func(*Options){
+		addIsPaginatorUserAgent,
+	}, optFns...)
 	result, err := p.client.ListCompute(ctx, &params, optFns...)
 	if err != nil {
 		return nil, err
@@ -236,134 +289,17 @@ func (p *ListComputePaginator) NextPage(ctx context.Context, optFns ...func(*Opt
 	return result, nil
 }
 
+// ListComputeAPIClient is a client that implements the ListCompute operation.
+type ListComputeAPIClient interface {
+	ListCompute(context.Context, *ListComputeInput, ...func(*Options)) (*ListComputeOutput, error)
+}
+
+var _ ListComputeAPIClient = (*Client)(nil)
+
 func newServiceMetadataMiddleware_opListCompute(region string) *awsmiddleware.RegisterServiceMetadata {
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "gamelift",
 		OperationName: "ListCompute",
 	}
-}
-
-type opListComputeResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opListComputeResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opListComputeResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "gamelift"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "gamelift"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("gamelift")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addListComputeResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opListComputeResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

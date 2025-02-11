@@ -50,6 +50,26 @@ func (m *validateOpCreateTable) HandleInitialize(ctx context.Context, in middlew
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateType struct {
+}
+
+func (*validateOpCreateType) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateType) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateTypeInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateTypeInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteKeyspace struct {
 }
 
@@ -90,6 +110,26 @@ func (m *validateOpDeleteTable) HandleInitialize(ctx context.Context, in middlew
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeleteType struct {
+}
+
+func (*validateOpDeleteType) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteType) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteTypeInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteTypeInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetKeyspace struct {
 }
 
@@ -110,6 +150,26 @@ func (m *validateOpGetKeyspace) HandleInitialize(ctx context.Context, in middlew
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetTableAutoScalingSettings struct {
+}
+
+func (*validateOpGetTableAutoScalingSettings) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetTableAutoScalingSettings) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetTableAutoScalingSettingsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetTableAutoScalingSettingsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetTable struct {
 }
 
@@ -125,6 +185,26 @@ func (m *validateOpGetTable) HandleInitialize(ctx context.Context, in middleware
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetTableInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetType struct {
+}
+
+func (*validateOpGetType) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetType) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetTypeInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetTypeInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -165,6 +245,26 @@ func (m *validateOpListTagsForResource) HandleInitialize(ctx context.Context, in
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListTagsForResourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListTypes struct {
+}
+
+func (*validateOpListTypes) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListTypes) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListTypesInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListTypesInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -230,6 +330,26 @@ func (m *validateOpUntagResource) HandleInitialize(ctx context.Context, in middl
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateKeyspace struct {
+}
+
+func (*validateOpUpdateKeyspace) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateKeyspace) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateKeyspaceInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateKeyspaceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateTable struct {
 }
 
@@ -258,6 +378,10 @@ func addOpCreateTableValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateTable{}, middleware.After)
 }
 
+func addOpCreateTypeValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateType{}, middleware.After)
+}
+
 func addOpDeleteKeyspaceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteKeyspace{}, middleware.After)
 }
@@ -266,12 +390,24 @@ func addOpDeleteTableValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteTable{}, middleware.After)
 }
 
+func addOpDeleteTypeValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteType{}, middleware.After)
+}
+
 func addOpGetKeyspaceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetKeyspace{}, middleware.After)
 }
 
+func addOpGetTableAutoScalingSettingsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetTableAutoScalingSettings{}, middleware.After)
+}
+
 func addOpGetTableValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetTable{}, middleware.After)
+}
+
+func addOpGetTypeValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetType{}, middleware.After)
 }
 
 func addOpListTablesValidationMiddleware(stack *middleware.Stack) error {
@@ -280,6 +416,10 @@ func addOpListTablesValidationMiddleware(stack *middleware.Stack) error {
 
 func addOpListTagsForResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListTagsForResource{}, middleware.After)
+}
+
+func addOpListTypesValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListTypes{}, middleware.After)
 }
 
 func addOpRestoreTableValidationMiddleware(stack *middleware.Stack) error {
@@ -294,8 +434,68 @@ func addOpUntagResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUntagResource{}, middleware.After)
 }
 
+func addOpUpdateKeyspaceValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateKeyspace{}, middleware.After)
+}
+
 func addOpUpdateTableValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateTable{}, middleware.After)
+}
+
+func validateAutoScalingPolicy(v *types.AutoScalingPolicy) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AutoScalingPolicy"}
+	if v.TargetTrackingScalingPolicyConfiguration != nil {
+		if err := validateTargetTrackingScalingPolicyConfiguration(v.TargetTrackingScalingPolicyConfiguration); err != nil {
+			invalidParams.AddNested("TargetTrackingScalingPolicyConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateAutoScalingSettings(v *types.AutoScalingSettings) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AutoScalingSettings"}
+	if v.ScalingPolicy != nil {
+		if err := validateAutoScalingPolicy(v.ScalingPolicy); err != nil {
+			invalidParams.AddNested("ScalingPolicy", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateAutoScalingSpecification(v *types.AutoScalingSpecification) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "AutoScalingSpecification"}
+	if v.WriteCapacityAutoScaling != nil {
+		if err := validateAutoScalingSettings(v.WriteCapacityAutoScaling); err != nil {
+			invalidParams.AddNested("WriteCapacityAutoScaling", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ReadCapacityAutoScaling != nil {
+		if err := validateAutoScalingSettings(v.ReadCapacityAutoScaling); err != nil {
+			invalidParams.AddNested("ReadCapacityAutoScaling", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
 }
 
 func validateCapacitySpecification(v *types.CapacitySpecification) error {
@@ -428,6 +628,41 @@ func validateEncryptionSpecification(v *types.EncryptionSpecification) error {
 	}
 }
 
+func validateFieldDefinition(v *types.FieldDefinition) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "FieldDefinition"}
+	if v.Name == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.Type == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Type"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateFieldList(v []types.FieldDefinition) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "FieldList"}
+	for i := range v {
+		if err := validateFieldDefinition(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validatePartitionKey(v *types.PartitionKey) error {
 	if v == nil {
 		return nil
@@ -467,6 +702,43 @@ func validatePointInTimeRecovery(v *types.PointInTimeRecovery) error {
 	invalidParams := smithy.InvalidParamsError{Context: "PointInTimeRecovery"}
 	if len(v.Status) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Status"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateReplicaSpecification(v *types.ReplicaSpecification) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ReplicaSpecification"}
+	if v.Region == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Region"))
+	}
+	if v.ReadCapacityAutoScaling != nil {
+		if err := validateAutoScalingSettings(v.ReadCapacityAutoScaling); err != nil {
+			invalidParams.AddNested("ReadCapacityAutoScaling", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateReplicaSpecificationList(v []types.ReplicaSpecification) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ReplicaSpecificationList"}
+	for i := range v {
+		if err := validateReplicaSpecification(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -593,6 +865,18 @@ func validateTagList(v []types.Tag) error {
 	}
 }
 
+func validateTargetTrackingScalingPolicyConfiguration(v *types.TargetTrackingScalingPolicyConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "TargetTrackingScalingPolicyConfiguration"}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateTimeToLive(v *types.TimeToLive) error {
 	if v == nil {
 		return nil
@@ -686,6 +970,41 @@ func validateOpCreateTableInput(v *CreateTableInput) error {
 			invalidParams.AddNested("ClientSideTimestamps", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.AutoScalingSpecification != nil {
+		if err := validateAutoScalingSpecification(v.AutoScalingSpecification); err != nil {
+			invalidParams.AddNested("AutoScalingSpecification", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ReplicaSpecifications != nil {
+		if err := validateReplicaSpecificationList(v.ReplicaSpecifications); err != nil {
+			invalidParams.AddNested("ReplicaSpecifications", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateTypeInput(v *CreateTypeInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateTypeInput"}
+	if v.KeyspaceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("KeyspaceName"))
+	}
+	if v.TypeName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TypeName"))
+	}
+	if v.FieldDefinitions == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("FieldDefinitions"))
+	} else if v.FieldDefinitions != nil {
+		if err := validateFieldList(v.FieldDefinitions); err != nil {
+			invalidParams.AddNested("FieldDefinitions", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -726,6 +1045,24 @@ func validateOpDeleteTableInput(v *DeleteTableInput) error {
 	}
 }
 
+func validateOpDeleteTypeInput(v *DeleteTypeInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteTypeInput"}
+	if v.KeyspaceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("KeyspaceName"))
+	}
+	if v.TypeName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TypeName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetKeyspaceInput(v *GetKeyspaceInput) error {
 	if v == nil {
 		return nil
@@ -733,6 +1070,24 @@ func validateOpGetKeyspaceInput(v *GetKeyspaceInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "GetKeyspaceInput"}
 	if v.KeyspaceName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("KeyspaceName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetTableAutoScalingSettingsInput(v *GetTableAutoScalingSettingsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetTableAutoScalingSettingsInput"}
+	if v.KeyspaceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("KeyspaceName"))
+	}
+	if v.TableName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TableName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -751,6 +1106,24 @@ func validateOpGetTableInput(v *GetTableInput) error {
 	}
 	if v.TableName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("TableName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetTypeInput(v *GetTypeInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetTypeInput"}
+	if v.KeyspaceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("KeyspaceName"))
+	}
+	if v.TypeName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("TypeName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -781,6 +1154,21 @@ func validateOpListTagsForResourceInput(v *ListTagsForResourceInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ListTagsForResourceInput"}
 	if v.ResourceArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ResourceArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListTypesInput(v *ListTypesInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListTypesInput"}
+	if v.KeyspaceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("KeyspaceName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -824,6 +1212,16 @@ func validateOpRestoreTableInput(v *RestoreTableInput) error {
 	if v.TagsOverride != nil {
 		if err := validateTagList(v.TagsOverride); err != nil {
 			invalidParams.AddNested("TagsOverride", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.AutoScalingSpecification != nil {
+		if err := validateAutoScalingSpecification(v.AutoScalingSpecification); err != nil {
+			invalidParams.AddNested("AutoScalingSpecification", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ReplicaSpecifications != nil {
+		if err := validateReplicaSpecificationList(v.ReplicaSpecifications); err != nil {
+			invalidParams.AddNested("ReplicaSpecifications", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -877,6 +1275,33 @@ func validateOpUntagResourceInput(v *UntagResourceInput) error {
 	}
 }
 
+func validateOpUpdateKeyspaceInput(v *UpdateKeyspaceInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateKeyspaceInput"}
+	if v.KeyspaceName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("KeyspaceName"))
+	}
+	if v.ReplicationSpecification == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ReplicationSpecification"))
+	} else if v.ReplicationSpecification != nil {
+		if err := validateReplicationSpecification(v.ReplicationSpecification); err != nil {
+			invalidParams.AddNested("ReplicationSpecification", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ClientSideTimestamps != nil {
+		if err := validateClientSideTimestamps(v.ClientSideTimestamps); err != nil {
+			invalidParams.AddNested("ClientSideTimestamps", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpUpdateTableInput(v *UpdateTableInput) error {
 	if v == nil {
 		return nil
@@ -916,6 +1341,16 @@ func validateOpUpdateTableInput(v *UpdateTableInput) error {
 	if v.ClientSideTimestamps != nil {
 		if err := validateClientSideTimestamps(v.ClientSideTimestamps); err != nil {
 			invalidParams.AddNested("ClientSideTimestamps", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.AutoScalingSpecification != nil {
+		if err := validateAutoScalingSpecification(v.AutoScalingSpecification); err != nil {
+			invalidParams.AddNested("AutoScalingSpecification", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ReplicaSpecifications != nil {
+		if err := validateReplicaSpecificationList(v.ReplicaSpecifications); err != nil {
+			invalidParams.AddNested("ReplicaSpecifications", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {

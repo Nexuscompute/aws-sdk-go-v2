@@ -133,6 +133,19 @@ type EmergencyCallingConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// Contains information about an external systems configuration for a Voice
+// Connector.
+type ExternalSystemsConfiguration struct {
+
+	// The contact center system.
+	ContactCenterSystemTypes []ContactCenterSystemType
+
+	// The session border controllers.
+	SessionBorderControllerTypes []SessionBorderControllerType
+
+	noSmithyDocumentSerde
+}
+
 // The country and area code for a proxy phone number in a proxy phone session.
 type GeoMatchParams struct {
 
@@ -168,7 +181,7 @@ type MediaInsightsConfiguration struct {
 	// The configuration's ARN.
 	ConfigurationArn *string
 
-	// Denotes the configration as enabled or disabled.
+	// Denotes the configuration as enabled or disabled.
 	Disabled *bool
 
 	noSmithyDocumentSerde
@@ -187,8 +200,9 @@ type OrderedPhoneNumber struct {
 }
 
 // Origination settings enable your SIP hosts to receive inbound calls using your
-// Amazon Chime SDK Voice Connector. The parameters listed below are not required,
-// but you must use at least one.
+// Amazon Chime SDK Voice Connector.
+//
+// The parameters listed below are not required, but you must use at least one.
 type Origination struct {
 
 	// When origination settings are disabled, inbound calls are not enabled for your
@@ -206,8 +220,9 @@ type Origination struct {
 
 // Origination routes define call distribution properties for your SIP hosts to
 // receive inbound calls using an Amazon Chime SDK Voice Connector. Limit: Ten
-// origination routes for each Voice Connector. The parameters listed below are not
-// required, but you must use at least one.
+// origination routes for each Voice Connector.
+//
+// The parameters listed below are not required, but you must use at least one.
 type OriginationRoute struct {
 
 	// The FQDN or IP address to contact for origination traffic.
@@ -270,6 +285,9 @@ type PhoneNumber struct {
 
 	// The phone number, in E.164 format.
 	E164PhoneNumber *string
+
+	// The name of the phone number.
+	Name *string
 
 	// The phone number's order ID.
 	OrderId *string
@@ -457,9 +475,10 @@ type ProxySession struct {
 	noSmithyDocumentSerde
 }
 
-// A structure that contains the configuration settings for server-side
-// encryption. We only support symmetric keys. Do not use asymmetric or HMAC keys,
-// or KMS aliases.
+// A structure that contains the configuration settings for server-side encryption.
+//
+// We only support symmetric keys. Do not use asymmetric or HMAC keys, or KMS
+// aliases.
 type ServerSideEncryptionConfiguration struct {
 
 	// The ARN of the KMS key used to encrypt the enrollment data in a voice profile
@@ -501,6 +520,11 @@ type SipMediaApplication struct {
 }
 
 // The Alexa Skill configuration of a SIP media application.
+//
+// Due to changes made by the Amazon Alexa service, this data type is no longer
+// available for use. For more information, refer to the [Alexa Smart Properties]page.
+//
+// [Alexa Smart Properties]: https://developer.amazon.com/en-US/alexa/alexasmartproperties
 type SipMediaApplicationAlexaSkillConfiguration struct {
 
 	// The ID of the Alexa Skill configuration.
@@ -741,7 +765,7 @@ type TerminationHealth struct {
 }
 
 // The phone number ID, product type, or calling name fields to update, used with
-// the BatchUpdatePhoneNumber and UpdatePhoneNumber actions.
+// the BatchUpdatePhoneNumberand UpdatePhoneNumber actions.
 type UpdatePhoneNumberRequestItem struct {
 
 	// The phone number ID to update.
@@ -751,6 +775,9 @@ type UpdatePhoneNumberRequestItem struct {
 
 	// The outbound calling name to update.
 	CallingName *string
+
+	// The name of the phone number.
+	Name *string
 
 	// The product type to update.
 	ProductType PhoneNumberProductType
@@ -767,6 +794,9 @@ type VoiceConnector struct {
 
 	// The Voice Connector's creation timestamp, in ISO 8601 format.
 	CreatedTimestamp *time.Time
+
+	// The connectors for use with Amazon Connect.
+	IntegrationType VoiceConnectorIntegrationType
 
 	// The Voice Connector's name.
 	Name *string

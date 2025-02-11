@@ -12,8 +12,9 @@ const (
 
 // Values returns all known values for AacAudioDescriptionBroadcasterMix. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AacAudioDescriptionBroadcasterMix) Values() []AacAudioDescriptionBroadcasterMix {
 	return []AacAudioDescriptionBroadcasterMix{
 		"BROADCASTER_MIXED_AD",
@@ -31,8 +32,9 @@ const (
 )
 
 // Values returns all known values for AacCodecProfile. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AacCodecProfile) Values() []AacCodecProfile {
 	return []AacCodecProfile{
 		"LC",
@@ -53,8 +55,9 @@ const (
 )
 
 // Values returns all known values for AacCodingMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AacCodingMode) Values() []AacCodingMode {
 	return []AacCodingMode{
 		"AD_RECEIVER_MIX",
@@ -74,8 +77,9 @@ const (
 )
 
 // Values returns all known values for AacRateControlMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AacRateControlMode) Values() []AacRateControlMode {
 	return []AacRateControlMode{
 		"CBR",
@@ -92,8 +96,9 @@ const (
 )
 
 // Values returns all known values for AacRawFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AacRawFormat) Values() []AacRawFormat {
 	return []AacRawFormat{
 		"LATM_LOAS",
@@ -110,8 +115,9 @@ const (
 )
 
 // Values returns all known values for AacSpecification. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AacSpecification) Values() []AacSpecification {
 	return []AacSpecification{
 		"MPEG2",
@@ -130,8 +136,9 @@ const (
 )
 
 // Values returns all known values for AacVbrQuality. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AacVbrQuality) Values() []AacVbrQuality {
 	return []AacVbrQuality{
 		"LOW",
@@ -156,8 +163,9 @@ const (
 )
 
 // Values returns all known values for Ac3BitstreamMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Ac3BitstreamMode) Values() []Ac3BitstreamMode {
 	return []Ac3BitstreamMode{
 		"COMPLETE_MAIN",
@@ -182,8 +190,9 @@ const (
 )
 
 // Values returns all known values for Ac3CodingMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Ac3CodingMode) Values() []Ac3CodingMode {
 	return []Ac3CodingMode{
 		"CODING_MODE_1_0",
@@ -207,8 +216,9 @@ const (
 
 // Values returns all known values for Ac3DynamicRangeCompressionLine. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Ac3DynamicRangeCompressionLine) Values() []Ac3DynamicRangeCompressionLine {
 	return []Ac3DynamicRangeCompressionLine{
 		"FILM_STANDARD",
@@ -230,8 +240,9 @@ const (
 
 // Values returns all known values for Ac3DynamicRangeCompressionProfile. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Ac3DynamicRangeCompressionProfile) Values() []Ac3DynamicRangeCompressionProfile {
 	return []Ac3DynamicRangeCompressionProfile{
 		"FILM_STANDARD",
@@ -253,8 +264,9 @@ const (
 
 // Values returns all known values for Ac3DynamicRangeCompressionRf. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Ac3DynamicRangeCompressionRf) Values() []Ac3DynamicRangeCompressionRf {
 	return []Ac3DynamicRangeCompressionRf{
 		"FILM_STANDARD",
@@ -275,8 +287,9 @@ const (
 )
 
 // Values returns all known values for Ac3LfeFilter. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Ac3LfeFilter) Values() []Ac3LfeFilter {
 	return []Ac3LfeFilter{
 		"ENABLED",
@@ -293,8 +306,9 @@ const (
 )
 
 // Values returns all known values for Ac3MetadataControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Ac3MetadataControl) Values() []Ac3MetadataControl {
 	return []Ac3MetadataControl{
 		"FOLLOW_INPUT",
@@ -312,8 +326,9 @@ const (
 )
 
 // Values returns all known values for AccelerationMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AccelerationMode) Values() []AccelerationMode {
 	return []AccelerationMode{
 		"DISABLED",
@@ -333,8 +348,9 @@ const (
 )
 
 // Values returns all known values for AccelerationStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AccelerationStatus) Values() []AccelerationStatus {
 	return []AccelerationStatus{
 		"NOT_APPLICABLE",
@@ -353,8 +369,9 @@ const (
 )
 
 // Values returns all known values for AdvancedInputFilter. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AdvancedInputFilter) Values() []AdvancedInputFilter {
 	return []AdvancedInputFilter{
 		"ENABLED",
@@ -372,8 +389,9 @@ const (
 
 // Values returns all known values for AdvancedInputFilterAddTexture. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AdvancedInputFilterAddTexture) Values() []AdvancedInputFilterAddTexture {
 	return []AdvancedInputFilterAddTexture{
 		"ENABLED",
@@ -392,6 +410,7 @@ const (
 
 // Values returns all known values for AdvancedInputFilterSharpen. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (AdvancedInputFilterSharpen) Values() []AdvancedInputFilterSharpen {
 	return []AdvancedInputFilterSharpen{
@@ -411,8 +430,9 @@ const (
 )
 
 // Values returns all known values for AfdSignaling. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AfdSignaling) Values() []AfdSignaling {
 	return []AfdSignaling{
 		"NONE",
@@ -430,8 +450,9 @@ const (
 )
 
 // Values returns all known values for AlphaBehavior. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AlphaBehavior) Values() []AlphaBehavior {
 	return []AlphaBehavior{
 		"DISCARD",
@@ -449,6 +470,7 @@ const (
 
 // Values returns all known values for AncillaryConvert608To708. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (AncillaryConvert608To708) Values() []AncillaryConvert608To708 {
 	return []AncillaryConvert608To708{
@@ -467,6 +489,7 @@ const (
 
 // Values returns all known values for AncillaryTerminateCaptions. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (AncillaryTerminateCaptions) Values() []AncillaryTerminateCaptions {
 	return []AncillaryTerminateCaptions{
@@ -484,8 +507,9 @@ const (
 )
 
 // Values returns all known values for AntiAlias. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AntiAlias) Values() []AntiAlias {
 	return []AntiAlias{
 		"DISABLED",
@@ -497,26 +521,40 @@ type AudioChannelTag string
 
 // Enum values for AudioChannelTag
 const (
-	AudioChannelTagL   AudioChannelTag = "L"
-	AudioChannelTagR   AudioChannelTag = "R"
-	AudioChannelTagC   AudioChannelTag = "C"
-	AudioChannelTagLfe AudioChannelTag = "LFE"
-	AudioChannelTagLs  AudioChannelTag = "LS"
-	AudioChannelTagRs  AudioChannelTag = "RS"
-	AudioChannelTagLc  AudioChannelTag = "LC"
-	AudioChannelTagRc  AudioChannelTag = "RC"
-	AudioChannelTagCs  AudioChannelTag = "CS"
-	AudioChannelTagLsd AudioChannelTag = "LSD"
-	AudioChannelTagRsd AudioChannelTag = "RSD"
-	AudioChannelTagTcs AudioChannelTag = "TCS"
-	AudioChannelTagVhl AudioChannelTag = "VHL"
-	AudioChannelTagVhc AudioChannelTag = "VHC"
-	AudioChannelTagVhr AudioChannelTag = "VHR"
+	AudioChannelTagL    AudioChannelTag = "L"
+	AudioChannelTagR    AudioChannelTag = "R"
+	AudioChannelTagC    AudioChannelTag = "C"
+	AudioChannelTagLfe  AudioChannelTag = "LFE"
+	AudioChannelTagLs   AudioChannelTag = "LS"
+	AudioChannelTagRs   AudioChannelTag = "RS"
+	AudioChannelTagLc   AudioChannelTag = "LC"
+	AudioChannelTagRc   AudioChannelTag = "RC"
+	AudioChannelTagCs   AudioChannelTag = "CS"
+	AudioChannelTagLsd  AudioChannelTag = "LSD"
+	AudioChannelTagRsd  AudioChannelTag = "RSD"
+	AudioChannelTagTcs  AudioChannelTag = "TCS"
+	AudioChannelTagVhl  AudioChannelTag = "VHL"
+	AudioChannelTagVhc  AudioChannelTag = "VHC"
+	AudioChannelTagVhr  AudioChannelTag = "VHR"
+	AudioChannelTagTbl  AudioChannelTag = "TBL"
+	AudioChannelTagTbc  AudioChannelTag = "TBC"
+	AudioChannelTagTbr  AudioChannelTag = "TBR"
+	AudioChannelTagRsl  AudioChannelTag = "RSL"
+	AudioChannelTagRsr  AudioChannelTag = "RSR"
+	AudioChannelTagLw   AudioChannelTag = "LW"
+	AudioChannelTagRw   AudioChannelTag = "RW"
+	AudioChannelTagLfe2 AudioChannelTag = "LFE2"
+	AudioChannelTagLt   AudioChannelTag = "LT"
+	AudioChannelTagRt   AudioChannelTag = "RT"
+	AudioChannelTagHi   AudioChannelTag = "HI"
+	AudioChannelTagNar  AudioChannelTag = "NAR"
+	AudioChannelTagM    AudioChannelTag = "M"
 )
 
 // Values returns all known values for AudioChannelTag. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AudioChannelTag) Values() []AudioChannelTag {
 	return []AudioChannelTag{
 		"L",
@@ -534,6 +572,19 @@ func (AudioChannelTag) Values() []AudioChannelTag {
 		"VHL",
 		"VHC",
 		"VHR",
+		"TBL",
+		"TBC",
+		"TBR",
+		"RSL",
+		"RSR",
+		"LW",
+		"RW",
+		"LFE2",
+		"LT",
+		"RT",
+		"HI",
+		"NAR",
+		"M",
 	}
 }
 
@@ -552,11 +603,13 @@ const (
 	AudioCodecVorbis      AudioCodec = "VORBIS"
 	AudioCodecOpus        AudioCodec = "OPUS"
 	AudioCodecPassthrough AudioCodec = "PASSTHROUGH"
+	AudioCodecFlac        AudioCodec = "FLAC"
 )
 
 // Values returns all known values for AudioCodec. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AudioCodec) Values() []AudioCodec {
 	return []AudioCodec{
 		"AAC",
@@ -570,6 +623,7 @@ func (AudioCodec) Values() []AudioCodec {
 		"VORBIS",
 		"OPUS",
 		"PASSTHROUGH",
+		"FLAC",
 	}
 }
 
@@ -582,8 +636,9 @@ const (
 )
 
 // Values returns all known values for AudioDefaultSelection. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AudioDefaultSelection) Values() []AudioDefaultSelection {
 	return []AudioDefaultSelection{
 		"DEFAULT",
@@ -599,17 +654,20 @@ const (
 	AudioDurationCorrectionAuto     AudioDurationCorrection = "AUTO"
 	AudioDurationCorrectionTrack    AudioDurationCorrection = "TRACK"
 	AudioDurationCorrectionFrame    AudioDurationCorrection = "FRAME"
+	AudioDurationCorrectionForce    AudioDurationCorrection = "FORCE"
 )
 
 // Values returns all known values for AudioDurationCorrection. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AudioDurationCorrection) Values() []AudioDurationCorrection {
 	return []AudioDurationCorrection{
 		"DISABLED",
 		"AUTO",
 		"TRACK",
 		"FRAME",
+		"FORCE",
 	}
 }
 
@@ -623,6 +681,7 @@ const (
 
 // Values returns all known values for AudioLanguageCodeControl. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (AudioLanguageCodeControl) Values() []AudioLanguageCodeControl {
 	return []AudioLanguageCodeControl{
@@ -643,6 +702,7 @@ const (
 
 // Values returns all known values for AudioNormalizationAlgorithm. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (AudioNormalizationAlgorithm) Values() []AudioNormalizationAlgorithm {
 	return []AudioNormalizationAlgorithm{
@@ -663,8 +723,9 @@ const (
 
 // Values returns all known values for AudioNormalizationAlgorithmControl. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AudioNormalizationAlgorithmControl) Values() []AudioNormalizationAlgorithmControl {
 	return []AudioNormalizationAlgorithmControl{
 		"CORRECT_AUDIO",
@@ -682,8 +743,9 @@ const (
 
 // Values returns all known values for AudioNormalizationLoudnessLogging. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AudioNormalizationLoudnessLogging) Values() []AudioNormalizationLoudnessLogging {
 	return []AudioNormalizationLoudnessLogging{
 		"LOG",
@@ -701,8 +763,9 @@ const (
 
 // Values returns all known values for AudioNormalizationPeakCalculation. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AudioNormalizationPeakCalculation) Values() []AudioNormalizationPeakCalculation {
 	return []AudioNormalizationPeakCalculation{
 		"TRUE_PEAK",
@@ -721,8 +784,9 @@ const (
 )
 
 // Values returns all known values for AudioSelectorType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AudioSelectorType) Values() []AudioSelectorType {
 	return []AudioSelectorType{
 		"PID",
@@ -741,8 +805,9 @@ const (
 )
 
 // Values returns all known values for AudioTypeControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AudioTypeControl) Values() []AudioTypeControl {
 	return []AudioTypeControl{
 		"FOLLOW_INPUT",
@@ -763,8 +828,9 @@ const (
 )
 
 // Values returns all known values for Av1AdaptiveQuantization. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Av1AdaptiveQuantization) Values() []Av1AdaptiveQuantization {
 	return []Av1AdaptiveQuantization{
 		"OFF",
@@ -785,12 +851,32 @@ const (
 )
 
 // Values returns all known values for Av1BitDepth. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Av1BitDepth) Values() []Av1BitDepth {
 	return []Av1BitDepth{
 		"BIT_8",
 		"BIT_10",
+	}
+}
+
+type Av1FilmGrainSynthesis string
+
+// Enum values for Av1FilmGrainSynthesis
+const (
+	Av1FilmGrainSynthesisDisabled Av1FilmGrainSynthesis = "DISABLED"
+	Av1FilmGrainSynthesisEnabled  Av1FilmGrainSynthesis = "ENABLED"
+)
+
+// Values returns all known values for Av1FilmGrainSynthesis. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (Av1FilmGrainSynthesis) Values() []Av1FilmGrainSynthesis {
+	return []Av1FilmGrainSynthesis{
+		"DISABLED",
+		"ENABLED",
 	}
 }
 
@@ -803,8 +889,9 @@ const (
 )
 
 // Values returns all known values for Av1FramerateControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Av1FramerateControl) Values() []Av1FramerateControl {
 	return []Av1FramerateControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -816,20 +903,23 @@ type Av1FramerateConversionAlgorithm string
 
 // Enum values for Av1FramerateConversionAlgorithm
 const (
-	Av1FramerateConversionAlgorithmDuplicateDrop Av1FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	Av1FramerateConversionAlgorithmInterpolate   Av1FramerateConversionAlgorithm = "INTERPOLATE"
-	Av1FramerateConversionAlgorithmFrameformer   Av1FramerateConversionAlgorithm = "FRAMEFORMER"
+	Av1FramerateConversionAlgorithmDuplicateDrop      Av1FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	Av1FramerateConversionAlgorithmInterpolate        Av1FramerateConversionAlgorithm = "INTERPOLATE"
+	Av1FramerateConversionAlgorithmFrameformer        Av1FramerateConversionAlgorithm = "FRAMEFORMER"
+	Av1FramerateConversionAlgorithmMaintainFrameCount Av1FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for Av1FramerateConversionAlgorithm. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Av1FramerateConversionAlgorithm) Values() []Av1FramerateConversionAlgorithm {
 	return []Av1FramerateConversionAlgorithm{
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -841,8 +931,9 @@ const (
 )
 
 // Values returns all known values for Av1RateControlMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Av1RateControlMode) Values() []Av1RateControlMode {
 	return []Av1RateControlMode{
 		"QVBR",
@@ -859,8 +950,9 @@ const (
 
 // Values returns all known values for Av1SpatialAdaptiveQuantization. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Av1SpatialAdaptiveQuantization) Values() []Av1SpatialAdaptiveQuantization {
 	return []Av1SpatialAdaptiveQuantization{
 		"DISABLED",
@@ -879,8 +971,9 @@ const (
 )
 
 // Values returns all known values for AvcIntraClass. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AvcIntraClass) Values() []AvcIntraClass {
 	return []AvcIntraClass{
 		"CLASS_50",
@@ -900,6 +993,7 @@ const (
 
 // Values returns all known values for AvcIntraFramerateControl. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (AvcIntraFramerateControl) Values() []AvcIntraFramerateControl {
 	return []AvcIntraFramerateControl{
@@ -912,20 +1006,23 @@ type AvcIntraFramerateConversionAlgorithm string
 
 // Enum values for AvcIntraFramerateConversionAlgorithm
 const (
-	AvcIntraFramerateConversionAlgorithmDuplicateDrop AvcIntraFramerateConversionAlgorithm = "DUPLICATE_DROP"
-	AvcIntraFramerateConversionAlgorithmInterpolate   AvcIntraFramerateConversionAlgorithm = "INTERPOLATE"
-	AvcIntraFramerateConversionAlgorithmFrameformer   AvcIntraFramerateConversionAlgorithm = "FRAMEFORMER"
+	AvcIntraFramerateConversionAlgorithmDuplicateDrop      AvcIntraFramerateConversionAlgorithm = "DUPLICATE_DROP"
+	AvcIntraFramerateConversionAlgorithmInterpolate        AvcIntraFramerateConversionAlgorithm = "INTERPOLATE"
+	AvcIntraFramerateConversionAlgorithmFrameformer        AvcIntraFramerateConversionAlgorithm = "FRAMEFORMER"
+	AvcIntraFramerateConversionAlgorithmMaintainFrameCount AvcIntraFramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for AvcIntraFramerateConversionAlgorithm. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AvcIntraFramerateConversionAlgorithm) Values() []AvcIntraFramerateConversionAlgorithm {
 	return []AvcIntraFramerateConversionAlgorithm{
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -941,8 +1038,9 @@ const (
 )
 
 // Values returns all known values for AvcIntraInterlaceMode. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AvcIntraInterlaceMode) Values() []AvcIntraInterlaceMode {
 	return []AvcIntraInterlaceMode{
 		"PROGRESSIVE",
@@ -963,8 +1061,9 @@ const (
 
 // Values returns all known values for AvcIntraScanTypeConversionMode. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AvcIntraScanTypeConversionMode) Values() []AvcIntraScanTypeConversionMode {
 	return []AvcIntraScanTypeConversionMode{
 		"INTERLACED",
@@ -981,8 +1080,9 @@ const (
 )
 
 // Values returns all known values for AvcIntraSlowPal. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AvcIntraSlowPal) Values() []AvcIntraSlowPal {
 	return []AvcIntraSlowPal{
 		"DISABLED",
@@ -999,8 +1099,9 @@ const (
 )
 
 // Values returns all known values for AvcIntraTelecine. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AvcIntraTelecine) Values() []AvcIntraTelecine {
 	return []AvcIntraTelecine{
 		"NONE",
@@ -1018,8 +1119,9 @@ const (
 
 // Values returns all known values for AvcIntraUhdQualityTuningLevel. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AvcIntraUhdQualityTuningLevel) Values() []AvcIntraUhdQualityTuningLevel {
 	return []AvcIntraUhdQualityTuningLevel{
 		"SINGLE_PASS",
@@ -1039,8 +1141,9 @@ const (
 
 // Values returns all known values for BandwidthReductionFilterSharpening. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BandwidthReductionFilterSharpening) Values() []BandwidthReductionFilterSharpening {
 	return []BandwidthReductionFilterSharpening{
 		"LOW",
@@ -1063,8 +1166,9 @@ const (
 
 // Values returns all known values for BandwidthReductionFilterStrength. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BandwidthReductionFilterStrength) Values() []BandwidthReductionFilterStrength {
 	return []BandwidthReductionFilterStrength{
 		"LOW",
@@ -1086,8 +1190,9 @@ const (
 )
 
 // Values returns all known values for BillingTagsSource. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BillingTagsSource) Values() []BillingTagsSource {
 	return []BillingTagsSource{
 		"QUEUE",
@@ -1107,8 +1212,9 @@ const (
 )
 
 // Values returns all known values for BurninSubtitleAlignment. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BurninSubtitleAlignment) Values() []BurninSubtitleAlignment {
 	return []BurninSubtitleAlignment{
 		"CENTERED",
@@ -1127,8 +1233,9 @@ const (
 
 // Values returns all known values for BurninSubtitleApplyFontColor. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BurninSubtitleApplyFontColor) Values() []BurninSubtitleApplyFontColor {
 	return []BurninSubtitleApplyFontColor{
 		"WHITE_TEXT_ONLY",
@@ -1148,8 +1255,9 @@ const (
 
 // Values returns all known values for BurninSubtitleBackgroundColor. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BurninSubtitleBackgroundColor) Values() []BurninSubtitleBackgroundColor {
 	return []BurninSubtitleBackgroundColor{
 		"NONE",
@@ -1172,6 +1280,7 @@ const (
 
 // Values returns all known values for BurninSubtitleFallbackFont. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (BurninSubtitleFallbackFont) Values() []BurninSubtitleFallbackFont {
 	return []BurninSubtitleFallbackFont{
@@ -1198,8 +1307,9 @@ const (
 )
 
 // Values returns all known values for BurninSubtitleFontColor. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BurninSubtitleFontColor) Values() []BurninSubtitleFontColor {
 	return []BurninSubtitleFontColor{
 		"WHITE",
@@ -1228,6 +1338,7 @@ const (
 
 // Values returns all known values for BurninSubtitleOutlineColor. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (BurninSubtitleOutlineColor) Values() []BurninSubtitleOutlineColor {
 	return []BurninSubtitleOutlineColor{
@@ -1253,6 +1364,7 @@ const (
 
 // Values returns all known values for BurninSubtitleShadowColor. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (BurninSubtitleShadowColor) Values() []BurninSubtitleShadowColor {
 	return []BurninSubtitleShadowColor{
@@ -1273,8 +1385,9 @@ const (
 
 // Values returns all known values for BurnInSubtitleStylePassthrough. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BurnInSubtitleStylePassthrough) Values() []BurnInSubtitleStylePassthrough {
 	return []BurnInSubtitleStylePassthrough{
 		"ENABLED",
@@ -1293,8 +1406,9 @@ const (
 
 // Values returns all known values for BurninSubtitleTeletextSpacing. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (BurninSubtitleTeletextSpacing) Values() []BurninSubtitleTeletextSpacing {
 	return []BurninSubtitleTeletextSpacing{
 		"FIXED_GRID",
@@ -1322,8 +1436,9 @@ const (
 )
 
 // Values returns all known values for CaptionDestinationType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CaptionDestinationType) Values() []CaptionDestinationType {
 	return []CaptionDestinationType{
 		"BURN_IN",
@@ -1341,6 +1456,25 @@ func (CaptionDestinationType) Values() []CaptionDestinationType {
 	}
 }
 
+type CaptionSourceByteRateLimit string
+
+// Enum values for CaptionSourceByteRateLimit
+const (
+	CaptionSourceByteRateLimitEnabled  CaptionSourceByteRateLimit = "ENABLED"
+	CaptionSourceByteRateLimitDisabled CaptionSourceByteRateLimit = "DISABLED"
+)
+
+// Values returns all known values for CaptionSourceByteRateLimit. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (CaptionSourceByteRateLimit) Values() []CaptionSourceByteRateLimit {
+	return []CaptionSourceByteRateLimit{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type CaptionSourceConvertPaintOnToPopOn string
 
 // Enum values for CaptionSourceConvertPaintOnToPopOn
@@ -1351,8 +1485,9 @@ const (
 
 // Values returns all known values for CaptionSourceConvertPaintOnToPopOn. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CaptionSourceConvertPaintOnToPopOn) Values() []CaptionSourceConvertPaintOnToPopOn {
 	return []CaptionSourceConvertPaintOnToPopOn{
 		"ENABLED",
@@ -1381,8 +1516,9 @@ const (
 )
 
 // Values returns all known values for CaptionSourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CaptionSourceType) Values() []CaptionSourceType {
 	return []CaptionSourceType{
 		"ANCILLARY",
@@ -1402,6 +1538,27 @@ func (CaptionSourceType) Values() []CaptionSourceType {
 	}
 }
 
+type ChromaPositionMode string
+
+// Enum values for ChromaPositionMode
+const (
+	ChromaPositionModeAuto         ChromaPositionMode = "AUTO"
+	ChromaPositionModeForceCenter  ChromaPositionMode = "FORCE_CENTER"
+	ChromaPositionModeForceTopLeft ChromaPositionMode = "FORCE_TOP_LEFT"
+)
+
+// Values returns all known values for ChromaPositionMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ChromaPositionMode) Values() []ChromaPositionMode {
+	return []ChromaPositionMode{
+		"AUTO",
+		"FORCE_CENTER",
+		"FORCE_TOP_LEFT",
+	}
+}
+
 type CmafClientCache string
 
 // Enum values for CmafClientCache
@@ -1411,8 +1568,9 @@ const (
 )
 
 // Values returns all known values for CmafClientCache. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafClientCache) Values() []CmafClientCache {
 	return []CmafClientCache{
 		"DISABLED",
@@ -1429,8 +1587,9 @@ const (
 )
 
 // Values returns all known values for CmafCodecSpecification. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafCodecSpecification) Values() []CmafCodecSpecification {
 	return []CmafCodecSpecification{
 		"RFC_6381",
@@ -1447,8 +1606,9 @@ const (
 )
 
 // Values returns all known values for CmafEncryptionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafEncryptionType) Values() []CmafEncryptionType {
 	return []CmafEncryptionType{
 		"SAMPLE_AES",
@@ -1467,8 +1627,9 @@ const (
 )
 
 // Values returns all known values for CmafImageBasedTrickPlay. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafImageBasedTrickPlay) Values() []CmafImageBasedTrickPlay {
 	return []CmafImageBasedTrickPlay{
 		"NONE",
@@ -1488,8 +1649,9 @@ const (
 
 // Values returns all known values for CmafInitializationVectorInManifest. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafInitializationVectorInManifest) Values() []CmafInitializationVectorInManifest {
 	return []CmafInitializationVectorInManifest{
 		"INCLUDE",
@@ -1506,8 +1668,9 @@ const (
 )
 
 // Values returns all known values for CmafIntervalCadence. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafIntervalCadence) Values() []CmafIntervalCadence {
 	return []CmafIntervalCadence{
 		"FOLLOW_IFRAME",
@@ -1524,8 +1687,9 @@ const (
 )
 
 // Values returns all known values for CmafKeyProviderType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafKeyProviderType) Values() []CmafKeyProviderType {
 	return []CmafKeyProviderType{
 		"SPEKE",
@@ -1542,8 +1706,9 @@ const (
 )
 
 // Values returns all known values for CmafManifestCompression. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafManifestCompression) Values() []CmafManifestCompression {
 	return []CmafManifestCompression{
 		"GZIP",
@@ -1561,6 +1726,7 @@ const (
 
 // Values returns all known values for CmafManifestDurationFormat. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafManifestDurationFormat) Values() []CmafManifestDurationFormat {
 	return []CmafManifestDurationFormat{
@@ -1579,8 +1745,9 @@ const (
 
 // Values returns all known values for CmafMpdManifestBandwidthType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafMpdManifestBandwidthType) Values() []CmafMpdManifestBandwidthType {
 	return []CmafMpdManifestBandwidthType{
 		"AVERAGE",
@@ -1597,8 +1764,9 @@ const (
 )
 
 // Values returns all known values for CmafMpdProfile. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafMpdProfile) Values() []CmafMpdProfile {
 	return []CmafMpdProfile{
 		"MAIN_PROFILE",
@@ -1616,8 +1784,9 @@ const (
 
 // Values returns all known values for CmafPtsOffsetHandlingForBFrames. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafPtsOffsetHandlingForBFrames) Values() []CmafPtsOffsetHandlingForBFrames {
 	return []CmafPtsOffsetHandlingForBFrames{
 		"ZERO_BASED",
@@ -1634,8 +1803,9 @@ const (
 )
 
 // Values returns all known values for CmafSegmentControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafSegmentControl) Values() []CmafSegmentControl {
 	return []CmafSegmentControl{
 		"SINGLE_FILE",
@@ -1653,6 +1823,7 @@ const (
 
 // Values returns all known values for CmafSegmentLengthControl. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafSegmentLengthControl) Values() []CmafSegmentLengthControl {
 	return []CmafSegmentLengthControl{
@@ -1670,8 +1841,9 @@ const (
 )
 
 // Values returns all known values for CmafStreamInfResolution. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafStreamInfResolution) Values() []CmafStreamInfResolution {
 	return []CmafStreamInfResolution{
 		"INCLUDE",
@@ -1689,8 +1861,9 @@ const (
 
 // Values returns all known values for CmafTargetDurationCompatibilityMode. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafTargetDurationCompatibilityMode) Values() []CmafTargetDurationCompatibilityMode {
 	return []CmafTargetDurationCompatibilityMode{
 		"LEGACY",
@@ -1708,6 +1881,7 @@ const (
 
 // Values returns all known values for CmafVideoCompositionOffsets. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafVideoCompositionOffsets) Values() []CmafVideoCompositionOffsets {
 	return []CmafVideoCompositionOffsets{
@@ -1725,8 +1899,9 @@ const (
 )
 
 // Values returns all known values for CmafWriteDASHManifest. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafWriteDASHManifest) Values() []CmafWriteDASHManifest {
 	return []CmafWriteDASHManifest{
 		"DISABLED",
@@ -1743,8 +1918,9 @@ const (
 )
 
 // Values returns all known values for CmafWriteHLSManifest. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafWriteHLSManifest) Values() []CmafWriteHLSManifest {
 	return []CmafWriteHLSManifest{
 		"DISABLED",
@@ -1762,8 +1938,9 @@ const (
 
 // Values returns all known values for CmafWriteSegmentTimelineInRepresentation.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmafWriteSegmentTimelineInRepresentation) Values() []CmafWriteSegmentTimelineInRepresentation {
 	return []CmafWriteSegmentTimelineInRepresentation{
 		"ENABLED",
@@ -1780,8 +1957,9 @@ const (
 )
 
 // Values returns all known values for CmfcAudioDuration. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmfcAudioDuration) Values() []CmfcAudioDuration {
 	return []CmfcAudioDuration{
 		"DEFAULT_CODEC_DURATION",
@@ -1796,16 +1974,19 @@ const (
 	CmfcAudioTrackTypeAlternateAudioAutoSelectDefault CmfcAudioTrackType = "ALTERNATE_AUDIO_AUTO_SELECT_DEFAULT"
 	CmfcAudioTrackTypeAlternateAudioAutoSelect        CmfcAudioTrackType = "ALTERNATE_AUDIO_AUTO_SELECT"
 	CmfcAudioTrackTypeAlternateAudioNotAutoSelect     CmfcAudioTrackType = "ALTERNATE_AUDIO_NOT_AUTO_SELECT"
+	CmfcAudioTrackTypeAudioOnlyVariantStream          CmfcAudioTrackType = "AUDIO_ONLY_VARIANT_STREAM"
 )
 
 // Values returns all known values for CmfcAudioTrackType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmfcAudioTrackType) Values() []CmfcAudioTrackType {
 	return []CmfcAudioTrackType{
 		"ALTERNATE_AUDIO_AUTO_SELECT_DEFAULT",
 		"ALTERNATE_AUDIO_AUTO_SELECT",
 		"ALTERNATE_AUDIO_NOT_AUTO_SELECT",
+		"AUDIO_ONLY_VARIANT_STREAM",
 	}
 }
 
@@ -1819,8 +2000,9 @@ const (
 
 // Values returns all known values for CmfcDescriptiveVideoServiceFlag. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmfcDescriptiveVideoServiceFlag) Values() []CmfcDescriptiveVideoServiceFlag {
 	return []CmfcDescriptiveVideoServiceFlag{
 		"DONT_FLAG",
@@ -1837,8 +2019,9 @@ const (
 )
 
 // Values returns all known values for CmfcIFrameOnlyManifest. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmfcIFrameOnlyManifest) Values() []CmfcIFrameOnlyManifest {
 	return []CmfcIFrameOnlyManifest{
 		"INCLUDE",
@@ -1855,8 +2038,9 @@ const (
 )
 
 // Values returns all known values for CmfcKlvMetadata. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmfcKlvMetadata) Values() []CmfcKlvMetadata {
 	return []CmfcKlvMetadata{
 		"PASSTHROUGH",
@@ -1874,8 +2058,9 @@ const (
 
 // Values returns all known values for CmfcManifestMetadataSignaling. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmfcManifestMetadataSignaling) Values() []CmfcManifestMetadataSignaling {
 	return []CmfcManifestMetadataSignaling{
 		"ENABLED",
@@ -1892,8 +2077,9 @@ const (
 )
 
 // Values returns all known values for CmfcScte35Esam. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmfcScte35Esam) Values() []CmfcScte35Esam {
 	return []CmfcScte35Esam{
 		"INSERT",
@@ -1910,8 +2096,9 @@ const (
 )
 
 // Values returns all known values for CmfcScte35Source. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmfcScte35Source) Values() []CmfcScte35Source {
 	return []CmfcScte35Source{
 		"PASSTHROUGH",
@@ -1928,8 +2115,9 @@ const (
 )
 
 // Values returns all known values for CmfcTimedMetadata. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CmfcTimedMetadata) Values() []CmfcTimedMetadata {
 	return []CmfcTimedMetadata{
 		"PASSTHROUGH",
@@ -1947,6 +2135,7 @@ const (
 
 // Values returns all known values for CmfcTimedMetadataBoxVersion. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (CmfcTimedMetadataBoxVersion) Values() []CmfcTimedMetadataBoxVersion {
 	return []CmfcTimedMetadataBoxVersion{
@@ -1964,8 +2153,9 @@ const (
 )
 
 // Values returns all known values for ColorMetadata. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ColorMetadata) Values() []ColorMetadata {
 	return []ColorMetadata{
 		"IGNORE",
@@ -1988,8 +2178,9 @@ const (
 )
 
 // Values returns all known values for ColorSpace. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ColorSpace) Values() []ColorSpace {
 	return []ColorSpace{
 		"FOLLOW",
@@ -2018,8 +2209,9 @@ const (
 )
 
 // Values returns all known values for ColorSpaceConversion. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ColorSpaceConversion) Values() []ColorSpaceConversion {
 	return []ColorSpaceConversion{
 		"NONE",
@@ -2042,8 +2234,9 @@ const (
 )
 
 // Values returns all known values for ColorSpaceUsage. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ColorSpaceUsage) Values() []ColorSpaceUsage {
 	return []ColorSpaceUsage{
 		"FORCE",
@@ -2059,8 +2252,9 @@ const (
 )
 
 // Values returns all known values for Commitment. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Commitment) Values() []Commitment {
 	return []Commitment{
 		"ONE_YEAR",
@@ -2072,6 +2266,7 @@ type ContainerType string
 // Enum values for ContainerType
 const (
 	ContainerTypeF4v  ContainerType = "F4V"
+	ContainerTypeGif  ContainerType = "GIF"
 	ContainerTypeIsmv ContainerType = "ISMV"
 	ContainerTypeM2ts ContainerType = "M2TS"
 	ContainerTypeM3u8 ContainerType = "M3U8"
@@ -2080,16 +2275,20 @@ const (
 	ContainerTypeMp4  ContainerType = "MP4"
 	ContainerTypeMpd  ContainerType = "MPD"
 	ContainerTypeMxf  ContainerType = "MXF"
+	ContainerTypeOgg  ContainerType = "OGG"
 	ContainerTypeWebm ContainerType = "WEBM"
 	ContainerTypeRaw  ContainerType = "RAW"
+	ContainerTypeY4m  ContainerType = "Y4M"
 )
 
 // Values returns all known values for ContainerType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ContainerType) Values() []ContainerType {
 	return []ContainerType{
 		"F4V",
+		"GIF",
 		"ISMV",
 		"M2TS",
 		"M3U8",
@@ -2098,8 +2297,10 @@ func (ContainerType) Values() []ContainerType {
 		"MP4",
 		"MPD",
 		"MXF",
+		"OGG",
 		"WEBM",
 		"RAW",
+		"Y4M",
 	}
 }
 
@@ -2112,8 +2313,9 @@ const (
 )
 
 // Values returns all known values for CopyProtectionAction. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CopyProtectionAction) Values() []CopyProtectionAction {
 	return []CopyProtectionAction{
 		"PASSTHROUGH",
@@ -2131,8 +2333,9 @@ const (
 
 // Values returns all known values for DashIsoGroupAudioChannelConfigSchemeIdUri.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DashIsoGroupAudioChannelConfigSchemeIdUri) Values() []DashIsoGroupAudioChannelConfigSchemeIdUri {
 	return []DashIsoGroupAudioChannelConfigSchemeIdUri{
 		"MPEG_CHANNEL_CONFIGURATION",
@@ -2149,8 +2352,9 @@ const (
 )
 
 // Values returns all known values for DashIsoHbbtvCompliance. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DashIsoHbbtvCompliance) Values() []DashIsoHbbtvCompliance {
 	return []DashIsoHbbtvCompliance{
 		"HBBTV_1_5",
@@ -2170,6 +2374,7 @@ const (
 
 // Values returns all known values for DashIsoImageBasedTrickPlay. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DashIsoImageBasedTrickPlay) Values() []DashIsoImageBasedTrickPlay {
 	return []DashIsoImageBasedTrickPlay{
@@ -2189,8 +2394,9 @@ const (
 )
 
 // Values returns all known values for DashIsoIntervalCadence. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DashIsoIntervalCadence) Values() []DashIsoIntervalCadence {
 	return []DashIsoIntervalCadence{
 		"FOLLOW_IFRAME",
@@ -2208,8 +2414,9 @@ const (
 
 // Values returns all known values for DashIsoMpdManifestBandwidthType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DashIsoMpdManifestBandwidthType) Values() []DashIsoMpdManifestBandwidthType {
 	return []DashIsoMpdManifestBandwidthType{
 		"AVERAGE",
@@ -2226,8 +2433,9 @@ const (
 )
 
 // Values returns all known values for DashIsoMpdProfile. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DashIsoMpdProfile) Values() []DashIsoMpdProfile {
 	return []DashIsoMpdProfile{
 		"MAIN_PROFILE",
@@ -2245,8 +2453,9 @@ const (
 
 // Values returns all known values for DashIsoPlaybackDeviceCompatibility. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DashIsoPlaybackDeviceCompatibility) Values() []DashIsoPlaybackDeviceCompatibility {
 	return []DashIsoPlaybackDeviceCompatibility{
 		"CENC_V1",
@@ -2264,8 +2473,9 @@ const (
 
 // Values returns all known values for DashIsoPtsOffsetHandlingForBFrames. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DashIsoPtsOffsetHandlingForBFrames) Values() []DashIsoPtsOffsetHandlingForBFrames {
 	return []DashIsoPtsOffsetHandlingForBFrames{
 		"ZERO_BASED",
@@ -2282,8 +2492,9 @@ const (
 )
 
 // Values returns all known values for DashIsoSegmentControl. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DashIsoSegmentControl) Values() []DashIsoSegmentControl {
 	return []DashIsoSegmentControl{
 		"SINGLE_FILE",
@@ -2301,6 +2512,7 @@ const (
 
 // Values returns all known values for DashIsoSegmentLengthControl. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DashIsoSegmentLengthControl) Values() []DashIsoSegmentLengthControl {
 	return []DashIsoSegmentLengthControl{
@@ -2319,8 +2531,9 @@ const (
 
 // Values returns all known values for DashIsoVideoCompositionOffsets. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DashIsoVideoCompositionOffsets) Values() []DashIsoVideoCompositionOffsets {
 	return []DashIsoVideoCompositionOffsets{
 		"SIGNED",
@@ -2338,8 +2551,9 @@ const (
 
 // Values returns all known values for
 // DashIsoWriteSegmentTimelineInRepresentation. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DashIsoWriteSegmentTimelineInRepresentation) Values() []DashIsoWriteSegmentTimelineInRepresentation {
 	return []DashIsoWriteSegmentTimelineInRepresentation{
 		"ENABLED",
@@ -2357,8 +2571,9 @@ const (
 )
 
 // Values returns all known values for DashManifestStyle. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DashManifestStyle) Values() []DashManifestStyle {
 	return []DashManifestStyle{
 		"BASIC",
@@ -2377,8 +2592,9 @@ const (
 )
 
 // Values returns all known values for DecryptionMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DecryptionMode) Values() []DecryptionMode {
 	return []DecryptionMode{
 		"AES_CTR",
@@ -2399,8 +2615,9 @@ const (
 )
 
 // Values returns all known values for DeinterlaceAlgorithm. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeinterlaceAlgorithm) Values() []DeinterlaceAlgorithm {
 	return []DeinterlaceAlgorithm{
 		"INTERPOLATE",
@@ -2420,8 +2637,9 @@ const (
 )
 
 // Values returns all known values for DeinterlacerControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeinterlacerControl) Values() []DeinterlacerControl {
 	return []DeinterlacerControl{
 		"FORCE_ALL_FRAMES",
@@ -2439,8 +2657,9 @@ const (
 )
 
 // Values returns all known values for DeinterlacerMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DeinterlacerMode) Values() []DeinterlacerMode {
 	return []DeinterlacerMode{
 		"DEINTERLACE",
@@ -2458,8 +2677,9 @@ const (
 )
 
 // Values returns all known values for DescribeEndpointsMode. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DescribeEndpointsMode) Values() []DescribeEndpointsMode {
 	return []DescribeEndpointsMode{
 		"DEFAULT",
@@ -2477,8 +2697,9 @@ const (
 )
 
 // Values returns all known values for DolbyVisionLevel6Mode. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DolbyVisionLevel6Mode) Values() []DolbyVisionLevel6Mode {
 	return []DolbyVisionLevel6Mode{
 		"PASSTHROUGH",
@@ -2496,8 +2717,9 @@ const (
 )
 
 // Values returns all known values for DolbyVisionMapping. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DolbyVisionMapping) Values() []DolbyVisionMapping {
 	return []DolbyVisionMapping{
 		"HDR10_NOMAP",
@@ -2514,8 +2736,9 @@ const (
 )
 
 // Values returns all known values for DolbyVisionProfile. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DolbyVisionProfile) Values() []DolbyVisionProfile {
 	return []DolbyVisionProfile{
 		"PROFILE_5",
@@ -2532,8 +2755,9 @@ const (
 )
 
 // Values returns all known values for DropFrameTimecode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DropFrameTimecode) Values() []DropFrameTimecode {
 	return []DropFrameTimecode{
 		"DISABLED",
@@ -2551,8 +2775,9 @@ const (
 )
 
 // Values returns all known values for DvbddsHandling. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DvbddsHandling) Values() []DvbddsHandling {
 	return []DvbddsHandling{
 		"NONE",
@@ -2574,6 +2799,7 @@ const (
 
 // Values returns all known values for DvbSubSubtitleFallbackFont. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DvbSubSubtitleFallbackFont) Values() []DvbSubSubtitleFallbackFont {
 	return []DvbSubSubtitleFallbackFont{
@@ -2595,8 +2821,9 @@ const (
 )
 
 // Values returns all known values for DvbSubtitleAlignment. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DvbSubtitleAlignment) Values() []DvbSubtitleAlignment {
 	return []DvbSubtitleAlignment{
 		"CENTERED",
@@ -2615,6 +2842,7 @@ const (
 
 // Values returns all known values for DvbSubtitleApplyFontColor. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DvbSubtitleApplyFontColor) Values() []DvbSubtitleApplyFontColor {
 	return []DvbSubtitleApplyFontColor{
@@ -2635,6 +2863,7 @@ const (
 
 // Values returns all known values for DvbSubtitleBackgroundColor. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DvbSubtitleBackgroundColor) Values() []DvbSubtitleBackgroundColor {
 	return []DvbSubtitleBackgroundColor{
@@ -2660,8 +2889,9 @@ const (
 )
 
 // Values returns all known values for DvbSubtitleFontColor. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DvbSubtitleFontColor) Values() []DvbSubtitleFontColor {
 	return []DvbSubtitleFontColor{
 		"WHITE",
@@ -2689,8 +2919,9 @@ const (
 )
 
 // Values returns all known values for DvbSubtitleOutlineColor. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DvbSubtitleOutlineColor) Values() []DvbSubtitleOutlineColor {
 	return []DvbSubtitleOutlineColor{
 		"BLACK",
@@ -2714,8 +2945,9 @@ const (
 )
 
 // Values returns all known values for DvbSubtitleShadowColor. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DvbSubtitleShadowColor) Values() []DvbSubtitleShadowColor {
 	return []DvbSubtitleShadowColor{
 		"NONE",
@@ -2735,6 +2967,7 @@ const (
 
 // Values returns all known values for DvbSubtitleStylePassthrough. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DvbSubtitleStylePassthrough) Values() []DvbSubtitleStylePassthrough {
 	return []DvbSubtitleStylePassthrough{
@@ -2754,6 +2987,7 @@ const (
 
 // Values returns all known values for DvbSubtitleTeletextSpacing. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (DvbSubtitleTeletextSpacing) Values() []DvbSubtitleTeletextSpacing {
 	return []DvbSubtitleTeletextSpacing{
@@ -2772,12 +3006,32 @@ const (
 )
 
 // Values returns all known values for DvbSubtitlingType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DvbSubtitlingType) Values() []DvbSubtitlingType {
 	return []DvbSubtitlingType{
 		"HEARING_IMPAIRED",
 		"STANDARD",
+	}
+}
+
+type DynamicAudioSelectorType string
+
+// Enum values for DynamicAudioSelectorType
+const (
+	DynamicAudioSelectorTypeAllTracks    DynamicAudioSelectorType = "ALL_TRACKS"
+	DynamicAudioSelectorTypeLanguageCode DynamicAudioSelectorType = "LANGUAGE_CODE"
+)
+
+// Values returns all known values for DynamicAudioSelectorType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DynamicAudioSelectorType) Values() []DynamicAudioSelectorType {
+	return []DynamicAudioSelectorType{
+		"ALL_TRACKS",
+		"LANGUAGE_CODE",
 	}
 }
 
@@ -2789,8 +3043,9 @@ const (
 )
 
 // Values returns all known values for Eac3AtmosBitstreamMode. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3AtmosBitstreamMode) Values() []Eac3AtmosBitstreamMode {
 	return []Eac3AtmosBitstreamMode{
 		"COMPLETE_MAIN",
@@ -2808,8 +3063,9 @@ const (
 )
 
 // Values returns all known values for Eac3AtmosCodingMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3AtmosCodingMode) Values() []Eac3AtmosCodingMode {
 	return []Eac3AtmosCodingMode{
 		"CODING_MODE_AUTO",
@@ -2829,8 +3085,9 @@ const (
 
 // Values returns all known values for Eac3AtmosDialogueIntelligence. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3AtmosDialogueIntelligence) Values() []Eac3AtmosDialogueIntelligence {
 	return []Eac3AtmosDialogueIntelligence{
 		"ENABLED",
@@ -2847,8 +3104,9 @@ const (
 )
 
 // Values returns all known values for Eac3AtmosDownmixControl. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3AtmosDownmixControl) Values() []Eac3AtmosDownmixControl {
 	return []Eac3AtmosDownmixControl{
 		"SPECIFIED",
@@ -2870,8 +3128,9 @@ const (
 
 // Values returns all known values for Eac3AtmosDynamicRangeCompressionLine. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3AtmosDynamicRangeCompressionLine) Values() []Eac3AtmosDynamicRangeCompressionLine {
 	return []Eac3AtmosDynamicRangeCompressionLine{
 		"NONE",
@@ -2897,8 +3156,9 @@ const (
 
 // Values returns all known values for Eac3AtmosDynamicRangeCompressionRf. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3AtmosDynamicRangeCompressionRf) Values() []Eac3AtmosDynamicRangeCompressionRf {
 	return []Eac3AtmosDynamicRangeCompressionRf{
 		"NONE",
@@ -2920,8 +3180,9 @@ const (
 
 // Values returns all known values for Eac3AtmosDynamicRangeControl. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3AtmosDynamicRangeControl) Values() []Eac3AtmosDynamicRangeControl {
 	return []Eac3AtmosDynamicRangeControl{
 		"SPECIFIED",
@@ -2941,8 +3202,9 @@ const (
 )
 
 // Values returns all known values for Eac3AtmosMeteringMode. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3AtmosMeteringMode) Values() []Eac3AtmosMeteringMode {
 	return []Eac3AtmosMeteringMode{
 		"LEQ_A",
@@ -2964,8 +3226,9 @@ const (
 )
 
 // Values returns all known values for Eac3AtmosStereoDownmix. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3AtmosStereoDownmix) Values() []Eac3AtmosStereoDownmix {
 	return []Eac3AtmosStereoDownmix{
 		"NOT_INDICATED",
@@ -2985,8 +3248,9 @@ const (
 )
 
 // Values returns all known values for Eac3AtmosSurroundExMode. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3AtmosSurroundExMode) Values() []Eac3AtmosSurroundExMode {
 	return []Eac3AtmosSurroundExMode{
 		"NOT_INDICATED",
@@ -3004,8 +3268,9 @@ const (
 )
 
 // Values returns all known values for Eac3AttenuationControl. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3AttenuationControl) Values() []Eac3AttenuationControl {
 	return []Eac3AttenuationControl{
 		"ATTENUATE_3_DB",
@@ -3025,8 +3290,9 @@ const (
 )
 
 // Values returns all known values for Eac3BitstreamMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3BitstreamMode) Values() []Eac3BitstreamMode {
 	return []Eac3BitstreamMode{
 		"COMPLETE_MAIN",
@@ -3047,8 +3313,9 @@ const (
 )
 
 // Values returns all known values for Eac3CodingMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3CodingMode) Values() []Eac3CodingMode {
 	return []Eac3CodingMode{
 		"CODING_MODE_1_0",
@@ -3066,8 +3333,9 @@ const (
 )
 
 // Values returns all known values for Eac3DcFilter. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3DcFilter) Values() []Eac3DcFilter {
 	return []Eac3DcFilter{
 		"ENABLED",
@@ -3089,8 +3357,9 @@ const (
 
 // Values returns all known values for Eac3DynamicRangeCompressionLine. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3DynamicRangeCompressionLine) Values() []Eac3DynamicRangeCompressionLine {
 	return []Eac3DynamicRangeCompressionLine{
 		"NONE",
@@ -3116,8 +3385,9 @@ const (
 
 // Values returns all known values for Eac3DynamicRangeCompressionRf. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3DynamicRangeCompressionRf) Values() []Eac3DynamicRangeCompressionRf {
 	return []Eac3DynamicRangeCompressionRf{
 		"NONE",
@@ -3138,8 +3408,9 @@ const (
 )
 
 // Values returns all known values for Eac3LfeControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3LfeControl) Values() []Eac3LfeControl {
 	return []Eac3LfeControl{
 		"LFE",
@@ -3156,8 +3427,9 @@ const (
 )
 
 // Values returns all known values for Eac3LfeFilter. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3LfeFilter) Values() []Eac3LfeFilter {
 	return []Eac3LfeFilter{
 		"ENABLED",
@@ -3174,8 +3446,9 @@ const (
 )
 
 // Values returns all known values for Eac3MetadataControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3MetadataControl) Values() []Eac3MetadataControl {
 	return []Eac3MetadataControl{
 		"FOLLOW_INPUT",
@@ -3192,8 +3465,9 @@ const (
 )
 
 // Values returns all known values for Eac3PassthroughControl. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3PassthroughControl) Values() []Eac3PassthroughControl {
 	return []Eac3PassthroughControl{
 		"WHEN_POSSIBLE",
@@ -3210,8 +3484,9 @@ const (
 )
 
 // Values returns all known values for Eac3PhaseControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3PhaseControl) Values() []Eac3PhaseControl {
 	return []Eac3PhaseControl{
 		"SHIFT_90_DEGREES",
@@ -3230,8 +3505,9 @@ const (
 )
 
 // Values returns all known values for Eac3StereoDownmix. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3StereoDownmix) Values() []Eac3StereoDownmix {
 	return []Eac3StereoDownmix{
 		"NOT_INDICATED",
@@ -3251,8 +3527,9 @@ const (
 )
 
 // Values returns all known values for Eac3SurroundExMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3SurroundExMode) Values() []Eac3SurroundExMode {
 	return []Eac3SurroundExMode{
 		"NOT_INDICATED",
@@ -3271,8 +3548,9 @@ const (
 )
 
 // Values returns all known values for Eac3SurroundMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Eac3SurroundMode) Values() []Eac3SurroundMode {
 	return []Eac3SurroundMode{
 		"NOT_INDICATED",
@@ -3290,8 +3568,9 @@ const (
 )
 
 // Values returns all known values for EmbeddedConvert608To708. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EmbeddedConvert608To708) Values() []EmbeddedConvert608To708 {
 	return []EmbeddedConvert608To708{
 		"UPCONVERT",
@@ -3309,6 +3588,7 @@ const (
 
 // Values returns all known values for EmbeddedTerminateCaptions. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (EmbeddedTerminateCaptions) Values() []EmbeddedTerminateCaptions {
 	return []EmbeddedTerminateCaptions{
@@ -3327,6 +3607,7 @@ const (
 
 // Values returns all known values for EmbeddedTimecodeOverride. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (EmbeddedTimecodeOverride) Values() []EmbeddedTimecodeOverride {
 	return []EmbeddedTimecodeOverride{
@@ -3344,8 +3625,9 @@ const (
 )
 
 // Values returns all known values for F4vMoovPlacement. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (F4vMoovPlacement) Values() []F4vMoovPlacement {
 	return []F4vMoovPlacement{
 		"PROGRESSIVE_DOWNLOAD",
@@ -3363,6 +3645,7 @@ const (
 
 // Values returns all known values for FileSourceConvert608To708. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (FileSourceConvert608To708) Values() []FileSourceConvert608To708 {
 	return []FileSourceConvert608To708{
@@ -3381,6 +3664,7 @@ const (
 
 // Values returns all known values for FileSourceTimeDeltaUnits. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (FileSourceTimeDeltaUnits) Values() []FileSourceTimeDeltaUnits {
 	return []FileSourceTimeDeltaUnits{
@@ -3399,13 +3683,53 @@ const (
 )
 
 // Values returns all known values for FontScript. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (FontScript) Values() []FontScript {
 	return []FontScript{
 		"AUTOMATIC",
 		"HANS",
 		"HANT",
+	}
+}
+
+type GifFramerateControl string
+
+// Enum values for GifFramerateControl
+const (
+	GifFramerateControlInitializeFromSource GifFramerateControl = "INITIALIZE_FROM_SOURCE"
+	GifFramerateControlSpecified            GifFramerateControl = "SPECIFIED"
+)
+
+// Values returns all known values for GifFramerateControl. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GifFramerateControl) Values() []GifFramerateControl {
+	return []GifFramerateControl{
+		"INITIALIZE_FROM_SOURCE",
+		"SPECIFIED",
+	}
+}
+
+type GifFramerateConversionAlgorithm string
+
+// Enum values for GifFramerateConversionAlgorithm
+const (
+	GifFramerateConversionAlgorithmDuplicateDrop GifFramerateConversionAlgorithm = "DUPLICATE_DROP"
+	GifFramerateConversionAlgorithmInterpolate   GifFramerateConversionAlgorithm = "INTERPOLATE"
+)
+
+// Values returns all known values for GifFramerateConversionAlgorithm. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GifFramerateConversionAlgorithm) Values() []GifFramerateConversionAlgorithm {
+	return []GifFramerateConversionAlgorithm{
+		"DUPLICATE_DROP",
+		"INTERPOLATE",
 	}
 }
 
@@ -3424,6 +3748,7 @@ const (
 
 // Values returns all known values for H264AdaptiveQuantization. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (H264AdaptiveQuantization) Values() []H264AdaptiveQuantization {
 	return []H264AdaptiveQuantization{
@@ -3461,8 +3786,9 @@ const (
 )
 
 // Values returns all known values for H264CodecLevel. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264CodecLevel) Values() []H264CodecLevel {
 	return []H264CodecLevel{
 		"AUTO",
@@ -3498,8 +3824,9 @@ const (
 )
 
 // Values returns all known values for H264CodecProfile. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264CodecProfile) Values() []H264CodecProfile {
 	return []H264CodecProfile{
 		"BASELINE",
@@ -3520,12 +3847,32 @@ const (
 )
 
 // Values returns all known values for H264DynamicSubGop. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264DynamicSubGop) Values() []H264DynamicSubGop {
 	return []H264DynamicSubGop{
 		"ADAPTIVE",
 		"STATIC",
+	}
+}
+
+type H264EndOfStreamMarkers string
+
+// Enum values for H264EndOfStreamMarkers
+const (
+	H264EndOfStreamMarkersInclude  H264EndOfStreamMarkers = "INCLUDE"
+	H264EndOfStreamMarkersSuppress H264EndOfStreamMarkers = "SUPPRESS"
+)
+
+// Values returns all known values for H264EndOfStreamMarkers. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (H264EndOfStreamMarkers) Values() []H264EndOfStreamMarkers {
+	return []H264EndOfStreamMarkers{
+		"INCLUDE",
+		"SUPPRESS",
 	}
 }
 
@@ -3538,8 +3885,9 @@ const (
 )
 
 // Values returns all known values for H264EntropyEncoding. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264EntropyEncoding) Values() []H264EntropyEncoding {
 	return []H264EntropyEncoding{
 		"CABAC",
@@ -3557,8 +3905,9 @@ const (
 )
 
 // Values returns all known values for H264FieldEncoding. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264FieldEncoding) Values() []H264FieldEncoding {
 	return []H264FieldEncoding{
 		"PAFF",
@@ -3577,8 +3926,9 @@ const (
 
 // Values returns all known values for H264FlickerAdaptiveQuantization. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264FlickerAdaptiveQuantization) Values() []H264FlickerAdaptiveQuantization {
 	return []H264FlickerAdaptiveQuantization{
 		"DISABLED",
@@ -3595,8 +3945,9 @@ const (
 )
 
 // Values returns all known values for H264FramerateControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264FramerateControl) Values() []H264FramerateControl {
 	return []H264FramerateControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -3608,20 +3959,23 @@ type H264FramerateConversionAlgorithm string
 
 // Enum values for H264FramerateConversionAlgorithm
 const (
-	H264FramerateConversionAlgorithmDuplicateDrop H264FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	H264FramerateConversionAlgorithmInterpolate   H264FramerateConversionAlgorithm = "INTERPOLATE"
-	H264FramerateConversionAlgorithmFrameformer   H264FramerateConversionAlgorithm = "FRAMEFORMER"
+	H264FramerateConversionAlgorithmDuplicateDrop      H264FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	H264FramerateConversionAlgorithmInterpolate        H264FramerateConversionAlgorithm = "INTERPOLATE"
+	H264FramerateConversionAlgorithmFrameformer        H264FramerateConversionAlgorithm = "FRAMEFORMER"
+	H264FramerateConversionAlgorithmMaintainFrameCount H264FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for H264FramerateConversionAlgorithm. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264FramerateConversionAlgorithm) Values() []H264FramerateConversionAlgorithm {
 	return []H264FramerateConversionAlgorithm{
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -3634,8 +3988,9 @@ const (
 )
 
 // Values returns all known values for H264GopBReference. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264GopBReference) Values() []H264GopBReference {
 	return []H264GopBReference{
 		"DISABLED",
@@ -3653,8 +4008,9 @@ const (
 )
 
 // Values returns all known values for H264GopSizeUnits. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264GopSizeUnits) Values() []H264GopSizeUnits {
 	return []H264GopSizeUnits{
 		"FRAMES",
@@ -3675,8 +4031,9 @@ const (
 )
 
 // Values returns all known values for H264InterlaceMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264InterlaceMode) Values() []H264InterlaceMode {
 	return []H264InterlaceMode{
 		"PROGRESSIVE",
@@ -3696,8 +4053,9 @@ const (
 )
 
 // Values returns all known values for H264ParControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264ParControl) Values() []H264ParControl {
 	return []H264ParControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -3715,8 +4073,9 @@ const (
 )
 
 // Values returns all known values for H264QualityTuningLevel. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264QualityTuningLevel) Values() []H264QualityTuningLevel {
 	return []H264QualityTuningLevel{
 		"SINGLE_PASS",
@@ -3735,8 +4094,9 @@ const (
 )
 
 // Values returns all known values for H264RateControlMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264RateControlMode) Values() []H264RateControlMode {
 	return []H264RateControlMode{
 		"VBR",
@@ -3754,12 +4114,32 @@ const (
 )
 
 // Values returns all known values for H264RepeatPps. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264RepeatPps) Values() []H264RepeatPps {
 	return []H264RepeatPps{
 		"DISABLED",
 		"ENABLED",
+	}
+}
+
+type H264SaliencyAwareEncoding string
+
+// Enum values for H264SaliencyAwareEncoding
+const (
+	H264SaliencyAwareEncodingDisabled  H264SaliencyAwareEncoding = "DISABLED"
+	H264SaliencyAwareEncodingPreferred H264SaliencyAwareEncoding = "PREFERRED"
+)
+
+// Values returns all known values for H264SaliencyAwareEncoding. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (H264SaliencyAwareEncoding) Values() []H264SaliencyAwareEncoding {
+	return []H264SaliencyAwareEncoding{
+		"DISABLED",
+		"PREFERRED",
 	}
 }
 
@@ -3773,6 +4153,7 @@ const (
 
 // Values returns all known values for H264ScanTypeConversionMode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (H264ScanTypeConversionMode) Values() []H264ScanTypeConversionMode {
 	return []H264ScanTypeConversionMode{
@@ -3791,8 +4172,9 @@ const (
 )
 
 // Values returns all known values for H264SceneChangeDetect. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264SceneChangeDetect) Values() []H264SceneChangeDetect {
 	return []H264SceneChangeDetect{
 		"DISABLED",
@@ -3810,8 +4192,9 @@ const (
 )
 
 // Values returns all known values for H264SlowPal. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264SlowPal) Values() []H264SlowPal {
 	return []H264SlowPal{
 		"DISABLED",
@@ -3829,8 +4212,9 @@ const (
 
 // Values returns all known values for H264SpatialAdaptiveQuantization. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264SpatialAdaptiveQuantization) Values() []H264SpatialAdaptiveQuantization {
 	return []H264SpatialAdaptiveQuantization{
 		"DISABLED",
@@ -3847,8 +4231,9 @@ const (
 )
 
 // Values returns all known values for H264Syntax. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264Syntax) Values() []H264Syntax {
 	return []H264Syntax{
 		"DEFAULT",
@@ -3866,8 +4251,9 @@ const (
 )
 
 // Values returns all known values for H264Telecine. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264Telecine) Values() []H264Telecine {
 	return []H264Telecine{
 		"NONE",
@@ -3886,8 +4272,9 @@ const (
 
 // Values returns all known values for H264TemporalAdaptiveQuantization. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H264TemporalAdaptiveQuantization) Values() []H264TemporalAdaptiveQuantization {
 	return []H264TemporalAdaptiveQuantization{
 		"DISABLED",
@@ -3905,11 +4292,31 @@ const (
 
 // Values returns all known values for H264UnregisteredSeiTimecode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (H264UnregisteredSeiTimecode) Values() []H264UnregisteredSeiTimecode {
 	return []H264UnregisteredSeiTimecode{
 		"DISABLED",
 		"ENABLED",
+	}
+}
+
+type H264WriteMp4PackagingType string
+
+// Enum values for H264WriteMp4PackagingType
+const (
+	H264WriteMp4PackagingTypeAvc1 H264WriteMp4PackagingType = "AVC1"
+	H264WriteMp4PackagingTypeAvc3 H264WriteMp4PackagingType = "AVC3"
+)
+
+// Values returns all known values for H264WriteMp4PackagingType. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (H264WriteMp4PackagingType) Values() []H264WriteMp4PackagingType {
+	return []H264WriteMp4PackagingType{
+		"AVC1",
+		"AVC3",
 	}
 }
 
@@ -3928,6 +4335,7 @@ const (
 
 // Values returns all known values for H265AdaptiveQuantization. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (H265AdaptiveQuantization) Values() []H265AdaptiveQuantization {
 	return []H265AdaptiveQuantization{
@@ -3951,8 +4359,9 @@ const (
 
 // Values returns all known values for H265AlternateTransferFunctionSei. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265AlternateTransferFunctionSei) Values() []H265AlternateTransferFunctionSei {
 	return []H265AlternateTransferFunctionSei{
 		"DISABLED",
@@ -3981,8 +4390,9 @@ const (
 )
 
 // Values returns all known values for H265CodecLevel. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265CodecLevel) Values() []H265CodecLevel {
 	return []H265CodecLevel{
 		"AUTO",
@@ -4017,8 +4427,9 @@ const (
 )
 
 // Values returns all known values for H265CodecProfile. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265CodecProfile) Values() []H265CodecProfile {
 	return []H265CodecProfile{
 		"MAIN_MAIN",
@@ -4032,6 +4443,25 @@ func (H265CodecProfile) Values() []H265CodecProfile {
 	}
 }
 
+type H265Deblocking string
+
+// Enum values for H265Deblocking
+const (
+	H265DeblockingEnabled  H265Deblocking = "ENABLED"
+	H265DeblockingDisabled H265Deblocking = "DISABLED"
+)
+
+// Values returns all known values for H265Deblocking. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (H265Deblocking) Values() []H265Deblocking {
+	return []H265Deblocking{
+		"ENABLED",
+		"DISABLED",
+	}
+}
+
 type H265DynamicSubGop string
 
 // Enum values for H265DynamicSubGop
@@ -4041,12 +4471,32 @@ const (
 )
 
 // Values returns all known values for H265DynamicSubGop. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265DynamicSubGop) Values() []H265DynamicSubGop {
 	return []H265DynamicSubGop{
 		"ADAPTIVE",
 		"STATIC",
+	}
+}
+
+type H265EndOfStreamMarkers string
+
+// Enum values for H265EndOfStreamMarkers
+const (
+	H265EndOfStreamMarkersInclude  H265EndOfStreamMarkers = "INCLUDE"
+	H265EndOfStreamMarkersSuppress H265EndOfStreamMarkers = "SUPPRESS"
+)
+
+// Values returns all known values for H265EndOfStreamMarkers. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (H265EndOfStreamMarkers) Values() []H265EndOfStreamMarkers {
+	return []H265EndOfStreamMarkers{
+		"INCLUDE",
+		"SUPPRESS",
 	}
 }
 
@@ -4060,8 +4510,9 @@ const (
 
 // Values returns all known values for H265FlickerAdaptiveQuantization. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265FlickerAdaptiveQuantization) Values() []H265FlickerAdaptiveQuantization {
 	return []H265FlickerAdaptiveQuantization{
 		"DISABLED",
@@ -4078,8 +4529,9 @@ const (
 )
 
 // Values returns all known values for H265FramerateControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265FramerateControl) Values() []H265FramerateControl {
 	return []H265FramerateControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -4091,20 +4543,23 @@ type H265FramerateConversionAlgorithm string
 
 // Enum values for H265FramerateConversionAlgorithm
 const (
-	H265FramerateConversionAlgorithmDuplicateDrop H265FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	H265FramerateConversionAlgorithmInterpolate   H265FramerateConversionAlgorithm = "INTERPOLATE"
-	H265FramerateConversionAlgorithmFrameformer   H265FramerateConversionAlgorithm = "FRAMEFORMER"
+	H265FramerateConversionAlgorithmDuplicateDrop      H265FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	H265FramerateConversionAlgorithmInterpolate        H265FramerateConversionAlgorithm = "INTERPOLATE"
+	H265FramerateConversionAlgorithmFrameformer        H265FramerateConversionAlgorithm = "FRAMEFORMER"
+	H265FramerateConversionAlgorithmMaintainFrameCount H265FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for H265FramerateConversionAlgorithm. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265FramerateConversionAlgorithm) Values() []H265FramerateConversionAlgorithm {
 	return []H265FramerateConversionAlgorithm{
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -4117,8 +4572,9 @@ const (
 )
 
 // Values returns all known values for H265GopBReference. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265GopBReference) Values() []H265GopBReference {
 	return []H265GopBReference{
 		"DISABLED",
@@ -4136,8 +4592,9 @@ const (
 )
 
 // Values returns all known values for H265GopSizeUnits. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265GopSizeUnits) Values() []H265GopSizeUnits {
 	return []H265GopSizeUnits{
 		"FRAMES",
@@ -4158,8 +4615,9 @@ const (
 )
 
 // Values returns all known values for H265InterlaceMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265InterlaceMode) Values() []H265InterlaceMode {
 	return []H265InterlaceMode{
 		"PROGRESSIVE",
@@ -4179,8 +4637,9 @@ const (
 )
 
 // Values returns all known values for H265ParControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265ParControl) Values() []H265ParControl {
 	return []H265ParControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -4198,8 +4657,9 @@ const (
 )
 
 // Values returns all known values for H265QualityTuningLevel. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265QualityTuningLevel) Values() []H265QualityTuningLevel {
 	return []H265QualityTuningLevel{
 		"SINGLE_PASS",
@@ -4218,8 +4678,9 @@ const (
 )
 
 // Values returns all known values for H265RateControlMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265RateControlMode) Values() []H265RateControlMode {
 	return []H265RateControlMode{
 		"VBR",
@@ -4239,8 +4700,9 @@ const (
 
 // Values returns all known values for H265SampleAdaptiveOffsetFilterMode. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265SampleAdaptiveOffsetFilterMode) Values() []H265SampleAdaptiveOffsetFilterMode {
 	return []H265SampleAdaptiveOffsetFilterMode{
 		"DEFAULT",
@@ -4259,6 +4721,7 @@ const (
 
 // Values returns all known values for H265ScanTypeConversionMode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (H265ScanTypeConversionMode) Values() []H265ScanTypeConversionMode {
 	return []H265ScanTypeConversionMode{
@@ -4277,8 +4740,9 @@ const (
 )
 
 // Values returns all known values for H265SceneChangeDetect. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265SceneChangeDetect) Values() []H265SceneChangeDetect {
 	return []H265SceneChangeDetect{
 		"DISABLED",
@@ -4296,8 +4760,9 @@ const (
 )
 
 // Values returns all known values for H265SlowPal. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265SlowPal) Values() []H265SlowPal {
 	return []H265SlowPal{
 		"DISABLED",
@@ -4315,8 +4780,9 @@ const (
 
 // Values returns all known values for H265SpatialAdaptiveQuantization. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265SpatialAdaptiveQuantization) Values() []H265SpatialAdaptiveQuantization {
 	return []H265SpatialAdaptiveQuantization{
 		"DISABLED",
@@ -4334,8 +4800,9 @@ const (
 )
 
 // Values returns all known values for H265Telecine. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265Telecine) Values() []H265Telecine {
 	return []H265Telecine{
 		"NONE",
@@ -4354,8 +4821,9 @@ const (
 
 // Values returns all known values for H265TemporalAdaptiveQuantization. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265TemporalAdaptiveQuantization) Values() []H265TemporalAdaptiveQuantization {
 	return []H265TemporalAdaptiveQuantization{
 		"DISABLED",
@@ -4372,8 +4840,9 @@ const (
 )
 
 // Values returns all known values for H265TemporalIds. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265TemporalIds) Values() []H265TemporalIds {
 	return []H265TemporalIds{
 		"DISABLED",
@@ -4390,8 +4859,9 @@ const (
 )
 
 // Values returns all known values for H265Tiles. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (H265Tiles) Values() []H265Tiles {
 	return []H265Tiles{
 		"DISABLED",
@@ -4409,6 +4879,7 @@ const (
 
 // Values returns all known values for H265UnregisteredSeiTimecode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (H265UnregisteredSeiTimecode) Values() []H265UnregisteredSeiTimecode {
 	return []H265UnregisteredSeiTimecode{
@@ -4427,6 +4898,7 @@ const (
 
 // Values returns all known values for H265WriteMp4PackagingType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (H265WriteMp4PackagingType) Values() []H265WriteMp4PackagingType {
 	return []H265WriteMp4PackagingType{
@@ -4444,8 +4916,9 @@ const (
 )
 
 // Values returns all known values for HDRToSDRToneMapper. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HDRToSDRToneMapper) Values() []HDRToSDRToneMapper {
 	return []HDRToSDRToneMapper{
 		"PRESERVE_DETAILS",
@@ -4462,8 +4935,9 @@ const (
 )
 
 // Values returns all known values for HlsAdMarkers. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsAdMarkers) Values() []HlsAdMarkers {
 	return []HlsAdMarkers{
 		"ELEMENTAL",
@@ -4480,8 +4954,9 @@ const (
 )
 
 // Values returns all known values for HlsAudioOnlyContainer. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsAudioOnlyContainer) Values() []HlsAudioOnlyContainer {
 	return []HlsAudioOnlyContainer{
 		"AUTOMATIC",
@@ -4498,8 +4973,9 @@ const (
 )
 
 // Values returns all known values for HlsAudioOnlyHeader. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsAudioOnlyHeader) Values() []HlsAudioOnlyHeader {
 	return []HlsAudioOnlyHeader{
 		"INCLUDE",
@@ -4518,8 +4994,9 @@ const (
 )
 
 // Values returns all known values for HlsAudioTrackType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsAudioTrackType) Values() []HlsAudioTrackType {
 	return []HlsAudioTrackType{
 		"ALTERNATE_AUDIO_AUTO_SELECT_DEFAULT",
@@ -4540,6 +5017,7 @@ const (
 
 // Values returns all known values for HlsCaptionLanguageSetting. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsCaptionLanguageSetting) Values() []HlsCaptionLanguageSetting {
 	return []HlsCaptionLanguageSetting{
@@ -4559,8 +5037,9 @@ const (
 
 // Values returns all known values for HlsCaptionSegmentLengthControl. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsCaptionSegmentLengthControl) Values() []HlsCaptionSegmentLengthControl {
 	return []HlsCaptionSegmentLengthControl{
 		"LARGE_SEGMENTS",
@@ -4577,8 +5056,9 @@ const (
 )
 
 // Values returns all known values for HlsClientCache. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsClientCache) Values() []HlsClientCache {
 	return []HlsClientCache{
 		"DISABLED",
@@ -4595,8 +5075,9 @@ const (
 )
 
 // Values returns all known values for HlsCodecSpecification. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsCodecSpecification) Values() []HlsCodecSpecification {
 	return []HlsCodecSpecification{
 		"RFC_6381",
@@ -4614,8 +5095,9 @@ const (
 
 // Values returns all known values for HlsDescriptiveVideoServiceFlag. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsDescriptiveVideoServiceFlag) Values() []HlsDescriptiveVideoServiceFlag {
 	return []HlsDescriptiveVideoServiceFlag{
 		"DONT_FLAG",
@@ -4632,8 +5114,9 @@ const (
 )
 
 // Values returns all known values for HlsDirectoryStructure. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsDirectoryStructure) Values() []HlsDirectoryStructure {
 	return []HlsDirectoryStructure{
 		"SINGLE_DIRECTORY",
@@ -4650,8 +5133,9 @@ const (
 )
 
 // Values returns all known values for HlsEncryptionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsEncryptionType) Values() []HlsEncryptionType {
 	return []HlsEncryptionType{
 		"AES128",
@@ -4668,8 +5152,9 @@ const (
 )
 
 // Values returns all known values for HlsIFrameOnlyManifest. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsIFrameOnlyManifest) Values() []HlsIFrameOnlyManifest {
 	return []HlsIFrameOnlyManifest{
 		"INCLUDE",
@@ -4688,8 +5173,9 @@ const (
 )
 
 // Values returns all known values for HlsImageBasedTrickPlay. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsImageBasedTrickPlay) Values() []HlsImageBasedTrickPlay {
 	return []HlsImageBasedTrickPlay{
 		"NONE",
@@ -4709,8 +5195,9 @@ const (
 
 // Values returns all known values for HlsInitializationVectorInManifest. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsInitializationVectorInManifest) Values() []HlsInitializationVectorInManifest {
 	return []HlsInitializationVectorInManifest{
 		"INCLUDE",
@@ -4727,8 +5214,9 @@ const (
 )
 
 // Values returns all known values for HlsIntervalCadence. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsIntervalCadence) Values() []HlsIntervalCadence {
 	return []HlsIntervalCadence{
 		"FOLLOW_IFRAME",
@@ -4745,8 +5233,9 @@ const (
 )
 
 // Values returns all known values for HlsKeyProviderType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsKeyProviderType) Values() []HlsKeyProviderType {
 	return []HlsKeyProviderType{
 		"SPEKE",
@@ -4763,8 +5252,9 @@ const (
 )
 
 // Values returns all known values for HlsManifestCompression. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsManifestCompression) Values() []HlsManifestCompression {
 	return []HlsManifestCompression{
 		"GZIP",
@@ -4782,6 +5272,7 @@ const (
 
 // Values returns all known values for HlsManifestDurationFormat. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsManifestDurationFormat) Values() []HlsManifestDurationFormat {
 	return []HlsManifestDurationFormat{
@@ -4799,8 +5290,9 @@ const (
 )
 
 // Values returns all known values for HlsOfflineEncrypted. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsOfflineEncrypted) Values() []HlsOfflineEncrypted {
 	return []HlsOfflineEncrypted{
 		"ENABLED",
@@ -4817,8 +5309,9 @@ const (
 )
 
 // Values returns all known values for HlsOutputSelection. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsOutputSelection) Values() []HlsOutputSelection {
 	return []HlsOutputSelection{
 		"MANIFESTS_AND_SEGMENTS",
@@ -4835,8 +5328,9 @@ const (
 )
 
 // Values returns all known values for HlsProgramDateTime. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsProgramDateTime) Values() []HlsProgramDateTime {
 	return []HlsProgramDateTime{
 		"INCLUDE",
@@ -4854,8 +5348,9 @@ const (
 
 // Values returns all known values for HlsProgressiveWriteHlsManifest. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsProgressiveWriteHlsManifest) Values() []HlsProgressiveWriteHlsManifest {
 	return []HlsProgressiveWriteHlsManifest{
 		"ENABLED",
@@ -4872,8 +5367,9 @@ const (
 )
 
 // Values returns all known values for HlsSegmentControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsSegmentControl) Values() []HlsSegmentControl {
 	return []HlsSegmentControl{
 		"SINGLE_FILE",
@@ -4890,8 +5386,9 @@ const (
 )
 
 // Values returns all known values for HlsSegmentLengthControl. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsSegmentLengthControl) Values() []HlsSegmentLengthControl {
 	return []HlsSegmentLengthControl{
 		"EXACT",
@@ -4908,8 +5405,9 @@ const (
 )
 
 // Values returns all known values for HlsStreamInfResolution. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsStreamInfResolution) Values() []HlsStreamInfResolution {
 	return []HlsStreamInfResolution{
 		"INCLUDE",
@@ -4927,8 +5425,9 @@ const (
 
 // Values returns all known values for HlsTargetDurationCompatibilityMode. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsTargetDurationCompatibilityMode) Values() []HlsTargetDurationCompatibilityMode {
 	return []HlsTargetDurationCompatibilityMode{
 		"LEGACY",
@@ -4947,6 +5446,7 @@ const (
 
 // Values returns all known values for HlsTimedMetadataId3Frame. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (HlsTimedMetadataId3Frame) Values() []HlsTimedMetadataId3Frame {
 	return []HlsTimedMetadataId3Frame{
@@ -4965,8 +5465,9 @@ const (
 )
 
 // Values returns all known values for ImscAccessibilitySubs. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImscAccessibilitySubs) Values() []ImscAccessibilitySubs {
 	return []ImscAccessibilitySubs{
 		"DISABLED",
@@ -4983,8 +5484,9 @@ const (
 )
 
 // Values returns all known values for ImscStylePassthrough. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ImscStylePassthrough) Values() []ImscStylePassthrough {
 	return []ImscStylePassthrough{
 		"ENABLED",
@@ -5001,8 +5503,9 @@ const (
 )
 
 // Values returns all known values for InputDeblockFilter. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputDeblockFilter) Values() []InputDeblockFilter {
 	return []InputDeblockFilter{
 		"ENABLED",
@@ -5019,8 +5522,9 @@ const (
 )
 
 // Values returns all known values for InputDenoiseFilter. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputDenoiseFilter) Values() []InputDenoiseFilter {
 	return []InputDenoiseFilter{
 		"ENABLED",
@@ -5038,8 +5542,9 @@ const (
 )
 
 // Values returns all known values for InputFilterEnable. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputFilterEnable) Values() []InputFilterEnable {
 	return []InputFilterEnable{
 		"AUTO",
@@ -5057,8 +5562,9 @@ const (
 )
 
 // Values returns all known values for InputPolicy. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputPolicy) Values() []InputPolicy {
 	return []InputPolicy{
 		"ALLOWED",
@@ -5075,8 +5581,9 @@ const (
 )
 
 // Values returns all known values for InputPsiControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputPsiControl) Values() []InputPsiControl {
 	return []InputPsiControl{
 		"IGNORE_PSI",
@@ -5096,8 +5603,9 @@ const (
 )
 
 // Values returns all known values for InputRotate. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputRotate) Values() []InputRotate {
 	return []InputRotate{
 		"DEGREE_0",
@@ -5118,8 +5626,9 @@ const (
 )
 
 // Values returns all known values for InputSampleRange. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputSampleRange) Values() []InputSampleRange {
 	return []InputSampleRange{
 		"FOLLOW",
@@ -5137,8 +5646,9 @@ const (
 )
 
 // Values returns all known values for InputScanType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputScanType) Values() []InputScanType {
 	return []InputScanType{
 		"AUTO",
@@ -5156,8 +5666,9 @@ const (
 )
 
 // Values returns all known values for InputTimecodeSource. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputTimecodeSource) Values() []InputTimecodeSource {
 	return []InputTimecodeSource{
 		"EMBEDDED",
@@ -5176,8 +5687,9 @@ const (
 )
 
 // Values returns all known values for JobPhase. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobPhase) Values() []JobPhase {
 	return []JobPhase{
 		"PROBING",
@@ -5198,8 +5710,9 @@ const (
 )
 
 // Values returns all known values for JobStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobStatus) Values() []JobStatus {
 	return []JobStatus{
 		"SUBMITTED",
@@ -5220,8 +5733,9 @@ const (
 )
 
 // Values returns all known values for JobTemplateListBy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (JobTemplateListBy) Values() []JobTemplateListBy {
 	return []JobTemplateListBy{
 		"NAME",
@@ -5429,8 +5943,9 @@ const (
 )
 
 // Values returns all known values for LanguageCode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LanguageCode) Values() []LanguageCode {
 	return []LanguageCode{
 		"ENG",
@@ -5637,8 +6152,9 @@ const (
 )
 
 // Values returns all known values for M2tsAudioBufferModel. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsAudioBufferModel) Values() []M2tsAudioBufferModel {
 	return []M2tsAudioBufferModel{
 		"DVB",
@@ -5655,8 +6171,9 @@ const (
 )
 
 // Values returns all known values for M2tsAudioDuration. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsAudioDuration) Values() []M2tsAudioDuration {
 	return []M2tsAudioDuration{
 		"DEFAULT_CODEC_DURATION",
@@ -5673,8 +6190,9 @@ const (
 )
 
 // Values returns all known values for M2tsBufferModel. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsBufferModel) Values() []M2tsBufferModel {
 	return []M2tsBufferModel{
 		"MULTIPLEX",
@@ -5691,8 +6209,9 @@ const (
 )
 
 // Values returns all known values for M2tsDataPtsControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsDataPtsControl) Values() []M2tsDataPtsControl {
 	return []M2tsDataPtsControl{
 		"AUTO",
@@ -5709,8 +6228,9 @@ const (
 )
 
 // Values returns all known values for M2tsEbpAudioInterval. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsEbpAudioInterval) Values() []M2tsEbpAudioInterval {
 	return []M2tsEbpAudioInterval{
 		"VIDEO_AND_FIXED_INTERVALS",
@@ -5727,8 +6247,9 @@ const (
 )
 
 // Values returns all known values for M2tsEbpPlacement. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsEbpPlacement) Values() []M2tsEbpPlacement {
 	return []M2tsEbpPlacement{
 		"VIDEO_AND_AUDIO_PIDS",
@@ -5745,8 +6266,9 @@ const (
 )
 
 // Values returns all known values for M2tsEsRateInPes. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsEsRateInPes) Values() []M2tsEsRateInPes {
 	return []M2tsEsRateInPes{
 		"INCLUDE",
@@ -5764,6 +6286,7 @@ const (
 
 // Values returns all known values for M2tsForceTsVideoEbpOrder. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsForceTsVideoEbpOrder) Values() []M2tsForceTsVideoEbpOrder {
 	return []M2tsForceTsVideoEbpOrder{
@@ -5781,8 +6304,9 @@ const (
 )
 
 // Values returns all known values for M2tsKlvMetadata. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsKlvMetadata) Values() []M2tsKlvMetadata {
 	return []M2tsKlvMetadata{
 		"PASSTHROUGH",
@@ -5799,8 +6323,9 @@ const (
 )
 
 // Values returns all known values for M2tsNielsenId3. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsNielsenId3) Values() []M2tsNielsenId3 {
 	return []M2tsNielsenId3{
 		"INSERT",
@@ -5817,12 +6342,32 @@ const (
 )
 
 // Values returns all known values for M2tsPcrControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsPcrControl) Values() []M2tsPcrControl {
 	return []M2tsPcrControl{
 		"PCR_EVERY_PES_PACKET",
 		"CONFIGURED_PCR_PERIOD",
+	}
+}
+
+type M2tsPreventBufferUnderflow string
+
+// Enum values for M2tsPreventBufferUnderflow
+const (
+	M2tsPreventBufferUnderflowDisabled M2tsPreventBufferUnderflow = "DISABLED"
+	M2tsPreventBufferUnderflowEnabled  M2tsPreventBufferUnderflow = "ENABLED"
+)
+
+// Values returns all known values for M2tsPreventBufferUnderflow. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (M2tsPreventBufferUnderflow) Values() []M2tsPreventBufferUnderflow {
+	return []M2tsPreventBufferUnderflow{
+		"DISABLED",
+		"ENABLED",
 	}
 }
 
@@ -5835,8 +6380,9 @@ const (
 )
 
 // Values returns all known values for M2tsRateMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsRateMode) Values() []M2tsRateMode {
 	return []M2tsRateMode{
 		"VBR",
@@ -5853,8 +6399,9 @@ const (
 )
 
 // Values returns all known values for M2tsScte35Source. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsScte35Source) Values() []M2tsScte35Source {
 	return []M2tsScte35Source{
 		"PASSTHROUGH",
@@ -5875,8 +6422,9 @@ const (
 )
 
 // Values returns all known values for M2tsSegmentationMarkers. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsSegmentationMarkers) Values() []M2tsSegmentationMarkers {
 	return []M2tsSegmentationMarkers{
 		"NONE",
@@ -5897,8 +6445,9 @@ const (
 )
 
 // Values returns all known values for M2tsSegmentationStyle. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M2tsSegmentationStyle) Values() []M2tsSegmentationStyle {
 	return []M2tsSegmentationStyle{
 		"MAINTAIN_CADENCE",
@@ -5915,8 +6464,9 @@ const (
 )
 
 // Values returns all known values for M3u8AudioDuration. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M3u8AudioDuration) Values() []M3u8AudioDuration {
 	return []M3u8AudioDuration{
 		"DEFAULT_CODEC_DURATION",
@@ -5933,8 +6483,9 @@ const (
 )
 
 // Values returns all known values for M3u8DataPtsControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M3u8DataPtsControl) Values() []M3u8DataPtsControl {
 	return []M3u8DataPtsControl{
 		"AUTO",
@@ -5951,8 +6502,9 @@ const (
 )
 
 // Values returns all known values for M3u8NielsenId3. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M3u8NielsenId3) Values() []M3u8NielsenId3 {
 	return []M3u8NielsenId3{
 		"INSERT",
@@ -5969,8 +6521,9 @@ const (
 )
 
 // Values returns all known values for M3u8PcrControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M3u8PcrControl) Values() []M3u8PcrControl {
 	return []M3u8PcrControl{
 		"PCR_EVERY_PES_PACKET",
@@ -5987,8 +6540,9 @@ const (
 )
 
 // Values returns all known values for M3u8Scte35Source. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (M3u8Scte35Source) Values() []M3u8Scte35Source {
 	return []M3u8Scte35Source{
 		"PASSTHROUGH",
@@ -6006,6 +6560,7 @@ const (
 
 // Values returns all known values for MotionImageInsertionMode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (MotionImageInsertionMode) Values() []MotionImageInsertionMode {
 	return []MotionImageInsertionMode{
@@ -6023,8 +6578,9 @@ const (
 )
 
 // Values returns all known values for MotionImagePlayback. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MotionImagePlayback) Values() []MotionImagePlayback {
 	return []MotionImagePlayback{
 		"ONCE",
@@ -6041,8 +6597,9 @@ const (
 )
 
 // Values returns all known values for MovClapAtom. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MovClapAtom) Values() []MovClapAtom {
 	return []MovClapAtom{
 		"INCLUDE",
@@ -6059,8 +6616,9 @@ const (
 )
 
 // Values returns all known values for MovCslgAtom. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MovCslgAtom) Values() []MovCslgAtom {
 	return []MovCslgAtom{
 		"INCLUDE",
@@ -6077,8 +6635,9 @@ const (
 )
 
 // Values returns all known values for MovMpeg2FourCCControl. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MovMpeg2FourCCControl) Values() []MovMpeg2FourCCControl {
 	return []MovMpeg2FourCCControl{
 		"XDCAM",
@@ -6095,8 +6654,9 @@ const (
 )
 
 // Values returns all known values for MovPaddingControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MovPaddingControl) Values() []MovPaddingControl {
 	return []MovPaddingControl{
 		"OMNEON",
@@ -6113,8 +6673,9 @@ const (
 )
 
 // Values returns all known values for MovReference. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MovReference) Values() []MovReference {
 	return []MovReference{
 		"SELF_CONTAINED",
@@ -6131,8 +6692,9 @@ const (
 )
 
 // Values returns all known values for Mp3RateControlMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mp3RateControlMode) Values() []Mp3RateControlMode {
 	return []Mp3RateControlMode{
 		"CBR",
@@ -6149,8 +6711,9 @@ const (
 )
 
 // Values returns all known values for Mp4CslgAtom. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mp4CslgAtom) Values() []Mp4CslgAtom {
 	return []Mp4CslgAtom{
 		"INCLUDE",
@@ -6167,8 +6730,9 @@ const (
 )
 
 // Values returns all known values for Mp4FreeSpaceBox. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mp4FreeSpaceBox) Values() []Mp4FreeSpaceBox {
 	return []Mp4FreeSpaceBox{
 		"INCLUDE",
@@ -6185,8 +6749,9 @@ const (
 )
 
 // Values returns all known values for Mp4MoovPlacement. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mp4MoovPlacement) Values() []Mp4MoovPlacement {
 	return []Mp4MoovPlacement{
 		"PROGRESSIVE_DOWNLOAD",
@@ -6204,8 +6769,9 @@ const (
 
 // Values returns all known values for MpdAccessibilityCaptionHints. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MpdAccessibilityCaptionHints) Values() []MpdAccessibilityCaptionHints {
 	return []MpdAccessibilityCaptionHints{
 		"INCLUDE",
@@ -6222,8 +6788,9 @@ const (
 )
 
 // Values returns all known values for MpdAudioDuration. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MpdAudioDuration) Values() []MpdAudioDuration {
 	return []MpdAudioDuration{
 		"DEFAULT_CODEC_DURATION",
@@ -6240,8 +6807,9 @@ const (
 )
 
 // Values returns all known values for MpdCaptionContainerType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MpdCaptionContainerType) Values() []MpdCaptionContainerType {
 	return []MpdCaptionContainerType{
 		"RAW",
@@ -6258,8 +6826,9 @@ const (
 )
 
 // Values returns all known values for MpdKlvMetadata. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MpdKlvMetadata) Values() []MpdKlvMetadata {
 	return []MpdKlvMetadata{
 		"NONE",
@@ -6277,8 +6846,9 @@ const (
 
 // Values returns all known values for MpdManifestMetadataSignaling. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MpdManifestMetadataSignaling) Values() []MpdManifestMetadataSignaling {
 	return []MpdManifestMetadataSignaling{
 		"ENABLED",
@@ -6295,8 +6865,9 @@ const (
 )
 
 // Values returns all known values for MpdScte35Esam. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MpdScte35Esam) Values() []MpdScte35Esam {
 	return []MpdScte35Esam{
 		"INSERT",
@@ -6313,8 +6884,9 @@ const (
 )
 
 // Values returns all known values for MpdScte35Source. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MpdScte35Source) Values() []MpdScte35Source {
 	return []MpdScte35Source{
 		"PASSTHROUGH",
@@ -6331,8 +6903,9 @@ const (
 )
 
 // Values returns all known values for MpdTimedMetadata. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MpdTimedMetadata) Values() []MpdTimedMetadata {
 	return []MpdTimedMetadata{
 		"PASSTHROUGH",
@@ -6350,6 +6923,7 @@ const (
 
 // Values returns all known values for MpdTimedMetadataBoxVersion. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (MpdTimedMetadataBoxVersion) Values() []MpdTimedMetadataBoxVersion {
 	return []MpdTimedMetadataBoxVersion{
@@ -6370,6 +6944,7 @@ const (
 
 // Values returns all known values for Mpeg2AdaptiveQuantization. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2AdaptiveQuantization) Values() []Mpeg2AdaptiveQuantization {
 	return []Mpeg2AdaptiveQuantization{
@@ -6392,8 +6967,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2CodecLevel. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2CodecLevel) Values() []Mpeg2CodecLevel {
 	return []Mpeg2CodecLevel{
 		"AUTO",
@@ -6413,8 +6989,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2CodecProfile. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2CodecProfile) Values() []Mpeg2CodecProfile {
 	return []Mpeg2CodecProfile{
 		"MAIN",
@@ -6431,8 +7008,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2DynamicSubGop. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2DynamicSubGop) Values() []Mpeg2DynamicSubGop {
 	return []Mpeg2DynamicSubGop{
 		"ADAPTIVE",
@@ -6449,8 +7027,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2FramerateControl. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2FramerateControl) Values() []Mpeg2FramerateControl {
 	return []Mpeg2FramerateControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -6462,20 +7041,23 @@ type Mpeg2FramerateConversionAlgorithm string
 
 // Enum values for Mpeg2FramerateConversionAlgorithm
 const (
-	Mpeg2FramerateConversionAlgorithmDuplicateDrop Mpeg2FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	Mpeg2FramerateConversionAlgorithmInterpolate   Mpeg2FramerateConversionAlgorithm = "INTERPOLATE"
-	Mpeg2FramerateConversionAlgorithmFrameformer   Mpeg2FramerateConversionAlgorithm = "FRAMEFORMER"
+	Mpeg2FramerateConversionAlgorithmDuplicateDrop      Mpeg2FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	Mpeg2FramerateConversionAlgorithmInterpolate        Mpeg2FramerateConversionAlgorithm = "INTERPOLATE"
+	Mpeg2FramerateConversionAlgorithmFrameformer        Mpeg2FramerateConversionAlgorithm = "FRAMEFORMER"
+	Mpeg2FramerateConversionAlgorithmMaintainFrameCount Mpeg2FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for Mpeg2FramerateConversionAlgorithm. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2FramerateConversionAlgorithm) Values() []Mpeg2FramerateConversionAlgorithm {
 	return []Mpeg2FramerateConversionAlgorithm{
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -6488,8 +7070,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2GopSizeUnits. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2GopSizeUnits) Values() []Mpeg2GopSizeUnits {
 	return []Mpeg2GopSizeUnits{
 		"FRAMES",
@@ -6509,8 +7092,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2InterlaceMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2InterlaceMode) Values() []Mpeg2InterlaceMode {
 	return []Mpeg2InterlaceMode{
 		"PROGRESSIVE",
@@ -6533,8 +7117,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2IntraDcPrecision. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2IntraDcPrecision) Values() []Mpeg2IntraDcPrecision {
 	return []Mpeg2IntraDcPrecision{
 		"AUTO",
@@ -6554,8 +7139,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2ParControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2ParControl) Values() []Mpeg2ParControl {
 	return []Mpeg2ParControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -6572,8 +7158,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2QualityTuningLevel. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2QualityTuningLevel) Values() []Mpeg2QualityTuningLevel {
 	return []Mpeg2QualityTuningLevel{
 		"SINGLE_PASS",
@@ -6590,8 +7177,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2RateControlMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2RateControlMode) Values() []Mpeg2RateControlMode {
 	return []Mpeg2RateControlMode{
 		"VBR",
@@ -6609,6 +7197,7 @@ const (
 
 // Values returns all known values for Mpeg2ScanTypeConversionMode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2ScanTypeConversionMode) Values() []Mpeg2ScanTypeConversionMode {
 	return []Mpeg2ScanTypeConversionMode{
@@ -6626,8 +7215,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2SceneChangeDetect. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2SceneChangeDetect) Values() []Mpeg2SceneChangeDetect {
 	return []Mpeg2SceneChangeDetect{
 		"DISABLED",
@@ -6644,8 +7234,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2SlowPal. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2SlowPal) Values() []Mpeg2SlowPal {
 	return []Mpeg2SlowPal{
 		"DISABLED",
@@ -6663,8 +7254,9 @@ const (
 
 // Values returns all known values for Mpeg2SpatialAdaptiveQuantization. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2SpatialAdaptiveQuantization) Values() []Mpeg2SpatialAdaptiveQuantization {
 	return []Mpeg2SpatialAdaptiveQuantization{
 		"DISABLED",
@@ -6681,8 +7273,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2Syntax. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2Syntax) Values() []Mpeg2Syntax {
 	return []Mpeg2Syntax{
 		"DEFAULT",
@@ -6700,8 +7293,9 @@ const (
 )
 
 // Values returns all known values for Mpeg2Telecine. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2Telecine) Values() []Mpeg2Telecine {
 	return []Mpeg2Telecine{
 		"NONE",
@@ -6720,8 +7314,9 @@ const (
 
 // Values returns all known values for Mpeg2TemporalAdaptiveQuantization. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Mpeg2TemporalAdaptiveQuantization) Values() []Mpeg2TemporalAdaptiveQuantization {
 	return []Mpeg2TemporalAdaptiveQuantization{
 		"DISABLED",
@@ -6739,6 +7334,7 @@ const (
 
 // Values returns all known values for MsSmoothAudioDeduplication. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (MsSmoothAudioDeduplication) Values() []MsSmoothAudioDeduplication {
 	return []MsSmoothAudioDeduplication{
@@ -6757,8 +7353,9 @@ const (
 
 // Values returns all known values for MsSmoothFragmentLengthControl. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MsSmoothFragmentLengthControl) Values() []MsSmoothFragmentLengthControl {
 	return []MsSmoothFragmentLengthControl{
 		"EXACT",
@@ -6776,6 +7373,7 @@ const (
 
 // Values returns all known values for MsSmoothManifestEncoding. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (MsSmoothManifestEncoding) Values() []MsSmoothManifestEncoding {
 	return []MsSmoothManifestEncoding{
@@ -6793,8 +7391,9 @@ const (
 )
 
 // Values returns all known values for MxfAfdSignaling. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MxfAfdSignaling) Values() []MxfAfdSignaling {
 	return []MxfAfdSignaling{
 		"NO_COPY",
@@ -6814,8 +7413,9 @@ const (
 )
 
 // Values returns all known values for MxfProfile. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MxfProfile) Values() []MxfProfile {
 	return []MxfProfile{
 		"D_10",
@@ -6835,8 +7435,9 @@ const (
 )
 
 // Values returns all known values for MxfXavcDurationMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MxfXavcDurationMode) Values() []MxfXavcDurationMode {
 	return []MxfXavcDurationMode{
 		"ALLOW_ANY_DURATION",
@@ -6855,8 +7456,9 @@ const (
 
 // Values returns all known values for NielsenActiveWatermarkProcessType. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NielsenActiveWatermarkProcessType) Values() []NielsenActiveWatermarkProcessType {
 	return []NielsenActiveWatermarkProcessType{
 		"NAES2_AND_NW",
@@ -6875,8 +7477,9 @@ const (
 
 // Values returns all known values for NielsenSourceWatermarkStatusType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NielsenSourceWatermarkStatusType) Values() []NielsenSourceWatermarkStatusType {
 	return []NielsenSourceWatermarkStatusType{
 		"CLEAN",
@@ -6894,8 +7497,9 @@ const (
 
 // Values returns all known values for NielsenUniqueTicPerAudioTrackType. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NielsenUniqueTicPerAudioTrackType) Values() []NielsenUniqueTicPerAudioTrackType {
 	return []NielsenUniqueTicPerAudioTrackType{
 		"RESERVE_UNIQUE_TICS_PER_TRACK",
@@ -6914,8 +7518,9 @@ const (
 
 // Values returns all known values for NoiseFilterPostTemporalSharpening. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NoiseFilterPostTemporalSharpening) Values() []NoiseFilterPostTemporalSharpening {
 	return []NoiseFilterPostTemporalSharpening{
 		"DISABLED",
@@ -6935,8 +7540,9 @@ const (
 
 // Values returns all known values for NoiseFilterPostTemporalSharpeningStrength.
 // Note that this can be expanded in the future, and so it is only as up to date as
-// the client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NoiseFilterPostTemporalSharpeningStrength) Values() []NoiseFilterPostTemporalSharpeningStrength {
 	return []NoiseFilterPostTemporalSharpeningStrength{
 		"LOW",
@@ -6960,8 +7566,9 @@ const (
 )
 
 // Values returns all known values for NoiseReducerFilter. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (NoiseReducerFilter) Values() []NoiseReducerFilter {
 	return []NoiseReducerFilter{
 		"BILATERAL",
@@ -6984,8 +7591,9 @@ const (
 )
 
 // Values returns all known values for Order. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Order) Values() []Order {
 	return []Order{
 		"ASCENDING",
@@ -7005,8 +7613,9 @@ const (
 )
 
 // Values returns all known values for OutputGroupType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OutputGroupType) Values() []OutputGroupType {
 	return []OutputGroupType{
 		"HLS_GROUP_SETTINGS",
@@ -7028,8 +7637,9 @@ const (
 )
 
 // Values returns all known values for OutputSdt. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (OutputSdt) Values() []OutputSdt {
 	return []OutputSdt{
 		"SDT_FOLLOW",
@@ -7048,8 +7658,9 @@ const (
 )
 
 // Values returns all known values for PadVideo. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PadVideo) Values() []PadVideo {
 	return []PadVideo{
 		"DISABLED",
@@ -7067,13 +7678,74 @@ const (
 )
 
 // Values returns all known values for PresetListBy. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PresetListBy) Values() []PresetListBy {
 	return []PresetListBy{
 		"NAME",
 		"CREATION_DATE",
 		"SYSTEM",
+	}
+}
+
+type PresetSpeke20Audio string
+
+// Enum values for PresetSpeke20Audio
+const (
+	PresetSpeke20AudioPresetAudio1 PresetSpeke20Audio = "PRESET_AUDIO_1"
+	PresetSpeke20AudioPresetAudio2 PresetSpeke20Audio = "PRESET_AUDIO_2"
+	PresetSpeke20AudioPresetAudio3 PresetSpeke20Audio = "PRESET_AUDIO_3"
+	PresetSpeke20AudioShared       PresetSpeke20Audio = "SHARED"
+	PresetSpeke20AudioUnencrypted  PresetSpeke20Audio = "UNENCRYPTED"
+)
+
+// Values returns all known values for PresetSpeke20Audio. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PresetSpeke20Audio) Values() []PresetSpeke20Audio {
+	return []PresetSpeke20Audio{
+		"PRESET_AUDIO_1",
+		"PRESET_AUDIO_2",
+		"PRESET_AUDIO_3",
+		"SHARED",
+		"UNENCRYPTED",
+	}
+}
+
+type PresetSpeke20Video string
+
+// Enum values for PresetSpeke20Video
+const (
+	PresetSpeke20VideoPresetVideo1 PresetSpeke20Video = "PRESET_VIDEO_1"
+	PresetSpeke20VideoPresetVideo2 PresetSpeke20Video = "PRESET_VIDEO_2"
+	PresetSpeke20VideoPresetVideo3 PresetSpeke20Video = "PRESET_VIDEO_3"
+	PresetSpeke20VideoPresetVideo4 PresetSpeke20Video = "PRESET_VIDEO_4"
+	PresetSpeke20VideoPresetVideo5 PresetSpeke20Video = "PRESET_VIDEO_5"
+	PresetSpeke20VideoPresetVideo6 PresetSpeke20Video = "PRESET_VIDEO_6"
+	PresetSpeke20VideoPresetVideo7 PresetSpeke20Video = "PRESET_VIDEO_7"
+	PresetSpeke20VideoPresetVideo8 PresetSpeke20Video = "PRESET_VIDEO_8"
+	PresetSpeke20VideoShared       PresetSpeke20Video = "SHARED"
+	PresetSpeke20VideoUnencrypted  PresetSpeke20Video = "UNENCRYPTED"
+)
+
+// Values returns all known values for PresetSpeke20Video. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PresetSpeke20Video) Values() []PresetSpeke20Video {
+	return []PresetSpeke20Video{
+		"PRESET_VIDEO_1",
+		"PRESET_VIDEO_2",
+		"PRESET_VIDEO_3",
+		"PRESET_VIDEO_4",
+		"PRESET_VIDEO_5",
+		"PRESET_VIDEO_6",
+		"PRESET_VIDEO_7",
+		"PRESET_VIDEO_8",
+		"SHARED",
+		"UNENCRYPTED",
 	}
 }
 
@@ -7086,8 +7758,9 @@ const (
 )
 
 // Values returns all known values for PricingPlan. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PricingPlan) Values() []PricingPlan {
 	return []PricingPlan{
 		"ON_DEMAND",
@@ -7104,8 +7777,9 @@ const (
 )
 
 // Values returns all known values for ProresChromaSampling. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProresChromaSampling) Values() []ProresChromaSampling {
 	return []ProresChromaSampling{
 		"PRESERVE_444_SAMPLING",
@@ -7126,8 +7800,9 @@ const (
 )
 
 // Values returns all known values for ProresCodecProfile. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProresCodecProfile) Values() []ProresCodecProfile {
 	return []ProresCodecProfile{
 		"APPLE_PRORES_422",
@@ -7148,8 +7823,9 @@ const (
 )
 
 // Values returns all known values for ProresFramerateControl. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProresFramerateControl) Values() []ProresFramerateControl {
 	return []ProresFramerateControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -7161,20 +7837,23 @@ type ProresFramerateConversionAlgorithm string
 
 // Enum values for ProresFramerateConversionAlgorithm
 const (
-	ProresFramerateConversionAlgorithmDuplicateDrop ProresFramerateConversionAlgorithm = "DUPLICATE_DROP"
-	ProresFramerateConversionAlgorithmInterpolate   ProresFramerateConversionAlgorithm = "INTERPOLATE"
-	ProresFramerateConversionAlgorithmFrameformer   ProresFramerateConversionAlgorithm = "FRAMEFORMER"
+	ProresFramerateConversionAlgorithmDuplicateDrop      ProresFramerateConversionAlgorithm = "DUPLICATE_DROP"
+	ProresFramerateConversionAlgorithmInterpolate        ProresFramerateConversionAlgorithm = "INTERPOLATE"
+	ProresFramerateConversionAlgorithmFrameformer        ProresFramerateConversionAlgorithm = "FRAMEFORMER"
+	ProresFramerateConversionAlgorithmMaintainFrameCount ProresFramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for ProresFramerateConversionAlgorithm. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProresFramerateConversionAlgorithm) Values() []ProresFramerateConversionAlgorithm {
 	return []ProresFramerateConversionAlgorithm{
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -7190,8 +7869,9 @@ const (
 )
 
 // Values returns all known values for ProresInterlaceMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProresInterlaceMode) Values() []ProresInterlaceMode {
 	return []ProresInterlaceMode{
 		"PROGRESSIVE",
@@ -7211,8 +7891,9 @@ const (
 )
 
 // Values returns all known values for ProresParControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProresParControl) Values() []ProresParControl {
 	return []ProresParControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -7230,8 +7911,9 @@ const (
 
 // Values returns all known values for ProresScanTypeConversionMode. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProresScanTypeConversionMode) Values() []ProresScanTypeConversionMode {
 	return []ProresScanTypeConversionMode{
 		"INTERLACED",
@@ -7248,8 +7930,9 @@ const (
 )
 
 // Values returns all known values for ProresSlowPal. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProresSlowPal) Values() []ProresSlowPal {
 	return []ProresSlowPal{
 		"DISABLED",
@@ -7266,8 +7949,9 @@ const (
 )
 
 // Values returns all known values for ProresTelecine. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ProresTelecine) Values() []ProresTelecine {
 	return []ProresTelecine{
 		"NONE",
@@ -7284,8 +7968,9 @@ const (
 )
 
 // Values returns all known values for QueueListBy. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (QueueListBy) Values() []QueueListBy {
 	return []QueueListBy{
 		"NAME",
@@ -7302,12 +7987,32 @@ const (
 )
 
 // Values returns all known values for QueueStatus. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (QueueStatus) Values() []QueueStatus {
 	return []QueueStatus{
 		"ACTIVE",
 		"PAUSED",
+	}
+}
+
+type RemoveRubyReserveAttributes string
+
+// Enum values for RemoveRubyReserveAttributes
+const (
+	RemoveRubyReserveAttributesDisabled RemoveRubyReserveAttributes = "DISABLED"
+	RemoveRubyReserveAttributesEnabled  RemoveRubyReserveAttributes = "ENABLED"
+)
+
+// Values returns all known values for RemoveRubyReserveAttributes. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RemoveRubyReserveAttributes) Values() []RemoveRubyReserveAttributes {
+	return []RemoveRubyReserveAttributes{
+		"DISABLED",
+		"ENABLED",
 	}
 }
 
@@ -7320,8 +8025,9 @@ const (
 )
 
 // Values returns all known values for RenewalType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RenewalType) Values() []RenewalType {
 	return []RenewalType{
 		"AUTO_RENEW",
@@ -7338,8 +8044,9 @@ const (
 )
 
 // Values returns all known values for RequiredFlag. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RequiredFlag) Values() []RequiredFlag {
 	return []RequiredFlag{
 		"ENABLED",
@@ -7356,8 +8063,9 @@ const (
 )
 
 // Values returns all known values for ReservationPlanStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ReservationPlanStatus) Values() []ReservationPlanStatus {
 	return []ReservationPlanStatus{
 		"ACTIVE",
@@ -7375,8 +8083,9 @@ const (
 )
 
 // Values returns all known values for RespondToAfd. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RespondToAfd) Values() []RespondToAfd {
 	return []RespondToAfd{
 		"NONE",
@@ -7396,8 +8105,9 @@ const (
 )
 
 // Values returns all known values for RuleType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RuleType) Values() []RuleType {
 	return []RuleType{
 		"MIN_TOP_RENDITION_SIZE",
@@ -7418,8 +8128,9 @@ const (
 )
 
 // Values returns all known values for S3ObjectCannedAcl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (S3ObjectCannedAcl) Values() []S3ObjectCannedAcl {
 	return []S3ObjectCannedAcl{
 		"PUBLIC_READ",
@@ -7439,11 +8150,41 @@ const (
 
 // Values returns all known values for S3ServerSideEncryptionType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (S3ServerSideEncryptionType) Values() []S3ServerSideEncryptionType {
 	return []S3ServerSideEncryptionType{
 		"SERVER_SIDE_ENCRYPTION_S3",
 		"SERVER_SIDE_ENCRYPTION_KMS",
+	}
+}
+
+type S3StorageClass string
+
+// Enum values for S3StorageClass
+const (
+	S3StorageClassStandard           S3StorageClass = "STANDARD"
+	S3StorageClassReducedRedundancy  S3StorageClass = "REDUCED_REDUNDANCY"
+	S3StorageClassStandardIa         S3StorageClass = "STANDARD_IA"
+	S3StorageClassOnezoneIa          S3StorageClass = "ONEZONE_IA"
+	S3StorageClassIntelligentTiering S3StorageClass = "INTELLIGENT_TIERING"
+	S3StorageClassGlacier            S3StorageClass = "GLACIER"
+	S3StorageClassDeepArchive        S3StorageClass = "DEEP_ARCHIVE"
+)
+
+// Values returns all known values for S3StorageClass. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (S3StorageClass) Values() []S3StorageClass {
+	return []S3StorageClass{
+		"STANDARD",
+		"REDUCED_REDUNDANCY",
+		"STANDARD_IA",
+		"ONEZONE_IA",
+		"INTELLIGENT_TIERING",
+		"GLACIER",
+		"DEEP_ARCHIVE",
 	}
 }
 
@@ -7457,8 +8198,9 @@ const (
 )
 
 // Values returns all known values for SampleRangeConversion. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SampleRangeConversion) Values() []SampleRangeConversion {
 	return []SampleRangeConversion{
 		"LIMITED_RANGE_SQUEEZE",
@@ -7473,15 +8215,22 @@ type ScalingBehavior string
 const (
 	ScalingBehaviorDefault         ScalingBehavior = "DEFAULT"
 	ScalingBehaviorStretchToOutput ScalingBehavior = "STRETCH_TO_OUTPUT"
+	ScalingBehaviorFit             ScalingBehavior = "FIT"
+	ScalingBehaviorFitNoUpscale    ScalingBehavior = "FIT_NO_UPSCALE"
+	ScalingBehaviorFill            ScalingBehavior = "FILL"
 )
 
 // Values returns all known values for ScalingBehavior. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScalingBehavior) Values() []ScalingBehavior {
 	return []ScalingBehavior{
 		"DEFAULT",
 		"STRETCH_TO_OUTPUT",
+		"FIT",
+		"FIT_NO_UPSCALE",
+		"FILL",
 	}
 }
 
@@ -7497,8 +8246,9 @@ const (
 )
 
 // Values returns all known values for SccDestinationFramerate. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SccDestinationFramerate) Values() []SccDestinationFramerate {
 	return []SccDestinationFramerate{
 		"FRAMERATE_23_97",
@@ -7518,8 +8268,9 @@ const (
 )
 
 // Values returns all known values for SimulateReservedQueue. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SimulateReservedQueue) Values() []SimulateReservedQueue {
 	return []SimulateReservedQueue{
 		"DISABLED",
@@ -7536,8 +8287,9 @@ const (
 )
 
 // Values returns all known values for SrtStylePassthrough. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SrtStylePassthrough) Values() []SrtStylePassthrough {
 	return []SrtStylePassthrough{
 		"ENABLED",
@@ -7567,8 +8319,9 @@ const (
 )
 
 // Values returns all known values for StatusUpdateInterval. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (StatusUpdateInterval) Values() []StatusUpdateInterval {
 	return []StatusUpdateInterval{
 		"SECONDS_10",
@@ -7601,8 +8354,9 @@ const (
 )
 
 // Values returns all known values for TeletextPageType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TeletextPageType) Values() []TeletextPageType {
 	return []TeletextPageType{
 		"PAGE_TYPE_INITIAL",
@@ -7629,8 +8383,9 @@ const (
 )
 
 // Values returns all known values for TimecodeBurninPosition. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TimecodeBurninPosition) Values() []TimecodeBurninPosition {
 	return []TimecodeBurninPosition{
 		"TOP_CENTER",
@@ -7655,13 +8410,33 @@ const (
 )
 
 // Values returns all known values for TimecodeSource. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TimecodeSource) Values() []TimecodeSource {
 	return []TimecodeSource{
 		"EMBEDDED",
 		"ZEROBASED",
 		"SPECIFIEDSTART",
+	}
+}
+
+type TimecodeTrack string
+
+// Enum values for TimecodeTrack
+const (
+	TimecodeTrackDisabled TimecodeTrack = "DISABLED"
+	TimecodeTrackEnabled  TimecodeTrack = "ENABLED"
+)
+
+// Values returns all known values for TimecodeTrack. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TimecodeTrack) Values() []TimecodeTrack {
+	return []TimecodeTrack{
+		"DISABLED",
+		"ENABLED",
 	}
 }
 
@@ -7674,12 +8449,32 @@ const (
 )
 
 // Values returns all known values for TimedMetadata. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TimedMetadata) Values() []TimedMetadata {
 	return []TimedMetadata{
 		"PASSTHROUGH",
 		"NONE",
+	}
+}
+
+type TsPtsOffset string
+
+// Enum values for TsPtsOffset
+const (
+	TsPtsOffsetAuto    TsPtsOffset = "AUTO"
+	TsPtsOffsetSeconds TsPtsOffset = "SECONDS"
+)
+
+// Values returns all known values for TsPtsOffset. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (TsPtsOffset) Values() []TsPtsOffset {
+	return []TsPtsOffset{
+		"AUTO",
+		"SECONDS",
 	}
 }
 
@@ -7692,8 +8487,9 @@ const (
 )
 
 // Values returns all known values for TtmlStylePassthrough. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TtmlStylePassthrough) Values() []TtmlStylePassthrough {
 	return []TtmlStylePassthrough{
 		"ENABLED",
@@ -7710,12 +8506,155 @@ const (
 )
 
 // Values returns all known values for Type. Note that this can be expanded in the
-// future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Type) Values() []Type {
 	return []Type{
 		"SYSTEM",
 		"CUSTOM",
+	}
+}
+
+type UncompressedFourcc string
+
+// Enum values for UncompressedFourcc
+const (
+	UncompressedFourccI420 UncompressedFourcc = "I420"
+	UncompressedFourccI422 UncompressedFourcc = "I422"
+	UncompressedFourccI444 UncompressedFourcc = "I444"
+)
+
+// Values returns all known values for UncompressedFourcc. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UncompressedFourcc) Values() []UncompressedFourcc {
+	return []UncompressedFourcc{
+		"I420",
+		"I422",
+		"I444",
+	}
+}
+
+type UncompressedFramerateControl string
+
+// Enum values for UncompressedFramerateControl
+const (
+	UncompressedFramerateControlInitializeFromSource UncompressedFramerateControl = "INITIALIZE_FROM_SOURCE"
+	UncompressedFramerateControlSpecified            UncompressedFramerateControl = "SPECIFIED"
+)
+
+// Values returns all known values for UncompressedFramerateControl. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UncompressedFramerateControl) Values() []UncompressedFramerateControl {
+	return []UncompressedFramerateControl{
+		"INITIALIZE_FROM_SOURCE",
+		"SPECIFIED",
+	}
+}
+
+type UncompressedFramerateConversionAlgorithm string
+
+// Enum values for UncompressedFramerateConversionAlgorithm
+const (
+	UncompressedFramerateConversionAlgorithmDuplicateDrop      UncompressedFramerateConversionAlgorithm = "DUPLICATE_DROP"
+	UncompressedFramerateConversionAlgorithmInterpolate        UncompressedFramerateConversionAlgorithm = "INTERPOLATE"
+	UncompressedFramerateConversionAlgorithmFrameformer        UncompressedFramerateConversionAlgorithm = "FRAMEFORMER"
+	UncompressedFramerateConversionAlgorithmMaintainFrameCount UncompressedFramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
+)
+
+// Values returns all known values for UncompressedFramerateConversionAlgorithm.
+// Note that this can be expanded in the future, and so it is only as up to date as
+// the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UncompressedFramerateConversionAlgorithm) Values() []UncompressedFramerateConversionAlgorithm {
+	return []UncompressedFramerateConversionAlgorithm{
+		"DUPLICATE_DROP",
+		"INTERPOLATE",
+		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
+	}
+}
+
+type UncompressedInterlaceMode string
+
+// Enum values for UncompressedInterlaceMode
+const (
+	UncompressedInterlaceModeInterlaced  UncompressedInterlaceMode = "INTERLACED"
+	UncompressedInterlaceModeProgressive UncompressedInterlaceMode = "PROGRESSIVE"
+)
+
+// Values returns all known values for UncompressedInterlaceMode. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UncompressedInterlaceMode) Values() []UncompressedInterlaceMode {
+	return []UncompressedInterlaceMode{
+		"INTERLACED",
+		"PROGRESSIVE",
+	}
+}
+
+type UncompressedScanTypeConversionMode string
+
+// Enum values for UncompressedScanTypeConversionMode
+const (
+	UncompressedScanTypeConversionModeInterlaced         UncompressedScanTypeConversionMode = "INTERLACED"
+	UncompressedScanTypeConversionModeInterlacedOptimize UncompressedScanTypeConversionMode = "INTERLACED_OPTIMIZE"
+)
+
+// Values returns all known values for UncompressedScanTypeConversionMode. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UncompressedScanTypeConversionMode) Values() []UncompressedScanTypeConversionMode {
+	return []UncompressedScanTypeConversionMode{
+		"INTERLACED",
+		"INTERLACED_OPTIMIZE",
+	}
+}
+
+type UncompressedSlowPal string
+
+// Enum values for UncompressedSlowPal
+const (
+	UncompressedSlowPalDisabled UncompressedSlowPal = "DISABLED"
+	UncompressedSlowPalEnabled  UncompressedSlowPal = "ENABLED"
+)
+
+// Values returns all known values for UncompressedSlowPal. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UncompressedSlowPal) Values() []UncompressedSlowPal {
+	return []UncompressedSlowPal{
+		"DISABLED",
+		"ENABLED",
+	}
+}
+
+type UncompressedTelecine string
+
+// Enum values for UncompressedTelecine
+const (
+	UncompressedTelecineNone UncompressedTelecine = "NONE"
+	UncompressedTelecineHard UncompressedTelecine = "HARD"
+)
+
+// Values returns all known values for UncompressedTelecine. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (UncompressedTelecine) Values() []UncompressedTelecine {
+	return []UncompressedTelecine{
+		"NONE",
+		"HARD",
 	}
 }
 
@@ -7729,8 +8668,9 @@ const (
 )
 
 // Values returns all known values for Vc3Class. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vc3Class) Values() []Vc3Class {
 	return []Vc3Class{
 		"CLASS_145_8BIT",
@@ -7748,8 +8688,9 @@ const (
 )
 
 // Values returns all known values for Vc3FramerateControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vc3FramerateControl) Values() []Vc3FramerateControl {
 	return []Vc3FramerateControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -7761,20 +8702,23 @@ type Vc3FramerateConversionAlgorithm string
 
 // Enum values for Vc3FramerateConversionAlgorithm
 const (
-	Vc3FramerateConversionAlgorithmDuplicateDrop Vc3FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	Vc3FramerateConversionAlgorithmInterpolate   Vc3FramerateConversionAlgorithm = "INTERPOLATE"
-	Vc3FramerateConversionAlgorithmFrameformer   Vc3FramerateConversionAlgorithm = "FRAMEFORMER"
+	Vc3FramerateConversionAlgorithmDuplicateDrop      Vc3FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	Vc3FramerateConversionAlgorithmInterpolate        Vc3FramerateConversionAlgorithm = "INTERPOLATE"
+	Vc3FramerateConversionAlgorithmFrameformer        Vc3FramerateConversionAlgorithm = "FRAMEFORMER"
+	Vc3FramerateConversionAlgorithmMaintainFrameCount Vc3FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for Vc3FramerateConversionAlgorithm. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vc3FramerateConversionAlgorithm) Values() []Vc3FramerateConversionAlgorithm {
 	return []Vc3FramerateConversionAlgorithm{
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -7787,8 +8731,9 @@ const (
 )
 
 // Values returns all known values for Vc3InterlaceMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vc3InterlaceMode) Values() []Vc3InterlaceMode {
 	return []Vc3InterlaceMode{
 		"INTERLACED",
@@ -7806,6 +8751,7 @@ const (
 
 // Values returns all known values for Vc3ScanTypeConversionMode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (Vc3ScanTypeConversionMode) Values() []Vc3ScanTypeConversionMode {
 	return []Vc3ScanTypeConversionMode{
@@ -7823,8 +8769,9 @@ const (
 )
 
 // Values returns all known values for Vc3SlowPal. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vc3SlowPal) Values() []Vc3SlowPal {
 	return []Vc3SlowPal{
 		"DISABLED",
@@ -7841,8 +8788,9 @@ const (
 )
 
 // Values returns all known values for Vc3Telecine. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vc3Telecine) Values() []Vc3Telecine {
 	return []Vc3Telecine{
 		"NONE",
@@ -7859,8 +8807,9 @@ const (
 )
 
 // Values returns all known values for VchipAction. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VchipAction) Values() []VchipAction {
 	return []VchipAction{
 		"PASSTHROUGH",
@@ -7875,11 +8824,13 @@ const (
 	VideoCodecAv1          VideoCodec = "AV1"
 	VideoCodecAvcIntra     VideoCodec = "AVC_INTRA"
 	VideoCodecFrameCapture VideoCodec = "FRAME_CAPTURE"
+	VideoCodecGif          VideoCodec = "GIF"
 	VideoCodecH264         VideoCodec = "H_264"
 	VideoCodecH265         VideoCodec = "H_265"
 	VideoCodecMpeg2        VideoCodec = "MPEG2"
 	VideoCodecPassthrough  VideoCodec = "PASSTHROUGH"
 	VideoCodecProres       VideoCodec = "PRORES"
+	VideoCodecUncompressed VideoCodec = "UNCOMPRESSED"
 	VideoCodecVc3          VideoCodec = "VC3"
 	VideoCodecVp8          VideoCodec = "VP8"
 	VideoCodecVp9          VideoCodec = "VP9"
@@ -7887,22 +8838,63 @@ const (
 )
 
 // Values returns all known values for VideoCodec. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VideoCodec) Values() []VideoCodec {
 	return []VideoCodec{
 		"AV1",
 		"AVC_INTRA",
 		"FRAME_CAPTURE",
+		"GIF",
 		"H_264",
 		"H_265",
 		"MPEG2",
 		"PASSTHROUGH",
 		"PRORES",
+		"UNCOMPRESSED",
 		"VC3",
 		"VP8",
 		"VP9",
 		"XAVC",
+	}
+}
+
+type VideoOverlayPlayBackMode string
+
+// Enum values for VideoOverlayPlayBackMode
+const (
+	VideoOverlayPlayBackModeOnce   VideoOverlayPlayBackMode = "ONCE"
+	VideoOverlayPlayBackModeRepeat VideoOverlayPlayBackMode = "REPEAT"
+)
+
+// Values returns all known values for VideoOverlayPlayBackMode. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VideoOverlayPlayBackMode) Values() []VideoOverlayPlayBackMode {
+	return []VideoOverlayPlayBackMode{
+		"ONCE",
+		"REPEAT",
+	}
+}
+
+type VideoOverlayUnit string
+
+// Enum values for VideoOverlayUnit
+const (
+	VideoOverlayUnitPixels     VideoOverlayUnit = "PIXELS"
+	VideoOverlayUnitPercentage VideoOverlayUnit = "PERCENTAGE"
+)
+
+// Values returns all known values for VideoOverlayUnit. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (VideoOverlayUnit) Values() []VideoOverlayUnit {
+	return []VideoOverlayUnit{
+		"PIXELS",
+		"PERCENTAGE",
 	}
 }
 
@@ -7915,8 +8907,9 @@ const (
 )
 
 // Values returns all known values for VideoTimecodeInsertion. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (VideoTimecodeInsertion) Values() []VideoTimecodeInsertion {
 	return []VideoTimecodeInsertion{
 		"DISABLED",
@@ -7933,8 +8926,9 @@ const (
 )
 
 // Values returns all known values for Vp8FramerateControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vp8FramerateControl) Values() []Vp8FramerateControl {
 	return []Vp8FramerateControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -7946,20 +8940,23 @@ type Vp8FramerateConversionAlgorithm string
 
 // Enum values for Vp8FramerateConversionAlgorithm
 const (
-	Vp8FramerateConversionAlgorithmDuplicateDrop Vp8FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	Vp8FramerateConversionAlgorithmInterpolate   Vp8FramerateConversionAlgorithm = "INTERPOLATE"
-	Vp8FramerateConversionAlgorithmFrameformer   Vp8FramerateConversionAlgorithm = "FRAMEFORMER"
+	Vp8FramerateConversionAlgorithmDuplicateDrop      Vp8FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	Vp8FramerateConversionAlgorithmInterpolate        Vp8FramerateConversionAlgorithm = "INTERPOLATE"
+	Vp8FramerateConversionAlgorithmFrameformer        Vp8FramerateConversionAlgorithm = "FRAMEFORMER"
+	Vp8FramerateConversionAlgorithmMaintainFrameCount Vp8FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for Vp8FramerateConversionAlgorithm. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vp8FramerateConversionAlgorithm) Values() []Vp8FramerateConversionAlgorithm {
 	return []Vp8FramerateConversionAlgorithm{
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -7972,8 +8969,9 @@ const (
 )
 
 // Values returns all known values for Vp8ParControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vp8ParControl) Values() []Vp8ParControl {
 	return []Vp8ParControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -7990,8 +8988,9 @@ const (
 )
 
 // Values returns all known values for Vp8QualityTuningLevel. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vp8QualityTuningLevel) Values() []Vp8QualityTuningLevel {
 	return []Vp8QualityTuningLevel{
 		"MULTI_PASS",
@@ -8007,8 +9006,9 @@ const (
 )
 
 // Values returns all known values for Vp8RateControlMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vp8RateControlMode) Values() []Vp8RateControlMode {
 	return []Vp8RateControlMode{
 		"VBR",
@@ -8024,8 +9024,9 @@ const (
 )
 
 // Values returns all known values for Vp9FramerateControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vp9FramerateControl) Values() []Vp9FramerateControl {
 	return []Vp9FramerateControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -8037,20 +9038,23 @@ type Vp9FramerateConversionAlgorithm string
 
 // Enum values for Vp9FramerateConversionAlgorithm
 const (
-	Vp9FramerateConversionAlgorithmDuplicateDrop Vp9FramerateConversionAlgorithm = "DUPLICATE_DROP"
-	Vp9FramerateConversionAlgorithmInterpolate   Vp9FramerateConversionAlgorithm = "INTERPOLATE"
-	Vp9FramerateConversionAlgorithmFrameformer   Vp9FramerateConversionAlgorithm = "FRAMEFORMER"
+	Vp9FramerateConversionAlgorithmDuplicateDrop      Vp9FramerateConversionAlgorithm = "DUPLICATE_DROP"
+	Vp9FramerateConversionAlgorithmInterpolate        Vp9FramerateConversionAlgorithm = "INTERPOLATE"
+	Vp9FramerateConversionAlgorithmFrameformer        Vp9FramerateConversionAlgorithm = "FRAMEFORMER"
+	Vp9FramerateConversionAlgorithmMaintainFrameCount Vp9FramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for Vp9FramerateConversionAlgorithm. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vp9FramerateConversionAlgorithm) Values() []Vp9FramerateConversionAlgorithm {
 	return []Vp9FramerateConversionAlgorithm{
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -8063,8 +9067,9 @@ const (
 )
 
 // Values returns all known values for Vp9ParControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vp9ParControl) Values() []Vp9ParControl {
 	return []Vp9ParControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -8081,8 +9086,9 @@ const (
 )
 
 // Values returns all known values for Vp9QualityTuningLevel. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vp9QualityTuningLevel) Values() []Vp9QualityTuningLevel {
 	return []Vp9QualityTuningLevel{
 		"MULTI_PASS",
@@ -8098,8 +9104,9 @@ const (
 )
 
 // Values returns all known values for Vp9RateControlMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Vp9RateControlMode) Values() []Vp9RateControlMode {
 	return []Vp9RateControlMode{
 		"VBR",
@@ -8118,8 +9125,9 @@ const (
 )
 
 // Values returns all known values for WatermarkingStrength. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WatermarkingStrength) Values() []WatermarkingStrength {
 	return []WatermarkingStrength{
 		"LIGHTEST",
@@ -8134,17 +9142,20 @@ type WavFormat string
 
 // Enum values for WavFormat
 const (
-	WavFormatRiff WavFormat = "RIFF"
-	WavFormatRf64 WavFormat = "RF64"
+	WavFormatRiff       WavFormat = "RIFF"
+	WavFormatRf64       WavFormat = "RF64"
+	WavFormatExtensible WavFormat = "EXTENSIBLE"
 )
 
 // Values returns all known values for WavFormat. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WavFormat) Values() []WavFormat {
 	return []WavFormat{
 		"RIFF",
 		"RF64",
+		"EXTENSIBLE",
 	}
 }
 
@@ -8157,8 +9168,9 @@ const (
 )
 
 // Values returns all known values for WebvttAccessibilitySubs. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WebvttAccessibilitySubs) Values() []WebvttAccessibilitySubs {
 	return []WebvttAccessibilitySubs{
 		"DISABLED",
@@ -8173,16 +9185,19 @@ const (
 	WebvttStylePassthroughEnabled  WebvttStylePassthrough = "ENABLED"
 	WebvttStylePassthroughDisabled WebvttStylePassthrough = "DISABLED"
 	WebvttStylePassthroughStrict   WebvttStylePassthrough = "STRICT"
+	WebvttStylePassthroughMerge    WebvttStylePassthrough = "MERGE"
 )
 
 // Values returns all known values for WebvttStylePassthrough. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (WebvttStylePassthrough) Values() []WebvttStylePassthrough {
 	return []WebvttStylePassthrough{
 		"ENABLED",
 		"DISABLED",
 		"STRICT",
+		"MERGE",
 	}
 }
 
@@ -8197,6 +9212,7 @@ const (
 
 // Values returns all known values for Xavc4kIntraCbgProfileClass. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (Xavc4kIntraCbgProfileClass) Values() []Xavc4kIntraCbgProfileClass {
 	return []Xavc4kIntraCbgProfileClass{
@@ -8217,6 +9233,7 @@ const (
 
 // Values returns all known values for Xavc4kIntraVbrProfileClass. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (Xavc4kIntraVbrProfileClass) Values() []Xavc4kIntraVbrProfileClass {
 	return []Xavc4kIntraVbrProfileClass{
@@ -8237,6 +9254,7 @@ const (
 
 // Values returns all known values for Xavc4kProfileBitrateClass. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (Xavc4kProfileBitrateClass) Values() []Xavc4kProfileBitrateClass {
 	return []Xavc4kProfileBitrateClass{
@@ -8256,6 +9274,7 @@ const (
 
 // Values returns all known values for Xavc4kProfileCodecProfile. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (Xavc4kProfileCodecProfile) Values() []Xavc4kProfileCodecProfile {
 	return []Xavc4kProfileCodecProfile{
@@ -8275,8 +9294,9 @@ const (
 
 // Values returns all known values for Xavc4kProfileQualityTuningLevel. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (Xavc4kProfileQualityTuningLevel) Values() []Xavc4kProfileQualityTuningLevel {
 	return []Xavc4kProfileQualityTuningLevel{
 		"SINGLE_PASS",
@@ -8300,6 +9320,7 @@ const (
 
 // Values returns all known values for XavcAdaptiveQuantization. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcAdaptiveQuantization) Values() []XavcAdaptiveQuantization {
 	return []XavcAdaptiveQuantization{
@@ -8323,8 +9344,9 @@ const (
 )
 
 // Values returns all known values for XavcEntropyEncoding. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcEntropyEncoding) Values() []XavcEntropyEncoding {
 	return []XavcEntropyEncoding{
 		"AUTO",
@@ -8343,8 +9365,9 @@ const (
 
 // Values returns all known values for XavcFlickerAdaptiveQuantization. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcFlickerAdaptiveQuantization) Values() []XavcFlickerAdaptiveQuantization {
 	return []XavcFlickerAdaptiveQuantization{
 		"DISABLED",
@@ -8361,8 +9384,9 @@ const (
 )
 
 // Values returns all known values for XavcFramerateControl. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcFramerateControl) Values() []XavcFramerateControl {
 	return []XavcFramerateControl{
 		"INITIALIZE_FROM_SOURCE",
@@ -8374,20 +9398,23 @@ type XavcFramerateConversionAlgorithm string
 
 // Enum values for XavcFramerateConversionAlgorithm
 const (
-	XavcFramerateConversionAlgorithmDuplicateDrop XavcFramerateConversionAlgorithm = "DUPLICATE_DROP"
-	XavcFramerateConversionAlgorithmInterpolate   XavcFramerateConversionAlgorithm = "INTERPOLATE"
-	XavcFramerateConversionAlgorithmFrameformer   XavcFramerateConversionAlgorithm = "FRAMEFORMER"
+	XavcFramerateConversionAlgorithmDuplicateDrop      XavcFramerateConversionAlgorithm = "DUPLICATE_DROP"
+	XavcFramerateConversionAlgorithmInterpolate        XavcFramerateConversionAlgorithm = "INTERPOLATE"
+	XavcFramerateConversionAlgorithmFrameformer        XavcFramerateConversionAlgorithm = "FRAMEFORMER"
+	XavcFramerateConversionAlgorithmMaintainFrameCount XavcFramerateConversionAlgorithm = "MAINTAIN_FRAME_COUNT"
 )
 
 // Values returns all known values for XavcFramerateConversionAlgorithm. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcFramerateConversionAlgorithm) Values() []XavcFramerateConversionAlgorithm {
 	return []XavcFramerateConversionAlgorithm{
 		"DUPLICATE_DROP",
 		"INTERPOLATE",
 		"FRAMEFORMER",
+		"MAINTAIN_FRAME_COUNT",
 	}
 }
 
@@ -8400,8 +9427,9 @@ const (
 )
 
 // Values returns all known values for XavcGopBReference. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcGopBReference) Values() []XavcGopBReference {
 	return []XavcGopBReference{
 		"DISABLED",
@@ -8420,6 +9448,7 @@ const (
 
 // Values returns all known values for XavcHdIntraCbgProfileClass. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcHdIntraCbgProfileClass) Values() []XavcHdIntraCbgProfileClass {
 	return []XavcHdIntraCbgProfileClass{
@@ -8440,6 +9469,7 @@ const (
 
 // Values returns all known values for XavcHdProfileBitrateClass. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcHdProfileBitrateClass) Values() []XavcHdProfileBitrateClass {
 	return []XavcHdProfileBitrateClass{
@@ -8460,8 +9490,9 @@ const (
 
 // Values returns all known values for XavcHdProfileQualityTuningLevel. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcHdProfileQualityTuningLevel) Values() []XavcHdProfileQualityTuningLevel {
 	return []XavcHdProfileQualityTuningLevel{
 		"SINGLE_PASS",
@@ -8479,8 +9510,9 @@ const (
 )
 
 // Values returns all known values for XavcHdProfileTelecine. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcHdProfileTelecine) Values() []XavcHdProfileTelecine {
 	return []XavcHdProfileTelecine{
 		"NONE",
@@ -8500,8 +9532,9 @@ const (
 )
 
 // Values returns all known values for XavcInterlaceMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcInterlaceMode) Values() []XavcInterlaceMode {
 	return []XavcInterlaceMode{
 		"PROGRESSIVE",
@@ -8524,8 +9557,9 @@ const (
 )
 
 // Values returns all known values for XavcProfile. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcProfile) Values() []XavcProfile {
 	return []XavcProfile{
 		"XAVC_HD_INTRA_CBG",
@@ -8545,8 +9579,9 @@ const (
 )
 
 // Values returns all known values for XavcSlowPal. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcSlowPal) Values() []XavcSlowPal {
 	return []XavcSlowPal{
 		"DISABLED",
@@ -8564,8 +9599,9 @@ const (
 
 // Values returns all known values for XavcSpatialAdaptiveQuantization. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcSpatialAdaptiveQuantization) Values() []XavcSpatialAdaptiveQuantization {
 	return []XavcSpatialAdaptiveQuantization{
 		"DISABLED",
@@ -8583,8 +9619,9 @@ const (
 
 // Values returns all known values for XavcTemporalAdaptiveQuantization. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (XavcTemporalAdaptiveQuantization) Values() []XavcTemporalAdaptiveQuantization {
 	return []XavcTemporalAdaptiveQuantization{
 		"DISABLED",

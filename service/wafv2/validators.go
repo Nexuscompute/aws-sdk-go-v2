@@ -150,6 +150,26 @@ func (m *validateOpCreateWebACL) HandleInitialize(ctx context.Context, in middle
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpDeleteAPIKey struct {
+}
+
+func (*validateOpDeleteAPIKey) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteAPIKey) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteAPIKeyInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteAPIKeyInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpDeleteFirewallManagerRuleGroups struct {
 }
 
@@ -1078,6 +1098,10 @@ func addOpCreateWebACLValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateWebACL{}, middleware.After)
 }
 
+func addOpDeleteAPIKeyValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteAPIKey{}, middleware.After)
+}
+
 func addOpDeleteFirewallManagerRuleGroupsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteFirewallManagerRuleGroups{}, middleware.After)
 }
@@ -1836,6 +1860,11 @@ func validateFieldToMatch(v *types.FieldToMatch) error {
 			invalidParams.AddNested("HeaderOrder", err.(smithy.InvalidParamsError))
 		}
 	}
+	if v.JA3Fingerprint != nil {
+		if err := validateJA3Fingerprint(v.JA3Fingerprint); err != nil {
+			invalidParams.AddNested("JA3Fingerprint", err.(smithy.InvalidParamsError))
+		}
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -2004,6 +2033,21 @@ func validateIPSetReferenceStatement(v *types.IPSetReferenceStatement) error {
 		if err := validateIPSetForwardedIPConfig(v.IPSetForwardedIPConfig); err != nil {
 			invalidParams.AddNested("IPSetForwardedIPConfig", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateJA3Fingerprint(v *types.JA3Fingerprint) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "JA3Fingerprint"}
+	if len(v.FallbackBehavior) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("FallbackBehavior"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2344,6 +2388,9 @@ func validateRateBasedStatement(v *types.RateBasedStatement) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "RateBasedStatement"}
+	if v.Limit == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Limit"))
+	}
 	if len(v.AggregateKeyType) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("AggregateKeyType"))
 	}
@@ -3460,6 +3507,9 @@ func validateOpCreateRuleGroupInput(v *CreateRuleGroupInput) error {
 	if len(v.Scope) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("Scope"))
 	}
+	if v.Capacity == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Capacity"))
+	}
 	if v.Rules != nil {
 		if err := validateRules(v.Rules); err != nil {
 			invalidParams.AddNested("Rules", err.(smithy.InvalidParamsError))
@@ -3543,6 +3593,24 @@ func validateOpCreateWebACLInput(v *CreateWebACLInput) error {
 		if err := validateAssociationConfig(v.AssociationConfig); err != nil {
 			invalidParams.AddNested("AssociationConfig", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteAPIKeyInput(v *DeleteAPIKeyInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteAPIKeyInput"}
+	if len(v.Scope) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Scope"))
+	}
+	if v.APIKey == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("APIKey"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -3955,6 +4023,9 @@ func validateOpGetSampledRequestsInput(v *GetSampledRequestsInput) error {
 		if err := validateTimeWindow(v.TimeWindow); err != nil {
 			invalidParams.AddNested("TimeWindow", err.(smithy.InvalidParamsError))
 		}
+	}
+	if v.MaxItems == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaxItems"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

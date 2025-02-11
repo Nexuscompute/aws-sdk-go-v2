@@ -4,21 +4,18 @@ package databasemigrationservice
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/databasemigrationservice/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Modifies the replication instance to apply new settings. You can change one or
 // more parameters by specifying these parameters and the new values in the
-// request. Some settings are applied during the maintenance window.
+// request.
+//
+// Some settings are applied during the maintenance window.
 func (c *Client) ModifyReplicationInstance(ctx context.Context, params *ModifyReplicationInstanceInput, optFns ...func(*Options)) (*ModifyReplicationInstanceOutput, error) {
 	if params == nil {
 		params = &ModifyReplicationInstanceInput{}
@@ -47,9 +44,11 @@ type ModifyReplicationInstanceInput struct {
 
 	// Indicates that major version upgrades are allowed. Changing this parameter does
 	// not result in an outage, and the change is asynchronously applied as soon as
-	// possible. This parameter must be set to true when specifying a value for the
-	// EngineVersion parameter that is a different major version than the replication
-	// instance's current version.
+	// possible.
+	//
+	// This parameter must be set to true when specifying a value for the EngineVersion
+	// parameter that is a different major version than the replication instance's
+	// current version.
 	AllowMajorVersionUpgrade bool
 
 	// Indicates whether the changes should be applied immediately or during the next
@@ -59,24 +58,28 @@ type ModifyReplicationInstanceInput struct {
 	// A value that indicates that minor version upgrades are applied automatically to
 	// the replication instance during the maintenance window. Changing this parameter
 	// doesn't result in an outage, except in the case described following. The change
-	// is asynchronously applied as soon as possible. An outage does result if these
-	// factors apply:
+	// is asynchronously applied as soon as possible.
+	//
+	// An outage does result if these factors apply:
+	//
 	//   - This parameter is set to true during the maintenance window.
+	//
 	//   - A newer minor version is available.
+	//
 	//   - DMS has enabled automatic patching for the given engine version.
-	// When AutoMinorVersionUpgrade is enabled, DMS uses the current default engine
-	// version when you modify a replication instance. For example, if you set
-	// EngineVersion to a lower version number than the current default version, DMS
-	// uses the default version. If AutoMinorVersionUpgrade isn’t enabled when you
-	// modify a replication instance, DMS uses the engine version specified by the
-	// EngineVersion parameter.
 	AutoMinorVersionUpgrade *bool
 
-	// The engine version number of the replication instance. When modifying a major
-	// engine version of an instance, also set AllowMajorVersionUpgrade to true .
+	// The engine version number of the replication instance.
+	//
+	// When modifying a major engine version of an instance, also set
+	// AllowMajorVersionUpgrade to true .
 	EngineVersion *string
 
-	// Specifies whether the replication instance is a Multi-AZ deployment. You can't
+	// Specifies the settings required for kerberos authentication when modifying a
+	// replication instance.
+	KerberosAuthenticationSettings *types.KerberosAuthenticationSettings
+
+	//  Specifies whether the replication instance is a Multi-AZ deployment. You can't
 	// set the AvailabilityZone parameter if the Multi-AZ parameter is set to true .
 	MultiAZ *bool
 
@@ -90,24 +93,32 @@ type ModifyReplicationInstanceInput struct {
 	// except in the following situation, and the change is asynchronously applied as
 	// soon as possible. If moving this window to the current time, there must be at
 	// least 30 minutes between the current time and end of the window to ensure
-	// pending changes are applied. Default: Uses existing setting Format:
-	// ddd:hh24:mi-ddd:hh24:mi Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun
+	// pending changes are applied.
+	//
+	// Default: Uses existing setting
+	//
+	// Format: ddd:hh24:mi-ddd:hh24:mi
+	//
+	// Valid Days: Mon | Tue | Wed | Thu | Fri | Sat | Sun
+	//
 	// Constraints: Must be at least 30 minutes
 	PreferredMaintenanceWindow *string
 
 	// The compute and memory capacity of the replication instance as defined for the
 	// specified replication instance class. For example to specify the instance class
-	// dms.c4.large, set this parameter to "dms.c4.large" . For more information on the
-	// settings and capacities for the available replication instance classes, see
-	// Selecting the right DMS replication instance for your migration (https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html#CHAP_ReplicationInstance.InDepth)
-	// .
+	// dms.c4.large, set this parameter to "dms.c4.large" .
+	//
+	// For more information on the settings and capacities for the available
+	// replication instance classes, see [Selecting the right DMS replication instance for your migration].
+	//
+	// [Selecting the right DMS replication instance for your migration]: https://docs.aws.amazon.com/dms/latest/userguide/CHAP_ReplicationInstance.html#CHAP_ReplicationInstance.InDepth
 	ReplicationInstanceClass *string
 
 	// The replication instance identifier. This parameter is stored as a lowercase
 	// string.
 	ReplicationInstanceIdentifier *string
 
-	// Specifies the VPC security group to be used with the replication instance. The
+	//  Specifies the VPC security group to be used with the replication instance. The
 	// VPC security group must work with the VPC containing the replication instance.
 	VpcSecurityGroupIds []string
 
@@ -126,6 +137,9 @@ type ModifyReplicationInstanceOutput struct {
 }
 
 func (c *Client) addOperationModifyReplicationInstanceMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpModifyReplicationInstance{}, middleware.After)
 	if err != nil {
 		return err
@@ -134,34 +148,38 @@ func (c *Client) addOperationModifyReplicationInstanceMiddlewares(stack *middlew
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "ModifyReplicationInstance"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -173,7 +191,13 @@ func (c *Client) addOperationModifyReplicationInstanceMiddlewares(stack *middlew
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addModifyReplicationInstanceResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpModifyReplicationInstanceValidationMiddleware(stack); err != nil {
@@ -182,7 +206,7 @@ func (c *Client) addOperationModifyReplicationInstanceMiddlewares(stack *middlew
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opModifyReplicationInstance(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -194,7 +218,19 @@ func (c *Client) addOperationModifyReplicationInstanceMiddlewares(stack *middlew
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -204,130 +240,6 @@ func newServiceMetadataMiddleware_opModifyReplicationInstance(region string) *aw
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "dms",
 		OperationName: "ModifyReplicationInstance",
 	}
-}
-
-type opModifyReplicationInstanceResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opModifyReplicationInstanceResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opModifyReplicationInstanceResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "dms"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "dms"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("dms")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addModifyReplicationInstanceResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opModifyReplicationInstanceResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

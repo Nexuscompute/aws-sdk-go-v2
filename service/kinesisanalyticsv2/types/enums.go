@@ -11,8 +11,9 @@ const (
 )
 
 // Values returns all known values for ApplicationMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ApplicationMode) Values() []ApplicationMode {
 	return []ApplicationMode{
 		"STREAMING",
@@ -30,8 +31,9 @@ const (
 )
 
 // Values returns all known values for ApplicationRestoreType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ApplicationRestoreType) Values() []ApplicationRestoreType {
 	return []ApplicationRestoreType{
 		"SKIP_RESTORE_FROM_SNAPSHOT",
@@ -58,8 +60,9 @@ const (
 )
 
 // Values returns all known values for ApplicationStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ApplicationStatus) Values() []ApplicationStatus {
 	return []ApplicationStatus{
 		"DELETING",
@@ -85,8 +88,9 @@ const (
 )
 
 // Values returns all known values for ArtifactType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ArtifactType) Values() []ArtifactType {
 	return []ArtifactType{
 		"UDF",
@@ -103,8 +107,9 @@ const (
 )
 
 // Values returns all known values for CodeContentType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CodeContentType) Values() []CodeContentType {
 	return []CodeContentType{
 		"PLAINTEXT",
@@ -121,8 +126,9 @@ const (
 )
 
 // Values returns all known values for ConfigurationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConfigurationType) Values() []ConfigurationType {
 	return []ConfigurationType{
 		"DEFAULT",
@@ -140,8 +146,9 @@ const (
 )
 
 // Values returns all known values for InputStartingPosition. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (InputStartingPosition) Values() []InputStartingPosition {
 	return []InputStartingPosition{
 		"NOW",
@@ -161,8 +168,9 @@ const (
 )
 
 // Values returns all known values for LogLevel. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (LogLevel) Values() []LogLevel {
 	return []LogLevel{
 		"INFO",
@@ -183,14 +191,38 @@ const (
 )
 
 // Values returns all known values for MetricsLevel. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MetricsLevel) Values() []MetricsLevel {
 	return []MetricsLevel{
 		"APPLICATION",
 		"TASK",
 		"OPERATOR",
 		"PARALLELISM",
+	}
+}
+
+type OperationStatus string
+
+// Enum values for OperationStatus
+const (
+	OperationStatusInProgress OperationStatus = "IN_PROGRESS"
+	OperationStatusCancelled  OperationStatus = "CANCELLED"
+	OperationStatusSuccessful OperationStatus = "SUCCESSFUL"
+	OperationStatusFailed     OperationStatus = "FAILED"
+)
+
+// Values returns all known values for OperationStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (OperationStatus) Values() []OperationStatus {
+	return []OperationStatus{
+		"IN_PROGRESS",
+		"CANCELLED",
+		"SUCCESSFUL",
+		"FAILED",
 	}
 }
 
@@ -203,8 +235,9 @@ const (
 )
 
 // Values returns all known values for RecordFormatType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RecordFormatType) Values() []RecordFormatType {
 	return []RecordFormatType{
 		"JSON",
@@ -225,11 +258,15 @@ const (
 	RuntimeEnvironmentZeppelinFlink20 RuntimeEnvironment = "ZEPPELIN-FLINK-2_0"
 	RuntimeEnvironmentFlink115        RuntimeEnvironment = "FLINK-1_15"
 	RuntimeEnvironmentZeppelinFlink30 RuntimeEnvironment = "ZEPPELIN-FLINK-3_0"
+	RuntimeEnvironmentFlink118        RuntimeEnvironment = "FLINK-1_18"
+	RuntimeEnvironmentFlink119        RuntimeEnvironment = "FLINK-1_19"
+	RuntimeEnvironmentFlink120        RuntimeEnvironment = "FLINK-1_20"
 )
 
 // Values returns all known values for RuntimeEnvironment. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RuntimeEnvironment) Values() []RuntimeEnvironment {
 	return []RuntimeEnvironment{
 		"SQL-1_0",
@@ -241,6 +278,9 @@ func (RuntimeEnvironment) Values() []RuntimeEnvironment {
 		"ZEPPELIN-FLINK-2_0",
 		"FLINK-1_15",
 		"ZEPPELIN-FLINK-3_0",
+		"FLINK-1_18",
+		"FLINK-1_19",
+		"FLINK-1_20",
 	}
 }
 
@@ -255,8 +295,9 @@ const (
 )
 
 // Values returns all known values for SnapshotStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SnapshotStatus) Values() []SnapshotStatus {
 	return []SnapshotStatus{
 		"CREATING",
@@ -275,8 +316,9 @@ const (
 )
 
 // Values returns all known values for UrlType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (UrlType) Values() []UrlType {
 	return []UrlType{
 		"FLINK_DASHBOARD_URL",

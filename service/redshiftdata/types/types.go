@@ -120,6 +120,24 @@ type FieldMemberStringValue struct {
 
 func (*FieldMemberStringValue) isField() {}
 
+// The results of the SQL statement.
+//
+// The following types satisfy this interface:
+//
+//	QueryRecordsMemberCSVRecords
+type QueryRecords interface {
+	isQueryRecords()
+}
+
+// The results of the SQL statement in CSV format.
+type QueryRecordsMemberCSVRecords struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*QueryRecordsMemberCSVRecords) isQueryRecords() {}
+
 // A parameter used in a SQL statement.
 type SqlParameter struct {
 
@@ -129,8 +147,10 @@ type SqlParameter struct {
 	Name *string
 
 	// The value of the parameter. Amazon Redshift implicitly converts to the proper
-	// data type. For more information, see Data types (https://docs.aws.amazon.com/redshift/latest/dg/c_Supported_data_types.html)
-	// in the Amazon Redshift Database Developer Guide.
+	// data type. For more information, see [Data types]in the Amazon Redshift Database Developer
+	// Guide.
+	//
+	// [Data types]: https://docs.aws.amazon.com/redshift/latest/dg/c_Supported_data_types.html
 	//
 	// This member is required.
 	Value *string
@@ -163,9 +183,15 @@ type StatementData struct {
 	// of the queries in a batch query request.
 	QueryStrings []string
 
+	// The data format of the result of the SQL statement.
+	ResultFormat ResultFormatString
+
 	// The name or Amazon Resource Name (ARN) of the secret that enables access to the
 	// database.
 	SecretArn *string
+
+	// The session identifier of the query.
+	SessionId *string
 
 	// The name of the SQL statement.
 	StatementName *string
@@ -258,4 +284,5 @@ type UnknownUnionMember struct {
 	noSmithyDocumentSerde
 }
 
-func (*UnknownUnionMember) isField() {}
+func (*UnknownUnionMember) isField()        {}
+func (*UnknownUnionMember) isQueryRecords() {}

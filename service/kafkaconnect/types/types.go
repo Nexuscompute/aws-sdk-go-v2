@@ -183,6 +183,39 @@ type CloudWatchLogsLogDeliveryDescription struct {
 	noSmithyDocumentSerde
 }
 
+// Details of a step that is involved in a connector's operation.
+type ConnectorOperationStep struct {
+
+	// The step state of the operation.
+	StepState ConnectorOperationStepState
+
+	// The step type of the operation.
+	StepType ConnectorOperationStepType
+
+	noSmithyDocumentSerde
+}
+
+// Summary of a connector operation.
+type ConnectorOperationSummary struct {
+
+	// The Amazon Resource Name (ARN) of the connector operation.
+	ConnectorOperationArn *string
+
+	// The state of the connector operation.
+	ConnectorOperationState ConnectorOperationState
+
+	// The type of connector operation performed.
+	ConnectorOperationType ConnectorOperationType
+
+	// The time when operation was created.
+	CreationTime *time.Time
+
+	// The time when operation ended.
+	EndTime *time.Time
+
+	noSmithyDocumentSerde
+}
+
 // Summary of a connector.
 type ConnectorSummary struct {
 
@@ -237,8 +270,8 @@ type ConnectorSummary struct {
 	noSmithyDocumentSerde
 }
 
-// A plugin is an AWS resource that contains the code that defines a connector's
-// logic.
+// A plugin is an Amazon Web Services resource that contains the code that defines
+// a connector's logic.
 type CustomPlugin struct {
 
 	// The Amazon Resource Name (ARN) of the custom plugin.
@@ -465,8 +498,8 @@ type LogDeliveryDescription struct {
 	noSmithyDocumentSerde
 }
 
-// A plugin is an AWS resource that contains the code that defines your connector
-// logic.
+// A plugin is an Amazon Web Services resource that contains the code that defines
+// your connector logic.
 type Plugin struct {
 
 	// Details about a custom plugin.
@@ -787,6 +820,9 @@ type WorkerConfigurationSummary struct {
 	// The Amazon Resource Name (ARN) of the worker configuration.
 	WorkerConfigurationArn *string
 
+	// The state of the worker configuration.
+	WorkerConfigurationState WorkerConfigurationState
+
 	noSmithyDocumentSerde
 }
 
@@ -818,6 +854,15 @@ type WorkerLogDeliveryDescription struct {
 
 	// Details about delivering logs to Amazon S3.
 	S3 *S3LogDeliveryDescription
+
+	noSmithyDocumentSerde
+}
+
+// Details about worker setting of a connector
+type WorkerSetting struct {
+
+	// A description of the connector's capacity.
+	Capacity *CapacityDescription
 
 	noSmithyDocumentSerde
 }

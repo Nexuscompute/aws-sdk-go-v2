@@ -4,14 +4,9 @@ package personalizeruntime
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/personalizeruntime/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -19,15 +14,19 @@ import (
 // Returns a list of recommended items. For campaigns, the campaign's Amazon
 // Resource Name (ARN) is required and the required user and item input depends on
 // the recipe type used to create the solution backing the campaign as follows:
+//
 //   - USER_PERSONALIZATION - userId required, itemId not used
+//
 //   - RELATED_ITEMS - itemId required, userId not used
 //
 // Campaigns that are backed by a solution created using a recipe of type
-// PERSONALIZED_RANKING use the API. For recommenders, the recommender's ARN is
-// required and the required item and user input depends on the use case
-// (domain-based recipe) backing the recommender. For information on use case
-// requirements see Choosing recommender use cases (https://docs.aws.amazon.com/personalize/latest/dg/domain-use-cases.html)
-// .
+// PERSONALIZED_RANKING use the API.
+//
+// For recommenders, the recommender's ARN is required and the required item and
+// user input depends on the use case (domain-based recipe) backing the
+// recommender. For information on use case requirements see [Choosing recommender use cases].
+//
+// [Choosing recommender use cases]: https://docs.aws.amazon.com/personalize/latest/dg/domain-use-cases.html
 func (c *Client) GetRecommendations(ctx context.Context, params *GetRecommendationsInput, optFns ...func(*Options)) (*GetRecommendationsOutput, error) {
 	if params == nil {
 		params = &GetRecommendationsInput{}
@@ -56,27 +55,49 @@ type GetRecommendationsInput struct {
 	Context map[string]string
 
 	// The ARN of the filter to apply to the returned recommendations. For more
-	// information, see Filtering Recommendations (https://docs.aws.amazon.com/personalize/latest/dg/filter.html)
-	// . When using this parameter, be sure the filter resource is ACTIVE .
+	// information, see [Filtering Recommendations].
+	//
+	// When using this parameter, be sure the filter resource is ACTIVE .
+	//
+	// [Filtering Recommendations]: https://docs.aws.amazon.com/personalize/latest/dg/filter.html
 	FilterArn *string
 
 	// The values to use when filtering recommendations. For each placeholder
 	// parameter in your filter expression, provide the parameter name (in matching
 	// case) as a key and the filter value(s) as the corresponding value. Separate
-	// multiple values for one parameter with a comma. For filter expressions that use
-	// an INCLUDE element to include items, you must provide values for all parameters
-	// that are defined in the expression. For filters with expressions that use an
-	// EXCLUDE element to exclude items, you can omit the filter-values .In this case,
-	// Amazon Personalize doesn't use that portion of the expression to filter
-	// recommendations. For more information, see Filtering recommendations and user
-	// segments (https://docs.aws.amazon.com/personalize/latest/dg/filter.html) .
+	// multiple values for one parameter with a comma.
+	//
+	// For filter expressions that use an INCLUDE element to include items, you must
+	// provide values for all parameters that are defined in the expression. For
+	// filters with expressions that use an EXCLUDE element to exclude items, you can
+	// omit the filter-values .In this case, Amazon Personalize doesn't use that
+	// portion of the expression to filter recommendations.
+	//
+	// For more information, see [Filtering recommendations and user segments].
+	//
+	// [Filtering recommendations and user segments]: https://docs.aws.amazon.com/personalize/latest/dg/filter.html
 	FilterValues map[string]string
 
-	// The item ID to provide recommendations for. Required for RELATED_ITEMS recipe
-	// type.
+	// The item ID to provide recommendations for.
+	//
+	// Required for RELATED_ITEMS recipe type.
 	ItemId *string
 
-	// The number of results to return. The default is 25. The maximum is 500.
+	// If you enabled metadata in recommendations when you created or updated the
+	// campaign or recommender, specify the metadata columns from your Items dataset to
+	// include in item recommendations. The map key is ITEMS and the value is a list
+	// of column names from your Items dataset. The maximum number of columns you can
+	// provide is 10.
+	//
+	// For information about enabling metadata for a campaign, see [Enabling metadata in recommendations for a campaign]. For information
+	// about enabling metadata for a recommender, see [Enabling metadata in recommendations for a recommender].
+	//
+	// [Enabling metadata in recommendations for a campaign]: https://docs.aws.amazon.com/personalize/latest/dg/campaigns.html#create-campaign-return-metadata
+	// [Enabling metadata in recommendations for a recommender]: https://docs.aws.amazon.com/personalize/latest/dg/creating-recommenders.html#create-recommender-return-metadata
+	MetadataColumns map[string][]string
+
+	// The number of results to return. The default is 25. If you are including
+	// metadata in recommendations, the maximum is 50. Otherwise, the maximum is 500.
 	NumResults int32
 
 	// The promotions to apply to the recommendation request. A promotion defines
@@ -89,8 +110,9 @@ type GetRecommendationsInput struct {
 	// with a recommender for a domain use case.
 	RecommenderArn *string
 
-	// The user ID to provide recommendations for. Required for USER_PERSONALIZATION
-	// recipe type.
+	// The user ID to provide recommendations for.
+	//
+	// Required for USER_PERSONALIZATION recipe type.
 	UserId *string
 
 	noSmithyDocumentSerde
@@ -112,6 +134,9 @@ type GetRecommendationsOutput struct {
 }
 
 func (c *Client) addOperationGetRecommendationsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpGetRecommendations{}, middleware.After)
 	if err != nil {
 		return err
@@ -120,34 +145,38 @@ func (c *Client) addOperationGetRecommendationsMiddlewares(stack *middleware.Sta
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GetRecommendations"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -159,13 +188,19 @@ func (c *Client) addOperationGetRecommendationsMiddlewares(stack *middleware.Sta
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGetRecommendationsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetRecommendations(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -177,7 +212,19 @@ func (c *Client) addOperationGetRecommendationsMiddlewares(stack *middleware.Sta
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -187,130 +234,6 @@ func newServiceMetadataMiddleware_opGetRecommendations(region string) *awsmiddle
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "personalize",
 		OperationName: "GetRecommendations",
 	}
-}
-
-type opGetRecommendationsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opGetRecommendationsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGetRecommendationsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "personalize"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "personalize"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("personalize")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addGetRecommendationsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGetRecommendationsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

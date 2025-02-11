@@ -4,37 +4,43 @@ package kinesisvideoarchivedmedia
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"io"
 )
 
 // Gets media for a list of fragments (specified by fragment number) from the
-// archived data in an Amazon Kinesis video stream. You must first call the
-// GetDataEndpoint API to get an endpoint. Then send the GetMediaForFragmentList
-// requests to this endpoint using the --endpoint-url parameter (https://docs.aws.amazon.com/cli/latest/reference/)
-// . For limits, see Kinesis Video Streams Limits (http://docs.aws.amazon.com/kinesisvideostreams/latest/dg/limits.html)
-// . If an error is thrown after invoking a Kinesis Video Streams archived media
+// archived data in an Amazon Kinesis video stream.
+//
+// You must first call the GetDataEndpoint API to get an endpoint. Then send the
+// GetMediaForFragmentList requests to this endpoint using the [--endpoint-url parameter].
+//
+// For limits, see [Kinesis Video Streams Limits].
+//
+// If an error is thrown after invoking a Kinesis Video Streams archived media
 // API, in addition to the HTTP status code and the response body, it includes the
 // following pieces of information:
+//
 //   - x-amz-ErrorType HTTP header – contains a more specific error type in
 //     addition to what the HTTP status code provides.
-//   - x-amz-RequestId HTTP header – if you want to report an issue to AWS, the
-//     support team can better diagnose the problem if given the Request Id.
+//
+//   - x-amz-RequestId HTTP header – if you want to report an issue to Amazon Web
+//     Services, the support team can better diagnose the problem if given the Request
+//     Id.
 //
 // Both the HTTP status code and the ErrorType header can be utilized to make
 // programmatic decisions about whether errors are retry-able and under what
 // conditions, as well as provide information on what actions the client programmer
-// might need to take in order to successfully try again. For more information, see
-// the Errors section at the bottom of this topic, as well as Common Errors (https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/CommonErrors.html)
-// .
+// might need to take in order to successfully try again.
+//
+// For more information, see the Errors section at the bottom of this topic, as
+// well as [Common Errors].
+//
+// [--endpoint-url parameter]: https://docs.aws.amazon.com/cli/latest/reference/
+// [Common Errors]: https://docs.aws.amazon.com/kinesisvideostreams/latest/dg/CommonErrors.html
+// [Kinesis Video Streams Limits]: http://docs.aws.amazon.com/kinesisvideostreams/latest/dg/limits.html
 func (c *Client) GetMediaForFragmentList(ctx context.Context, params *GetMediaForFragmentListInput, optFns ...func(*Options)) (*GetMediaForFragmentListOutput, error) {
 	if params == nil {
 		params = &GetMediaForFragmentListInput{}
@@ -53,7 +59,7 @@ func (c *Client) GetMediaForFragmentList(ctx context.Context, params *GetMediaFo
 type GetMediaForFragmentListInput struct {
 
 	// A list of the numbers of fragments for which to retrieve media. You retrieve
-	// these values with ListFragments .
+	// these values with ListFragments.
 	//
 	// This member is required.
 	Fragments []string
@@ -75,19 +81,28 @@ type GetMediaForFragmentListOutput struct {
 	ContentType *string
 
 	// The payload that Kinesis Video Streams returns is a sequence of chunks from the
-	// specified stream. For information about the chunks, see PutMedia (http://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_dataplane_PutMedia.html)
-	// . The chunks that Kinesis Video Streams returns in the GetMediaForFragmentList
-	// call also include the following additional Matroska (MKV) tags:
+	// specified stream. For information about the chunks, see [PutMedia]. The chunks that
+	// Kinesis Video Streams returns in the GetMediaForFragmentList call also include
+	// the following additional Matroska (MKV) tags:
+	//
 	//   - AWS_KINESISVIDEO_FRAGMENT_NUMBER - Fragment number returned in the chunk.
+	//
 	//   - AWS_KINESISVIDEO_SERVER_SIDE_TIMESTAMP - Server-side timestamp of the
 	//   fragment.
+	//
 	//   - AWS_KINESISVIDEO_PRODUCER_SIDE_TIMESTAMP - Producer-side timestamp of the
 	//   fragment.
+	//
 	// The following tags will be included if an exception occurs:
+	//
 	//   - AWS_KINESISVIDEO_FRAGMENT_NUMBER - The number of the fragment that threw
 	//   the exception
-	//   - AWS_KINESISVIDEO_EXCEPTION_ERROR_CODE - The integer code of the exception
+	//
+	//   - AWS_KINESISVIDEO_EXCEPTION_ERROR_CODE - The integer code of the
+	//
 	//   - AWS_KINESISVIDEO_EXCEPTION_MESSAGE - A text description of the exception
+	//
+	// [PutMedia]: http://docs.aws.amazon.com/kinesisvideostreams/latest/dg/API_dataplane_PutMedia.html
 	Payload io.ReadCloser
 
 	// Metadata pertaining to the operation's result.
@@ -97,6 +112,9 @@ type GetMediaForFragmentListOutput struct {
 }
 
 func (c *Client) addOperationGetMediaForFragmentListMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpGetMediaForFragmentList{}, middleware.After)
 	if err != nil {
 		return err
@@ -105,34 +123,38 @@ func (c *Client) addOperationGetMediaForFragmentListMiddlewares(stack *middlewar
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GetMediaForFragmentList"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -141,7 +163,13 @@ func (c *Client) addOperationGetMediaForFragmentListMiddlewares(stack *middlewar
 	if err = smithyhttp.AddErrorCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGetMediaForFragmentListResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetMediaForFragmentListValidationMiddleware(stack); err != nil {
@@ -150,7 +178,7 @@ func (c *Client) addOperationGetMediaForFragmentListMiddlewares(stack *middlewar
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetMediaForFragmentList(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -162,7 +190,19 @@ func (c *Client) addOperationGetMediaForFragmentListMiddlewares(stack *middlewar
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -172,130 +212,6 @@ func newServiceMetadataMiddleware_opGetMediaForFragmentList(region string) *awsm
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "kinesisvideo",
 		OperationName: "GetMediaForFragmentList",
 	}
-}
-
-type opGetMediaForFragmentListResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opGetMediaForFragmentListResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGetMediaForFragmentListResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "kinesisvideo"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "kinesisvideo"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("kinesisvideo")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addGetMediaForFragmentListResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGetMediaForFragmentListResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

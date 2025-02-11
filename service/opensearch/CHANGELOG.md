@@ -1,3 +1,361 @@
+# v1.45.11 (2025-02-05)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.45.10 (2025-02-04)
+
+* No change notes available for this release.
+
+# v1.45.9 (2025-01-31)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.45.8 (2025-01-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.45.7 (2025-01-24)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+* **Dependency Update**: Upgrade to smithy-go v1.22.2.
+
+# v1.45.6 (2025-01-17)
+
+* **Bug Fix**: Fix bug where credentials weren't refreshed during retry loop.
+
+# v1.45.5 (2025-01-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.45.4 (2025-01-14)
+
+* No change notes available for this release.
+
+# v1.45.3 (2025-01-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.45.2 (2025-01-08)
+
+* No change notes available for this release.
+
+# v1.45.1 (2024-12-19)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.45.0 (2024-12-02)
+
+* **Feature**: This feature introduces support for CRUDL APIs, enabling the creation and management of Connected data sources.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.1 (2024-11-18)
+
+* **Dependency Update**: Update to smithy-go v1.22.1.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.44.0 (2024-11-11)
+
+* **Feature**: Adds Support for new AssociatePackages and DissociatePackages API in Amazon OpenSearch Service that allows association and dissociation operations to be carried out on multiple packages at the same time.
+
+# v1.43.2 (2024-11-07)
+
+* **Bug Fix**: Adds case-insensitive handling of error message fields in service responses
+
+# v1.43.1 (2024-11-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.43.0 (2024-10-30)
+
+* **Feature**: This release introduces the new OpenSearch user interface (Dashboards), a new web-based application that can be associated with multiple data sources across OpenSearch managed clusters, serverless collections, and Amazon S3, so that users can gain a comprehensive insights in an unified interface.
+
+# v1.42.0 (2024-10-28)
+
+* **Feature**: Adds support for provisioning dedicated coordinator nodes. Coordinator nodes can be specified using the new NodeOptions parameter in ClusterConfig.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.41.2 (2024-10-08)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.41.1 (2024-10-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.41.0 (2024-10-04)
+
+* **Feature**: Add support for HTTP client metrics.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.40.4 (2024-10-03)
+
+* No change notes available for this release.
+
+# v1.40.3 (2024-09-27)
+
+* No change notes available for this release.
+
+# v1.40.2 (2024-09-25)
+
+* No change notes available for this release.
+
+# v1.40.1 (2024-09-23)
+
+* No change notes available for this release.
+
+# v1.40.0 (2024-09-20)
+
+* **Feature**: Add tracing and metrics support to service clients.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.39.7 (2024-09-17)
+
+* **Bug Fix**: **BREAKFIX**: Only generate AccountIDEndpointMode config for services that use it. This is a compiler break, but removes no actual functionality, as no services currently use the account ID in endpoint resolution.
+
+# v1.39.6 (2024-09-04)
+
+* No change notes available for this release.
+
+# v1.39.5 (2024-09-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.39.4 (2024-08-22)
+
+* No change notes available for this release.
+
+# v1.39.3 (2024-08-15)
+
+* **Dependency Update**: Bump minimum Go version to 1.21.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.39.2 (2024-07-10.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.39.1 (2024-07-10)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.39.0 (2024-07-09)
+
+* **Feature**: This release adds support for enabling or disabling Natural Language Query Processing feature for Amazon OpenSearch Service domains, and provides visibility into the current state of the setup or tear-down.
+
+# v1.38.0 (2024-06-28)
+
+* **Feature**: This release removes support for enabling or disabling Natural Language Query Processing feature for Amazon OpenSearch Service domains.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.37.0 (2024-06-26)
+
+* **Feature**: Support list-of-string endpoint parameter.
+* **Feature**: This release adds support for enabling or disabling Natural Language Query Processing feature for Amazon OpenSearch Service domains, and provides visibility into the current state of the setup or tear-down.
+
+# v1.36.0 (2024-06-19)
+
+* **Feature**: This release enables customers to use JSON Web Tokens (JWT) for authentication on their Amazon OpenSearch Service domains.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.35.0 (2024-06-18)
+
+* **Feature**: Track usage of various AWS SDK features in user-agent string.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.34.4 (2024-06-17)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.34.3 (2024-06-07)
+
+* **Bug Fix**: Add clock skew correction on all service clients
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.34.2 (2024-06-03)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.34.1 (2024-05-23)
+
+* No change notes available for this release.
+
+# v1.34.0 (2024-05-22)
+
+* **Feature**: This release adds support for enabling or disabling a data source configured as part of Zero-ETL integration with Amazon S3, by setting its status.
+
+# v1.33.3 (2024-05-16)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.33.2 (2024-05-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.33.1 (2024-05-08)
+
+* **Bug Fix**: GoDoc improvement
+
+# v1.33.0 (2024-04-30)
+
+* **Feature**: This release enables customers to create Route53 A and AAAA alias record types to point custom endpoint domain to OpenSearch domain's dualstack search endpoint.
+
+# v1.32.4 (2024-03-29)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.32.3 (2024-03-18)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.32.2 (2024-03-07)
+
+* **Bug Fix**: Remove dependency on go-cmp.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.32.1 (2024-02-23)
+
+* **Bug Fix**: Move all common, SDK-side middleware stack ops into the service client module to prevent cross-module compatibility issues in the future.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.32.0 (2024-02-22)
+
+* **Feature**: Add middleware stack snapshot tests.
+
+# v1.31.2 (2024-02-21)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.31.1 (2024-02-20)
+
+* **Bug Fix**: When sourcing values for a service's `EndpointParameters`, the lack of a configured region (i.e. `options.Region == ""`) will now translate to a `nil` value for `EndpointParameters.Region` instead of a pointer to the empty string `""`. This will result in a much more explicit error when calling an operation instead of an obscure hostname lookup failure.
+
+# v1.31.0 (2024-02-15)
+
+* **Feature**: Adds additional supported instance types.
+
+# v1.30.0 (2024-02-13)
+
+* **Feature**: Bump minimum Go version to 1.20 per our language support policy.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.29.0 (2024-02-06)
+
+* **Feature**: This release adds clear visibility to the customers on the changes that they make on the domain.
+
+# v1.28.0 (2024-01-04)
+
+* **Feature**: This release adds support for new or existing Amazon OpenSearch domains to enable TLS 1.3 or TLS 1.2 with perfect forward secrecy cipher suites for domain endpoints.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.27.1 (2023-12-20)
+
+* No change notes available for this release.
+
+# v1.27.0 (2023-12-14)
+
+* **Feature**: Updating documentation for Amazon OpenSearch Service support for new zero-ETL integration with Amazon S3.
+
+# v1.26.5 (2023-12-08)
+
+* **Bug Fix**: Reinstate presence of default Retryer in functional options, but still respect max attempts set therein.
+
+# v1.26.4 (2023-12-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.26.3 (2023-12-06)
+
+* **Bug Fix**: Restore pre-refactor auth behavior where all operations could technically be performed anonymously.
+
+# v1.26.2 (2023-12-01)
+
+* **Bug Fix**: Correct wrapping of errors in authentication workflow.
+* **Bug Fix**: Correctly recognize cache-wrapped instances of AnonymousCredentials at client construction.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.26.1 (2023-11-30)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.26.0 (2023-11-29)
+
+* **Feature**: Expose Options() accessor on service clients.
+* **Feature**: Launching Amazon OpenSearch Service support for new zero-ETL integration with Amazon S3. Customers can now manage their direct query data sources to Amazon S3 programatically
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.5 (2023-11-28.2)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.4 (2023-11-28)
+
+* **Bug Fix**: Respect setting RetryMaxAttempts in functional options at client construction.
+
+# v1.25.3 (2023-11-20)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.2 (2023-11-15)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.1 (2023-11-09)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.25.0 (2023-11-01)
+
+* **Feature**: Adds support for configured endpoints via environment variables and the AWS shared configuration file.
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.24.0 (2023-10-31)
+
+* **Feature**: **BREAKING CHANGE**: Bump minimum go version to 1.19 per the revised [go version support policy](https://aws.amazon.com/blogs/developer/aws-sdk-for-go-aligns-with-go-release-policy-on-supported-runtimes/).
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.23.0 (2023-10-26)
+
+* **Feature**: You can specify ipv4 or dualstack IPAddressType for cluster endpoints. If you specify IPAddressType as dualstack, the new endpoint will be visible under the 'EndpointV2' parameter and will support IPv4 and IPv6 requests. Whereas, the 'Endpoint' will continue to serve IPv4 requests.
+
+# v1.22.0 (2023-10-24)
+
+* **Feature**: **BREAKFIX**: Correct nullability and default value representation of various input fields across a large number of services. Calling code that references one or more of the affected fields will need to update usage accordingly. See [2162](https://github.com/aws/aws-sdk-go-v2/issues/2162).
+
+# v1.21.0 (2023-10-19)
+
+* **Feature**: Added Cluster Administrative options for node restart, opensearch process restart and opensearch dashboard restart for Multi-AZ without standby domains
+
+# v1.20.0 (2023-10-16)
+
+* **Feature**: This release allows customers to list and associate optional plugin packages with compatible Amazon OpenSearch Service clusters for enhanced functionality.
+
+# v1.19.8 (2023-10-12)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.19.7 (2023-10-06)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.19.6 (2023-09-06)
+
+* No change notes available for this release.
+
+# v1.19.5 (2023-08-21)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.19.4 (2023-08-18)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.19.3 (2023-08-17)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
+# v1.19.2 (2023-08-07)
+
+* **Dependency Update**: Updated to the latest SDK module versions
+
 # v1.19.1 (2023-08-01)
 
 * No change notes available for this release.

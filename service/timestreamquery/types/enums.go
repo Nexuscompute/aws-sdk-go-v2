@@ -2,6 +2,25 @@
 
 package types
 
+type ComputeMode string
+
+// Enum values for ComputeMode
+const (
+	ComputeModeOnDemand    ComputeMode = "ON_DEMAND"
+	ComputeModeProvisioned ComputeMode = "PROVISIONED"
+)
+
+// Values returns all known values for ComputeMode. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ComputeMode) Values() []ComputeMode {
+	return []ComputeMode{
+		"ON_DEMAND",
+		"PROVISIONED",
+	}
+}
+
 type DimensionValueType string
 
 // Enum values for DimensionValueType
@@ -10,11 +29,33 @@ const (
 )
 
 // Values returns all known values for DimensionValueType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DimensionValueType) Values() []DimensionValueType {
 	return []DimensionValueType{
 		"VARCHAR",
+	}
+}
+
+type LastUpdateStatus string
+
+// Enum values for LastUpdateStatus
+const (
+	LastUpdateStatusPending   LastUpdateStatus = "PENDING"
+	LastUpdateStatusFailed    LastUpdateStatus = "FAILED"
+	LastUpdateStatusSucceeded LastUpdateStatus = "SUCCEEDED"
+)
+
+// Values returns all known values for LastUpdateStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (LastUpdateStatus) Values() []LastUpdateStatus {
+	return []LastUpdateStatus{
+		"PENDING",
+		"FAILED",
+		"SUCCEEDED",
 	}
 }
 
@@ -30,8 +71,9 @@ const (
 )
 
 // Values returns all known values for MeasureValueType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MeasureValueType) Values() []MeasureValueType {
 	return []MeasureValueType{
 		"BIGINT",
@@ -39,6 +81,44 @@ func (MeasureValueType) Values() []MeasureValueType {
 		"DOUBLE",
 		"VARCHAR",
 		"MULTI",
+	}
+}
+
+type QueryInsightsMode string
+
+// Enum values for QueryInsightsMode
+const (
+	QueryInsightsModeEnabledWithRateControl QueryInsightsMode = "ENABLED_WITH_RATE_CONTROL"
+	QueryInsightsModeDisabled               QueryInsightsMode = "DISABLED"
+)
+
+// Values returns all known values for QueryInsightsMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QueryInsightsMode) Values() []QueryInsightsMode {
+	return []QueryInsightsMode{
+		"ENABLED_WITH_RATE_CONTROL",
+		"DISABLED",
+	}
+}
+
+type QueryPricingModel string
+
+// Enum values for QueryPricingModel
+const (
+	QueryPricingModelBytesScanned QueryPricingModel = "BYTES_SCANNED"
+	QueryPricingModelComputeUnits QueryPricingModel = "COMPUTE_UNITS"
+)
+
+// Values returns all known values for QueryPricingModel. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (QueryPricingModel) Values() []QueryPricingModel {
+	return []QueryPricingModel{
+		"BYTES_SCANNED",
+		"COMPUTE_UNITS",
 	}
 }
 
@@ -51,8 +131,9 @@ const (
 )
 
 // Values returns all known values for S3EncryptionOption. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (S3EncryptionOption) Values() []S3EncryptionOption {
 	return []S3EncryptionOption{
 		"SSE_S3",
@@ -72,8 +153,9 @@ const (
 )
 
 // Values returns all known values for ScalarMeasureValueType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScalarMeasureValueType) Values() []ScalarMeasureValueType {
 	return []ScalarMeasureValueType{
 		"BIGINT",
@@ -102,8 +184,9 @@ const (
 )
 
 // Values returns all known values for ScalarType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScalarType) Values() []ScalarType {
 	return []ScalarType{
 		"VARCHAR",
@@ -120,6 +203,25 @@ func (ScalarType) Values() []ScalarType {
 	}
 }
 
+type ScheduledQueryInsightsMode string
+
+// Enum values for ScheduledQueryInsightsMode
+const (
+	ScheduledQueryInsightsModeEnabledWithRateControl ScheduledQueryInsightsMode = "ENABLED_WITH_RATE_CONTROL"
+	ScheduledQueryInsightsModeDisabled               ScheduledQueryInsightsMode = "DISABLED"
+)
+
+// Values returns all known values for ScheduledQueryInsightsMode. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ScheduledQueryInsightsMode) Values() []ScheduledQueryInsightsMode {
+	return []ScheduledQueryInsightsMode{
+		"ENABLED_WITH_RATE_CONTROL",
+		"DISABLED",
+	}
+}
+
 type ScheduledQueryRunStatus string
 
 // Enum values for ScheduledQueryRunStatus
@@ -131,8 +233,9 @@ const (
 )
 
 // Values returns all known values for ScheduledQueryRunStatus. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScheduledQueryRunStatus) Values() []ScheduledQueryRunStatus {
 	return []ScheduledQueryRunStatus{
 		"AUTO_TRIGGER_SUCCESS",
@@ -151,8 +254,9 @@ const (
 )
 
 // Values returns all known values for ScheduledQueryState. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ScheduledQueryState) Values() []ScheduledQueryState {
 	return []ScheduledQueryState{
 		"ENABLED",

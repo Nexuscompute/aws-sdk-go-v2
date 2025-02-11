@@ -4,14 +4,9 @@ package batch
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/batch/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -42,45 +37,63 @@ type UpdateComputeEnvironmentInput struct {
 	ComputeEnvironment *string
 
 	// Details of the compute resources managed by the compute environment. Required
-	// for a managed compute environment. For more information, see Compute
-	// Environments (https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html)
-	// in the Batch User Guide.
+	// for a managed compute environment. For more information, see [Compute Environments]in the Batch User
+	// Guide.
+	//
+	// [Compute Environments]: https://docs.aws.amazon.com/batch/latest/userguide/compute_environments.html
 	ComputeResources *types.ComputeResourceUpdate
+
+	// Reserved.
+	Context *string
 
 	// The full Amazon Resource Name (ARN) of the IAM role that allows Batch to make
 	// calls to other Amazon Web Services services on your behalf. For more
-	// information, see Batch service IAM role (https://docs.aws.amazon.com/batch/latest/userguide/service_IAM_role.html)
-	// in the Batch User Guide. If the compute environment has a service-linked role,
-	// it can't be changed to use a regular IAM role. Likewise, if the compute
-	// environment has a regular IAM role, it can't be changed to use a service-linked
-	// role. To update the parameters for the compute environment that require an
-	// infrastructure update to change, the AWSServiceRoleForBatch service-linked role
-	// must be used. For more information, see Updating compute environments (https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html)
-	// in the Batch User Guide. If your specified role has a path other than / , then
-	// you must either specify the full role ARN (recommended) or prefix the role name
-	// with the path. Depending on how you created your Batch service role, its ARN
-	// might contain the service-role path prefix. When you only specify the name of
-	// the service role, Batch assumes that your ARN doesn't use the service-role path
-	// prefix. Because of this, we recommend that you specify the full ARN of your
-	// service role when you create compute environments.
+	// information, see [Batch service IAM role]in the Batch User Guide.
+	//
+	// If the compute environment has a service-linked role, it can't be changed to
+	// use a regular IAM role. Likewise, if the compute environment has a regular IAM
+	// role, it can't be changed to use a service-linked role. To update the parameters
+	// for the compute environment that require an infrastructure update to change, the
+	// AWSServiceRoleForBatch service-linked role must be used. For more information,
+	// see [Updating compute environments]in the Batch User Guide.
+	//
+	// If your specified role has a path other than / , then you must either specify
+	// the full role ARN (recommended) or prefix the role name with the path.
+	//
+	// Depending on how you created your Batch service role, its ARN might contain the
+	// service-role path prefix. When you only specify the name of the service role,
+	// Batch assumes that your ARN doesn't use the service-role path prefix. Because
+	// of this, we recommend that you specify the full ARN of your service role when
+	// you create compute environments.
+	//
+	// [Updating compute environments]: https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html
+	// [Batch service IAM role]: https://docs.aws.amazon.com/batch/latest/userguide/service_IAM_role.html
 	ServiceRole *string
 
 	// The state of the compute environment. Compute environments in the ENABLED state
 	// can accept jobs from a queue and scale in or out automatically based on the
-	// workload demand of its associated queues. If the state is ENABLED , then the
-	// Batch scheduler can attempt to place jobs from an associated job queue on the
-	// compute resources within the environment. If the compute environment is managed,
-	// then it can scale its instances out or in automatically, based on the job queue
-	// demand. If the state is DISABLED , then the Batch scheduler doesn't attempt to
-	// place jobs within the environment. Jobs in a STARTING or RUNNING state continue
-	// to progress normally. Managed compute environments in the DISABLED state don't
-	// scale out. Compute environments in a DISABLED state may continue to incur
-	// billing charges. To prevent additional charges, turn off and then delete the
-	// compute environment. For more information, see State (https://docs.aws.amazon.com/batch/latest/userguide/compute_environment_parameters.html#compute_environment_state)
-	// in the Batch User Guide. When an instance is idle, the instance scales down to
-	// the minvCpus value. However, the instance size doesn't change. For example,
-	// consider a c5.8xlarge instance with a minvCpus value of 4 and a desiredvCpus
-	// value of 36 . This instance doesn't scale down to a c5.large instance.
+	// workload demand of its associated queues.
+	//
+	// If the state is ENABLED , then the Batch scheduler can attempt to place jobs
+	// from an associated job queue on the compute resources within the environment. If
+	// the compute environment is managed, then it can scale its instances out or in
+	// automatically, based on the job queue demand.
+	//
+	// If the state is DISABLED , then the Batch scheduler doesn't attempt to place
+	// jobs within the environment. Jobs in a STARTING or RUNNING state continue to
+	// progress normally. Managed compute environments in the DISABLED state don't
+	// scale out.
+	//
+	// Compute environments in a DISABLED state may continue to incur billing charges.
+	// To prevent additional charges, turn off and then delete the compute environment.
+	// For more information, see [State]in the Batch User Guide.
+	//
+	// When an instance is idle, the instance scales down to the minvCpus value.
+	// However, the instance size doesn't change. For example, consider a c5.8xlarge
+	// instance with a minvCpus value of 4 and a desiredvCpus value of 36 . This
+	// instance doesn't scale down to a c5.large instance.
+	//
+	// [State]: https://docs.aws.amazon.com/batch/latest/userguide/compute_environment_parameters.html#compute_environment_state
 	State types.CEState
 
 	// The maximum number of vCPUs expected to be used for an unmanaged compute
@@ -91,9 +104,9 @@ type UpdateComputeEnvironmentInput struct {
 	UnmanagedvCpus *int32
 
 	// Specifies the updated infrastructure update policy for the compute environment.
-	// For more information about infrastructure updates, see Updating compute
-	// environments (https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html)
-	// in the Batch User Guide.
+	// For more information about infrastructure updates, see [Updating compute environments]in the Batch User Guide.
+	//
+	// [Updating compute environments]: https://docs.aws.amazon.com/batch/latest/userguide/updating-compute-environments.html
 	UpdatePolicy *types.UpdatePolicy
 
 	noSmithyDocumentSerde
@@ -116,6 +129,9 @@ type UpdateComputeEnvironmentOutput struct {
 }
 
 func (c *Client) addOperationUpdateComputeEnvironmentMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsRestjson1_serializeOpUpdateComputeEnvironment{}, middleware.After)
 	if err != nil {
 		return err
@@ -124,34 +140,38 @@ func (c *Client) addOperationUpdateComputeEnvironmentMiddlewares(stack *middlewa
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateComputeEnvironment"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -163,7 +183,13 @@ func (c *Client) addOperationUpdateComputeEnvironmentMiddlewares(stack *middlewa
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateComputeEnvironmentResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateComputeEnvironmentValidationMiddleware(stack); err != nil {
@@ -172,7 +198,7 @@ func (c *Client) addOperationUpdateComputeEnvironmentMiddlewares(stack *middlewa
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateComputeEnvironment(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -184,7 +210,19 @@ func (c *Client) addOperationUpdateComputeEnvironmentMiddlewares(stack *middlewa
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -194,130 +232,6 @@ func newServiceMetadataMiddleware_opUpdateComputeEnvironment(region string) *aws
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "batch",
 		OperationName: "UpdateComputeEnvironment",
 	}
-}
-
-type opUpdateComputeEnvironmentResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateComputeEnvironmentResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateComputeEnvironmentResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "batch"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "batch"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("batch")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateComputeEnvironmentResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateComputeEnvironmentResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

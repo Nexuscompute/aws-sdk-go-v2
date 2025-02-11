@@ -4,14 +4,9 @@ package lookoutequipment
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/lookoutequipment/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 	"time"
@@ -50,6 +45,17 @@ type DescribeModelVersionInput struct {
 
 type DescribeModelVersionOutput struct {
 
+	// Indicates whether the model version was promoted to be the active version after
+	// retraining or if there was an error with or cancellation of the retraining.
+	AutoPromotionResult types.AutoPromotionResult
+
+	// Indicates the reason for the AutoPromotionResult . For example, a model might
+	// not be promoted if its performance was worse than the active version, if there
+	// was an error during training, or if the retraining scheduler was using MANUAL
+	// promote mode. The model will be promoted in MANAGED promote mode if the
+	// performance is better than the previous model.
+	AutoPromotionResultReason *string
+
 	// Indicates the time and date at which the machine learning model version was
 	// created.
 	CreatedAt *time.Time
@@ -58,10 +64,11 @@ type DescribeModelVersionOutput struct {
 	// data after post processing by Amazon Lookout for Equipment. For example, if you
 	// provide data that has been collected at a 1 second level and you want the system
 	// to resample the data at a 1 minute rate before training, the TargetSamplingRate
-	// is 1 minute. When providing a value for the TargetSamplingRate , you must attach
-	// the prefix "PT" to the rate you want. The value for a 1 second rate is therefore
-	// PT1S, the value for a 15 minute rate is PT15M, and the value for a 1 hour rate
-	// is PT1H
+	// is 1 minute.
+	//
+	// When providing a value for the TargetSamplingRate , you must attach the prefix
+	// "PT" to the rate you want. The value for a 1 second rate is therefore PT1S, the
+	// value for a 15 minute rate is PT15M, and the value for a 1 hour rate is PT1H
 	DataPreProcessingConfiguration *types.DataPreProcessingConfiguration
 
 	// The Amazon Resource Name (ARN) of the dataset used to train the model version.
@@ -106,12 +113,38 @@ type DescribeModelVersionOutput struct {
 	// version belong to.
 	ModelArn *string
 
+	// The Amazon S3 location where Amazon Lookout for Equipment saves the pointwise
+	// model diagnostics for the model version.
+	ModelDiagnosticsOutputConfiguration *types.ModelDiagnosticsOutputConfiguration
+
+	// The Amazon S3 output prefix for where Lookout for Equipment saves the pointwise
+	// model diagnostics for the model version.
+	ModelDiagnosticsResultsObject *types.S3Object
+
 	// Shows an aggregated summary, in JSON format, of the model's performance within
 	// the evaluation time range. These metrics are created when evaluating the model.
 	ModelMetrics *string
 
 	// The name of the machine learning model that this version belongs to.
 	ModelName *string
+
+	// Provides a quality assessment for a model that uses labels. If Lookout for
+	// Equipment determines that the model quality is poor based on training metrics,
+	// the value is POOR_QUALITY_DETECTED . Otherwise, the value is
+	// QUALITY_THRESHOLD_MET .
+	//
+	// If the model is unlabeled, the model quality can't be assessed and the value of
+	// ModelQuality is CANNOT_DETERMINE_QUALITY . In this situation, you can get a
+	// model quality assessment by adding labels to the input dataset and retraining
+	// the model.
+	//
+	// For information about using labels with your models, see [Understanding labeling].
+	//
+	// For information about improving the quality of a model, see [Best practices with Amazon Lookout for Equipment].
+	//
+	// [Best practices with Amazon Lookout for Equipment]: https://docs.aws.amazon.com/lookout-for-equipment/latest/ug/best-practices.html
+	// [Understanding labeling]: https://docs.aws.amazon.com/lookout-for-equipment/latest/ug/understanding-labeling.html
+	ModelQuality types.ModelQuality
 
 	// The version of the machine learning model.
 	ModelVersion *int64
@@ -123,6 +156,16 @@ type DescribeModelVersionOutput struct {
 	// as this condition is met, Lookout for Equipment will not use data from this
 	// asset for training, evaluation, or inference.
 	OffCondition *string
+
+	// If the model version was retrained, this field shows a summary of the
+	// performance of the prior model on the new training range. You can use the
+	// information in this JSON-formatted object to compare the new model version and
+	// the prior model version.
+	PriorModelMetrics *string
+
+	// Indicates the number of days of data used in the most recent scheduled
+	// retraining run.
+	RetrainingAvailableDataInDays *int32
 
 	// The Amazon Resource Name (ARN) of the role that was used to train the model
 	// version.
@@ -168,6 +211,9 @@ type DescribeModelVersionOutput struct {
 }
 
 func (c *Client) addOperationDescribeModelVersionMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson10_serializeOpDescribeModelVersion{}, middleware.After)
 	if err != nil {
 		return err
@@ -176,34 +222,38 @@ func (c *Client) addOperationDescribeModelVersionMiddlewares(stack *middleware.S
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "DescribeModelVersion"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -215,7 +265,13 @@ func (c *Client) addOperationDescribeModelVersionMiddlewares(stack *middleware.S
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addDescribeModelVersionResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpDescribeModelVersionValidationMiddleware(stack); err != nil {
@@ -224,7 +280,7 @@ func (c *Client) addOperationDescribeModelVersionMiddlewares(stack *middleware.S
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opDescribeModelVersion(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -236,7 +292,19 @@ func (c *Client) addOperationDescribeModelVersionMiddlewares(stack *middleware.S
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -246,130 +314,6 @@ func newServiceMetadataMiddleware_opDescribeModelVersion(region string) *awsmidd
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "lookoutequipment",
 		OperationName: "DescribeModelVersion",
 	}
-}
-
-type opDescribeModelVersionResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opDescribeModelVersionResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opDescribeModelVersionResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "lookoutequipment"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "lookoutequipment"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("lookoutequipment")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addDescribeModelVersionResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opDescribeModelVersionResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

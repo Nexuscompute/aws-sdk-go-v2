@@ -315,13 +315,25 @@ type DeviceRegistrationStateResourceTypeEventConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// The required list of dimensions for the metric.
+type Dimension struct {
+
+	// The name of the dimension.
+	Name DimensionName
+
+	// The dimension's value.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
 // The message in the downlink queue.
 type DownlinkQueueMessage struct {
 
 	// LoRaWAN router info.
 	LoRaWAN *LoRaWANSendDataToDevice
 
-	// The message ID assigned by IoT Wireless to each downlink message, which helps
+	//  The message ID assigned by IoT Wireless to each downlink message, which helps
 	// identify the message.
 	MessageId *string
 
@@ -407,6 +419,49 @@ type FuotaTask struct {
 
 	// The name of a FUOTA task.
 	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// The log options for a FUOTA task event and can be used to set log levels for a
+// specific fuota task event.
+//
+// For a LoRaWAN FuotaTask type, possible event for a log message is Fuota .
+type FuotaTaskEventLogOption struct {
+
+	// The event for a log message, if the log message is tied to a fuota task.
+	//
+	// This member is required.
+	Event FuotaTaskEvent
+
+	// The log level for a log message. The log levels can be disabled, or set to ERROR
+	// to display less verbose logs containing only error information, or to INFO for
+	// more detailed logs.
+	//
+	// This member is required.
+	LogLevel LogLevel
+
+	noSmithyDocumentSerde
+}
+
+// The log options for fuota tasks and can be used to set log levels for a
+// specific type of fuota task.
+type FuotaTaskLogOption struct {
+
+	// The log level for a log message. The log levels can be disabled, or set to ERROR
+	// to display less verbose logs containing only error information, or to INFO for
+	// more detailed logs.
+	//
+	// This member is required.
+	LogLevel LogLevel
+
+	// The fuota task type.
+	//
+	// This member is required.
+	Type FuotaTaskType
+
+	// The list of FUOTA task event log options.
+	Events []FuotaTaskEventLogOption
 
 	noSmithyDocumentSerde
 }
@@ -691,6 +746,9 @@ type LoRaWANDeviceMetadata struct {
 	// Information about the gateways accessed by the device.
 	Gateways []LoRaWANGatewayMetadata
 
+	// Information about the LoRaWAN public network accessed by the device.
+	PublicGateways []LoRaWANPublicGatewayMetadata
+
 	// The date and time of the metadata.
 	Timestamp *string
 
@@ -713,7 +771,7 @@ type LoRaWANDeviceProfile struct {
 	// profile.
 	MacVersion *string
 
-	// The MaxDutyCycle value.
+	// The MaxDutyCycle value. It ranges from 0 to 15.
 	MaxDutyCycle *int32
 
 	// The MaxEIRP value.
@@ -946,6 +1004,11 @@ type LoRaWANMulticast struct {
 	// DlClass for LoRaWAM, valid values are ClassB and ClassC.
 	DlClass DlClass
 
+	// Specify the list of gateways to which you want to send the multicast downlink
+	// messages. The multicast message will be sent to each gateway in the sequence
+	// provided in the list.
+	ParticipatingGateways *ParticipatingGatewaysMulticast
+
 	// Supported RfRegions
 	RfRegion SupportedRfRegion
 
@@ -964,6 +1027,11 @@ type LoRaWANMulticastGet struct {
 
 	// Number of devices that are requested to be associated with the multicast group.
 	NumberOfDevicesRequested *int32
+
+	// Specify the list of gateways to which you want to send the multicast downlink
+	// messages. The multicast message will be sent to each gateway in the sequence
+	// provided in the list.
+	ParticipatingGateways *ParticipatingGatewaysMulticast
 
 	// Supported RfRegions
 	RfRegion SupportedRfRegion
@@ -997,6 +1065,30 @@ type LoRaWANMulticastSession struct {
 
 	// How long before a multicast group session is to timeout.
 	SessionTimeout *int32
+
+	noSmithyDocumentSerde
+}
+
+// LoRaWAN public gateway metadata.
+type LoRaWANPublicGatewayMetadata struct {
+
+	// Boolean that indicates whether downlink is allowed using the network.
+	DlAllowed *bool
+
+	// The ID of the gateways that are operated by the network provider.
+	Id *string
+
+	// The ID of the LoRaWAN public network provider.
+	ProviderNetId *string
+
+	// The frequency band (RFRegion) value.
+	RfRegion *string
+
+	// The RSSI (received signal strength indicator) value.
+	Rssi *float64
+
+	// The SNR (signal to noise ratio) value.
+	Snr *float64
 
 	noSmithyDocumentSerde
 }
@@ -1213,6 +1305,36 @@ type MessageDeliveryStatusResourceTypeEventConfiguration struct {
 	noSmithyDocumentSerde
 }
 
+// The aggregated values of the metric.
+type MetricQueryValue struct {
+
+	// The average of the values of all data points collected during the aggregation
+	// period.
+	Avg *float64
+
+	// The maximum of the values of all the data points collected during the
+	// aggregation period.
+	Max *float64
+
+	// The minimum of the values of all data points collected during the aggregation
+	// period.
+	Min *float64
+
+	// The 90th percentile of the values of all data points collected during the
+	// aggregation period.
+	P90 *float64
+
+	// The standard deviation of the values of all data points collected during the
+	// aggregation period.
+	Std *float64
+
+	// The sum of the values of all data points collected during the aggregation
+	// period.
+	Sum *float64
+
+	noSmithyDocumentSerde
+}
+
 // A multicast group.
 type MulticastGroup struct {
 
@@ -1261,7 +1383,8 @@ type NetworkAnalyzerConfigurations struct {
 // OTAA device object for v1.0.x
 type OtaaV1_0_x struct {
 
-	// The AppEUI value.
+	// The AppEUI value. You specify this value when using LoRaWAN versions v1.0.2 or
+	// v1.0.3.
 	AppEui *string
 
 	// The AppKey value.
@@ -1269,6 +1392,10 @@ type OtaaV1_0_x struct {
 
 	// The GenAppKey value.
 	GenAppKey *string
+
+	// The JoinEUI value. You specify this value instead of the AppEUI when using
+	// LoRaWAN version v1.0.4.
+	JoinEui *string
 
 	noSmithyDocumentSerde
 }
@@ -1308,6 +1435,24 @@ type ParticipatingGateways struct {
 	// transmitting the payload to the next gateway.
 	//
 	// This member is required.
+	TransmissionInterval *int32
+
+	noSmithyDocumentSerde
+}
+
+// Specify the list of gateways to which you want to send the multicast downlink
+// messages. The multicast message will be sent to each gateway in the sequence
+// provided in the list.
+type ParticipatingGatewaysMulticast struct {
+
+	// The list of gateways that you want to use for sending the multicast downlink.
+	// Each downlink will be sent to all the gateways in the list with transmission
+	// interval between them. If list is empty the gateway list will be dynamically
+	// selected similar to the case of no ParticipatingGateways
+	GatewayList []string
+
+	// The duration of time for which AWS IoT Core for LoRaWAN will wait before
+	// transmitting the multicast payload to the next gateway in the list.
 	TransmissionInterval *int32
 
 	noSmithyDocumentSerde
@@ -1689,6 +1834,78 @@ type SidewalkUpdateImportInfo struct {
 	noSmithyDocumentSerde
 }
 
+// The configuration of summary metrics.
+type SummaryMetricConfiguration struct {
+
+	// The status of the configuration of summary metrics.
+	Status SummaryMetricConfigurationStatus
+
+	noSmithyDocumentSerde
+}
+
+// The summary metric query object.
+type SummaryMetricQuery struct {
+
+	// The aggregation period of the summary metric.
+	AggregationPeriod AggregationPeriod
+
+	// The dimensions of the summary metric.
+	Dimensions []Dimension
+
+	// The end timestamp for the summary metric query.
+	EndTimestamp *time.Time
+
+	// The name of the metric.
+	MetricName MetricName
+
+	// The id of the summary metric query.
+	QueryId *string
+
+	// The start timestamp for the summary metric query.
+	StartTimestamp *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// The result of the summary metrics aggregation operation.
+type SummaryMetricQueryResult struct {
+
+	// The aggregation period of the metric.
+	AggregationPeriod AggregationPeriod
+
+	// The dimensions of the metric.
+	Dimensions []Dimension
+
+	// The end timestamp for the summary metric query.
+	EndTimestamp *time.Time
+
+	// The error message for the summary metric query result.
+	Error *string
+
+	// The name of the summary metric query result.
+	MetricName MetricName
+
+	// The ID of the summary metric results query operation.
+	QueryId *string
+
+	// The status of the summary metric query result.
+	QueryStatus MetricQueryStatus
+
+	// The start timestamp for the summary metric query.
+	StartTimestamp *time.Time
+
+	// The timestamp of each aggregation result.
+	Timestamps []time.Time
+
+	// The units of measurement to be used for interpreting the aggregation result.
+	Unit *string
+
+	// The list of aggregated summary metric query results.
+	Values []MetricQueryValue
+
+	noSmithyDocumentSerde
+}
+
 // A simple label consisting of a customer-defined key-value pair
 type Tag struct {
 
@@ -1790,7 +2007,7 @@ type TdscdmaObj struct {
 	noSmithyDocumentSerde
 }
 
-// Trace content for your wireless gateway and wireless device resources.
+// Trace content for your wireless devices, gateways, and multicast groups.
 type TraceContent struct {
 
 	// The log level for a log message. The log levels can be disabled, or set to ERROR
@@ -1799,8 +2016,8 @@ type TraceContent struct {
 	LogLevel LogLevel
 
 	// FrameInfo of your multicast group resources for the trace content. Use
-	// FrameInfo to debug the multicast communication between your LoRaWAN end devices
-	// and the network server.
+	// FrameInfo to debug the multicast communication between your multicast groups and
+	// the network server.
 	MulticastFrameInfo MulticastFrameInfo
 
 	// FrameInfo of your wireless device resources for the trace content. Use
@@ -1970,10 +2187,11 @@ type WiFiAccessPoint struct {
 }
 
 // The log options for a wireless device event and can be used to set log levels
-// for a specific wireless device event. For a LoRaWAN device, possible events for
-// a log messsage are: Join , Rejoin , Downlink_Data , and Uplink_Data . For a
-// Sidewalk device, possible events for a log message are Registration ,
-// Downlink_Data , and Uplink_Data .
+// for a specific wireless device event.
+//
+// For a LoRaWAN device, possible events for a log messsage are: Join , Rejoin ,
+// Downlink_Data , and Uplink_Data . For a Sidewalk device, possible events for a
+// log message are Registration , Downlink_Data , and Uplink_Data .
 type WirelessDeviceEventLogOption struct {
 
 	// The event for a log message, if the log message is tied to a wireless device.
@@ -2073,8 +2291,9 @@ type WirelessDeviceStatistics struct {
 	// The ID of the wireless device reporting the data.
 	Id *string
 
-	// The date and time when the most recent uplink was received. Theis value is only
-	// valid for 3 months.
+	// The date and time when the most recent uplink was received.
+	//
+	// Theis value is only valid for 3 months.
 	LastUplinkReceivedAt *string
 
 	// LoRaWAN device info.
@@ -2099,8 +2318,10 @@ type WirelessDeviceStatistics struct {
 }
 
 // The log options for a wireless gateway event and can be used to set log levels
-// for a specific wireless gateway event. For a LoRaWAN gateway, possible events
-// for a log message are CUPS_Request and Certificate .
+// for a specific wireless gateway event.
+//
+// For a LoRaWAN gateway, possible events for a log message are CUPS_Request and
+// Certificate .
 type WirelessGatewayEventLogOption struct {
 
 	// The event for a log message, if the log message is tied to a wireless gateway.
@@ -2152,8 +2373,9 @@ type WirelessGatewayStatistics struct {
 	// The ID of the wireless gateway reporting the data.
 	Id *string
 
-	// The date and time when the most recent uplink was received. This value is only
-	// valid for 3 months.
+	// The date and time when the most recent uplink was received.
+	//
+	// This value is only valid for 3 months.
 	LastUplinkReceivedAt *string
 
 	// LoRaWAN gateway info.

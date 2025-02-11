@@ -29,6 +29,9 @@ func ExampleDataSourceParameters_outputUsage() {
 	case *types.DataSourceParametersMemberAwsIotAnalyticsParameters:
 		_ = v.Value // Value is types.AwsIotAnalyticsParameters
 
+	case *types.DataSourceParametersMemberBigQueryParameters:
+		_ = v.Value // Value is types.BigQueryParameters
+
 	case *types.DataSourceParametersMemberDatabricksParameters:
 		_ = v.Value // Value is types.DatabricksParameters
 
@@ -74,8 +77,14 @@ func ExampleDataSourceParameters_outputUsage() {
 	case *types.DataSourceParametersMemberSqlServerParameters:
 		_ = v.Value // Value is types.SqlServerParameters
 
+	case *types.DataSourceParametersMemberStarburstParameters:
+		_ = v.Value // Value is types.StarburstParameters
+
 	case *types.DataSourceParametersMemberTeradataParameters:
 		_ = v.Value // Value is types.TeradataParameters
+
+	case *types.DataSourceParametersMemberTrinoParameters:
+		_ = v.Value // Value is types.TrinoParameters
 
 	case *types.DataSourceParametersMemberTwitterParameters:
 		_ = v.Value // Value is types.TwitterParameters
@@ -89,29 +98,53 @@ func ExampleDataSourceParameters_outputUsage() {
 	}
 }
 
-var _ *types.AmazonElasticsearchParameters
-var _ *types.MariaDbParameters
-var _ *types.RdsParameters
-var _ *types.AmazonOpenSearchParameters
 var _ *types.RedshiftParameters
 var _ *types.DatabricksParameters
-var _ *types.OracleParameters
 var _ *types.JiraParameters
-var _ *types.TeradataParameters
 var _ *types.MySqlParameters
-var _ *types.ExasolParameters
 var _ *types.SnowflakeParameters
-var _ *types.SqlServerParameters
-var _ *types.PostgreSqlParameters
+var _ *types.BigQueryParameters
 var _ *types.ServiceNowParameters
 var _ *types.PrestoParameters
 var _ *types.AuroraParameters
 var _ *types.S3Parameters
 var _ *types.TwitterParameters
-var _ *types.AuroraPostgreSqlParameters
 var _ *types.AwsIotAnalyticsParameters
+var _ *types.AmazonElasticsearchParameters
+var _ *types.MariaDbParameters
+var _ *types.RdsParameters
+var _ *types.AmazonOpenSearchParameters
+var _ *types.TrinoParameters
+var _ *types.OracleParameters
+var _ *types.TeradataParameters
+var _ *types.ExasolParameters
+var _ *types.SqlServerParameters
+var _ *types.PostgreSqlParameters
+var _ *types.StarburstParameters
+var _ *types.AuroraPostgreSqlParameters
 var _ *types.AthenaParameters
 var _ *types.SparkParameters
+
+func ExampleImageSource_outputUsage() {
+	var union types.ImageSource
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.ImageSourceMemberPublicUrl:
+		_ = v.Value // Value is string
+
+	case *types.ImageSourceMemberS3Uri:
+		_ = v.Value // Value is string
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *string
 
 func ExamplePhysicalTable_outputUsage() {
 	var union types.PhysicalTable

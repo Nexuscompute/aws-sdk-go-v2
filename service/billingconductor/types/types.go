@@ -65,6 +65,22 @@ type AssociateResourceResponseElement struct {
 	noSmithyDocumentSerde
 }
 
+// The key-value pair that represents the attribute by which the
+// BillingGroupCostReportResults are grouped. For example, if you want a
+// service-level breakdown for Amazon Simple Storage Service (Amazon S3) of the
+// billing group, the attribute will be a key-value pair of "PRODUCT_NAME" and "S3"
+// .
+type Attribute struct {
+
+	// The key in a key-value pair that describes the margin summary.
+	Key *string
+
+	// The value in a key-value pair that describes the margin summary.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
 // A summary report of actual Amazon Web Services charges and calculated Amazon
 // Web Services charges, based on the associated pricing plan of a billing group.
 type BillingGroupCostReportElement struct {
@@ -82,6 +98,40 @@ type BillingGroupCostReportElement struct {
 	Margin *string
 
 	// The percentage of billing group margin.
+	MarginPercentage *string
+
+	// The hypothetical Amazon Web Services charges based on the associated pricing
+	// plan of a billing group.
+	ProformaCost *string
+
+	noSmithyDocumentSerde
+}
+
+// A paginated call to retrieve a list of summary reports of actual Amazon Web
+// Services charges and the calculated Amazon Web Services charges, broken down by
+// attributes.
+type BillingGroupCostReportResultElement struct {
+
+	// The actual Amazon Web Services charges for the billing group.
+	AWSCost *string
+
+	// The Amazon Resource Number (ARN) that uniquely identifies the billing group.
+	Arn *string
+
+	// The list of key-value pairs that represent the attributes by which the
+	// BillingGroupCostReportResults are grouped. For example, if you want the Amazon
+	// S3 service-level breakdown of a billing group for November 2023, the attributes
+	// list will contain a key-value pair of "PRODUCT_NAME" and "S3" and a key-value
+	// pair of "BILLING_PERIOD" and "Nov 2023" .
+	Attributes []Attribute
+
+	// The displayed currency.
+	Currency *string
+
+	// The billing group margin.
+	Margin *string
+
+	// The percentage of the billing group margin.
 	MarginPercentage *string
 
 	// The hypothetical Amazon Web Services charges based on the associated pricing
@@ -133,11 +183,32 @@ type BillingGroupListElement struct {
 	noSmithyDocumentSerde
 }
 
+// A time range for which the margin summary is effective. The time range can be
+// up to 12 months.
+type BillingPeriodRange struct {
+
+	// The exclusive end billing period that defines a billing period range for the
+	// margin summary. For example, if you choose a billing period that starts in
+	// October 2023 and ends in December 2023, the margin summary will only include
+	// data from October 2023 and November 2023.
+	//
+	// This member is required.
+	ExclusiveEndBillingPeriod *string
+
+	// The inclusive start billing period that defines a billing period range for the
+	// margin summary.
+	//
+	// This member is required.
+	InclusiveStartBillingPeriod *string
+
+	noSmithyDocumentSerde
+}
+
 // The preferences and settings that will be used to compute the Amazon Web
 // Services charges for a billing group.
 type ComputationPreference struct {
 
-	// The Amazon Resource Name (ARN) of the pricing plan that's used to compute the
+	//  The Amazon Resource Name (ARN) of the pricing plan that's used to compute the
 	// Amazon Web Services charges for a billing group.
 	//
 	// This member is required.
@@ -149,7 +220,7 @@ type ComputationPreference struct {
 // The possible Amazon Web Services Free Tier configurations.
 type CreateFreeTierConfig struct {
 
-	// Activate or deactivate Amazon Web Services Free Tier.
+	//  Activate or deactivate Amazon Web Services Free Tier.
 	//
 	// This member is required.
 	Activated *bool
@@ -160,7 +231,7 @@ type CreateFreeTierConfig struct {
 // The set of tiering configurations for the pricing rule.
 type CreateTieringInput struct {
 
-	// The possible Amazon Web Services Free Tier configurations.
+	//  The possible Amazon Web Services Free Tier configurations.
 	//
 	// This member is required.
 	FreeTier *CreateFreeTierConfig
@@ -198,6 +269,9 @@ type CustomLineItemChargeDetails struct {
 	// custom line item.
 	Flat *CustomLineItemFlatChargeDetails
 
+	// A representation of the line item filter.
+	LineItemFilters []LineItemFilter
+
 	// A CustomLineItemPercentageChargeDetails that describes the charge details of a
 	// percentage custom line item.
 	Percentage *CustomLineItemPercentageChargeDetails
@@ -219,6 +293,10 @@ type CustomLineItemFlatChargeDetails struct {
 
 // A representation of a custom line item.
 type CustomLineItemListElement struct {
+
+	// The Amazon Web Services account in which this custom line item will be applied
+	// to.
+	AccountId *string
 
 	// The Amazon Resource Names (ARNs) for custom line items.
 	Arn *string
@@ -276,7 +354,12 @@ type CustomLineItemPercentageChargeDetails struct {
 // A representation of a custom line item version.
 type CustomLineItemVersionListElement struct {
 
-	// A list of custom line item Amazon Resource Names (ARNs) to retrieve information.
+	// The Amazon Web Services account in which this custom line item will be applied
+	// to.
+	AccountId *string
+
+	//  A list of custom line item Amazon Resource Names (ARNs) to retrieve
+	// information.
 	Arn *string
 
 	// The number of resources that are associated with the custom line item.
@@ -286,7 +369,7 @@ type CustomLineItemVersionListElement struct {
 	// applies to.
 	BillingGroupArn *string
 
-	// A representation of the charge details of a custom line item.
+	//  A representation of the charge details of a custom line item.
 	ChargeDetails *ListCustomLineItemChargeDetails
 
 	// The time when the custom line item version was created.
@@ -313,7 +396,7 @@ type CustomLineItemVersionListElement struct {
 	// The start billing period of the custom line item version.
 	StartBillingPeriod *string
 
-	// The inclusive start time.
+	//  The inclusive start time.
 	StartTime int64
 
 	noSmithyDocumentSerde
@@ -325,7 +408,7 @@ type DisassociateResourceResponseElement struct {
 	// The resource ARN that was disassociated from the custom line item.
 	Arn *string
 
-	// An AssociateResourceError that's shown if the resource disassociation fails.
+	//  An AssociateResourceError that's shown if the resource disassociation fails.
 	Error *AssociateResourceError
 
 	noSmithyDocumentSerde
@@ -334,7 +417,7 @@ type DisassociateResourceResponseElement struct {
 // The possible Amazon Web Services Free Tier configurations.
 type FreeTierConfig struct {
 
-	// Activate or deactivate Amazon Web Services Free Tier application.
+	//  Activate or deactivate Amazon Web Services Free Tier application.
 	//
 	// This member is required.
 	Activated *bool
@@ -342,22 +425,57 @@ type FreeTierConfig struct {
 	noSmithyDocumentSerde
 }
 
+// A representation of the line item filter for your custom line item. You can use
+// line item filters to include or exclude specific resource values from the
+// billing group's total cost. For example, if you create a custom line item and
+// you want to filter out a value, such as Savings Plan discounts, you can update
+// LineItemFilter to exclude it.
+type LineItemFilter struct {
+
+	// The attribute of the line item filter. This specifies what attribute that you
+	// can filter on.
+	//
+	// This member is required.
+	Attribute LineItemFilterAttributeName
+
+	// The match criteria of the line item filter. This parameter specifies whether
+	// not to include the resource value from the billing group total cost.
+	//
+	// This member is required.
+	MatchOption MatchOption
+
+	// The values of the line item filter. This specifies the values to filter on.
+	// Currently, you can only exclude Savings Plan discounts.
+	//
+	// This member is required.
+	Values []LineItemFilterValue
+
+	noSmithyDocumentSerde
+}
+
 // The filter on the account ID of the linked account, or any of the following:
-// MONITORED : linked accounts that are associated to billing groups. UNMONITORED :
-// linked accounts that are not associated to billing groups. Billing Group Arn :
-// linked accounts that are associated to the provided Billing Group Arn.
+//
+// MONITORED : linked accounts that are associated to billing groups.
+//
+// UNMONITORED : linked accounts that are not associated to billing groups.
+//
+// Billing Group Arn : linked accounts that are associated to the provided Billing
+// Group Arn.
 type ListAccountAssociationsFilter struct {
 
 	// The Amazon Web Services account ID to filter on.
 	AccountId *string
 
-	// The list of Amazon Web Services IDs to retrieve their associated billing group
+	//  The list of Amazon Web Services IDs to retrieve their associated billing group
 	// for a given time range.
 	AccountIds []string
 
-	// MONITORED : linked accounts that are associated to billing groups. UNMONITORED :
-	// linked accounts that are not associated to billing groups. Billing Group Arn :
-	// linked accounts that are associated to the provided Billing Group Arn.
+	// MONITORED : linked accounts that are associated to billing groups.
+	//
+	// UNMONITORED : linked accounts that are not associated to billing groups.
+	//
+	// Billing Group Arn : linked accounts that are associated to the provided Billing
+	// Group Arn.
 	Association *string
 
 	noSmithyDocumentSerde
@@ -397,7 +515,7 @@ type ListBillingGroupsFilter struct {
 	// The pricing plan Amazon Resource Names (ARNs) to retrieve information.
 	PricingPlan *string
 
-	// A list of billing groups to retrieve their current status for a specific time
+	//  A list of billing groups to retrieve their current status for a specific time
 	// range
 	Statuses []BillingGroupStatus
 
@@ -407,28 +525,32 @@ type ListBillingGroupsFilter struct {
 // A representation of the charge details of a custom line item.
 type ListCustomLineItemChargeDetails struct {
 
-	// The type of the custom line item that indicates whether the charge is a fee or
+	//  The type of the custom line item that indicates whether the charge is a fee or
 	// credit .
 	//
 	// This member is required.
 	Type CustomLineItemType
 
-	// A ListCustomLineItemFlatChargeDetails that describes the charge details of a
+	//  A ListCustomLineItemFlatChargeDetails that describes the charge details of a
 	// flat custom line item.
 	Flat *ListCustomLineItemFlatChargeDetails
 
-	// A ListCustomLineItemPercentageChargeDetails that describes the charge details
+	// A representation of the line item filter.
+	LineItemFilters []LineItemFilter
+
+	//  A ListCustomLineItemPercentageChargeDetails that describes the charge details
 	// of a percentage custom line item.
 	Percentage *ListCustomLineItemPercentageChargeDetails
 
 	noSmithyDocumentSerde
 }
 
-// A representation of the charge details that are associated with a flat custom
+//	A representation of the charge details that are associated with a flat custom
+//
 // line item.
 type ListCustomLineItemFlatChargeDetails struct {
 
-	// The custom line item's fixed charge value in USD.
+	//  The custom line item's fixed charge value in USD.
 	//
 	// This member is required.
 	ChargeValue *float64
@@ -436,11 +558,12 @@ type ListCustomLineItemFlatChargeDetails struct {
 	noSmithyDocumentSerde
 }
 
-// A representation of the charge details that are associated with a percentage
+//	A representation of the charge details that are associated with a percentage
+//
 // custom line item.
 type ListCustomLineItemPercentageChargeDetails struct {
 
-	// The custom line item's percentage value. This will be multiplied against the
+	//  The custom line item's percentage value. This will be multiplied against the
 	// combined value of its associated resources to determine its charge value.
 	//
 	// This member is required.
@@ -452,6 +575,10 @@ type ListCustomLineItemPercentageChargeDetails struct {
 // A filter that specifies the custom line items and billing groups to retrieve
 // FFLI information.
 type ListCustomLineItemsFilter struct {
+
+	// The Amazon Web Services accounts in which this custom line item will be applied
+	// to.
+	AccountIds []string
 
 	// A list of custom line item ARNs to retrieve information.
 	Arns []string
@@ -500,7 +627,8 @@ type ListPricingPlansFilter struct {
 	noSmithyDocumentSerde
 }
 
-// The filter that specifies criteria that the pricing rules returned by the
+//	The filter that specifies criteria that the pricing rules returned by the
+//
 // ListPricingRules API will adhere to.
 type ListPricingRulesFilter struct {
 
@@ -511,11 +639,12 @@ type ListPricingRulesFilter struct {
 	noSmithyDocumentSerde
 }
 
-// A filter that specifies the type of resource associations that should be
+//	A filter that specifies the type of resource associations that should be
+//
 // retrieved for a custom line item.
 type ListResourcesAssociatedToCustomLineItemFilter struct {
 
-	// The type of relationship between the custom line item and the associated
+	//  The type of relationship between the custom line item and the associated
 	// resource.
 	Relationship CustomLineItemRelationship
 
@@ -525,13 +654,13 @@ type ListResourcesAssociatedToCustomLineItemFilter struct {
 // A representation of a resource association for a custom line item.
 type ListResourcesAssociatedToCustomLineItemResponseElement struct {
 
-	// The ARN of the associated resource.
+	//  The ARN of the associated resource.
 	Arn *string
 
 	// The end billing period of the associated resource.
 	EndBillingPeriod *string
 
-	// The type of relationship between the custom line item and the associated
+	//  The type of relationship between the custom line item and the associated
 	// resource.
 	Relationship CustomLineItemRelationship
 
@@ -573,7 +702,7 @@ type PricingRuleListElement struct {
 	// The pricing plans count that this pricing rule is associated with.
 	AssociatedPricingPlanCount int64
 
-	// The seller of services provided by Amazon Web Services, their affiliates, or
+	//  The seller of services provided by Amazon Web Services, their affiliates, or
 	// third-party providers selling services via Amazon Web Services Marketplace.
 	BillingEntity *string
 
@@ -583,7 +712,7 @@ type PricingRuleListElement struct {
 	// The pricing rule description.
 	Description *string
 
-	// The most recent time when the pricing rule was modified.
+	//  The most recent time when the pricing rule was modified.
 	LastModifiedTime int64
 
 	// A percentage modifier applied on the public pricing rates.
@@ -592,11 +721,12 @@ type PricingRuleListElement struct {
 	// The name of a pricing rule.
 	Name *string
 
-	// Operation is the specific Amazon Web Services action covered by this line item.
-	// This describes the specific usage of the line item. If the Scope attribute is
-	// set to SKU , this attribute indicates which operation the PricingRule is
-	// modifying. For example, a value of RunInstances:0202 indicates the operation of
-	// running an Amazon EC2 instance.
+	//  Operation is the specific Amazon Web Services action covered by this line
+	// item. This describes the specific usage of the line item.
+	//
+	// If the Scope attribute is set to SKU , this attribute indicates which operation
+	// the PricingRule is modifying. For example, a value of RunInstances:0202
+	// indicates the operation of running an Amazon EC2 instance.
 	Operation *string
 
 	// The scope of pricing rule that indicates if it is globally applicable, or if it
@@ -607,17 +737,18 @@ type PricingRuleListElement struct {
 	// PricingRule is applicable for.
 	Service *string
 
-	// The set of tiering configurations for the pricing rule.
+	//  The set of tiering configurations for the pricing rule.
 	Tiering *Tiering
 
 	// The type of pricing rule.
 	Type PricingRuleType
 
-	// Usage type is the unit that each service uses to measure the usage of a
-	// specific type of resource. If the Scope attribute is set to SKU , this attribute
-	// indicates which usage type the PricingRule is modifying. For example,
-	// USW2-BoxUsage:m2.2xlarge describes an M2 High Memory Double Extra Large
-	// instance in the US West (Oregon) Region.
+	//  Usage type is the unit that each service uses to measure the usage of a
+	// specific type of resource.
+	//
+	// If the Scope attribute is set to SKU , this attribute indicates which usage type
+	// the PricingRule is modifying. For example, USW2-BoxUsage:m2.2xlarge describes an
+	// M2 High Memory Double Extra Large instance in the US West (Oregon) Region.
 	UsageType *string
 
 	noSmithyDocumentSerde
@@ -626,7 +757,7 @@ type PricingRuleListElement struct {
 // The set of tiering configurations for the pricing rule.
 type Tiering struct {
 
-	// The possible Amazon Web Services Free Tier configurations.
+	//  The possible Amazon Web Services Free Tier configurations.
 	//
 	// This member is required.
 	FreeTier *FreeTierConfig
@@ -644,26 +775,31 @@ type UpdateBillingGroupAccountGrouping struct {
 	noSmithyDocumentSerde
 }
 
-// A representation of the new charge details of a custom line item. This should
+//	A representation of the new charge details of a custom line item. This should
+//
 // contain only one of Flat or Percentage .
 type UpdateCustomLineItemChargeDetails struct {
 
-	// An UpdateCustomLineItemFlatChargeDetails that describes the new charge details
+	//  An UpdateCustomLineItemFlatChargeDetails that describes the new charge details
 	// of a flat custom line item.
 	Flat *UpdateCustomLineItemFlatChargeDetails
 
-	// An UpdateCustomLineItemPercentageChargeDetails that describes the new charge
+	// A representation of the line item filter.
+	LineItemFilters []LineItemFilter
+
+	//  An UpdateCustomLineItemPercentageChargeDetails that describes the new charge
 	// details of a percentage custom line item.
 	Percentage *UpdateCustomLineItemPercentageChargeDetails
 
 	noSmithyDocumentSerde
 }
 
-// A representation of the new charge details that are associated with a flat
+//	A representation of the new charge details that are associated with a flat
+//
 // custom line item.
 type UpdateCustomLineItemFlatChargeDetails struct {
 
-	// The custom line item's new fixed charge value in USD.
+	//  The custom line item's new fixed charge value in USD.
 	//
 	// This member is required.
 	ChargeValue *float64
@@ -671,11 +807,12 @@ type UpdateCustomLineItemFlatChargeDetails struct {
 	noSmithyDocumentSerde
 }
 
-// A representation of the new charge details that are associated with a
+//	A representation of the new charge details that are associated with a
+//
 // percentage custom line item.
 type UpdateCustomLineItemPercentageChargeDetails struct {
 
-	// The custom line item's new percentage value. This will be multiplied against
+	//  The custom line item's new percentage value. This will be multiplied against
 	// the combined value of its associated resources to determine its charge value.
 	//
 	// This member is required.
@@ -687,7 +824,7 @@ type UpdateCustomLineItemPercentageChargeDetails struct {
 // The possible Amazon Web Services Free Tier configurations.
 type UpdateFreeTierConfig struct {
 
-	// Activate or deactivate application of Amazon Web Services Free Tier.
+	//  Activate or deactivate application of Amazon Web Services Free Tier.
 	//
 	// This member is required.
 	Activated *bool
@@ -698,7 +835,7 @@ type UpdateFreeTierConfig struct {
 // The set of tiering configurations for the pricing rule.
 type UpdateTieringInput struct {
 
-	// The possible Amazon Web Services Free Tier configurations.
+	//  The possible Amazon Web Services Free Tier configurations.
 	//
 	// This member is required.
 	FreeTier *UpdateFreeTierConfig

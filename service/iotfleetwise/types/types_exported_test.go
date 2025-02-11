@@ -33,6 +33,9 @@ func ExampleDataDestinationConfig_outputUsage() {
 	var union types.DataDestinationConfig
 	// type switches can be used to check the union value
 	switch v := union.(type) {
+	case *types.DataDestinationConfigMemberMqttTopicConfig:
+		_ = v.Value // Value is types.MqttTopicConfig
+
 	case *types.DataDestinationConfigMemberS3Config:
 		_ = v.Value // Value is types.S3Config
 
@@ -48,6 +51,7 @@ func ExampleDataDestinationConfig_outputUsage() {
 	}
 }
 
+var _ *types.MqttTopicConfig
 var _ *types.S3Config
 var _ *types.TimestreamConfig
 
@@ -100,8 +104,14 @@ func ExampleNode_outputUsage() {
 	case *types.NodeMemberBranch:
 		_ = v.Value // Value is types.Branch
 
+	case *types.NodeMemberProperty:
+		_ = v.Value // Value is types.CustomProperty
+
 	case *types.NodeMemberSensor:
 		_ = v.Value // Value is types.Sensor
+
+	case *types.NodeMemberStruct:
+		_ = v.Value // Value is types.CustomStruct
 
 	case *types.UnknownUnionMember:
 		fmt.Println("unknown tag:", v.Tag)
@@ -113,6 +123,96 @@ func ExampleNode_outputUsage() {
 }
 
 var _ *types.Branch
+var _ *types.CustomStruct
 var _ *types.Actuator
 var _ *types.Sensor
 var _ *types.Attribute
+var _ *types.CustomProperty
+
+func ExamplePrimitiveMessageDefinition_outputUsage() {
+	var union types.PrimitiveMessageDefinition
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.PrimitiveMessageDefinitionMemberRos2PrimitiveMessageDefinition:
+		_ = v.Value // Value is types.ROS2PrimitiveMessageDefinition
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.ROS2PrimitiveMessageDefinition
+
+func ExampleSignalFetchConfig_outputUsage() {
+	var union types.SignalFetchConfig
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.SignalFetchConfigMemberConditionBased:
+		_ = v.Value // Value is types.ConditionBasedSignalFetchConfig
+
+	case *types.SignalFetchConfigMemberTimeBased:
+		_ = v.Value // Value is types.TimeBasedSignalFetchConfig
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.TimeBasedSignalFetchConfig
+var _ *types.ConditionBasedSignalFetchConfig
+
+func ExampleStateTemplateUpdateStrategy_outputUsage() {
+	var union types.StateTemplateUpdateStrategy
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.StateTemplateUpdateStrategyMemberOnChange:
+		_ = v.Value // Value is types.OnChangeStateTemplateUpdateStrategy
+
+	case *types.StateTemplateUpdateStrategyMemberPeriodic:
+		_ = v.Value // Value is types.PeriodicStateTemplateUpdateStrategy
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ *types.PeriodicStateTemplateUpdateStrategy
+var _ *types.OnChangeStateTemplateUpdateStrategy
+
+func ExampleStructuredMessage_outputUsage() {
+	var union types.StructuredMessage
+	// type switches can be used to check the union value
+	switch v := union.(type) {
+	case *types.StructuredMessageMemberPrimitiveMessageDefinition:
+		_ = v.Value // Value is types.PrimitiveMessageDefinition
+
+	case *types.StructuredMessageMemberStructuredMessageDefinition:
+		_ = v.Value // Value is []types.StructuredMessageFieldNameAndDataTypePair
+
+	case *types.StructuredMessageMemberStructuredMessageListDefinition:
+		_ = v.Value // Value is types.StructuredMessageListDefinition
+
+	case *types.UnknownUnionMember:
+		fmt.Println("unknown tag:", v.Tag)
+
+	default:
+		fmt.Println("union is nil or unknown type")
+
+	}
+}
+
+var _ types.PrimitiveMessageDefinition
+var _ []types.StructuredMessageFieldNameAndDataTypePair
+var _ *types.StructuredMessageListDefinition

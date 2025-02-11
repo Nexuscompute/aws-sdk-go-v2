@@ -4,25 +4,22 @@ package lightsail
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/lightsail/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
-// Creates an email or SMS text message contact method. A contact method is used
-// to send you notifications about your Amazon Lightsail resources. You can add one
-// email address and one mobile phone number contact method in each Amazon Web
-// Services Region. However, SMS text messaging is not supported in some Amazon Web
-// Services Regions, and SMS text messages cannot be sent to some
-// countries/regions. For more information, see Notifications in Amazon Lightsail (https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-notifications)
-// .
+// Creates an email or SMS text message contact method.
+//
+// A contact method is used to send you notifications about your Amazon Lightsail
+// resources. You can add one email address and one mobile phone number contact
+// method in each Amazon Web Services Region. However, SMS text messaging is not
+// supported in some Amazon Web Services Regions, and SMS text messages cannot be
+// sent to some countries/regions. For more information, see [Notifications in Amazon Lightsail].
+//
+// [Notifications in Amazon Lightsail]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-notifications
 func (c *Client) CreateContactMethod(ctx context.Context, params *CreateContactMethodInput, optFns ...func(*Options)) (*CreateContactMethodOutput, error) {
 	if params == nil {
 		params = &CreateContactMethodInput{}
@@ -41,31 +38,44 @@ func (c *Client) CreateContactMethod(ctx context.Context, params *CreateContactM
 type CreateContactMethodInput struct {
 
 	// The destination of the contact method, such as an email address or a mobile
-	// phone number. Use the E.164 format when specifying a mobile phone number. E.164
-	// is a standard for the phone number structure used for international
-	// telecommunication. Phone numbers that follow this format can have a maximum of
-	// 15 digits, and they are prefixed with the plus character (+) and the country
-	// code. For example, a U.S. phone number in E.164 format would be specified as
-	// +1XXX5550100. For more information, see E.164 (https://en.wikipedia.org/wiki/E.164)
-	// on Wikipedia.
+	// phone number.
+	//
+	// Use the E.164 format when specifying a mobile phone number. E.164 is a standard
+	// for the phone number structure used for international telecommunication. Phone
+	// numbers that follow this format can have a maximum of 15 digits, and they are
+	// prefixed with the plus character (+) and the country code. For example, a U.S.
+	// phone number in E.164 format would be specified as +1XXX5550100. For more
+	// information, see [E.164]on Wikipedia.
+	//
+	// [E.164]: https://en.wikipedia.org/wiki/E.164
 	//
 	// This member is required.
 	ContactEndpoint *string
 
-	// The protocol of the contact method, such as Email or SMS (text messaging). The
-	// SMS protocol is supported only in the following Amazon Web Services Regions.
+	// The protocol of the contact method, such as Email or SMS (text messaging).
+	//
+	// The SMS protocol is supported only in the following Amazon Web Services Regions.
+	//
 	//   - US East (N. Virginia) ( us-east-1 )
+	//
 	//   - US West (Oregon) ( us-west-2 )
+	//
 	//   - Europe (Ireland) ( eu-west-1 )
+	//
 	//   - Asia Pacific (Tokyo) ( ap-northeast-1 )
+	//
 	//   - Asia Pacific (Singapore) ( ap-southeast-1 )
+	//
 	//   - Asia Pacific (Sydney) ( ap-southeast-2 )
+	//
 	// For a list of countries/regions where SMS text messages can be sent, and the
-	// latest Amazon Web Services Regions where SMS text messaging is supported, see
-	// Supported Regions and Countries (https://docs.aws.amazon.com/sns/latest/dg/sns-supported-regions-countries.html)
-	// in the Amazon SNS Developer Guide. For more information about notifications in
-	// Amazon Lightsail, see Notifications in Amazon Lightsail (https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-notifications)
-	// .
+	// latest Amazon Web Services Regions where SMS text messaging is supported, see [Supported Regions and Countries]
+	// in the Amazon SNS Developer Guide.
+	//
+	// For more information about notifications in Amazon Lightsail, see [Notifications in Amazon Lightsail].
+	//
+	// [Supported Regions and Countries]: https://docs.aws.amazon.com/sns/latest/dg/sns-supported-regions-countries.html
+	// [Notifications in Amazon Lightsail]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-notifications
 	//
 	// This member is required.
 	Protocol types.ContactProtocol
@@ -87,6 +97,9 @@ type CreateContactMethodOutput struct {
 }
 
 func (c *Client) addOperationCreateContactMethodMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpCreateContactMethod{}, middleware.After)
 	if err != nil {
 		return err
@@ -95,34 +108,38 @@ func (c *Client) addOperationCreateContactMethodMiddlewares(stack *middleware.St
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "CreateContactMethod"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -134,7 +151,13 @@ func (c *Client) addOperationCreateContactMethodMiddlewares(stack *middleware.St
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addCreateContactMethodResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpCreateContactMethodValidationMiddleware(stack); err != nil {
@@ -143,7 +166,7 @@ func (c *Client) addOperationCreateContactMethodMiddlewares(stack *middleware.St
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opCreateContactMethod(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -155,7 +178,19 @@ func (c *Client) addOperationCreateContactMethodMiddlewares(stack *middleware.St
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -165,130 +200,6 @@ func newServiceMetadataMiddleware_opCreateContactMethod(region string) *awsmiddl
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "lightsail",
 		OperationName: "CreateContactMethod",
 	}
-}
-
-type opCreateContactMethodResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opCreateContactMethodResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opCreateContactMethodResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "lightsail"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "lightsail"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("lightsail")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addCreateContactMethodResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opCreateContactMethodResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -7,6 +7,60 @@ import (
 	smithy "github.com/aws/smithy-go"
 )
 
+// The requested analysis can't be found.
+type AnalysisNotFoundException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *AnalysisNotFoundException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *AnalysisNotFoundException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *AnalysisNotFoundException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "AnalysisNotFoundException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *AnalysisNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
+//	A request to backfill is already in progress. Once the previous request is
+//
+// complete, you can create another request.
+type BackfillLimitExceededException struct {
+	Message *string
+
+	ErrorCodeOverride *string
+
+	noSmithyDocumentSerde
+}
+
+func (e *BackfillLimitExceededException) Error() string {
+	return fmt.Sprintf("%s: %s", e.ErrorCode(), e.ErrorMessage())
+}
+func (e *BackfillLimitExceededException) ErrorMessage() string {
+	if e.Message == nil {
+		return ""
+	}
+	return *e.Message
+}
+func (e *BackfillLimitExceededException) ErrorCode() string {
+	if e == nil || e.ErrorCodeOverride == nil {
+		return "BackfillLimitExceededException"
+	}
+	return *e.ErrorCodeOverride
+}
+func (e *BackfillLimitExceededException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
+
 // The requested report expired. Update the date interval and try again.
 type BillExpirationException struct {
 	Message *string
@@ -59,7 +113,7 @@ func (e *DataUnavailableException) ErrorCode() string {
 }
 func (e *DataUnavailableException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// A request to generate a recommendation is already in progress.
+// A request to generate a recommendation or analysis is already in progress.
 type GenerationExistsException struct {
 	Message *string
 
@@ -192,8 +246,9 @@ func (e *ResourceNotFoundException) ErrorCode() string {
 }
 func (e *ResourceNotFoundException) ErrorFault() smithy.ErrorFault { return smithy.FaultClient }
 
-// You've reached the limit on the number of resources you can create, or exceeded
-// the size of an individual resource.
+//	You've reached the limit on the number of resources you can create, or
+//
+// exceeded the size of an individual resource.
 type ServiceQuotaExceededException struct {
 	Message *string
 

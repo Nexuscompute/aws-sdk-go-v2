@@ -4,14 +4,9 @@ package lightsail
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/lightsail/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -21,8 +16,9 @@ import (
 // GetInstance or GetInstances API operation initially responds with a state of
 // pending . After the parameter modifications are successfully applied, the state
 // changes to applied in subsequent GetInstance or GetInstances API calls. For
-// more information, see Use IMDSv2 with an Amazon Lightsail instance (https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-instance-metadata-service)
-// in the Amazon Lightsail Developer Guide.
+// more information, see [Use IMDSv2 with an Amazon Lightsail instance]in the Amazon Lightsail Developer Guide.
+//
+// [Use IMDSv2 with an Amazon Lightsail instance]: https://lightsail.aws.amazon.com/ls/docs/en_us/articles/amazon-lightsail-configuring-instance-metadata-service
 func (c *Client) UpdateInstanceMetadataOptions(ctx context.Context, params *UpdateInstanceMetadataOptionsInput, optFns ...func(*Options)) (*UpdateInstanceMetadataOptionsOutput, error) {
 	if params == nil {
 		params = &UpdateInstanceMetadataOptionsInput{}
@@ -46,14 +42,16 @@ type UpdateInstanceMetadataOptionsInput struct {
 	InstanceName *string
 
 	// Enables or disables the HTTP metadata endpoint on your instances. If this
-	// parameter is not specified, the existing state is maintained. If you specify a
-	// value of disabled , you cannot access your instance metadata.
+	// parameter is not specified, the existing state is maintained.
+	//
+	// If you specify a value of disabled , you cannot access your instance metadata.
 	HttpEndpoint types.HttpEndpoint
 
 	// Enables or disables the IPv6 endpoint for the instance metadata service. This
-	// setting applies only when the HTTP metadata endpoint is enabled. This parameter
-	// is available only for instances in the Europe (Stockholm) Amazon Web Services
-	// Region ( eu-north-1 ).
+	// setting applies only when the HTTP metadata endpoint is enabled.
+	//
+	// This parameter is available only for instances in the Europe (Stockholm) Amazon
+	// Web Services Region ( eu-north-1 ).
 	HttpProtocolIpv6 types.HttpProtocolIpv6
 
 	// The desired HTTP PUT response hop limit for instance metadata requests. A
@@ -62,15 +60,18 @@ type UpdateInstanceMetadataOptionsInput struct {
 	HttpPutResponseHopLimit *int32
 
 	// The state of token usage for your instance metadata requests. If the parameter
-	// is not specified in the request, the default state is optional . If the state is
-	// optional , you can choose whether to retrieve instance metadata with a signed
-	// token header on your request. If you retrieve the IAM role credentials without a
-	// token, the version 1.0 role credentials are returned. If you retrieve the IAM
-	// role credentials by using a valid signed token, the version 2.0 role credentials
-	// are returned. If the state is required , you must send a signed token header
-	// with all instance metadata retrieval requests. In this state, retrieving the IAM
-	// role credential always returns the version 2.0 credentials. The version 1.0
-	// credentials are not available.
+	// is not specified in the request, the default state is optional .
+	//
+	// If the state is optional , you can choose whether to retrieve instance metadata
+	// with a signed token header on your request. If you retrieve the IAM role
+	// credentials without a token, the version 1.0 role credentials are returned. If
+	// you retrieve the IAM role credentials by using a valid signed token, the version
+	// 2.0 role credentials are returned.
+	//
+	// If the state is required , you must send a signed token header with all instance
+	// metadata retrieval requests. In this state, retrieving the IAM role credential
+	// always returns the version 2.0 credentials. The version 1.0 credentials are not
+	// available.
 	HttpTokens types.HttpTokens
 
 	noSmithyDocumentSerde
@@ -90,6 +91,9 @@ type UpdateInstanceMetadataOptionsOutput struct {
 }
 
 func (c *Client) addOperationUpdateInstanceMetadataOptionsMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpUpdateInstanceMetadataOptions{}, middleware.After)
 	if err != nil {
 		return err
@@ -98,34 +102,38 @@ func (c *Client) addOperationUpdateInstanceMetadataOptionsMiddlewares(stack *mid
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "UpdateInstanceMetadataOptions"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -137,7 +145,13 @@ func (c *Client) addOperationUpdateInstanceMetadataOptionsMiddlewares(stack *mid
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addUpdateInstanceMetadataOptionsResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpUpdateInstanceMetadataOptionsValidationMiddleware(stack); err != nil {
@@ -146,7 +160,7 @@ func (c *Client) addOperationUpdateInstanceMetadataOptionsMiddlewares(stack *mid
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opUpdateInstanceMetadataOptions(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -158,7 +172,19 @@ func (c *Client) addOperationUpdateInstanceMetadataOptionsMiddlewares(stack *mid
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -168,130 +194,6 @@ func newServiceMetadataMiddleware_opUpdateInstanceMetadataOptions(region string)
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "lightsail",
 		OperationName: "UpdateInstanceMetadataOptions",
 	}
-}
-
-type opUpdateInstanceMetadataOptionsResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opUpdateInstanceMetadataOptionsResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opUpdateInstanceMetadataOptionsResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "lightsail"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "lightsail"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("lightsail")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addUpdateInstanceMetadataOptionsResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opUpdateInstanceMetadataOptionsResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

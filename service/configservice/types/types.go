@@ -25,9 +25,10 @@ type AccountAggregationSource struct {
 }
 
 // Indicates whether an Config rule is compliant based on account ID, region,
-// compliance, and rule name. A rule is compliant if all of the resources that the
-// rule evaluated comply with it. It is noncompliant if any of these resources do
-// not comply.
+// compliance, and rule name.
+//
+// A rule is compliant if all of the resources that the rule evaluated comply with
+// it. It is noncompliant if any of these resources do not comply.
 type AggregateComplianceByConfigRule struct {
 
 	// The 12-digit account ID of the source account.
@@ -48,13 +49,15 @@ type AggregateComplianceByConfigRule struct {
 
 // Provides aggregate compliance of the conformance pack. Indicates whether a
 // conformance pack is compliant based on the name of the conformance pack, account
-// ID, and region. A conformance pack is compliant if all of the rules in a
-// conformance packs are compliant. It is noncompliant if any of the rules are not
-// compliant. The compliance status of a conformance pack is INSUFFICIENT_DATA only
-// if all rules within a conformance pack cannot be evaluated due to insufficient
-// data. If some of the rules in a conformance pack are compliant but the
-// compliance status of other rules in that same conformance pack is
-// INSUFFICIENT_DATA, the conformance pack shows compliant.
+// ID, and region.
+//
+// A conformance pack is compliant if all of the rules in a conformance packs are
+// compliant. It is noncompliant if any of the rules are not compliant. The
+// compliance status of a conformance pack is INSUFFICIENT_DATA only if all rules
+// within a conformance pack cannot be evaluated due to insufficient data. If some
+// of the rules in a conformance pack are compliant but the compliance status of
+// other rules in that same conformance pack is INSUFFICIENT_DATA, the conformance
+// pack shows compliant.
 type AggregateComplianceByConformancePack struct {
 
 	// The 12-digit Amazon Web Services account ID of the source account.
@@ -88,13 +91,15 @@ type AggregateComplianceCount struct {
 // Provides the number of compliant and noncompliant rules within a conformance
 // pack. Also provides the compliance status of the conformance pack and the total
 // rule count which includes compliant rules, noncompliant rules, and rules that
-// cannot be evaluated due to insufficient data. A conformance pack is compliant if
-// all of the rules in a conformance packs are compliant. It is noncompliant if any
-// of the rules are not compliant. The compliance status of a conformance pack is
-// INSUFFICIENT_DATA only if all rules within a conformance pack cannot be
-// evaluated due to insufficient data. If some of the rules in a conformance pack
-// are compliant but the compliance status of other rules in that same conformance
-// pack is INSUFFICIENT_DATA, the conformance pack shows compliant.
+// cannot be evaluated due to insufficient data.
+//
+// A conformance pack is compliant if all of the rules in a conformance packs are
+// compliant. It is noncompliant if any of the rules are not compliant. The
+// compliance status of a conformance pack is INSUFFICIENT_DATA only if all rules
+// within a conformance pack cannot be evaluated due to insufficient data. If some
+// of the rules in a conformance pack are compliant but the compliance status of
+// other rules in that same conformance pack is INSUFFICIENT_DATA, the conformance
+// pack shows compliant.
 type AggregateConformancePackCompliance struct {
 
 	// The compliance status of the conformance pack.
@@ -184,8 +189,11 @@ type AggregatedSourceStatus struct {
 	LastErrorMessage *string
 
 	// Filters the last updated status type.
+	//
 	//   - Valid value FAILED indicates errors while moving data.
+	//
 	//   - Valid value SUCCEEDED indicates the data was successfully moved.
+	//
 	//   - Valid value OUTDATED indicates the data is not the most recent.
 	LastUpdateStatus AggregatedSourceStatusType
 
@@ -216,9 +224,11 @@ type AggregateEvaluationResult struct {
 	// The source region from where the data is aggregated.
 	AwsRegion *string
 
-	// The resource compliance status. For the AggregationEvaluationResult data type,
-	// Config supports only the COMPLIANT and NON_COMPLIANT . Config does not support
-	// the NOT_APPLICABLE and INSUFFICIENT_DATA value.
+	// The resource compliance status.
+	//
+	// For the AggregationEvaluationResult data type, Config supports only the
+	// COMPLIANT and NON_COMPLIANT . Config does not support the NOT_APPLICABLE and
+	// INSUFFICIENT_DATA value.
 	ComplianceType ComplianceType
 
 	// The time when the Config rule evaluated the Amazon Web Services resource.
@@ -283,7 +293,53 @@ type AggregationAuthorization struct {
 	noSmithyDocumentSerde
 }
 
-// The detailed configuration of a specified resource.
+// An object to filter the configuration recorders based on the resource types in
+// scope for recording.
+type AggregatorFilterResourceType struct {
+
+	// The type of resource type filter to apply. INCLUDE specifies that the list of
+	// resource types in the Value field will be aggregated and no other resource
+	// types will be filtered.
+	Type AggregatorFilterType
+
+	// Comma-separate list of resource types to filter your aggregated configuration
+	// recorders.
+	Value []string
+
+	noSmithyDocumentSerde
+}
+
+// An object to filter the data you specify for an aggregator.
+type AggregatorFilters struct {
+
+	// An object to filter the configuration recorders based on the resource types in
+	// scope for recording.
+	ResourceType *AggregatorFilterResourceType
+
+	// An object to filter service-linked configuration recorders in an aggregator
+	// based on the linked Amazon Web Services service.
+	ServicePrincipal *AggregatorFilterServicePrincipal
+
+	noSmithyDocumentSerde
+}
+
+// An object to filter service-linked configuration recorders in an aggregator
+// based on the linked Amazon Web Services service.
+type AggregatorFilterServicePrincipal struct {
+
+	// The type of service principal filter to apply. INCLUDE specifies that the list
+	// of service principals in the Value field will be aggregated and no other
+	// service principals will be filtered.
+	Type AggregatorFilterType
+
+	// Comma-separated list of service principals for the linked Amazon Web Services
+	// services to filter your aggregated service-linked configuration recorders.
+	Value []string
+
+	noSmithyDocumentSerde
+}
+
+// The detailed configurations of a specified resource.
 type BaseConfigurationItem struct {
 
 	// The 12-digit Amazon Web Services account ID associated with the resource.
@@ -301,25 +357,45 @@ type BaseConfigurationItem struct {
 	// The description of the resource configuration.
 	Configuration *string
 
-	// The time when the configuration recording was initiated.
+	// The time when the recording of configuration changes was initiated for the
+	// resource.
 	ConfigurationItemCaptureTime *time.Time
 
-	// The configuration item status. The valid values are:
-	//   - OK – The resource configuration has been updated
-	//   - ResourceDiscovered – The resource was newly discovered
-	//   - ResourceNotRecorded – The resource was discovered but its configuration was
-	//   not recorded since the recorder excludes the recording of resources of this type
+	// The time when configuration changes for the resource were delivered.
+	//
+	// This field is optional and is not guaranteed to be present in a configuration
+	// item (CI). If you are using daily recording, this field will be populated.
+	// However, if you are using continuous recording, this field will be omitted since
+	// the delivery time is instantaneous as the CI is available right away. For more
+	// information on daily recording and continuous recording, see [Recording Frequency]in the Config
+	// Developer Guide.
+	//
+	// [Recording Frequency]: https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html#select-resources-recording-frequency
+	ConfigurationItemDeliveryTime *time.Time
+
+	// The configuration item status. Valid values include:
+	//
+	//   - OK – The resource configuration has been updated.
+	//
+	//   - ResourceDiscovered – The resource was newly discovered.
+	//
+	//   - ResourceNotRecorded – The resource was discovered, but its configuration
+	//   was not recorded since the recorder doesn't record resources of this type.
 	//
 	//   - ResourceDeleted – The resource was deleted
-	//   - ResourceDeletedNotRecorded – The resource was deleted but its configuration
-	//   was not recorded since the recorder excludes the recording of resources of this
-	//   type
-	// The CIs do not incur any cost.
+	//
+	//   - ResourceDeletedNotRecorded – The resource was deleted, but its
+	//   configuration was not recorded since the recorder doesn't record resources of
+	//   this type.
 	ConfigurationItemStatus ConfigurationItemStatus
 
 	// An identifier that indicates the ordering of the configuration items of a
 	// resource.
 	ConfigurationStateId *string
+
+	// The recording frequency that Config uses to record configuration changes for
+	// the resource.
+	RecordingFrequency RecordingFrequency
 
 	// The time stamp when the resource was created.
 	ResourceCreationTime *time.Time
@@ -352,15 +428,20 @@ type Compliance struct {
 	ComplianceContributorCount *ComplianceContributorCount
 
 	// Indicates whether an Amazon Web Services resource or Config rule is compliant.
+	//
 	// A resource is compliant if it complies with all of the Config rules that
 	// evaluate it. A resource is noncompliant if it does not comply with one or more
-	// of these rules. A rule is compliant if all of the resources that the rule
-	// evaluates comply with it. A rule is noncompliant if any of these resources do
-	// not comply. Config returns the INSUFFICIENT_DATA value when no evaluation
-	// results are available for the Amazon Web Services resource or Config rule. For
-	// the Compliance data type, Config supports only COMPLIANT , NON_COMPLIANT , and
-	// INSUFFICIENT_DATA values. Config does not support the NOT_APPLICABLE value for
-	// the Compliance data type.
+	// of these rules.
+	//
+	// A rule is compliant if all of the resources that the rule evaluates comply with
+	// it. A rule is noncompliant if any of these resources do not comply.
+	//
+	// Config returns the INSUFFICIENT_DATA value when no evaluation results are
+	// available for the Amazon Web Services resource or Config rule.
+	//
+	// For the Compliance data type, Config supports only COMPLIANT , NON_COMPLIANT ,
+	// and INSUFFICIENT_DATA values. Config does not support the NOT_APPLICABLE value
+	// for the Compliance data type.
 	ComplianceType ComplianceType
 
 	noSmithyDocumentSerde
@@ -475,19 +556,30 @@ type ConfigExportDeliveryInfo struct {
 // resources. A rule can run when Config detects a configuration change to an
 // Amazon Web Services resource or at a periodic frequency that you choose (for
 // example, every 24 hours). There are two types of rules: Config Managed Rules and
-// Config Custom Rules. Config Managed Rules are predefined, customizable rules
-// created by Config. For a list of managed rules, see List of Config Managed Rules (https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html)
-// . Config Custom Rules are rules that you create from scratch. There are two ways
-// to create Config custom rules: with Lambda functions ( Lambda Developer Guide (https://docs.aws.amazon.com/config/latest/developerguide/gettingstarted-concepts.html#gettingstarted-concepts-function)
-// ) and with Guard ( Guard GitHub Repository (https://github.com/aws-cloudformation/cloudformation-guard)
-// ), a policy-as-code language. Config custom rules created with Lambda are called
-// Config Custom Lambda Rules and Config custom rules created with Guard are called
-// Config Custom Policy Rules. For more information about developing and using
-// Config rules, see Evaluating Resource with Config Rules (https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config.html)
-// in the Config Developer Guide. You can use the Amazon Web Services CLI and
-// Amazon Web Services SDKs if you want to create a rule that triggers evaluations
-// for your resources when Config delivers the configuration snapshot. For more
-// information, see ConfigSnapshotDeliveryProperties .
+// Config Custom Rules.
+//
+// Config Managed Rules are predefined, customizable rules created by Config. For
+// a list of managed rules, see [List of Config Managed Rules].
+//
+// Config Custom Rules are rules that you create from scratch. There are two ways
+// to create Config custom rules: with Lambda functions ([Lambda Developer Guide] ) and with Guard ([Guard GitHub Repository] ), a
+// policy-as-code language.
+//
+// Config custom rules created with Lambda are called Config Custom Lambda Rules
+// and Config custom rules created with Guard are called Config Custom Policy
+// Rules.
+//
+// For more information about developing and using Config rules, see [Evaluating Resource with Config Rules] in the
+// Config Developer Guide.
+//
+// You can use the Amazon Web Services CLI and Amazon Web Services SDKs if you
+// want to create a rule that triggers evaluations for your resources when Config
+// delivers the configuration snapshot. For more information, see ConfigSnapshotDeliveryProperties.
+//
+// [List of Config Managed Rules]: https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html
+// [Evaluating Resource with Config Rules]: https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config.html
+// [Lambda Developer Guide]: https://docs.aws.amazon.com/config/latest/developerguide/gettingstarted-concepts.html#gettingstarted-concepts-function
+// [Guard GitHub Repository]: https://github.com/aws-cloudformation/cloudformation-guard
 type ConfigRule struct {
 
 	// Provides the rule owner ( Amazon Web Services for managed rules, CUSTOM_POLICY
@@ -509,20 +601,25 @@ type ConfigRule struct {
 	ConfigRuleName *string
 
 	// Indicates whether the Config rule is active or is currently being deleted by
-	// Config. It can also indicate the evaluation status for the Config rule. Config
-	// sets the state of the rule to EVALUATING temporarily after you use the
+	// Config. It can also indicate the evaluation status for the Config rule.
+	//
+	// Config sets the state of the rule to EVALUATING temporarily after you use the
 	// StartConfigRulesEvaluation request to evaluate your resources against the Config
-	// rule. Config sets the state of the rule to DELETING_RESULTS temporarily after
-	// you use the DeleteEvaluationResults request to delete the current evaluation
-	// results for the Config rule. Config temporarily sets the state of a rule to
-	// DELETING after you use the DeleteConfigRule request to delete the rule. After
-	// Config deletes the rule, the rule and all of its evaluations are erased and are
-	// no longer available.
+	// rule.
+	//
+	// Config sets the state of the rule to DELETING_RESULTS temporarily after you use
+	// the DeleteEvaluationResults request to delete the current evaluation results
+	// for the Config rule.
+	//
+	// Config temporarily sets the state of a rule to DELETING after you use the
+	// DeleteConfigRule request to delete the rule. After Config deletes the rule, the
+	// rule and all of its evaluations are erased and are no longer available.
 	ConfigRuleState ConfigRuleState
 
-	// Service principal name of the service that created the rule. The field is
-	// populated only if the service-linked rule is created by a service. The field is
-	// empty if you create your own rule.
+	// Service principal name of the service that created the rule.
+	//
+	// The field is populated only if the service-linked rule is created by a service.
+	// The field is empty if you create your own rule.
 	CreatedBy *string
 
 	// The description that you provide for the Config rule.
@@ -537,10 +634,13 @@ type ConfigRule struct {
 
 	// The maximum frequency with which Config runs evaluations for a rule. You can
 	// specify a value for MaximumExecutionFrequency when:
+	//
 	//   - This is for an Config managed rule that is triggered at a periodic
 	//   frequency.
+	//
 	//   - Your custom rule is triggered when Config delivers the configuration
-	//   snapshot. For more information, see ConfigSnapshotDeliveryProperties .
+	//   snapshot. For more information, see ConfigSnapshotDeliveryProperties.
+	//
 	// By default, rules with a periodic trigger are evaluated every 24 hours. To
 	// change the frequency, specify a valid value for the MaximumExecutionFrequency
 	// parameter.
@@ -551,7 +651,9 @@ type ConfigRule struct {
 	// resource ID, or a combination of a tag key and value. Specify a scope to
 	// constrain the resources that can trigger an evaluation for the rule. If you do
 	// not specify a scope, evaluations are triggered when any resource in the
-	// recording group changes. The scope can be empty.
+	// recording group changes.
+	//
+	// The scope can be empty.
 	Scope *Scope
 
 	noSmithyDocumentSerde
@@ -567,9 +669,11 @@ type ConfigRuleComplianceFilters struct {
 	// The source region where the data is aggregated.
 	AwsRegion *string
 
-	// The rule compliance status. For the ConfigRuleComplianceFilters data type,
-	// Config supports only COMPLIANT and NON_COMPLIANT . Config does not support the
-	// NOT_APPLICABLE and the INSUFFICIENT_DATA values.
+	// The rule compliance status.
+	//
+	// For the ConfigRuleComplianceFilters data type, Config supports only COMPLIANT
+	// and NON_COMPLIANT . Config does not support the NOT_APPLICABLE and the
+	// INSUFFICIENT_DATA values.
 	ComplianceType ComplianceType
 
 	// The name of the Config rule.
@@ -592,8 +696,10 @@ type ConfigRuleComplianceSummaryFilters struct {
 
 // Status information for your Config Managed rules and Config Custom Policy
 // rules. The status includes information such as the last time the rule ran, the
-// last time it failed, and the related error for the last failure. This action
-// does not return status information about Config Custom Lambda rules.
+// last time it failed, and the related error for the last failure.
+//
+// This operation does not return status information about Config Custom Lambda
+// rules.
 type ConfigRuleEvaluationStatus struct {
 
 	// The Amazon Resource Name (ARN) of the Config rule.
@@ -610,8 +716,10 @@ type ConfigRuleEvaluationStatus struct {
 
 	// Indicates whether Config has evaluated your resources against the rule at least
 	// once.
+	//
 	//   - true - Config has evaluated your Amazon Web Services resources against the
 	//   rule at least once.
+	//
 	//   - false - Config has not finished evaluating your Amazon Web Services
 	//   resources against the rule at least once.
 	FirstEvaluationStarted bool
@@ -657,33 +765,42 @@ type ConfigRuleEvaluationStatus struct {
 }
 
 // Provides options for how often Config delivers configuration snapshots to the
-// Amazon S3 bucket in your delivery channel. The frequency for a rule that
-// triggers evaluations for your resources when Config delivers the configuration
-// snapshot is set by one of two values, depending on which is less frequent:
+// Amazon S3 bucket in your delivery channel.
+//
+// The frequency for a rule that triggers evaluations for your resources when
+// Config delivers the configuration snapshot is set by one of two values,
+// depending on which is less frequent:
+//
 //   - The value for the deliveryFrequency parameter within the delivery channel
 //     configuration, which sets how often Config delivers configuration snapshots.
 //     This value also sets how often Config invokes evaluations for Config rules.
+//
 //   - The value for the MaximumExecutionFrequency parameter, which sets the
 //     maximum frequency with which Config invokes evaluations for the rule. For more
-//     information, see ConfigRule .
+//     information, see ConfigRule.
 //
 // If the deliveryFrequency value is less frequent than the
 // MaximumExecutionFrequency value for a rule, Config invokes the rule only as
 // often as the deliveryFrequency value.
+//
 //   - For example, you want your rule to run evaluations when Config delivers the
 //     configuration snapshot.
+//
 //   - You specify the MaximumExecutionFrequency value for Six_Hours .
+//
 //   - You then specify the delivery channel deliveryFrequency value for
 //     TwentyFour_Hours .
+//
 //   - Because the value for deliveryFrequency is less frequent than
 //     MaximumExecutionFrequency , Config invokes evaluations for the rule every 24
 //     hours.
 //
 // You should set the MaximumExecutionFrequency value to be at least as frequent
 // as the deliveryFrequency value. You can view the deliveryFrequency value by
-// using the DescribeDeliveryChannnels action. To update the deliveryFrequency
-// with which Config delivers your configuration snapshots, use the
-// PutDeliveryChannel action.
+// using the DescribeDeliveryChannnels action.
+//
+// To update the deliveryFrequency with which Config delivers your configuration
+// snapshots, use the PutDeliveryChannel action.
 type ConfigSnapshotDeliveryProperties struct {
 
 	// The frequency with which Config delivers configuration snapshots.
@@ -702,10 +819,12 @@ type ConfigStreamDeliveryInfo struct {
 	// The error message from the last attempted delivery.
 	LastErrorMessage *string
 
-	// Status of the last attempted delivery. Note Providing an SNS topic on a
-	// DeliveryChannel (https://docs.aws.amazon.com/config/latest/APIReference/API_DeliveryChannel.html)
-	// for Config is optional. If the SNS delivery is turned off, the last status will
-	// be Not_Applicable.
+	// Status of the last attempted delivery.
+	//
+	// Note Providing an SNS topic on a [DeliveryChannel] for Config is optional. If the SNS delivery
+	// is turned off, the last status will be Not_Applicable.
+	//
+	// [DeliveryChannel]: https://docs.aws.amazon.com/config/latest/APIReference/API_DeliveryChannel.html
 	LastStatus DeliveryStatus
 
 	// The time from the last status change.
@@ -720,6 +839,9 @@ type ConfigurationAggregator struct {
 
 	// Provides a list of source accounts and regions to be aggregated.
 	AccountAggregationSources []AccountAggregationSource
+
+	// An object to filter the data you specify for an aggregator.
+	AggregatorFilters *AggregatorFilters
 
 	// The Amazon Resource Name (ARN) of the aggregator.
 	ConfigurationAggregatorArn *string
@@ -760,38 +882,63 @@ type ConfigurationItem struct {
 	// The description of the resource configuration.
 	Configuration *string
 
-	// The time when the configuration recording was initiated.
+	// The time when the recording of configuration changes was initiated for the
+	// resource.
 	ConfigurationItemCaptureTime *time.Time
 
-	// Unique MD5 hash that represents the configuration item's state. You can use MD5
-	// hash to compare the states of two or more configuration items that are
-	// associated with the same resource.
+	// The time when configuration changes for the resource were delivered.
+	//
+	// This field is optional and is not guaranteed to be present in a configuration
+	// item (CI). If you are using daily recording, this field will be populated.
+	// However, if you are using continuous recording, this field will be omitted since
+	// the delivery time is instantaneous as the CI is available right away. For more
+	// information on daily recording and continuous recording, see [Recording Frequency]in the Config
+	// Developer Guide.
+	//
+	// [Recording Frequency]: https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html#select-resources-recording-frequency
+	ConfigurationItemDeliveryTime *time.Time
+
+	// Unique MD5 hash that represents the configuration item's state.
+	//
+	// You can use MD5 hash to compare the states of two or more configuration items
+	// that are associated with the same resource.
 	ConfigurationItemMD5Hash *string
 
-	// The configuration item status. The valid values are:
+	// The configuration item status. Valid values include:
+	//
 	//   - OK – The resource configuration has been updated
+	//
 	//   - ResourceDiscovered – The resource was newly discovered
+	//
 	//   - ResourceNotRecorded – The resource was discovered but its configuration was
-	//   not recorded since the recorder excludes the recording of resources of this type
+	//   not recorded since the recorder doesn't record resources of this type
 	//
 	//   - ResourceDeleted – The resource was deleted
+	//
 	//   - ResourceDeletedNotRecorded – The resource was deleted but its configuration
-	//   was not recorded since the recorder excludes the recording of resources of this
-	//   type
-	// The CIs do not incur any cost.
+	//   was not recorded since the recorder doesn't record resources of this type
 	ConfigurationItemStatus ConfigurationItemStatus
 
 	// An identifier that indicates the ordering of the configuration items of a
 	// resource.
 	ConfigurationStateId *string
 
-	// A list of CloudTrail event IDs. A populated field indicates that the current
-	// configuration was initiated by the events recorded in the CloudTrail log. For
-	// more information about CloudTrail, see What Is CloudTrail (https://docs.aws.amazon.com/awscloudtrail/latest/userguide/what_is_cloud_trail_top_level.html)
-	// . An empty field indicates that the current configuration was not initiated by
+	// The recording frequency that Config uses to record configuration changes for
+	// the resource.
+	RecordingFrequency RecordingFrequency
+
+	// A list of CloudTrail event IDs.
+	//
+	// A populated field indicates that the current configuration was initiated by the
+	// events recorded in the CloudTrail log. For more information about CloudTrail,
+	// see [What Is CloudTrail].
+	//
+	// An empty field indicates that the current configuration was not initiated by
 	// any event. As of Version 1.3, the relatedEvents field is empty. You can access
-	// the LookupEvents API (https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_LookupEvents.html)
-	// in the CloudTrail API Reference to retrieve the events for the resource.
+	// the [LookupEvents API]in the CloudTrail API Reference to retrieve the events for the resource.
+	//
+	// [LookupEvents API]: https://docs.aws.amazon.com/awscloudtrail/latest/APIReference/API_LookupEvents.html
+	// [What Is CloudTrail]: https://docs.aws.amazon.com/awscloudtrail/latest/userguide/what_is_cloud_trail_top_level.html
 	RelatedEvents []string
 
 	// A list of related Amazon Web Services resources.
@@ -822,57 +969,161 @@ type ConfigurationItem struct {
 	noSmithyDocumentSerde
 }
 
-// Records configuration changes to specified resource types. For more information
-// about the configuration recorder, see Managing the Configuration Recorder  (https://docs.aws.amazon.com/config/latest/developerguide/stop-start-recorder.html)
-// in the Config Developer Guide.
+// Records configuration changes to the resource types in scope.
+//
+// For more information about the configuration recorder, see [Working with the Configuration Recorder] in the Config
+// Developer Guide.
+//
+// [Working with the Configuration Recorder]: https://docs.aws.amazon.com/config/latest/developerguide/stop-start-recorder.html
 type ConfigurationRecorder struct {
 
-	// The name of the configuration recorder. Config automatically assigns the name
-	// of "default" when creating the configuration recorder. You cannot change the
-	// name of the configuration recorder after it has been created. To change the
-	// configuration recorder name, you must delete it and create a new configuration
-	// recorder with a new name.
+	// The Amazon Resource Name (ARN) of the specified configuration recorder.
+	Arn *string
+
+	// The name of the configuration recorder.
+	//
+	// For customer managed configuration recorders, Config automatically assigns the
+	// name of "default" when creating a configuration recorder if you do not specify a
+	// name at creation time.
+	//
+	// For service-linked configuration recorders, Config automatically assigns a name
+	// that has the prefix " AWS " to a new service-linked configuration recorder.
+	//
+	// Changing the name of a configuration recorder
+	//
+	// To change the name of the customer managed configuration recorder, you must
+	// delete it and create a new customer managed configuration recorder with a new
+	// name.
+	//
+	// You cannot change the name of a service-linked configuration recorder.
 	Name *string
 
-	// Specifies which resource types Config records for configuration changes. High
-	// Number of Config Evaluations You may notice increased activity in your account
-	// during your initial month recording with Config when compared to subsequent
-	// months. During the initial bootstrapping process, Config runs evaluations on all
-	// the resources in your account that you have selected for Config to record. If
-	// you are running ephemeral workloads, you may see increased activity from Config
-	// as it records configuration changes associated with creating and deleting these
-	// temporary resources. An ephemeral workload is a temporary use of computing
+	// Specifies which resource types are in scope for the configuration recorder to
+	// record.
+	//
+	// High Number of Config Evaluations
+	//
+	// You might notice increased activity in your account during your initial month
+	// recording with Config when compared to subsequent months. During the initial
+	// bootstrapping process, Config runs evaluations on all the resources in your
+	// account that you have selected for Config to record.
+	//
+	// If you are running ephemeral workloads, you may see increased activity from
+	// Config as it records configuration changes associated with creating and deleting
+	// these temporary resources. An ephemeral workload is a temporary use of computing
 	// resources that are loaded and run when needed. Examples include Amazon Elastic
-	// Compute Cloud (Amazon EC2) Spot Instances, Amazon EMR jobs, and Auto Scaling. If
-	// you want to avoid the increased activity from running ephemeral workloads, you
-	// can run these types of workloads in a separate account with Config turned off to
-	// avoid increased configuration recording and rule evaluations.
+	// Compute Cloud (Amazon EC2) Spot Instances, Amazon EMR jobs, and Auto Scaling.
+	//
+	// If you want to avoid the increased activity from running ephemeral workloads,
+	// you can set up the configuration recorder to exclude these resource types from
+	// being recorded, or run these types of workloads in a separate account with
+	// Config turned off to avoid increased configuration recording and rule
+	// evaluations.
 	RecordingGroup *RecordingGroup
 
-	// Amazon Resource Name (ARN) of the IAM role assumed by Config and used by the
-	// configuration recorder. While the API model does not require this field, the
-	// server will reject a request without a defined roleARN for the configuration
-	// recorder. Pre-existing Config role If you have used an Amazon Web Services
-	// service that uses Config, such as Security Hub or Control Tower, and an Config
-	// role has already been created, make sure that the IAM role that you use when
-	// setting up Config keeps the same minimum permissions as the already created
-	// Config role. You must do this so that the other Amazon Web Services service
-	// continues to run as expected. For example, if Control Tower has an IAM role that
-	// allows Config to read Amazon Simple Storage Service (Amazon S3) objects, make
-	// sure that the same permissions are granted within the IAM role you use when
-	// setting up Config. Otherwise, it may interfere with how Control Tower operates.
-	// For more information about IAM roles for Config, see Identity and Access
-	// Management for Config  (https://docs.aws.amazon.com/config/latest/developerguide/security-iam.html)
-	// in the Config Developer Guide.
+	// Specifies the default recording frequency for the configuration recorder.
+	//
+	// Config supports Continuous recording and Daily recording.
+	//
+	//   - Continuous recording allows you to record configuration changes
+	//   continuously whenever a change occurs.
+	//
+	//   - Daily recording allows you to receive a configuration item (CI)
+	//   representing the most recent state of your resources over the last 24-hour
+	//   period, only if it’s different from the previous CI recorded.
+	//
+	// Some resource types require continuous recording
+	//
+	// Firewall Manager depends on continuous recording to monitor your resources. If
+	// you are using Firewall Manager, it is recommended that you set the recording
+	// frequency to Continuous.
+	//
+	// You can also override the recording frequency for specific resource types.
+	RecordingMode *RecordingMode
+
+	// Specifies whether the [ConfigurationItems] in scope for the specified configuration recorder are
+	// recorded for free ( INTERNAL ) or if it impacts the costs to your bill ( PAID ).
+	//
+	// [ConfigurationItems]: https://docs.aws.amazon.com/config/latest/APIReference/API_ConfigurationItem.html
+	RecordingScope RecordingScope
+
+	// The Amazon Resource Name (ARN) of the IAM role assumed by Config and used by
+	// the specified configuration recorder.
+	//
+	// The server will reject a request without a defined roleARN for the
+	// configuration recorder
+	//
+	// While the API model does not require this field, the server will reject a
+	// request without a defined roleARN for the configuration recorder.
+	//
+	// Policies and compliance results
+	//
+	// [IAM policies]and [other policies managed in Organizations] can impact whether Config has permissions to record configuration changes
+	// for your resources. Additionally, rules directly evaluate the configuration of a
+	// resource and rules don't take into account these policies when running
+	// evaluations. Make sure that the policies in effect align with how you intend to
+	// use Config.
+	//
+	// Keep Minimum Permisions When Reusing an IAM role
+	//
+	// If you use an Amazon Web Services service that uses Config, such as Security
+	// Hub or Control Tower, and an IAM role has already been created, make sure that
+	// the IAM role that you use when setting up Config keeps the same minimum
+	// permissions as the pre-existing IAM role. You must do this to ensure that the
+	// other Amazon Web Services service continues to run as expected.
+	//
+	// For example, if Control Tower has an IAM role that allows Config to read S3
+	// objects, make sure that the same permissions are granted to the IAM role you use
+	// when setting up Config. Otherwise, it may interfere with how Control Tower
+	// operates.
+	//
+	// The service-linked IAM role for Config must be used for service-linked
+	// configuration recorders
+	//
+	// For service-linked configuration recorders, you must use the service-linked IAM
+	// role for Config: [AWSServiceRoleForConfig].
+	//
+	// [AWSServiceRoleForConfig]: https://docs.aws.amazon.com/config/latest/developerguide/using-service-linked-roles.html
+	// [other policies managed in Organizations]: https://docs.aws.amazon.com/organizations/latest/userguide/orgs_manage_policies.html
+	// [IAM policies]: https://docs.aws.amazon.com/IAM/latest/UserGuide/access_policies.html
 	RoleARN *string
+
+	// For service-linked configuration recorders, specifies the linked Amazon Web
+	// Services service for the configuration recorder.
+	ServicePrincipal *string
 
 	noSmithyDocumentSerde
 }
 
-// The current status of the configuration recorder. For a detailed status of
-// recording events over time, add your Config events to CloudWatch metrics and use
-// CloudWatch metrics.
+// Filters configuration recorders by recording scope.
+type ConfigurationRecorderFilter struct {
+
+	// The name of the type of filter. Currently, only recordingScope is supported.
+	FilterName ConfigurationRecorderFilterName
+
+	// The value of the filter. For recordingScope , valid values include: INTERNAL
+	// and PAID .
+	//
+	// INTERNAL indicates that the [ConfigurationItems] in scope for the configuration recorder are
+	// recorded for free.
+	//
+	// PAID indicates that the [ConfigurationItems] in scope for the configuration recorder impact the
+	// costs to your bill.
+	//
+	// [ConfigurationItems]: https://docs.aws.amazon.com/config/latest/APIReference/API_ConfigurationItem.html
+	FilterValue []string
+
+	noSmithyDocumentSerde
+}
+
+// The current status of the configuration recorder.
+//
+// For a detailed status of recording events over time, add your Config events to
+// CloudWatch metrics and use CloudWatch metrics.
 type ConfigurationRecorderStatus struct {
+
+	// The Amazon Resource Name (ARN) of the configuration recorder.
+	Arn *string
 
 	// The latest error code from when the recorder last failed.
 	LastErrorCode *string
@@ -899,14 +1150,49 @@ type ConfigurationRecorderStatus struct {
 	// Specifies whether or not the recorder is currently recording.
 	Recording bool
 
+	// For service-linked configuration recorders, the service principal of the linked
+	// Amazon Web Services service.
+	ServicePrincipal *string
+
+	noSmithyDocumentSerde
+}
+
+// A summary of a configuration recorder, including the arn , name ,
+// servicePrincipal , and recordingScope .
+type ConfigurationRecorderSummary struct {
+
+	// The Amazon Resource Name (ARN) of the configuration recorder.
+	//
+	// This member is required.
+	Arn *string
+
+	// The name of the configuration recorder.
+	//
+	// This member is required.
+	Name *string
+
+	// Indicates whether the [ConfigurationItems] in scope for the configuration recorder are recorded for
+	// free ( INTERNAL ) or if you are charged a service fee for recording ( PAID ).
+	//
+	// [ConfigurationItems]: https://docs.aws.amazon.com/config/latest/APIReference/API_ConfigurationItem.html
+	//
+	// This member is required.
+	RecordingScope RecordingScope
+
+	// For service-linked configuration recorders, indicates which Amazon Web Services
+	// service the configuration recorder is linked to.
+	ServicePrincipal *string
+
 	noSmithyDocumentSerde
 }
 
 // Filters the conformance pack by compliance types and Config rule names.
 type ConformancePackComplianceFilters struct {
 
-	// Filters the results by compliance. The allowed values are COMPLIANT and
-	// NON_COMPLIANT . INSUFFICIENT_DATA is not supported.
+	// Filters the results by compliance.
+	//
+	// The allowed values are COMPLIANT and NON_COMPLIANT . INSUFFICIENT_DATA is not
+	// supported.
 	ComplianceType ConformancePackComplianceType
 
 	// Filters the results by Config rule names.
@@ -993,10 +1279,14 @@ type ConformancePackDetail struct {
 	CreatedBy *string
 
 	// The name of the Amazon S3 bucket where Config stores conformance pack
-	// templates. This field is optional.
+	// templates.
+	//
+	// This field is optional.
 	DeliveryS3Bucket *string
 
-	// The prefix for the Amazon S3 bucket. This field is optional.
+	// The prefix for the Amazon S3 bucket.
+	//
+	// This field is optional.
 	DeliveryS3KeyPrefix *string
 
 	// The last time a conformation pack update was requested.
@@ -1014,15 +1304,19 @@ type ConformancePackDetail struct {
 // Services resource types, and resource IDs.
 type ConformancePackEvaluationFilters struct {
 
-	// Filters the results by compliance. The allowed values are COMPLIANT and
-	// NON_COMPLIANT . INSUFFICIENT_DATA is not supported.
+	// Filters the results by compliance.
+	//
+	// The allowed values are COMPLIANT and NON_COMPLIANT . INSUFFICIENT_DATA is not
+	// supported.
 	ComplianceType ConformancePackComplianceType
 
 	// Filters the results by Config rule names.
 	ConfigRuleNames []string
 
-	// Filters the results by resource IDs. This is valid only when you provide
-	// resource type. If there is no resource type, you will see an error.
+	// Filters the results by resource IDs.
+	//
+	// This is valid only when you provide resource type. If there is no resource
+	// type, you will see an error.
 	ResourceIds []string
 
 	// Filters the results by the resource type (for example, "AWS::EC2::Instance" ).
@@ -1117,14 +1411,20 @@ type ConformancePackStatusDetail struct {
 	// This member is required.
 	ConformancePackName *string
 
-	// Indicates deployment status of conformance pack. Config sets the state of the
-	// conformance pack to:
+	// Indicates deployment status of conformance pack.
+	//
+	// Config sets the state of the conformance pack to:
+	//
 	//   - CREATE_IN_PROGRESS when a conformance pack creation is in progress for an
 	//   account.
+	//
 	//   - CREATE_COMPLETE when a conformance pack has been successfully created in
 	//   your account.
+	//
 	//   - CREATE_FAILED when a conformance pack creation failed in your account.
+	//
 	//   - DELETE_IN_PROGRESS when a conformance pack deletion is in progress.
+	//
 	//   - DELETE_FAILED when a conformance pack deletion failed in your account.
 	//
 	// This member is required.
@@ -1156,8 +1456,9 @@ type CustomPolicyDetails struct {
 
 	// The runtime system for your Config Custom Policy rule. Guard is a
 	// policy-as-code language that allows you to write policies that are enforced by
-	// Config Custom Policy rules. For more information about Guard, see the Guard
-	// GitHub Repository (https://github.com/aws-cloudformation/cloudformation-guard) .
+	// Config Custom Policy rules. For more information about Guard, see the [Guard GitHub Repository].
+	//
+	// [Guard GitHub Repository]: https://github.com/aws-cloudformation/cloudformation-guard
 	//
 	// This member is required.
 	PolicyRuntime *string
@@ -1190,11 +1491,13 @@ type DeliveryChannel struct {
 	Name *string
 
 	// The name of the Amazon S3 bucket to which Config delivers configuration
-	// snapshots and configuration history files. If you specify a bucket that belongs
-	// to another Amazon Web Services account, that bucket must have policies that
-	// grant access permissions to Config. For more information, see Permissions for
-	// the Amazon S3 Bucket (https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-policy.html)
-	// in the Config Developer Guide.
+	// snapshots and configuration history files.
+	//
+	// If you specify a bucket that belongs to another Amazon Web Services account,
+	// that bucket must have policies that grant access permissions to Config. For more
+	// information, see [Permissions for the Amazon S3 Bucket]in the Config Developer Guide.
+	//
+	// [Permissions for the Amazon S3 Bucket]: https://docs.aws.amazon.com/config/latest/developerguide/s3-bucket-policy.html
 	S3BucketName *string
 
 	// The prefix for the specified Amazon S3 bucket.
@@ -1206,16 +1509,21 @@ type DeliveryChannel struct {
 	S3KmsKeyArn *string
 
 	// The Amazon Resource Name (ARN) of the Amazon SNS topic to which Config sends
-	// notifications about configuration changes. If you choose a topic from another
-	// account, the topic must have policies that grant access permissions to Config.
-	// For more information, see Permissions for the Amazon SNS Topic (https://docs.aws.amazon.com/config/latest/developerguide/sns-topic-policy.html)
-	// in the Config Developer Guide.
+	// notifications about configuration changes.
+	//
+	// If you choose a topic from another account, the topic must have policies that
+	// grant access permissions to Config. For more information, see [Permissions for the Amazon SNS Topic]in the Config
+	// Developer Guide.
+	//
+	// [Permissions for the Amazon SNS Topic]: https://docs.aws.amazon.com/config/latest/developerguide/sns-topic-policy.html
 	SnsTopicARN *string
 
 	noSmithyDocumentSerde
 }
 
-// The status of a specified delivery channel. Valid values: Success | Failure
+// The status of a specified delivery channel.
+//
+// Valid values: Success | Failure
 type DeliveryChannelStatus struct {
 
 	// A list that contains the status of the delivery of the configuration history to
@@ -1238,8 +1546,10 @@ type DeliveryChannelStatus struct {
 
 // Returns a filtered list of Detective or Proactive Config rules. By default, if
 // the filter is not defined, this API returns an unfiltered list. For more
-// information on Detective or Proactive Config rules, see Evaluation Mode  (https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config-rules.html)
-// in the Config Developer Guide.
+// information on Detective or Proactive Config rules, see [Evaluation Mode]in the Config Developer
+// Guide.
+//
+// [Evaluation Mode]: https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config-rules.html
 type DescribeConfigRulesFilters struct {
 
 	// The mode of an evaluation. The valid values are Detective or Proactive.
@@ -1263,12 +1573,15 @@ type Evaluation struct {
 	ComplianceResourceType *string
 
 	// Indicates whether the Amazon Web Services resource complies with the Config
-	// rule that it was evaluated against. For the Evaluation data type, Config
-	// supports only the COMPLIANT , NON_COMPLIANT , and NOT_APPLICABLE values. Config
-	// does not support the INSUFFICIENT_DATA value for this data type. Similarly,
-	// Config does not accept INSUFFICIENT_DATA as the value for ComplianceType from a
-	// PutEvaluations request. For example, an Lambda function for a custom Config rule
-	// cannot pass an INSUFFICIENT_DATA value to Config.
+	// rule that it was evaluated against.
+	//
+	// For the Evaluation data type, Config supports only the COMPLIANT , NON_COMPLIANT
+	// , and NOT_APPLICABLE values. Config does not support the INSUFFICIENT_DATA
+	// value for this data type.
+	//
+	// Similarly, Config does not accept INSUFFICIENT_DATA as the value for
+	// ComplianceType from a PutEvaluations request. For example, an Lambda function
+	// for a custom Config rule cannot pass an INSUFFICIENT_DATA value to Config.
 	//
 	// This member is required.
 	ComplianceType ComplianceType
@@ -1299,7 +1612,7 @@ type EvaluationContext struct {
 	noSmithyDocumentSerde
 }
 
-// The configuration object for Config rule evaluation mode. The Supported valid
+// The configuration object for Config rule evaluation mode. The supported valid
 // values are Detective or Proactive.
 type EvaluationModeConfiguration struct {
 
@@ -1318,9 +1631,11 @@ type EvaluationResult struct {
 	Annotation *string
 
 	// Indicates whether the Amazon Web Services resource complies with the Config
-	// rule that evaluated it. For the EvaluationResult data type, Config supports
-	// only the COMPLIANT , NON_COMPLIANT , and NOT_APPLICABLE values. Config does not
-	// support the INSUFFICIENT_DATA value for the EvaluationResult data type.
+	// rule that evaluated it.
+	//
+	// For the EvaluationResult data type, Config supports only the COMPLIANT ,
+	// NON_COMPLIANT , and NOT_APPLICABLE values. Config does not support the
+	// INSUFFICIENT_DATA value for the EvaluationResult data type.
 	ComplianceType ComplianceType
 
 	// The time when the Config rule evaluated the Amazon Web Services resource.
@@ -1393,9 +1708,36 @@ type EvaluationStatus struct {
 	noSmithyDocumentSerde
 }
 
-// Specifies whether the configuration recorder excludes resource types from being
-// recorded. Use the resourceTypes field to enter a comma-separated list of
-// resource types to exclude as exemptions.
+// Specifies whether the configuration recorder excludes certain resource types
+// from being recorded. Use the resourceTypes field to enter a comma-separated
+// list of resource types you want to exclude from recording.
+//
+// By default, when Config adds support for a new resource type in the Region
+// where you set up the configuration recorder, including global resource types,
+// Config starts recording resources of that type automatically.
+//
+// # How to use the exclusion recording strategy
+//
+// To use this option, you must set the useOnly field of [RecordingStrategy] to
+// EXCLUSION_BY_RESOURCE_TYPES .
+//
+// Config will then record configuration changes for all supported resource types,
+// except the resource types that you specify to exclude from being recorded.
+//
+// # Global resource types and the exclusion recording strategy
+//
+// Unless specifically listed as exclusions, AWS::RDS::GlobalCluster will be
+// recorded automatically in all supported Config Regions were the configuration
+// recorder is enabled.
+//
+// IAM users, groups, roles, and customer managed policies will be recorded in the
+// Region where you set up the configuration recorder if that is a Region where
+// Config was available before February 2022. You cannot be record the global IAM
+// resouce types in Regions supported by Config after February 2022. For a list of
+// those Regions, see [Recording Amazon Web Services Resources | Global Resources].
+//
+// [Recording Amazon Web Services Resources | Global Resources]: https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html#select-resources-all
+// [RecordingStrategy]: https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html
 type ExclusionByResourceTypes struct {
 
 	// A comma-separated list of resource types to exclude from recording by the
@@ -1532,16 +1874,26 @@ type MemberAccountStatus struct {
 	// calls PutOrganizationConfigRule action for the second time, Config rule status
 	// is updated in the member account. Config rule status is deleted when the
 	// management account deletes OrganizationConfigRule and disables service access
-	// for config-multiaccountsetup.amazonaws.com . Config sets the state of the rule
-	// to:
+	// for config-multiaccountsetup.amazonaws.com .
+	//
+	// Config sets the state of the rule to:
+	//
 	//   - CREATE_SUCCESSFUL when Config rule has been created in the member account.
+	//
 	//   - CREATE_IN_PROGRESS when Config rule is being created in the member account.
+	//
 	//   - CREATE_FAILED when Config rule creation has failed in the member account.
+	//
 	//   - DELETE_FAILED when Config rule deletion has failed in the member account.
+	//
 	//   - DELETE_IN_PROGRESS when Config rule is being deleted in the member account.
+	//
 	//   - DELETE_SUCCESSFUL when Config rule has been deleted in the member account.
+	//
 	//   - UPDATE_SUCCESSFUL when Config rule has been updated in the member account.
+	//
 	//   - UPDATE_IN_PROGRESS when Config rule is being updated in the member account.
+	//
 	//   - UPDATE_FAILED when Config rule deletion has failed in the member account.
 	//
 	// This member is required.
@@ -1632,20 +1984,31 @@ type OrganizationConfigRuleStatus struct {
 	// when one or more member accounts join or leave an organization. Config rule
 	// status is deleted when the management account deletes OrganizationConfigRule in
 	// all the member accounts and disables service access for
-	// config-multiaccountsetup.amazonaws.com . Config sets the state of the rule to:
+	// config-multiaccountsetup.amazonaws.com .
+	//
+	// Config sets the state of the rule to:
+	//
 	//   - CREATE_SUCCESSFUL when an organization Config rule has been successfully
 	//   created in all the member accounts.
+	//
 	//   - CREATE_IN_PROGRESS when an organization Config rule creation is in progress.
+	//
 	//   - CREATE_FAILED when an organization Config rule creation failed in one or
 	//   more member accounts within that organization.
+	//
 	//   - DELETE_FAILED when an organization Config rule deletion failed in one or
 	//   more member accounts within that organization.
+	//
 	//   - DELETE_IN_PROGRESS when an organization Config rule deletion is in progress.
+	//
 	//   - DELETE_SUCCESSFUL when an organization Config rule has been successfully
 	//   deleted from all the member accounts.
+	//
 	//   - UPDATE_SUCCESSFUL when an organization Config rule has been successfully
 	//   updated in all the member accounts.
+	//
 	//   - UPDATE_IN_PROGRESS when an organization Config rule update is in progress.
+	//
 	//   - UPDATE_FAILED when an organization Config rule update failed in one or more
 	//   member accounts within that organization.
 	//
@@ -1689,11 +2052,14 @@ type OrganizationConformancePack struct {
 	ConformancePackInputParameters []ConformancePackInputParameter
 
 	// The name of the Amazon S3 bucket where Config stores conformance pack
-	// templates. This field is optional.
+	// templates.
+	//
+	// This field is optional.
 	DeliveryS3Bucket *string
 
-	// Any folder structure you want to add to an Amazon S3 bucket. This field is
-	// optional.
+	// Any folder structure you want to add to an Amazon S3 bucket.
+	//
+	// This field is optional.
 	DeliveryS3KeyPrefix *string
 
 	// A comma-separated list of accounts excluded from organization conformance pack.
@@ -1724,24 +2090,34 @@ type OrganizationConformancePackDetailedStatus struct {
 	// conformance pack status is updated in the member account. Conformance pack
 	// status is deleted when the management account deletes
 	// OrganizationConformancePack and disables service access for
-	// config-multiaccountsetup.amazonaws.com . Config sets the state of the
-	// conformance pack to:
+	// config-multiaccountsetup.amazonaws.com .
+	//
+	// Config sets the state of the conformance pack to:
+	//
 	//   - CREATE_SUCCESSFUL when conformance pack has been created in the member
 	//   account.
+	//
 	//   - CREATE_IN_PROGRESS when conformance pack is being created in the member
 	//   account.
+	//
 	//   - CREATE_FAILED when conformance pack creation has failed in the member
 	//   account.
+	//
 	//   - DELETE_FAILED when conformance pack deletion has failed in the member
 	//   account.
+	//
 	//   - DELETE_IN_PROGRESS when conformance pack is being deleted in the member
 	//   account.
+	//
 	//   - DELETE_SUCCESSFUL when conformance pack has been deleted in the member
 	//   account.
+	//
 	//   - UPDATE_SUCCESSFUL when conformance pack has been updated in the member
 	//   account.
+	//
 	//   - UPDATE_IN_PROGRESS when conformance pack is being updated in the member
 	//   account.
+	//
 	//   - UPDATE_FAILED when conformance pack deletion has failed in the member
 	//   account.
 	//
@@ -1778,24 +2154,34 @@ type OrganizationConformancePackStatus struct {
 	// pack status is updated when one or more member accounts join or leave an
 	// organization. Conformance pack status is deleted when the management account
 	// deletes OrganizationConformancePack in all the member accounts and disables
-	// service access for config-multiaccountsetup.amazonaws.com . Config sets the
-	// state of the conformance pack to:
+	// service access for config-multiaccountsetup.amazonaws.com .
+	//
+	// Config sets the state of the conformance pack to:
+	//
 	//   - CREATE_SUCCESSFUL when an organization conformance pack has been
 	//   successfully created in all the member accounts.
+	//
 	//   - CREATE_IN_PROGRESS when an organization conformance pack creation is in
 	//   progress.
+	//
 	//   - CREATE_FAILED when an organization conformance pack creation failed in one
 	//   or more member accounts within that organization.
+	//
 	//   - DELETE_FAILED when an organization conformance pack deletion failed in one
 	//   or more member accounts within that organization.
+	//
 	//   - DELETE_IN_PROGRESS when an organization conformance pack deletion is in
 	//   progress.
+	//
 	//   - DELETE_SUCCESSFUL when an organization conformance pack has been
 	//   successfully deleted from all the member accounts.
+	//
 	//   - UPDATE_SUCCESSFUL when an organization conformance pack has been
 	//   successfully updated in all the member accounts.
+	//
 	//   - UPDATE_IN_PROGRESS when an organization conformance pack update is in
 	//   progress.
+	//
 	//   - UPDATE_FAILED when an organization conformance pack update failed in one or
 	//   more member accounts within that organization.
 	//
@@ -1825,8 +2211,9 @@ type OrganizationCustomPolicyRuleMetadata struct {
 
 	// The runtime system for your organization Config Custom Policy rules. Guard is a
 	// policy-as-code language that allows you to write policies that are enforced by
-	// Config Custom Policy rules. For more information about Guard, see the Guard
-	// GitHub Repository (https://github.com/aws-cloudformation/cloudformation-guard) .
+	// Config Custom Policy rules. For more information about Guard, see the [Guard GitHub Repository].
+	//
+	// [Guard GitHub Repository]: https://github.com/aws-cloudformation/cloudformation-guard
 	//
 	// This member is required.
 	PolicyRuntime *string
@@ -1852,14 +2239,16 @@ type OrganizationCustomPolicyRuleMetadata struct {
 
 	// The maximum frequency with which Config runs evaluations for a rule. Your
 	// Config Custom Policy rule is triggered when Config delivers the configuration
-	// snapshot. For more information, see ConfigSnapshotDeliveryProperties .
+	// snapshot. For more information, see ConfigSnapshotDeliveryProperties.
 	MaximumExecutionFrequency MaximumExecutionFrequency
 
 	// The type of notification that initiates Config to run an evaluation for a rule.
 	// For Config Custom Policy rules, Config supports change-initiated notification
 	// types:
+	//
 	//   - ConfigurationItemChangeNotification - Initiates an evaluation when Config
 	//   delivers a configuration item as a result of a resource change.
+	//
 	//   - OversizedConfigurationItemChangeNotification - Initiates an evaluation when
 	//   Config delivers an oversized configuration item. Config may generate this
 	//   notification type when a resource changes and the notification exceeds the
@@ -1883,7 +2272,8 @@ type OrganizationCustomPolicyRuleMetadata struct {
 	noSmithyDocumentSerde
 }
 
-// metadata for your organization Config Custom Policy rule including the runtime
+//	metadata for your organization Config Custom Policy rule including the runtime
+//
 // system in use, which accounts have debug logging enabled, and other custom rule
 // metadata such as resource type, resource ID of Amazon Web Services resource, and
 // organization trigger types that trigger Config to evaluate Amazon Web Services
@@ -1905,14 +2295,16 @@ type OrganizationCustomPolicyRuleMetadataNoPolicy struct {
 
 	// The maximum frequency with which Config runs evaluations for a rule. Your
 	// Config Custom Policy rule is triggered when Config delivers the configuration
-	// snapshot. For more information, see ConfigSnapshotDeliveryProperties .
+	// snapshot. For more information, see ConfigSnapshotDeliveryProperties.
 	MaximumExecutionFrequency MaximumExecutionFrequency
 
 	// The type of notification that triggers Config to run an evaluation for a rule.
 	// For Config Custom Policy rules, Config supports change triggered notification
 	// types:
+	//
 	//   - ConfigurationItemChangeNotification - Triggers an evaluation when Config
 	//   delivers a configuration item as a result of a resource change.
+	//
 	//   - OversizedConfigurationItemChangeNotification - Triggers an evaluation when
 	//   Config delivers an oversized configuration item. Config may generate this
 	//   notification type when a resource changes and the notification exceeds the
@@ -1921,8 +2313,9 @@ type OrganizationCustomPolicyRuleMetadataNoPolicy struct {
 
 	// The runtime system for your organization Config Custom Policy rules. Guard is a
 	// policy-as-code language that allows you to write policies that are enforced by
-	// Config Custom Policy rules. For more information about Guard, see the Guard
-	// GitHub Repository (https://github.com/aws-cloudformation/cloudformation-guard) .
+	// Config Custom Policy rules. For more information about Guard, see the [Guard GitHub Repository].
+	//
+	// [Guard GitHub Repository]: https://github.com/aws-cloudformation/cloudformation-guard
 	PolicyRuntime *string
 
 	// The ID of the Amazon Web Services resource that was evaluated.
@@ -1942,11 +2335,11 @@ type OrganizationCustomPolicyRuleMetadataNoPolicy struct {
 	noSmithyDocumentSerde
 }
 
-// organization custom rule metadata such as resource type, resource ID of Amazon
-// Web Services resource, Lambda function ARN, and organization trigger types that
-// trigger Config to evaluate your Amazon Web Services resources against a rule. It
-// also provides the frequency with which you want Config to run evaluations for
-// the rule if the trigger type is periodic.
+// An object that specifies organization custom rule metadata such as resource
+// type, resource ID of Amazon Web Services resource, Lambda function ARN, and
+// organization trigger types that trigger Config to evaluate your Amazon Web
+// Services resources against a rule. It also provides the frequency with which you
+// want Config to run evaluations for the rule if the trigger type is periodic.
 type OrganizationCustomRuleMetadata struct {
 
 	// The lambda function ARN.
@@ -1956,12 +2349,15 @@ type OrganizationCustomRuleMetadata struct {
 
 	// The type of notification that triggers Config to run an evaluation for a rule.
 	// You can specify the following notification types:
+	//
 	//   - ConfigurationItemChangeNotification - Triggers an evaluation when Config
 	//   delivers a configuration item as a result of a resource change.
+	//
 	//   - OversizedConfigurationItemChangeNotification - Triggers an evaluation when
 	//   Config delivers an oversized configuration item. Config may generate this
 	//   notification type when a resource changes and the notification exceeds the
 	//   maximum size allowed by Amazon SNS.
+	//
 	//   - ScheduledNotification - Triggers a periodic evaluation at the frequency
 	//   specified for MaximumExecutionFrequency .
 	//
@@ -1977,9 +2373,11 @@ type OrganizationCustomRuleMetadata struct {
 
 	// The maximum frequency with which Config runs evaluations for a rule. Your
 	// custom rule is triggered when Config delivers the configuration snapshot. For
-	// more information, see ConfigSnapshotDeliveryProperties . By default, rules with
-	// a periodic trigger are evaluated every 24 hours. To change the frequency,
-	// specify a valid value for the MaximumExecutionFrequency parameter.
+	// more information, see ConfigSnapshotDeliveryProperties.
+	//
+	// By default, rules with a periodic trigger are evaluated every 24 hours. To
+	// change the frequency, specify a valid value for the MaximumExecutionFrequency
+	// parameter.
 	MaximumExecutionFrequency MaximumExecutionFrequency
 
 	// The ID of the Amazon Web Services resource that was evaluated.
@@ -1999,16 +2397,17 @@ type OrganizationCustomRuleMetadata struct {
 	noSmithyDocumentSerde
 }
 
-// organization managed rule metadata such as resource type and ID of Amazon Web
-// Services resource along with the rule identifier. It also provides the frequency
-// with which you want Config to run evaluations for the rule if the trigger type
-// is periodic.
+// An object that specifies organization managed rule metadata such as resource
+// type and ID of Amazon Web Services resource along with the rule identifier. It
+// also provides the frequency with which you want Config to run evaluations for
+// the rule if the trigger type is periodic.
 type OrganizationManagedRuleMetadata struct {
 
 	// For organization config managed rules, a predefined identifier from a list. For
 	// example, IAM_PASSWORD_POLICY is a managed rule. To reference a managed rule,
-	// see Using Config managed rules (https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html)
-	// .
+	// see [Using Config managed rules].
+	//
+	// [Using Config managed rules]: https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html
 	//
 	// This member is required.
 	RuleIdentifier *string
@@ -2021,9 +2420,10 @@ type OrganizationManagedRuleMetadata struct {
 	InputParameters *string
 
 	// The maximum frequency with which Config runs evaluations for a rule. This is
-	// for an Config managed rule that is triggered at a periodic frequency. By
-	// default, rules with a periodic trigger are evaluated every 24 hours. To change
-	// the frequency, specify a valid value for the MaximumExecutionFrequency
+	// for an Config managed rule that is triggered at a periodic frequency.
+	//
+	// By default, rules with a periodic trigger are evaluated every 24 hours. To
+	// change the frequency, specify a valid value for the MaximumExecutionFrequency
 	// parameter.
 	MaximumExecutionFrequency MaximumExecutionFrequency
 
@@ -2058,24 +2458,34 @@ type OrganizationResourceDetailedStatusFilters struct {
 	// conformance pack status is updated in the member account. Conformance pack
 	// status is deleted when the management account deletes
 	// OrganizationConformancePack and disables service access for
-	// config-multiaccountsetup.amazonaws.com . Config sets the state of the
-	// conformance pack to:
+	// config-multiaccountsetup.amazonaws.com .
+	//
+	// Config sets the state of the conformance pack to:
+	//
 	//   - CREATE_SUCCESSFUL when conformance pack has been created in the member
 	//   account.
+	//
 	//   - CREATE_IN_PROGRESS when conformance pack is being created in the member
 	//   account.
+	//
 	//   - CREATE_FAILED when conformance pack creation has failed in the member
 	//   account.
+	//
 	//   - DELETE_FAILED when conformance pack deletion has failed in the member
 	//   account.
+	//
 	//   - DELETE_IN_PROGRESS when conformance pack is being deleted in the member
 	//   account.
+	//
 	//   - DELETE_SUCCESSFUL when conformance pack has been deleted in the member
 	//   account.
+	//
 	//   - UPDATE_SUCCESSFUL when conformance pack has been updated in the member
 	//   account.
+	//
 	//   - UPDATE_IN_PROGRESS when conformance pack is being updated in the member
 	//   account.
+	//
 	//   - UPDATE_FAILED when conformance pack deletion has failed in the member
 	//   account.
 	Status OrganizationResourceDetailedStatus
@@ -2105,114 +2515,316 @@ type QueryInfo struct {
 	noSmithyDocumentSerde
 }
 
-// Specifies which resource types Config records for configuration changes. In the
-// recording group, you specify whether you want to record all supported resource
-// types or to include or exclude specific types of resources. By default, Config
-// records configuration changes for all supported types of Regional resources that
-// Config discovers in the Amazon Web Services Region in which it is running.
-// Regional resources are tied to a Region and can be used only in that Region.
-// Examples of Regional resources are Amazon EC2 instances and Amazon EBS volumes.
-// You can also have Config record supported types of global resources. Global
-// resources are not tied to a specific Region and can be used in all Regions. The
-// global resource types that Config supports include IAM users, groups, roles, and
-// customer managed policies. Global resource types onboarded to Config recording
-// after February 2022 will be recorded only in the service's home Region for the
-// commercial partition and Amazon Web Services GovCloud (US-West) for the Amazon
-// Web Services GovCloud (US) partition. You can view the Configuration Items for
-// these new global resource types only in their home Region and Amazon Web
-// Services GovCloud (US-West). If you don't want Config to record all resources,
-// you can specify which types of resources Config records with the resourceTypes
-// parameter. For a list of supported resource types, see Supported Resource Types (https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources)
-// in the Config developer guide. For more information and a table of the Home
-// Regions for Global Resource Types Onboarded after February 2022, see Selecting
-// Which Resources Config Records (https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html)
-// in the Config developer guide.
+// Specifies which resource types Config records for configuration changes. By
+// default, Config records configuration changes for all current and future
+// supported resource types in the Amazon Web Services Region where you have
+// enabled Config, excluding the global IAM resource types: IAM users, groups,
+// roles, and customer managed policies.
+//
+// In the recording group, you specify whether you want to record all supported
+// current and future supported resource types or to include or exclude specific
+// resources types. For a list of supported resource types, see [Supported Resource Types]in the Config
+// developer guide.
+//
+// If you don't want Config to record all current and future supported resource
+// types (excluding the global IAM resource types), use one of the following
+// recording strategies:
+//
+//   - Record all current and future resource types with exclusions (
+//     EXCLUSION_BY_RESOURCE_TYPES ), or
+//
+//   - Record specific resource types ( INCLUSION_BY_RESOURCE_TYPES ).
+//
+// If you use the recording strategy to Record all current and future resource
+// types ( ALL_SUPPORTED_RESOURCE_TYPES ), you can use the flag
+// includeGlobalResourceTypes to include the global IAM resource types in your
+// recording.
+//
+// # Aurora global clusters are recorded in all enabled Regions
+//
+// The AWS::RDS::GlobalCluster resource type will be recorded in all supported
+// Config Regions where the configuration recorder is enabled.
+//
+// If you do not want to record AWS::RDS::GlobalCluster in all enabled Regions,
+// use the EXCLUSION_BY_RESOURCE_TYPES or INCLUSION_BY_RESOURCE_TYPES recording
+// strategy.
+//
+// [Supported Resource Types]: https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources
 type RecordingGroup struct {
 
 	// Specifies whether Config records configuration changes for all supported
-	// regional resource types. If you set this field to true , when Config adds
-	// support for a new type of regional resource, Config starts recording resources
-	// of that type automatically. If you set this field to true , you cannot enumerate
-	// specific resource types to record in the resourceTypes field of RecordingGroup (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html)
-	// , or to exclude in the resourceTypes field of ExclusionByResourceTypes (https://docs.aws.amazon.com/config/latest/APIReference/API_ExclusionByResourceTypes.html)
-	// .
+	// resource types, excluding the global IAM resource types.
+	//
+	// If you set this field to true , when Config adds support for a new resource
+	// type, Config starts recording resources of that type automatically.
+	//
+	// If you set this field to true , you cannot enumerate specific resource types to
+	// record in the resourceTypes field of [RecordingGroup], or to exclude in the resourceTypes field
+	// of [ExclusionByResourceTypes].
+	//
+	// Region availability
+	//
+	// Check [Resource Coverage by Region Availability] to see if a resource type is supported in the Amazon Web Services Region
+	// where you set up Config.
+	//
+	// [ExclusionByResourceTypes]: https://docs.aws.amazon.com/config/latest/APIReference/API_ExclusionByResourceTypes.html
+	// [RecordingGroup]: https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html
+	// [Resource Coverage by Region Availability]: https://docs.aws.amazon.com/config/latest/developerguide/what-is-resource-config-coverage.html
 	AllSupported bool
 
 	// An object that specifies how Config excludes resource types from being recorded
-	// by the configuration recorder. To use this option, you must set the useOnly
-	// field of RecordingStrategy (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html)
-	// to EXCLUSION_BY_RESOURCE_TYPES .
+	// by the configuration recorder.
+	//
+	// Required fields
+	//
+	// To use this option, you must set the useOnly field of [RecordingStrategy] to
+	// EXCLUSION_BY_RESOURCE_TYPES .
+	//
+	// [RecordingStrategy]: https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html
 	ExclusionByResourceTypes *ExclusionByResourceTypes
 
-	// Specifies whether Config records configuration changes for all supported global
-	// resources. Before you set this field to true , set the allSupported field of
-	// RecordingGroup (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html)
-	// to true . Optionally, you can set the useOnly field of RecordingStrategy (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html)
-	// to ALL_SUPPORTED_RESOURCE_TYPES . If you set this field to true , when Config
-	// adds support for a new type of global resource in the Region where you set up
-	// the configuration recorder, Config starts recording resources of that type
-	// automatically. If you set this field to false but list global resource types in
-	// the resourceTypes field of RecordingGroup (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html)
-	// , Config will still record configuration changes for those specified resource
-	// types regardless of if you set the includeGlobalResourceTypes field to false.
-	// If you do not want to record configuration changes to global resource types,
-	// make sure to not list them in the resourceTypes field in addition to setting
-	// the includeGlobalResourceTypes field to false.
+	// This option is a bundle which only applies to the global IAM resource types:
+	// IAM users, groups, roles, and customer managed policies. These global IAM
+	// resource types can only be recorded by Config in Regions where Config was
+	// available before February 2022. You cannot be record the global IAM resouce
+	// types in Regions supported by Config after February 2022. For a list of those
+	// Regions, see [Recording Amazon Web Services Resources | Global Resources].
+	//
+	// Aurora global clusters are recorded in all enabled Regions
+	//
+	// The AWS::RDS::GlobalCluster resource type will be recorded in all supported
+	// Config Regions where the configuration recorder is enabled, even if
+	// includeGlobalResourceTypes is set false . The includeGlobalResourceTypes option
+	// is a bundle which only applies to IAM users, groups, roles, and customer managed
+	// policies.
+	//
+	// If you do not want to record AWS::RDS::GlobalCluster in all enabled Regions,
+	// use one of the following recording strategies:
+	//
+	//   - Record all current and future resource types with exclusions (
+	//   EXCLUSION_BY_RESOURCE_TYPES ), or
+	//
+	//   - Record specific resource types ( INCLUSION_BY_RESOURCE_TYPES ).
+	//
+	// For more information, see [Selecting Which Resources are Recorded] in the Config developer guide.
+	//
+	// includeGlobalResourceTypes and the exclusion recording strategy
+	//
+	// The includeGlobalResourceTypes field has no impact on the
+	// EXCLUSION_BY_RESOURCE_TYPES recording strategy. This means that the global IAM
+	// resource types (IAM users, groups, roles, and customer managed policies) will
+	// not be automatically added as exclusions for exclusionByResourceTypes when
+	// includeGlobalResourceTypes is set to false .
+	//
+	// The includeGlobalResourceTypes field should only be used to modify the
+	// AllSupported field, as the default for the AllSupported field is to record
+	// configuration changes for all supported resource types excluding the global IAM
+	// resource types. To include the global IAM resource types when AllSupported is
+	// set to true , make sure to set includeGlobalResourceTypes to true .
+	//
+	// To exclude the global IAM resource types for the EXCLUSION_BY_RESOURCE_TYPES
+	// recording strategy, you need to manually add them to the resourceTypes field of
+	// exclusionByResourceTypes .
+	//
+	// Required and optional fields
+	//
+	// Before you set this field to true , set the allSupported field of [RecordingGroup] to true .
+	// Optionally, you can set the useOnly field of [RecordingStrategy] to ALL_SUPPORTED_RESOURCE_TYPES .
+	//
+	// Overriding fields
+	//
+	// If you set this field to false but list global IAM resource types in the
+	// resourceTypes field of [RecordingGroup], Config will still record configuration changes for
+	// those specified resource types regardless of if you set the
+	// includeGlobalResourceTypes field to false.
+	//
+	// If you do not want to record configuration changes to the global IAM resource
+	// types (IAM users, groups, roles, and customer managed policies), make sure to
+	// not list them in the resourceTypes field in addition to setting the
+	// includeGlobalResourceTypes field to false.
+	//
+	// [Recording Amazon Web Services Resources | Global Resources]: https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html#select-resources-all
+	// [RecordingStrategy]: https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html
+	// [Selecting Which Resources are Recorded]: https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html#select-resources-all
+	// [RecordingGroup]: https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html
 	IncludeGlobalResourceTypes bool
 
 	// An object that specifies the recording strategy for the configuration recorder.
-	//   - If you set the useOnly field of RecordingStrategy (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html)
-	//   to ALL_SUPPORTED_RESOURCE_TYPES , Config records configuration changes for all
-	//   supported regional resource types. You also must set the allSupported field of
-	//   RecordingGroup (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html)
-	//   to true . When Config adds support for a new type of regional resource, Config
-	//   automatically starts recording resources of that type.
-	//   - If you set the useOnly field of RecordingStrategy (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html)
-	//   to INCLUSION_BY_RESOURCE_TYPES , Config records configuration changes for only
-	//   the resource types you specify in the resourceTypes field of RecordingGroup (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html)
-	//   .
-	//   - If you set the useOnly field of RecordingStrategy (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html)
-	//   to EXCLUSION_BY_RESOURCE_TYPES , Config records configuration changes for all
-	//   supported resource types except the resource types that you specify as
-	//   exemptions to exclude from being recorded in the resourceTypes field of
-	//   ExclusionByResourceTypes (https://docs.aws.amazon.com/config/latest/APIReference/API_ExclusionByResourceTypes.html)
-	//   .
-	// The recordingStrategy field is optional when you set the allSupported field of
-	// RecordingGroup (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html)
-	// to true . The recordingStrategy field is optional when you list resource types
-	// in the resourceTypes field of RecordingGroup (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html)
-	// . The recordingStrategy field is required if you list resource types to exclude
-	// from recording in the resourceTypes field of ExclusionByResourceTypes (https://docs.aws.amazon.com/config/latest/APIReference/API_ExclusionByResourceTypes.html)
-	// . If you choose EXCLUSION_BY_RESOURCE_TYPES for the recording strategy, the
+	//
+	//   - If you set the useOnly field of [RecordingStrategy]to ALL_SUPPORTED_RESOURCE_TYPES , Config
+	//   records configuration changes for all supported resource types, excluding the
+	//   global IAM resource types. You also must set the allSupported field of [RecordingGroup]to true
+	//   . When Config adds support for a new resource type, Config automatically starts
+	//   recording resources of that type.
+	//
+	//   - If you set the useOnly field of [RecordingStrategy]to INCLUSION_BY_RESOURCE_TYPES , Config
+	//   records configuration changes for only the resource types you specify in the
+	//   resourceTypes field of [RecordingGroup].
+	//
+	//   - If you set the useOnly field of [RecordingStrategy]to EXCLUSION_BY_RESOURCE_TYPES , Config
+	//   records configuration changes for all supported resource types except the
+	//   resource types that you specify to exclude from being recorded in the
+	//   resourceTypes field of [ExclusionByResourceTypes].
+	//
+	// Required and optional fields
+	//
+	// The recordingStrategy field is optional when you set the allSupported field of [RecordingGroup]
+	// to true .
+	//
+	// The recordingStrategy field is optional when you list resource types in the
+	// resourceTypes field of [RecordingGroup].
+	//
+	// The recordingStrategy field is required if you list resource types to exclude
+	// from recording in the resourceTypes field of [ExclusionByResourceTypes].
+	//
+	// Overriding fields
+	//
+	// If you choose EXCLUSION_BY_RESOURCE_TYPES for the recording strategy, the
 	// exclusionByResourceTypes field will override other properties in the request.
-	// For example, even if you set includeGlobalResourceTypes to false, global
+	//
+	// For example, even if you set includeGlobalResourceTypes to false, global IAM
 	// resource types will still be automatically recorded in this option unless those
-	// resource types are specifically listed as exemptions in the resourceTypes field
-	// of exclusionByResourceTypes . By default, if you choose the
-	// EXCLUSION_BY_RESOURCE_TYPES recording strategy, when Config adds support for a
-	// new resource type in the Region where you set up the configuration recorder,
-	// including global resource types, Config starts recording resources of that type
-	// automatically.
+	// resource types are specifically listed as exclusions in the resourceTypes field
+	// of exclusionByResourceTypes .
+	//
+	// Global resources types and the resource exclusion recording strategy
+	//
+	// By default, if you choose the EXCLUSION_BY_RESOURCE_TYPES recording strategy,
+	// when Config adds support for a new resource type in the Region where you set up
+	// the configuration recorder, including global resource types, Config starts
+	// recording resources of that type automatically.
+	//
+	// Unless specifically listed as exclusions, AWS::RDS::GlobalCluster will be
+	// recorded automatically in all supported Config Regions were the configuration
+	// recorder is enabled.
+	//
+	// IAM users, groups, roles, and customer managed policies will be recorded in the
+	// Region where you set up the configuration recorder if that is a Region where
+	// Config was available before February 2022. You cannot be record the global IAM
+	// resouce types in Regions supported by Config after February 2022. For a list of
+	// those Regions, see [Recording Amazon Web Services Resources | Global Resources].
+	//
+	// [Recording Amazon Web Services Resources | Global Resources]: https://docs.aws.amazon.com/config/latest/developerguide/select-resources.html#select-resources-all
+	// [RecordingStrategy]: https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html
+	// [ExclusionByResourceTypes]: https://docs.aws.amazon.com/config/latest/APIReference/API_ExclusionByResourceTypes.html
+	// [RecordingGroup]: https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html
 	RecordingStrategy *RecordingStrategy
 
 	// A comma-separated list that specifies which resource types Config records.
-	// Optionally, you can set the useOnly field of RecordingStrategy (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html)
-	// to INCLUSION_BY_RESOURCE_TYPES . To record all configuration changes, set the
-	// allSupported field of RecordingGroup (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html)
-	// to true , and either omit this field or don't specify any resource types in this
-	// field. If you set the allSupported field to false and specify values for
-	// resourceTypes , when Config adds support for a new type of resource, it will not
-	// record resources of that type unless you manually add that type to your
-	// recording group. For a list of valid resourceTypes values, see the Resource
-	// Type Value column in Supported Amazon Web Services resource Types (https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources)
-	// in the Config developer guide. Region Availability Before specifying a resource
-	// type for Config to track, check Resource Coverage by Region Availability (https://docs.aws.amazon.com/config/latest/developerguide/what-is-resource-config-coverage.html)
-	// to see if the resource type is supported in the Amazon Web Services Region where
-	// you set up Config. If a resource type is supported by Config in at least one
-	// Region, you can enable the recording of that resource type in all Regions
-	// supported by Config, even if the specified resource type is not supported in the
-	// Amazon Web Services Region where you set up Config.
+	//
+	// For a list of valid resourceTypes values, see the Resource Type Value column in [Supported Amazon Web Services resource Types]
+	// in the Config developer guide.
+	//
+	// Required and optional fields
+	//
+	// Optionally, you can set the useOnly field of [RecordingStrategy] to INCLUSION_BY_RESOURCE_TYPES .
+	//
+	// To record all configuration changes, set the allSupported field of [RecordingGroup] to true ,
+	// and either omit this field or don't specify any resource types in this field. If
+	// you set the allSupported field to false and specify values for resourceTypes ,
+	// when Config adds support for a new type of resource, it will not record
+	// resources of that type unless you manually add that type to your recording
+	// group.
+	//
+	// Region availability
+	//
+	// Before specifying a resource type for Config to track, check [Resource Coverage by Region Availability] to see if the
+	// resource type is supported in the Amazon Web Services Region where you set up
+	// Config. If a resource type is supported by Config in at least one Region, you
+	// can enable the recording of that resource type in all Regions supported by
+	// Config, even if the specified resource type is not supported in the Amazon Web
+	// Services Region where you set up Config.
+	//
+	// [RecordingStrategy]: https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingStrategy.html
+	// [Supported Amazon Web Services resource Types]: https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources
+	// [RecordingGroup]: https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html
+	// [Resource Coverage by Region Availability]: https://docs.aws.amazon.com/config/latest/developerguide/what-is-resource-config-coverage.html
 	ResourceTypes []ResourceType
+
+	noSmithyDocumentSerde
+}
+
+// Specifies the default recording frequency that Config uses to record
+// configuration changes.
+//
+// Config supports Continuous recording and Daily recording.
+//
+//   - Continuous recording allows you to record configuration changes
+//     continuously whenever a change occurs.
+//
+//   - Daily recording allows you to receive a configuration item (CI)
+//     representing the most recent state of your resources over the last 24-hour
+//     period, only if it’s different from the previous CI recorded.
+//
+// Firewall Manager depends on continuous recording to monitor your resources. If
+// you are using Firewall Manager, it is recommended that you set the recording
+// frequency to Continuous.
+//
+// You can also override the recording frequency for specific resource types.
+type RecordingMode struct {
+
+	// The default recording frequency that Config uses to record configuration
+	// changes.
+	//
+	// Daily recording cannot be specified for the following resource types:
+	//
+	//   - AWS::Config::ResourceCompliance
+	//
+	//   - AWS::Config::ConformancePackCompliance
+	//
+	//   - AWS::Config::ConfigurationRecorder
+	//
+	// For the allSupported ( ALL_SUPPORTED_RESOURCE_TYPES ) recording strategy, these
+	// resource types will be set to Continuous recording.
+	//
+	// This member is required.
+	RecordingFrequency RecordingFrequency
+
+	// An array of recordingModeOverride objects for you to specify your overrides for
+	// the recording mode. The recordingModeOverride object in the
+	// recordingModeOverrides array consists of three fields: a description , the new
+	// recordingFrequency , and an array of resourceTypes to override.
+	RecordingModeOverrides []RecordingModeOverride
+
+	noSmithyDocumentSerde
+}
+
+// An object for you to specify your overrides for the recording mode.
+type RecordingModeOverride struct {
+
+	// The recording frequency that will be applied to all the resource types
+	// specified in the override.
+	//
+	//   - Continuous recording allows you to record configuration changes
+	//   continuously whenever a change occurs.
+	//
+	//   - Daily recording allows you to receive a configuration item (CI)
+	//   representing the most recent state of your resources over the last 24-hour
+	//   period, only if it’s different from the previous CI recorded.
+	//
+	// Firewall Manager depends on continuous recording to monitor your resources. If
+	// you are using Firewall Manager, it is recommended that you set the recording
+	// frequency to Continuous.
+	//
+	// This member is required.
+	RecordingFrequency RecordingFrequency
+
+	// A comma-separated list that specifies which resource types Config includes in
+	// the override.
+	//
+	// Daily recording cannot be specified for the following resource types:
+	//
+	//   - AWS::Config::ResourceCompliance
+	//
+	//   - AWS::Config::ConformancePackCompliance
+	//
+	//   - AWS::Config::ConfigurationRecorder
+	//
+	// This member is required.
+	ResourceTypes []ResourceType
+
+	// A description that you provide for the override.
+	Description *string
 
 	noSmithyDocumentSerde
 }
@@ -2221,38 +2833,79 @@ type RecordingGroup struct {
 type RecordingStrategy struct {
 
 	// The recording strategy for the configuration recorder.
+	//
 	//   - If you set this option to ALL_SUPPORTED_RESOURCE_TYPES , Config records
-	//   configuration changes for all supported regional resource types. You also must
-	//   set the allSupported field of RecordingGroup (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html)
-	//   to true . When Config adds support for a new type of regional resource, Config
-	//   automatically starts recording resources of that type. For a list of supported
-	//   resource types, see Supported Resource Types (https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources)
+	//   configuration changes for all supported resource types, excluding the global IAM
+	//   resource types. You also must set the allSupported field of [RecordingGroup]to true . When
+	//   Config adds support for a new resource type, Config automatically starts
+	//   recording resources of that type. For a list of supported resource types, see [Supported Resource Types]
 	//   in the Config developer guide.
+	//
 	//   - If you set this option to INCLUSION_BY_RESOURCE_TYPES , Config records
 	//   configuration changes for only the resource types that you specify in the
-	//   resourceTypes field of RecordingGroup (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html)
-	//   .
+	//   resourceTypes field of [RecordingGroup].
+	//
 	//   - If you set this option to EXCLUSION_BY_RESOURCE_TYPES , Config records
 	//   configuration changes for all supported resource types, except the resource
-	//   types that you specify as exemptions to exclude from being recorded in the
-	//   resourceTypes field of ExclusionByResourceTypes (https://docs.aws.amazon.com/config/latest/APIReference/API_ExclusionByResourceTypes.html)
-	//   .
-	// The recordingStrategy field is optional when you set the allSupported field of
-	// RecordingGroup (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html)
-	// to true . The recordingStrategy field is optional when you list resource types
-	// in the resourceTypes field of RecordingGroup (https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html)
-	// . The recordingStrategy field is required if you list resource types to exclude
-	// from recording in the resourceTypes field of ExclusionByResourceTypes (https://docs.aws.amazon.com/config/latest/APIReference/API_ExclusionByResourceTypes.html)
-	// . If you choose EXCLUSION_BY_RESOURCE_TYPES for the recording strategy, the
+	//   types that you specify to exclude from being recorded in the resourceTypes
+	//   field of [ExclusionByResourceTypes].
+	//
+	// Required and optional fields
+	//
+	// The recordingStrategy field is optional when you set the allSupported field of [RecordingGroup]
+	// to true .
+	//
+	// The recordingStrategy field is optional when you list resource types in the
+	// resourceTypes field of [RecordingGroup].
+	//
+	// The recordingStrategy field is required if you list resource types to exclude
+	// from recording in the resourceTypes field of [ExclusionByResourceTypes].
+	//
+	// Overriding fields
+	//
+	// If you choose EXCLUSION_BY_RESOURCE_TYPES for the recording strategy, the
 	// exclusionByResourceTypes field will override other properties in the request.
-	// For example, even if you set includeGlobalResourceTypes to false, global
+	//
+	// For example, even if you set includeGlobalResourceTypes to false, global IAM
 	// resource types will still be automatically recorded in this option unless those
-	// resource types are specifically listed as exemptions in the resourceTypes field
-	// of exclusionByResourceTypes . By default, if you choose the
-	// EXCLUSION_BY_RESOURCE_TYPES recording strategy, when Config adds support for a
-	// new resource type in the Region where you set up the configuration recorder,
-	// including global resource types, Config starts recording resources of that type
-	// automatically.
+	// resource types are specifically listed as exclusions in the resourceTypes field
+	// of exclusionByResourceTypes .
+	//
+	// Global resource types and the exclusion recording strategy
+	//
+	// By default, if you choose the EXCLUSION_BY_RESOURCE_TYPES recording strategy,
+	// when Config adds support for a new resource type in the Region where you set up
+	// the configuration recorder, including global resource types, Config starts
+	// recording resources of that type automatically.
+	//
+	// Unless specifically listed as exclusions, AWS::RDS::GlobalCluster will be
+	// recorded automatically in all supported Config Regions were the configuration
+	// recorder is enabled.
+	//
+	// IAM users, groups, roles, and customer managed policies will be recorded in the
+	// Region where you set up the configuration recorder if that is a Region where
+	// Config was available before February 2022. You cannot be record the global IAM
+	// resouce types in Regions supported by Config after February 2022. This list
+	// where you cannot record the global IAM resource types includes the following
+	// Regions:
+	//
+	//   - Asia Pacific (Hyderabad)
+	//
+	//   - Asia Pacific (Melbourne)
+	//
+	//   - Canada West (Calgary)
+	//
+	//   - Europe (Spain)
+	//
+	//   - Europe (Zurich)
+	//
+	//   - Israel (Tel Aviv)
+	//
+	//   - Middle East (UAE)
+	//
+	// [ExclusionByResourceTypes]: https://docs.aws.amazon.com/config/latest/APIReference/API_ExclusionByResourceTypes.html
+	// [RecordingGroup]: https://docs.aws.amazon.com/config/latest/APIReference/API_RecordingGroup.html
+	// [Supported Resource Types]: https://docs.aws.amazon.com/config/latest/developerguide/resource-config-reference.html#supported-resources
 	UseOnly RecordingStrategyType
 
 	noSmithyDocumentSerde
@@ -2308,10 +2961,13 @@ type RemediationConfiguration struct {
 	ExecutionControls *ExecutionControls
 
 	// The maximum number of failed attempts for auto-remediation. If you do not
-	// select a number, the default is 5. For example, if you specify
-	// MaximumAutomaticAttempts as 5 with RetryAttemptSeconds as 50 seconds, Config
-	// will put a RemediationException on your behalf for the failing resource after
-	// the 5th failed attempt within 50 seconds.
+	// select a number, the default is 5.
+	//
+	// For example, if you specify MaximumAutomaticAttempts as 5 with
+	// RetryAttemptSeconds as 50 seconds,
+	//
+	// Config will put a RemediationException on your behalf for the failing resource
+	// after the 5th failed attempt within 50 seconds.
 	MaximumAutomaticAttempts *int32
 
 	// An object of the RemediationParameterValue.
@@ -2320,14 +2976,20 @@ type RemediationConfiguration struct {
 	// The type of a resource.
 	ResourceType *string
 
-	// Maximum time in seconds that Config runs auto-remediation. If you do not select
-	// a number, the default is 60 seconds. For example, if you specify
-	// RetryAttemptSeconds as 50 seconds and MaximumAutomaticAttempts as 5, Config will
-	// run auto-remediations 5 times within 50 seconds before throwing an exception.
+	// Time window to determine whether or not to add a remediation exception to
+	// prevent infinite remediation attempts. If MaximumAutomaticAttempts remediation
+	// attempts have been made under RetryAttemptSeconds , a remediation exception will
+	// be added to the resource. If you do not select a number, the default is 60
+	// seconds.
+	//
+	// For example, if you specify RetryAttemptSeconds as 50 seconds and
+	// MaximumAutomaticAttempts as 5, Config will run auto-remediations 5 times within
+	// 50 seconds before adding a remediation exception to the resource.
 	RetryAttemptSeconds *int64
 
-	// Version of the target. For example, version of the SSM document. If you make
-	// backward incompatible changes to the SSM document, you must call
+	// Version of the target. For example, version of the SSM document.
+	//
+	// If you make backward incompatible changes to the SSM document, you must call
 	// PutRemediationConfiguration API again to ensure the remediations can run.
 	TargetVersion *string
 
@@ -2479,14 +3141,18 @@ type ResourceDetails struct {
 	// This member is required.
 	ResourceType *string
 
-	// The schema type of the resource configuration. You can find the Resource type
-	// schema (https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-schema.html)
-	// , or CFN_RESOURCE_SCHEMA , in "Amazon Web Services public extensions" within the
-	// CloudFormation registry or with the following CLI commmand: aws cloudformation
-	// describe-type --type-name "AWS::S3::Bucket" --type RESOURCE . For more
-	// information, see Managing extensions through the CloudFormation registry (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry.html#registry-view)
-	// and Amazon Web Services resource and property types reference (https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html)
-	// in the CloudFormation User Guide.
+	// The schema type of the resource configuration.
+	//
+	// You can find the [Resource type schema], or CFN_RESOURCE_SCHEMA , in "Amazon Web Services public
+	// extensions" within the CloudFormation registry or with the following CLI
+	// commmand: aws cloudformation describe-type --type-name "AWS::S3::Bucket" --type
+	// RESOURCE .
+	//
+	// For more information, see [Managing extensions through the CloudFormation registry] and [Amazon Web Services resource and property types reference] in the CloudFormation User Guide.
+	//
+	// [Resource type schema]: https://docs.aws.amazon.com/cloudformation-cli/latest/userguide/resource-type-schema.html
+	// [Amazon Web Services resource and property types reference]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/aws-template-resource-type-ref.html
+	// [Managing extensions through the CloudFormation registry]: https://docs.aws.amazon.com/AWSCloudFormation/latest/UserGuide/registry.html#registry-view
 	ResourceConfigurationSchemaType ResourceConfigurationSchemaType
 
 	noSmithyDocumentSerde
@@ -2514,8 +3180,10 @@ type ResourceEvaluationFilters struct {
 	// Stack.
 	EvaluationContextIdentifier *string
 
-	// Filters all resource evaluations results based on an evaluation mode. the valid
-	// value for this API is Proactive .
+	// Filters all resource evaluations results based on an evaluation mode.
+	//
+	// Currently, DECTECTIVE is not supported as a valid value. Ignore other
+	// documentation stating otherwise.
 	EvaluationMode EvaluationMode
 
 	// Returns a TimeWindow object.
@@ -2599,11 +3267,12 @@ type RetentionConfiguration struct {
 	// This member is required.
 	Name *string
 
-	// Number of days Config stores your historical information. Currently, only
-	// applicable to the configuration item history.
+	// Number of days Config stores your historical information.
+	//
+	// Currently, only applicable to the configuration item history.
 	//
 	// This member is required.
-	RetentionPeriodInDays int32
+	RetentionPeriodInDays *int32
 
 	noSmithyDocumentSerde
 }
@@ -2645,12 +3314,17 @@ type Scope struct {
 type Source struct {
 
 	// Indicates whether Amazon Web Services or the customer owns and manages the
-	// Config rule. Config Managed Rules are predefined rules owned by Amazon Web
-	// Services. For more information, see Config Managed Rules (https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html)
-	// in the Config developer guide. Config Custom Rules are rules that you can
-	// develop either with Guard ( CUSTOM_POLICY ) or Lambda ( CUSTOM_LAMBDA ). For
-	// more information, see Config Custom Rules  (https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_develop-rules.html)
-	// in the Config developer guide.
+	// Config rule.
+	//
+	// Config Managed Rules are predefined rules owned by Amazon Web Services. For
+	// more information, see [Config Managed Rules]in the Config developer guide.
+	//
+	// Config Custom Rules are rules that you can develop either with Guard (
+	// CUSTOM_POLICY ) or Lambda ( CUSTOM_LAMBDA ). For more information, see [Config Custom Rules] in the
+	// Config developer guide.
+	//
+	// [Config Custom Rules]: https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_develop-rules.html
+	// [Config Managed Rules]: https://docs.aws.amazon.com/config/latest/developerguide/evaluate-config_use-managed-rules.html
 	//
 	// This member is required.
 	Owner Owner
@@ -2662,18 +3336,23 @@ type Source struct {
 	// Provides the source and the message types that cause Config to evaluate your
 	// Amazon Web Services resources against a rule. It also provides the frequency
 	// with which you want Config to run evaluations for the rule if the trigger type
-	// is periodic. If the owner is set to CUSTOM_POLICY , the only acceptable values
-	// for the Config rule trigger message type are ConfigurationItemChangeNotification
-	// and OversizedConfigurationItemChangeNotification .
+	// is periodic.
+	//
+	// If the owner is set to CUSTOM_POLICY , the only acceptable values for the Config
+	// rule trigger message type are ConfigurationItemChangeNotification and
+	// OversizedConfigurationItemChangeNotification .
 	SourceDetails []SourceDetail
 
 	// For Config Managed rules, a predefined identifier from a list. For example,
-	// IAM_PASSWORD_POLICY is a managed rule. To reference a managed rule, see List of
-	// Config Managed Rules (https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html)
-	// . For Config Custom Lambda rules, the identifier is the Amazon Resource Name
+	// IAM_PASSWORD_POLICY is a managed rule. To reference a managed rule, see [List of Config Managed Rules].
+	//
+	// For Config Custom Lambda rules, the identifier is the Amazon Resource Name
 	// (ARN) of the rule's Lambda function, such as
-	// arn:aws:lambda:us-east-2:123456789012:function:custom_rule_name . For Config
-	// Custom Policy rules, this field will be ignored.
+	// arn:aws:lambda:us-east-2:123456789012:function:custom_rule_name .
+	//
+	// For Config Custom Policy rules, this field will be ignored.
+	//
+	// [List of Config Managed Rules]: https://docs.aws.amazon.com/config/latest/developerguide/managed-rules-by-aws-config.html
 	SourceIdentifier *string
 
 	noSmithyDocumentSerde
@@ -2692,26 +3371,35 @@ type SourceDetail struct {
 
 	// The frequency at which you want Config to run evaluations for a custom rule
 	// with a periodic trigger. If you specify a value for MaximumExecutionFrequency ,
-	// then MessageType must use the ScheduledNotification value. By default, rules
-	// with a periodic trigger are evaluated every 24 hours. To change the frequency,
-	// specify a valid value for the MaximumExecutionFrequency parameter. Based on the
-	// valid value you choose, Config runs evaluations once for each valid value. For
-	// example, if you choose Three_Hours , Config runs evaluations once every three
-	// hours. In this case, Three_Hours is the frequency of this rule.
+	// then MessageType must use the ScheduledNotification value.
+	//
+	// By default, rules with a periodic trigger are evaluated every 24 hours. To
+	// change the frequency, specify a valid value for the MaximumExecutionFrequency
+	// parameter.
+	//
+	// Based on the valid value you choose, Config runs evaluations once for each
+	// valid value. For example, if you choose Three_Hours , Config runs evaluations
+	// once every three hours. In this case, Three_Hours is the frequency of this
+	// rule.
 	MaximumExecutionFrequency MaximumExecutionFrequency
 
 	// The type of notification that triggers Config to run an evaluation for a rule.
 	// You can specify the following notification types:
+	//
 	//   - ConfigurationItemChangeNotification - Triggers an evaluation when Config
 	//   delivers a configuration item as a result of a resource change.
+	//
 	//   - OversizedConfigurationItemChangeNotification - Triggers an evaluation when
 	//   Config delivers an oversized configuration item. Config may generate this
 	//   notification type when a resource changes and the notification exceeds the
 	//   maximum size allowed by Amazon SNS.
+	//
 	//   - ScheduledNotification - Triggers a periodic evaluation at the frequency
 	//   specified for MaximumExecutionFrequency .
+	//
 	//   - ConfigurationSnapshotDeliveryCompleted - Triggers a periodic evaluation when
 	//   Config delivers a configuration snapshot.
+	//
 	// If you want your custom rule to be triggered by configuration changes, specify
 	// two SourceDetail objects, one for ConfigurationItemChangeNotification and one
 	// for OversizedConfigurationItemChangeNotification .
@@ -2763,16 +3451,26 @@ type StatusDetailFilters struct {
 	// calls PutOrganizationConfigRule action for the second time, Config rule status
 	// is updated in the member account. Config rule status is deleted when the
 	// management account deletes OrganizationConfigRule and disables service access
-	// for config-multiaccountsetup.amazonaws.com . Config sets the state of the rule
-	// to:
+	// for config-multiaccountsetup.amazonaws.com .
+	//
+	// Config sets the state of the rule to:
+	//
 	//   - CREATE_SUCCESSFUL when Config rule has been created in the member account.
+	//
 	//   - CREATE_IN_PROGRESS when Config rule is being created in the member account.
+	//
 	//   - CREATE_FAILED when Config rule creation has failed in the member account.
+	//
 	//   - DELETE_FAILED when Config rule deletion has failed in the member account.
+	//
 	//   - DELETE_IN_PROGRESS when Config rule is being deleted in the member account.
+	//
 	//   - DELETE_SUCCESSFUL when Config rule has been deleted in the member account.
+	//
 	//   - UPDATE_SUCCESSFUL when Config rule has been updated in the member account.
+	//
 	//   - UPDATE_IN_PROGRESS when Config rule is being updated in the member account.
+	//
 	//   - UPDATE_FAILED when Config rule deletion has failed in the member account.
 	MemberAccountRuleStatus MemberAccountRuleStatus
 
@@ -2851,22 +3549,26 @@ type Tag struct {
 // This API allows you to create a conformance pack template with an Amazon Web
 // Services Systems Manager document (SSM document). To deploy a conformance pack
 // using an SSM document, first create an SSM document with conformance pack
-// content, and then provide the DocumentName in the PutConformancePack API (https://docs.aws.amazon.com/config/latest/APIReference/API_PutConformancePack.html)
-// . You can also provide the DocumentVersion . The TemplateSSMDocumentDetails
-// object contains the name of the SSM document and the version of the SSM
-// document.
+// content, and then provide the DocumentName in the [PutConformancePack API]. You can also provide the
+// DocumentVersion .
+//
+// The TemplateSSMDocumentDetails object contains the name of the SSM document and
+// the version of the SSM document.
+//
+// [PutConformancePack API]: https://docs.aws.amazon.com/config/latest/APIReference/API_PutConformancePack.html
 type TemplateSSMDocumentDetails struct {
 
 	// The name or Amazon Resource Name (ARN) of the SSM document to use to create a
 	// conformance pack. If you use the document name, Config checks only your account
-	// and Amazon Web Services Region for the SSM document. If you want to use an SSM
-	// document from another Region or account, you must provide the ARN.
+	// and Amazon Web Services Region for the SSM document.
 	//
 	// This member is required.
 	DocumentName *string
 
 	// The version of the SSM document to use to create a conformance pack. By
-	// default, Config uses the latest version. This field is optional.
+	// default, Config uses the latest version.
+	//
+	// This field is optional.
 	DocumentVersion *string
 
 	noSmithyDocumentSerde

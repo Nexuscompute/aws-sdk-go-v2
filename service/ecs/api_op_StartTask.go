@@ -4,29 +4,31 @@ package ecs
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/ecs/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
 
 // Starts a new task from the specified task definition on the specified container
-// instance or instances. Starting April 15, 2023, Amazon Web Services will not
-// onboard new customers to Amazon Elastic Inference (EI), and will help current
-// customers migrate their workloads to options that offer better price and
-// performance. After April 15, 2023, new customers will not be able to launch
-// instances with Amazon EI accelerators in Amazon SageMaker, Amazon ECS, or Amazon
-// EC2. However, customers who have used Amazon EI at least once during the past
-// 30-day period are considered current customers and will be able to continue
-// using the service. Alternatively, you can use RunTask to place tasks for you.
-// For more information, see Scheduling Tasks (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html)
-// in the Amazon Elastic Container Service Developer Guide.
+// instance or instances.
+//
+// On March 21, 2024, a change was made to resolve the task definition revision
+// before authorization. When a task definition revision is not specified,
+// authorization will occur using the latest revision of a task definition.
+//
+// Amazon Elastic Inference (EI) is no longer available to customers.
+//
+// Alternatively, you can use RunTask to place tasks for you. For more
+// information, see [Scheduling Tasks]in the Amazon Elastic Container Service Developer Guide.
+//
+// You can attach Amazon EBS volumes to Amazon ECS tasks by configuring the volume
+// when creating or updating a service. For more infomation, see [Amazon EBS volumes]in the Amazon
+// Elastic Container Service Developer Guide.
+//
+// [Scheduling Tasks]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/scheduling_tasks.html
+// [Amazon EBS volumes]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ebs-volumes.html#ebs-volume-types
 func (c *Client) StartTask(ctx context.Context, params *StartTaskInput, optFns ...func(*Options)) (*StartTaskOutput, error) {
 	if params == nil {
 		params = &StartTaskInput{}
@@ -62,8 +64,9 @@ type StartTaskInput struct {
 	Cluster *string
 
 	// Specifies whether to use Amazon ECS managed tags for the task. For more
-	// information, see Tagging Your Amazon ECS Resources (https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html)
-	// in the Amazon Elastic Container Service Developer Guide.
+	// information, see [Tagging Your Amazon ECS Resources]in the Amazon Elastic Container Service Developer Guide.
+	//
+	// [Tagging Your Amazon ECS Resources]: https://docs.aws.amazon.com/AmazonECS/latest/developerguide/ecs-using-tags.html
 	EnableECSManagedTags bool
 
 	// Whether or not the execute command functionality is turned on for the task. If
@@ -85,45 +88,67 @@ type StartTaskInput struct {
 	// definition or Docker image) with a command override. You can also override
 	// existing environment variables (that are specified in the task definition or
 	// Docker image) on a container or add new environment variables to it with an
-	// environment override. A total of 8192 characters are allowed for overrides. This
-	// limit includes the JSON formatting characters of the override structure.
+	// environment override.
+	//
+	// A total of 8192 characters are allowed for overrides. This limit includes the
+	// JSON formatting characters of the override structure.
 	Overrides *types.TaskOverride
 
 	// Specifies whether to propagate the tags from the task definition or the service
 	// to the task. If no value is specified, the tags aren't propagated.
 	PropagateTags types.PropagateTags
 
-	// The reference ID to use for the task.
+	// This parameter is only used by Amazon ECS. It is not intended for use by
+	// customers.
 	ReferenceId *string
 
 	// An optional tag specified when a task is started. For example, if you
 	// automatically trigger a task to run a batch process job, you could apply a
 	// unique identifier for that job to your task with the startedBy parameter. You
-	// can then identify which tasks belong to that job by filtering the results of a
-	// ListTasks call with the startedBy value. Up to 36 letters (uppercase and
-	// lowercase), numbers, hyphens (-), and underscores (_) are allowed. If a task is
-	// started by an Amazon ECS service, the startedBy parameter contains the
-	// deployment ID of the service that starts it.
+	// can then identify which tasks belong to that job by filtering the results of a [ListTasks]
+	// call with the startedBy value. Up to 36 letters (uppercase and lowercase),
+	// numbers, hyphens (-), forward slash (/), and underscores (_) are allowed.
+	//
+	// If a task is started by an Amazon ECS service, the startedBy parameter contains
+	// the deployment ID of the service that starts it.
+	//
+	// [ListTasks]: https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_ListTasks.html
 	StartedBy *string
 
 	// The metadata that you apply to the task to help you categorize and organize
 	// them. Each tag consists of a key and an optional value, both of which you
-	// define. The following basic restrictions apply to tags:
+	// define.
+	//
+	// The following basic restrictions apply to tags:
+	//
 	//   - Maximum number of tags per resource - 50
+	//
 	//   - For each resource, each tag key must be unique, and each tag key can have
 	//   only one value.
+	//
 	//   - Maximum key length - 128 Unicode characters in UTF-8
+	//
 	//   - Maximum value length - 256 Unicode characters in UTF-8
+	//
 	//   - If your tagging schema is used across multiple services and resources,
 	//   remember that other services may have restrictions on allowed characters.
 	//   Generally allowed characters are: letters, numbers, and spaces representable in
 	//   UTF-8, and the following characters: + - = . _ : / @.
+	//
 	//   - Tag keys and values are case-sensitive.
+	//
 	//   - Do not use aws: , AWS: , or any upper or lowercase combination of such as a
 	//   prefix for either keys or values as it is reserved for Amazon Web Services use.
 	//   You cannot edit or delete tag keys or values with this prefix. Tags with this
 	//   prefix do not count against your tags per resource limit.
 	Tags []types.Tag
+
+	// The details of the volume that was configuredAtLaunch . You can configure the
+	// size, volumeType, IOPS, throughput, snapshot and encryption in [TaskManagedEBSVolumeConfiguration]. The name of
+	// the volume must match the name from the task definition.
+	//
+	// [TaskManagedEBSVolumeConfiguration]: https://docs.aws.amazon.com/AmazonECS/latest/APIReference/API_TaskManagedEBSVolumeConfiguration.html
+	VolumeConfigurations []types.TaskVolumeConfiguration
 
 	noSmithyDocumentSerde
 }
@@ -144,6 +169,9 @@ type StartTaskOutput struct {
 }
 
 func (c *Client) addOperationStartTaskMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpStartTask{}, middleware.After)
 	if err != nil {
 		return err
@@ -152,34 +180,38 @@ func (c *Client) addOperationStartTaskMiddlewares(stack *middleware.Stack, optio
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "StartTask"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -191,7 +223,13 @@ func (c *Client) addOperationStartTaskMiddlewares(stack *middleware.Stack, optio
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addStartTaskResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpStartTaskValidationMiddleware(stack); err != nil {
@@ -200,7 +238,7 @@ func (c *Client) addOperationStartTaskMiddlewares(stack *middleware.Stack, optio
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opStartTask(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -212,7 +250,19 @@ func (c *Client) addOperationStartTaskMiddlewares(stack *middleware.Stack, optio
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -222,130 +272,6 @@ func newServiceMetadataMiddleware_opStartTask(region string) *awsmiddleware.Regi
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "ecs",
 		OperationName: "StartTask",
 	}
-}
-
-type opStartTaskResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opStartTaskResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opStartTaskResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "ecs"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "ecs"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("ecs")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addStartTaskResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opStartTaskResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

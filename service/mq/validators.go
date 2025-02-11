@@ -503,6 +503,9 @@ func validateEncryptionOptions(v *types.EncryptionOptions) error {
 		return nil
 	}
 	invalidParams := smithy.InvalidParamsError{Context: "EncryptionOptions"}
+	if v.UseAwsOwnedKey == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("UseAwsOwnedKey"))
+	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
 	} else {
@@ -603,9 +606,6 @@ func validateOpCreateBrokerInput(v *CreateBrokerInput) error {
 	if len(v.EngineType) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("EngineType"))
 	}
-	if v.EngineVersion == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("EngineVersion"))
-	}
 	if v.HostInstanceType == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("HostInstanceType"))
 	}
@@ -618,6 +618,9 @@ func validateOpCreateBrokerInput(v *CreateBrokerInput) error {
 		if err := validateWeeklyStartTime(v.MaintenanceWindowStartTime); err != nil {
 			invalidParams.AddNested("MaintenanceWindowStartTime", err.(smithy.InvalidParamsError))
 		}
+	}
+	if v.PubliclyAccessible == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("PubliclyAccessible"))
 	}
 	if v.Users == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Users"))
@@ -640,9 +643,6 @@ func validateOpCreateConfigurationInput(v *CreateConfigurationInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "CreateConfigurationInput"}
 	if len(v.EngineType) == 0 {
 		invalidParams.Add(smithy.NewErrParamRequired("EngineType"))
-	}
-	if v.EngineVersion == nil {
-		invalidParams.Add(smithy.NewErrParamRequired("EngineVersion"))
 	}
 	if v.Name == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Name"))

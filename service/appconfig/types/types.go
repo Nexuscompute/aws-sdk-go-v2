@@ -8,19 +8,27 @@ import (
 )
 
 // An action defines the tasks that the extension performs during the AppConfig
-// workflow. Each action includes an action point such as
-// ON_CREATE_HOSTED_CONFIGURATION , PRE_DEPLOYMENT , or ON_DEPLOYMENT . Each action
-// also includes a name, a URI to an Lambda function, and an Amazon Resource Name
-// (ARN) for an Identity and Access Management assume role. You specify the name,
-// URI, and ARN for each action point defined in the extension. You can specify the
-// following actions for an extension:
+// workflow. Each action includes an action point, as shown in the following list:
+//
 //   - PRE_CREATE_HOSTED_CONFIGURATION_VERSION
+//
 //   - PRE_START_DEPLOYMENT
+//
+//   - AT_DEPLOYMENT_TICK
+//
 //   - ON_DEPLOYMENT_START
+//
 //   - ON_DEPLOYMENT_STEP
+//
 //   - ON_DEPLOYMENT_BAKING
+//
 //   - ON_DEPLOYMENT_COMPLETE
+//
 //   - ON_DEPLOYMENT_ROLLED_BACK
+//
+// Each action also includes a name, a URI to an Lambda function, and an Amazon
+// Resource Name (ARN) for an Identity and Access Management assume role. You
+// specify the name, URI, and ARN for each action point defined in the extension.
 type Action struct {
 
 	// Information about the action.
@@ -142,12 +150,47 @@ type ConfigurationProfileSummary struct {
 	// flags and freeform configurations. We recommend you create feature flag
 	// configurations to enable or disable new features and freeform configurations to
 	// distribute configurations to an application. When calling this API, enter one of
-	// the following values for Type : AWS.AppConfig.FeatureFlags
+	// the following values for Type :
+	//
+	//     AWS.AppConfig.FeatureFlags
+	//
 	//     AWS.Freeform
 	Type *string
 
 	// The types of validators in the configuration profile.
 	ValidatorTypes []ValidatorType
+
+	noSmithyDocumentSerde
+}
+
+// A parameter to configure deletion protection. If enabled, deletion protection
+// prevents a user from deleting a configuration profile or an environment if
+// AppConfig has called either [GetLatestConfiguration]or for the configuration profile or from the
+// environment during the specified interval.
+//
+// This setting uses the following default values:
+//
+//   - Deletion protection is disabled by default.
+//
+//   - The default interval specified by ProtectionPeriodInMinutes is 60.
+//
+//   - DeletionProtectionCheck skips configuration profiles and environments that
+//     were created in the past hour.
+//
+// [GetLatestConfiguration]: https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html
+type DeletionProtectionSettings struct {
+
+	// A parameter that indicates if deletion protection is enabled or not.
+	Enabled *bool
+
+	// The time interval during which AppConfig monitors for calls to [GetLatestConfiguration] or for a
+	// configuration profile or from an environment. AppConfig returns an error if a
+	// user calls or for the designated configuration profile or environment. To bypass
+	// the error and delete a configuration profile or an environment, specify BYPASS
+	// for the DeletionProtectionCheck parameter for either or .
+	//
+	// [GetLatestConfiguration]: https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html
+	ProtectionPeriodInMinutes *int32
 
 	noSmithyDocumentSerde
 }
@@ -159,9 +202,15 @@ type DeploymentEvent struct {
 	ActionInvocations []ActionInvocation
 
 	// A description of the deployment event. Descriptions include, but are not
-	// limited to, the user account or the Amazon CloudWatch alarm ARN that initiated a
-	// rollback, the percentage of hosts that received the deployment, or in the case
-	// of an internal error, a recommendation to attempt a new deployment.
+	// limited to, the following:
+	//
+	//   - The Amazon Web Services account or the Amazon CloudWatch alarm ARN that
+	//   initiated a rollback.
+	//
+	//   - The percentage of hosts that received the deployment.
+	//
+	//   - A recommendation to attempt a new deployment (in the case of an internal
+	//   error).
 	Description *string
 
 	// The type of deployment event. Deployment event types include the start, stop,
@@ -193,7 +242,7 @@ type DeploymentStrategy struct {
 
 	// The percentage of targets that received a deployed configuration during each
 	// interval.
-	GrowthFactor float32
+	GrowthFactor *float32
 
 	// The algorithm used to define how percentage grew over time.
 	GrowthType GrowthType
@@ -234,19 +283,22 @@ type DeploymentSummary struct {
 
 	// The percentage of targets to receive a deployed configuration during each
 	// interval.
-	GrowthFactor float32
+	GrowthFactor *float32
 
 	// The algorithm used to define how percentage grows over time.
 	GrowthType GrowthType
 
 	// The percentage of targets for which the deployment is available.
-	PercentageComplete float32
+	PercentageComplete *float32
 
 	// Time the deployment started.
 	StartedAt *time.Time
 
 	// The state of the deployment.
 	State DeploymentState
+
+	// A user-defined label for an AppConfig hosted configuration version.
+	VersionLabel *string
 
 	noSmithyDocumentSerde
 }
@@ -326,12 +378,18 @@ type HostedConfigurationVersionSummary struct {
 	ConfigurationProfileId *string
 
 	// A standard MIME type describing the format of the configuration content. For
-	// more information, see Content-Type (https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17)
-	// .
+	// more information, see [Content-Type].
+	//
+	// [Content-Type]: https://www.w3.org/Protocols/rfc2616/rfc2616-sec14.html#sec14.17
 	ContentType *string
 
 	// A description of the configuration.
 	Description *string
+
+	// The Amazon Resource Name of the Key Management Service key that was used to
+	// encrypt this specific version of the configuration data in the AppConfig hosted
+	// configuration store.
+	KmsKeyArn *string
 
 	// A user-defined label for an AppConfig hosted configuration version.
 	VersionLabel *string
@@ -385,12 +443,18 @@ type Monitor struct {
 // A value such as an Amazon Resource Name (ARN) or an Amazon Simple Notification
 // Service topic entered in an extension when invoked. Parameter values are
 // specified in an extension association. For more information about extensions,
-// see Working with AppConfig extensions (https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html)
-// in the AppConfig User Guide.
+// see [Extending workflows]in the AppConfig User Guide.
+//
+// [Extending workflows]: https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html
 type Parameter struct {
 
 	// Information about the parameter.
 	Description *string
+
+	// Indicates whether this parameter's value can be supplied at the extension's
+	// action point instead of during extension association. Dynamic parameters can't
+	// be marked Required .
+	Dynamic bool
 
 	// A parameter value must be specified in the extension association.
 	Required bool
@@ -402,7 +466,10 @@ type Parameter struct {
 // that you want to deploy functions as intended. To validate your application
 // configuration data, you provide a schema or an Amazon Web Services Lambda
 // function that runs against the configuration. The configuration deployment or
-// update can only proceed when the configuration data is valid.
+// update can only proceed when the configuration data is valid. For more
+// information, see [About validators]in the AppConfig User Guide.
+//
+// [About validators]: https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-profile.html#appconfig-creating-configuration-and-profile-validators
 type Validator struct {
 
 	// Either the JSON Schema content or the Amazon Resource Name (ARN) of an Lambda

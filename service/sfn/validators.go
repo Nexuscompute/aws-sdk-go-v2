@@ -410,6 +410,26 @@ func (m *validateOpPublishStateMachineVersion) HandleInitialize(ctx context.Cont
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpRedriveExecution struct {
+}
+
+func (*validateOpRedriveExecution) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpRedriveExecution) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*RedriveExecutionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpRedriveExecutionInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpSendTaskFailure struct {
 }
 
@@ -550,6 +570,26 @@ func (m *validateOpTagResource) HandleInitialize(ctx context.Context, in middlew
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpTestState struct {
+}
+
+func (*validateOpTestState) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpTestState) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*TestStateInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpTestStateInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUntagResource struct {
 }
 
@@ -625,6 +665,26 @@ func (m *validateOpUpdateStateMachine) HandleInitialize(ctx context.Context, in 
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpUpdateStateMachineInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpValidateStateMachineDefinition struct {
+}
+
+func (*validateOpValidateStateMachineDefinition) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpValidateStateMachineDefinition) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ValidateStateMachineDefinitionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpValidateStateMachineDefinitionInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -710,6 +770,10 @@ func addOpPublishStateMachineVersionValidationMiddleware(stack *middleware.Stack
 	return stack.Initialize.Add(&validateOpPublishStateMachineVersion{}, middleware.After)
 }
 
+func addOpRedriveExecutionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpRedriveExecution{}, middleware.After)
+}
+
 func addOpSendTaskFailureValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpSendTaskFailure{}, middleware.After)
 }
@@ -738,6 +802,10 @@ func addOpTagResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpTagResource{}, middleware.After)
 }
 
+func addOpTestStateValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpTestState{}, middleware.After)
+}
+
 func addOpUntagResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUntagResource{}, middleware.After)
 }
@@ -752,6 +820,25 @@ func addOpUpdateStateMachineAliasValidationMiddleware(stack *middleware.Stack) e
 
 func addOpUpdateStateMachineValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateStateMachine{}, middleware.After)
+}
+
+func addOpValidateStateMachineDefinitionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpValidateStateMachineDefinition{}, middleware.After)
+}
+
+func validateEncryptionConfiguration(v *types.EncryptionConfiguration) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "EncryptionConfiguration"}
+	if len(v.Type) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Type"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
 }
 
 func validateRoutingConfigurationList(v []types.RoutingConfigurationListItem) error {
@@ -793,6 +880,11 @@ func validateOpCreateActivityInput(v *CreateActivityInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "CreateActivityInput"}
 	if v.Name == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("Name"))
+	}
+	if v.EncryptionConfiguration != nil {
+		if err := validateEncryptionConfiguration(v.EncryptionConfiguration); err != nil {
+			invalidParams.AddNested("EncryptionConfiguration", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -836,6 +928,11 @@ func validateOpCreateStateMachineInput(v *CreateStateMachineInput) error {
 	}
 	if v.RoleArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("RoleArn"))
+	}
+	if v.EncryptionConfiguration != nil {
+		if err := validateEncryptionConfiguration(v.EncryptionConfiguration); err != nil {
+			invalidParams.AddNested("EncryptionConfiguration", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1099,6 +1196,21 @@ func validateOpPublishStateMachineVersionInput(v *PublishStateMachineVersionInpu
 	}
 }
 
+func validateOpRedriveExecutionInput(v *RedriveExecutionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RedriveExecutionInput"}
+	if v.ExecutionArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ExecutionArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpSendTaskFailureInput(v *SendTaskFailureInput) error {
 	if v == nil {
 		return nil
@@ -1210,6 +1322,21 @@ func validateOpTagResourceInput(v *TagResourceInput) error {
 	}
 }
 
+func validateOpTestStateInput(v *TestStateInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "TestStateInput"}
+	if v.Definition == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Definition"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpUntagResourceInput(v *UntagResourceInput) error {
 	if v == nil {
 		return nil
@@ -1270,6 +1397,26 @@ func validateOpUpdateStateMachineInput(v *UpdateStateMachineInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "UpdateStateMachineInput"}
 	if v.StateMachineArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("StateMachineArn"))
+	}
+	if v.EncryptionConfiguration != nil {
+		if err := validateEncryptionConfiguration(v.EncryptionConfiguration); err != nil {
+			invalidParams.AddNested("EncryptionConfiguration", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpValidateStateMachineDefinitionInput(v *ValidateStateMachineDefinitionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ValidateStateMachineDefinitionInput"}
+	if v.Definition == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Definition"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams

@@ -14,8 +14,9 @@ const (
 )
 
 // Values returns all known values for DukptDerivationType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DukptDerivationType) Values() []DukptDerivationType {
 	return []DukptDerivationType{
 		"TDES_2KEY",
@@ -35,8 +36,9 @@ const (
 )
 
 // Values returns all known values for DukptEncryptionMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DukptEncryptionMode) Values() []DukptEncryptionMode {
 	return []DukptEncryptionMode{
 		"ECB",
@@ -54,13 +56,52 @@ const (
 )
 
 // Values returns all known values for DukptKeyVariant. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DukptKeyVariant) Values() []DukptKeyVariant {
 	return []DukptKeyVariant{
 		"BIDIRECTIONAL",
 		"REQUEST",
 		"RESPONSE",
+	}
+}
+
+type EmvEncryptionMode string
+
+// Enum values for EmvEncryptionMode
+const (
+	EmvEncryptionModeEcb EmvEncryptionMode = "ECB"
+	EmvEncryptionModeCbc EmvEncryptionMode = "CBC"
+)
+
+// Values returns all known values for EmvEncryptionMode. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EmvEncryptionMode) Values() []EmvEncryptionMode {
+	return []EmvEncryptionMode{
+		"ECB",
+		"CBC",
+	}
+}
+
+type EmvMajorKeyDerivationMode string
+
+// Enum values for EmvMajorKeyDerivationMode
+const (
+	EmvMajorKeyDerivationModeEmvOptionA EmvMajorKeyDerivationMode = "EMV_OPTION_A"
+	EmvMajorKeyDerivationModeEmvOptionB EmvMajorKeyDerivationMode = "EMV_OPTION_B"
+)
+
+// Values returns all known values for EmvMajorKeyDerivationMode. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EmvMajorKeyDerivationMode) Values() []EmvMajorKeyDerivationMode {
+	return []EmvMajorKeyDerivationMode{
+		"EMV_OPTION_A",
+		"EMV_OPTION_B",
 	}
 }
 
@@ -79,8 +120,9 @@ const (
 )
 
 // Values returns all known values for EncryptionMode. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EncryptionMode) Values() []EncryptionMode {
 	return []EncryptionMode{
 		"ECB",
@@ -91,6 +133,65 @@ func (EncryptionMode) Values() []EncryptionMode {
 		"CFB64",
 		"CFB128",
 		"OFB",
+	}
+}
+
+type KeyCheckValueAlgorithm string
+
+// Enum values for KeyCheckValueAlgorithm
+const (
+	KeyCheckValueAlgorithmCmac     KeyCheckValueAlgorithm = "CMAC"
+	KeyCheckValueAlgorithmAnsiX924 KeyCheckValueAlgorithm = "ANSI_X9_24"
+)
+
+// Values returns all known values for KeyCheckValueAlgorithm. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KeyCheckValueAlgorithm) Values() []KeyCheckValueAlgorithm {
+	return []KeyCheckValueAlgorithm{
+		"CMAC",
+		"ANSI_X9_24",
+	}
+}
+
+type KeyDerivationFunction string
+
+// Enum values for KeyDerivationFunction
+const (
+	KeyDerivationFunctionNistSp800 KeyDerivationFunction = "NIST_SP800"
+	KeyDerivationFunctionAnsiX963  KeyDerivationFunction = "ANSI_X963"
+)
+
+// Values returns all known values for KeyDerivationFunction. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KeyDerivationFunction) Values() []KeyDerivationFunction {
+	return []KeyDerivationFunction{
+		"NIST_SP800",
+		"ANSI_X963",
+	}
+}
+
+type KeyDerivationHashAlgorithm string
+
+// Enum values for KeyDerivationHashAlgorithm
+const (
+	KeyDerivationHashAlgorithmSha256 KeyDerivationHashAlgorithm = "SHA_256"
+	KeyDerivationHashAlgorithmSha384 KeyDerivationHashAlgorithm = "SHA_384"
+	KeyDerivationHashAlgorithmSha512 KeyDerivationHashAlgorithm = "SHA_512"
+)
+
+// Values returns all known values for KeyDerivationHashAlgorithm. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (KeyDerivationHashAlgorithm) Values() []KeyDerivationHashAlgorithm {
+	return []KeyDerivationHashAlgorithm{
+		"SHA_256",
+		"SHA_384",
+		"SHA_512",
 	}
 }
 
@@ -108,8 +209,9 @@ const (
 )
 
 // Values returns all known values for MacAlgorithm. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MacAlgorithm) Values() []MacAlgorithm {
 	return []MacAlgorithm{
 		"ISO9797_ALGORITHM1",
@@ -131,8 +233,9 @@ const (
 )
 
 // Values returns all known values for MajorKeyDerivationMode. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (MajorKeyDerivationMode) Values() []MajorKeyDerivationMode {
 	return []MajorKeyDerivationMode{
 		"EMV_OPTION_A",
@@ -151,8 +254,9 @@ const (
 )
 
 // Values returns all known values for PaddingType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PaddingType) Values() []PaddingType {
 	return []PaddingType{
 		"PKCS1",
@@ -162,21 +266,84 @@ func (PaddingType) Values() []PaddingType {
 	}
 }
 
+type PinBlockFormatForEmvPinChange string
+
+// Enum values for PinBlockFormatForEmvPinChange
+const (
+	PinBlockFormatForEmvPinChangeIsoFormat0 PinBlockFormatForEmvPinChange = "ISO_FORMAT_0"
+	PinBlockFormatForEmvPinChangeIsoFormat1 PinBlockFormatForEmvPinChange = "ISO_FORMAT_1"
+	PinBlockFormatForEmvPinChangeIsoFormat3 PinBlockFormatForEmvPinChange = "ISO_FORMAT_3"
+)
+
+// Values returns all known values for PinBlockFormatForEmvPinChange. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PinBlockFormatForEmvPinChange) Values() []PinBlockFormatForEmvPinChange {
+	return []PinBlockFormatForEmvPinChange{
+		"ISO_FORMAT_0",
+		"ISO_FORMAT_1",
+		"ISO_FORMAT_3",
+	}
+}
+
 type PinBlockFormatForPinData string
 
 // Enum values for PinBlockFormatForPinData
 const (
 	PinBlockFormatForPinDataIsoFormat0 PinBlockFormatForPinData = "ISO_FORMAT_0"
 	PinBlockFormatForPinDataIsoFormat3 PinBlockFormatForPinData = "ISO_FORMAT_3"
+	PinBlockFormatForPinDataIsoFormat4 PinBlockFormatForPinData = "ISO_FORMAT_4"
 )
 
 // Values returns all known values for PinBlockFormatForPinData. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (PinBlockFormatForPinData) Values() []PinBlockFormatForPinData {
 	return []PinBlockFormatForPinData{
 		"ISO_FORMAT_0",
 		"ISO_FORMAT_3",
+		"ISO_FORMAT_4",
+	}
+}
+
+type PinBlockLengthPosition string
+
+// Enum values for PinBlockLengthPosition
+const (
+	PinBlockLengthPositionNone            PinBlockLengthPosition = "NONE"
+	PinBlockLengthPositionFrontOfPinBlock PinBlockLengthPosition = "FRONT_OF_PIN_BLOCK"
+)
+
+// Values returns all known values for PinBlockLengthPosition. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PinBlockLengthPosition) Values() []PinBlockLengthPosition {
+	return []PinBlockLengthPosition{
+		"NONE",
+		"FRONT_OF_PIN_BLOCK",
+	}
+}
+
+type PinBlockPaddingType string
+
+// Enum values for PinBlockPaddingType
+const (
+	PinBlockPaddingTypeNoPadding   PinBlockPaddingType = "NO_PADDING"
+	PinBlockPaddingTypeIsoIec78164 PinBlockPaddingType = "ISO_IEC_7816_4"
+)
+
+// Values returns all known values for PinBlockPaddingType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PinBlockPaddingType) Values() []PinBlockPaddingType {
+	return []PinBlockPaddingType{
+		"NO_PADDING",
+		"ISO_IEC_7816_4",
 	}
 }
 
@@ -193,6 +360,7 @@ const (
 
 // Values returns all known values for SessionKeyDerivationMode. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (SessionKeyDerivationMode) Values() []SessionKeyDerivationMode {
 	return []SessionKeyDerivationMode{
@@ -201,6 +369,31 @@ func (SessionKeyDerivationMode) Values() []SessionKeyDerivationMode {
 		"AMEX",
 		"MASTERCARD_SESSION_KEY",
 		"VISA",
+	}
+}
+
+type SymmetricKeyAlgorithm string
+
+// Enum values for SymmetricKeyAlgorithm
+const (
+	SymmetricKeyAlgorithmTdes2key SymmetricKeyAlgorithm = "TDES_2KEY"
+	SymmetricKeyAlgorithmTdes3key SymmetricKeyAlgorithm = "TDES_3KEY"
+	SymmetricKeyAlgorithmAes128   SymmetricKeyAlgorithm = "AES_128"
+	SymmetricKeyAlgorithmAes192   SymmetricKeyAlgorithm = "AES_192"
+	SymmetricKeyAlgorithmAes256   SymmetricKeyAlgorithm = "AES_256"
+)
+
+// Values returns all known values for SymmetricKeyAlgorithm. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (SymmetricKeyAlgorithm) Values() []SymmetricKeyAlgorithm {
+	return []SymmetricKeyAlgorithm{
+		"TDES_2KEY",
+		"TDES_3KEY",
+		"AES_128",
+		"AES_192",
+		"AES_256",
 	}
 }
 
@@ -216,6 +409,7 @@ const (
 
 // Values returns all known values for VerificationFailedReason. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (VerificationFailedReason) Values() []VerificationFailedReason {
 	return []VerificationFailedReason{

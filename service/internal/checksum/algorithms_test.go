@@ -1,5 +1,5 @@
-//go:build go1.16
-// +build go1.16
+//go:build go1.21
+// +build go1.21
 
 package checksum
 
@@ -10,13 +10,12 @@ import (
 	"encoding/base64"
 	"fmt"
 	"hash/crc32"
+	"hash/crc64"
 	"io"
 	"io/ioutil"
 	"strings"
 	"testing"
 	"testing/iotest"
-
-	"github.com/google/go-cmp/cmp"
 )
 
 func TestComputeChecksumReader(t *testing.T) {
@@ -71,6 +70,13 @@ func TestComputeChecksumReader(t *testing.T) {
 			ExpectRead:        "hello world",
 			ExpectChecksum:    "uU0nuZNNPgilLlLX2n2r+sSE7+N6U4DukIj3rOLvzek=",
 		},
+		"crc64nvme": {
+			Input:             strings.NewReader("hello world"),
+			Algorithm:         AlgorithmCRC64NVME,
+			ExpectChecksumLen: base64.StdEncoding.EncodedLen(crc64.Size),
+			ExpectRead:        "hello world",
+			ExpectChecksum:    "jSnVw/bqjr4=",
+		},
 	}
 
 	for name, c := range cases {
@@ -114,7 +120,7 @@ func TestComputeChecksumReader(t *testing.T) {
 				return
 			}
 
-			if diff := cmp.Diff(string(c.ExpectRead), string(b)); diff != "" {
+			if diff := cmpDiff(string(c.ExpectRead), string(b)); diff != "" {
 				t.Errorf("expect read match, got\n%v", diff)
 			}
 
@@ -129,7 +135,7 @@ func TestComputeChecksumReader(t *testing.T) {
 			if err != nil && !strings.Contains(err.Error(), c.ExpectComputeErr) {
 				t.Fatalf("expect error to contain %v, got %v", c.ExpectComputeErr, err)
 			}
-			if diff := cmp.Diff(c.ExpectChecksum, v); diff != "" {
+			if diff := cmpDiff(c.ExpectChecksum, v); diff != "" {
 				t.Errorf("expect checksum match, got\n%v", diff)
 			}
 			if c.ExpectComputeErr != "" {
@@ -229,7 +235,7 @@ func TestValidateChecksumReader(t *testing.T) {
 				t.Fatalf("expected error %v to contain %v", err.Error(), c.expectChecksumErr)
 			}
 
-			if diff := cmp.Diff(c.expectedBody, actualResponse); len(diff) != 0 {
+			if diff := cmpDiff(c.expectedBody, actualResponse); len(diff) != 0 {
 				t.Fatalf("found diff comparing response body  %v", diff)
 			}
 
@@ -394,12 +400,13 @@ func TestFilterSupportedAlgorithms(t *testing.T) {
 			},
 		},
 		"mixed case": {
-			values: []string{"Crc32", "cRc32c", "shA1", "sHA256"},
+			values: []string{"Crc32", "cRc32c", "shA1", "sHA256", "crc64nvme"},
 			expectAlgorithms: []Algorithm{
 				AlgorithmCRC32,
 				AlgorithmCRC32C,
 				AlgorithmSHA1,
 				AlgorithmSHA256,
+				AlgorithmCRC64NVME,
 			},
 		},
 	}
@@ -407,7 +414,7 @@ func TestFilterSupportedAlgorithms(t *testing.T) {
 	for name, c := range cases {
 		t.Run(name, func(t *testing.T) {
 			algorithms := FilterSupportedAlgorithms(c.values)
-			if diff := cmp.Diff(c.expectAlgorithms, algorithms); diff != "" {
+			if diff := cmpDiff(c.expectAlgorithms, algorithms); diff != "" {
 				t.Errorf("expect algorithms match\n%s", diff)
 			}
 		})
@@ -443,6 +450,10 @@ func TestAlgorithmChecksumLength(t *testing.T) {
 		"sha256": {
 			algorithm:    AlgorithmSHA256,
 			expectLength: sha256.Size,
+		},
+		"crc64nvme": {
+			algorithm:    AlgorithmCRC64NVME,
+			expectLength: crc64.Size,
 		},
 	}
 

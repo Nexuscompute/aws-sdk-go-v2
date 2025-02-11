@@ -4,14 +4,9 @@ package costexplorer
 
 import (
 	"context"
-	"errors"
 	"fmt"
-	"github.com/aws/aws-sdk-go-v2/aws"
 	awsmiddleware "github.com/aws/aws-sdk-go-v2/aws/middleware"
-	"github.com/aws/aws-sdk-go-v2/aws/signer/v4"
-	internalauth "github.com/aws/aws-sdk-go-v2/internal/auth"
 	"github.com/aws/aws-sdk-go-v2/service/costexplorer/types"
-	smithyendpoints "github.com/aws/smithy-go/endpoints"
 	"github.com/aws/smithy-go/middleware"
 	smithyhttp "github.com/aws/smithy-go/transport/http"
 )
@@ -23,20 +18,33 @@ import (
 // associated member accounts. This supports dimensions, Cost Categories, and
 // nested expressions. For any time period, you can filter data about reservation
 // usage by the following dimensions:
+//
 //   - AZ
+//
 //   - CACHE_ENGINE
+//
 //   - DATABASE_ENGINE
+//
 //   - DEPLOYMENT_OPTION
+//
 //   - INSTANCE_TYPE
+//
 //   - LINKED_ACCOUNT
+//
 //   - OPERATING_SYSTEM
+//
 //   - PLATFORM
+//
 //   - REGION
+//
 //   - SERVICE
+//
 //   - TAG
+//
 //   - TENANCY
 //
-// To determine valid values for a dimension, use the GetDimensionValues operation.
+// To determine valid values for a dimension, use the GetDimensionValues
+// operation.
 func (c *Client) GetReservationCoverage(ctx context.Context, params *GetReservationCoverageInput, optFns ...func(*Options)) (*GetReservationCoverageOutput, error) {
 	if params == nil {
 		params = &GetReservationCoverageInput{}
@@ -68,43 +76,74 @@ type GetReservationCoverageInput struct {
 
 	// Filters utilization data by dimensions. You can filter by the following
 	// dimensions:
+	//
 	//   - AZ
+	//
 	//   - CACHE_ENGINE
+	//
 	//   - DATABASE_ENGINE
+	//
 	//   - DEPLOYMENT_OPTION
+	//
 	//   - INSTANCE_TYPE
+	//
 	//   - LINKED_ACCOUNT
+	//
 	//   - OPERATING_SYSTEM
+	//
 	//   - PLATFORM
+	//
 	//   - REGION
+	//
 	//   - SERVICE
+	//
 	//   - TAG
+	//
 	//   - TENANCY
-	// GetReservationCoverage uses the same Expression (https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html)
-	// object as the other operations, but only AND is supported among each dimension.
-	// You can nest only one level deep. If there are multiple values for a dimension,
-	// they are OR'd together. If you don't provide a SERVICE filter, Cost Explorer
-	// defaults to EC2. Cost category is also supported.
+	//
+	// GetReservationCoverage uses the same [Expression] object as the other operations, but only
+	// AND is supported among each dimension. You can nest only one level deep. If
+	// there are multiple values for a dimension, they are OR'd together.
+	//
+	// If you don't provide a SERVICE filter, Cost Explorer defaults to EC2.
+	//
+	// Cost category is also supported.
+	//
+	// [Expression]: https://docs.aws.amazon.com/aws-cost-management/latest/APIReference/API_Expression.html
 	Filter *types.Expression
 
 	// The granularity of the Amazon Web Services cost data for the reservation. Valid
-	// values are MONTHLY and DAILY . If GroupBy is set, Granularity can't be set. If
-	// Granularity isn't set, the response object doesn't include Granularity , either
-	// MONTHLY or DAILY . The GetReservationCoverage operation supports only DAILY and
-	// MONTHLY granularities.
+	// values are MONTHLY and DAILY .
+	//
+	// If GroupBy is set, Granularity can't be set. If Granularity isn't set, the
+	// response object doesn't include Granularity , either MONTHLY or DAILY .
+	//
+	// The GetReservationCoverage operation supports only DAILY and MONTHLY
+	// granularities.
 	Granularity types.Granularity
 
 	// You can group the data by the following attributes:
+	//
 	//   - AZ
+	//
 	//   - CACHE_ENGINE
+	//
 	//   - DATABASE_ENGINE
+	//
 	//   - DEPLOYMENT_OPTION
+	//
 	//   - INSTANCE_TYPE
+	//
 	//   - INVOICING_ENTITY
+	//
 	//   - LINKED_ACCOUNT
+	//
 	//   - OPERATING_SYSTEM
+	//
 	//   - PLATFORM
+	//
 	//   - REGION
+	//
 	//   - TENANCY
 	GroupBy []types.GroupDefinition
 
@@ -114,8 +153,10 @@ type GetReservationCoverageInput struct {
 	// of objects.
 	MaxResults *int32
 
-	// The measurement that you want your reservation coverage reported in. Valid
-	// values are Hour , Unit , and Cost . You can use multiple values in a request.
+	// The measurement that you want your reservation coverage reported in.
+	//
+	// Valid values are Hour , Unit , and Cost . You can use multiple values in a
+	// request.
 	Metrics []string
 
 	// The token to retrieve the next set of results. Amazon Web Services provides the
@@ -123,18 +164,30 @@ type GetReservationCoverageInput struct {
 	// page size.
 	NextPageToken *string
 
-	// The value by which you want to sort the data. The following values are
-	// supported for Key :
+	// The value by which you want to sort the data.
+	//
+	// The following values are supported for Key :
+	//
 	//   - OnDemandCost
+	//
 	//   - CoverageHoursPercentage
+	//
 	//   - OnDemandHours
+	//
 	//   - ReservedHours
+	//
 	//   - TotalRunningHours
+	//
 	//   - CoverageNormalizedUnitsPercentage
+	//
 	//   - OnDemandNormalizedUnits
+	//
 	//   - ReservedNormalizedUnits
+	//
 	//   - TotalRunningNormalizedUnits
+	//
 	//   - Time
+	//
 	// Supported values for SortOrder are ASCENDING or DESCENDING .
 	SortBy *types.SortDefinition
 
@@ -163,6 +216,9 @@ type GetReservationCoverageOutput struct {
 }
 
 func (c *Client) addOperationGetReservationCoverageMiddlewares(stack *middleware.Stack, options Options) (err error) {
+	if err := stack.Serialize.Add(&setOperationInputMiddleware{}, middleware.After); err != nil {
+		return err
+	}
 	err = stack.Serialize.Add(&awsAwsjson11_serializeOpGetReservationCoverage{}, middleware.After)
 	if err != nil {
 		return err
@@ -171,34 +227,38 @@ func (c *Client) addOperationGetReservationCoverageMiddlewares(stack *middleware
 	if err != nil {
 		return err
 	}
+	if err := addProtocolFinalizerMiddlewares(stack, options, "GetReservationCoverage"); err != nil {
+		return fmt.Errorf("add protocol finalizers: %v", err)
+	}
+
 	if err = addlegacyEndpointContextSetter(stack, options); err != nil {
 		return err
 	}
 	if err = addSetLoggerMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddClientRequestIDMiddleware(stack); err != nil {
+	if err = addClientRequestID(stack); err != nil {
 		return err
 	}
-	if err = smithyhttp.AddComputeContentLengthMiddleware(stack); err != nil {
+	if err = addComputeContentLength(stack); err != nil {
 		return err
 	}
 	if err = addResolveEndpointMiddleware(stack, options); err != nil {
 		return err
 	}
-	if err = v4.AddComputePayloadSHA256Middleware(stack); err != nil {
+	if err = addComputePayloadSHA256(stack); err != nil {
 		return err
 	}
-	if err = addRetryMiddlewares(stack, options); err != nil {
+	if err = addRetry(stack, options); err != nil {
 		return err
 	}
-	if err = addHTTPSignerV4Middleware(stack, options); err != nil {
+	if err = addRawResponseToMetadata(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRawResponseToMetadata(stack); err != nil {
+	if err = addRecordResponseTiming(stack); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecordResponseTiming(stack); err != nil {
+	if err = addSpanRetryLoop(stack, options); err != nil {
 		return err
 	}
 	if err = addClientUserAgent(stack, options); err != nil {
@@ -210,7 +270,13 @@ func (c *Client) addOperationGetReservationCoverageMiddlewares(stack *middleware
 	if err = smithyhttp.AddCloseResponseBodyMiddleware(stack); err != nil {
 		return err
 	}
-	if err = addGetReservationCoverageResolveEndpointMiddleware(stack, options); err != nil {
+	if err = addSetLegacyContextSigningOptionsMiddleware(stack); err != nil {
+		return err
+	}
+	if err = addTimeOffsetBuild(stack, c); err != nil {
+		return err
+	}
+	if err = addUserAgentRetryMode(stack, options); err != nil {
 		return err
 	}
 	if err = addOpGetReservationCoverageValidationMiddleware(stack); err != nil {
@@ -219,7 +285,7 @@ func (c *Client) addOperationGetReservationCoverageMiddlewares(stack *middleware
 	if err = stack.Initialize.Add(newServiceMetadataMiddleware_opGetReservationCoverage(options.Region), middleware.Before); err != nil {
 		return err
 	}
-	if err = awsmiddleware.AddRecursionDetection(stack); err != nil {
+	if err = addRecursionDetection(stack); err != nil {
 		return err
 	}
 	if err = addRequestIDRetrieverMiddleware(stack); err != nil {
@@ -231,7 +297,19 @@ func (c *Client) addOperationGetReservationCoverageMiddlewares(stack *middleware
 	if err = addRequestResponseLogging(stack, options); err != nil {
 		return err
 	}
-	if err = addendpointDisableHTTPSMiddleware(stack, options); err != nil {
+	if err = addDisableHTTPSMiddleware(stack, options); err != nil {
+		return err
+	}
+	if err = addSpanInitializeStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanInitializeEnd(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestStart(stack); err != nil {
+		return err
+	}
+	if err = addSpanBuildRequestEnd(stack); err != nil {
 		return err
 	}
 	return nil
@@ -241,130 +319,6 @@ func newServiceMetadataMiddleware_opGetReservationCoverage(region string) *awsmi
 	return &awsmiddleware.RegisterServiceMetadata{
 		Region:        region,
 		ServiceID:     ServiceID,
-		SigningName:   "ce",
 		OperationName: "GetReservationCoverage",
 	}
-}
-
-type opGetReservationCoverageResolveEndpointMiddleware struct {
-	EndpointResolver EndpointResolverV2
-	BuiltInResolver  builtInParameterResolver
-}
-
-func (*opGetReservationCoverageResolveEndpointMiddleware) ID() string {
-	return "ResolveEndpointV2"
-}
-
-func (m *opGetReservationCoverageResolveEndpointMiddleware) HandleSerialize(ctx context.Context, in middleware.SerializeInput, next middleware.SerializeHandler) (
-	out middleware.SerializeOutput, metadata middleware.Metadata, err error,
-) {
-	if awsmiddleware.GetRequiresLegacyEndpoints(ctx) {
-		return next.HandleSerialize(ctx, in)
-	}
-
-	req, ok := in.Request.(*smithyhttp.Request)
-	if !ok {
-		return out, metadata, fmt.Errorf("unknown transport type %T", in.Request)
-	}
-
-	if m.EndpointResolver == nil {
-		return out, metadata, fmt.Errorf("expected endpoint resolver to not be nil")
-	}
-
-	params := EndpointParameters{}
-
-	m.BuiltInResolver.ResolveBuiltIns(&params)
-
-	var resolvedEndpoint smithyendpoints.Endpoint
-	resolvedEndpoint, err = m.EndpointResolver.ResolveEndpoint(ctx, params)
-	if err != nil {
-		return out, metadata, fmt.Errorf("failed to resolve service endpoint, %w", err)
-	}
-
-	req.URL = &resolvedEndpoint.URI
-
-	for k := range resolvedEndpoint.Headers {
-		req.Header.Set(
-			k,
-			resolvedEndpoint.Headers.Get(k),
-		)
-	}
-
-	authSchemes, err := internalauth.GetAuthenticationSchemes(&resolvedEndpoint.Properties)
-	if err != nil {
-		var nfe *internalauth.NoAuthenticationSchemesFoundError
-		if errors.As(err, &nfe) {
-			// if no auth scheme is found, default to sigv4
-			signingName := "ce"
-			signingRegion := m.BuiltInResolver.(*builtInResolver).Region
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-
-		}
-		var ue *internalauth.UnSupportedAuthenticationSchemeSpecifiedError
-		if errors.As(err, &ue) {
-			return out, metadata, fmt.Errorf(
-				"This operation requests signer version(s) %v but the client only supports %v",
-				ue.UnsupportedSchemes,
-				internalauth.SupportedSchemes,
-			)
-		}
-	}
-
-	for _, authScheme := range authSchemes {
-		switch authScheme.(type) {
-		case *internalauth.AuthenticationSchemeV4:
-			v4Scheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4)
-			var signingName, signingRegion string
-			if v4Scheme.SigningName == nil {
-				signingName = "ce"
-			} else {
-				signingName = *v4Scheme.SigningName
-			}
-			if v4Scheme.SigningRegion == nil {
-				signingRegion = m.BuiltInResolver.(*builtInResolver).Region
-			} else {
-				signingRegion = *v4Scheme.SigningRegion
-			}
-			if v4Scheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4Scheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, signingName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, signingRegion)
-			break
-		case *internalauth.AuthenticationSchemeV4A:
-			v4aScheme, _ := authScheme.(*internalauth.AuthenticationSchemeV4A)
-			if v4aScheme.SigningName == nil {
-				v4aScheme.SigningName = aws.String("ce")
-			}
-			if v4aScheme.DisableDoubleEncoding != nil {
-				// The signer sets an equivalent value at client initialization time.
-				// Setting this context value will cause the signer to extract it
-				// and override the value set at client initialization time.
-				ctx = internalauth.SetDisableDoubleEncoding(ctx, *v4aScheme.DisableDoubleEncoding)
-			}
-			ctx = awsmiddleware.SetSigningName(ctx, *v4aScheme.SigningName)
-			ctx = awsmiddleware.SetSigningRegion(ctx, v4aScheme.SigningRegionSet[0])
-			break
-		case *internalauth.AuthenticationSchemeNone:
-			break
-		}
-	}
-
-	return next.HandleSerialize(ctx, in)
-}
-
-func addGetReservationCoverageResolveEndpointMiddleware(stack *middleware.Stack, options Options) error {
-	return stack.Serialize.Insert(&opGetReservationCoverageResolveEndpointMiddleware{
-		EndpointResolver: options.EndpointResolverV2,
-		BuiltInResolver: &builtInResolver{
-			Region:       options.Region,
-			UseDualStack: options.EndpointOptions.UseDualStackEndpoint,
-			UseFIPS:      options.EndpointOptions.UseFIPSEndpoint,
-			Endpoint:     options.BaseEndpoint,
-		},
-	}, "ResolveEndpoint", middleware.After)
 }

@@ -18,12 +18,41 @@ type ActionSummary struct {
 	noSmithyDocumentSerde
 }
 
-// Information about the contact (https://docs.aws.amazon.com/connect/latest/APIReference/API_Contact.html)
-// associated to the user.
+// List of additional email addresses for an email contact.
+type AdditionalEmailRecipients struct {
+
+	// List of additional CC email recipients for an email contact.
+	CcList []EmailRecipient
+
+	// List of additional TO email recipients for an email contact.
+	ToList []EmailRecipient
+
+	noSmithyDocumentSerde
+}
+
+// The distribution of agents between the instance and its replica(s).
+type AgentConfig struct {
+
+	// Information about traffic distributions.
+	//
+	// This member is required.
+	Distributions []Distribution
+
+	noSmithyDocumentSerde
+}
+
+// Information about the [contact] associated to the user.
+//
+// [contact]: https://docs.aws.amazon.com/connect/latest/APIReference/API_Contact.html
 type AgentContactReference struct {
 
-	// The state of the contact (https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html)
-	// .
+	// The [state of the contact].
+	//
+	// When AgentContactState is set to CONNECTED_ONHOLD , StateStartTimestamp is not
+	// changed. Instead, StateStartTimestamp reflects the time the contact was
+	// CONNECTED to the agent.
+	//
+	// [state of the contact]: https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html
 	AgentContactState ContactState
 
 	// The channel of the contact.
@@ -47,14 +76,84 @@ type AgentContactReference struct {
 	noSmithyDocumentSerde
 }
 
+// Information about an agent hierarchy group.
+type AgentHierarchyGroup struct {
+
+	// The Amazon Resource Name (ARN) of the group.
+	Arn *string
+
+	noSmithyDocumentSerde
+}
+
+// A structure that defines search criteria for contacts using agent hierarchy
+// group levels. For more information about agent hierarchies, see [Set Up Agent Hierarchies]in the Amazon
+// Connect Administrator Guide.
+//
+// [Set Up Agent Hierarchies]: https://docs.aws.amazon.com/connect/latest/adminguide/agent-hierarchy.html
+type AgentHierarchyGroups struct {
+
+	// The identifiers for level 1 hierarchy groups.
+	L1Ids []string
+
+	// The identifiers for level 2 hierarchy groups.
+	L2Ids []string
+
+	// The identifiers for level 3 hierarchy groups.
+	L3Ids []string
+
+	// The identifiers for level 4 hierarchy groups.
+	L4Ids []string
+
+	// The identifiers for level 5 hierarchy groups.
+	L5Ids []string
+
+	noSmithyDocumentSerde
+}
+
 // Information about the agent who accepted the contact.
 type AgentInfo struct {
+
+	// Agent pause duration for a contact in seconds.
+	AgentPauseDurationInSeconds *int32
+
+	// The configuration for the allowed video and screen sharing capabilities for
+	// participants present over the call. For more information, see [Set up in-app, web, video calling, and screen sharing capabilities]in the Amazon
+	// Connect Administrator Guide.
+	//
+	// [Set up in-app, web, video calling, and screen sharing capabilities]: https://docs.aws.amazon.com/connect/latest/adminguide/inapp-calling.html
+	Capabilities *ParticipantCapabilities
 
 	// The timestamp when the contact was connected to the agent.
 	ConnectedToAgentTimestamp *time.Time
 
+	// Information regarding Agent’s device.
+	DeviceInfo *DeviceInfo
+
+	// The agent hierarchy groups for the agent.
+	HierarchyGroups *HierarchyGroups
+
 	// The identifier of the agent who accepted the contact.
 	Id *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the quality of the Agent's media connection
+type AgentQualityMetrics struct {
+
+	// Information about the audio quality of the Agent
+	Audio *AudioQualityMetricsInfo
+
+	noSmithyDocumentSerde
+}
+
+// Can be used to define a list of preferred agents to target the contact to
+// within the queue.  Note that agents must have the queue in their routing profile
+// in order to be offered the  contact.
+type AgentsCriteria struct {
+
+	// An object to specify a list of agents, by user ID.
+	AgentIds []string
 
 	noSmithyDocumentSerde
 }
@@ -74,6 +173,12 @@ type AgentStatus struct {
 	// The display order of the agent status.
 	DisplayOrder *int32
 
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
+
 	// The name of the agent status.
 	Name *string
 
@@ -81,7 +186,7 @@ type AgentStatus struct {
 	State AgentStatusState
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	// The type of agent status.
@@ -105,6 +210,43 @@ type AgentStatusReference struct {
 	noSmithyDocumentSerde
 }
 
+// The search criteria to be used to return agent statuses.
+type AgentStatusSearchCriteria struct {
+
+	// A leaf node condition which can be used to specify a string condition.
+	//
+	// The currently supported values for FieldName are name ,   description , state ,
+	// type , displayOrder ,  and resourceID .
+	AndConditions []AgentStatusSearchCriteria
+
+	// A list of conditions which would be applied together with an OR condition.
+	OrConditions []AgentStatusSearchCriteria
+
+	// A leaf node condition which can be used to specify a string condition.
+	//
+	// The currently supported values for FieldName are name ,   description , state ,
+	// type , displayOrder ,  and resourceID .
+	StringCondition *StringCondition
+
+	noSmithyDocumentSerde
+}
+
+// Filters to be applied to search results.
+type AgentStatusSearchFilter struct {
+
+	// An object that can be used to specify Tag conditions inside the SearchFilter .
+	// This accepts an OR of AND (List of List) input where:
+	//
+	//   - The top level list specifies conditions that need to be applied with OR
+	//   operator.
+	//
+	//   - The inner list specifies conditions that need to be applied with AND
+	//   operator.
+	AttributeFilter *ControlPlaneAttributeFilter
+
+	noSmithyDocumentSerde
+}
+
 // Summary information for an agent status.
 type AgentStatusSummary struct {
 
@@ -114,11 +256,50 @@ type AgentStatusSummary struct {
 	// The identifier for an agent status.
 	Id *string
 
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
+
 	// The name of the agent status.
 	Name *string
 
 	// The type of the agent status.
 	Type AgentStatusType
+
+	noSmithyDocumentSerde
+}
+
+// Information about the capabilities enabled for participants of the contact.
+type AllowedCapabilities struct {
+
+	// Information about the agent's video sharing capabilities.
+	Agent *ParticipantCapabilities
+
+	// Information about the customer's video sharing capabilities.
+	Customer *ParticipantCapabilities
+
+	noSmithyDocumentSerde
+}
+
+// This API is in preview release for Amazon Connect and is subject to change.
+//
+// Information about associations that are successfully created: DataSetId ,
+// TargetAccountId , ResourceShareId , ResourceShareArn .
+type AnalyticsDataAssociationResult struct {
+
+	// The identifier of the dataset.
+	DataSetId *string
+
+	// The Amazon Resource Name (ARN) of the Resource Access Manager share.
+	ResourceShareArn *string
+
+	// The Resource Access Manager share ID.
+	ResourceShareId *string
+
+	// The identifier of the target account.
+	TargetAccountId *string
 
 	noSmithyDocumentSerde
 }
@@ -136,17 +317,144 @@ type AnswerMachineDetectionConfig struct {
 	noSmithyDocumentSerde
 }
 
+// This API is in preview release for Amazon Connect and is subject to change.
+//
+// A third-party application's metadata.
+type Application struct {
+
+	// The permissions that the agent is granted on the application. Only the ACCESS
+	// permission is supported.
+	ApplicationPermissions []string
+
+	// Namespace of the application that you want to give access to.
+	Namespace *string
+
+	noSmithyDocumentSerde
+}
+
 // This action must be set if TriggerEventSource is one of the following values:
 // OnPostCallAnalysisAvailable | OnRealTimeCallAnalysisAvailable |
-// OnPostChatAnalysisAvailable . Contact is categorized using the rule name.
+// OnRealTimeChatAnalysisAvailable | OnPostChatAnalysisAvailable . Contact is
+// categorized using the rule name.
+//
 // RuleName is used as ContactCategory .
 type AssignContactCategoryActionDefinition struct {
+	noSmithyDocumentSerde
+}
+
+// Contact summary of a contact in contact tree associated with unique identifier.
+type AssociatedContactSummary struct {
+
+	// How the contact reached your contact center.
+	Channel Channel
+
+	// The Amazon Resource Name (ARN) of the contact
+	ContactArn *string
+
+	// The identifier of the contact in this instance of Amazon Connect.
+	ContactId *string
+
+	// The timestamp when the customer endpoint disconnected from Amazon Connect.
+	DisconnectTimestamp *time.Time
+
+	// If this contact is related to other contacts, this is the ID of the initial
+	// contact.
+	InitialContactId *string
+
+	// Indicates how the contact was initiated.
+	InitiationMethod ContactInitiationMethod
+
+	// The date and time this contact was initiated, in UTC time.
+	InitiationTimestamp *time.Time
+
+	// If this contact is not the first contact, this is the ID of the previous
+	// contact.
+	PreviousContactId *string
+
+	// The contactId that is related to this contact.
+	RelatedContactId *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the attached file.
+type AttachedFile struct {
+
+	// The time of Creation of the file resource as an ISO timestamp. It's specified
+	// in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ . For example,
+	// 2024-05-03T02:41:28.172Z .
+	//
+	// This member is required.
+	CreationTime *string
+
+	// The unique identifier of the attached file resource (ARN).
+	//
+	// This member is required.
+	FileArn *string
+
+	// The unique identifier of the attached file resource.
+	//
+	// This member is required.
+	FileId *string
+
+	// A case-sensitive name of the attached file being uploaded.
+	//
+	// This member is required.
+	FileName *string
+
+	// The size of the attached file in bytes.
+	//
+	// This member is required.
+	FileSizeInBytes *int64
+
+	// The current status of the attached file.
+	//
+	// This member is required.
+	FileStatus FileStatusType
+
+	// The resource to which the attached file is (being) uploaded to. [Cases] are the only
+	// current supported resource.
+	//
+	// This value must be a valid ARN.
+	//
+	// [Cases]: https://docs.aws.amazon.com/connect/latest/APIReference/API_connect-cases_CreateCase.html
+	AssociatedResourceArn *string
+
+	// Represents the identity that created the file.
+	CreatedBy CreatedByInfo
+
+	// The use case for the file.
+	FileUseCaseType FileUseCaseType
+
+	// The tags used to organize, track, or control access for this resource. For
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} } .
+	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// Error describing a failure to retrieve attached file metadata through
+// BatchGetAttachedFileMetadata action.
+type AttachedFileError struct {
+
+	//  Status code describing the failure.
+	ErrorCode *string
+
+	// Why the attached file couldn't be retrieved.
+	ErrorMessage *string
+
+	// The unique identifier of the attached file resource.
+	FileId *string
+
 	noSmithyDocumentSerde
 }
 
 // Information about a reference when the referenceType is ATTACHMENT . Otherwise,
 // null.
 type AttachmentReference struct {
+
+	// The Amazon Resource Name (ARN) of the attachment reference.
+	Arn *string
 
 	// Identifier of the attachment reference.
 	Name *string
@@ -160,6 +468,18 @@ type AttachmentReference struct {
 	noSmithyDocumentSerde
 }
 
+// The attendee information, including attendee ID and join token.
+type Attendee struct {
+
+	// The Amazon Chime SDK attendee ID.
+	AttendeeId *string
+
+	// The join token used by the Amazon Chime SDK attendee.
+	JoinToken *string
+
+	noSmithyDocumentSerde
+}
+
 // A toggle for an individual feature at the instance level.
 type Attribute struct {
 
@@ -168,6 +488,168 @@ type Attribute struct {
 
 	// The value of the attribute.
 	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// A list of conditions which would be applied together with an AND condition.
+type AttributeAndCondition struct {
+
+	// A leaf node condition which can be used to specify a hierarchy group condition.
+	HierarchyGroupCondition *HierarchyGroupCondition
+
+	// A leaf node condition which can be used to specify a tag condition.
+	TagConditions []TagCondition
+
+	noSmithyDocumentSerde
+}
+
+// An object to specify the predefined attribute condition.
+type AttributeCondition struct {
+
+	// The operator of the condition.
+	ComparisonOperator *string
+
+	// An object to define AgentsCriteria .
+	MatchCriteria *MatchCriteria
+
+	// The name of predefined attribute.
+	Name *string
+
+	// The proficiency level of the condition.
+	ProficiencyLevel *float32
+
+	// An Object to define the minimum and maximum proficiency levels.
+	Range *Range
+
+	// The value of predefined attribute.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// Has audio-specific configurations as the operating parameter for Echo Reduction.
+type AudioFeatures struct {
+
+	// Makes echo reduction available to clients who connect to the meeting.
+	EchoReduction MeetingFeatureStatus
+
+	noSmithyDocumentSerde
+}
+
+// Contains information for score and potential quality issues for Audio
+type AudioQualityMetricsInfo struct {
+
+	// List of potential issues causing degradation of quality on a media connection.
+	// If the service did not detect any potential quality issues the list is empty.
+	//
+	// Valid values: HighPacketLoss | HighRoundTripTime | HighJitterBuffer
+	PotentialQualityIssues []string
+
+	// Number measuring the estimated quality of the media connection.
+	QualityScore float32
+
+	noSmithyDocumentSerde
+}
+
+// This API is in preview release for Amazon Connect and is subject to change. To
+// request access to this API, contact Amazon Web Services Support.
+//
+// Information about an authentication profile. An authentication profile is a
+// resource that stores the authentication settings for users in your contact
+// center. You use authentication profiles to set up IP address range restrictions
+// and session timeouts. For more information, see [Set IP address restrictions or session timeouts].
+//
+// [Set IP address restrictions or session timeouts]: https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html
+type AuthenticationProfile struct {
+
+	// A list of IP address range strings that are allowed to access the Amazon
+	// Connect instance. For more information about how to configure IP addresses, see [Configure IP address based access control]
+	// in the Amazon Connect Administrator Guide.
+	//
+	// [Configure IP address based access control]: https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-ip-based-ac
+	AllowedIps []string
+
+	// The Amazon Resource Name (ARN) for the authentication profile.
+	Arn *string
+
+	// A list of IP address range strings that are blocked from accessing the Amazon
+	// Connect instance. For more information about how to configure IP addresses, see [Configure IP address based access control]
+	// in the Amazon Connect Administrator Guide.
+	//
+	// [Configure IP address based access control]: https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-ip-based-ac
+	BlockedIps []string
+
+	// The timestamp when the authentication profile was created.
+	CreatedTime *time.Time
+
+	// The description for the authentication profile.
+	Description *string
+
+	// A unique identifier for the authentication profile.
+	Id *string
+
+	// Shows whether the authentication profile is the default authentication profile
+	// for the Amazon Connect instance. The default authentication profile applies to
+	// all agents in an Amazon Connect instance, unless overridden by another
+	// authentication profile.
+	IsDefault bool
+
+	// The Amazon Web Services Region where the authentication profile was last
+	// modified.
+	LastModifiedRegion *string
+
+	// The timestamp when the authentication profile was last modified.
+	LastModifiedTime *time.Time
+
+	// The long lived session duration for users logged in to Amazon Connect, in
+	// minutes. After this time period, users must log in again. For more information,
+	// see [Configure the session duration]in the Amazon Connect Administrator Guide.
+	//
+	// [Configure the session duration]: https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-session-timeouts
+	MaxSessionDuration *int32
+
+	// The name for the authentication profile.
+	Name *string
+
+	// The short lived session duration configuration for users logged in to Amazon
+	// Connect, in minutes. This value determines the maximum possible time before an
+	// agent is authenticated. For more information, see [Configure the session duration]in the Amazon Connect
+	// Administrator Guide.
+	//
+	// [Configure the session duration]: https://docs.aws.amazon.com/connect/latest/adminguide/authentication-profiles.html#configure-session-timeouts
+	PeriodicSessionDuration *int32
+
+	noSmithyDocumentSerde
+}
+
+// This API is in preview release for Amazon Connect and is subject to change. To
+// request access to this API, contact Amazon Web Services Support.
+//
+// A summary of a given authentication profile.
+type AuthenticationProfileSummary struct {
+
+	// The Amazon Resource Name (ARN) of the authentication profile summary.
+	Arn *string
+
+	// The unique identifier of the authentication profile.
+	Id *string
+
+	// Shows whether the authentication profile is the default authentication profile
+	// for the Amazon Connect instance. The default authentication profile applies to
+	// all agents in an Amazon Connect instance, unless overridden by another
+	// authentication profile.
+	IsDefault bool
+
+	// The Amazon Web Services Region when the authentication profile summary was last
+	// modified.
+	LastModifiedRegion *string
+
+	// The timestamp when the authentication profile summary was last modified.
+	LastModifiedTime *time.Time
+
+	// The name of the authentication profile summary.
+	Name *string
 
 	noSmithyDocumentSerde
 }
@@ -188,14 +670,69 @@ type AvailableNumberSummary struct {
 	noSmithyDocumentSerde
 }
 
+// Information associated with a campaign.
+type Campaign struct {
+
+	// A unique identifier for a campaign.
+	CampaignId *string
+
+	noSmithyDocumentSerde
+}
+
+// Chat integration event containing payload to perform different chat actions
+// such as:
+//
+//   - Sending a chat message
+//
+//   - Sending a chat event, such as typing
+//
+//   - Disconnecting from a chat
+type ChatEvent struct {
+
+	// Type of chat integration event.
+	//
+	// This member is required.
+	Type ChatEventType
+
+	// Content of the message or event. This is required when Type is MESSAGE and for
+	// certain ContentTypes when Type is EVENT .
+	//
+	//   - For allowed message content, see the Content parameter in the [SendMessage]topic in the
+	//   Amazon Connect Participant Service API Reference.
+	//
+	//   - For allowed event content, see the Content parameter in the [SendEvent]topic in the
+	//   Amazon Connect Participant Service API Reference.
+	//
+	// [SendEvent]: https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_SendEvent.html
+	// [SendMessage]: https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_SendMessage.html
+	Content *string
+
+	// Type of content. This is required when Type is MESSAGE or EVENT .
+	//
+	//   - For allowed message content types, see the ContentType parameter in the [SendMessage]
+	//   topic in the Amazon Connect Participant Service API Reference.
+	//
+	//   - For allowed event content types, see the ContentType parameter in the [SendEvent]topic
+	//   in the Amazon Connect Participant Service API Reference.
+	//
+	// [SendEvent]: https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_SendEvent.html
+	// [SendMessage]: https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_SendMessage.html
+	ContentType *string
+
+	noSmithyDocumentSerde
+}
+
 // A chat message.
 type ChatMessage struct {
 
 	// The content of the chat message.
+	//
 	//   - For text/plain and text/markdown , the Length Constraints are Minimum of 1,
 	//   Maximum of 1024.
+	//
 	//   - For application/json , the Length Constraints are Minimum of 1, Maximum of
 	//   12000.
+	//
 	//   - For application/vnd.amazonaws.connect.message.interactive.response , the
 	//   Length Constraints are Minimum of 1, Maximum of 12288.
 	//
@@ -241,6 +778,12 @@ type ChatStreamingConfiguration struct {
 // instance or traffic distribution group.
 type ClaimedPhoneNumberSummary struct {
 
+	// The identifier of the Amazon Connect instance that phone numbers are claimed
+	// to. You can [find the instance ID]in the Amazon Resource Name (ARN) of the instance.
+	//
+	// [find the instance ID]: https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html
+	InstanceId *string
+
 	// The phone number. Phone numbers are formatted [+] [country code] [subscriber
 	// number including area code] .
 	PhoneNumber *string
@@ -258,36 +801,82 @@ type ClaimedPhoneNumberSummary struct {
 	PhoneNumberId *string
 
 	// The status of the phone number.
-	//   - CLAIMED means the previous ClaimedPhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimedPhoneNumber.html)
-	//   or UpdatePhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html)
-	//   operation succeeded.
-	//   - IN_PROGRESS means a ClaimedPhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimedPhoneNumber.html)
-	//   or UpdatePhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html)
-	//   operation is still in progress and has not yet completed. You can call
-	//   DescribePhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html)
-	//   at a later time to verify if the previous operation has completed.
-	//   - FAILED indicates that the previous ClaimedPhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimedPhoneNumber.html)
-	//   or UpdatePhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html)
-	//   operation has failed. It will include a message indicating the failure reason. A
-	//   common reason for a failure may be that the TargetArn value you are claiming
-	//   or updating a phone number to has reached its limit of total claimed numbers. If
-	//   you received a FAILED status from a ClaimPhoneNumber API call, you have one
-	//   day to retry claiming the phone number before the number is released back to the
-	//   inventory for other customers to claim.
+	//
+	//   - CLAIMED means the previous [ClaimPhoneNumber]or [UpdatePhoneNumber]operation succeeded.
+	//
+	//   - IN_PROGRESS means a [ClaimPhoneNumber], [UpdatePhoneNumber], or [UpdatePhoneNumberMetadata]operation is still in progress and has not yet
+	//   completed. You can call [DescribePhoneNumber]at a later time to verify if the previous operation
+	//   has completed.
+	//
+	//   - FAILED indicates that the previous [ClaimPhoneNumber]or [UpdatePhoneNumber]operation has failed. It will include
+	//   a message indicating the failure reason. A common reason for a failure may be
+	//   that the TargetArn value you are claiming or updating a phone number to has
+	//   reached its limit of total claimed numbers. If you received a FAILED status
+	//   from a ClaimPhoneNumber API call, you have one day to retry claiming the phone
+	//   number before the number is released back to the inventory for other customers
+	//   to claim.
+	//
 	// You will not be billed for the phone number during the 1-day period if number
 	// claiming fails.
+	//
+	// [UpdatePhoneNumber]: https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html
+	// [UpdatePhoneNumberMetadata]: https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumberMetadata.html
+	// [ClaimPhoneNumber]: https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimPhoneNumber.html
+	// [DescribePhoneNumber]: https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html
 	PhoneNumberStatus *PhoneNumberStatus
 
 	// The type of phone number.
 	PhoneNumberType PhoneNumberType
 
+	// The claimed phone number ARN that was previously imported from the external
+	// service, such as Amazon Web Services End User Messaging. If it is from Amazon
+	// Web Services End User Messaging, it looks like the ARN of the phone number that
+	// was imported from Amazon Web Services End User Messaging.
+	SourcePhoneNumberArn *string
+
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	// The Amazon Resource Name (ARN) for Amazon Connect instances or traffic
-	// distribution groups that phone numbers are claimed to.
+	// distribution groups that phone number inbound traffic is routed through.
 	TargetArn *string
+
+	noSmithyDocumentSerde
+}
+
+// A list of conditions which would be applied together with an AND condition.
+type CommonAttributeAndCondition struct {
+
+	// A leaf node condition which can be used to specify a tag condition.
+	TagConditions []TagCondition
+
+	noSmithyDocumentSerde
+}
+
+// A leaf node condition which can be used to specify a ProficiencyName,
+// ProficiencyValue and ProficiencyLimit.
+type Condition struct {
+
+	// A leaf node condition which can be used to specify a numeric condition.
+	NumberCondition *NumberCondition
+
+	// A leaf node condition which can be used to specify a string condition.
+	//
+	// The currently supported values for FieldName are name and  value .
+	StringCondition *StringCondition
+
+	noSmithyDocumentSerde
+}
+
+// Information required to join the call.
+type ConnectionData struct {
+
+	// The attendee information, including attendee ID and join token.
+	Attendee *Attendee
+
+	// A meeting created using the Amazon Chime SDK.
+	Meeting *Meeting
 
 	noSmithyDocumentSerde
 }
@@ -295,17 +884,55 @@ type ClaimedPhoneNumberSummary struct {
 // Contains information about a contact.
 type Contact struct {
 
+	// List of additional email addresses for an email contact.
+	AdditionalEmailRecipients *AdditionalEmailRecipients
+
 	// Information about the agent who accepted the contact.
 	AgentInfo *AgentInfo
+
+	// Indicates how an [outbound campaign] call is actually disposed if the contact is connected to
+	// Amazon Connect.
+	//
+	// [outbound campaign]: https://docs.aws.amazon.com/connect/latest/adminguide/how-to-create-campaigns.html
+	AnsweringMachineDetectionStatus AnsweringMachineDetectionStatus
 
 	// The Amazon Resource Name (ARN) for the contact.
 	Arn *string
 
+	// Information associated with a campaign.
+	Campaign *Campaign
+
 	// How the contact reached your contact center.
 	Channel Channel
 
+	// The timestamp when customer endpoint connected to Amazon Connect.
+	ConnectedToSystemTimestamp *time.Time
+
+	// This is the root contactId which is used as a unique identifier for all
+	// subsequent contacts in a contact tree.
+	ContactAssociationId *string
+
+	// Information about the Customer on the contact.
+	Customer *Customer
+
+	// The customer or external third party participant endpoint.
+	CustomerEndpoint *EndpointInfo
+
+	// The customer's identification number. For example, the CustomerId may be a
+	// customer number from your CRM. You can create a Lambda function to pull the
+	// unique customer ID of the caller from your CRM system. If you enable Amazon
+	// Connect Voice ID capability, this attribute is populated with the
+	// CustomerSpeakerId of the caller.
+	CustomerId *string
+
+	// Information about customer’s voice activity.
+	CustomerVoiceActivity *CustomerVoiceActivity
+
 	// The description of the contact.
 	Description *string
+
+	// Information about the call disconnect experience.
+	DisconnectDetails *DisconnectDetails
 
 	// The timestamp when the customer endpoint disconnected from Amazon Connect.
 	DisconnectTimestamp *time.Time
@@ -329,6 +956,12 @@ type Contact struct {
 	// started listening to a contact.
 	InitiationTimestamp *time.Time
 
+	// The timestamp when the contact was last paused.
+	LastPausedTimestamp *time.Time
+
+	// The timestamp when the contact was last resumed.
+	LastResumedTimestamp *time.Time
+
 	// The timestamp when contact was last updated.
 	LastUpdateTimestamp *time.Time
 
@@ -339,16 +972,59 @@ type Contact struct {
 	// contact.
 	PreviousContactId *string
 
+	// Information about the quality of the participant's media connection.
+	QualityMetrics *QualityMetrics
+
 	// If this contact was queued, this contains information about the queue.
 	QueueInfo *QueueInfo
 
-	// The contactId that is related (https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html#relatedcontactid)
-	// to this contact.
+	// An integer that represents the queue priority to be applied to the contact
+	// (lower priorities are routed preferentially). Cannot be specified if the
+	// QueueTimeAdjustmentSeconds is specified. Must be statically defined, must be
+	// larger than zero, and a valid integer value. Default Value is 5.
+	QueuePriority *int64
+
+	// An integer that represents the queue time adjust to be applied to the contact,
+	// in seconds (longer / larger queue time are routed preferentially). Cannot be
+	// specified if the QueuePriority is specified. Must be statically defined and a
+	// valid integer value.
+	QueueTimeAdjustmentSeconds *int32
+
+	// The contactId that is [related] to this contact.
+	//
+	// [related]: https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html#relatedcontactid
 	RelatedContactId *string
+
+	// Latest routing criteria on the contact.
+	RoutingCriteria *RoutingCriteria
 
 	// The timestamp, in Unix epoch time format, at which to start running the inbound
 	// flow.
 	ScheduledTimestamp *time.Time
+
+	// A set of system defined key-value pairs stored on individual contact segments
+	// using an attribute map. The attributes are standard Amazon Connect attributes
+	// and can be accessed in flows. Attribute keys can include only alphanumeric, -,
+	// and _ characters. This field can be used to show channel subtype. For example,
+	// connect:Guide or connect:SMS .
+	SegmentAttributes map[string]SegmentAttributeValue
+
+	// The system endpoint. For INBOUND , this is the phone number or email address
+	// that the customer dialed. For OUTBOUND and EXTERNAL_OUTBOUND , this is the
+	// outbound caller ID number assigned to the outbound queue that is used to dial
+	// the customer. For callback, this shows up as Softphone for calls handled by
+	// agents with softphone.
+	SystemEndpoint *EndpointInfo
+
+	// Tags associated with the contact. This contains both Amazon Web Services
+	// generated and user-defined tags.
+	Tags map[string]string
+
+	// Total pause count for a contact.
+	TotalPauseCount *int32
+
+	// Total pause duration for a contact in seconds.
+	TotalPauseDurationInSeconds *int32
 
 	// Information about Amazon Connect Wisdom.
 	WisdomInfo *WisdomInfo
@@ -356,13 +1032,72 @@ type Contact struct {
 	noSmithyDocumentSerde
 }
 
+// A structure that defines search criteria for contacts using analysis outputs
+// from Amazon Connect Contact Lens.
+type ContactAnalysis struct {
+
+	// Search criteria based on transcript analyzed by Amazon Connect Contact Lens.
+	Transcript *Transcript
+
+	noSmithyDocumentSerde
+}
+
+// The contact configuration for push notification registration.
+type ContactConfiguration struct {
+
+	// The identifier of the contact within the Amazon Connect instance.
+	//
+	// This member is required.
+	ContactId *string
+
+	// Whether to include raw connect message in the push notification payload.
+	// Default is False .
+	IncludeRawMessage bool
+
+	// The role of the participant in the chat conversation.
+	//
+	// Only CUSTOMER is currently supported. Any other values other than CUSTOMER will
+	// result in an exception (4xx error).
+	ParticipantRole ParticipantRole
+
+	noSmithyDocumentSerde
+}
+
+// Request object with information to create a contact.
+type ContactDataRequest struct {
+
+	// List of attributes to be stored in a contact.
+	Attributes map[string]string
+
+	// Structure to store information associated with a campaign.
+	Campaign *Campaign
+
+	// Endpoint of the customer for which contact will be initiated.
+	CustomerEndpoint *Endpoint
+
+	// The identifier of the queue associated with the Amazon Connect instance in
+	// which contacts that are created will be queued.
+	QueueId *string
+
+	// Identifier to uniquely identify individual requests in the batch.
+	RequestIdentifier *string
+
+	// Endpoint associated with the Amazon Connect instance from which outbound
+	// contact will be initiated for the campaign.
+	SystemEndpoint *Endpoint
+
+	noSmithyDocumentSerde
+}
+
 // Filters user data based on the contact information that is associated to the
-// users. It contains a list of contact states (https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html)
-// .
+// users. It contains a list of [contact states].
+//
+// [contact states]: https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html
 type ContactFilter struct {
 
-	// A list of up to 9 contact states (https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html)
-	// .
+	// A list of up to 9 [contact states].
+	//
+	// [contact states]: https://docs.aws.amazon.com/connect/latest/adminguide/about-contact-states.html
 	ContactStates []ContactState
 
 	noSmithyDocumentSerde
@@ -374,14 +1109,27 @@ type ContactFlow struct {
 	// The Amazon Resource Name (ARN) of the flow.
 	Arn *string
 
-	// The content of the flow.
+	// The JSON string that represents the content of the flow. For an example, see [Example flow in Amazon Connect Flow language].
+	//
+	// Length Constraints: Minimum length of 1. Maximum length of 256000.
+	//
+	// [Example flow in Amazon Connect Flow language]: https://docs.aws.amazon.com/connect/latest/APIReference/flow-language-example.html
 	Content *string
 
 	// The description of the flow.
 	Description *string
 
+	// Indicates the checksum value of the flow content.
+	FlowContentSha256 *string
+
 	// The identifier of the flow.
 	Id *string
+
+	// The region in which the flow was last modified
+	LastModifiedRegion *string
+
+	// The time at which the flow was last modified.
+	LastModifiedTime *time.Time
 
 	// The name of the flow.
 	Name *string
@@ -389,14 +1137,24 @@ type ContactFlow struct {
 	// The type of flow.
 	State ContactFlowState
 
+	// The status of the flow.
+	Status ContactFlowStatus
+
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
-	// The type of the flow. For descriptions of the available types, see Choose a
-	// flow type (https://docs.aws.amazon.com/connect/latest/adminguide/create-contact-flow.html#contact-flow-types)
-	// in the Amazon Connect Administrator Guide.
+	// The type of the flow. For descriptions of the available types, see [Choose a flow type] in the
+	// Amazon Connect Administrator Guide.
+	//
+	// [Choose a flow type]: https://docs.aws.amazon.com/connect/latest/adminguide/create-contact-flow.html#contact-flow-types
 	Type ContactFlowType
+
+	// The identifier of the flow version.
+	Version *int64
+
+	// The description of the flow version.
+	VersionDescription *string
 
 	noSmithyDocumentSerde
 }
@@ -407,7 +1165,9 @@ type ContactFlowModule struct {
 	// The Amazon Resource Name (ARN).
 	Arn *string
 
-	// The content of the flow module.
+	// The JSON string that represents the content of the flow. For an example, see [Example flow in Amazon Connect Flow language].
+	//
+	// [Example flow in Amazon Connect Flow language]: https://docs.aws.amazon.com/connect/latest/APIReference/flow-language-example.html
 	Content *string
 
 	// The description of the flow module.
@@ -426,8 +1186,43 @@ type ContactFlowModule struct {
 	Status ContactFlowModuleStatus
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// The search criteria to be used to return flow modules.
+type ContactFlowModuleSearchCriteria struct {
+
+	// A list of conditions which would be applied together with an AND condition.
+	AndConditions []ContactFlowModuleSearchCriteria
+
+	// A list of conditions which would be applied together with an OR condition.
+	OrConditions []ContactFlowModuleSearchCriteria
+
+	// The state of the flow.
+	StateCondition ContactFlowModuleState
+
+	// The status of the flow.
+	StatusCondition ContactFlowModuleStatus
+
+	// A leaf node condition which can be used to specify a string condition.
+	StringCondition *StringCondition
+
+	noSmithyDocumentSerde
+}
+
+// The search criteria to be used to return flow modules.
+type ContactFlowModuleSearchFilter struct {
+
+	// An object that can be used to specify Tag conditions inside the SearchFilter .
+	// This accepts an OR of AND (List of List) input where:
+	//
+	//   - Top level list specifies conditions that need to be applied with OR operator
+	//
+	//   - Inner list specifies conditions that need to be applied with AND operator.
+	TagFilter *ControlPlaneTagFilter
 
 	noSmithyDocumentSerde
 }
@@ -450,9 +1245,49 @@ type ContactFlowModuleSummary struct {
 	noSmithyDocumentSerde
 }
 
-// Contains summary information about a flow. You can also create and update flows
-// using the Amazon Connect Flow language (https://docs.aws.amazon.com/connect/latest/APIReference/flow-language.html)
-// .
+// The search criteria to be used to return flows.
+type ContactFlowSearchCriteria struct {
+
+	// A list of conditions which would be applied together with an AND condition.
+	AndConditions []ContactFlowSearchCriteria
+
+	// A list of conditions which would be applied together with an OR condition.
+	OrConditions []ContactFlowSearchCriteria
+
+	// The state of the flow.
+	StateCondition ContactFlowState
+
+	// The status of the flow.
+	StatusCondition ContactFlowStatus
+
+	// A leaf node condition which can be used to specify a string condition.
+	StringCondition *StringCondition
+
+	// The type of flow.
+	TypeCondition ContactFlowType
+
+	noSmithyDocumentSerde
+}
+
+// Filters to be applied to search results.
+type ContactFlowSearchFilter struct {
+
+	// An object that can be used to specify Tag conditions inside the SearchFilter .
+	// This accepts an OR of AND (List of List) input where:
+	//
+	//   - Top level list specifies conditions that need to be applied with OR operator
+	//
+	//   - Inner list specifies conditions that need to be applied with AND operator.
+	TagFilter *ControlPlaneTagFilter
+
+	noSmithyDocumentSerde
+}
+
+// Contains summary information about a flow.
+//
+// You can also create and update flows using the [Amazon Connect Flow language].
+//
+// [Amazon Connect Flow language]: https://docs.aws.amazon.com/connect/latest/APIReference/flow-language.html
 type ContactFlowSummary struct {
 
 	// The Amazon Resource Name (ARN) of the flow.
@@ -460,6 +1295,9 @@ type ContactFlowSummary struct {
 
 	// The type of flow.
 	ContactFlowState ContactFlowState
+
+	// The status of the flow.
+	ContactFlowStatus ContactFlowStatus
 
 	// The type of flow.
 	ContactFlowType ContactFlowType
@@ -473,9 +1311,136 @@ type ContactFlowSummary struct {
 	noSmithyDocumentSerde
 }
 
+// A summary of a flow version's metadata.
+type ContactFlowVersionSummary struct {
+
+	// The Amazon Resource Name (ARN) of the view version.
+	Arn *string
+
+	// The identifier of the flow version.
+	Version *int64
+
+	// The description of the flow version.
+	VersionDescription *string
+
+	noSmithyDocumentSerde
+}
+
+// Information of returned contact.
+type ContactSearchSummary struct {
+
+	// Information about the agent who accepted the contact.
+	AgentInfo *ContactSearchSummaryAgentInfo
+
+	// The Amazon Resource Name (ARN) of the contact.
+	Arn *string
+
+	// How the contact reached your contact center.
+	Channel Channel
+
+	// The timestamp when the customer endpoint disconnected from Amazon Connect.
+	DisconnectTimestamp *time.Time
+
+	// The identifier of the contact summary.
+	Id *string
+
+	// If this contact is related to other contacts, this is the ID of the initial
+	// contact.
+	InitialContactId *string
+
+	// Indicates how the contact was initiated.
+	InitiationMethod ContactInitiationMethod
+
+	// The date and time this contact was initiated, in UTC time. For INBOUND , this is
+	// when the contact arrived. For OUTBOUND , this is when the agent began dialing.
+	// For CALLBACK , this is when the callback contact was created. For TRANSFER and
+	// QUEUE_TRANSFER , this is when the transfer was initiated. For API, this is when
+	// the request arrived. For EXTERNAL_OUTBOUND , this is when the agent started
+	// dialing the external participant. For MONITOR , this is when the supervisor
+	// started listening to a contact.
+	InitiationTimestamp *time.Time
+
+	// If this contact is not the first contact, this is the ID of the previous
+	// contact.
+	PreviousContactId *string
+
+	// If this contact was queued, this contains information about the queue.
+	QueueInfo *ContactSearchSummaryQueueInfo
+
+	// The timestamp, in Unix epoch time format, at which to start running the inbound
+	// flow.
+	ScheduledTimestamp *time.Time
+
+	// Set of segment attributes for a contact.
+	SegmentAttributes map[string]ContactSearchSummarySegmentAttributeValue
+
+	noSmithyDocumentSerde
+}
+
+// Information about the agent who accepted the contact.
+type ContactSearchSummaryAgentInfo struct {
+
+	// The timestamp when the contact was connected to the agent.
+	ConnectedToAgentTimestamp *time.Time
+
+	// The identifier of the agent who accepted the contact.
+	Id *string
+
+	noSmithyDocumentSerde
+}
+
+// If this contact was queued, this contains information about the queue.
+type ContactSearchSummaryQueueInfo struct {
+
+	// The timestamp when the contact was added to the queue.
+	EnqueueTimestamp *time.Time
+
+	// The unique identifier for the queue.
+	Id *string
+
+	noSmithyDocumentSerde
+}
+
+// The value of a segment attribute. This is structured as a map with a single
+// key-value pair. The key 'valueString' indicates that the attribute type is a
+// string, and its corresponding value is the actual string value of the segment
+// attribute.
+type ContactSearchSummarySegmentAttributeValue struct {
+
+	// The value of a segment attribute represented as a string.
+	ValueString *string
+
+	noSmithyDocumentSerde
+}
+
+// An object that can be used to specify Tag conditions inside the SearchFilter .
+// This accepts an OR or AND (List of List) input where:
+//
+//   - The top level list specifies conditions that need to be applied with OR
+//     operator.
+//
+//   - The inner list specifies conditions that need to be applied with AND
+//     operator.
+type ControlPlaneAttributeFilter struct {
+
+	// A list of conditions which would be applied together with an AND condition.
+	AndCondition *CommonAttributeAndCondition
+
+	// A list of conditions which would be applied together with an OR condition.
+	OrConditions []CommonAttributeAndCondition
+
+	// A leaf node condition which can be used to specify a tag condition, for
+	// example, HAVE BPO = 123 .
+	TagCondition *TagCondition
+
+	noSmithyDocumentSerde
+}
+
 // An object that can be used to specify Tag conditions inside the SearchFilter .
 // This accepts an OR of AND (List of List) input where:
+//
 //   - Top level list specifies conditions that need to be applied with OR operator
+//
 //   - Inner list specifies conditions that need to be applied with AND operator.
 type ControlPlaneTagFilter struct {
 
@@ -490,6 +1455,85 @@ type ControlPlaneTagFilter struct {
 
 	noSmithyDocumentSerde
 }
+
+// An object that can be used to specify Tag conditions or Hierarchy Group
+// conditions inside the SearchFilter .
+//
+// This accepts an OR of AND (List of List) input where:
+//
+//   - The top level list specifies conditions that need to be applied with OR
+//     operator
+//
+//   - The inner list specifies conditions that need to be applied with AND
+//     operator.
+//
+// Only one field can be populated. Maximum number of allowed Tag conditions is
+// 25. Maximum number of allowed Hierarchy Group conditions is 20.
+type ControlPlaneUserAttributeFilter struct {
+
+	// A list of conditions which would be applied together with an AND condition.
+	AndCondition *AttributeAndCondition
+
+	// A leaf node condition which can be used to specify a hierarchy group condition.
+	HierarchyGroupCondition *HierarchyGroupCondition
+
+	// A list of conditions which would be applied together with an OR condition.
+	OrConditions []AttributeAndCondition
+
+	// A leaf node condition which can be used to specify a tag condition, for
+	// example, HAVE BPO = 123 .
+	TagCondition *TagCondition
+
+	noSmithyDocumentSerde
+}
+
+// The CreateCase action definition.
+type CreateCaseActionDefinition struct {
+
+	// An array of objects with Field ID and Value data.
+	//
+	// This member is required.
+	Fields []FieldValue
+
+	// A unique identifier of a template.
+	//
+	// This member is required.
+	TemplateId *string
+
+	noSmithyDocumentSerde
+}
+
+// Information on the identity that created the file.
+//
+// The following types satisfy this interface:
+//
+//	CreatedByInfoMemberAWSIdentityArn
+//	CreatedByInfoMemberConnectUserArn
+type CreatedByInfo interface {
+	isCreatedByInfo()
+}
+
+// STS or IAM ARN representing the identity of API Caller. SDK users cannot
+// populate this and this value is calculated automatically if ConnectUserArn is
+// not provided.
+type CreatedByInfoMemberAWSIdentityArn struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*CreatedByInfoMemberAWSIdentityArn) isCreatedByInfo() {}
+
+// An agent ARN representing a [connect user].
+//
+// [connect user]: https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonconnect.html#amazonconnect-resources-for-iam-policies
+type CreatedByInfoMemberConnectUserArn struct {
+	Value string
+
+	noSmithyDocumentSerde
+}
+
+func (*CreatedByInfoMemberConnectUserArn) isCreatedByInfo() {}
 
 // Contains credentials to use for federation.
 type Credentials struct {
@@ -524,8 +1568,9 @@ type CrossChannelBehavior struct {
 }
 
 // Contains information about a real-time metric. For a description of each
-// metric, see Real-time Metrics Definitions (https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html)
-// in the Amazon Connect Administrator Guide.
+// metric, see [Real-time Metrics Definitions]in the Amazon Connect Administrator Guide.
+//
+// [Real-time Metrics Definitions]: https://docs.aws.amazon.com/connect/latest/adminguide/real-time-metrics-definitions.html
 type CurrentMetric struct {
 
 	// The name of the metric.
@@ -575,6 +1620,61 @@ type CurrentMetricSortCriteria struct {
 	noSmithyDocumentSerde
 }
 
+// Information about the Customer on the contact.
+type Customer struct {
+
+	// The configuration for the allowed video and screen sharing capabilities for
+	// participants present over the call. For more information, see [Set up in-app, web, video calling, and screen sharing capabilities]in the Amazon
+	// Connect Administrator Guide.
+	//
+	// [Set up in-app, web, video calling, and screen sharing capabilities]: https://docs.aws.amazon.com/connect/latest/adminguide/inapp-calling.html
+	Capabilities *ParticipantCapabilities
+
+	// Information regarding Customer’s device.
+	DeviceInfo *DeviceInfo
+
+	noSmithyDocumentSerde
+}
+
+// Information about the quality of the Customer's media connection
+type CustomerQualityMetrics struct {
+
+	// Information about the audio quality of the Customer
+	Audio *AudioQualityMetricsInfo
+
+	noSmithyDocumentSerde
+}
+
+// Information about customer’s voice activity.
+type CustomerVoiceActivity struct {
+
+	// Timestamp that measures the end of the customer greeting from an outbound voice
+	// call.
+	GreetingEndTimestamp *time.Time
+
+	// Timestamp that measures the beginning of the customer greeting from an outbound
+	// voice call.
+	GreetingStartTimestamp *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// An object to specify the hours of operation override date condition.
+type DateCondition struct {
+
+	// An object to specify the hours of operation override date condition
+	// comparisonType .
+	ComparisonType DateComparisonType
+
+	// An object to specify the hours of operation override date field.
+	FieldName *string
+
+	// An object to specify the hours of operation override date value.
+	Value *string
+
+	noSmithyDocumentSerde
+}
+
 // Information about a reference when the referenceType is DATE . Otherwise, null.
 type DateReference struct {
 
@@ -590,14 +1690,18 @@ type DateReference struct {
 // Contains information about a default vocabulary.
 type DefaultVocabulary struct {
 
-	// The identifier of the Amazon Connect instance. You can find the instance ID (https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html)
-	// in the Amazon Resource Name (ARN) of the instance.
+	// The identifier of the Amazon Connect instance. You can [find the instance ID] in the Amazon Resource
+	// Name (ARN) of the instance.
+	//
+	// [find the instance ID]: https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html
 	//
 	// This member is required.
 	InstanceId *string
 
 	// The language code of the vocabulary entries. For a list of languages and their
-	// corresponding language codes, see What is Amazon Transcribe? (https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html)
+	// corresponding language codes, see [What is Amazon Transcribe?]
+	//
+	// [What is Amazon Transcribe?]: https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html
 	//
 	// This member is required.
 	LanguageCode VocabularyLanguageCode
@@ -615,6 +1719,21 @@ type DefaultVocabulary struct {
 	noSmithyDocumentSerde
 }
 
+// Information regarding the device.
+type DeviceInfo struct {
+
+	// Operating system that the participant used for the call.
+	OperatingSystem *string
+
+	// Name of the platform that the participant used for the call.
+	PlatformName *string
+
+	// Version of the platform that the participant used for the call.
+	PlatformVersion *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about the dimensions for a set of metrics.
 type Dimensions struct {
 
@@ -626,6 +1745,29 @@ type Dimensions struct {
 
 	// Information about the routing profile assigned to the user.
 	RoutingProfile *RoutingProfileReference
+
+	// The expression of a step in a routing criteria.
+	RoutingStepExpression *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the call disconnect experience.
+type DisconnectDetails struct {
+
+	// Indicates the potential disconnection issues for a call. This field is not
+	// populated if the service does not detect potential issues.
+	PotentialDisconnectIssue *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains details about why a contact was disconnected. Only Amazon Connect
+// outbound campaigns can provide this field.
+type DisconnectReason struct {
+
+	// A code that indicates how the contact was terminated.
+	Code *string
 
 	noSmithyDocumentSerde
 }
@@ -646,6 +1788,144 @@ type Distribution struct {
 	noSmithyDocumentSerde
 }
 
+// Metadata used to download the attached file.
+type DownloadUrlMetadata struct {
+
+	// A pre-signed URL that should be used to download the attached file.
+	Url *string
+
+	// The expiration time of the URL in ISO timestamp. It's specified in ISO 8601
+	// format: yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.
+	UrlExpiry *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the hours of operations with the effective override applied.
+type EffectiveHoursOfOperations struct {
+
+	// The date that the hours of operation or overrides applies to.
+	Date *string
+
+	// Information about the hours of operations with the effective override applied.
+	OperationalHours []OperationalHour
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about a source or destination email address
+type EmailAddressInfo struct {
+
+	// The email address with the instance, in [^\s@]+@[^\s@]+\.[^\s@]+ format.
+	//
+	// This member is required.
+	EmailAddress *string
+
+	// The display name of email address.
+	DisplayName *string
+
+	noSmithyDocumentSerde
+}
+
+// Contains information about an email address for a contact center.
+type EmailAddressMetadata struct {
+
+	// The description of the email address.
+	Description *string
+
+	// The display name of email address.
+	DisplayName *string
+
+	// The email address with the instance, in [^\s@]+@[^\s@]+\.[^\s@]+ format.
+	EmailAddress *string
+
+	// The Amazon Resource Name (ARN) of the email address.
+	EmailAddressArn *string
+
+	// The identifier of the email address.
+	EmailAddressId *string
+
+	noSmithyDocumentSerde
+}
+
+// The search criteria to be used to return email addresses.
+type EmailAddressSearchCriteria struct {
+
+	// A list of conditions which would be applied together with an AND condition.
+	AndConditions []EmailAddressSearchCriteria
+
+	// A list of conditions which would be applied together with an OR condition.
+	OrConditions []EmailAddressSearchCriteria
+
+	// A leaf node condition which can be used to specify a string condition.
+	StringCondition *StringCondition
+
+	noSmithyDocumentSerde
+}
+
+// Filters to be applied to search results.
+type EmailAddressSearchFilter struct {
+
+	// An object that can be used to specify Tag conditions inside the SearchFilter .
+	// This accepts an OR of AND (List of List) input where:
+	//
+	//   - Top level list specifies conditions that need to be applied with OR operator
+	//
+	//   - Inner list specifies conditions that need to be applied with AND operator.
+	TagFilter *ControlPlaneTagFilter
+
+	noSmithyDocumentSerde
+}
+
+// Information about the email attachment files.
+type EmailAttachment struct {
+
+	// A case-sensitive name of the attached file being uploaded.
+	//
+	// This member is required.
+	FileName *string
+
+	// The pre-signed URLs for the S3 bucket where the email attachment is stored.
+	//
+	// This member is required.
+	S3Url *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the reference when the referenceType is EMAIL_MESSAGE .
+// Otherwise, null.
+type EmailMessageReference struct {
+
+	// The Amazon Resource Name (ARN) of the email message reference
+	Arn *string
+
+	// The name of the email message reference
+	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the email recipient
+type EmailRecipient struct {
+
+	// Address of the email recipient.
+	//
+	// Type: String
+	//
+	// Length Constraints: Minimum length of 1. Maximum length of 256.
+	Address *string
+
+	// Display name of the email recipient.
+	//
+	// Type: String
+	//
+	// Length Constraints: Minimum length of 1. Maximum length of 256.
+	DisplayName *string
+
+	noSmithyDocumentSerde
+}
+
 // Information about a reference when the referenceType is EMAIL . Otherwise, null.
 type EmailReference struct {
 
@@ -658,6 +1938,11 @@ type EmailReference struct {
 	noSmithyDocumentSerde
 }
 
+// An empty value.
+type EmptyFieldValue struct {
+	noSmithyDocumentSerde
+}
+
 // The encryption configuration.
 type EncryptionConfig struct {
 
@@ -666,13 +1951,63 @@ type EncryptionConfig struct {
 	// This member is required.
 	EncryptionType EncryptionType
 
-	// The full ARN of the encryption key. Be sure to provide the full ARN of the
-	// encryption key, not just the ID. Amazon Connect supports only KMS keys with the
-	// default key spec of SYMMETRIC_DEFAULT (https://docs.aws.amazon.com/kms/latest/developerguide/asymmetric-key-specs.html#key-spec-symmetric-default)
-	// .
+	// The full ARN of the encryption key.
+	//
+	// Be sure to provide the full ARN of the encryption key, not just the ID.
+	//
+	// Amazon Connect supports only KMS keys with the default key spec of [SYMMETRIC_DEFAULT]
+	// SYMMETRIC_DEFAULT .
+	//
+	// [SYMMETRIC_DEFAULT]: https://docs.aws.amazon.com/kms/latest/developerguide/asymmetric-key-specs.html#key-spec-symmetric-default
 	//
 	// This member is required.
 	KeyId *string
+
+	noSmithyDocumentSerde
+}
+
+// End associated tasks related to a case.
+type EndAssociatedTasksActionDefinition struct {
+	noSmithyDocumentSerde
+}
+
+// Information about the endpoint.
+type Endpoint struct {
+
+	// Address of the endpoint.
+	Address *string
+
+	// Type of the endpoint.
+	Type EndpointType
+
+	noSmithyDocumentSerde
+}
+
+// Information about the endpoint.
+type EndpointInfo struct {
+
+	// Address of the endpoint.
+	Address *string
+
+	// Display name of the endpoint.
+	DisplayName *string
+
+	// Type of endpoint.
+	Type EndpointType
+
+	noSmithyDocumentSerde
+}
+
+// This API is in preview release for Amazon Connect and is subject to change.
+//
+// List of errors for dataset association failures.
+type ErrorResult struct {
+
+	// The error code.
+	ErrorCode *string
+
+	// The corresponding error message for the error code.
+	ErrorMessage *string
 
 	noSmithyDocumentSerde
 }
@@ -724,7 +2059,7 @@ type Evaluation struct {
 	Scores map[string]EvaluationScore
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -816,7 +2151,7 @@ type EvaluationForm struct {
 	// A version of the evaluation form.
 	//
 	// This member is required.
-	EvaluationFormVersion *int32
+	EvaluationFormVersion int32
 
 	// Items that are part of the evaluation form. The total number of sections and
 	// questions must not exceed 100 each. Questions must be contained in a section.
@@ -856,7 +2191,7 @@ type EvaluationForm struct {
 	ScoringStrategy *EvaluationFormScoringStrategy
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -878,7 +2213,7 @@ type EvaluationFormContent struct {
 	// A version of the evaluation form.
 	//
 	// This member is required.
-	EvaluationFormVersion *int32
+	EvaluationFormVersion int32
 
 	// Items that are part of the evaluation form. The total number of sections and
 	// questions must not exceed 100 each. Questions must be contained in a section.
@@ -1219,7 +2554,7 @@ type EvaluationFormSummary struct {
 	// The version number of the latest evaluation form version.
 	//
 	// This member is required.
-	LatestVersion *int32
+	LatestVersion int32
 
 	// A title of the evaluation form.
 	//
@@ -1229,7 +2564,7 @@ type EvaluationFormSummary struct {
 	// The version of the active evaluation form version.
 	ActiveVersion *int32
 
-	// The Amazon Resource Name (ARN) of the user who last activated the evaluation
+	//  The Amazon Resource Name (ARN) of the user who last activated the evaluation
 	// form.
 	LastActivatedBy *string
 
@@ -1265,7 +2600,7 @@ type EvaluationFormVersionSummary struct {
 	// A version of the evaluation form.
 	//
 	// This member is required.
-	EvaluationFormVersion *int32
+	EvaluationFormVersion int32
 
 	// The Amazon Resource Name (ARN) of the user who last updated the evaluation form.
 	//
@@ -1316,6 +2651,11 @@ type EvaluationMetadata struct {
 type EvaluationNote struct {
 
 	// The note for an item (section or question) in a contact evaluation.
+	//
+	// Even though a note in an evaluation can have up to 3072 chars, there is also a
+	// limit on the total number of chars for all the notes in the evaluation combined.
+	// Assuming there are N questions in the evaluation being submitted, then the max
+	// char limit for all notes combined is N x 1024.
 	Value *string
 
 	noSmithyDocumentSerde
@@ -1397,6 +2737,86 @@ type EventBridgeActionDefinition struct {
 	noSmithyDocumentSerde
 }
 
+// An object to specify the expiration of a routing step.
+type Expiry struct {
+
+	// The number of seconds to wait before expiring the routing step.
+	DurationInSeconds *int32
+
+	// The timestamp indicating when the routing step expires.
+	ExpiryTimestamp *time.Time
+
+	noSmithyDocumentSerde
+}
+
+// A tagged union to specify expression for a routing step.
+type Expression struct {
+
+	// List of routing expressions which will be AND-ed together.
+	AndExpression []Expression
+
+	// An object to specify the predefined attribute condition.
+	AttributeCondition *AttributeCondition
+
+	// An object to specify the predefined attribute condition.
+	NotAttributeCondition *AttributeCondition
+
+	// List of routing expressions which will be OR-ed together.
+	OrExpression []Expression
+
+	noSmithyDocumentSerde
+}
+
+// Request for which contact failed to be generated.
+type FailedRequest struct {
+
+	// Reason code for the failure.
+	FailureReasonCode FailureReasonCode
+
+	// Why the request to create a contact failed.
+	FailureReasonMessage *string
+
+	// Request identifier provided in the API call in the ContactDataRequest to create
+	// a contact.
+	RequestIdentifier *string
+
+	noSmithyDocumentSerde
+}
+
+// Object for case field values.
+type FieldValue struct {
+
+	// Unique identifier of a field.
+	//
+	// This member is required.
+	Id *string
+
+	// Union of potential field value types.
+	//
+	// This member is required.
+	Value *FieldValueUnion
+
+	noSmithyDocumentSerde
+}
+
+// Object to store union of Field values.
+type FieldValueUnion struct {
+
+	// A Boolean number value type.
+	BooleanValue bool
+
+	// A Double number value type.
+	DoubleValue *float64
+
+	// An empty value.
+	EmptyValue *EmptyFieldValue
+
+	// String value type.
+	StringValue *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains the filter to apply when retrieving metrics.
 type Filters struct {
 
@@ -1411,11 +2831,16 @@ type Filters struct {
 	// A list of up to 100 routing profile IDs or ARNs.
 	RoutingProfiles []string
 
+	// A list of expressions as a filter, in which an expression is an object of a
+	// step in a routing criteria.
+	RoutingStepExpressions []string
+
 	noSmithyDocumentSerde
 }
 
-// Contains the filter to apply when retrieving metrics with the GetMetricDataV2 (https://docs.aws.amazon.com/connect/latest/APIReference/API_GetMetricDataV2.html)
-// API.
+// Contains the filter to apply when retrieving metrics with the [GetMetricDataV2] API.
+//
+// [GetMetricDataV2]: https://docs.aws.amazon.com/connect/latest/APIReference/API_GetMetricDataV2.html
 type FilterV2 struct {
 
 	// The key to use for filtering data. For example, QUEUE , ROUTING_PROFILE, AGENT ,
@@ -1427,6 +2852,21 @@ type FilterV2 struct {
 	// The identifiers to use for filtering data. For example, if you have a filter
 	// key of QUEUE , you would add queue IDs or ARNs in FilterValues .
 	FilterValues []string
+
+	noSmithyDocumentSerde
+}
+
+// Information about flow associations.
+type FlowAssociationSummary struct {
+
+	// The identifier of the flow.
+	FlowId *string
+
+	// The identifier of the resource.
+	ResourceId *string
+
+	// The type of resource association.
+	ResourceType ListFlowAssociationResourceType
 
 	noSmithyDocumentSerde
 }
@@ -1443,6 +2883,12 @@ type HierarchyGroup struct {
 	// The identifier of the hierarchy group.
 	Id *string
 
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
+
 	// The identifier of the level in the hierarchy group.
 	LevelId *string
 
@@ -1450,7 +2896,7 @@ type HierarchyGroup struct {
 	Name *string
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -1468,6 +2914,28 @@ type HierarchyGroupCondition struct {
 	noSmithyDocumentSerde
 }
 
+// Information about the agent hierarchy. Hierarchies can be configured with up to
+// five levels.
+type HierarchyGroups struct {
+
+	// The group at level one of the agent hierarchy.
+	Level1 *AgentHierarchyGroup
+
+	// The group at level two of the agent hierarchy.
+	Level2 *AgentHierarchyGroup
+
+	// The group at level three of the agent hierarchy.
+	Level3 *AgentHierarchyGroup
+
+	// The group at level four of the agent hierarchy.
+	Level4 *AgentHierarchyGroup
+
+	// The group at level five of the agent hierarchy.
+	Level5 *AgentHierarchyGroup
+
+	noSmithyDocumentSerde
+}
+
 // Contains summary information about a hierarchy group.
 type HierarchyGroupSummary struct {
 
@@ -1476,6 +2944,12 @@ type HierarchyGroupSummary struct {
 
 	// The identifier of the hierarchy group.
 	Id *string
+
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
 
 	// The name of the hierarchy group.
 	Name *string
@@ -1503,6 +2977,12 @@ type HierarchyLevel struct {
 
 	// The identifier of the hierarchy level.
 	Id *string
+
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
 
 	// The name of the hierarchy level.
 	Name *string
@@ -1606,8 +3086,9 @@ type HierarchyStructureUpdate struct {
 }
 
 // Contains information about a historical metric. For a description of each
-// metric, see Historical Metrics Definitions (https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html)
-// in the Amazon Connect Administrator Guide.
+// metric, see [Historical Metrics Definitions]in the Amazon Connect Administrator Guide.
+//
+// [Historical Metrics Definitions]: https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html
 type HistoricalMetric struct {
 
 	// The name of the metric.
@@ -1664,11 +3145,17 @@ type HoursOfOperation struct {
 	// The identifier for the hours of operation.
 	HoursOfOperationId *string
 
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
+
 	// The name for the hours of operation.
 	Name *string
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	// The time zone for the hours of operation.
@@ -1698,6 +3185,71 @@ type HoursOfOperationConfig struct {
 	noSmithyDocumentSerde
 }
 
+// Information about the hours of operations override.
+type HoursOfOperationOverride struct {
+
+	// Configuration information for the hours of operation override: day, start time,
+	// and end time.
+	Config []HoursOfOperationOverrideConfig
+
+	// The description of the hours of operation override.
+	Description *string
+
+	// The date from which the hours of operation override would be effective.
+	EffectiveFrom *string
+
+	// The date till which the hours of operation override would be effective.
+	EffectiveTill *string
+
+	// The Amazon Resource Name (ARN) for the hours of operation.
+	HoursOfOperationArn *string
+
+	// The identifier for the hours of operation.
+	HoursOfOperationId *string
+
+	// The identifier for the hours of operation override.
+	HoursOfOperationOverrideId *string
+
+	// The name of the hours of operation override.
+	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the hours of operation override config: day, start time, and
+// end time.
+type HoursOfOperationOverrideConfig struct {
+
+	// The day that the hours of operation override applies to.
+	Day OverrideDays
+
+	// The end time that your contact center closes if overrides are applied.
+	EndTime *OverrideTimeSlice
+
+	// The start time when your contact center opens if overrides are applied.
+	StartTime *OverrideTimeSlice
+
+	noSmithyDocumentSerde
+}
+
+// The search criteria to be used to return hours of operations overrides.
+type HoursOfOperationOverrideSearchCriteria struct {
+
+	// A list of conditions which would be applied together with an AND condition.
+	AndConditions []HoursOfOperationOverrideSearchCriteria
+
+	// A leaf node condition which can be used to specify a date condition.
+	DateCondition *DateCondition
+
+	// A list of conditions which would be applied together with an OR condition.
+	OrConditions []HoursOfOperationOverrideSearchCriteria
+
+	// A leaf node condition which can be used to specify a string condition.
+	StringCondition *StringCondition
+
+	noSmithyDocumentSerde
+}
+
 // The search criteria to be used to return hours of operations.
 type HoursOfOperationSearchCriteria struct {
 
@@ -1707,9 +3259,10 @@ type HoursOfOperationSearchCriteria struct {
 	// A list of conditions which would be applied together with an OR condition.
 	OrConditions []HoursOfOperationSearchCriteria
 
-	// A leaf node condition which can be used to specify a string condition. The
-	// currently supported values for FieldName are name , description , timezone , and
-	// resourceID .
+	// A leaf node condition which can be used to specify a string condition.
+	//
+	// The currently supported values for FieldName are name , description , timezone ,
+	// and resourceID .
 	StringCondition *StringCondition
 
 	noSmithyDocumentSerde
@@ -1720,7 +3273,9 @@ type HoursOfOperationSearchFilter struct {
 
 	// An object that can be used to specify Tag conditions inside the SearchFilter .
 	// This accepts an OR of AND (List of List) input where:
+	//
 	//   - Top level list specifies conditions that need to be applied with OR operator
+	//
 	//   - Inner list specifies conditions that need to be applied with AND operator.
 	TagFilter *ControlPlaneTagFilter
 
@@ -1735,6 +3290,12 @@ type HoursOfOperationSummary struct {
 
 	// The identifier of the hours of operation.
 	Id *string
+
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
 
 	// The name of the hours of operation.
 	Name *string
@@ -1758,6 +3319,56 @@ type HoursOfOperationTimeSlice struct {
 	noSmithyDocumentSerde
 }
 
+// The additional TO CC recipients information of inbound email.
+type InboundAdditionalRecipients struct {
+
+	// The additional recipients information present in cc list.
+	CcAddresses []EmailAddressInfo
+
+	// The additional recipients information present in to list.
+	ToAddresses []EmailAddressInfo
+
+	noSmithyDocumentSerde
+}
+
+// Information about email body content.
+type InboundEmailContent struct {
+
+	// The message source type, that is, RAW .
+	//
+	// This member is required.
+	MessageSourceType InboundMessageSourceType
+
+	// The raw email body content.
+	RawMessage *InboundRawMessage
+
+	noSmithyDocumentSerde
+}
+
+// Information about the raw email body content.
+type InboundRawMessage struct {
+
+	// The email message body.
+	//
+	// This member is required.
+	Body *string
+
+	// Type of content, that is, text/plain or text/html .
+	//
+	// This member is required.
+	ContentType *string
+
+	// The email subject.
+	//
+	// This member is required.
+	Subject *string
+
+	// Headers present in inbound email.
+	Headers map[string]string
+
+	noSmithyDocumentSerde
+}
+
 // The Amazon Connect instance.
 type Instance struct {
 
@@ -1767,8 +3378,10 @@ type Instance struct {
 	// When the instance was created.
 	CreatedTime *time.Time
 
-	// The identifier of the Amazon Connect instance. You can find the instance ID (https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html)
-	// in the Amazon Resource Name (ARN) of the instance.
+	// The identifier of the Amazon Connect instance. You can [find the instance ID] in the Amazon Resource
+	// Name (ARN) of the instance.
+	//
+	// [find the instance ID]: https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html
 	Id *string
 
 	// The identity management type.
@@ -1794,6 +3407,9 @@ type Instance struct {
 
 	// Relevant details why the instance was not successfully created.
 	StatusReason *InstanceStatusReason
+
+	// The tags of an instance.
+	Tags map[string]string
 
 	noSmithyDocumentSerde
 }
@@ -1873,8 +3489,10 @@ type InstanceSummary struct {
 // Contains summary information about the associated AppIntegrations.
 type IntegrationAssociationSummary struct {
 
-	// The identifier of the Amazon Connect instance. You can find the instance ID (https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html)
-	// in the Amazon Resource Name (ARN) of the instance.
+	// The identifier of the Amazon Connect instance. You can [find the instance ID] in the Amazon Resource
+	// Name (ARN) of the instance.
+	//
+	// [find the instance ID]: https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html
 	InstanceId *string
 
 	// The Amazon Resource Name (ARN) for the AppIntegration.
@@ -1899,6 +3517,63 @@ type IntegrationAssociationSummary struct {
 	SourceType SourceType
 
 	noSmithyDocumentSerde
+}
+
+// Information about the interval period to use for returning results.
+type IntervalDetails struct {
+
+	// IntervalPeriod : An aggregated grouping applied to request metrics. Valid
+	// IntervalPeriod values are: FIFTEEN_MIN | THIRTY_MIN | HOUR | DAY | WEEK | TOTAL
+	// .
+	//
+	// For example, if IntervalPeriod is selected THIRTY_MIN , StartTime and EndTime
+	// differs by 1 day, then Amazon Connect returns 48 results in the response. Each
+	// result is aggregated by the THIRTY_MIN period. By default Amazon Connect
+	// aggregates results based on the TOTAL interval period.
+	//
+	// The following list describes restrictions on StartTime and EndTime based on
+	// what IntervalPeriod is requested.
+	//
+	//   - FIFTEEN_MIN : The difference between StartTime and EndTime must be less than
+	//   3 days.
+	//
+	//   - THIRTY_MIN : The difference between StartTime and EndTime must be less than
+	//   3 days.
+	//
+	//   - HOUR : The difference between StartTime and EndTime must be less than 3 days.
+	//
+	//   - DAY : The difference between StartTime and EndTime must be less than 35 days.
+	//
+	//   - WEEK : The difference between StartTime and EndTime must be less than 35
+	//   days.
+	//
+	//   - TOTAL : The difference between StartTime and EndTime must be less than 35
+	//   days.
+	IntervalPeriod IntervalPeriod
+
+	// The timezone applied to requested metrics.
+	TimeZone *string
+
+	noSmithyDocumentSerde
+}
+
+// Reason why the request was invalid.
+//
+// The following types satisfy this interface:
+//
+//	InvalidRequestExceptionReasonMemberAttachedFileInvalidRequestExceptionReason
+type InvalidRequestExceptionReason interface {
+	isInvalidRequestExceptionReason()
+}
+
+// Reason why the StartAttachedFiledUpload request was invalid.
+type InvalidRequestExceptionReasonMemberAttachedFileInvalidRequestExceptionReason struct {
+	Value AttachedFileInvalidRequestExceptionReason
+
+	noSmithyDocumentSerde
+}
+
+func (*InvalidRequestExceptionReasonMemberAttachedFileInvalidRequestExceptionReason) isInvalidRequestExceptionReason() {
 }
 
 // A field that is invisible to an agent.
@@ -1946,8 +3621,9 @@ type KinesisVideoStreamConfig struct {
 	Prefix *string
 
 	// The number of hours data is retained in the stream. Kinesis Video Streams
-	// retains the data in a data store that is associated with the stream. The default
-	// value is 0, indicating that the stream does not persist data.
+	// retains the data in a data store that is associated with the stream.
+	//
+	// The default value is 0, indicating that the stream does not persist data.
 	//
 	// This member is required.
 	RetentionPeriodHours int32
@@ -1992,9 +3668,29 @@ type LexV2Bot struct {
 	noSmithyDocumentSerde
 }
 
+// A leaf node condition which can be used to specify a List condition to search
+// users with attributes included in Lists like Proficiencies.
+type ListCondition struct {
+
+	// A list of Condition objects which would be applied together with an AND
+	// condition.
+	Conditions []Condition
+
+	// The type of target list that will be used to filter the users.
+	TargetListType TargetListType
+
+	noSmithyDocumentSerde
+}
+
 // Information about phone numbers that have been claimed to your Amazon Connect
 // instance or traffic distribution group.
 type ListPhoneNumbersSummary struct {
+
+	// The identifier of the Amazon Connect instance that phone numbers are claimed
+	// to. You can [find the instance ID]in the Amazon Resource Name (ARN) of the instance.
+	//
+	// [find the instance ID]: https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html
+	InstanceId *string
 
 	// The phone number. Phone numbers are formatted [+] [country code] [subscriber
 	// number including area code] .
@@ -2006,15 +3702,33 @@ type ListPhoneNumbersSummary struct {
 	// The ISO country code.
 	PhoneNumberCountryCode PhoneNumberCountryCode
 
+	// The description of the phone number.
+	PhoneNumberDescription *string
+
 	// A unique identifier for the phone number.
 	PhoneNumberId *string
 
 	// The type of phone number.
 	PhoneNumberType PhoneNumberType
 
+	// The claimed phone number ARN that was previously imported from the external
+	// service, such as Amazon Web Services End User Messaging. If it is from Amazon
+	// Web Services End User Messaging, it looks like the ARN of the phone number that
+	// was imported from Amazon Web Services End User Messaging.
+	SourcePhoneNumberArn *string
+
 	// The Amazon Resource Name (ARN) for Amazon Connect instances or traffic
-	// distribution groups that phone numbers are claimed to.
+	// distribution groups that phone number inbound traffic is routed through.
 	TargetArn *string
+
+	noSmithyDocumentSerde
+}
+
+// An object to define AgentsCriteria.
+type MatchCriteria struct {
+
+	// An object to define agentIds.
+	AgentsCriteria *AgentsCriteria
 
 	noSmithyDocumentSerde
 }
@@ -2028,19 +3742,71 @@ type MediaConcurrency struct {
 	// This member is required.
 	Channel Channel
 
-	// The number of contacts an agent can have on a channel simultaneously. Valid
-	// Range for VOICE : Minimum value of 1. Maximum value of 1. Valid Range for CHAT :
-	// Minimum value of 1. Maximum value of 10. Valid Range for TASK : Minimum value of
-	// 1. Maximum value of 10.
+	// The number of contacts an agent can have on a channel simultaneously.
+	//
+	// Valid Range for VOICE : Minimum value of 1. Maximum value of 1.
+	//
+	// Valid Range for CHAT : Minimum value of 1. Maximum value of 10.
+	//
+	// Valid Range for TASK : Minimum value of 1. Maximum value of 10.
 	//
 	// This member is required.
-	Concurrency int32
+	Concurrency *int32
 
 	// Defines the cross-channel routing behavior for each channel that is enabled for
 	// this Routing Profile. For example, this allows you to offer an agent a different
 	// contact from another channel when they are currently working with a contact from
 	// a Voice channel.
 	CrossChannelBehavior *CrossChannelBehavior
+
+	noSmithyDocumentSerde
+}
+
+// A set of endpoints used by clients to connect to the media service group for an
+// Amazon Chime SDK meeting.
+type MediaPlacement struct {
+
+	// The audio fallback URL.
+	AudioFallbackUrl *string
+
+	// The audio host URL.
+	AudioHostUrl *string
+
+	// The event ingestion URL to which you send client meeting events.
+	EventIngestionUrl *string
+
+	// The signaling URL.
+	SignalingUrl *string
+
+	// The turn control URL.
+	TurnControlUrl *string
+
+	noSmithyDocumentSerde
+}
+
+// A meeting created using the Amazon Chime SDK.
+type Meeting struct {
+
+	// The media placement for the meeting.
+	MediaPlacement *MediaPlacement
+
+	// The Amazon Web Services Region in which you create the meeting.
+	MediaRegion *string
+
+	// The configuration settings of the features available to a meeting.
+	MeetingFeatures *MeetingFeaturesConfiguration
+
+	// The Amazon Chime SDK meeting ID.
+	MeetingId *string
+
+	noSmithyDocumentSerde
+}
+
+// The configuration settings of the features available to a meeting.
+type MeetingFeaturesConfiguration struct {
+
+	// The configuration settings for the audio features available to a meeting.
+	Audio *AudioFeatures
 
 	noSmithyDocumentSerde
 }
@@ -2062,19 +3828,73 @@ type MetricDataV2 struct {
 // , CONTACTS_CREATED , CONTACTS_HANDLED , SUM_CONTACTS_DISCONNECTED .
 type MetricFilterV2 struct {
 
-	// The key to use for filtering data. Valid metric filter keys: INITIATION_METHOD ,
-	// DISCONNECT_REASON . These are the same values as the InitiationMethod and
-	// DisconnectReason in the contact record. For more information, see
-	// ContactTraceRecord (https://docs.aws.amazon.com/connect/latest/adminguide/ctr-data-model.html#ctr-ContactTraceRecord)
-	// in the Amazon Connect Administrator's Guide.
+	// The key to use for filtering data.
+	//
+	// Valid metric filter keys:
+	//
+	//   - ANSWERING_MACHINE_DETECTION_STATUS
+	//
+	//   - CASE_STATUS
+	//
+	//   - DISCONNECT_REASON
+	//
+	//   - FLOWS_ACTION_IDENTIFIER
+	//
+	//   - FLOWS_NEXT_ACTION_IDENTIFIER
+	//
+	//   - FLOWS_OUTCOME_TYPE
+	//
+	//   - FLOWS_RESOURCE_TYPE
+	//
+	//   - INITIATION_METHOD
 	MetricFilterKey *string
 
-	// The values to use for filtering data. Valid metric filter values for
-	// INITIATION_METHOD : INBOUND | OUTBOUND | TRANSFER | QUEUE_TRANSFER | CALLBACK |
-	// API Valid metric filter values for DISCONNECT_REASON : CUSTOMER_DISCONNECT |
-	// AGENT_DISCONNECT | THIRD_PARTY_DISCONNECT | TELECOM_PROBLEM | BARGED |
-	// CONTACT_FLOW_DISCONNECT | OTHER | EXPIRED | API
+	// The values to use for filtering data. Values for metric-level filters can be
+	// either a fixed set of values or a customized list, depending on the use case.
+	//
+	// For valid values of metric-level filters INITIATION_METHOD , DISCONNECT_REASON ,
+	// and ANSWERING_MACHINE_DETECTION_STATUS , see [ContactTraceRecord] in the Amazon Connect
+	// Administrator Guide.
+	//
+	// For valid values of the metric-level filter FLOWS_OUTCOME_TYPE , see the
+	// description for the [Flow outcome]metric in the Amazon Connect Administrator Guide.
+	//
+	// For valid values of the metric-level filter BOT_CONVERSATION_OUTCOME_TYPE , see
+	// the description for the [Bot conversations completed]in the Amazon Connect Administrator Guide.
+	//
+	// For valid values of the metric-level filter BOT_INTENT_OUTCOME_TYPE , see the
+	// description for the [Bot intents completed]metric in the Amazon Connect Administrator Guide.
+	//
+	// [Bot intents completed]: https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#bot-intents-completed-metric
+	// [ContactTraceRecord]: https://docs.aws.amazon.com/connect/latest/adminguide/ctr-data-model.html#ctr-ContactTraceRecord
+	// [Flow outcome]: https://docs.aws.amazon.com/connect/latest/adminguide/historical-metrics-definitions.html#flows-outcome-historical
+	// [Bot conversations completed]: https://docs.aws.amazon.com/connect/latest/adminguide/bot-metrics.html#bot-conversations-completed-metric
 	MetricFilterValues []string
+
+	// If set to true , the API response contains results that filter out the results
+	// matched by the metric-level filters condition. By default, Negate is set to
+	// false .
+	Negate bool
+
+	noSmithyDocumentSerde
+}
+
+// The interval period with the start and end time for the metrics.
+type MetricInterval struct {
+
+	// The timestamp, in UNIX Epoch time format. End time is based on the interval
+	// period selected. For example, If IntervalPeriod is selected THIRTY_MIN ,
+	// StartTime and EndTime in the API request differs by 1 day, then 48 results are
+	// returned in the response. Each result is aggregated by the 30 minutes period,
+	// with each StartTime and EndTime differing by 30 minutes.
+	EndTime *time.Time
+
+	// The interval period provided in the API request.
+	Interval IntervalPeriod
+
+	// The timestamp, in UNIX Epoch time format. Start time is based on the interval
+	// period selected.
+	StartTime *time.Time
 
 	noSmithyDocumentSerde
 }
@@ -2088,6 +3908,9 @@ type MetricResultV2 struct {
 	// The dimension for the metrics.
 	Dimensions map[string]string
 
+	// The interval period with the start and end time for the metrics.
+	MetricInterval *MetricInterval
+
 	noSmithyDocumentSerde
 }
 
@@ -2097,8 +3920,9 @@ type MetricV2 struct {
 	// Contains the filters to be used when returning data.
 	MetricFilters []MetricFilterV2
 
-	// The name of the metric. This parameter is required. The following Required = No
-	// is incorrect.
+	// The name of the metric.
+	//
+	// This parameter is required. The following Required = No is incorrect.
 	Name *string
 
 	// Contains information about the threshold for service level metrics.
@@ -2107,16 +3931,70 @@ type MetricV2 struct {
 	noSmithyDocumentSerde
 }
 
+// Payload of chat properties to apply when starting a new contact.
+type NewSessionDetails struct {
+
+	//  A custom key-value pair using an attribute map. The attributes are standard
+	// Amazon Connect attributes. They can be accessed in flows just like any other
+	// contact attributes.
+	//
+	// There can be up to 32,768 UTF-8 bytes across all key-value pairs per contact.
+	// Attribute keys can include only alphanumeric, dash, and underscore characters.
+	Attributes map[string]string
+
+	// The customer's details.
+	ParticipantDetails *ParticipantDetails
+
+	// The streaming configuration, such as the Amazon SNS streaming endpoint.
+	StreamingConfiguration *ChatStreamingConfiguration
+
+	//  The supported chat message content types. Supported types are text/plain ,
+	// text/markdown , application/json ,
+	// application/vnd.amazonaws.connect.message.interactive , and
+	// application/vnd.amazonaws.connect.message.interactive.response .
+	//
+	// Content types must always contain  text/plain . You can then put any other
+	// supported type in the list. For example, all the following lists are valid
+	// because they contain text/plain : [text/plain, text/markdown, application/json]
+	// , [text/markdown, text/plain] , [text/plain, application/json,
+	// application/vnd.amazonaws.connect.message.interactive.response] .
+	SupportedMessagingContentTypes []string
+
+	noSmithyDocumentSerde
+}
+
 // The type of notification recipient.
 type NotificationRecipientType struct {
 
-	// A list of user IDs.
+	// A list of user IDs. Supports variable injection of
+	// $.ContactLens.ContactEvaluation.Agent.AgentId for OnContactEvaluationSubmit
+	// event source.
 	UserIds []string
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }. Amazon Connect users
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }. Amazon Connect users
 	// with the specified tags will be notified.
 	UserTags map[string]string
+
+	noSmithyDocumentSerde
+}
+
+// A leaf node condition which can be used to specify a numeric condition.
+//
+// The currently supported value for FieldName is limit .
+type NumberCondition struct {
+
+	// The type of comparison to be made when evaluating the number condition.
+	ComparisonType NumberComparisonType
+
+	// The name of the field in the number condition.
+	FieldName *string
+
+	// The maxValue to be used while evaluating the number condition.
+	MaxValue *int32
+
+	// The minValue to be used while evaluating the number condition.
+	MinValue *int32
 
 	noSmithyDocumentSerde
 }
@@ -2136,11 +4014,15 @@ type NumberReference struct {
 // Information about the property value used in automation of a numeric questions.
 // Label values are associated with minimum and maximum values for the numeric
 // question.
+//
 //   - Sentiment scores have a minimum value of -5 and maximum value of 5.
+//
 //   - Duration labels, such as NON_TALK_TIME , CONTACT_DURATION ,
 //     AGENT_INTERACTION_DURATION , CUSTOMER_HOLD_TIME have a minimum value of 0 and
-//     maximum value of 28800.
+//     maximum value of 63072000.
+//
 //   - Percentages have a minimum value of 0 and maximum value of 100.
+//
 //   - NUMBER_OF_INTERRUPTIONS has a minimum value of 0 and maximum value of 1000.
 type NumericQuestionPropertyValueAutomation struct {
 
@@ -2148,6 +4030,27 @@ type NumericQuestionPropertyValueAutomation struct {
 	//
 	// This member is required.
 	Label NumericQuestionPropertyAutomationLabel
+
+	noSmithyDocumentSerde
+}
+
+// Information about the hours of operations with the effective override applied.
+type OperationalHour struct {
+
+	// The end time that your contact center closes.
+	End *OverrideTimeSlice
+
+	// The start time that your contact center opens.
+	Start *OverrideTimeSlice
+
+	noSmithyDocumentSerde
+}
+
+// The additional recipients information of outbound email.
+type OutboundAdditionalRecipients struct {
+
+	// The additional CC email address recipients information.
+	CcEmailAddresses []EmailAddressInfo
 
 	noSmithyDocumentSerde
 }
@@ -2163,6 +4066,87 @@ type OutboundCallerConfig struct {
 
 	// The outbound whisper flow to be used during an outbound call.
 	OutboundFlowId *string
+
+	noSmithyDocumentSerde
+}
+
+// The outbound email address Id.
+type OutboundEmailConfig struct {
+
+	// The identifier of the email address.
+	OutboundEmailAddressId *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about email body content.
+type OutboundEmailContent struct {
+
+	// The message source type, that is, RAW or TEMPLATE .
+	//
+	// This member is required.
+	MessageSourceType OutboundMessageSourceType
+
+	// The raw email body content.
+	RawMessage *OutboundRawMessage
+
+	// Information about template message configuration.
+	TemplatedMessageConfig *TemplatedMessageConfig
+
+	noSmithyDocumentSerde
+}
+
+// Information about the raw email body content.
+type OutboundRawMessage struct {
+
+	// The email message body.
+	//
+	// This member is required.
+	Body *string
+
+	// Type of content, that is, text/plain or text/html .
+	//
+	// This member is required.
+	ContentType *string
+
+	// The email subject.
+	//
+	// This member is required.
+	Subject *string
+
+	noSmithyDocumentSerde
+}
+
+// The start time or end time for an hours of operation override.
+type OverrideTimeSlice struct {
+
+	// The hours.
+	//
+	// This member is required.
+	Hours *int32
+
+	// The minutes.
+	//
+	// This member is required.
+	Minutes *int32
+
+	noSmithyDocumentSerde
+}
+
+// The configuration for the allowed video and screen sharing capabilities for
+// participants present over the call. For more information, see [Set up in-app, web, video calling, and screen sharing capabilities]in the Amazon
+// Connect Administrator Guide.
+//
+// [Set up in-app, web, video calling, and screen sharing capabilities]: https://docs.aws.amazon.com/connect/latest/adminguide/inapp-calling.html
+type ParticipantCapabilities struct {
+
+	// The screen sharing capability that is enabled for the participant. SEND
+	// indicates the participant can share their screen.
+	ScreenShare ScreenShareCapability
+
+	// The configuration having the video and screen sharing capabilities for
+	// participants over the call.
+	Video VideoCapability
 
 	noSmithyDocumentSerde
 }
@@ -2192,9 +4176,11 @@ type ParticipantDetailsToAdd struct {
 
 // Configuration information for the timer. After the timer configuration is set,
 // it persists for the duration of the chat. It persists across new contacts in the
-// chain, for example, transfer contacts. For more information about how chat
-// timeouts work, see Set up chat timeouts for human participants (https://docs.aws.amazon.com/connect/latest/adminguide/setup-chat-timeouts.html)
-// .
+// chain, for example, transfer contacts.
+//
+// For more information about how chat timeouts work, see [Set up chat timeouts for human participants].
+//
+// [Set up chat timeouts for human participants]: https://docs.aws.amazon.com/connect/latest/adminguide/setup-chat-timeouts.html
 type ParticipantTimerConfiguration struct {
 
 	// The role of the participant in the chat conversation.
@@ -2219,15 +4205,16 @@ type ParticipantTimerConfiguration struct {
 }
 
 // The value of the timer. Either the timer action ( Unset to delete the timer),
-// or the duration of the timer in minutes. Only one value can be set. For more
-// information about how chat timeouts work, see Set up chat timeouts for human
-// participants (https://docs.aws.amazon.com/connect/latest/adminguide/setup-chat-timeouts.html)
-// .
+// or the duration of the timer in minutes. Only one value can be set.
+//
+// For more information about how chat timeouts work, see [Set up chat timeouts for human participants].
 //
 // The following types satisfy this interface:
 //
 //	ParticipantTimerValueMemberParticipantTimerAction
 //	ParticipantTimerValueMemberParticipantTimerDurationInMinutes
+//
+// [Set up chat timeouts for human participants]: https://docs.aws.amazon.com/connect/latest/adminguide/setup-chat-timeouts.html
 type ParticipantTimerValue interface {
 	isParticipantTimerValue()
 }
@@ -2258,29 +4245,34 @@ type ParticipantTokenCredentials struct {
 	// yyyy-MM-ddThh:mm:ss.SSSZ. For example, 2019-11-08T02:41:28.172Z.
 	Expiry *string
 
-	// The token used by the chat participant to call CreateParticipantConnection (https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html)
-	// . The participant token is valid for the lifetime of a chat participant.
+	// The token used by the chat participant to call [CreateParticipantConnection]. The participant token is valid
+	// for the lifetime of a chat participant.
+	//
+	// [CreateParticipantConnection]: https://docs.aws.amazon.com/connect-participant/latest/APIReference/API_CreateParticipantConnection.html
 	ParticipantToken *string
 
 	noSmithyDocumentSerde
 }
 
 // Enable persistent chats. For more information about enabling persistent chat,
-// and for example use cases and how to configure for them, see Enable persistent
-// chat (https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html)
-// .
+// and for example use cases and how to configure for them, see [Enable persistent chat].
+//
+// [Enable persistent chat]: https://docs.aws.amazon.com/connect/latest/adminguide/chat-persistence.html
 type PersistentChat struct {
 
 	// The contactId that is used for rehydration depends on the rehydration type.
 	// RehydrationType is required for persistent chat.
+	//
 	//   - ENTIRE_PAST_SESSION : Rehydrates a chat from the most recently terminated
 	//   past chat contact of the specified past ended chat session. To use this type,
 	//   provide the initialContactId of the past ended chat session in the
 	//   sourceContactId field. In this type, Amazon Connect determines the most recent
 	//   chat contact on the specified chat session that has ended, and uses it to start
 	//   a persistent chat.
+	//
 	//   - FROM_SEGMENT : Rehydrates a chat from the past chat contact that is
 	//   specified in the sourceContactId field.
+	//
 	// The actual contactId used for rehydration is provided in the response of this
 	// API.
 	RehydrationType RehydrationType
@@ -2303,22 +4295,25 @@ type PhoneNumberQuickConnectConfig struct {
 }
 
 // The status of the phone number.
-//   - CLAIMED means the previous ClaimedPhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimedPhoneNumber.html)
-//     or UpdatePhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html)
-//     operation succeeded.
-//   - IN_PROGRESS means a ClaimedPhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimedPhoneNumber.html)
-//     or UpdatePhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html)
-//     operation is still in progress and has not yet completed. You can call
-//     DescribePhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html)
-//     at a later time to verify if the previous operation has completed.
-//   - FAILED indicates that the previous ClaimedPhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimedPhoneNumber.html)
-//     or UpdatePhoneNumber (https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html)
-//     operation has failed. It will include a message indicating the failure reason. A
-//     common reason for a failure may be that the TargetArn value you are claiming
-//     or updating a phone number to has reached its limit of total claimed numbers. If
-//     you received a FAILED status from a ClaimPhoneNumber API call, you have one
-//     day to retry claiming the phone number before the number is released back to the
-//     inventory for other customers to claim.
+//
+//   - CLAIMED means the previous [ClaimPhoneNumber]or [UpdatePhoneNumber]operation succeeded.
+//
+//   - IN_PROGRESS means a [ClaimPhoneNumber], [UpdatePhoneNumber], or [UpdatePhoneNumberMetadata]operation is still in progress and has not yet
+//     completed. You can call [DescribePhoneNumber]at a later time to verify if the previous operation
+//     has completed.
+//
+//   - FAILED indicates that the previous [ClaimPhoneNumber]or [UpdatePhoneNumber]operation has failed. It will include
+//     a message indicating the failure reason. A common reason for a failure may be
+//     that the TargetArn value you are claiming or updating a phone number to has
+//     reached its limit of total claimed numbers. If you received a FAILED status
+//     from a ClaimPhoneNumber API call, you have one day to retry claiming the phone
+//     number before the number is released back to the inventory for other customers
+//     to claim.
+//
+// [UpdatePhoneNumber]: https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumber.html
+// [UpdatePhoneNumberMetadata]: https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdatePhoneNumberMetadata.html
+// [ClaimPhoneNumber]: https://docs.aws.amazon.com/connect/latest/APIReference/API_ClaimPhoneNumber.html
+// [DescribePhoneNumber]: https://docs.aws.amazon.com/connect/latest/APIReference/API_DescribePhoneNumber.html
 type PhoneNumberStatus struct {
 
 	// The status message.
@@ -2351,6 +4346,72 @@ type PhoneNumberSummary struct {
 	noSmithyDocumentSerde
 }
 
+// Information about a predefined attribute.
+type PredefinedAttribute struct {
+
+	// Last modified region.
+	LastModifiedRegion *string
+
+	// Last modified time.
+	LastModifiedTime *time.Time
+
+	// The name of the predefined attribute.
+	Name *string
+
+	// The values of the predefined attribute.
+	Values PredefinedAttributeValues
+
+	noSmithyDocumentSerde
+}
+
+// The search criteria to be used to return predefined attributes.
+type PredefinedAttributeSearchCriteria struct {
+
+	// A list of conditions which would be applied together with an AND condition.
+	AndConditions []PredefinedAttributeSearchCriteria
+
+	// A list of conditions which would be applied together with an OR condition.
+	OrConditions []PredefinedAttributeSearchCriteria
+
+	// A leaf node condition which can be used to specify a string condition.
+	StringCondition *StringCondition
+
+	noSmithyDocumentSerde
+}
+
+// Summary of a predefined attribute.
+type PredefinedAttributeSummary struct {
+
+	// Last modified region.
+	LastModifiedRegion *string
+
+	// Last modified time.
+	LastModifiedTime *time.Time
+
+	// The name of the predefined attribute.
+	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about values of a predefined attribute.
+//
+// The following types satisfy this interface:
+//
+//	PredefinedAttributeValuesMemberStringList
+type PredefinedAttributeValues interface {
+	isPredefinedAttributeValues()
+}
+
+// Predefined attribute values of type string list.
+type PredefinedAttributeValuesMemberStringList struct {
+	Value []string
+
+	noSmithyDocumentSerde
+}
+
+func (*PredefinedAttributeValuesMemberStringList) isPredefinedAttributeValues() {}
+
 // Information about a problem detail.
 type ProblemDetail struct {
 
@@ -2366,6 +4427,12 @@ type Prompt struct {
 	// The description of the prompt.
 	Description *string
 
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
+
 	// The name of the prompt.
 	Name *string
 
@@ -2376,7 +4443,7 @@ type Prompt struct {
 	PromptId *string
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -2391,9 +4458,10 @@ type PromptSearchCriteria struct {
 	// A list of conditions which would be applied together with an OR condition.
 	OrConditions []PromptSearchCriteria
 
-	// A leaf node condition which can be used to specify a string condition. The
-	// currently supported values for FieldName are name , description , and resourceID
-	// .
+	// A leaf node condition which can be used to specify a string condition.
+	//
+	// The currently supported values for FieldName are name , description , and
+	// resourceID .
 	StringCondition *StringCondition
 
 	noSmithyDocumentSerde
@@ -2404,7 +4472,9 @@ type PromptSearchFilter struct {
 
 	// An object that can be used to specify Tag conditions inside the SearchFilter .
 	// This accepts an OR of AND (List of List) input where:
+	//
 	//   - Top level list specifies conditions that need to be applied with OR operator
+	//
 	//   - Inner list specifies conditions that need to be applied with AND operator.
 	TagFilter *ControlPlaneTagFilter
 
@@ -2419,6 +4489,12 @@ type PromptSummary struct {
 
 	// The identifier of the prompt.
 	Id *string
+
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
 
 	// The name of the prompt.
 	Name *string
@@ -2447,6 +4523,18 @@ type PropertyValidationExceptionProperty struct {
 	noSmithyDocumentSerde
 }
 
+// Information about the quality of the participant's media connection.
+type QualityMetrics struct {
+
+	// Information about the quality of Agent media connection.
+	Agent *AgentQualityMetrics
+
+	// Information about the quality of Customer media connection.
+	Customer *CustomerQualityMetrics
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about a queue.
 type Queue struct {
 
@@ -2455,6 +4543,12 @@ type Queue struct {
 
 	// The identifier for the hours of operation.
 	HoursOfOperationId *string
+
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
 
 	// The maximum number of contacts that can be in the queue before it is considered
 	// full.
@@ -2466,6 +4560,9 @@ type Queue struct {
 	// The outbound caller ID name, number, and outbound whisper flow.
 	OutboundCallerConfig *OutboundCallerConfig
 
+	// The outbound email address ID for a specified queue.
+	OutboundEmailConfig *OutboundEmailConfig
+
 	// The Amazon Resource Name (ARN) for the queue.
 	QueueArn *string
 
@@ -2476,7 +4573,7 @@ type Queue struct {
 	Status QueueStatus
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -2489,6 +4586,15 @@ type QueueInfo struct {
 	EnqueueTimestamp *time.Time
 
 	// The unique identifier for the queue.
+	Id *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about a queue.
+type QueueInfoInput struct {
+
+	// The identifier of the queue.
 	Id *string
 
 	noSmithyDocumentSerde
@@ -2523,10 +4629,11 @@ type QueueReference struct {
 	noSmithyDocumentSerde
 }
 
-// The search criteria to be used to return queues. The name and description
-// fields support "contains" queries with a minimum of 2 characters and a maximum
-// of 25 characters. Any queries with character lengths outside of this range will
-// throw invalid results.
+// The search criteria to be used to return queues.
+//
+// The name and description fields support "contains" queries with a minimum of 2
+// characters and a maximum of 25 characters. Any queries with character lengths
+// outside of this range will throw invalid results.
 type QueueSearchCriteria struct {
 
 	// A list of conditions which would be applied together with an AND condition.
@@ -2538,9 +4645,10 @@ type QueueSearchCriteria struct {
 	// The type of queue.
 	QueueTypeCondition SearchableQueueType
 
-	// A leaf node condition which can be used to specify a string condition. The
-	// currently supported values for FieldName are name , description , and resourceID
-	// .
+	// A leaf node condition which can be used to specify a string condition.
+	//
+	// The currently supported values for FieldName are name , description , and
+	// resourceID .
 	StringCondition *StringCondition
 
 	noSmithyDocumentSerde
@@ -2551,7 +4659,9 @@ type QueueSearchFilter struct {
 
 	// An object that can be used to specify Tag conditions inside the SearchFilter .
 	// This accepts an OR of AND (List of List) input where:
+	//
 	//   - Top level list specifies conditions that need to be applied with OR operator
+	//
 	//   - Inner list specifies conditions that need to be applied with AND operator.
 	TagFilter *ControlPlaneTagFilter
 
@@ -2566,6 +4676,12 @@ type QueueSummary struct {
 
 	// The identifier of the queue.
 	Id *string
+
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
 
 	// The name of the queue.
 	Name *string
@@ -2582,6 +4698,12 @@ type QuickConnect struct {
 	// The description.
 	Description *string
 
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
+
 	// The name of the quick connect.
 	Name *string
 
@@ -2595,7 +4717,7 @@ type QuickConnect struct {
 	QuickConnectId *string
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -2604,8 +4726,8 @@ type QuickConnect struct {
 // Contains configuration settings for a quick connect.
 type QuickConnectConfig struct {
 
-	// The type of quick connect. In the Amazon Connect console, when you create a
-	// quick connect, you are prompted to assign one of the following types: Agent
+	// The type of quick connect. In the Amazon Connect admin website, when you create
+	// a quick connect, you are prompted to assign one of the following types: Agent
 	// (USER), External (PHONE_NUMBER), or Queue (QUEUE).
 	//
 	// This member is required.
@@ -2633,9 +4755,10 @@ type QuickConnectSearchCriteria struct {
 	// A list of conditions which would be applied together with an OR condition.
 	OrConditions []QuickConnectSearchCriteria
 
-	// A leaf node condition which can be used to specify a string condition. The
-	// currently supported values for FieldName are name , description , and resourceID
-	// .
+	// A leaf node condition which can be used to specify a string condition.
+	//
+	// The currently supported values for FieldName are name , description , and
+	// resourceID .
 	StringCondition *StringCondition
 
 	noSmithyDocumentSerde
@@ -2646,7 +4769,9 @@ type QuickConnectSearchFilter struct {
 
 	// An object that can be used to specify Tag conditions inside the SearchFilter .
 	// This accepts an OR of AND (List of List) input where:
+	//
 	//   - Top level list specifies conditions that need to be applied with OR operator
+	//
 	//   - Inner list specifies conditions that need to be applied with AND operator.
 	TagFilter *ControlPlaneTagFilter
 
@@ -2662,13 +4787,31 @@ type QuickConnectSummary struct {
 	// The identifier for the quick connect.
 	Id *string
 
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
+
 	// The name of the quick connect.
 	Name *string
 
-	// The type of quick connect. In the Amazon Connect console, when you create a
-	// quick connect, you are prompted to assign one of the following types: Agent
+	// The type of quick connect. In the Amazon Connect admin website, when you create
+	// a quick connect, you are prompted to assign one of the following types: Agent
 	// (USER), External (PHONE_NUMBER), or Queue (QUEUE).
 	QuickConnectType QuickConnectType
+
+	noSmithyDocumentSerde
+}
+
+// An Object to define the minimum and maximum proficiency levels.
+type Range struct {
+
+	// The maximum proficiency level of the range.
+	MaxProficiencyLevel *float32
+
+	// The minimum proficiency level of the range.
+	MinProficiencyLevel *float32
 
 	noSmithyDocumentSerde
 }
@@ -2682,6 +4825,387 @@ type ReadOnlyFieldInfo struct {
 	noSmithyDocumentSerde
 }
 
+// Object that describes attached file.
+type RealTimeContactAnalysisAttachment struct {
+
+	// A unique identifier for the attachment.
+	//
+	// This member is required.
+	AttachmentId *string
+
+	// A case-sensitive name of the attachment being uploaded. Can be redacted.
+	//
+	// This member is required.
+	AttachmentName *string
+
+	// Describes the MIME file type of the attachment. For a list of supported file
+	// types, see [Feature specifications]in the Amazon Connect Administrator Guide.
+	//
+	// [Feature specifications]: https://docs.aws.amazon.com/connect/latest/adminguide/feature-limits.html
+	ContentType *string
+
+	// Status of the attachment.
+	Status ArtifactStatus
+
+	noSmithyDocumentSerde
+}
+
+// Provides information about the category rule that was matched.
+type RealTimeContactAnalysisCategoryDetails struct {
+
+	// List of PointOfInterest - objects describing a single match of a rule.
+	//
+	// This member is required.
+	PointsOfInterest []RealTimeContactAnalysisPointOfInterest
+
+	noSmithyDocumentSerde
+}
+
+// Begin and end offsets for a part of text.
+type RealTimeContactAnalysisCharacterInterval struct {
+
+	// The beginning of the character interval.
+	//
+	// This member is required.
+	BeginOffsetChar int32
+
+	// The end of the character interval.
+	//
+	// This member is required.
+	EndOffsetChar int32
+
+	noSmithyDocumentSerde
+}
+
+// Potential issues that are detected based on an artificial intelligence analysis
+// of each turn in the conversation.
+type RealTimeContactAnalysisIssueDetected struct {
+
+	// List of the transcript items (segments) that are associated with a given issue.
+	//
+	// This member is required.
+	TranscriptItems []RealTimeContactAnalysisTranscriptItemWithContent
+
+	noSmithyDocumentSerde
+}
+
+// The section of the contact transcript segment that category rule was detected.
+type RealTimeContactAnalysisPointOfInterest struct {
+
+	// List of the transcript items (segments) that are associated with a given point
+	// of interest.
+	TranscriptItems []RealTimeContactAnalysisTranscriptItemWithCharacterOffsets
+
+	noSmithyDocumentSerde
+}
+
+// An analyzed segment for a real-time analysis session.
+//
+// The following types satisfy this interface:
+//
+//	RealtimeContactAnalysisSegmentMemberAttachments
+//	RealtimeContactAnalysisSegmentMemberCategories
+//	RealtimeContactAnalysisSegmentMemberEvent
+//	RealtimeContactAnalysisSegmentMemberIssues
+//	RealtimeContactAnalysisSegmentMemberPostContactSummary
+//	RealtimeContactAnalysisSegmentMemberTranscript
+type RealtimeContactAnalysisSegment interface {
+	isRealtimeContactAnalysisSegment()
+}
+
+// The analyzed attachments.
+type RealtimeContactAnalysisSegmentMemberAttachments struct {
+	Value RealTimeContactAnalysisSegmentAttachments
+
+	noSmithyDocumentSerde
+}
+
+func (*RealtimeContactAnalysisSegmentMemberAttachments) isRealtimeContactAnalysisSegment() {}
+
+// The matched category rules.
+type RealtimeContactAnalysisSegmentMemberCategories struct {
+	Value RealTimeContactAnalysisSegmentCategories
+
+	noSmithyDocumentSerde
+}
+
+func (*RealtimeContactAnalysisSegmentMemberCategories) isRealtimeContactAnalysisSegment() {}
+
+// Segment type describing a contact event.
+type RealtimeContactAnalysisSegmentMemberEvent struct {
+	Value RealTimeContactAnalysisSegmentEvent
+
+	noSmithyDocumentSerde
+}
+
+func (*RealtimeContactAnalysisSegmentMemberEvent) isRealtimeContactAnalysisSegment() {}
+
+// Segment type containing a list of detected issues.
+type RealtimeContactAnalysisSegmentMemberIssues struct {
+	Value RealTimeContactAnalysisSegmentIssues
+
+	noSmithyDocumentSerde
+}
+
+func (*RealtimeContactAnalysisSegmentMemberIssues) isRealtimeContactAnalysisSegment() {}
+
+// Information about the post-contact summary.
+type RealtimeContactAnalysisSegmentMemberPostContactSummary struct {
+	Value RealTimeContactAnalysisSegmentPostContactSummary
+
+	noSmithyDocumentSerde
+}
+
+func (*RealtimeContactAnalysisSegmentMemberPostContactSummary) isRealtimeContactAnalysisSegment() {}
+
+// The analyzed transcript segment.
+type RealtimeContactAnalysisSegmentMemberTranscript struct {
+	Value RealTimeContactAnalysisSegmentTranscript
+
+	noSmithyDocumentSerde
+}
+
+func (*RealtimeContactAnalysisSegmentMemberTranscript) isRealtimeContactAnalysisSegment() {}
+
+// Segment containing list of attachments.
+type RealTimeContactAnalysisSegmentAttachments struct {
+
+	// List of objects describing an individual attachment.
+	//
+	// This member is required.
+	Attachments []RealTimeContactAnalysisAttachment
+
+	// The identifier of the segment.
+	//
+	// This member is required.
+	Id *string
+
+	// The identifier of the participant.
+	//
+	// This member is required.
+	ParticipantId *string
+
+	// The role of the participant. For example, is it a customer, agent, or system.
+	//
+	// This member is required.
+	ParticipantRole ParticipantRole
+
+	// Field describing the time of the event. It can have different representations
+	// of time.
+	//
+	// This member is required.
+	Time RealTimeContactAnalysisTimeData
+
+	// The display name of the participant. Can be redacted.
+	DisplayName *string
+
+	noSmithyDocumentSerde
+}
+
+// The matched category rules.
+type RealTimeContactAnalysisSegmentCategories struct {
+
+	// Map between the name of the matched rule and
+	// RealTimeContactAnalysisCategoryDetails.
+	//
+	// This member is required.
+	MatchedDetails map[string]RealTimeContactAnalysisCategoryDetails
+
+	noSmithyDocumentSerde
+}
+
+// Segment type describing a contact event.
+type RealTimeContactAnalysisSegmentEvent struct {
+
+	// Type of the event. For example,
+	// application/vnd.amazonaws.connect.event.participant.left .
+	//
+	// This member is required.
+	EventType *string
+
+	// The identifier of the contact event.
+	//
+	// This member is required.
+	Id *string
+
+	// Field describing the time of the event. It can have different representations
+	// of time.
+	//
+	// This member is required.
+	Time RealTimeContactAnalysisTimeData
+
+	// The display name of the participant. Can be redacted.
+	DisplayName *string
+
+	// The identifier of the participant.
+	ParticipantId *string
+
+	// The role of the participant. For example, is it a customer, agent, or system.
+	ParticipantRole ParticipantRole
+
+	noSmithyDocumentSerde
+}
+
+// Segment type containing a list of detected issues.
+type RealTimeContactAnalysisSegmentIssues struct {
+
+	// List of the issues detected.
+	//
+	// This member is required.
+	IssuesDetected []RealTimeContactAnalysisIssueDetected
+
+	noSmithyDocumentSerde
+}
+
+// Information about the post-contact summary for a real-time contact segment.
+type RealTimeContactAnalysisSegmentPostContactSummary struct {
+
+	// Whether the summary was successfully COMPLETED or FAILED to be generated.
+	//
+	// This member is required.
+	Status RealTimeContactAnalysisPostContactSummaryStatus
+
+	// The content of the summary.
+	Content *string
+
+	// If the summary failed to be generated, one of the following failure codes
+	// occurs:
+	//
+	//   - QUOTA_EXCEEDED : The number of concurrent analytics jobs reached your
+	//   service quota.
+	//
+	//   - INSUFFICIENT_CONVERSATION_CONTENT : The conversation needs to have at least
+	//   one turn from both the participants in order to generate the summary.
+	//
+	//   - FAILED_SAFETY_GUIDELINES : The generated summary cannot be provided because
+	//   it failed to meet system safety guidelines.
+	//
+	//   - INVALID_ANALYSIS_CONFIGURATION : This code occurs when, for example, you're
+	//   using a [language]that isn't supported by generative AI-powered post-contact summaries.
+	//
+	//   - INTERNAL_ERROR : Internal system error.
+	//
+	// [language]: https://docs.aws.amazon.com/connect/latest/adminguide/supported-languages.html#supported-languages-contact-lens
+	FailureCode RealTimeContactAnalysisPostContactSummaryFailureCode
+
+	noSmithyDocumentSerde
+}
+
+// The analyzed transcript segment.
+type RealTimeContactAnalysisSegmentTranscript struct {
+
+	// The content of the transcript. Can be redacted.
+	//
+	// This member is required.
+	Content *string
+
+	// The identifier of the transcript.
+	//
+	// This member is required.
+	Id *string
+
+	// The identifier of the participant.
+	//
+	// This member is required.
+	ParticipantId *string
+
+	// The role of the participant. For example, is it a customer, agent, or system.
+	//
+	// This member is required.
+	ParticipantRole ParticipantRole
+
+	// Field describing the time of the event. It can have different representations
+	// of time.
+	//
+	// This member is required.
+	Time RealTimeContactAnalysisTimeData
+
+	// The type of content of the item. For example, text/plain .
+	ContentType *string
+
+	// The display name of the participant.
+	DisplayName *string
+
+	// Object describing redaction that was applied to the transcript. If transcript
+	// has the field it means part of the transcript was redacted.
+	Redaction *RealTimeContactAnalysisTranscriptItemRedaction
+
+	// The sentiment detected for this piece of transcript.
+	Sentiment RealTimeContactAnalysisSentimentLabel
+
+	noSmithyDocumentSerde
+}
+
+// Object describing time with which the segment is associated. It can have
+// different representations of time. Currently supported: absoluteTime
+//
+// The following types satisfy this interface:
+//
+//	RealTimeContactAnalysisTimeDataMemberAbsoluteTime
+type RealTimeContactAnalysisTimeData interface {
+	isRealTimeContactAnalysisTimeData()
+}
+
+// Time represented in ISO 8601 format: yyyy-MM-ddThh:mm:ss.SSSZ. For example,
+// 2019-11-08T02:41:28.172Z.
+type RealTimeContactAnalysisTimeDataMemberAbsoluteTime struct {
+	Value time.Time
+
+	noSmithyDocumentSerde
+}
+
+func (*RealTimeContactAnalysisTimeDataMemberAbsoluteTime) isRealTimeContactAnalysisTimeData() {}
+
+// Object describing redaction applied to the segment.
+type RealTimeContactAnalysisTranscriptItemRedaction struct {
+
+	// List of character intervals each describing a part of the text that was
+	// redacted. For OutputType.Raw , part of the original text that contains data that
+	// can be redacted. For OutputType.Redacted , part of the string with redaction tag.
+	CharacterOffsets []RealTimeContactAnalysisCharacterInterval
+
+	noSmithyDocumentSerde
+}
+
+// Transcript representation containing Id and list of character intervals that
+// are associated with analysis data. For example, this object within a
+// RealTimeContactAnalysisPointOfInterest in Category.MatchedDetails would have
+// character interval describing part of the text that matched category.
+type RealTimeContactAnalysisTranscriptItemWithCharacterOffsets struct {
+
+	// Transcript identifier. Matches the identifier from one of the
+	// TranscriptSegments.
+	//
+	// This member is required.
+	Id *string
+
+	// List of character intervals within transcript content/text.
+	CharacterOffsets *RealTimeContactAnalysisCharacterInterval
+
+	noSmithyDocumentSerde
+}
+
+// Transcript representation containing Id, Content and list of character
+// intervals that are associated with analysis data. For example, this object
+// within an issue detected would describe both content that contains identified
+// issue and intervals where that content is taken from.
+type RealTimeContactAnalysisTranscriptItemWithContent struct {
+
+	// Transcript identifier. Matches the identifier from one of the
+	// TranscriptSegments.
+	//
+	// This member is required.
+	Id *string
+
+	// Begin and end offsets for a part of text.
+	CharacterOffsets *RealTimeContactAnalysisCharacterInterval
+
+	// Part of the transcript content that contains identified issue. Can be redacted
+	Content *string
+
+	noSmithyDocumentSerde
+}
+
 // Well-formed data on a contact, used by agents to complete a contact request.
 // You can have up to 4,096 UTF-8 bytes across all references for a contact.
 type Reference struct {
@@ -2691,10 +5215,17 @@ type Reference struct {
 	// This member is required.
 	Type ReferenceType
 
+	// The Amazon Resource Name (ARN) of the reference
+	Arn *string
+
+	// Status of the attachment reference type.
+	Status ReferenceStatus
+
+	// Relevant details why the reference was not successfully created.
+	StatusReason *string
+
 	// A valid value for the reference. For example, for a URL reference, a formatted
 	// URL that is displayed to an agent in the Contact Control Panel (CCP).
-	//
-	// This member is required.
 	Value *string
 
 	noSmithyDocumentSerde
@@ -2708,6 +5239,7 @@ type Reference struct {
 //	ReferenceSummaryMemberAttachment
 //	ReferenceSummaryMemberDate
 //	ReferenceSummaryMemberEmail
+//	ReferenceSummaryMemberEmailMessage
 //	ReferenceSummaryMemberNumber
 //	ReferenceSummaryMemberString
 //	ReferenceSummaryMemberUrl
@@ -2743,6 +5275,16 @@ type ReferenceSummaryMemberEmail struct {
 
 func (*ReferenceSummaryMemberEmail) isReferenceSummary() {}
 
+// Information about the reference when the referenceType is EMAIL_MESSAGE .
+// Otherwise, null.
+type ReferenceSummaryMemberEmailMessage struct {
+	Value EmailMessageReference
+
+	noSmithyDocumentSerde
+}
+
+func (*ReferenceSummaryMemberEmailMessage) isReferenceSummary() {}
+
 // Information about a reference when the referenceType is NUMBER . Otherwise, null.
 type ReferenceSummaryMemberNumber struct {
 	Value NumberReference
@@ -2770,6 +5312,61 @@ type ReferenceSummaryMemberUrl struct {
 
 func (*ReferenceSummaryMemberUrl) isReferenceSummary() {}
 
+// Details about the status of the replication of a source Amazon Connect instance
+// across Amazon Web Services Regions. Use these details to understand the general
+// status of a given replication. For information about why a replication process
+// may fail, see [Why a ReplicateInstance call fails]in the Create a replica of your existing Amazon Connect instance
+// topic in the Amazon Connect Administrator Guide.
+//
+// [Why a ReplicateInstance call fails]: https://docs.aws.amazon.com/connect/latest/adminguide/create-replica-connect-instance.html#why-replicateinstance-fails
+type ReplicationConfiguration struct {
+
+	// The URL that is used to sign-in to your Amazon Connect instance according to
+	// your traffic distribution group configuration. For more information about
+	// sign-in and traffic distribution groups, see [Important things to know]in the Create traffic distribution
+	// groups topic in the Amazon Connect Administrator Guide.
+	//
+	// [Important things to know]: https://docs.aws.amazon.com/connect/latest/adminguide/setup-traffic-distribution-groups.html
+	GlobalSignInEndpoint *string
+
+	// A list of replication status summaries. The summaries contain details about the
+	// replication of configuration information for Amazon Connect resources, for each
+	// Amazon Web Services Region.
+	ReplicationStatusSummaryList []ReplicationStatusSummary
+
+	// The Amazon Web Services Region where the source Amazon Connect instance was
+	// created. This is the Region where the [ReplicateInstance]API was called to start the replication
+	// process.
+	//
+	// [ReplicateInstance]: https://docs.aws.amazon.com/connect/latest/APIReference/API_ReplicateInstance.html
+	SourceRegion *string
+
+	noSmithyDocumentSerde
+}
+
+// Status information about the replication process, where you use the [ReplicateInstance] API to
+// create a replica of your Amazon Connect instance in another Amazon Web Services
+// Region. For more information, see [Set up Amazon Connect Global Resiliency]in the Amazon Connect Administrator Guide.
+//
+// [ReplicateInstance]: https://docs.aws.amazon.com/connect/latest/APIReference/API_ReplicateInstance.html
+// [Set up Amazon Connect Global Resiliency]: https://docs.aws.amazon.com/connect/latest/adminguide/setup-connect-global-resiliency.html
+type ReplicationStatusSummary struct {
+
+	// The Amazon Web Services Region. This can be either the source or the replica
+	// Region, depending where it appears in the summary list.
+	Region *string
+
+	// The state of the replication.
+	ReplicationStatus InstanceReplicationStatus
+
+	// A description of the replication status. Use this information to resolve any
+	// issues that are preventing the successful replication of your Amazon Connect
+	// instance to another Region.
+	ReplicationStatusReason *string
+
+	noSmithyDocumentSerde
+}
+
 // Information about a required field.
 type RequiredFieldInfo struct {
 
@@ -2788,8 +5385,73 @@ type ResourceTagsSearchCriteria struct {
 	noSmithyDocumentSerde
 }
 
+// Latest routing criteria on the contact.
+type RoutingCriteria struct {
+
+	// The timestamp indicating when the routing criteria is set to active. A routing
+	// criteria is activated when contact is transferred to a queue.
+	// ActivationTimestamp will be set on routing criteria for contacts in agent queue
+	// even though Routing criteria is never activated for contacts in agent queue.
+	ActivationTimestamp *time.Time
+
+	// Information about the index of the routing criteria.
+	Index *int32
+
+	// List of routing steps. When Amazon Connect does not find an available agent
+	// meeting the requirements in a step for a given step duration, the routing
+	// criteria will move on to the next step sequentially until a join is completed
+	// with an agent. When all steps are exhausted, the contact will be offered to any
+	// agent in the queue.
+	Steps []Step
+
+	noSmithyDocumentSerde
+}
+
+// An object to define the RoutingCriteria.
+type RoutingCriteriaInput struct {
+
+	// When Amazon Connect does not find an available agent meeting the requirements
+	// in a step for  a given step duration, the routing criteria will move on to the
+	// next step sequentially until a  join is completed with an agent. When all steps
+	// are exhausted, the contact will be offered to any agent in the queue.
+	Steps []RoutingCriteriaInputStep
+
+	noSmithyDocumentSerde
+}
+
+// Step defines the list of agents to be routed or route based on the agent
+// requirements such as ProficiencyLevel, Name, or Value.
+type RoutingCriteriaInputStep struct {
+
+	// An object to specify the expiration of a routing step.
+	Expiry *RoutingCriteriaInputStepExpiry
+
+	// A tagged union to specify expression for a routing step.
+	Expression *Expression
+
+	noSmithyDocumentSerde
+}
+
+// Specify whether this routing criteria step should apply for only a limited
+// amount of time,  or if it should never expire.
+type RoutingCriteriaInputStepExpiry struct {
+
+	// The number of seconds that the contact will be routed only to agents matching
+	// this routing  step, if expiry was configured for this routing step.
+	DurationInSeconds *int32
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about a routing profile.
 type RoutingProfile struct {
+
+	// Whether agents with this routing profile will have their routing order
+	// calculated based on time since their last inbound contact or longest idle time.
+	AgentAvailabilityTimer AgentAvailabilityTimer
+
+	// The IDs of the associated queue.
+	AssociatedQueueIds []string
 
 	// The identifier of the default outbound queue for this routing profile.
 	DefaultOutboundQueueId *string
@@ -2797,9 +5459,20 @@ type RoutingProfile struct {
 	// The description of the routing profile.
 	Description *string
 
-	// The identifier of the Amazon Connect instance. You can find the instance ID (https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html)
-	// in the Amazon Resource Name (ARN) of the instance.
+	// The identifier of the Amazon Connect instance. You can [find the instance ID] in the Amazon Resource
+	// Name (ARN) of the instance.
+	//
+	// [find the instance ID]: https://docs.aws.amazon.com/connect/latest/adminguide/find-instance-arn.html
 	InstanceId *string
+
+	// Whether this a default routing profile.
+	IsDefault bool
+
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
 
 	// The channels agents can handle in the Contact Control Panel (CCP) for this
 	// routing profile.
@@ -2821,7 +5494,7 @@ type RoutingProfile struct {
 	RoutingProfileId *string
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -2832,15 +5505,18 @@ type RoutingProfile struct {
 type RoutingProfileQueueConfig struct {
 
 	// The delay, in seconds, a contact should be in the queue before they are routed
-	// to an available agent. For more information, see Queues: priority and delay (https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html)
-	// in the Amazon Connect Administrator Guide.
+	// to an available agent. For more information, see [Queues: priority and delay]in the Amazon Connect
+	// Administrator Guide.
+	//
+	// [Queues: priority and delay]: https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html
 	//
 	// This member is required.
 	Delay *int32
 
 	// The order in which contacts are to be handled for the queue. For more
-	// information, see Queues: priority and delay (https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html)
-	// .
+	// information, see [Queues: priority and delay].
+	//
+	// [Queues: priority and delay]: https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html
 	//
 	// This member is required.
 	Priority *int32
@@ -2862,19 +5538,21 @@ type RoutingProfileQueueConfigSummary struct {
 	Channel Channel
 
 	// The delay, in seconds, that a contact should be in the queue before they are
-	// routed to an available agent. For more information, see Queues: priority and
-	// delay (https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html)
-	// in the Amazon Connect Administrator Guide.
+	// routed to an available agent. For more information, see [Queues: priority and delay]in the Amazon Connect
+	// Administrator Guide.
+	//
+	// [Queues: priority and delay]: https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html
 	//
 	// This member is required.
 	Delay int32
 
 	// The order in which contacts are to be handled for the queue. For more
-	// information, see Queues: priority and delay (https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html)
-	// .
+	// information, see [Queues: priority and delay].
+	//
+	// [Queues: priority and delay]: https://docs.aws.amazon.com/connect/latest/adminguide/concepts-routing-profiles-priority.html
 	//
 	// This member is required.
-	Priority int32
+	Priority *int32
 
 	// The Amazon Resource Name (ARN) of the queue.
 	//
@@ -2923,10 +5601,11 @@ type RoutingProfileReference struct {
 	noSmithyDocumentSerde
 }
 
-// The search criteria to be used to return routing profiles. The name and
-// description fields support "contains" queries with a minimum of 2 characters and
-// a maximum of 25 characters. Any queries with character lengths outside of this
-// range will throw invalid results.
+// The search criteria to be used to return routing profiles.
+//
+// The name and description fields support "contains" queries with a minimum of 2
+// characters and a maximum of 25 characters. Any queries with character lengths
+// outside of this range will throw invalid results.
 type RoutingProfileSearchCriteria struct {
 
 	// A list of conditions which would be applied together with an AND condition.
@@ -2935,9 +5614,10 @@ type RoutingProfileSearchCriteria struct {
 	// A list of conditions which would be applied together with an OR condition.
 	OrConditions []RoutingProfileSearchCriteria
 
-	// A leaf node condition which can be used to specify a string condition. The
-	// currently supported values for FieldName are name , description , and resourceID
-	// .
+	// A leaf node condition which can be used to specify a string condition.
+	//
+	// The currently supported values for FieldName are associatedQueueIds , name ,
+	// description , and resourceID .
 	StringCondition *StringCondition
 
 	noSmithyDocumentSerde
@@ -2948,7 +5628,9 @@ type RoutingProfileSearchFilter struct {
 
 	// An object that can be used to specify Tag conditions inside the SearchFilter .
 	// This accepts an OR of AND (List of List) input where:
+	//
 	//   - Top level list specifies conditions that need to be applied with OR operator
+	//
 	//   - Inner list specifies conditions that need to be applied with AND operator.
 	TagFilter *ControlPlaneTagFilter
 
@@ -2963,6 +5645,12 @@ type RoutingProfileSummary struct {
 
 	// The identifier of the routing profile.
 	Id *string
+
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
 
 	// The name of the routing profile.
 	Name *string
@@ -3024,7 +5712,7 @@ type Rule struct {
 	TriggerEventSource *RuleTriggerEventSource
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -3039,18 +5727,50 @@ type RuleAction struct {
 	ActionType ActionType
 
 	// Information about the contact category action.
+	//
+	// Supported only for TriggerEventSource values: OnPostCallAnalysisAvailable |
+	// OnRealTimeCallAnalysisAvailable | OnRealTimeChatAnalysisAvailable |
+	// OnPostChatAnalysisAvailable | OnZendeskTicketCreate |
+	// OnZendeskTicketStatusUpdate | OnSalesforceCaseCreate
 	AssignContactCategoryAction *AssignContactCategoryActionDefinition
 
+	// Information about the create case action.
+	//
+	// Supported only for TriggerEventSource values: OnPostCallAnalysisAvailable |
+	// OnPostChatAnalysisAvailable .
+	CreateCaseAction *CreateCaseActionDefinition
+
+	// Information about the end associated tasks action.
+	//
+	// Supported only for TriggerEventSource values: OnCaseUpdate .
+	EndAssociatedTasksAction *EndAssociatedTasksActionDefinition
+
 	// Information about the EventBridge action.
+	//
+	// Supported only for TriggerEventSource values: OnPostCallAnalysisAvailable |
+	// OnRealTimeCallAnalysisAvailable | OnRealTimeChatAnalysisAvailable |
+	// OnPostChatAnalysisAvailable | OnContactEvaluationSubmit | OnMetricDataUpdate
 	EventBridgeAction *EventBridgeActionDefinition
 
 	// Information about the send notification action.
+	//
+	// Supported only for TriggerEventSource values: OnPostCallAnalysisAvailable |
+	// OnRealTimeCallAnalysisAvailable | OnRealTimeChatAnalysisAvailable |
+	// OnPostChatAnalysisAvailable | OnContactEvaluationSubmit | OnMetricDataUpdate
 	SendNotificationAction *SendNotificationActionDefinition
+
+	// Information about the submit automated evaluation action.
+	SubmitAutoEvaluationAction *SubmitAutoEvaluationActionDefinition
 
 	// Information about the task action. This field is required if TriggerEventSource
 	// is one of the following values: OnZendeskTicketCreate |
 	// OnZendeskTicketStatusUpdate | OnSalesforceCaseCreate
 	TaskAction *TaskActionDefinition
+
+	// Information about the update case action.
+	//
+	// Supported only for TriggerEventSource values: OnCaseCreate | OnCaseUpdate .
+	UpdateCaseAction *UpdateCaseActionDefinition
 
 	noSmithyDocumentSerde
 }
@@ -3103,7 +5823,7 @@ type RuleSummary struct {
 
 // The name of the event source. This field is required if TriggerEventSource is
 // one of the following values: OnZendeskTicketCreate | OnZendeskTicketStatusUpdate
-// | OnSalesforceCaseCreate
+// | OnSalesforceCaseCreate | OnContactEvaluationSubmit | OnMetricDataUpdate .
 type RuleTriggerEventSource struct {
 
 	// The name of the event source.
@@ -3136,6 +5856,132 @@ type S3Config struct {
 	noSmithyDocumentSerde
 }
 
+// A structure that defines search criteria based on user-defined contact
+// attributes that are configured for contact search.
+type SearchableContactAttributes struct {
+
+	// The list of criteria based on user-defined contact attributes that are
+	// configured for contact search.
+	//
+	// This member is required.
+	Criteria []SearchableContactAttributesCriteria
+
+	// The match type combining search criteria using multiple searchable contact
+	// attributes.
+	MatchType SearchContactsMatchType
+
+	noSmithyDocumentSerde
+}
+
+// The search criteria based on user-defined contact attribute key and values to
+// search on.
+type SearchableContactAttributesCriteria struct {
+
+	// The key containing a searchable user-defined contact attribute.
+	//
+	// This member is required.
+	Key *string
+
+	// The list of values to search for within a user-defined contact attribute.
+	//
+	// This member is required.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// The search criteria based on searchable segment attributes of a contact
+type SearchableSegmentAttributes struct {
+
+	// The list of criteria based on searchable segment attributes.
+	//
+	// This member is required.
+	Criteria []SearchableSegmentAttributesCriteria
+
+	// The match type combining search criteria using multiple searchable segment
+	// attributes.
+	MatchType SearchContactsMatchType
+
+	noSmithyDocumentSerde
+}
+
+// The search criteria based on searchable segment attribute key and values to
+// search on.
+type SearchableSegmentAttributesCriteria struct {
+
+	// The key containing a searchable segment attribute.
+	//
+	// This member is required.
+	Key *string
+
+	// The list of values to search for within a searchable segment attribute.
+	//
+	// This member is required.
+	Values []string
+
+	noSmithyDocumentSerde
+}
+
+// A structure of time range that you want to search results.
+type SearchContactsTimeRange struct {
+
+	// The end time of the time range.
+	//
+	// This member is required.
+	EndTime *time.Time
+
+	// The start time of the time range.
+	//
+	// This member is required.
+	StartTime *time.Time
+
+	// The type of timestamp to search.
+	//
+	// This member is required.
+	Type SearchContactsTimeRangeType
+
+	noSmithyDocumentSerde
+}
+
+// A structure of search criteria to be used to return contacts.
+type SearchCriteria struct {
+
+	// The agent hierarchy groups of the agent at the time of handling the contact.
+	AgentHierarchyGroups *AgentHierarchyGroups
+
+	// The identifiers of agents who handled the contacts.
+	AgentIds []string
+
+	// The list of channels associated with contacts.
+	Channels []Channel
+
+	// Search criteria based on analysis outputs from Amazon Connect Contact Lens.
+	ContactAnalysis *ContactAnalysis
+
+	// The list of initiation methods associated with contacts.
+	InitiationMethods []ContactInitiationMethod
+
+	// The list of queue IDs associated with contacts.
+	QueueIds []string
+
+	// The search criteria based on user-defined contact attributes that have been
+	// configured for contact search. For more information, see [Search by custom contact attributes]in the Amazon Connect
+	// Administrator Guide.
+	//
+	// To use SearchableContactAttributes in a search request, the GetContactAttributes
+	// action is required to perform an API request. For more information, see [https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonconnect.html#amazonconnect-actions-as-permissions]Actions
+	// defined by Amazon Connect.
+	//
+	// [https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonconnect.html#amazonconnect-actions-as-permissions]: https://docs.aws.amazon.com/service-authorization/latest/reference/list_amazonconnect.html#amazonconnect-actions-as-permissions
+	// [Search by custom contact attributes]: https://docs.aws.amazon.com/connect/latest/adminguide/search-custom-attributes.html
+	SearchableContactAttributes *SearchableContactAttributes
+
+	// The search criteria based on searchable segment attributes of a contact.
+	SearchableSegmentAttributes *SearchableSegmentAttributes
+
+	noSmithyDocumentSerde
+}
+
 // Configuration information of the security key.
 type SecurityKey struct {
 
@@ -3155,18 +6001,32 @@ type SecurityKey struct {
 // Contains information about a security profile.
 type SecurityProfile struct {
 
+	// The identifier of the hierarchy group that a security profile uses to restrict
+	// access to resources in Amazon Connect.
+	AllowedAccessControlHierarchyGroupId *string
+
 	// The list of tags that a security profile uses to restrict access to resources
 	// in Amazon Connect.
 	AllowedAccessControlTags map[string]string
 
-	// The Amazon Resource Name (ARN) for the secruity profile.
+	// The Amazon Resource Name (ARN) for the security profile.
 	Arn *string
 
 	// The description of the security profile.
 	Description *string
 
+	// The list of resources that a security profile applies hierarchy restrictions to
+	// in Amazon Connect. Following are acceptable ResourceNames: User .
+	HierarchyRestrictedResources []string
+
 	// The identifier for the security profile.
 	Id *string
+
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
 
 	// The organization resource identifier for the security profile.
 	OrganizationResourceId *string
@@ -3179,16 +6039,17 @@ type SecurityProfile struct {
 	TagRestrictedResources []string
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
 }
 
-// The search criteria to be used to return security profiles. The name field
-// support "contains" queries with a minimum of 2 characters and maximum of 25
-// characters. Any queries with character lengths outside of this range will throw
-// invalid results.
+// The search criteria to be used to return security profiles.
+//
+// The name field support "contains" queries with a minimum of 2 characters and
+// maximum of 25 characters. Any queries with character lengths outside of this
+// range will throw invalid results.
 type SecurityProfileSearchCriteria struct {
 
 	// A list of conditions which would be applied together with an AND condition.
@@ -3222,7 +6083,7 @@ type SecurityProfileSearchSummary struct {
 	SecurityProfileName *string
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -3233,7 +6094,9 @@ type SecurityProfilesSearchFilter struct {
 
 	// An object that can be used to specify Tag conditions inside the SearchFilter .
 	// This accepts an OR of AND (List of List) input where:
+	//
 	//   - Top level list specifies conditions that need to be applied with OR operator
+	//
 	//   - Inner list specifies conditions that need to be applied with AND operator.
 	TagFilter *ControlPlaneTagFilter
 
@@ -3249,8 +6112,30 @@ type SecurityProfileSummary struct {
 	// The identifier of the security profile.
 	Id *string
 
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
+
 	// The name of the security profile.
 	Name *string
+
+	noSmithyDocumentSerde
+}
+
+// A value for a segment attribute. This is structured as a map where the key is
+// valueString and the value is a string.
+type SegmentAttributeValue struct {
+
+	// The value of a segment attribute.
+	ValueInteger *int32
+
+	// The value of a segment attribute.
+	ValueMap map[string]SegmentAttributeValue
+
+	// The value of a segment attribute.
+	ValueString *string
 
 	noSmithyDocumentSerde
 }
@@ -3258,9 +6143,10 @@ type SecurityProfileSummary struct {
 // Information about the send notification action.
 type SendNotificationActionDefinition struct {
 
-	// Notification content. Supports variable injection. For more information, see
-	// JSONPath reference (https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html)
+	// Notification content. Supports variable injection. For more information, see [JSONPath reference]
 	// in the Amazon Connect Administrators Guide.
+	//
+	// [JSONPath reference]: https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html
 	//
 	// This member is required.
 	Content *string
@@ -3281,9 +6167,57 @@ type SendNotificationActionDefinition struct {
 	Recipient *NotificationRecipientType
 
 	// The subject of the email if the delivery method is EMAIL . Supports variable
-	// injection. For more information, see JSONPath reference (https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html)
-	// in the Amazon Connect Administrators Guide.
+	// injection. For more information, see [JSONPath reference]in the Amazon Connect Administrators Guide.
+	//
+	// [JSONPath reference]: https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html
 	Subject *string
+
+	noSmithyDocumentSerde
+}
+
+// The reason for the exception.
+//
+// The following types satisfy this interface:
+//
+//	ServiceQuotaExceededExceptionReasonMemberAttachedFileServiceQuotaExceededExceptionReason
+type ServiceQuotaExceededExceptionReason interface {
+	isServiceQuotaExceededExceptionReason()
+}
+
+// Total file size of all files or total number of files exceeds the service quota
+type ServiceQuotaExceededExceptionReasonMemberAttachedFileServiceQuotaExceededExceptionReason struct {
+	Value AttachedFileServiceQuotaExceededExceptionReason
+
+	noSmithyDocumentSerde
+}
+
+func (*ServiceQuotaExceededExceptionReasonMemberAttachedFileServiceQuotaExceededExceptionReason) isServiceQuotaExceededExceptionReason() {
+}
+
+// The distribution that determines which Amazon Web Services Regions should be
+// used to sign in agents in to both the instance and its replica(s).
+type SignInConfig struct {
+
+	// Information about traffic distributions.
+	//
+	// This member is required.
+	Distributions []SignInDistribution
+
+	noSmithyDocumentSerde
+}
+
+// The distribution of sign in traffic between the instance and its replica(s).
+type SignInDistribution struct {
+
+	// Whether sign in distribution is enabled.
+	//
+	// This member is required.
+	Enabled bool
+
+	// The Amazon Web Services Region of the sign in distribution.
+	//
+	// This member is required.
+	Region *string
 
 	noSmithyDocumentSerde
 }
@@ -3292,7 +6226,7 @@ type SendNotificationActionDefinition struct {
 // select question.
 type SingleSelectQuestionRuleCategoryAutomation struct {
 
-	// The category name, as defined in Rules.
+	//  The category name, as defined in Rules.
 	//
 	// This member is required.
 	Category *string
@@ -3309,6 +6243,49 @@ type SingleSelectQuestionRuleCategoryAutomation struct {
 	//
 	// This member is required.
 	OptionRefId *string
+
+	noSmithyDocumentSerde
+}
+
+// A structure that defines the field name to sort by and a sort order.
+type Sort struct {
+
+	// The name of the field on which to sort.
+	//
+	// This member is required.
+	FieldName SortableFieldName
+
+	// An ascending or descending sort.
+	//
+	// This member is required.
+	Order SortOrder
+
+	noSmithyDocumentSerde
+}
+
+// Information about the campaign.
+type SourceCampaign struct {
+
+	// A unique identifier for a campaign.
+	CampaignId *string
+
+	// A unique identifier for a each request part of same campaign.
+	OutboundRequestId *string
+
+	noSmithyDocumentSerde
+}
+
+// Step signifies the criteria to be used for routing to an agent
+type Step struct {
+
+	// An object to specify the expiration of a routing step.
+	Expiry *Expiry
+
+	// A tagged union to specify expression for a routing step.
+	Expression *Expression
+
+	// Represents status of the Routing step.
+	Status RoutingCriteriaStepStatus
 
 	noSmithyDocumentSerde
 }
@@ -3336,6 +6313,30 @@ type StringReference struct {
 
 	// A valid string.
 	Value *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about the submit automated evaluation action.
+type SubmitAutoEvaluationActionDefinition struct {
+
+	// The identifier of the auto-evaluation enabled form.
+	//
+	// This member is required.
+	EvaluationFormId *string
+
+	noSmithyDocumentSerde
+}
+
+// Request for which contact was successfully created.
+type SuccessfulRequest struct {
+
+	// The contactId of the contact that was created successfully.
+	ContactId *string
+
+	// Request identifier provided in the API call in the ContactDataRequest to create
+	// a contact.
+	RequestIdentifier *string
 
 	noSmithyDocumentSerde
 }
@@ -3376,7 +6377,7 @@ type TagSearchCondition struct {
 // A tag set contains tag key and tag value.
 type TagSet struct {
 
-	// The tag key in the tagSet.
+	// The tag key in the TagSet.
 	Key *string
 
 	// The tag value in the tagSet.
@@ -3393,16 +6394,18 @@ type TaskActionDefinition struct {
 	// This member is required.
 	ContactFlowId *string
 
-	// The name. Supports variable injection. For more information, see JSONPath
-	// reference (https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html)
-	// in the Amazon Connect Administrators Guide.
+	// The name. Supports variable injection. For more information, see [JSONPath reference] in the Amazon
+	// Connect Administrators Guide.
+	//
+	// [JSONPath reference]: https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html
 	//
 	// This member is required.
 	Name *string
 
-	// The description. Supports variable injection. For more information, see
-	// JSONPath reference (https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html)
-	// in the Amazon Connect Administrators Guide.
+	// The description. Supports variable injection. For more information, see [JSONPath reference] in the
+	// Amazon Connect Administrators Guide.
+	//
+	// [JSONPath reference]: https://docs.aws.amazon.com/connect/latest/adminguide/contact-lens-variable-injection.html
 	Description *string
 
 	// Information about the reference when the referenceType is URL . Otherwise, null.
@@ -3517,6 +6520,46 @@ type TelephonyConfig struct {
 	noSmithyDocumentSerde
 }
 
+// Information about the template attributes.
+type TemplateAttributes struct {
+
+	// An object that specifies the custom attributes values to use for variables in
+	// the message template. This object contains different categories of key-value
+	// pairs. Each key defines a variable or placeholder in the message template.
+	CustomAttributes map[string]string
+
+	// An object that specifies the customer profile attributes values to use for
+	// variables in the message template. This object contains different categories of
+	// key-value pairs. Each key defines a variable or placeholder in the message
+	// template.
+	CustomerProfileAttributes *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about template message configuration.
+type TemplatedMessageConfig struct {
+
+	// The identifier of the knowledge base. Can be either the ID or the ARN. URLs
+	// cannot contain the ARN.
+	//
+	// This member is required.
+	KnowledgeBaseId *string
+
+	// The identifier of the message template Id.
+	//
+	// This member is required.
+	MessageTemplateId *string
+
+	// Information about template attributes, that is, CustomAttributes or
+	// CustomerProfileAttributes.
+	//
+	// This member is required.
+	TemplateAttributes *TemplateAttributes
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about the threshold for service level metrics.
 type Threshold struct {
 
@@ -3532,7 +6575,8 @@ type Threshold struct {
 // Contains information about the threshold for service level metrics.
 type ThresholdV2 struct {
 
-	// The type of comparison. Only "less than" (LT) comparisons are supported.
+	// The type of comparison. Currently, "less than" (LT), "less than equal" (LTE),
+	// and "greater than" (GT) comparisons are supported.
 	Comparison *string
 
 	// The threshold value to compare.
@@ -3558,26 +6602,46 @@ type TrafficDistributionGroup struct {
 	// The Amazon Resource Name (ARN).
 	InstanceArn *string
 
+	// Whether this is the default traffic distribution group created during instance
+	// replication. The default traffic distribution group cannot be deleted by the
+	// DeleteTrafficDistributionGroup API. The default traffic distribution group is
+	// deleted as part of the process for deleting a replica.
+	//
+	// The SignInConfig distribution is available only on a default
+	// TrafficDistributionGroup (see the IsDefault parameter in the [TrafficDistributionGroup] data type). If
+	// you call UpdateTrafficDistribution with a modified SignInConfig and a
+	// non-default TrafficDistributionGroup , an InvalidRequestException is returned.
+	//
+	// [TrafficDistributionGroup]: https://docs.aws.amazon.com/connect/latest/APIReference/API_TrafficDistributionGroup.html
+	IsDefault bool
+
 	// The name of the traffic distribution group.
 	Name *string
 
 	// The status of the traffic distribution group.
-	//   - CREATION_IN_PROGRESS means the previous CreateTrafficDistributionGroup (https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html)
-	//   operation is still in progress and has not yet completed.
-	//   - ACTIVE means the previous CreateTrafficDistributionGroup (https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html)
-	//   operation has succeeded.
-	//   - CREATION_FAILED indicates that the previous CreateTrafficDistributionGroup (https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html)
-	//   operation has failed.
-	//   - PENDING_DELETION means the previous DeleteTrafficDistributionGroup (https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html)
-	//   operation is still in progress and has not yet completed.
-	//   - DELETION_FAILED means the previous DeleteTrafficDistributionGroup (https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html)
-	//   operation has failed.
-	//   - UPDATE_IN_PROGRESS means the previous UpdateTrafficDistributionGroup (https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdateTrafficDistributionGroup.html)
-	//   operation is still in progress and has not yet completed.
+	//
+	//   - CREATION_IN_PROGRESS means the previous [CreateTrafficDistributionGroup]operation is still in progress and
+	//   has not yet completed.
+	//
+	//   - ACTIVE means the previous [CreateTrafficDistributionGroup]operation has succeeded.
+	//
+	//   - CREATION_FAILED indicates that the previous [CreateTrafficDistributionGroup]operation has failed.
+	//
+	//   - PENDING_DELETION means the previous [DeleteTrafficDistributionGroup]operation is still in progress and has
+	//   not yet completed.
+	//
+	//   - DELETION_FAILED means the previous [DeleteTrafficDistributionGroup]operation has failed.
+	//
+	//   - UPDATE_IN_PROGRESS means the previous [UpdateTrafficDistribution]operation is still in progress and
+	//   has not yet completed.
+	//
+	// [UpdateTrafficDistribution]: https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdateTrafficDistribution.html
+	// [DeleteTrafficDistributionGroup]: https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html
+	// [CreateTrafficDistributionGroup]: https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html
 	Status TrafficDistributionGroupStatus
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -3597,23 +6661,96 @@ type TrafficDistributionGroupSummary struct {
 	// The Amazon Resource Name (ARN) of the traffic distribution group.
 	InstanceArn *string
 
+	// Whether this is the default traffic distribution group created during instance
+	// replication. The default traffic distribution group cannot be deleted by the
+	// DeleteTrafficDistributionGroup API. The default traffic distribution group is
+	// deleted as part of the process for deleting a replica.
+	IsDefault bool
+
 	// The name of the traffic distribution group.
 	Name *string
 
 	// The status of the traffic distribution group.
-	//   - CREATION_IN_PROGRESS means the previous CreateTrafficDistributionGroup (https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html)
-	//   operation is still in progress and has not yet completed.
-	//   - ACTIVE means the previous CreateTrafficDistributionGroup (https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html)
-	//   operation has succeeded.
-	//   - CREATION_FAILED indicates that the previous CreateTrafficDistributionGroup (https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html)
-	//   operation has failed.
-	//   - PENDING_DELETION means the previous DeleteTrafficDistributionGroup (https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html)
-	//   operation is still in progress and has not yet completed.
-	//   - DELETION_FAILED means the previous DeleteTrafficDistributionGroup (https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html)
-	//   operation has failed.
-	//   - UPDATE_IN_PROGRESS means the previous UpdateTrafficDistributionGroup (https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdateTrafficDistributionGroup.html)
-	//   operation is still in progress and has not yet completed.
+	//
+	//   - CREATION_IN_PROGRESS means the previous [CreateTrafficDistributionGroup]operation is still in progress and
+	//   has not yet completed.
+	//
+	//   - ACTIVE means the previous [CreateTrafficDistributionGroup]operation has succeeded.
+	//
+	//   - CREATION_FAILED indicates that the previous [CreateTrafficDistributionGroup]operation has failed.
+	//
+	//   - PENDING_DELETION means the previous [DeleteTrafficDistributionGroup]operation is still in progress and has
+	//   not yet completed.
+	//
+	//   - DELETION_FAILED means the previous [DeleteTrafficDistributionGroup]operation has failed.
+	//
+	//   - UPDATE_IN_PROGRESS means the previous [UpdateTrafficDistributionGroup]operation is still in progress and
+	//   has not yet completed.
+	//
+	// [DeleteTrafficDistributionGroup]: https://docs.aws.amazon.com/connect/latest/APIReference/API_DeleteTrafficDistributionGroup.html
+	// [CreateTrafficDistributionGroup]: https://docs.aws.amazon.com/connect/latest/APIReference/API_CreateTrafficDistributionGroup.html
+	// [UpdateTrafficDistributionGroup]: https://docs.aws.amazon.com/connect/latest/APIReference/API_UpdateTrafficDistributionGroup.html
 	Status TrafficDistributionGroupStatus
+
+	noSmithyDocumentSerde
+}
+
+// Summary information about a traffic distribution group user.
+type TrafficDistributionGroupUserSummary struct {
+
+	// The identifier for the user. This can be the ID or the ARN of the user.
+	UserId *string
+
+	noSmithyDocumentSerde
+}
+
+// A structure that defines search criteria and matching logic to search for
+// contacts by matching text with transcripts analyzed by Amazon Connect Contact
+// Lens.
+type Transcript struct {
+
+	// The list of search criteria based on Contact Lens conversational analytics
+	// transcript.
+	//
+	// This member is required.
+	Criteria []TranscriptCriteria
+
+	// The match type combining search criteria using multiple transcript criteria.
+	MatchType SearchContactsMatchType
+
+	noSmithyDocumentSerde
+}
+
+// A structure that defines search criteria base on words or phrases, participants
+// in the Contact Lens conversational analytics transcript.
+type TranscriptCriteria struct {
+
+	// The match type combining search criteria using multiple search texts in a
+	// transcript criteria.
+	//
+	// This member is required.
+	MatchType SearchContactsMatchType
+
+	// The participant role in a transcript
+	//
+	// This member is required.
+	ParticipantRole ParticipantRole
+
+	// The words or phrases used to search within a transcript.
+	//
+	// This member is required.
+	SearchText []string
+
+	noSmithyDocumentSerde
+}
+
+// The UpdateCase action definition.
+type UpdateCaseActionDefinition struct {
+
+	// An array of objects with Field ID and Value data.
+	//
+	// This member is required.
+	Fields []FieldValue
 
 	noSmithyDocumentSerde
 }
@@ -3635,6 +6772,22 @@ type UpdateParticipantRoleConfigChannelInfoMemberChat struct {
 }
 
 func (*UpdateParticipantRoleConfigChannelInfoMemberChat) isUpdateParticipantRoleConfigChannelInfo() {}
+
+// Fields required when uploading an attached file.
+type UploadUrlMetadata struct {
+
+	// A map of headers that should be provided when uploading the attached file.
+	HeadersToInclude map[string]string
+
+	// A pre-signed S3 URL that should be used for uploading the attached file.
+	Url *string
+
+	// The expiration time of the URL in ISO timestamp. It's specified in ISO 8601
+	// format: yyyy-MM-ddThh:mm:ss.SSSZ . For example, 2019-11-08T02:41:28.172Z .
+	UrlExpiry *string
+
+	noSmithyDocumentSerde
+}
 
 // The URL reference.
 type UrlReference struct {
@@ -3683,6 +6836,12 @@ type User struct {
 	// Information about the user identity.
 	IdentityInfo *UserIdentityInfo
 
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
+
 	// Information about the phone configuration for the user.
 	PhoneConfig *UserPhoneConfig
 
@@ -3704,7 +6863,7 @@ type User struct {
 // Data for a user.
 type UserData struct {
 
-	// A map of active slots by channel. The key is a channel name. The value is an
+	//  A map of active slots by channel. The key is a channel name. The value is an
 	// integer: the number of active slots.
 	ActiveSlotsByChannel map[string]int32
 
@@ -3719,8 +6878,10 @@ type UserData struct {
 	HierarchyPath *HierarchyPathReference
 
 	// A map of maximum slots by channel. The key is a channel name. The value is an
-	// integer: the maximum number of slots. This is calculated from MediaConcurrency (https://docs.aws.amazon.com/connect/latest/APIReference/API_MediaConcurrency.html)
-	// of the RoutingProfile assigned to the agent.
+	// integer: the maximum number of slots. This is calculated from [MediaConcurrency]of the
+	// RoutingProfile assigned to the agent.
+	//
+	// [MediaConcurrency]: https://docs.aws.amazon.com/connect/latest/APIReference/API_MediaConcurrency.html
 	MaxSlotsByChannel map[string]int32
 
 	// The Next status of the agent.
@@ -3762,7 +6923,50 @@ type UserDataFilters struct {
 	noSmithyDocumentSerde
 }
 
+// The search criteria to be used to return userHierarchyGroup.
+type UserHierarchyGroupSearchCriteria struct {
+
+	// A list of conditions which would be applied together with an AND condition.
+	AndConditions []UserHierarchyGroupSearchCriteria
+
+	// A list of conditions which would be applied together with an OR condition.
+	OrConditions []UserHierarchyGroupSearchCriteria
+
+	// A leaf node condition which can be used to specify a string condition.
+	//
+	// The currently supported values for FieldName are name ,   parentId , levelId ,
+	// and resourceID .
+	StringCondition *StringCondition
+
+	noSmithyDocumentSerde
+}
+
+// Filters to be applied to search results.
+type UserHierarchyGroupSearchFilter struct {
+
+	// An object that can be used to specify Tag conditions inside the SearchFilter.
+	// This accepts an OR or AND (List of List) input where:
+	//
+	//   - The top level list specifies conditions that need to be applied with OR
+	//   operator.
+	//
+	//   - The inner list specifies conditions that need to be applied with AND
+	//   operator.
+	AttributeFilter *ControlPlaneAttributeFilter
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about the identity of a user.
+//
+// For Amazon Connect instances that are created with the EXISTING_DIRECTORY
+// identity management type, FirstName , LastName , and Email cannot be updated
+// from within Amazon Connect because they are managed by the directory.
+//
+// The FirstName and LastName length constraints below apply only to instances
+// using SAML for identity management. If you are using Amazon Connect for identity
+// management, the length constraints are 1-255 for FirstName , and 1-256 for
+// LastName .
 type UserIdentityInfo struct {
 
 	// The email address. If you are using SAML for identity management and include
@@ -3770,11 +6974,15 @@ type UserIdentityInfo struct {
 	Email *string
 
 	// The first name. This is required if you are using Amazon Connect or SAML for
-	// identity management.
+	// identity management. Inputs must be in Unicode Normalization Form C (NFC). Text
+	// containing characters in a non-NFC form (for example, decomposed characters or
+	// combining marks) are not accepted.
 	FirstName *string
 
 	// The last name. This is required if you are using Amazon Connect or SAML for
-	// identity management.
+	// identity management. Inputs must be in Unicode Normalization Form C (NFC). Text
+	// containing characters in a non-NFC form (for example, decomposed characters or
+	// combining marks) are not accepted.
 	LastName *string
 
 	// The user's mobile number.
@@ -3782,8 +6990,9 @@ type UserIdentityInfo struct {
 
 	// The user's secondary email address. If you provide a secondary email, the user
 	// receives email notifications - other than password reset notifications - to this
-	// email address instead of to their primary email address. Pattern:
-	// (?=^.{0,265}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}
+	// email address instead of to their primary email address.
+	//
+	// Pattern: (?=^.{0,265}$)[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,63}
 	SecondaryEmail *string
 
 	noSmithyDocumentSerde
@@ -3801,6 +7010,15 @@ type UserIdentityInfoLite struct {
 	noSmithyDocumentSerde
 }
 
+// The user details for the contact.
+type UserInfo struct {
+
+	// The user identifier for the contact.
+	UserId *string
+
+	noSmithyDocumentSerde
+}
+
 // Contains information about the phone configuration settings for a user.
 type UserPhoneConfig struct {
 
@@ -3809,8 +7027,14 @@ type UserPhoneConfig struct {
 	// This member is required.
 	PhoneType PhoneType
 
-	// The After Call Work (ACW) timeout setting, in seconds. When returned by a
-	// SearchUsers call, AfterContactWorkTimeLimit is returned in milliseconds.
+	// The After Call Work (ACW) timeout setting, in seconds. This parameter has a
+	// minimum value of 0 and a maximum value of 2,000,000 seconds (24 days). Enter 0
+	// if you don't want to allocate a specific amount of ACW time. It essentially
+	// means an indefinite amount of time. When the conversation ends, ACW starts; the
+	// agent must choose Close contact to end ACW.
+	//
+	// When returned by a SearchUsers call, AfterContactWorkTimeLimit is returned in
+	// milliseconds.
 	AfterContactWorkTimeLimit int32
 
 	// The Auto accept setting.
@@ -3818,6 +7042,45 @@ type UserPhoneConfig struct {
 
 	// The phone number for the user's desk phone.
 	DeskPhoneNumber *string
+
+	noSmithyDocumentSerde
+}
+
+// Information about proficiency of a user.
+type UserProficiency struct {
+
+	// The name of user's proficiency. You must use name of predefined attribute
+	// present in the Amazon Connect instance.
+	//
+	// This member is required.
+	AttributeName *string
+
+	// The value of user's proficiency. You must use value of predefined attribute
+	// present in the Amazon Connect instance.
+	//
+	// This member is required.
+	AttributeValue *string
+
+	// The level of the proficiency. The valid values are 1, 2, 3, 4 and 5.
+	//
+	// This member is required.
+	Level *float32
+
+	noSmithyDocumentSerde
+}
+
+// Information about proficiency to be disassociated from the user.
+type UserProficiencyDisassociate struct {
+
+	// The name of user's proficiency.
+	//
+	// This member is required.
+	AttributeName *string
+
+	// The value of user's proficiency.
+	//
+	// This member is required.
+	AttributeValue *string
 
 	noSmithyDocumentSerde
 }
@@ -3851,10 +7114,11 @@ type UserReference struct {
 	noSmithyDocumentSerde
 }
 
-// The search criteria to be used to return users. The name and description fields
-// support "contains" queries with a minimum of 2 characters and a maximum of 25
-// characters. Any queries with character lengths outside of this range will throw
-// invalid results.
+// The search criteria to be used to return users.
+//
+// The name and description fields support "contains" queries with a minimum of 2
+// characters and a maximum of 25 characters. Any queries with character lengths
+// outside of this range will throw invalid results.
 type UserSearchCriteria struct {
 
 	// A list of conditions which would be applied together with an AND condition.
@@ -3863,12 +7127,17 @@ type UserSearchCriteria struct {
 	// A leaf node condition which can be used to specify a hierarchy group condition.
 	HierarchyGroupCondition *HierarchyGroupCondition
 
+	// A leaf node condition which can be used to specify a List condition to search
+	// users with attributes included in Lists like Proficiencies.
+	ListCondition *ListCondition
+
 	// A list of conditions which would be applied together with an OR condition.
 	OrConditions []UserSearchCriteria
 
-	// A leaf node condition which can be used to specify a string condition. The
-	// currently supported values for FieldName are name , description , and resourceID
-	// .
+	// A leaf node condition which can be used to specify a string condition.
+	//
+	// The currently supported values for FieldName are Username , FirstName , LastName
+	// , RoutingProfileId , SecurityProfileId , ResourceId .
 	StringCondition *StringCondition
 
 	noSmithyDocumentSerde
@@ -3879,9 +7148,28 @@ type UserSearchFilter struct {
 
 	// An object that can be used to specify Tag conditions inside the SearchFilter .
 	// This accepts an OR of AND (List of List) input where:
+	//
 	//   - Top level list specifies conditions that need to be applied with OR operator
+	//
 	//   - Inner list specifies conditions that need to be applied with AND operator.
 	TagFilter *ControlPlaneTagFilter
+
+	// An object that can be used to specify Tag conditions or Hierarchy Group
+	// conditions inside the SearchFilter.
+	//
+	// This accepts an OR of AND (List of List) input where:
+	//
+	//   - The top level list specifies conditions that need to be applied with OR
+	//   operator.
+	//
+	//   - The inner list specifies conditions that need to be applied with AND
+	//   operator.
+	//
+	// Only one field can be populated. This object can’t be used along with
+	// TagFilter. Request can either contain TagFilter or UserAttributeFilter if
+	// SearchFilter is specified, combination of both is not supported and such request
+	// will throw AccessDeniedException.
+	UserAttributeFilter *ControlPlaneUserAttributeFilter
 
 	noSmithyDocumentSerde
 }
@@ -3914,7 +7202,7 @@ type UserSearchSummary struct {
 	SecurityProfileIds []string
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	// The name of the user.
@@ -3932,8 +7220,144 @@ type UserSummary struct {
 	// The identifier of the user account.
 	Id *string
 
+	// The Amazon Web Services Region where this resource was last modified.
+	LastModifiedRegion *string
+
+	// The timestamp when this resource was last modified.
+	LastModifiedTime *time.Time
+
 	// The Amazon Connect user name of the user account.
 	Username *string
+
+	noSmithyDocumentSerde
+}
+
+// A view resource object. Contains metadata and content necessary to render the
+// view.
+type View struct {
+
+	// The Amazon Resource Name (ARN) of the view.
+	Arn *string
+
+	// View content containing all content necessary to render a view except for
+	// runtime input data.
+	Content *ViewContent
+
+	// The timestamp of when the view was created.
+	CreatedTime *time.Time
+
+	// The description of the view.
+	Description *string
+
+	// The identifier of the view.
+	Id *string
+
+	// Latest timestamp of the UpdateViewContent or CreateViewVersion operations.
+	LastModifiedTime *time.Time
+
+	// The name of the view.
+	Name *string
+
+	// Indicates the view status as either SAVED or PUBLISHED . The PUBLISHED status
+	// will initiate validation on the content.
+	Status ViewStatus
+
+	// The tags associated with the view resource (not specific to view version).
+	Tags map[string]string
+
+	// The type of the view - CUSTOMER_MANAGED .
+	Type ViewType
+
+	// Current version of the view.
+	Version int32
+
+	// The description of the version.
+	VersionDescription *string
+
+	// Indicates the checksum value of the latest published view content.
+	ViewContentSha256 *string
+
+	noSmithyDocumentSerde
+}
+
+// View content containing all content necessary to render a view except for
+// runtime input data.
+type ViewContent struct {
+
+	// A list of possible actions from the view.
+	Actions []string
+
+	// The data schema matching data that the view template must be provided to render.
+	InputSchema *string
+
+	// The view template representing the structure of the view.
+	Template *string
+
+	noSmithyDocumentSerde
+}
+
+// View content containing all content necessary to render a view except for
+// runtime input data and the runtime input schema, which is auto-generated by this
+// operation.
+type ViewInputContent struct {
+
+	// A list of possible actions from the view.
+	Actions []string
+
+	// The view template representing the structure of the view.
+	Template *string
+
+	noSmithyDocumentSerde
+}
+
+// A summary of a view's metadata.
+type ViewSummary struct {
+
+	// The Amazon Resource Name (ARN) of the view.
+	Arn *string
+
+	// The description of the view.
+	Description *string
+
+	// The identifier of the view.
+	Id *string
+
+	// The name of the view.
+	Name *string
+
+	// Indicates the view status as either SAVED or PUBLISHED . The PUBLISHED status
+	// will initiate validation on the content.
+	Status ViewStatus
+
+	// The type of the view.
+	Type ViewType
+
+	noSmithyDocumentSerde
+}
+
+// A summary of a view version's metadata.
+type ViewVersionSummary struct {
+
+	// The Amazon Resource Name (ARN) of the view version.
+	Arn *string
+
+	// The description of the view version.
+	Description *string
+
+	// The identifier of the view version.
+	Id *string
+
+	// The name of the view version.
+	Name *string
+
+	// The type of the view version.
+	Type ViewType
+
+	// The sequentially incremented version of the view version.
+	Version int32
+
+	// The description of the view version.
+	VersionDescription *string
 
 	noSmithyDocumentSerde
 }
@@ -3952,7 +7376,9 @@ type Vocabulary struct {
 	Id *string
 
 	// The language code of the vocabulary entries. For a list of languages and their
-	// corresponding language codes, see What is Amazon Transcribe? (https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html)
+	// corresponding language codes, see [What is Amazon Transcribe?]
+	//
+	// [What is Amazon Transcribe?]: https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html
 	//
 	// This member is required.
 	LanguageCode VocabularyLanguageCode
@@ -3975,15 +7401,16 @@ type Vocabulary struct {
 	// The content of the custom vocabulary in plain-text format with a table of
 	// values. Each row in the table represents a word or a phrase, described with
 	// Phrase , IPA , SoundsLike , and DisplayAs fields. Separate the fields with TAB
-	// characters. For more information, see Create a custom vocabulary using a table (https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html#create-vocabulary-table)
-	// .
+	// characters. For more information, see [Create a custom vocabulary using a table].
+	//
+	// [Create a custom vocabulary using a table]: https://docs.aws.amazon.com/transcribe/latest/dg/custom-vocabulary.html#create-vocabulary-table
 	Content *string
 
 	// The reason why the custom vocabulary was not created.
 	FailureReason *string
 
 	// The tags used to organize, track, or control access for this resource. For
-	// example, { "tags": {"key1":"value1", "key2":"value2"} }.
+	// example, { "Tags": {"key1":"value1", "key2":"value2"} }.
 	Tags map[string]string
 
 	noSmithyDocumentSerde
@@ -4003,7 +7430,9 @@ type VocabularySummary struct {
 	Id *string
 
 	// The language code of the vocabulary entries. For a list of languages and their
-	// corresponding language codes, see What is Amazon Transcribe? (https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html)
+	// corresponding language codes, see [What is Amazon Transcribe?]
+	//
+	// [What is Amazon Transcribe?]: https://docs.aws.amazon.com/transcribe/latest/dg/transcribe-whatis.html
 	//
 	// This member is required.
 	LanguageCode VocabularyLanguageCode
@@ -4032,6 +7461,11 @@ type VocabularySummary struct {
 // Contains information about the recording configuration settings.
 type VoiceRecordingConfiguration struct {
 
+	// Identifies which IVR track is being recorded.
+	//
+	// One and only one of the track configurations should be presented in the request.
+	IvrRecordingTrack IvrRecordingTrack
+
 	// Identifies which track is being recorded.
 	VoiceRecordingTrack VoiceRecordingTrack
 
@@ -4058,11 +7492,17 @@ type UnknownUnionMember struct {
 	noSmithyDocumentSerde
 }
 
+func (*UnknownUnionMember) isCreatedByInfo()                                      {}
 func (*UnknownUnionMember) isEvaluationAnswerData()                               {}
 func (*UnknownUnionMember) isEvaluationFormItem()                                 {}
 func (*UnknownUnionMember) isEvaluationFormNumericQuestionAutomation()            {}
 func (*UnknownUnionMember) isEvaluationFormQuestionTypeProperties()               {}
 func (*UnknownUnionMember) isEvaluationFormSingleSelectQuestionAutomationOption() {}
+func (*UnknownUnionMember) isInvalidRequestExceptionReason()                      {}
 func (*UnknownUnionMember) isParticipantTimerValue()                              {}
+func (*UnknownUnionMember) isPredefinedAttributeValues()                          {}
+func (*UnknownUnionMember) isRealtimeContactAnalysisSegment()                     {}
+func (*UnknownUnionMember) isRealTimeContactAnalysisTimeData()                    {}
 func (*UnknownUnionMember) isReferenceSummary()                                   {}
+func (*UnknownUnionMember) isServiceQuotaExceededExceptionReason()                {}
 func (*UnknownUnionMember) isUpdateParticipantRoleConfigChannelInfo()             {}

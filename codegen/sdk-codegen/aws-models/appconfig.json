@@ -29,6 +29,17 @@
         ]
     },
     "shapes": {
+        "com.amazonaws.appconfig#AccountSettings": {
+            "type": "structure",
+            "members": {
+                "DeletionProtection": {
+                    "target": "com.amazonaws.appconfig#DeletionProtectionSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A parameter to configure deletion protection. If enabled, deletion protection prevents a\n         user from deleting a configuration profile or an environment if AppConfig has\n         called either <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> or  for the\n         configuration profile or from the environment during the specified interval. Deletion\n         protection is disabled by default. The default interval for\n            <code>ProtectionPeriodInMinutes</code> is 60.</p>"
+                    }
+                }
+            }
+        },
         "com.amazonaws.appconfig#Action": {
             "type": "structure",
             "members": {
@@ -58,7 +69,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>An action defines the tasks that the extension performs during the AppConfig\n         workflow. Each action includes an action point such as\n            <code>ON_CREATE_HOSTED_CONFIGURATION</code>, <code>PRE_DEPLOYMENT</code>, or\n            <code>ON_DEPLOYMENT</code>. Each action also includes a name, a URI to an Lambda function, and an Amazon Resource Name (ARN) for an Identity and Access Management\n         assume role. You specify the name, URI, and ARN for each <i>action point</i>\n         defined in the extension. You can specify the following actions for an extension:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>PRE_CREATE_HOSTED_CONFIGURATION_VERSION</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>PRE_START_DEPLOYMENT</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>ON_DEPLOYMENT_START</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>ON_DEPLOYMENT_STEP</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>ON_DEPLOYMENT_BAKING</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>ON_DEPLOYMENT_COMPLETE</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>ON_DEPLOYMENT_ROLLED_BACK</code>\n               </p>\n            </li>\n         </ul>"
+                "smithy.api#documentation": "<p>An action defines the tasks that the extension performs during the AppConfig\n         workflow. Each action includes an action point, as shown in the following list: </p>\n         <ul>\n            <li>\n               <p>\n                  <code>PRE_CREATE_HOSTED_CONFIGURATION_VERSION</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>PRE_START_DEPLOYMENT</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>AT_DEPLOYMENT_TICK</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>ON_DEPLOYMENT_START</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>ON_DEPLOYMENT_STEP</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>ON_DEPLOYMENT_BAKING</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>ON_DEPLOYMENT_COMPLETE</code>\n               </p>\n            </li>\n            <li>\n               <p>\n                  <code>ON_DEPLOYMENT_ROLLED_BACK</code>\n               </p>\n            </li>\n         </ul>\n         <p>Each action also includes a name, a URI to an Lambda function, and an\n         Amazon Resource Name (ARN) for an Identity and Access Management assume role. You specify the name,\n         URI, and ARN for each <i>action point</i> defined in the extension.</p>"
             }
         },
         "com.amazonaws.appconfig#ActionInvocation": {
@@ -142,6 +153,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "PRE_START_DEPLOYMENT"
+                    }
+                },
+                "AT_DEPLOYMENT_TICK": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "AT_DEPLOYMENT_TICK"
                     }
                 },
                 "ON_DEPLOYMENT_START": {
@@ -238,6 +255,9 @@
                     "target": "com.amazonaws.appconfig#DeleteHostedConfigurationVersion"
                 },
                 {
+                    "target": "com.amazonaws.appconfig#GetAccountSettings"
+                },
+                {
                     "target": "com.amazonaws.appconfig#GetApplication"
                 },
                 {
@@ -304,6 +324,9 @@
                     "target": "com.amazonaws.appconfig#UntagResource"
                 },
                 {
+                    "target": "com.amazonaws.appconfig#UpdateAccountSettings"
+                },
+                {
                     "target": "com.amazonaws.appconfig#UpdateApplication"
                 },
                 {
@@ -337,7 +360,7 @@
                     "name": "appconfig"
                 },
                 "aws.protocols#restJson1": {},
-                "smithy.api#documentation": "<p>Use AppConfig, a capability of Amazon Web Services Systems Manager, to create, manage, and quickly\n         deploy application configurations. AppConfig supports controlled deployments to\n         applications of any size and includes built-in validation checks and monitoring. You can\n         use AppConfig with applications hosted on Amazon EC2 instances, Lambda, containers,\n         mobile applications, or IoT devices.</p>\n         <p>To prevent errors when deploying application configurations, especially for production\n         systems where a simple typo could cause an unexpected outage, AppConfig includes\n         validators. A validator provides a syntactic or semantic check to ensure that the\n         configuration you want to deploy works as intended. To validate your application\n         configuration data, you provide a schema or an Amazon Web Services Lambda function that runs against\n         the configuration. The configuration deployment or update can only proceed when the\n         configuration data is valid.</p>\n         <p>During a configuration deployment, AppConfig monitors the application to\n         ensure that the deployment is successful. If the system encounters an error, AppConfig rolls back the change to minimize impact for your application users. You can\n         configure a deployment strategy for each application or environment that includes\n         deployment criteria, including velocity, bake time, and alarms to monitor. Similar to error\n         monitoring, if a deployment triggers an alarm, AppConfig automatically rolls back\n         to the previous version. </p>\n         <p>AppConfig supports multiple use cases. Here are some examples:</p>\n         <ul>\n            <li>\n               <p>\n                  <b>Feature flags</b>: Use AppConfig to turn on\n               new features that require a timely deployment, such as a product launch or\n               announcement. </p>\n            </li>\n            <li>\n               <p>\n                  <b>Application tuning</b>: Use AppConfig to\n               carefully introduce changes to your application that can only be tested with\n               production traffic.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Allow list</b>: Use AppConfig to allow\n               premium subscribers to access paid content. </p>\n            </li>\n            <li>\n               <p>\n                  <b>Operational issues</b>: Use AppConfig to\n               reduce stress on your application when a dependency or other external factor impacts\n               the system.</p>\n            </li>\n         </ul>\n         <p>This reference is intended to be used with the <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html\">AppConfig User\n         Guide</a>.</p>",
+                "smithy.api#documentation": "<p>AppConfig feature flags and dynamic configurations help software builders\n         quickly and securely adjust application behavior in production environments without full\n         code deployments. AppConfig speeds up software release frequency, improves\n         application resiliency, and helps you address emergent issues more quickly. With feature\n         flags, you can gradually release new capabilities to users and measure the impact of those\n         changes before fully deploying the new capabilities to all users. With operational flags\n         and dynamic configurations, you can update block lists, allow lists, throttling limits,\n         logging verbosity, and perform other operational tuning to quickly respond to issues in\n         production environments.</p>\n         <note>\n            <p>AppConfig is a capability of Amazon Web Services Systems Manager.</p>\n         </note>\n         <p>Despite the fact that application configuration content can vary greatly from\n         application to application, AppConfig supports the following use cases, which\n         cover a broad spectrum of customer needs:</p>\n         <ul>\n            <li>\n               <p>\n                  <b>Feature flags and toggles</b> - Safely release new\n               capabilities to your customers in a controlled environment. Instantly roll back\n               changes if you experience a problem.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Application tuning</b> - Carefully introduce\n               application changes while testing the impact of those changes with users in\n               production environments.</p>\n            </li>\n            <li>\n               <p>\n                  <b>Allow list or block list</b> - Control access to\n               premium features or instantly block specific users without deploying new code.\n            </p>\n            </li>\n            <li>\n               <p>\n                  <b>Centralized configuration storage</b> - Keep your\n               configuration data organized and consistent across all of your workloads. You can use\n                  AppConfig to deploy configuration data stored in the AppConfig\n               hosted configuration store, Secrets Manager, Systems Manager, Parameter\n               Store, or Amazon S3.</p>\n            </li>\n         </ul>\n         <p>\n            <b>How AppConfig works</b>\n         </p>\n         <p>This section provides a high-level description of how AppConfig works and how\n         you get started.</p>\n         <dl>\n            <dt>1. Identify configuration values in code you want to manage in the cloud</dt>\n            <dd>\n               <p>Before you start creating AppConfig artifacts, we recommend you\n                  identify configuration data in your code that you want to dynamically manage using\n                     AppConfig. Good examples include feature flags or toggles, allow and\n                  block lists, logging verbosity, service limits, and throttling rules, to name a\n                  few.</p>\n               <p>If your configuration data already exists in the cloud, you can take advantage\n                  of AppConfig validation, deployment, and extension features to further\n                  streamline configuration data management.</p>\n            </dd>\n            <dt>2. Create an application namespace</dt>\n            <dd>\n               <p>To create a namespace, you create an AppConfig artifact called an\n                  application. An application is simply an organizational construct like a\n                  folder.</p>\n            </dd>\n            <dt>3. Create environments</dt>\n            <dd>\n               <p>For each AppConfig application, you define one or more environments.\n                  An environment is a logical grouping of targets, such as applications in a\n                     <code>Beta</code> or <code>Production</code> environment, Lambda functions,\n                  or containers. You can also define environments for application subcomponents,\n                  such as the <code>Web</code>, <code>Mobile</code>, and\n                  <code>Back-end</code>.</p>\n               <p>You can configure Amazon CloudWatch alarms for each environment. The system monitors\n                  alarms during a configuration deployment. If an alarm is triggered, the system\n                  rolls back the configuration.</p>\n            </dd>\n            <dt>4. Create a configuration profile</dt>\n            <dd>\n               <p>A configuration profile includes, among other things, a URI that enables\n                     AppConfig to locate your configuration data in its stored location\n                  and a profile type. AppConfig supports two configuration profile types:\n                  feature flags and freeform configurations. Feature flag configuration profiles\n                  store their data in the AppConfig hosted configuration store and the URI\n                  is simply <code>hosted</code>. For freeform configuration profiles, you can store\n                  your data in the AppConfig hosted configuration store or any Amazon Web Services\n                  service that integrates with AppConfig, as described in <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-free-form-configurations-creating.html\">Creating\n                     a free form configuration profile</a> in the the <i>AppConfig User Guide</i>.</p>\n               <p>A configuration profile can also include optional validators to ensure your\n                  configuration data is syntactically and semantically correct. AppConfig\n                  performs a check using the validators when you start a deployment. If any errors\n                  are detected, the deployment rolls back to the previous configuration data.</p>\n            </dd>\n            <dt>5. Deploy configuration data</dt>\n            <dd>\n               <p>When you create a new deployment, you specify the following:</p>\n               <ul>\n                  <li>\n                     <p>An application ID</p>\n                  </li>\n                  <li>\n                     <p>A configuration profile ID</p>\n                  </li>\n                  <li>\n                     <p>A configuration version</p>\n                  </li>\n                  <li>\n                     <p>An environment ID where you want to deploy the configuration data</p>\n                  </li>\n                  <li>\n                     <p>A deployment strategy ID that defines how fast you want the changes to\n                        take effect</p>\n                  </li>\n               </ul>\n               <p>When you call the <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_StartDeployment.html\">StartDeployment</a> API action, AppConfig performs the following\n                  tasks:</p>\n               <ol>\n                  <li>\n                     <p>Retrieves the configuration data from the underlying data store by using\n                        the location URI in the configuration profile.</p>\n                  </li>\n                  <li>\n                     <p>Verifies the configuration data is syntactically and semantically correct\n                        by using the validators you specified when you created your configuration\n                        profile.</p>\n                  </li>\n                  <li>\n                     <p>Caches a copy of the data so it is ready to be retrieved by your\n                        application. This cached copy is called the <i>deployed\n                           data</i>.</p>\n                  </li>\n               </ol>\n            </dd>\n            <dt>6. Retrieve the configuration</dt>\n            <dd>\n               <p>You can configure AppConfig Agent as a local host and have the agent\n                  poll AppConfig for configuration updates. The agent calls the <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_StartConfigurationSession.html\">StartConfigurationSession</a> and <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> API actions and caches your configuration data\n                  locally. To retrieve the data, your application makes an HTTP call to the\n                  localhost server. AppConfig Agent supports several use cases, as\n                  described in <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-retrieving-simplified-methods.html\">Simplified\n                     retrieval methods</a> in the the <i>AppConfig User\n                     Guide</i>.</p>\n               <p>If AppConfig Agent isn't supported for your use case, you can\n                  configure your application to poll AppConfig for configuration updates\n                  by directly calling the <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_StartConfigurationSession.html\">StartConfigurationSession</a> and <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> API actions. </p>\n            </dd>\n         </dl>\n         <p>This reference is intended to be used with the <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/what-is-appconfig.html\">AppConfig User\n         Guide</a>.</p>",
                 "smithy.api#title": "Amazon AppConfig",
                 "smithy.rules#endpointRuleSet": {
                     "version": "1.0",
@@ -381,7 +404,6 @@
                                     ]
                                 }
                             ],
-                            "type": "tree",
                             "rules": [
                                 {
                                     "conditions": [
@@ -399,9 +421,225 @@
                                     "type": "error"
                                 },
                                 {
+                                    "conditions": [
+                                        {
+                                            "fn": "booleanEquals",
+                                            "argv": [
+                                                {
+                                                    "ref": "UseDualStack"
+                                                },
+                                                true
+                                            ]
+                                        }
+                                    ],
+                                    "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
+                                    "type": "error"
+                                },
+                                {
                                     "conditions": [],
-                                    "type": "tree",
+                                    "endpoint": {
+                                        "url": {
+                                            "ref": "Endpoint"
+                                        },
+                                        "properties": {},
+                                        "headers": {}
+                                    },
+                                    "type": "endpoint"
+                                }
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [
+                                {
+                                    "fn": "isSet",
+                                    "argv": [
+                                        {
+                                            "ref": "Region"
+                                        }
+                                    ]
+                                }
+                            ],
+                            "rules": [
+                                {
+                                    "conditions": [
+                                        {
+                                            "fn": "aws.partition",
+                                            "argv": [
+                                                {
+                                                    "ref": "Region"
+                                                }
+                                            ],
+                                            "assign": "PartitionResult"
+                                        }
+                                    ],
                                     "rules": [
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                },
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseDualStack"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                true,
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsFIPS"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        },
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                true,
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsDualStack"
+                                                                    ]
+                                                                }
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://appconfig-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [
+                                                {
+                                                    "fn": "booleanEquals",
+                                                    "argv": [
+                                                        {
+                                                            "ref": "UseFIPS"
+                                                        },
+                                                        true
+                                                    ]
+                                                }
+                                            ],
+                                            "rules": [
+                                                {
+                                                    "conditions": [
+                                                        {
+                                                            "fn": "booleanEquals",
+                                                            "argv": [
+                                                                {
+                                                                    "fn": "getAttr",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "PartitionResult"
+                                                                        },
+                                                                        "supportsFIPS"
+                                                                    ]
+                                                                },
+                                                                true
+                                                            ]
+                                                        }
+                                                    ],
+                                                    "rules": [
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "us-gov-east-1"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://appconfig.us-gov-east-1.amazonaws.com",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [
+                                                                {
+                                                                    "fn": "stringEquals",
+                                                                    "argv": [
+                                                                        {
+                                                                            "ref": "Region"
+                                                                        },
+                                                                        "us-gov-west-1"
+                                                                    ]
+                                                                }
+                                                            ],
+                                                            "endpoint": {
+                                                                "url": "https://appconfig.us-gov-west-1.amazonaws.com",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        },
+                                                        {
+                                                            "conditions": [],
+                                                            "endpoint": {
+                                                                "url": "https://appconfig-fips.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "properties": {},
+                                                                "headers": {}
+                                                            },
+                                                            "type": "endpoint"
+                                                        }
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "FIPS is enabled but this partition does not support FIPS",
+                                                    "type": "error"
+                                                }
+                                            ],
+                                            "type": "tree"
+                                        },
                                         {
                                             "conditions": [
                                                 {
@@ -414,316 +652,65 @@
                                                     ]
                                                 }
                                             ],
-                                            "error": "Invalid Configuration: Dualstack and custom endpoint are not supported",
-                                            "type": "error"
-                                        },
-                                        {
-                                            "conditions": [],
-                                            "endpoint": {
-                                                "url": {
-                                                    "ref": "Endpoint"
-                                                },
-                                                "properties": {},
-                                                "headers": {}
-                                            },
-                                            "type": "endpoint"
-                                        }
-                                    ]
-                                }
-                            ]
-                        },
-                        {
-                            "conditions": [],
-                            "type": "tree",
-                            "rules": [
-                                {
-                                    "conditions": [
-                                        {
-                                            "fn": "isSet",
-                                            "argv": [
-                                                {
-                                                    "ref": "Region"
-                                                }
-                                            ]
-                                        }
-                                    ],
-                                    "type": "tree",
-                                    "rules": [
-                                        {
-                                            "conditions": [
-                                                {
-                                                    "fn": "aws.partition",
-                                                    "argv": [
-                                                        {
-                                                            "ref": "Region"
-                                                        }
-                                                    ],
-                                                    "assign": "PartitionResult"
-                                                }
-                                            ],
-                                            "type": "tree",
                                             "rules": [
                                                 {
                                                     "conditions": [
                                                         {
                                                             "fn": "booleanEquals",
                                                             "argv": [
+                                                                true,
                                                                 {
-                                                                    "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        },
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
+                                                                    "fn": "getAttr",
                                                                     "argv": [
-                                                                        true,
                                                                         {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsFIPS"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                },
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsDualStack"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://appconfig-fips.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "FIPS and DualStack are enabled, but this partition does not support one or both",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseFIPS"
-                                                                },
-                                                                true
-                                                            ]
-                                                        }
-                                                    ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsFIPS"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [
-                                                                                {
-                                                                                    "fn": "stringEquals",
-                                                                                    "argv": [
-                                                                                        {
-                                                                                            "ref": "Region"
-                                                                                        },
-                                                                                        "us-gov-east-1"
-                                                                                    ]
-                                                                                }
-                                                                            ],
-                                                                            "endpoint": {
-                                                                                "url": "https://appconfig.us-gov-east-1.amazonaws.com",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
+                                                                            "ref": "PartitionResult"
                                                                         },
-                                                                        {
-                                                                            "conditions": [
-                                                                                {
-                                                                                    "fn": "stringEquals",
-                                                                                    "argv": [
-                                                                                        {
-                                                                                            "ref": "Region"
-                                                                                        },
-                                                                                        "us-gov-west-1"
-                                                                                    ]
-                                                                                }
-                                                                            ],
-                                                                            "endpoint": {
-                                                                                "url": "https://appconfig.us-gov-west-1.amazonaws.com",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        },
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://appconfig-fips.{Region}.{PartitionResult#dnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
+                                                                        "supportsDualStack"
                                                                     ]
                                                                 }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "FIPS is enabled but this partition does not support FIPS",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [
-                                                        {
-                                                            "fn": "booleanEquals",
-                                                            "argv": [
-                                                                {
-                                                                    "ref": "UseDualStack"
-                                                                },
-                                                                true
                                                             ]
                                                         }
                                                     ],
-                                                    "type": "tree",
-                                                    "rules": [
-                                                        {
-                                                            "conditions": [
-                                                                {
-                                                                    "fn": "booleanEquals",
-                                                                    "argv": [
-                                                                        true,
-                                                                        {
-                                                                            "fn": "getAttr",
-                                                                            "argv": [
-                                                                                {
-                                                                                    "ref": "PartitionResult"
-                                                                                },
-                                                                                "supportsDualStack"
-                                                                            ]
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ],
-                                                            "type": "tree",
-                                                            "rules": [
-                                                                {
-                                                                    "conditions": [],
-                                                                    "type": "tree",
-                                                                    "rules": [
-                                                                        {
-                                                                            "conditions": [],
-                                                                            "endpoint": {
-                                                                                "url": "https://appconfig.{Region}.{PartitionResult#dualStackDnsSuffix}",
-                                                                                "properties": {},
-                                                                                "headers": {}
-                                                                            },
-                                                                            "type": "endpoint"
-                                                                        }
-                                                                    ]
-                                                                }
-                                                            ]
-                                                        },
-                                                        {
-                                                            "conditions": [],
-                                                            "error": "DualStack is enabled but this partition does not support DualStack",
-                                                            "type": "error"
-                                                        }
-                                                    ]
-                                                },
-                                                {
-                                                    "conditions": [],
-                                                    "type": "tree",
                                                     "rules": [
                                                         {
                                                             "conditions": [],
                                                             "endpoint": {
-                                                                "url": "https://appconfig.{Region}.{PartitionResult#dnsSuffix}",
+                                                                "url": "https://appconfig.{Region}.{PartitionResult#dualStackDnsSuffix}",
                                                                 "properties": {},
                                                                 "headers": {}
                                                             },
                                                             "type": "endpoint"
                                                         }
-                                                    ]
+                                                    ],
+                                                    "type": "tree"
+                                                },
+                                                {
+                                                    "conditions": [],
+                                                    "error": "DualStack is enabled but this partition does not support DualStack",
+                                                    "type": "error"
                                                 }
-                                            ]
+                                            ],
+                                            "type": "tree"
+                                        },
+                                        {
+                                            "conditions": [],
+                                            "endpoint": {
+                                                "url": "https://appconfig.{Region}.{PartitionResult#dnsSuffix}",
+                                                "properties": {},
+                                                "headers": {}
+                                            },
+                                            "type": "endpoint"
                                         }
-                                    ]
-                                },
-                                {
-                                    "conditions": [],
-                                    "error": "Invalid Configuration: Missing Region",
-                                    "type": "error"
+                                    ],
+                                    "type": "tree"
                                 }
-                            ]
+                            ],
+                            "type": "tree"
+                        },
+                        {
+                            "conditions": [],
+                            "error": "Invalid Configuration: Missing Region",
+                            "type": "error"
                         }
                     ]
                 },
@@ -738,8 +725,8 @@
                             },
                             "params": {
                                 "Region": "af-south-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -751,8 +738,8 @@
                             },
                             "params": {
                                 "Region": "ap-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -764,8 +751,8 @@
                             },
                             "params": {
                                 "Region": "ap-northeast-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -777,8 +764,8 @@
                             },
                             "params": {
                                 "Region": "ap-northeast-2",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -790,8 +777,8 @@
                             },
                             "params": {
                                 "Region": "ap-northeast-3",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -803,8 +790,8 @@
                             },
                             "params": {
                                 "Region": "ap-south-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -816,8 +803,8 @@
                             },
                             "params": {
                                 "Region": "ap-southeast-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -829,8 +816,8 @@
                             },
                             "params": {
                                 "Region": "ap-southeast-2",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -842,8 +829,8 @@
                             },
                             "params": {
                                 "Region": "ap-southeast-3",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -855,8 +842,8 @@
                             },
                             "params": {
                                 "Region": "ca-central-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -868,8 +855,8 @@
                             },
                             "params": {
                                 "Region": "eu-central-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -881,8 +868,8 @@
                             },
                             "params": {
                                 "Region": "eu-north-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -894,8 +881,8 @@
                             },
                             "params": {
                                 "Region": "eu-south-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -907,8 +894,8 @@
                             },
                             "params": {
                                 "Region": "eu-west-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -920,8 +907,8 @@
                             },
                             "params": {
                                 "Region": "eu-west-2",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -933,8 +920,8 @@
                             },
                             "params": {
                                 "Region": "eu-west-3",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -946,8 +933,8 @@
                             },
                             "params": {
                                 "Region": "me-south-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -959,8 +946,8 @@
                             },
                             "params": {
                                 "Region": "sa-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -972,8 +959,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -985,8 +972,8 @@
                             },
                             "params": {
                                 "Region": "us-east-2",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -998,8 +985,8 @@
                             },
                             "params": {
                                 "Region": "us-west-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1011,8 +998,8 @@
                             },
                             "params": {
                                 "Region": "us-west-2",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1024,8 +1011,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1037,8 +1024,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1050,8 +1037,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1063,8 +1050,8 @@
                             },
                             "params": {
                                 "Region": "cn-north-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1076,8 +1063,8 @@
                             },
                             "params": {
                                 "Region": "cn-northwest-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1089,8 +1076,8 @@
                             },
                             "params": {
                                 "Region": "cn-north-1",
-                                "UseDualStack": true,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1102,8 +1089,8 @@
                             },
                             "params": {
                                 "Region": "cn-north-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1115,8 +1102,8 @@
                             },
                             "params": {
                                 "Region": "cn-north-1",
-                                "UseDualStack": true,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1128,8 +1115,8 @@
                             },
                             "params": {
                                 "Region": "us-gov-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1141,8 +1128,8 @@
                             },
                             "params": {
                                 "Region": "us-gov-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1154,8 +1141,8 @@
                             },
                             "params": {
                                 "Region": "us-gov-west-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1167,8 +1154,8 @@
                             },
                             "params": {
                                 "Region": "us-gov-west-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1180,8 +1167,8 @@
                             },
                             "params": {
                                 "Region": "us-gov-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1193,8 +1180,8 @@
                             },
                             "params": {
                                 "Region": "us-gov-east-1",
-                                "UseDualStack": true,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1206,8 +1193,8 @@
                             },
                             "params": {
                                 "Region": "us-iso-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
                             }
                         },
                         {
@@ -1219,8 +1206,19 @@
                             },
                             "params": {
                                 "Region": "us-iso-west-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1232,8 +1230,19 @@
                             },
                             "params": {
                                 "Region": "us-iso-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-iso-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "error": "DualStack is enabled but this partition does not support DualStack"
+                            },
+                            "params": {
+                                "Region": "us-iso-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1245,8 +1254,19 @@
                             },
                             "params": {
                                 "Region": "us-isob-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": false
+                                "UseFIPS": false,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isob-east-1 with FIPS enabled and DualStack enabled",
+                            "expect": {
+                                "error": "FIPS and DualStack are enabled, but this partition does not support one or both"
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": true,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1258,8 +1278,19 @@
                             },
                             "params": {
                                 "Region": "us-isob-east-1",
-                                "UseDualStack": false,
-                                "UseFIPS": true
+                                "UseFIPS": true,
+                                "UseDualStack": false
+                            }
+                        },
+                        {
+                            "documentation": "For region us-isob-east-1 with FIPS disabled and DualStack enabled",
+                            "expect": {
+                                "error": "DualStack is enabled but this partition does not support DualStack"
+                            },
+                            "params": {
+                                "Region": "us-isob-east-1",
+                                "UseFIPS": false,
+                                "UseDualStack": true
                             }
                         },
                         {
@@ -1271,8 +1302,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": false,
                                 "UseFIPS": false,
+                                "UseDualStack": false,
                                 "Endpoint": "https://example.com"
                             }
                         },
@@ -1284,8 +1315,8 @@
                                 }
                             },
                             "params": {
-                                "UseDualStack": false,
                                 "UseFIPS": false,
+                                "UseDualStack": false,
                                 "Endpoint": "https://example.com"
                             }
                         },
@@ -1296,8 +1327,8 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": false,
                                 "UseFIPS": true,
+                                "UseDualStack": false,
                                 "Endpoint": "https://example.com"
                             }
                         },
@@ -1308,9 +1339,15 @@
                             },
                             "params": {
                                 "Region": "us-east-1",
-                                "UseDualStack": true,
                                 "UseFIPS": false,
+                                "UseDualStack": true,
                                 "Endpoint": "https://example.com"
+                            }
+                        },
+                        {
+                            "documentation": "Missing region",
+                            "expect": {
+                                "error": "Invalid Configuration: Missing Region"
                             }
                         }
                     ],
@@ -1410,7 +1447,7 @@
                     "min": 20,
                     "max": 2048
                 },
-                "smithy.api#pattern": "^arn:(aws[a-zA-Z-]*)?:[a-z]+:([a-z]{2}((-gov)|(-iso(b?)))?-[a-z]+-\\d{1})?:(\\d{12})?:[a-zA-Z0-9-_/:.]+$"
+                "smithy.api#pattern": "^arn:(aws[a-zA-Z-]*)?:[a-z]+:([a-z]{2}((-gov)|(-iso([a-z]?)))?-[a-z]+-\\d{1})?:(\\d{12})?:[a-zA-Z0-9-_/:.]+$"
             }
         },
         "com.amazonaws.appconfig#BadRequestDetails": {
@@ -1556,6 +1593,18 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The type of configurations contained in the profile. AppConfig supports\n            <code>feature flags</code> and <code>freeform</code> configurations. We recommend you\n         create feature flag configurations to enable or disable new features and freeform\n         configurations to distribute configurations to an application. When calling this API, enter\n         one of the following values for <code>Type</code>:</p>\n         <p>\n            <code>AWS.AppConfig.FeatureFlags</code>\n         </p>\n         <p>\n            <code>AWS.Freeform</code>\n         </p>"
                     }
+                },
+                "KmsKeyArn": {
+                    "target": "com.amazonaws.appconfig#Arn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name of the Key Management Service key to encrypt new configuration\n         data versions in the AppConfig hosted configuration store. This attribute is only\n         used for <code>hosted</code> configuration types. To encrypt data managed in other\n         configuration stores, see the documentation for how to specify an KMS key\n         for that particular service.</p>"
+                    }
+                },
+                "KmsKeyIdentifier": {
+                    "target": "com.amazonaws.appconfig#KmsKeyIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Key Management Service key identifier (key ID, key alias, or key ARN) provided when\n         the resource was created or updated.</p>"
+                    }
                 }
             }
         },
@@ -1659,10 +1708,28 @@
                 },
                 {
                     "target": "com.amazonaws.appconfig#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.appconfig#ServiceQuotaExceededException"
                 }
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Creates an application. In AppConfig, an application is simply an\n         organizational construct like a folder. This organizational construct has a relationship\n         with some unit of executable code. For example, you could create an application called\n         MyMobileApp to organize and manage configuration data for a mobile application installed by\n         your users.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To create an application",
+                        "documentation": "The following create-application example creates an application in AWS AppConfig.",
+                        "input": {
+                            "Name": "example-application",
+                            "Description": "An application used for creating an example."
+                        },
+                        "output": {
+                            "Id": "339ohji",
+                            "Name": "example-application",
+                            "Description": "An application used for creating an example."
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/applications",
@@ -1714,10 +1781,32 @@
                 },
                 {
                     "target": "com.amazonaws.appconfig#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.appconfig#ServiceQuotaExceededException"
                 }
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Creates a configuration profile, which is information that enables AppConfig\n         to access the configuration source. Valid configuration sources include the\n         following:</p>\n         <ul>\n            <li>\n               <p>Configuration data in YAML, JSON, and other formats stored in the AppConfig hosted configuration store</p>\n            </li>\n            <li>\n               <p>Configuration data stored as objects in an Amazon Simple Storage Service (Amazon S3)\n               bucket</p>\n            </li>\n            <li>\n               <p>Pipelines stored in CodePipeline</p>\n            </li>\n            <li>\n               <p>Secrets stored in Secrets Manager</p>\n            </li>\n            <li>\n               <p>Standard and secure string parameters stored in Amazon Web Services Systems Manager Parameter Store</p>\n            </li>\n            <li>\n               <p>Configuration data in SSM documents stored in the Systems Manager document store</p>\n            </li>\n         </ul>\n         <p>A configuration profile includes the following information:</p>\n         <ul>\n            <li>\n               <p>The URI location of the configuration data.</p>\n            </li>\n            <li>\n               <p>The Identity and Access Management (IAM) role that provides access to the configuration data.</p>\n            </li>\n            <li>\n               <p>A validator for the configuration data. Available validators include either a JSON\n               Schema or an Amazon Web Services Lambda function.</p>\n            </li>\n         </ul>\n         <p>For more information, see <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile.html\">Create a\n            Configuration and a Configuration Profile</a> in the <i>AppConfig\n            User Guide</i>.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To create a configuration profile",
+                        "documentation": "The following create-configuration-profile example creates a configuration profile using a configuration stored in Parameter Store, a capability of Systems Manager.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "Name": "Example-Configuration-Profile",
+                            "LocationUri": "ssm-parameter://Example-Parameter",
+                            "RetrievalRoleArn": "arn:aws:iam::111122223333:role/Example-App-Config-Role"
+                        },
+                        "output": {
+                            "ApplicationId": "339ohji",
+                            "Id": "ur8hx2f",
+                            "Name": "Example-Configuration-Profile",
+                            "LocationUri": "ssm-parameter://Example-Parameter",
+                            "RetrievalRoleArn": "arn:aws:iam::111122223333:role/Example-App-Config-Role"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/applications/{ApplicationId}/configurationprofiles",
@@ -1752,7 +1841,7 @@
                 "LocationUri": {
                     "target": "com.amazonaws.appconfig#Uri",
                     "traits": {
-                        "smithy.api#documentation": "<p>A URI to locate the configuration. You can specify the following:</p>\n         <ul>\n            <li>\n               <p>For the AppConfig hosted configuration store and for feature flags,\n               specify <code>hosted</code>.</p>\n            </li>\n            <li>\n               <p>For an Amazon Web Services Systems Manager Parameter Store parameter, specify either the parameter name in\n               the format <code>ssm-parameter://<parameter name></code> or the ARN.</p>\n            </li>\n            <li>\n               <p>For an Secrets Manager secret, specify the URI in the following format:\n                  <code>secrets-manager</code>://<secret name>.</p>\n            </li>\n            <li>\n               <p>For an Amazon S3 object, specify the URI in the following format:\n                  <code>s3://<bucket>/<objectKey> </code>. Here is an example:\n                  <code>s3://my-bucket/my-app/us-east-1/my-config.json</code>\n               </p>\n            </li>\n            <li>\n               <p>For an SSM document, specify either the document name in the format\n                  <code>ssm-document://<document name></code> or the Amazon Resource Name\n               (ARN).</p>\n            </li>\n         </ul>",
+                        "smithy.api#documentation": "<p>A URI to locate the configuration. You can specify the following:</p>\n         <ul>\n            <li>\n               <p>For the AppConfig hosted configuration store and for feature flags,\n               specify <code>hosted</code>.</p>\n            </li>\n            <li>\n               <p>For an Amazon Web Services Systems Manager Parameter Store parameter, specify either the parameter name in\n               the format <code>ssm-parameter://<parameter name></code> or the ARN.</p>\n            </li>\n            <li>\n               <p>For an Amazon Web Services\n               CodePipeline pipeline, specify the URI in the following format:\n                  <code>codepipeline</code>://<pipeline name>.</p>\n            </li>\n            <li>\n               <p>For an Secrets Manager secret, specify the URI in the following format:\n                  <code>secretsmanager</code>://<secret name>.</p>\n            </li>\n            <li>\n               <p>For an Amazon S3 object, specify the URI in the following format:\n                  <code>s3://<bucket>/<objectKey> </code>. Here is an example:\n                     <code>s3://amzn-s3-demo-bucket/my-app/us-east-1/my-config.json</code>\n               </p>\n            </li>\n            <li>\n               <p>For an SSM document, specify either the document name in the format\n                  <code>ssm-document://<document name></code> or the Amazon Resource Name\n               (ARN).</p>\n            </li>\n         </ul>",
                         "smithy.api#required": {}
                     }
                 },
@@ -1779,6 +1868,12 @@
                     "traits": {
                         "smithy.api#documentation": "<p>The type of configurations contained in the profile. AppConfig supports\n            <code>feature flags</code> and <code>freeform</code> configurations. We recommend you\n         create feature flag configurations to enable or disable new features and freeform\n         configurations to distribute configurations to an application. When calling this API, enter\n         one of the following values for <code>Type</code>:</p>\n         <p>\n            <code>AWS.AppConfig.FeatureFlags</code>\n         </p>\n         <p>\n            <code>AWS.Freeform</code>\n         </p>"
                     }
+                },
+                "KmsKeyIdentifier": {
+                    "target": "com.amazonaws.appconfig#KmsKeyIdentifier",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier for an Key Management Service key to encrypt new configuration data\n         versions in the AppConfig hosted configuration store. This attribute is only used\n         for <code>hosted</code> configuration types. The identifier can be an KMS\n         key ID, alias, or the Amazon Resource Name (ARN) of the key ID or alias. To encrypt data\n         managed in other configuration stores, see the documentation for how to specify an KMS key for that particular service.</p>"
+                    }
                 }
             },
             "traits": {
@@ -1799,10 +1894,34 @@
                 },
                 {
                     "target": "com.amazonaws.appconfig#InternalServerException"
+                },
+                {
+                    "target": "com.amazonaws.appconfig#ServiceQuotaExceededException"
                 }
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Creates a deployment strategy that defines important criteria for rolling out your\n         configuration to the designated targets. A deployment strategy includes the overall\n         duration required, a percentage of targets to receive the deployment during each interval,\n         an algorithm that defines how percentage grows, and bake time.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To create a deployment strategy",
+                        "documentation": "The following create-deployment-strategy example creates a deployment strategy called Example-Deployment that takes 15 minutes and deploys the configuration to 25% of the application at a time. The strategy is also copied to an SSM Document.",
+                        "input": {
+                            "Name": "Example-Deployment",
+                            "DeploymentDurationInMinutes": 15,
+                            "GrowthFactor": 25,
+                            "ReplicateTo": "SSM_DOCUMENT"
+                        },
+                        "output": {
+                            "Id": "1225qzk",
+                            "Name": "Example-Deployment",
+                            "DeploymentDurationInMinutes": 15,
+                            "GrowthType": "LINEAR",
+                            "GrowthFactor": 25,
+                            "FinalBakeTimeInMinutes": 0,
+                            "ReplicateTo": "SSM_DOCUMENT"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/deploymentstrategies",
@@ -1844,7 +1963,6 @@
                 "GrowthFactor": {
                     "target": "com.amazonaws.appconfig#GrowthFactor",
                     "traits": {
-                        "smithy.api#default": null,
                         "smithy.api#documentation": "<p>The percentage of targets to receive a deployed configuration during each\n         interval.</p>",
                         "smithy.api#required": {}
                     }
@@ -1889,10 +2007,29 @@
                 },
                 {
                     "target": "com.amazonaws.appconfig#ResourceNotFoundException"
+                },
+                {
+                    "target": "com.amazonaws.appconfig#ServiceQuotaExceededException"
                 }
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Creates an environment. For each application, you define one or more environments. An\n         environment is a deployment group of AppConfig targets, such as applications in a\n            <code>Beta</code> or <code>Production</code> environment. You can also define\n         environments for application subcomponents such as the <code>Web</code>,\n            <code>Mobile</code> and <code>Back-end</code> components for your application. You can\n         configure Amazon CloudWatch alarms for each environment. The system monitors alarms during a\n         configuration deployment. If an alarm is triggered, the system rolls back the\n         configuration.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To create an environment",
+                        "documentation": "The following create-environment example creates an AWS AppConfig environment named Example-Environment using the application you created using create-application",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "Name": "Example-Environment"
+                        },
+                        "output": {
+                            "ApplicationId": "339ohji",
+                            "Id": "54j1r29",
+                            "Name": "Example-Environment",
+                            "State": "READY_FOR_DEPLOYMENT"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/applications/{ApplicationId}/environments",
@@ -1964,7 +2101,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Creates an AppConfig extension. An extension augments your ability to inject\n         logic or behavior at different points during the AppConfig workflow of creating\n         or deploying a configuration.</p>\n         <p>You can create your own extensions or use the Amazon Web Services authored extensions provided by\n            AppConfig. For most use cases, to create your own extension, you must create\n         an Lambda function to perform any computation and processing defined in the\n         extension. For more information about extensions, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Working with\n               AppConfig extensions</a> in the\n         <i>AppConfig User Guide</i>.</p>",
+                "smithy.api#documentation": "<p>Creates an AppConfig extension. An extension augments your ability to inject\n         logic or behavior at different points during the AppConfig workflow of creating\n         or deploying a configuration.</p>\n         <p>You can create your own extensions or use the Amazon Web Services authored extensions provided by\n            AppConfig. For an AppConfig extension that uses Lambda, you must create a Lambda function to perform any computation and processing\n         defined in the extension. If you plan to create custom versions of the Amazon Web Services\n         authored notification extensions, you only need to specify an Amazon Resource Name (ARN) in\n         the <code>Uri</code> field for the new extension version.</p>\n         <ul>\n            <li>\n               <p>For a custom EventBridge notification extension, enter the ARN of the EventBridge\n               default events in the <code>Uri</code> field.</p>\n            </li>\n            <li>\n               <p>For a custom Amazon SNS notification extension, enter the ARN of an Amazon SNS\n               topic in the <code>Uri</code> field.</p>\n            </li>\n            <li>\n               <p>For a custom Amazon SQS notification extension, enter the ARN of an Amazon SQS\n               message queue in the <code>Uri</code> field. </p>\n            </li>\n         </ul>\n         <p>For more information about extensions, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Extending\n            workflows</a> in the <i>AppConfig User Guide</i>.</p>",
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/extensions",
@@ -1995,7 +2132,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>When you create an extension or configure an Amazon Web Services authored extension, you\n         associate the extension with an AppConfig application, environment, or\n         configuration profile. For example, you can choose to run the <code>AppConfig\n            deployment events to Amazon SNS</code>\n         Amazon Web Services authored extension and receive notifications on an Amazon SNS\n         topic anytime a configuration deployment is started for a specific application. Defining\n         which extension to associate with an AppConfig resource is called an\n            <i>extension association</i>. An extension association is a specified\n         relationship between an extension and an AppConfig resource, such as an\n         application or a configuration profile. For more information about extensions and\n         associations, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Working with\n               AppConfig extensions</a> in the\n         <i>AppConfig User Guide</i>.</p>",
+                "smithy.api#documentation": "<p>When you create an extension or configure an Amazon Web Services authored extension, you\n         associate the extension with an AppConfig application, environment, or\n         configuration profile. For example, you can choose to run the <code>AppConfig\n            deployment events to Amazon SNS</code>\n         Amazon Web Services authored extension and receive notifications on an Amazon SNS\n         topic anytime a configuration deployment is started for a specific application. Defining\n         which extension to associate with an AppConfig resource is called an\n            <i>extension association</i>. An extension association is a specified\n         relationship between an extension and an AppConfig resource, such as an\n         application or a configuration profile. For more information about extensions and\n         associations, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Extending\n            workflows</a> in the <i>AppConfig User Guide</i>.</p>",
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/extensionassociations",
@@ -2048,7 +2185,7 @@
             "type": "structure",
             "members": {
                 "Name": {
-                    "target": "com.amazonaws.appconfig#Name",
+                    "target": "com.amazonaws.appconfig#ExtensionOrParameterName",
                     "traits": {
                         "smithy.api#documentation": "<p>A name for the extension. Each extension name in your account must be unique. Extension\n         versions use the same name.</p>",
                         "smithy.api#required": {}
@@ -2121,7 +2258,26 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Creates a new configuration in the AppConfig hosted configuration\n         store.</p>",
+                "smithy.api#documentation": "<p>Creates a new configuration in the AppConfig hosted configuration store. If\n         you're creating a feature flag, we recommend you familiarize yourself with the JSON schema\n         for feature flag data. For more information, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-and-profile-feature-flags.html#appconfig-type-reference-feature-flags\">Type reference for AWS.AppConfig.FeatureFlags</a> in the\n            <i>AppConfig User Guide</i>.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To create a hosted configuration version",
+                        "documentation": "The following create-hosted-configuration-version example creates a new configuration in the AWS AppConfig configuration store.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "ConfigurationProfileId": "ur8hx2f",
+                            "Content": "eyAiTmFtZSI6ICJFeGFtcGxlQXBwbGljYXRpb24iLCAiSWQiOiBFeGFtcGxlSUQsICJSYW5rIjogNyB9",
+                            "ContentType": "text",
+                            "LatestVersionNumber": 1
+                        },
+                        "output": {
+                            "ApplicationId": "339ohji",
+                            "ConfigurationProfileId": "ur8hx2f",
+                            "VersionNumber": 1,
+                            "ContentType": "text"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions",
@@ -2158,7 +2314,7 @@
                 "Content": {
                     "target": "com.amazonaws.appconfig#Blob",
                     "traits": {
-                        "smithy.api#documentation": "<p>The content of the configuration or the configuration data.</p>",
+                        "smithy.api#documentation": "<p>The configuration data, as bytes.</p>\n         <note>\n            <p>AppConfig accepts any type of data, including text formats like JSON or\n            TOML, or binary formats like protocol buffers or compressed data.</p>\n         </note>",
                         "smithy.api#httpPayload": {},
                         "smithy.api#required": {}
                     }
@@ -2182,7 +2338,7 @@
                 "VersionLabel": {
                     "target": "com.amazonaws.appconfig#VersionLabel",
                     "traits": {
-                        "smithy.api#documentation": "<p>An optional, user-defined label for the AppConfig hosted configuration version. This value must contain at least one non-numeric character. For example, \"v2.2.0\".</p>",
+                        "smithy.api#documentation": "<p>An optional, user-defined label for the AppConfig hosted configuration\n         version. This value must contain at least one non-numeric character. For example,\n         \"v2.2.0\".</p>",
                         "smithy.api#httpHeader": "VersionLabel"
                     }
                 }
@@ -2211,7 +2367,16 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Deletes an application. Deleting an application does not delete a configuration from a\n         host.</p>",
+                "smithy.api#documentation": "<p>Deletes an application.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To delete an application",
+                        "documentation": "The following delete-application example deletes the specified application. \n",
+                        "input": {
+                            "ApplicationId": "339ohji"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "DELETE",
                     "uri": "/applications/{ApplicationId}",
@@ -2258,7 +2423,17 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Deletes a configuration profile. Deleting a configuration profile does not delete a\n         configuration from a host.</p>",
+                "smithy.api#documentation": "<p>Deletes a configuration profile.</p>\n         <p>To prevent users from unintentionally deleting actively-used configuration profiles,\n         enable <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/deletion-protection.html\">deletion\n         protection</a>.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To delete a configuration profile",
+                        "documentation": "The following delete-configuration-profile example deletes the specified configuration profile.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "ConfigurationProfileId": "ur8hx2f"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "DELETE",
                     "uri": "/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}",
@@ -2283,6 +2458,13 @@
                         "smithy.api#documentation": "<p>The ID of the configuration profile you want to delete.</p>",
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
+                    }
+                },
+                "DeletionProtectionCheck": {
+                    "target": "com.amazonaws.appconfig#DeletionProtectionCheck",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A parameter to configure deletion protection. If enabled, deletion protection prevents a\n         user from deleting a configuration profile if your application has called either <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> or  for the\n         configuration profile during the specified interval. </p>\n         <p>This parameter supports the following values:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>BYPASS</code>: Instructs AppConfig to bypass the deletion\n               protection check and delete a configuration profile even if deletion protection would\n               have otherwise prevented it. </p>\n            </li>\n            <li>\n               <p>\n                  <code>APPLY</code>: Instructs the deletion protection check to run, even if\n               deletion protection is disabled at the account level. <code>APPLY</code> also forces\n               the deletion protection check to run against resources created in the past hour,\n               which are normally excluded from deletion protection checks. </p>\n            </li>\n            <li>\n               <p>\n                  <code>ACCOUNT_DEFAULT</code>: The default setting, which instructs AppConfig to implement the deletion protection value specified in the\n                  <code>UpdateAccountSettings</code> API.</p>\n            </li>\n         </ul>",
+                        "smithy.api#httpHeader": "x-amzn-deletion-protection-check"
                     }
                 }
             },
@@ -2310,7 +2492,16 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Deletes a deployment strategy. Deleting a deployment strategy does not delete a\n         configuration from a host.</p>",
+                "smithy.api#documentation": "<p>Deletes a deployment strategy.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To delete a deployment strategy",
+                        "documentation": "The following delete-deployment-strategy example deletes the specified deployment strategy.",
+                        "input": {
+                            "DeploymentStrategyId": "1225qzk"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "DELETE",
                     "uri": "/deployementstrategies/{DeploymentStrategyId}",
@@ -2357,7 +2548,17 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Deletes an environment. Deleting an environment does not delete a configuration from a\n         host.</p>",
+                "smithy.api#documentation": "<p>Deletes an environment.</p>\n         <p>To prevent users from unintentionally deleting actively-used environments, enable <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/deletion-protection.html\">deletion\n            protection</a>.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To delete an environment",
+                        "documentation": "The following delete-environment example deletes the specified application environment.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "EnvironmentId": "54j1r29"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "DELETE",
                     "uri": "/applications/{ApplicationId}/environments/{EnvironmentId}",
@@ -2368,6 +2569,14 @@
         "com.amazonaws.appconfig#DeleteEnvironmentRequest": {
             "type": "structure",
             "members": {
+                "EnvironmentId": {
+                    "target": "com.amazonaws.appconfig#Id",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The ID of the environment that you want to delete.</p>",
+                        "smithy.api#httpLabel": {},
+                        "smithy.api#required": {}
+                    }
+                },
                 "ApplicationId": {
                     "target": "com.amazonaws.appconfig#Id",
                     "traits": {
@@ -2376,12 +2585,11 @@
                         "smithy.api#required": {}
                     }
                 },
-                "EnvironmentId": {
-                    "target": "com.amazonaws.appconfig#Id",
+                "DeletionProtectionCheck": {
+                    "target": "com.amazonaws.appconfig#DeletionProtectionCheck",
                     "traits": {
-                        "smithy.api#documentation": "<p>The ID of the environment that you want to delete.</p>",
-                        "smithy.api#httpLabel": {},
-                        "smithy.api#required": {}
+                        "smithy.api#documentation": "<p>A parameter to configure deletion protection. If enabled, deletion protection prevents a\n         user from deleting an environment if your application called either <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> or  in the\n         environment during the specified interval. </p>\n         <p>This parameter supports the following values:</p>\n         <ul>\n            <li>\n               <p>\n                  <code>BYPASS</code>: Instructs AppConfig to bypass the deletion\n               protection check and delete a configuration profile even if deletion protection would\n               have otherwise prevented it. </p>\n            </li>\n            <li>\n               <p>\n                  <code>APPLY</code>: Instructs the deletion protection check to run, even if\n               deletion protection is disabled at the account level. <code>APPLY</code> also forces\n               the deletion protection check to run against resources created in the past hour,\n               which are normally excluded from deletion protection checks. </p>\n            </li>\n            <li>\n               <p>\n                  <code>ACCOUNT_DEFAULT</code>: The default setting, which instructs AppConfig to implement the deletion protection value specified in the\n                  <code>UpdateAccountSettings</code> API.</p>\n            </li>\n         </ul>",
+                        "smithy.api#httpHeader": "x-amzn-deletion-protection-check"
                     }
                 }
             },
@@ -2506,6 +2714,17 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Deletes a version of a configuration from the AppConfig hosted configuration\n         store.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To delete a hosted configuration version",
+                        "documentation": "The following delete-hosted-configuration-version example deletes a configuration version hosted in the AWS AppConfig configuration store.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "ConfigurationProfileId": "ur8hx2f",
+                            "VersionNumber": 1
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "DELETE",
                     "uri": "/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions/{VersionNumber}",
@@ -2535,7 +2754,7 @@
                 "VersionNumber": {
                     "target": "com.amazonaws.appconfig#Integer",
                     "traits": {
-                        "smithy.api#default": 0,
+                        "smithy.api#default": null,
                         "smithy.api#documentation": "<p>The versions number to delete.</p>",
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
@@ -2544,6 +2763,59 @@
             },
             "traits": {
                 "smithy.api#input": {}
+            }
+        },
+        "com.amazonaws.appconfig#DeletionProtectionCheck": {
+            "type": "enum",
+            "members": {
+                "ACCOUNT_DEFAULT": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "ACCOUNT_DEFAULT"
+                    }
+                },
+                "APPLY": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "APPLY"
+                    }
+                },
+                "BYPASS": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "BYPASS"
+                    }
+                }
+            }
+        },
+        "com.amazonaws.appconfig#DeletionProtectionDuration": {
+            "type": "integer",
+            "traits": {
+                "smithy.api#range": {
+                    "min": 15,
+                    "max": 1440
+                }
+            }
+        },
+        "com.amazonaws.appconfig#DeletionProtectionSettings": {
+            "type": "structure",
+            "members": {
+                "Enabled": {
+                    "target": "com.amazonaws.appconfig#Boolean",
+                    "traits": {
+                        "smithy.api#default": null,
+                        "smithy.api#documentation": "<p>A parameter that indicates if deletion protection is enabled or not.</p>"
+                    }
+                },
+                "ProtectionPeriodInMinutes": {
+                    "target": "com.amazonaws.appconfig#DeletionProtectionDuration",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The time interval during which AppConfig monitors for calls to <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> or  for a\n         configuration profile or from an environment. AppConfig returns an error if a\n         user calls  or  for the designated configuration profile or\n         environment. To bypass the error and delete a configuration profile or an environment,\n         specify <code>BYPASS</code> for the <code>DeletionProtectionCheck</code> parameter for\n         either  or .</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#documentation": "<p>A parameter to configure deletion protection. If enabled, deletion protection prevents a\n         user from deleting a configuration profile or an environment if AppConfig has\n         called either <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> or  for the\n         configuration profile or from the environment during the specified interval.</p>\n         <p>This setting uses the following default values:</p>\n         <ul>\n            <li>\n               <p>Deletion protection is disabled by default. </p>\n            </li>\n            <li>\n               <p>The default interval specified by <code>ProtectionPeriodInMinutes</code> is\n               60.</p>\n            </li>\n            <li>\n               <p>\n                  <code>DeletionProtectionCheck</code> skips configuration profiles and environments\n               that were created in the past hour.</p>\n            </li>\n         </ul>"
             }
         },
         "com.amazonaws.appconfig#Deployment": {
@@ -2620,7 +2892,6 @@
                 "GrowthFactor": {
                     "target": "com.amazonaws.appconfig#Percentage",
                     "traits": {
-                        "smithy.api#default": 0,
                         "smithy.api#documentation": "<p>The percentage of targets to receive a deployed configuration during each\n         interval.</p>"
                     }
                 },
@@ -2646,7 +2917,6 @@
                 "PercentageComplete": {
                     "target": "com.amazonaws.appconfig#Percentage",
                     "traits": {
-                        "smithy.api#default": 0,
                         "smithy.api#documentation": "<p>The percentage of targets for which the deployment is available.</p>"
                     }
                 },
@@ -2675,9 +2945,15 @@
                     }
                 },
                 "KmsKeyIdentifier": {
-                    "target": "com.amazonaws.appconfig#Identifier",
+                    "target": "com.amazonaws.appconfig#KmsKeyIdentifier",
                     "traits": {
-                        "smithy.api#documentation": "<p>The KMS key identifier (key ID, key alias, or key ARN). AppConfig uses this ID to encrypt the configuration data using a customer managed key. </p>"
+                        "smithy.api#documentation": "<p>The Key Management Service key identifier (key ID, key alias, or key ARN) provided when\n         the resource was created or updated.</p>"
+                    }
+                },
+                "VersionLabel": {
+                    "target": "com.amazonaws.appconfig#VersionLabel",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A user-defined label for an AppConfig hosted configuration version.</p>"
                     }
                 }
             }
@@ -2700,7 +2976,7 @@
                 "Description": {
                     "target": "com.amazonaws.appconfig#Description",
                     "traits": {
-                        "smithy.api#documentation": "<p>A description of the deployment event. Descriptions include, but are not limited to, the\n         user account or the Amazon CloudWatch alarm ARN that initiated a rollback, the percentage of hosts\n         that received the deployment, or in the case of an internal error, a recommendation to\n         attempt a new deployment.</p>"
+                        "smithy.api#documentation": "<p>A description of the deployment event. Descriptions include, but are not limited to, the\n         following:</p>\n         <ul>\n            <li>\n               <p>The Amazon Web Services account or the Amazon CloudWatch alarm ARN that initiated a rollback.</p>\n            </li>\n            <li>\n               <p>The percentage of hosts that received the deployment.</p>\n            </li>\n            <li>\n               <p>A recommendation to attempt a new deployment (in the case of an internal\n               error).</p>\n            </li>\n         </ul>"
                     }
                 },
                 "ActionInvocations": {
@@ -2758,6 +3034,12 @@
                     "traits": {
                         "smithy.api#enumValue": "DEPLOYMENT_COMPLETED"
                     }
+                },
+                "REVERT_COMPLETED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "REVERT_COMPLETED"
+                    }
                 }
             }
         },
@@ -2810,6 +3092,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "ROLLED_BACK"
+                    }
+                },
+                "REVERTED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "REVERTED"
                     }
                 }
             }
@@ -2868,7 +3156,6 @@
                 "GrowthFactor": {
                     "target": "com.amazonaws.appconfig#Percentage",
                     "traits": {
-                        "smithy.api#default": 0,
                         "smithy.api#documentation": "<p>The percentage of targets that received a deployed configuration during each\n         interval.</p>"
                     }
                 },
@@ -2937,7 +3224,6 @@
                 "GrowthFactor": {
                     "target": "com.amazonaws.appconfig#Percentage",
                     "traits": {
-                        "smithy.api#default": 0,
                         "smithy.api#documentation": "<p>The percentage of targets to receive a deployed configuration during each\n         interval.</p>"
                     }
                 },
@@ -2957,7 +3243,6 @@
                 "PercentageComplete": {
                     "target": "com.amazonaws.appconfig#Percentage",
                     "traits": {
-                        "smithy.api#default": 0,
                         "smithy.api#documentation": "<p>The percentage of targets for which the deployment is available.</p>"
                     }
                 },
@@ -2971,6 +3256,12 @@
                     "target": "com.amazonaws.appconfig#Iso8601DateTime",
                     "traits": {
                         "smithy.api#documentation": "<p>Time the deployment completed.</p>"
+                    }
+                },
+                "VersionLabel": {
+                    "target": "com.amazonaws.appconfig#VersionLabel",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A user-defined label for an AppConfig hosted configuration version.</p>"
                     }
                 }
             },
@@ -3001,6 +3292,27 @@
                 "smithy.api#length": {
                     "min": 0,
                     "max": 1024
+                }
+            }
+        },
+        "com.amazonaws.appconfig#DynamicParameterKey": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^([^#\\n]{1,96})#([^\\/#\\n]{1,64})$"
+            }
+        },
+        "com.amazonaws.appconfig#DynamicParameterMap": {
+            "type": "map",
+            "key": {
+                "target": "com.amazonaws.appconfig#DynamicParameterKey"
+            },
+            "value": {
+                "target": "com.amazonaws.appconfig#StringWithLengthBetween1And2048"
+            },
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 10
                 }
             }
         },
@@ -3076,6 +3388,12 @@
                     "target": "smithy.api#Unit",
                     "traits": {
                         "smithy.api#enumValue": "ROLLED_BACK"
+                    }
+                },
+                "REVERTED": {
+                    "target": "smithy.api#Unit",
+                    "traits": {
+                        "smithy.api#enumValue": "REVERTED"
                     }
                 }
             }
@@ -3236,6 +3554,12 @@
                 }
             }
         },
+        "com.amazonaws.appconfig#ExtensionOrParameterName": {
+            "type": "string",
+            "traits": {
+                "smithy.api#pattern": "^[^\\/#:\\n]{1,64}$"
+            }
+        },
         "com.amazonaws.appconfig#ExtensionSummaries": {
             "type": "list",
             "member": {
@@ -3304,6 +3628,31 @@
                 "smithy.api#default": 0
             }
         },
+        "com.amazonaws.appconfig#GetAccountSettings": {
+            "type": "operation",
+            "input": {
+                "target": "smithy.api#Unit"
+            },
+            "output": {
+                "target": "com.amazonaws.appconfig#AccountSettings"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.appconfig#BadRequestException"
+                },
+                {
+                    "target": "com.amazonaws.appconfig#InternalServerException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Returns information about the status of the <code>DeletionProtection</code>\n         parameter.</p>",
+                "smithy.api#http": {
+                    "method": "GET",
+                    "uri": "/settings",
+                    "code": 200
+                }
+            }
+        },
         "com.amazonaws.appconfig#GetApplication": {
             "type": "operation",
             "input": {
@@ -3325,6 +3674,19 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Retrieves information about an application.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To list details of an application",
+                        "documentation": "The following get-application example lists the details of the specified application.",
+                        "input": {
+                            "ApplicationId": "339ohji"
+                        },
+                        "output": {
+                            "Id": "339ohji",
+                            "Name": "example-application"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/applications/{ApplicationId}",
@@ -3371,7 +3733,23 @@
                 "smithy.api#deprecated": {
                     "message": "This API has been deprecated in favor of the GetLatestConfiguration API used in conjunction with StartConfigurationSession."
                 },
-                "smithy.api#documentation": "<p>(Deprecated) Retrieves the latest deployed configuration.</p>\n         <important>\n            <p>Note the following important information.</p>\n            <ul>\n               <li>\n                  <p>This API action is deprecated. Calls to receive configuration data should use\n                  the <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_StartConfigurationSession.html\">StartConfigurationSession</a> and <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> APIs instead. </p>\n               </li>\n               <li>\n                  <p>\n                     <code>GetConfiguration</code> is a priced call. For more information, see\n                     <a href=\"https://aws.amazon.com/systems-manager/pricing/\">Pricing</a>.</p>\n               </li>\n            </ul>\n         </important>",
+                "smithy.api#documentation": "<p>(Deprecated) Retrieves the latest deployed configuration.</p>\n         <important>\n            <p>Note the following important information.</p>\n            <ul>\n               <li>\n                  <p>This API action is deprecated. Calls to receive configuration data should use\n                  the <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_StartConfigurationSession.html\">StartConfigurationSession</a> and <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> APIs instead. </p>\n               </li>\n               <li>\n                  <p>\n                     <a>GetConfiguration</a> is a priced call. For more information, see\n                     <a href=\"https://aws.amazon.com/systems-manager/pricing/\">Pricing</a>.</p>\n               </li>\n            </ul>\n         </important>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To retrieve configuration details",
+                        "documentation": "The following get-configuration example returns the configuration details of the example application. On subsequent calls to get-configuration, use the client-configuration-version parameter to only update the configuration of your application if the version has changed. Only updating the configuration when the version has changed avoids excess charges incurred by calling get-configuration.",
+                        "input": {
+                            "Application": "example-application",
+                            "Environment": "Example-Environment",
+                            "Configuration": "Example-Configuration-Profile",
+                            "ClientId": "example-id"
+                        },
+                        "output": {
+                            "ConfigurationVersion": "1",
+                            "ContentType": "application/octet-stream"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/applications/{Application}/environments/{Environment}/configurations/{Configuration}",
@@ -3400,6 +3778,23 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Retrieves information about a configuration profile.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To retrieve configuration profile details",
+                        "documentation": "The following get-configuration-profile example returns the details of the specified configuration profile.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "ConfigurationProfileId": "ur8hx2f"
+                        },
+                        "output": {
+                            "ApplicationId": "339ohji",
+                            "Id": "ur8hx2f",
+                            "Name": "Example-Configuration-Profile",
+                            "LocationUri": "ssm-parameter://Example-Parameter",
+                            "RetrievalRoleArn": "arn:aws:iam::111122223333:role/Example-App-Config-Role"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}",
@@ -3469,7 +3864,7 @@
                 "ClientConfigurationVersion": {
                     "target": "com.amazonaws.appconfig#Version",
                     "traits": {
-                        "smithy.api#documentation": "<p>The configuration version returned in the most recent <code>GetConfiguration</code>\n         response.</p>\n         <important>\n            <p>AppConfig uses the value of the <code>ClientConfigurationVersion</code>\n            parameter to identify the configuration version on your clients. If you don’t send\n               <code>ClientConfigurationVersion</code> with each call to\n               <code>GetConfiguration</code>, your clients receive the current configuration. You\n            are charged each time your clients receive a configuration.</p>\n            <p>To avoid excess charges, we recommend you use the <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/StartConfigurationSession.html\">StartConfigurationSession</a> and <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/GetLatestConfiguration.html\">GetLatestConfiguration</a> APIs, which track the client configuration version on\n            your behalf. If you choose to continue using <code>GetConfiguration</code>, we recommend\n            that you include the <code>ClientConfigurationVersion</code> value with every call to\n               <code>GetConfiguration</code>. The value to use for\n               <code>ClientConfigurationVersion</code> comes from the\n               <code>ConfigurationVersion</code> attribute returned by <code>GetConfiguration</code>\n            when there is new or updated data, and should be saved for subsequent calls to\n               <code>GetConfiguration</code>.</p>\n         </important>\n         <p>For more information about working with configurations, see <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-retrieving-the-configuration.html\">Retrieving the\n            Configuration</a> in the <i>AppConfig User Guide</i>.</p>",
+                        "smithy.api#documentation": "<p>The configuration version returned in the most recent <a>GetConfiguration</a>\n         response.</p>\n         <important>\n            <p>AppConfig uses the value of the <code>ClientConfigurationVersion</code>\n            parameter to identify the configuration version on your clients. If you don’t send\n               <code>ClientConfigurationVersion</code> with each call to <a>GetConfiguration</a>, your clients receive the current configuration. You are\n            charged each time your clients receive a configuration.</p>\n            <p>To avoid excess charges, we recommend you use the <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/StartConfigurationSession.html\">StartConfigurationSession</a> and <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/GetLatestConfiguration.html\">GetLatestConfiguration</a> APIs, which track the client configuration version on\n            your behalf. If you choose to continue using <a>GetConfiguration</a>, we\n            recommend that you include the <code>ClientConfigurationVersion</code> value with every\n            call to <a>GetConfiguration</a>. The value to use for\n               <code>ClientConfigurationVersion</code> comes from the\n               <code>ConfigurationVersion</code> attribute returned by <a>GetConfiguration</a> when there is new or updated data, and should be saved\n            for subsequent calls to <a>GetConfiguration</a>.</p>\n         </important>\n         <p>For more information about working with configurations, see <a href=\"http://docs.aws.amazon.com/appconfig/latest/userguide/retrieving-feature-flags.html\">Retrieving feature flags and\n            configuration data in AppConfig</a> in the <i>AppConfig\n            User Guide</i>.</p>",
                         "smithy.api#httpQuery": "client_configuration_version"
                     }
                 }
@@ -3560,6 +3955,24 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Retrieves information about a deployment strategy. A deployment strategy defines\n         important criteria for rolling out your configuration to the designated targets. A\n         deployment strategy includes the overall duration required, a percentage of targets to\n         receive the deployment during each interval, an algorithm that defines how percentage\n         grows, and bake time.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To retrieve details of a deployment strategy",
+                        "documentation": "The following get-deployment-strategy example lists the details of the specified deployment strategy.",
+                        "input": {
+                            "DeploymentStrategyId": "1225qzk"
+                        },
+                        "output": {
+                            "Id": "1225qzk",
+                            "Name": "Example-Deployment",
+                            "DeploymentDurationInMinutes": 15,
+                            "GrowthType": "LINEAR",
+                            "GrowthFactor": 25,
+                            "FinalBakeTimeInMinutes": 0,
+                            "ReplicateTo": "SSM_DOCUMENT"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/deploymentstrategies/{DeploymentStrategyId}",
@@ -3604,6 +4017,22 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Retrieves information about an environment. An environment is a deployment group of\n            AppConfig applications, such as applications in a <code>Production</code>\n         environment or in an <code>EU_Region</code> environment. Each configuration deployment\n         targets an environment. You can enable one or more Amazon CloudWatch alarms for an environment. If\n         an alarm is triggered during a deployment, AppConfig roles back the\n         configuration.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To retrieve environment details",
+                        "documentation": "The following get-environment example returns the details and state of the specified environment.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "EnvironmentId": "54j1r29"
+                        },
+                        "output": {
+                            "ApplicationId": "339ohji",
+                            "Id": "54j1r29",
+                            "Name": "Example-Environment",
+                            "State": "READY_FOR_DEPLOYMENT"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/applications/{ApplicationId}/environments/{EnvironmentId}",
@@ -3683,7 +4112,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Returns information about an AppConfig extension association. For more\n         information about extensions and associations, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Working with\n               AppConfig extensions</a> in the\n         <i>AppConfig User Guide</i>.</p>",
+                "smithy.api#documentation": "<p>Returns information about an AppConfig extension association. For more\n         information about extensions and associations, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Extending\n            workflows</a> in the <i>AppConfig User Guide</i>.</p>",
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/extensionassociations/{ExtensionAssociationId}",
@@ -3752,6 +4181,23 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Retrieves information about a specific configuration version.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To retrieve hosted configuration details",
+                        "documentation": "The following get-hosted-configuration-version example retrieves the configuration details of the AWS AppConfig hosted configuration.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "ConfigurationProfileId": "ur8hx2f",
+                            "VersionNumber": 1
+                        },
+                        "output": {
+                            "ApplicationId": "339ohji",
+                            "ConfigurationProfileId": "ur8hx2f",
+                            "VersionNumber": 1,
+                            "ContentType": "application/json"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions/{VersionNumber}",
@@ -3781,7 +4227,7 @@
                 "VersionNumber": {
                     "target": "com.amazonaws.appconfig#Integer",
                     "traits": {
-                        "smithy.api#default": 0,
+                        "smithy.api#default": null,
                         "smithy.api#documentation": "<p>The version.</p>",
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
@@ -3795,7 +4241,6 @@
         "com.amazonaws.appconfig#GrowthFactor": {
             "type": "float",
             "traits": {
-                "smithy.api#default": 0,
                 "smithy.api#range": {
                     "min": 1.0,
                     "max": 100.0
@@ -3871,6 +4316,13 @@
                         "smithy.api#documentation": "<p>A user-defined label for an AppConfig hosted configuration version.</p>",
                         "smithy.api#httpHeader": "VersionLabel"
                     }
+                },
+                "KmsKeyArn": {
+                    "target": "com.amazonaws.appconfig#Arn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name of the Key Management Service key that was used to encrypt this\n         specific version of the configuration data in the AppConfig hosted configuration\n         store.</p>",
+                        "smithy.api#httpHeader": "KmsKeyArn"
+                    }
                 }
             }
         },
@@ -3912,6 +4364,12 @@
                     "target": "com.amazonaws.appconfig#VersionLabel",
                     "traits": {
                         "smithy.api#documentation": "<p>A user-defined label for an AppConfig hosted configuration version.</p>"
+                    }
+                },
+                "KmsKeyArn": {
+                    "target": "com.amazonaws.appconfig#Arn",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The Amazon Resource Name of the Key Management Service key that was used to encrypt this\n         specific version of the configuration data in the AppConfig hosted configuration\n         store.</p>"
                     }
                 }
             },
@@ -4026,6 +4484,24 @@
                 "smithy.api#timestampFormat": "date-time"
             }
         },
+        "com.amazonaws.appconfig#KmsKeyIdentifier": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 1,
+                    "max": 2048
+                }
+            }
+        },
+        "com.amazonaws.appconfig#KmsKeyIdentifierOrEmpty": {
+            "type": "string",
+            "traits": {
+                "smithy.api#length": {
+                    "min": 0,
+                    "max": 2048
+                }
+            }
+        },
         "com.amazonaws.appconfig#ListApplications": {
             "type": "operation",
             "input": {
@@ -4044,6 +4520,25 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Lists all applications in your Amazon Web Services account.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To list the available applications",
+                        "documentation": "The following list-applications example lists the available applications in your AWS account.",
+                        "output": {
+                            "Items": [
+                                {
+                                    "Id": "339ohji",
+                                    "Name": "test-application",
+                                    "Description": "An application used for creating an example."
+                                },
+                                {
+                                    "Id": "rwalwu7",
+                                    "Name": "Test-Application"
+                                }
+                            ]
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/applications",
@@ -4052,6 +4547,7 @@
                 "smithy.api#paginated": {
                     "inputToken": "NextToken",
                     "outputToken": "NextToken",
+                    "items": "Items",
                     "pageSize": "MaxResults"
                 }
             }
@@ -4062,7 +4558,6 @@
                 "MaxResults": {
                     "target": "com.amazonaws.appconfig#MaxResults",
                     "traits": {
-                        "smithy.api#default": null,
                         "smithy.api#documentation": "<p>The maximum number of items to return for this call. The call also returns a token that\n         you can specify in a subsequent call to get the next set of results.</p>",
                         "smithy.api#httpQuery": "max_results"
                     }
@@ -4100,6 +4595,25 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Lists the configuration profiles for an application.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To list the available configuration profiles",
+                        "documentation": "The following list-configuration-profiles example lists the available configuration profiles for the specified application.",
+                        "input": {
+                            "ApplicationId": "339ohji"
+                        },
+                        "output": {
+                            "Items": [
+                                {
+                                    "ApplicationId": "339ohji",
+                                    "Id": "ur8hx2f",
+                                    "Name": "Example-Configuration-Profile",
+                                    "LocationUri": "ssm-parameter://Example-Parameter"
+                                }
+                            ]
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/applications/{ApplicationId}/configurationprofiles",
@@ -4108,6 +4622,7 @@
                 "smithy.api#paginated": {
                     "inputToken": "NextToken",
                     "outputToken": "NextToken",
+                    "items": "Items",
                     "pageSize": "MaxResults"
                 }
             }
@@ -4126,7 +4641,6 @@
                 "MaxResults": {
                     "target": "com.amazonaws.appconfig#MaxResults",
                     "traits": {
-                        "smithy.api#default": null,
                         "smithy.api#documentation": "<p>The maximum number of items to return for this call. The call also returns a token that\n         you can specify in a subsequent call to get the next set of results.</p>",
                         "smithy.api#httpQuery": "max_results"
                     }
@@ -4168,6 +4682,25 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Lists deployment strategies.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To list the available deployment strategies",
+                        "documentation": "The following list-deployment-strategies example lists the available deployment strategies in your AWS account.",
+                        "output": {
+                            "Items": [
+                                {
+                                    "Id": "1225qzk",
+                                    "Name": "Example-Deployment",
+                                    "DeploymentDurationInMinutes": 15,
+                                    "GrowthType": "LINEAR",
+                                    "GrowthFactor": 25,
+                                    "FinalBakeTimeInMinutes": 0,
+                                    "ReplicateTo": "SSM_DOCUMENT"
+                                }
+                            ]
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/deploymentstrategies",
@@ -4176,6 +4709,7 @@
                 "smithy.api#paginated": {
                     "inputToken": "NextToken",
                     "outputToken": "NextToken",
+                    "items": "Items",
                     "pageSize": "MaxResults"
                 }
             }
@@ -4186,7 +4720,6 @@
                 "MaxResults": {
                     "target": "com.amazonaws.appconfig#MaxResults",
                     "traits": {
-                        "smithy.api#default": null,
                         "smithy.api#documentation": "<p>The maximum number of items to return for this call. The call also returns a token that\n         you can specify in a subsequent call to get the next set of results.</p>",
                         "smithy.api#httpQuery": "max_results"
                     }
@@ -4232,6 +4765,7 @@
                 "smithy.api#paginated": {
                     "inputToken": "NextToken",
                     "outputToken": "NextToken",
+                    "items": "Items",
                     "pageSize": "MaxResults"
                 }
             }
@@ -4258,7 +4792,6 @@
                 "MaxResults": {
                     "target": "com.amazonaws.appconfig#MaxResults",
                     "traits": {
-                        "smithy.api#default": null,
                         "smithy.api#documentation": "<p>The maximum number of items that may be returned for this call. If there are items that\n         have not yet been returned, the response will include a non-null <code>NextToken</code>\n         that you can provide in a subsequent call to get the next set of results.</p>",
                         "smithy.api#httpQuery": "max_results"
                     }
@@ -4296,6 +4829,25 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Lists the environments for an application.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To list the available environments",
+                        "documentation": "The following list-environments example lists the available environments in your AWS account for the specified application.",
+                        "input": {
+                            "ApplicationId": "339ohji"
+                        },
+                        "output": {
+                            "Items": [
+                                {
+                                    "ApplicationId": "339ohji",
+                                    "Id": "54j1r29",
+                                    "Name": "Example-Environment",
+                                    "State": "READY_FOR_DEPLOYMENT"
+                                }
+                            ]
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/applications/{ApplicationId}/environments",
@@ -4304,6 +4856,7 @@
                 "smithy.api#paginated": {
                     "inputToken": "NextToken",
                     "outputToken": "NextToken",
+                    "items": "Items",
                     "pageSize": "MaxResults"
                 }
             }
@@ -4322,7 +4875,6 @@
                 "MaxResults": {
                     "target": "com.amazonaws.appconfig#MaxResults",
                     "traits": {
-                        "smithy.api#default": null,
                         "smithy.api#documentation": "<p>The maximum number of items to return for this call. The call also returns a token that\n         you can specify in a subsequent call to get the next set of results.</p>",
                         "smithy.api#httpQuery": "max_results"
                     }
@@ -4356,7 +4908,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Lists all AppConfig extension associations in the account. For more\n         information about extensions and associations, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Working with\n               AppConfig extensions</a> in the\n         <i>AppConfig User Guide</i>.</p>",
+                "smithy.api#documentation": "<p>Lists all AppConfig extension associations in the account. For more\n         information about extensions and associations, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Extending\n            workflows</a> in the <i>AppConfig User Guide</i>.</p>",
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/extensionassociations",
@@ -4365,6 +4917,7 @@
                 "smithy.api#paginated": {
                     "inputToken": "NextToken",
                     "outputToken": "NextToken",
+                    "items": "Items",
                     "pageSize": "MaxResults"
                 }
             }
@@ -4397,7 +4950,6 @@
                 "MaxResults": {
                     "target": "com.amazonaws.appconfig#MaxResults",
                     "traits": {
-                        "smithy.api#default": null,
                         "smithy.api#documentation": "<p>The maximum number of items to return for this call. The call also returns a token that\n         you can specify in a subsequent call to get the next set of results.</p>",
                         "smithy.api#httpQuery": "max_results"
                     }
@@ -4431,7 +4983,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Lists all custom and Amazon Web Services authored AppConfig extensions in the\n         account. For more information about extensions, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Working with\n               AppConfig extensions</a> in the\n         <i>AppConfig User Guide</i>.</p>",
+                "smithy.api#documentation": "<p>Lists all custom and Amazon Web Services authored AppConfig extensions in the\n         account. For more information about extensions, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Extending\n            workflows</a> in the <i>AppConfig User Guide</i>.</p>",
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/extensions",
@@ -4440,6 +4992,7 @@
                 "smithy.api#paginated": {
                     "inputToken": "NextToken",
                     "outputToken": "NextToken",
+                    "items": "Items",
                     "pageSize": "MaxResults"
                 }
             }
@@ -4450,7 +5003,6 @@
                 "MaxResults": {
                     "target": "com.amazonaws.appconfig#MaxResults",
                     "traits": {
-                        "smithy.api#default": null,
                         "smithy.api#documentation": "<p>The maximum number of items to return for this call. The call also returns a token that\n         you can specify in a subsequent call to get the next set of results.</p>",
                         "smithy.api#httpQuery": "max_results"
                     }
@@ -4494,7 +5046,27 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Lists configurations stored in the AppConfig hosted configuration store by\n         version.</p>",
+                "smithy.api#documentation": "<p>Lists configurations stored in the AppConfig hosted configuration store by\n         version. </p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To list the available hosted configuration versions",
+                        "documentation": "The following list-hosted-configuration-versions example lists the configurations versions hosted in the AWS AppConfig hosted configuration store for the specified application and configuration profile.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "ConfigurationProfileId": "ur8hx2f"
+                        },
+                        "output": {
+                            "Items": [
+                                {
+                                    "ApplicationId": "339ohji",
+                                    "ConfigurationProfileId": "ur8hx2f",
+                                    "VersionNumber": 1,
+                                    "ContentType": "application/json"
+                                }
+                            ]
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/hostedconfigurationversions",
@@ -4503,6 +5075,7 @@
                 "smithy.api#paginated": {
                     "inputToken": "NextToken",
                     "outputToken": "NextToken",
+                    "items": "Items",
                     "pageSize": "MaxResults"
                 }
             }
@@ -4529,8 +5102,7 @@
                 "MaxResults": {
                     "target": "com.amazonaws.appconfig#MaxResults",
                     "traits": {
-                        "smithy.api#default": null,
-                        "smithy.api#documentation": "<p>The maximum number of items to return for this call. The call also returns a token that\n         you can specify in a subsequent call to get the next set of results.</p>",
+                        "smithy.api#documentation": "<p>The maximum number of items to return for this call. If <code>MaxResults</code> is not\n         provided in the call, AppConfig returns the maximum of 50. The call also returns\n         a token that you can specify in a subsequent call to get the next set of results.</p>",
                         "smithy.api#httpQuery": "max_results"
                     }
                 },
@@ -4544,7 +5116,7 @@
                 "VersionLabel": {
                     "target": "com.amazonaws.appconfig#QueryName",
                     "traits": {
-                        "smithy.api#documentation": "<p>An optional filter that can be used to specify the version label of an AppConfig hosted configuration version. This parameter supports filtering by prefix using a wildcard, for example \"v2*\". If you don't specify an asterisk at the end of the value, only an exact match is returned.</p>",
+                        "smithy.api#documentation": "<p>An optional filter that can be used to specify the version label of an AppConfig hosted configuration version. This parameter supports filtering by prefix using a\n         wildcard, for example \"v2*\". If you don't specify an asterisk at the end of the value, only\n         an exact match is returned.</p>",
                         "smithy.api#httpQuery": "version_label"
                     }
                 }
@@ -4574,6 +5146,20 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Retrieves the list of key-value tags assigned to the resource.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To list the tags of an application",
+                        "documentation": "The following list-tags-for-resource example lists the tags of a specified application.",
+                        "input": {
+                            "ResourceArn": "arn:aws:appconfig:us-east-1:111122223333:application/339ohji"
+                        },
+                        "output": {
+                            "Tags": {
+                                "group1": "1"
+                            }
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "GET",
                     "uri": "/tags/{ResourceArn}",
@@ -4609,7 +5195,6 @@
         "com.amazonaws.appconfig#MaxResults": {
             "type": "integer",
             "traits": {
-                "smithy.api#default": 0,
                 "smithy.api#range": {
                     "min": 1,
                     "max": 50
@@ -4692,16 +5277,23 @@
                         "smithy.api#default": false,
                         "smithy.api#documentation": "<p>A parameter value must be specified in the extension association.</p>"
                     }
+                },
+                "Dynamic": {
+                    "target": "com.amazonaws.appconfig#Boolean",
+                    "traits": {
+                        "smithy.api#default": false,
+                        "smithy.api#documentation": "<p>Indicates whether this parameter's value can be supplied at the extension's action point\n         instead of during extension association. Dynamic parameters can't be marked\n            <code>Required</code>.</p>"
+                    }
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>A value such as an Amazon Resource Name (ARN) or an Amazon Simple Notification Service topic entered\n         in an extension when invoked. Parameter values are specified in an extension association.\n         For more information about extensions, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Working with\n               AppConfig extensions</a> in the\n         <i>AppConfig User Guide</i>.</p>"
+                "smithy.api#documentation": "<p>A value such as an Amazon Resource Name (ARN) or an Amazon Simple Notification Service topic entered\n         in an extension when invoked. Parameter values are specified in an extension association.\n         For more information about extensions, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Extending\n            workflows</a> in the <i>AppConfig User Guide</i>.</p>"
             }
         },
         "com.amazonaws.appconfig#ParameterMap": {
             "type": "map",
             "key": {
-                "target": "com.amazonaws.appconfig#Name"
+                "target": "com.amazonaws.appconfig#ExtensionOrParameterName"
             },
             "value": {
                 "target": "com.amazonaws.appconfig#Parameter"
@@ -4709,14 +5301,14 @@
             "traits": {
                 "smithy.api#length": {
                     "min": 1,
-                    "max": 5
+                    "max": 10
                 }
             }
         },
         "com.amazonaws.appconfig#ParameterValueMap": {
             "type": "map",
             "key": {
-                "target": "com.amazonaws.appconfig#Name"
+                "target": "com.amazonaws.appconfig#ExtensionOrParameterName"
             },
             "value": {
                 "target": "com.amazonaws.appconfig#StringWithLengthBetween1And2048"
@@ -4724,7 +5316,7 @@
             "traits": {
                 "smithy.api#length": {
                     "min": 0,
-                    "max": 5
+                    "max": 10
                 }
             }
         },
@@ -4759,7 +5351,6 @@
         "com.amazonaws.appconfig#Percentage": {
             "type": "float",
             "traits": {
-                "smithy.api#default": 0,
                 "smithy.api#range": {
                     "min": 1.0,
                     "max": 100.0
@@ -4837,7 +5428,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>The number of hosted configuration versions exceeds the limit for the AppConfig hosted configuration store. Delete one or more versions and try again.</p>",
+                "smithy.api#documentation": "<p>The number of one more AppConfig resources exceeds the maximum allowed. Verify that your\n         environment doesn't exceed the following service quotas:</p>\n         <p>Applications: 100 max</p>\n         <p>Deployment strategies: 20 max</p>\n         <p>Configuration profiles: 100 max per application</p>\n         <p>Environments: 20 max per application</p>\n         <p>To resolve this issue, you can delete one or more resources and try again. Or, you can\n         request a quota increase. For more information about quotas and to request an increase, see\n            <a href=\"https://docs.aws.amazon.com/general/latest/gr/appconfig.html#limits_appconfig\">Service quotas for AppConfig</a> in the Amazon Web Services General Reference.</p>",
                 "smithy.api#error": "client",
                 "smithy.api#httpError": 402
             }
@@ -4909,7 +5500,7 @@
                 "ConfigurationVersion": {
                     "target": "com.amazonaws.appconfig#Version",
                     "traits": {
-                        "smithy.api#documentation": "<p>The configuration version to deploy. If deploying an AppConfig hosted configuration version, you can specify either the version number or version label.</p>",
+                        "smithy.api#documentation": "<p>The configuration version to deploy. If deploying an AppConfig hosted\n         configuration version, you can specify either the version number or version label. For all\n         other configurations, you must specify the version number.</p>",
                         "smithy.api#required": {}
                     }
                 },
@@ -4926,9 +5517,15 @@
                     }
                 },
                 "KmsKeyIdentifier": {
-                    "target": "com.amazonaws.appconfig#Identifier",
+                    "target": "com.amazonaws.appconfig#KmsKeyIdentifier",
                     "traits": {
                         "smithy.api#documentation": "<p>The KMS key identifier (key ID, key alias, or key ARN). AppConfig uses this ID to encrypt the configuration data using a customer managed key. </p>"
+                    }
+                },
+                "DynamicExtensionParameters": {
+                    "target": "com.amazonaws.appconfig#DynamicParameterMap",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A map of dynamic extension parameter names to values to pass to associated extensions\n         with <code>PRE_START_DEPLOYMENT</code> actions.</p>"
                     }
                 }
             },
@@ -4956,7 +5553,25 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Stops a deployment. This API action works only on deployments that have a status of\n            <code>DEPLOYING</code>. This action moves the deployment to a status of\n            <code>ROLLED_BACK</code>.</p>",
+                "smithy.api#documentation": "<p>Stops a deployment. This API action works only on deployments that have a status of\n            <code>DEPLOYING</code>, unless an <code>AllowRevert</code> parameter is supplied. If the\n            <code>AllowRevert</code> parameter is supplied, the status of an in-progress deployment\n         will be <code>ROLLED_BACK</code>. The status of a completed deployment will be\n            <code>REVERTED</code>. AppConfig only allows a revert within 72 hours of\n         deployment completion.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To stop configuration deployment",
+                        "documentation": "The following stop-deployment example stops the deployment of an application configuration to the specified environment.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "EnvironmentId": "54j1r29",
+                            "DeploymentNumber": 2
+                        },
+                        "output": {
+                            "DeploymentNumber": 2,
+                            "DeploymentDurationInMinutes": 15,
+                            "GrowthFactor": 25.0,
+                            "FinalBakeTimeInMinutes": 0,
+                            "PercentageComplete": 1.0
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "DELETE",
                     "uri": "/applications/{ApplicationId}/environments/{EnvironmentId}/deployments/{DeploymentNumber}",
@@ -4990,6 +5605,14 @@
                         "smithy.api#documentation": "<p>The sequence number of the deployment.</p>",
                         "smithy.api#httpLabel": {},
                         "smithy.api#required": {}
+                    }
+                },
+                "AllowRevert": {
+                    "target": "com.amazonaws.appconfig#Boolean",
+                    "traits": {
+                        "smithy.api#default": null,
+                        "smithy.api#documentation": "<p>A Boolean that enables AppConfig to rollback a <code>COMPLETED</code>\n         deployment to the previous configuration version. This action moves the deployment to a\n         status of <code>REVERTED</code>.</p>",
+                        "smithy.api#httpHeader": "Allow-Revert"
                     }
                 }
             },
@@ -5094,6 +5717,18 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Assigns metadata to an AppConfig resource. Tags help organize and categorize\n         your AppConfig resources. Each tag consists of a key and an optional value, both\n         of which you define. You can specify a maximum of 50 tags for a resource.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To tag an application",
+                        "documentation": "The following tag-resource example tags an application resource.",
+                        "input": {
+                            "ResourceArn": "arn:aws:appconfig:us-east-1:111122223333:application/339ohji",
+                            "Tags": {
+                                "group1": "1"
+                            }
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/tags/{ResourceArn}",
@@ -5183,6 +5818,18 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Deletes a tag key and value from an AppConfig resource.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To remove a tag from an application",
+                        "documentation": "The following untag-resource example removes the group1 tag from the specified application.",
+                        "input": {
+                            "ResourceArn": "arn:aws:appconfig:us-east-1:111122223333:application/339ohji",
+                            "TagKeys": [
+                                "group1"
+                            ]
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "DELETE",
                     "uri": "/tags/{ResourceArn}",
@@ -5214,6 +5861,45 @@
                 "smithy.api#input": {}
             }
         },
+        "com.amazonaws.appconfig#UpdateAccountSettings": {
+            "type": "operation",
+            "input": {
+                "target": "com.amazonaws.appconfig#UpdateAccountSettingsRequest"
+            },
+            "output": {
+                "target": "com.amazonaws.appconfig#AccountSettings"
+            },
+            "errors": [
+                {
+                    "target": "com.amazonaws.appconfig#BadRequestException"
+                },
+                {
+                    "target": "com.amazonaws.appconfig#InternalServerException"
+                }
+            ],
+            "traits": {
+                "smithy.api#documentation": "<p>Updates the value of the <code>DeletionProtection</code> parameter.</p>",
+                "smithy.api#http": {
+                    "method": "PATCH",
+                    "uri": "/settings",
+                    "code": 200
+                }
+            }
+        },
+        "com.amazonaws.appconfig#UpdateAccountSettingsRequest": {
+            "type": "structure",
+            "members": {
+                "DeletionProtection": {
+                    "target": "com.amazonaws.appconfig#DeletionProtectionSettings",
+                    "traits": {
+                        "smithy.api#documentation": "<p>A parameter to configure deletion protection. If enabled, deletion protection prevents a\n         user from deleting a configuration profile or an environment if AppConfig has\n         called either <a href=\"https://docs.aws.amazon.com/appconfig/2019-10-09/APIReference/API_appconfigdata_GetLatestConfiguration.html\">GetLatestConfiguration</a> or  for the\n         configuration profile or from the environment during the specified interval. Deletion\n         protection is disabled by default. The default interval for\n            <code>ProtectionPeriodInMinutes</code> is 60.</p>"
+                    }
+                }
+            },
+            "traits": {
+                "smithy.api#input": {}
+            }
+        },
         "com.amazonaws.appconfig#UpdateApplication": {
             "type": "operation",
             "input": {
@@ -5235,6 +5921,22 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Updates an application.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To update an application",
+                        "documentation": "The following update-application example updates the name of the specified application.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "Name": "Example-Application",
+                            "Description": ""
+                        },
+                        "output": {
+                            "Id": "339ohji",
+                            "Name": "Example-Application",
+                            "Description": "An application used for creating an example."
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "PATCH",
                     "uri": "/applications/{ApplicationId}",
@@ -5291,6 +5993,25 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Updates a configuration profile.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To update a configuration profile",
+                        "documentation": "The following update-configuration-profile example updates the description of the specified configuration profile.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "ConfigurationProfileId": "ur8hx2f",
+                            "Description": "Configuration profile used for examples."
+                        },
+                        "output": {
+                            "ApplicationId": "339ohji",
+                            "Id": "ur8hx2f",
+                            "Name": "Example-Configuration-Profile",
+                            "Description": "Configuration profile used for examples.",
+                            "LocationUri": "ssm-parameter://Example-Parameter",
+                            "RetrievalRoleArn": "arn:aws:iam::111122223333:role/Example-App-Config-Role"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "PATCH",
                     "uri": "/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}",
@@ -5318,7 +6039,7 @@
                     }
                 },
                 "Name": {
-                    "target": "com.amazonaws.appconfig#Name",
+                    "target": "com.amazonaws.appconfig#LongName",
                     "traits": {
                         "smithy.api#documentation": "<p>The name of the configuration profile.</p>"
                     }
@@ -5339,6 +6060,12 @@
                     "target": "com.amazonaws.appconfig#ValidatorList",
                     "traits": {
                         "smithy.api#documentation": "<p>A list of methods for validating the configuration.</p>"
+                    }
+                },
+                "KmsKeyIdentifier": {
+                    "target": "com.amazonaws.appconfig#KmsKeyIdentifierOrEmpty",
+                    "traits": {
+                        "smithy.api#documentation": "<p>The identifier for a Key Management Service key to encrypt new configuration data\n         versions in the AppConfig hosted configuration store. This attribute is only used\n         for <code>hosted</code> configuration types. The identifier can be an KMS\n         key ID, alias, or the Amazon Resource Name (ARN) of the key ID or alias. To encrypt data\n         managed in other configuration stores, see the documentation for how to specify an KMS key for that particular service.</p>"
                     }
                 }
             },
@@ -5367,6 +6094,25 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Updates a deployment strategy.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To update a deployment strategy",
+                        "documentation": "The following update-deployment-strategy example updates final bake time to 20 minutes in the specified deployment strategy. ::\n",
+                        "input": {
+                            "DeploymentStrategyId": "1225qzk",
+                            "FinalBakeTimeInMinutes": 20
+                        },
+                        "output": {
+                            "Id": "1225qzk",
+                            "Name": "Example-Deployment",
+                            "DeploymentDurationInMinutes": 15,
+                            "GrowthType": "LINEAR",
+                            "GrowthFactor": 25,
+                            "FinalBakeTimeInMinutes": 20,
+                            "ReplicateTo": "SSM_DOCUMENT"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "PATCH",
                     "uri": "/deploymentstrategies/{DeploymentStrategyId}",
@@ -5408,7 +6154,6 @@
                 "GrowthFactor": {
                     "target": "com.amazonaws.appconfig#GrowthFactor",
                     "traits": {
-                        "smithy.api#default": null,
                         "smithy.api#documentation": "<p>The percentage of targets to receive a deployed configuration during each\n         interval.</p>"
                     }
                 },
@@ -5444,6 +6189,24 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Updates an environment.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To update an environment",
+                        "documentation": "The following update-environment example updates an environment's description.",
+                        "input": {
+                            "ApplicationId": "339ohji",
+                            "EnvironmentId": "54j1r29",
+                            "Description": "An environment for examples."
+                        },
+                        "output": {
+                            "ApplicationId": "339ohji",
+                            "Id": "54j1r29",
+                            "Name": "Example-Environment",
+                            "Description": "An environment for examples.",
+                            "State": "ROLLED_BACK"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "PATCH",
                     "uri": "/applications/{ApplicationId}/environments/{EnvironmentId}",
@@ -5516,7 +6279,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Updates an AppConfig extension. For more information about extensions, see\n            <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Working with\n               AppConfig extensions</a> in the\n         <i>AppConfig User Guide</i>.</p>",
+                "smithy.api#documentation": "<p>Updates an AppConfig extension. For more information about extensions, see\n            <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Extending\n            workflows</a> in the <i>AppConfig User Guide</i>.</p>",
                 "smithy.api#http": {
                     "method": "PATCH",
                     "uri": "/extensions/{ExtensionIdentifier}",
@@ -5544,7 +6307,7 @@
                 }
             ],
             "traits": {
-                "smithy.api#documentation": "<p>Updates an association. For more information about extensions and associations, see\n            <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Working with\n               AppConfig extensions</a> in the\n         <i>AppConfig User Guide</i>.</p>",
+                "smithy.api#documentation": "<p>Updates an association. For more information about extensions and associations, see\n            <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/working-with-appconfig-extensions.html\">Extending\n            workflows</a> in the <i>AppConfig User Guide</i>.</p>",
                 "smithy.api#http": {
                     "method": "PATCH",
                     "uri": "/extensionassociations/{ExtensionAssociationId}",
@@ -5645,6 +6408,17 @@
             ],
             "traits": {
                 "smithy.api#documentation": "<p>Uses the validators in a configuration profile to validate a configuration.</p>",
+                "smithy.api#examples": [
+                    {
+                        "title": "To validate a configuration",
+                        "documentation": "The following validate-configuration example uses the validators in a configuration profile to validate a configuration.",
+                        "input": {
+                            "ApplicationId": "abc1234",
+                            "ConfigurationProfileId": "ur8hx2f",
+                            "ConfigurationVersion": "1"
+                        }
+                    }
+                ],
                 "smithy.api#http": {
                     "method": "POST",
                     "uri": "/applications/{ApplicationId}/configurationprofiles/{ConfigurationProfileId}/validators",
@@ -5703,7 +6477,7 @@
                 }
             },
             "traits": {
-                "smithy.api#documentation": "<p>A validator provides a syntactic or semantic check to ensure the configuration that you\n         want to deploy functions as intended. To validate your application configuration data, you\n         provide a schema or an Amazon Web Services Lambda function that runs against the configuration. The\n         configuration deployment or update can only proceed when the configuration data is\n         valid.</p>"
+                "smithy.api#documentation": "<p>A validator provides a syntactic or semantic check to ensure the configuration that you\n         want to deploy functions as intended. To validate your application configuration data, you\n         provide a schema or an Amazon Web Services Lambda function that runs against the configuration. The\n         configuration deployment or update can only proceed when the configuration data is valid.\n         For more information, see <a href=\"https://docs.aws.amazon.com/appconfig/latest/userguide/appconfig-creating-configuration-profile.html#appconfig-creating-configuration-and-profile-validators\">About validators</a> in the <i>AppConfig User Guide</i>.</p>"
             }
         },
         "com.amazonaws.appconfig#ValidatorList": {

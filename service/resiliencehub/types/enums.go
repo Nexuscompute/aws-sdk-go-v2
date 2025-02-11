@@ -14,8 +14,9 @@ const (
 )
 
 // Values returns all known values for AlarmType. Note that this can be expanded
-// in the future, and so it is only as up to date as the client. The ordering of
-// this slice is not guaranteed to be stable across updates.
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AlarmType) Values() []AlarmType {
 	return []AlarmType{
 		"Metric",
@@ -36,6 +37,7 @@ const (
 
 // Values returns all known values for AppAssessmentScheduleType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (AppAssessmentScheduleType) Values() []AppAssessmentScheduleType {
 	return []AppAssessmentScheduleType{
@@ -52,17 +54,43 @@ const (
 	AppComplianceStatusTypePolicyMet       AppComplianceStatusType = "PolicyMet"
 	AppComplianceStatusTypeNotAssessed     AppComplianceStatusType = "NotAssessed"
 	AppComplianceStatusTypeChangesDetected AppComplianceStatusType = "ChangesDetected"
+	AppComplianceStatusTypeNotApplicable   AppComplianceStatusType = "NotApplicable"
+	AppComplianceStatusTypeMissingPolicy   AppComplianceStatusType = "MissingPolicy"
 )
 
 // Values returns all known values for AppComplianceStatusType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AppComplianceStatusType) Values() []AppComplianceStatusType {
 	return []AppComplianceStatusType{
 		"PolicyBreached",
 		"PolicyMet",
 		"NotAssessed",
 		"ChangesDetected",
+		"NotApplicable",
+		"MissingPolicy",
+	}
+}
+
+type AppDriftStatusType string
+
+// Enum values for AppDriftStatusType
+const (
+	AppDriftStatusTypeNotChecked  AppDriftStatusType = "NotChecked"
+	AppDriftStatusTypeNotDetected AppDriftStatusType = "NotDetected"
+	AppDriftStatusTypeDetected    AppDriftStatusType = "Detected"
+)
+
+// Values returns all known values for AppDriftStatusType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (AppDriftStatusType) Values() []AppDriftStatusType {
+	return []AppDriftStatusType{
+		"NotChecked",
+		"NotDetected",
+		"Detected",
 	}
 }
 
@@ -75,8 +103,9 @@ const (
 )
 
 // Values returns all known values for AppStatusType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AppStatusType) Values() []AppStatusType {
 	return []AppStatusType{
 		"Active",
@@ -93,8 +122,9 @@ const (
 )
 
 // Values returns all known values for AssessmentInvoker. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AssessmentInvoker) Values() []AssessmentInvoker {
 	return []AssessmentInvoker{
 		"User",
@@ -113,8 +143,9 @@ const (
 )
 
 // Values returns all known values for AssessmentStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (AssessmentStatus) Values() []AssessmentStatus {
 	return []AssessmentStatus{
 		"Pending",
@@ -130,15 +161,47 @@ type ComplianceStatus string
 const (
 	ComplianceStatusPolicyBreached ComplianceStatus = "PolicyBreached"
 	ComplianceStatusPolicyMet      ComplianceStatus = "PolicyMet"
+	ComplianceStatusNotApplicable  ComplianceStatus = "NotApplicable"
+	ComplianceStatusMissingPolicy  ComplianceStatus = "MissingPolicy"
 )
 
 // Values returns all known values for ComplianceStatus. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ComplianceStatus) Values() []ComplianceStatus {
 	return []ComplianceStatus{
 		"PolicyBreached",
 		"PolicyMet",
+		"NotApplicable",
+		"MissingPolicy",
+	}
+}
+
+type ConditionOperatorType string
+
+// Enum values for ConditionOperatorType
+const (
+	ConditionOperatorTypeEquals          ConditionOperatorType = "Equals"
+	ConditionOperatorTypeNotEquals       ConditionOperatorType = "NotEquals"
+	ConditionOperatorTypeGreaterThen     ConditionOperatorType = "GreaterThen"
+	ConditionOperatorTypeGreaterOrEquals ConditionOperatorType = "GreaterOrEquals"
+	ConditionOperatorTypeLessThen        ConditionOperatorType = "LessThen"
+	ConditionOperatorTypeLessOrEquals    ConditionOperatorType = "LessOrEquals"
+)
+
+// Values returns all known values for ConditionOperatorType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ConditionOperatorType) Values() []ConditionOperatorType {
+	return []ConditionOperatorType{
+		"Equals",
+		"NotEquals",
+		"GreaterThen",
+		"GreaterOrEquals",
+		"LessThen",
+		"LessOrEquals",
 	}
 }
 
@@ -156,8 +219,9 @@ const (
 
 // Values returns all known values for ConfigRecommendationOptimizationType. Note
 // that this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ConfigRecommendationOptimizationType) Values() []ConfigRecommendationOptimizationType {
 	return []ConfigRecommendationOptimizationType{
 		"LeastCost",
@@ -180,8 +244,9 @@ const (
 )
 
 // Values returns all known values for CostFrequency. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (CostFrequency) Values() []CostFrequency {
 	return []CostFrequency{
 		"Hourly",
@@ -201,13 +266,35 @@ const (
 )
 
 // Values returns all known values for DataLocationConstraint. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DataLocationConstraint) Values() []DataLocationConstraint {
 	return []DataLocationConstraint{
 		"AnyLocation",
 		"SameContinent",
 		"SameCountry",
+	}
+}
+
+type DifferenceType string
+
+// Enum values for DifferenceType
+const (
+	DifferenceTypeNotEqual DifferenceType = "NotEqual"
+	DifferenceTypeAdded    DifferenceType = "Added"
+	DifferenceTypeRemoved  DifferenceType = "Removed"
+)
+
+// Values returns all known values for DifferenceType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DifferenceType) Values() []DifferenceType {
+	return []DifferenceType{
+		"NotEqual",
+		"Added",
+		"Removed",
 	}
 }
 
@@ -222,14 +309,55 @@ const (
 )
 
 // Values returns all known values for DisruptionType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (DisruptionType) Values() []DisruptionType {
 	return []DisruptionType{
 		"Software",
 		"Hardware",
 		"AZ",
 		"Region",
+	}
+}
+
+type DriftStatus string
+
+// Enum values for DriftStatus
+const (
+	DriftStatusNotChecked  DriftStatus = "NotChecked"
+	DriftStatusNotDetected DriftStatus = "NotDetected"
+	DriftStatusDetected    DriftStatus = "Detected"
+)
+
+// Values returns all known values for DriftStatus. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DriftStatus) Values() []DriftStatus {
+	return []DriftStatus{
+		"NotChecked",
+		"NotDetected",
+		"Detected",
+	}
+}
+
+type DriftType string
+
+// Enum values for DriftType
+const (
+	DriftTypeApplicationCompliance                  DriftType = "ApplicationCompliance"
+	DriftTypeAppComponentResiliencyComplianceStatus DriftType = "AppComponentResiliencyComplianceStatus"
+)
+
+// Values returns all known values for DriftType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (DriftType) Values() []DriftType {
+	return []DriftType{
+		"ApplicationCompliance",
+		"AppComponentResiliencyComplianceStatus",
 	}
 }
 
@@ -244,14 +372,146 @@ const (
 )
 
 // Values returns all known values for EstimatedCostTier. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (EstimatedCostTier) Values() []EstimatedCostTier {
 	return []EstimatedCostTier{
 		"L1",
 		"L2",
 		"L3",
 		"L4",
+	}
+}
+
+type EventType string
+
+// Enum values for EventType
+const (
+	EventTypeScheduledAssessmentFailure EventType = "ScheduledAssessmentFailure"
+	EventTypeDriftDetected              EventType = "DriftDetected"
+)
+
+// Values returns all known values for EventType. Note that this can be expanded
+// in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (EventType) Values() []EventType {
+	return []EventType{
+		"ScheduledAssessmentFailure",
+		"DriftDetected",
+	}
+}
+
+type ExcludeRecommendationReason string
+
+// Enum values for ExcludeRecommendationReason
+const (
+	ExcludeRecommendationReasonAlreadyImplemented         ExcludeRecommendationReason = "AlreadyImplemented"
+	ExcludeRecommendationReasonNotRelevant                ExcludeRecommendationReason = "NotRelevant"
+	ExcludeRecommendationReasonComplexityOfImplementation ExcludeRecommendationReason = "ComplexityOfImplementation"
+)
+
+// Values returns all known values for ExcludeRecommendationReason. Note that this
+// can be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ExcludeRecommendationReason) Values() []ExcludeRecommendationReason {
+	return []ExcludeRecommendationReason{
+		"AlreadyImplemented",
+		"NotRelevant",
+		"ComplexityOfImplementation",
+	}
+}
+
+type FieldAggregationType string
+
+// Enum values for FieldAggregationType
+const (
+	FieldAggregationTypeMin   FieldAggregationType = "Min"
+	FieldAggregationTypeMax   FieldAggregationType = "Max"
+	FieldAggregationTypeSum   FieldAggregationType = "Sum"
+	FieldAggregationTypeAvg   FieldAggregationType = "Avg"
+	FieldAggregationTypeCount FieldAggregationType = "Count"
+)
+
+// Values returns all known values for FieldAggregationType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (FieldAggregationType) Values() []FieldAggregationType {
+	return []FieldAggregationType{
+		"Min",
+		"Max",
+		"Sum",
+		"Avg",
+		"Count",
+	}
+}
+
+type GroupingRecommendationConfidenceLevel string
+
+// Enum values for GroupingRecommendationConfidenceLevel
+const (
+	GroupingRecommendationConfidenceLevelHigh   GroupingRecommendationConfidenceLevel = "High"
+	GroupingRecommendationConfidenceLevelMedium GroupingRecommendationConfidenceLevel = "Medium"
+)
+
+// Values returns all known values for GroupingRecommendationConfidenceLevel. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GroupingRecommendationConfidenceLevel) Values() []GroupingRecommendationConfidenceLevel {
+	return []GroupingRecommendationConfidenceLevel{
+		"High",
+		"Medium",
+	}
+}
+
+type GroupingRecommendationRejectionReason string
+
+// Enum values for GroupingRecommendationRejectionReason
+const (
+	GroupingRecommendationRejectionReasonDistinctBusinessPurpose   GroupingRecommendationRejectionReason = "DistinctBusinessPurpose"
+	GroupingRecommendationRejectionReasonSeparateDataConcern       GroupingRecommendationRejectionReason = "SeparateDataConcern"
+	GroupingRecommendationRejectionReasonDistinctUserGroupHandling GroupingRecommendationRejectionReason = "DistinctUserGroupHandling"
+	GroupingRecommendationRejectionReasonOther                     GroupingRecommendationRejectionReason = "Other"
+)
+
+// Values returns all known values for GroupingRecommendationRejectionReason. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GroupingRecommendationRejectionReason) Values() []GroupingRecommendationRejectionReason {
+	return []GroupingRecommendationRejectionReason{
+		"DistinctBusinessPurpose",
+		"SeparateDataConcern",
+		"DistinctUserGroupHandling",
+		"Other",
+	}
+}
+
+type GroupingRecommendationStatusType string
+
+// Enum values for GroupingRecommendationStatusType
+const (
+	GroupingRecommendationStatusTypeAccepted        GroupingRecommendationStatusType = "Accepted"
+	GroupingRecommendationStatusTypeRejected        GroupingRecommendationStatusType = "Rejected"
+	GroupingRecommendationStatusTypePendingDecision GroupingRecommendationStatusType = "PendingDecision"
+)
+
+// Values returns all known values for GroupingRecommendationStatusType. Note that
+// this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (GroupingRecommendationStatusType) Values() []GroupingRecommendationStatusType {
+	return []GroupingRecommendationStatusType{
+		"Accepted",
+		"Rejected",
+		"PendingDecision",
 	}
 }
 
@@ -267,8 +527,9 @@ const (
 )
 
 // Values returns all known values for HaArchitecture. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (HaArchitecture) Values() []HaArchitecture {
 	return []HaArchitecture{
 		"MultiSite",
@@ -276,6 +537,48 @@ func (HaArchitecture) Values() []HaArchitecture {
 		"PilotLight",
 		"BackupAndRestore",
 		"NoRecoveryPlan",
+	}
+}
+
+type MetricsExportStatusType string
+
+// Enum values for MetricsExportStatusType
+const (
+	MetricsExportStatusTypePending    MetricsExportStatusType = "Pending"
+	MetricsExportStatusTypeInProgress MetricsExportStatusType = "InProgress"
+	MetricsExportStatusTypeFailed     MetricsExportStatusType = "Failed"
+	MetricsExportStatusTypeSuccess    MetricsExportStatusType = "Success"
+)
+
+// Values returns all known values for MetricsExportStatusType. Note that this can
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (MetricsExportStatusType) Values() []MetricsExportStatusType {
+	return []MetricsExportStatusType{
+		"Pending",
+		"InProgress",
+		"Failed",
+		"Success",
+	}
+}
+
+type PermissionModelType string
+
+// Enum values for PermissionModelType
+const (
+	PermissionModelTypeLegacyIamUser PermissionModelType = "LegacyIAMUser"
+	PermissionModelTypeRoleBased     PermissionModelType = "RoleBased"
+)
+
+// Values returns all known values for PermissionModelType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (PermissionModelType) Values() []PermissionModelType {
+	return []PermissionModelType{
+		"LegacyIAMUser",
+		"RoleBased",
 	}
 }
 
@@ -288,8 +591,9 @@ const (
 )
 
 // Values returns all known values for PhysicalIdentifierType. Note that this can
-// be expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// be expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (PhysicalIdentifierType) Values() []PhysicalIdentifierType {
 	return []PhysicalIdentifierType{
 		"Arn",
@@ -304,17 +608,43 @@ const (
 	RecommendationComplianceStatusBreachedUnattainable RecommendationComplianceStatus = "BreachedUnattainable"
 	RecommendationComplianceStatusBreachedCanMeet      RecommendationComplianceStatus = "BreachedCanMeet"
 	RecommendationComplianceStatusMetCanImprove        RecommendationComplianceStatus = "MetCanImprove"
+	RecommendationComplianceStatusMissingPolicy        RecommendationComplianceStatus = "MissingPolicy"
 )
 
 // Values returns all known values for RecommendationComplianceStatus. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RecommendationComplianceStatus) Values() []RecommendationComplianceStatus {
 	return []RecommendationComplianceStatus{
 		"BreachedUnattainable",
 		"BreachedCanMeet",
 		"MetCanImprove",
+		"MissingPolicy",
+	}
+}
+
+type RecommendationStatus string
+
+// Enum values for RecommendationStatus
+const (
+	RecommendationStatusImplemented    RecommendationStatus = "Implemented"
+	RecommendationStatusInactive       RecommendationStatus = "Inactive"
+	RecommendationStatusNotImplemented RecommendationStatus = "NotImplemented"
+	RecommendationStatusExcluded       RecommendationStatus = "Excluded"
+)
+
+// Values returns all known values for RecommendationStatus. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (RecommendationStatus) Values() []RecommendationStatus {
+	return []RecommendationStatus{
+		"Implemented",
+		"Inactive",
+		"NotImplemented",
+		"Excluded",
 	}
 }
 
@@ -330,8 +660,9 @@ const (
 
 // Values returns all known values for RecommendationTemplateStatus. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (RecommendationTemplateStatus) Values() []RecommendationTemplateStatus {
 	return []RecommendationTemplateStatus{
 		"Pending",
@@ -352,6 +683,7 @@ const (
 
 // Values returns all known values for RenderRecommendationType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (RenderRecommendationType) Values() []RenderRecommendationType {
 	return []RenderRecommendationType{
@@ -370,11 +702,13 @@ const (
 	ResiliencyPolicyTierImportant       ResiliencyPolicyTier = "Important"
 	ResiliencyPolicyTierCoreServices    ResiliencyPolicyTier = "CoreServices"
 	ResiliencyPolicyTierNonCritical     ResiliencyPolicyTier = "NonCritical"
+	ResiliencyPolicyTierNotApplicable   ResiliencyPolicyTier = "NotApplicable"
 )
 
 // Values returns all known values for ResiliencyPolicyTier. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResiliencyPolicyTier) Values() []ResiliencyPolicyTier {
 	return []ResiliencyPolicyTier{
 		"MissionCritical",
@@ -382,6 +716,30 @@ func (ResiliencyPolicyTier) Values() []ResiliencyPolicyTier {
 		"Important",
 		"CoreServices",
 		"NonCritical",
+		"NotApplicable",
+	}
+}
+
+type ResiliencyScoreType string
+
+// Enum values for ResiliencyScoreType
+const (
+	ResiliencyScoreTypeCompliance ResiliencyScoreType = "Compliance"
+	ResiliencyScoreTypeTest       ResiliencyScoreType = "Test"
+	ResiliencyScoreTypeAlarm      ResiliencyScoreType = "Alarm"
+	ResiliencyScoreTypeSop        ResiliencyScoreType = "Sop"
+)
+
+// Values returns all known values for ResiliencyScoreType. Note that this can be
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResiliencyScoreType) Values() []ResiliencyScoreType {
+	return []ResiliencyScoreType{
+		"Compliance",
+		"Test",
+		"Alarm",
+		"Sop",
 	}
 }
 
@@ -397,6 +755,7 @@ const (
 
 // Values returns all known values for ResourceImportStatusType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceImportStatusType) Values() []ResourceImportStatusType {
 	return []ResourceImportStatusType{
@@ -417,6 +776,7 @@ const (
 
 // Values returns all known values for ResourceImportStrategyType. Note that this
 // can be expanded in the future, and so it is only as up to date as the client.
+//
 // The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceImportStrategyType) Values() []ResourceImportStrategyType {
 	return []ResourceImportStrategyType{
@@ -438,8 +798,9 @@ const (
 )
 
 // Values returns all known values for ResourceMappingType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceMappingType) Values() []ResourceMappingType {
 	return []ResourceMappingType{
 		"CfnStack",
@@ -463,10 +824,35 @@ const (
 
 // Values returns all known values for ResourceResolutionStatusType. Note that
 // this can be expanded in the future, and so it is only as up to date as the
-// client. The ordering of this slice is not guaranteed to be stable across
-// updates.
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceResolutionStatusType) Values() []ResourceResolutionStatusType {
 	return []ResourceResolutionStatusType{
+		"Pending",
+		"InProgress",
+		"Failed",
+		"Success",
+	}
+}
+
+type ResourcesGroupingRecGenStatusType string
+
+// Enum values for ResourcesGroupingRecGenStatusType
+const (
+	ResourcesGroupingRecGenStatusTypePending    ResourcesGroupingRecGenStatusType = "Pending"
+	ResourcesGroupingRecGenStatusTypeInProgress ResourcesGroupingRecGenStatusType = "InProgress"
+	ResourcesGroupingRecGenStatusTypeFailed     ResourcesGroupingRecGenStatusType = "Failed"
+	ResourcesGroupingRecGenStatusTypeSuccess    ResourcesGroupingRecGenStatusType = "Success"
+)
+
+// Values returns all known values for ResourcesGroupingRecGenStatusType. Note
+// that this can be expanded in the future, and so it is only as up to date as the
+// client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
+func (ResourcesGroupingRecGenStatusType) Values() []ResourcesGroupingRecGenStatusType {
+	return []ResourcesGroupingRecGenStatusType{
 		"Pending",
 		"InProgress",
 		"Failed",
@@ -483,8 +869,9 @@ const (
 )
 
 // Values returns all known values for ResourceSourceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (ResourceSourceType) Values() []ResourceSourceType {
 	return []ResourceSourceType{
 		"AppTemplate",
@@ -500,8 +887,9 @@ const (
 )
 
 // Values returns all known values for SopServiceType. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (SopServiceType) Values() []SopServiceType {
 	return []SopServiceType{
 		"SSM",
@@ -517,8 +905,9 @@ const (
 )
 
 // Values returns all known values for TemplateFormat. Note that this can be
-// expanded in the future, and so it is only as up to date as the client. The
-// ordering of this slice is not guaranteed to be stable across updates.
+// expanded in the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TemplateFormat) Values() []TemplateFormat {
 	return []TemplateFormat{
 		"CfnYaml",
@@ -536,8 +925,9 @@ const (
 )
 
 // Values returns all known values for TestRisk. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TestRisk) Values() []TestRisk {
 	return []TestRisk{
 		"Small",
@@ -557,8 +947,9 @@ const (
 )
 
 // Values returns all known values for TestType. Note that this can be expanded in
-// the future, and so it is only as up to date as the client. The ordering of this
-// slice is not guaranteed to be stable across updates.
+// the future, and so it is only as up to date as the client.
+//
+// The ordering of this slice is not guaranteed to be stable across updates.
 func (TestType) Values() []TestType {
 	return []TestType{
 		"Software",

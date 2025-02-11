@@ -130,6 +130,26 @@ func (m *validateOpCreateLegalHold) HandleInitialize(ctx context.Context, in mid
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpCreateLogicallyAirGappedBackupVault struct {
+}
+
+func (*validateOpCreateLogicallyAirGappedBackupVault) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateLogicallyAirGappedBackupVault) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateLogicallyAirGappedBackupVaultInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateLogicallyAirGappedBackupVaultInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpCreateReportPlan struct {
 }
 
@@ -145,6 +165,46 @@ func (m *validateOpCreateReportPlan) HandleInitialize(ctx context.Context, in mi
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpCreateReportPlanInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateRestoreTestingPlan struct {
+}
+
+func (*validateOpCreateRestoreTestingPlan) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateRestoreTestingPlan) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateRestoreTestingPlanInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateRestoreTestingPlanInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpCreateRestoreTestingSelection struct {
+}
+
+func (*validateOpCreateRestoreTestingSelection) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpCreateRestoreTestingSelection) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*CreateRestoreTestingSelectionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpCreateRestoreTestingSelectionInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -325,6 +385,46 @@ func (m *validateOpDeleteReportPlan) HandleInitialize(ctx context.Context, in mi
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpDeleteReportPlanInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteRestoreTestingPlan struct {
+}
+
+func (*validateOpDeleteRestoreTestingPlan) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteRestoreTestingPlan) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteRestoreTestingPlanInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteRestoreTestingPlanInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpDeleteRestoreTestingSelection struct {
+}
+
+func (*validateOpDeleteRestoreTestingSelection) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpDeleteRestoreTestingSelection) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*DeleteRestoreTestingSelectionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpDeleteRestoreTestingSelectionInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -710,6 +810,26 @@ func (m *validateOpGetLegalHold) HandleInitialize(ctx context.Context, in middle
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpGetRecoveryPointIndexDetails struct {
+}
+
+func (*validateOpGetRecoveryPointIndexDetails) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetRecoveryPointIndexDetails) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetRecoveryPointIndexDetailsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetRecoveryPointIndexDetailsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpGetRecoveryPointRestoreMetadata struct {
 }
 
@@ -725,6 +845,86 @@ func (m *validateOpGetRecoveryPointRestoreMetadata) HandleInitialize(ctx context
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpGetRecoveryPointRestoreMetadataInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetRestoreJobMetadata struct {
+}
+
+func (*validateOpGetRestoreJobMetadata) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetRestoreJobMetadata) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetRestoreJobMetadataInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetRestoreJobMetadataInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetRestoreTestingInferredMetadata struct {
+}
+
+func (*validateOpGetRestoreTestingInferredMetadata) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetRestoreTestingInferredMetadata) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetRestoreTestingInferredMetadataInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetRestoreTestingInferredMetadataInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetRestoreTestingPlan struct {
+}
+
+func (*validateOpGetRestoreTestingPlan) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetRestoreTestingPlan) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetRestoreTestingPlanInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetRestoreTestingPlanInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpGetRestoreTestingSelection struct {
+}
+
+func (*validateOpGetRestoreTestingSelection) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpGetRestoreTestingSelection) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*GetRestoreTestingSelectionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpGetRestoreTestingSelectionInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -765,6 +965,26 @@ func (m *validateOpListBackupSelections) HandleInitialize(ctx context.Context, i
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListBackupSelectionsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListProtectedResourcesByBackupVault struct {
+}
+
+func (*validateOpListProtectedResourcesByBackupVault) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListProtectedResourcesByBackupVault) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListProtectedResourcesByBackupVaultInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListProtectedResourcesByBackupVaultInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -825,6 +1045,46 @@ func (m *validateOpListRecoveryPointsByResource) HandleInitialize(ctx context.Co
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpListRecoveryPointsByResourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListRestoreJobsByProtectedResource struct {
+}
+
+func (*validateOpListRestoreJobsByProtectedResource) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListRestoreJobsByProtectedResource) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListRestoreJobsByProtectedResourceInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListRestoreJobsByProtectedResourceInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpListRestoreTestingSelections struct {
+}
+
+func (*validateOpListRestoreTestingSelections) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpListRestoreTestingSelections) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*ListRestoreTestingSelectionsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpListRestoreTestingSelectionsInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -905,6 +1165,26 @@ func (m *validateOpPutBackupVaultNotifications) HandleInitialize(ctx context.Con
 		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
 	}
 	if err := validateOpPutBackupVaultNotificationsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpPutRestoreValidationResult struct {
+}
+
+func (*validateOpPutRestoreValidationResult) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpPutRestoreValidationResult) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*PutRestoreValidationResultInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpPutRestoreValidationResultInput(input); err != nil {
 		return out, metadata, err
 	}
 	return next.HandleInitialize(ctx, in)
@@ -1090,6 +1370,26 @@ func (m *validateOpUpdateFramework) HandleInitialize(ctx context.Context, in mid
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateRecoveryPointIndexSettings struct {
+}
+
+func (*validateOpUpdateRecoveryPointIndexSettings) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateRecoveryPointIndexSettings) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateRecoveryPointIndexSettingsInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateRecoveryPointIndexSettingsInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 type validateOpUpdateRecoveryPointLifecycle struct {
 }
 
@@ -1130,6 +1430,46 @@ func (m *validateOpUpdateReportPlan) HandleInitialize(ctx context.Context, in mi
 	return next.HandleInitialize(ctx, in)
 }
 
+type validateOpUpdateRestoreTestingPlan struct {
+}
+
+func (*validateOpUpdateRestoreTestingPlan) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateRestoreTestingPlan) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateRestoreTestingPlanInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateRestoreTestingPlanInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
+type validateOpUpdateRestoreTestingSelection struct {
+}
+
+func (*validateOpUpdateRestoreTestingSelection) ID() string {
+	return "OperationInputValidation"
+}
+
+func (m *validateOpUpdateRestoreTestingSelection) HandleInitialize(ctx context.Context, in middleware.InitializeInput, next middleware.InitializeHandler) (
+	out middleware.InitializeOutput, metadata middleware.Metadata, err error,
+) {
+	input, ok := in.Parameters.(*UpdateRestoreTestingSelectionInput)
+	if !ok {
+		return out, metadata, fmt.Errorf("unknown input parameters type %T", in.Parameters)
+	}
+	if err := validateOpUpdateRestoreTestingSelectionInput(input); err != nil {
+		return out, metadata, err
+	}
+	return next.HandleInitialize(ctx, in)
+}
+
 func addOpCancelLegalHoldValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCancelLegalHold{}, middleware.After)
 }
@@ -1154,8 +1494,20 @@ func addOpCreateLegalHoldValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateLegalHold{}, middleware.After)
 }
 
+func addOpCreateLogicallyAirGappedBackupVaultValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateLogicallyAirGappedBackupVault{}, middleware.After)
+}
+
 func addOpCreateReportPlanValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpCreateReportPlan{}, middleware.After)
+}
+
+func addOpCreateRestoreTestingPlanValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateRestoreTestingPlan{}, middleware.After)
+}
+
+func addOpCreateRestoreTestingSelectionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpCreateRestoreTestingSelection{}, middleware.After)
 }
 
 func addOpDeleteBackupPlanValidationMiddleware(stack *middleware.Stack) error {
@@ -1192,6 +1544,14 @@ func addOpDeleteRecoveryPointValidationMiddleware(stack *middleware.Stack) error
 
 func addOpDeleteReportPlanValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpDeleteReportPlan{}, middleware.After)
+}
+
+func addOpDeleteRestoreTestingPlanValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteRestoreTestingPlan{}, middleware.After)
+}
+
+func addOpDeleteRestoreTestingSelectionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpDeleteRestoreTestingSelection{}, middleware.After)
 }
 
 func addOpDescribeBackupJobValidationMiddleware(stack *middleware.Stack) error {
@@ -1270,8 +1630,28 @@ func addOpGetLegalHoldValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetLegalHold{}, middleware.After)
 }
 
+func addOpGetRecoveryPointIndexDetailsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetRecoveryPointIndexDetails{}, middleware.After)
+}
+
 func addOpGetRecoveryPointRestoreMetadataValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpGetRecoveryPointRestoreMetadata{}, middleware.After)
+}
+
+func addOpGetRestoreJobMetadataValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetRestoreJobMetadata{}, middleware.After)
+}
+
+func addOpGetRestoreTestingInferredMetadataValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetRestoreTestingInferredMetadata{}, middleware.After)
+}
+
+func addOpGetRestoreTestingPlanValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetRestoreTestingPlan{}, middleware.After)
+}
+
+func addOpGetRestoreTestingSelectionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpGetRestoreTestingSelection{}, middleware.After)
 }
 
 func addOpListBackupPlanVersionsValidationMiddleware(stack *middleware.Stack) error {
@@ -1280,6 +1660,10 @@ func addOpListBackupPlanVersionsValidationMiddleware(stack *middleware.Stack) er
 
 func addOpListBackupSelectionsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListBackupSelections{}, middleware.After)
+}
+
+func addOpListProtectedResourcesByBackupVaultValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListProtectedResourcesByBackupVault{}, middleware.After)
 }
 
 func addOpListRecoveryPointsByBackupVaultValidationMiddleware(stack *middleware.Stack) error {
@@ -1292,6 +1676,14 @@ func addOpListRecoveryPointsByLegalHoldValidationMiddleware(stack *middleware.St
 
 func addOpListRecoveryPointsByResourceValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpListRecoveryPointsByResource{}, middleware.After)
+}
+
+func addOpListRestoreJobsByProtectedResourceValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListRestoreJobsByProtectedResource{}, middleware.After)
+}
+
+func addOpListRestoreTestingSelectionsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpListRestoreTestingSelections{}, middleware.After)
 }
 
 func addOpListTagsValidationMiddleware(stack *middleware.Stack) error {
@@ -1308,6 +1700,10 @@ func addOpPutBackupVaultLockConfigurationValidationMiddleware(stack *middleware.
 
 func addOpPutBackupVaultNotificationsValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpPutBackupVaultNotifications{}, middleware.After)
+}
+
+func addOpPutRestoreValidationResultValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpPutRestoreValidationResult{}, middleware.After)
 }
 
 func addOpStartBackupJobValidationMiddleware(stack *middleware.Stack) error {
@@ -1346,12 +1742,24 @@ func addOpUpdateFrameworkValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateFramework{}, middleware.After)
 }
 
+func addOpUpdateRecoveryPointIndexSettingsValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateRecoveryPointIndexSettings{}, middleware.After)
+}
+
 func addOpUpdateRecoveryPointLifecycleValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateRecoveryPointLifecycle{}, middleware.After)
 }
 
 func addOpUpdateReportPlanValidationMiddleware(stack *middleware.Stack) error {
 	return stack.Initialize.Add(&validateOpUpdateReportPlan{}, middleware.After)
+}
+
+func addOpUpdateRestoreTestingPlanValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateRestoreTestingPlan{}, middleware.After)
+}
+
+func addOpUpdateRestoreTestingSelectionValidationMiddleware(stack *middleware.Stack) error {
+	return stack.Initialize.Add(&validateOpUpdateRestoreTestingSelection{}, middleware.After)
 }
 
 func validateBackupPlanInput(v *types.BackupPlanInput) error {
@@ -1542,6 +1950,41 @@ func validateFrameworkControls(v []types.FrameworkControl) error {
 	}
 }
 
+func validateKeyValue(v *types.KeyValue) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "KeyValue"}
+	if v.Key == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Key"))
+	}
+	if v.Value == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("Value"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateKeyValueList(v []types.KeyValue) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "KeyValueList"}
+	for i := range v {
+		if err := validateKeyValue(&v[i]); err != nil {
+			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateListOfTags(v []types.Condition) error {
 	if v == nil {
 		return nil
@@ -1550,6 +1993,28 @@ func validateListOfTags(v []types.Condition) error {
 	for i := range v {
 		if err := validateCondition(&v[i]); err != nil {
 			invalidParams.AddNested(fmt.Sprintf("[%d]", i), err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateProtectedResourceConditions(v *types.ProtectedResourceConditions) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ProtectedResourceConditions"}
+	if v.StringEquals != nil {
+		if err := validateKeyValueList(v.StringEquals); err != nil {
+			invalidParams.AddNested("StringEquals", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.StringNotEquals != nil {
+		if err := validateKeyValueList(v.StringNotEquals); err != nil {
+			invalidParams.AddNested("StringNotEquals", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1598,6 +2063,70 @@ func validateReportSetting(v *types.ReportSetting) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ReportSetting"}
 	if v.ReportTemplate == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ReportTemplate"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRestoreTestingPlanForCreate(v *types.RestoreTestingPlanForCreate) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RestoreTestingPlanForCreate"}
+	if v.RecoveryPointSelection == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RecoveryPointSelection"))
+	}
+	if v.RestoreTestingPlanName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingPlanName"))
+	}
+	if v.ScheduleExpression == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ScheduleExpression"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRestoreTestingSelectionForCreate(v *types.RestoreTestingSelectionForCreate) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RestoreTestingSelectionForCreate"}
+	if v.IamRoleArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("IamRoleArn"))
+	}
+	if v.ProtectedResourceConditions != nil {
+		if err := validateProtectedResourceConditions(v.ProtectedResourceConditions); err != nil {
+			invalidParams.AddNested("ProtectedResourceConditions", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.ProtectedResourceType == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ProtectedResourceType"))
+	}
+	if v.RestoreTestingSelectionName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingSelectionName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateRestoreTestingSelectionForUpdate(v *types.RestoreTestingSelectionForUpdate) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "RestoreTestingSelectionForUpdate"}
+	if v.ProtectedResourceConditions != nil {
+		if err := validateProtectedResourceConditions(v.ProtectedResourceConditions); err != nil {
+			invalidParams.AddNested("ProtectedResourceConditions", err.(smithy.InvalidParamsError))
+		}
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -1725,6 +2254,27 @@ func validateOpCreateLegalHoldInput(v *CreateLegalHoldInput) error {
 	}
 }
 
+func validateOpCreateLogicallyAirGappedBackupVaultInput(v *CreateLogicallyAirGappedBackupVaultInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateLogicallyAirGappedBackupVaultInput"}
+	if v.BackupVaultName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BackupVaultName"))
+	}
+	if v.MinRetentionDays == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MinRetentionDays"))
+	}
+	if v.MaxRetentionDays == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("MaxRetentionDays"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpCreateReportPlanInput(v *CreateReportPlanInput) error {
 	if v == nil {
 		return nil
@@ -1745,6 +2295,47 @@ func validateOpCreateReportPlanInput(v *CreateReportPlanInput) error {
 	} else if v.ReportSetting != nil {
 		if err := validateReportSetting(v.ReportSetting); err != nil {
 			invalidParams.AddNested("ReportSetting", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateRestoreTestingPlanInput(v *CreateRestoreTestingPlanInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateRestoreTestingPlanInput"}
+	if v.RestoreTestingPlan == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingPlan"))
+	} else if v.RestoreTestingPlan != nil {
+		if err := validateRestoreTestingPlanForCreate(v.RestoreTestingPlan); err != nil {
+			invalidParams.AddNested("RestoreTestingPlan", err.(smithy.InvalidParamsError))
+		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpCreateRestoreTestingSelectionInput(v *CreateRestoreTestingSelectionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "CreateRestoreTestingSelectionInput"}
+	if v.RestoreTestingPlanName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingPlanName"))
+	}
+	if v.RestoreTestingSelection == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingSelection"))
+	} else if v.RestoreTestingSelection != nil {
+		if err := validateRestoreTestingSelectionForCreate(v.RestoreTestingSelection); err != nil {
+			invalidParams.AddNested("RestoreTestingSelection", err.(smithy.InvalidParamsError))
 		}
 	}
 	if invalidParams.Len() > 0 {
@@ -1887,6 +2478,39 @@ func validateOpDeleteReportPlanInput(v *DeleteReportPlanInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "DeleteReportPlanInput"}
 	if v.ReportPlanName == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ReportPlanName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteRestoreTestingPlanInput(v *DeleteRestoreTestingPlanInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteRestoreTestingPlanInput"}
+	if v.RestoreTestingPlanName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingPlanName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpDeleteRestoreTestingSelectionInput(v *DeleteRestoreTestingSelectionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "DeleteRestoreTestingSelectionInput"}
+	if v.RestoreTestingPlanName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingPlanName"))
+	}
+	if v.RestoreTestingSelectionName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingSelectionName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2192,6 +2816,24 @@ func validateOpGetLegalHoldInput(v *GetLegalHoldInput) error {
 	}
 }
 
+func validateOpGetRecoveryPointIndexDetailsInput(v *GetRecoveryPointIndexDetailsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetRecoveryPointIndexDetailsInput"}
+	if v.BackupVaultName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BackupVaultName"))
+	}
+	if v.RecoveryPointArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RecoveryPointArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpGetRecoveryPointRestoreMetadataInput(v *GetRecoveryPointRestoreMetadataInput) error {
 	if v == nil {
 		return nil
@@ -2202,6 +2844,72 @@ func validateOpGetRecoveryPointRestoreMetadataInput(v *GetRecoveryPointRestoreMe
 	}
 	if v.RecoveryPointArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("RecoveryPointArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetRestoreJobMetadataInput(v *GetRestoreJobMetadataInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetRestoreJobMetadataInput"}
+	if v.RestoreJobId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreJobId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetRestoreTestingInferredMetadataInput(v *GetRestoreTestingInferredMetadataInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetRestoreTestingInferredMetadataInput"}
+	if v.BackupVaultName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BackupVaultName"))
+	}
+	if v.RecoveryPointArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RecoveryPointArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetRestoreTestingPlanInput(v *GetRestoreTestingPlanInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetRestoreTestingPlanInput"}
+	if v.RestoreTestingPlanName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingPlanName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpGetRestoreTestingSelectionInput(v *GetRestoreTestingSelectionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "GetRestoreTestingSelectionInput"}
+	if v.RestoreTestingPlanName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingPlanName"))
+	}
+	if v.RestoreTestingSelectionName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingSelectionName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2232,6 +2940,21 @@ func validateOpListBackupSelectionsInput(v *ListBackupSelectionsInput) error {
 	invalidParams := smithy.InvalidParamsError{Context: "ListBackupSelectionsInput"}
 	if v.BackupPlanId == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("BackupPlanId"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListProtectedResourcesByBackupVaultInput(v *ListProtectedResourcesByBackupVaultInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListProtectedResourcesByBackupVaultInput"}
+	if v.BackupVaultName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BackupVaultName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2277,6 +3000,36 @@ func validateOpListRecoveryPointsByResourceInput(v *ListRecoveryPointsByResource
 	invalidParams := smithy.InvalidParamsError{Context: "ListRecoveryPointsByResourceInput"}
 	if v.ResourceArn == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("ResourceArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListRestoreJobsByProtectedResourceInput(v *ListRestoreJobsByProtectedResourceInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListRestoreJobsByProtectedResourceInput"}
+	if v.ResourceArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("ResourceArn"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpListRestoreTestingSelectionsInput(v *ListRestoreTestingSelectionsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "ListRestoreTestingSelectionsInput"}
+	if v.RestoreTestingPlanName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingPlanName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2343,6 +3096,24 @@ func validateOpPutBackupVaultNotificationsInput(v *PutBackupVaultNotificationsIn
 	}
 	if v.BackupVaultEvents == nil {
 		invalidParams.Add(smithy.NewErrParamRequired("BackupVaultEvents"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpPutRestoreValidationResultInput(v *PutRestoreValidationResultInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "PutRestoreValidationResultInput"}
+	if v.RestoreJobId == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreJobId"))
+	}
+	if len(v.ValidationStatus) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("ValidationStatus"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
@@ -2522,6 +3293,27 @@ func validateOpUpdateFrameworkInput(v *UpdateFrameworkInput) error {
 	}
 }
 
+func validateOpUpdateRecoveryPointIndexSettingsInput(v *UpdateRecoveryPointIndexSettingsInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateRecoveryPointIndexSettingsInput"}
+	if v.BackupVaultName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("BackupVaultName"))
+	}
+	if v.RecoveryPointArn == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RecoveryPointArn"))
+	}
+	if len(v.Index) == 0 {
+		invalidParams.Add(smithy.NewErrParamRequired("Index"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
 func validateOpUpdateRecoveryPointLifecycleInput(v *UpdateRecoveryPointLifecycleInput) error {
 	if v == nil {
 		return nil
@@ -2557,6 +3349,49 @@ func validateOpUpdateReportPlanInput(v *UpdateReportPlanInput) error {
 		if err := validateReportSetting(v.ReportSetting); err != nil {
 			invalidParams.AddNested("ReportSetting", err.(smithy.InvalidParamsError))
 		}
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateRestoreTestingPlanInput(v *UpdateRestoreTestingPlanInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateRestoreTestingPlanInput"}
+	if v.RestoreTestingPlan == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingPlan"))
+	}
+	if v.RestoreTestingPlanName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingPlanName"))
+	}
+	if invalidParams.Len() > 0 {
+		return invalidParams
+	} else {
+		return nil
+	}
+}
+
+func validateOpUpdateRestoreTestingSelectionInput(v *UpdateRestoreTestingSelectionInput) error {
+	if v == nil {
+		return nil
+	}
+	invalidParams := smithy.InvalidParamsError{Context: "UpdateRestoreTestingSelectionInput"}
+	if v.RestoreTestingPlanName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingPlanName"))
+	}
+	if v.RestoreTestingSelection == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingSelection"))
+	} else if v.RestoreTestingSelection != nil {
+		if err := validateRestoreTestingSelectionForUpdate(v.RestoreTestingSelection); err != nil {
+			invalidParams.AddNested("RestoreTestingSelection", err.(smithy.InvalidParamsError))
+		}
+	}
+	if v.RestoreTestingSelectionName == nil {
+		invalidParams.Add(smithy.NewErrParamRequired("RestoreTestingSelectionName"))
 	}
 	if invalidParams.Len() > 0 {
 		return invalidParams
